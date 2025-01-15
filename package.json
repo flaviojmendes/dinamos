@@ -1,0 +1,32 @@
+{
+  "name": "meu-app-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@auth0/auth0-react": "^2.2.4",
+    "autoprefixer": "^10.4.17",
+    "framer-motion": "^11.18.0",
+    "postcss": "^8.4.35",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-ga4": "^2.1.0",
+    "react-router-dom": "^7.1.1",
+    "recharts": "^2.15.0",
+    "tailwindcss": "^3.4.1",
+    "universal-cookie": "^7.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.61",
+    "@types/react-dom": "^18.2.19",
+    "@vitejs/plugin-react": "^4.2.1",
+    "tailwind-scrollbar": "^3.1.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.1.4"
+  }
+}

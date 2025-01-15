@@ -1,0 +1,28 @@
+/* Base styles */
+.connection-line {
+  stroke-linecap: round;
+  transition: all 0.3s ease;
+}
+
+/* Active nodes */
+.active-node {
+  transform: scale(1.1);
+  transition: all 0.3s ease;
+}
+
+/* Cache hit indicator */
+.cache-hit {
+  border-color: #10B981 !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+/* DB hit indicator */
+.db-hit {
+  border-color: #EF4444 !important;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+}
+
+/* Moving dot glow effect */
+.glow {
+  filter: drop-shadow(0 0 4px #3B82F6);
+} 
