@@ -1,8 +1,12 @@
-import { Routes, Route, NavLink } from "react-router-dom";
+import { Routes, Route, NavLink, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import ComplexityGraph from "./components/ComplexityGraph";
 import RoundRobin from "./components/RoundRobin/RoundRobin";
 import CacheSimulation from "./components/CacheSimulation/CacheSimulation";
+import ReplicationModel from "./components/ReplicationModel/ReplicationModel";
+import MessageQueue from "./components/MessageQueue/MessageQueue";
+import HorizontalScaling from './components/HorizontalScaling/HorizontalScaling';
+
 import "./App.css";
 import logo from './assets/logo.svg';
 
@@ -126,6 +130,39 @@ function App() {
           >
             Cache
           </NavLink>
+          <NavLink
+            to="/replication"
+            onClick={handleNavClick}
+            className={({ isActive }) =>
+              `block px-4 py-2 rounded transition-colors ${
+                isActive
+                  ? 'bg-blue-500 text-white'
+                  : 'text-gray-300 hover:bg-gray-800'
+              }`
+            }
+          >
+            Replicação e Consistência
+          </NavLink>
+          <Link
+            to="/message-queue"
+            onClick={handleNavClick}
+            className="block px-4 py-2 rounded transition-colors text-gray-300 hover:bg-gray-800"
+          >
+            Filas e Pub/Sub
+          </Link>
+          <NavLink
+            to="/horizontal-scaling"
+            onClick={handleNavClick}
+            className={({ isActive }) =>
+              `block px-4 py-2 rounded transition-colors ${
+                isActive
+                  ? 'bg-blue-500 text-white'
+                  : 'text-gray-300 hover:bg-gray-800'
+              }`
+            }
+          >
+            Escalabilidade Horizontal
+          </NavLink>
         </nav>
       </div>
 
@@ -137,6 +174,9 @@ function App() {
             <Route path="/complexity" element={<ComplexityGraph />} />
             <Route path="/load-balancer" element={<RoundRobin />} />
             <Route path="/cache" element={<CacheSimulation />} />
+            <Route path="/replication" element={<ReplicationModel />} />
+            <Route path="/message-queue" element={<MessageQueue />} />
+            <Route path="/horizontal-scaling" element={<HorizontalScaling />} />
           </Routes>
         </div>
       </main>
