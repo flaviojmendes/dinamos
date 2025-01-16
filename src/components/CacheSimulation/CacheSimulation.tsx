@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 interface CacheEntry {
   key: string;
@@ -28,6 +28,7 @@ export default function CacheSimulation() {
   const [cache, setCache] = useState<Map<string, CacheEntry>>(new Map());
   const [logs, setLogs] = useState<RequestLog[]>([]);
   const [isConfigOpen, setIsConfigOpen] = useState(false);
+  const [, forceUpdate] = useState({});  // Used to force re-render for countdown
   const nextLogId = useRef(1);
   const [config, setConfig] = useState<SimulationConfig>({
     cacheEnabled: true,
@@ -35,6 +36,35 @@ export default function CacheSimulation() {
     requestDelay: 500,
     dbDelay: 1000,
   });
+
+  // Update cache countdown every second
+  useEffect(() => {
+    const timer = setInterval(() => {
+      // Only force update if there are items in cache
+      if (cache.size > 0) {
+        forceUpdate({});
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [cache.size]);
+
+  const getRemainingTime = (timestamp: number, ttl: number) => {
+    const remaining = Math.max(0, Math.ceil((timestamp + ttl * 1000 - Date.now()) / 1000));
+    if (remaining === 0) {
+      // Remove expired items from cache
+      setCache(current => {
+        const newCache = new Map(current);
+        for (const [key, entry] of newCache.entries()) {
+          if (Date.now() - entry.timestamp > config.cacheTTL * 1000) {
+            newCache.delete(key);
+          }
+        }
+        return newCache;
+      });
+    }
+    return remaining;
+  };
 
   const addLog = (log: Omit<RequestLog, 'id'>) => {
     setLogs(current => [...current.slice(-9), { ...log, id: nextLogId.current++ }]);
@@ -292,7 +322,7 @@ export default function CacheSimulation() {
             <div key={key} className="flex justify-between items-center bg-gray-800 p-3 rounded">
               <div className="text-white">{key}</div>
               <div className="text-gray-400">
-                expira em {Math.max(0, Math.ceil((entry.timestamp + config.cacheTTL * 1000 - Date.now()) / 1000))}s
+                expira em {getRemainingTime(entry.timestamp, config.cacheTTL)}s
               </div>
             </div>
           ))}
