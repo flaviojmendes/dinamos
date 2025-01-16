@@ -1,322 +1,377 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 
 interface Node {
-  id: string;
-  status: 'active' | 'starting' | 'stopping' | 'inactive';
-  load: number; // 0-100
-  requestsHandled: number;
-  latency: number; // ms
-  currentRequests: number;
+  id: number;
+  status: 'active' | 'starting' | 'stopping';
+  requests: number;
+  throughput: number;
+  load: number;
+  latency: number;
 }
 
-interface Request {
-  id: number;
-  timestamp: number;
-  nodeId?: string;
-  status: 'pending' | 'processing' | 'completed';
-  startProcessingTime?: number;
-  completionTime?: number;
+interface Config {
+  maxLoad: number;
+  baseLatency: number;
+  loadImpact: number;
+  defaultNodeThroughput: number;
 }
 
 interface Metrics {
-  avgLatency: number;
-  throughput: number; // requests/second
-  totalRequests: number;
+  processed: number;
+  dropped: number;
   successRate: number;
 }
 
-const BASE_LATENCY = 100; // ms
-const MAX_NODE_REQUESTS = 5; // requests per node before performance degradation
-
 export default function HorizontalScaling() {
+  // Basic state
   const [nodes, setNodes] = useState<Node[]>([
-    { 
-      id: 'node-1', 
-      status: 'active', 
-      load: 0, 
-      requestsHandled: 0, 
-      latency: BASE_LATENCY,
-      currentRequests: 0
-    },
+    { id: 1, status: 'active', requests: 0, throughput: 10, load: 0, latency: 100 }
   ]);
-  const [requests, setRequests] = useState<Request[]>([]);
   const [isRunning, setIsRunning] = useState(false);
-  const [requestRate, setRequestRate] = useState(5); // requests per second
+  const [requestsPerSecond, setRequestsPerSecond] = useState(5);
+  const [totalRequests, setTotalRequests] = useState(0);
   const [metrics, setMetrics] = useState<Metrics>({
-    avgLatency: 0,
-    throughput: 0,
-    totalRequests: 0,
-    successRate: 100,
+    processed: 0,
+    dropped: 0,
+    successRate: 100
+  });
+  const [avgLatency, setAvgLatency] = useState(0);
+  const [isConfigOpen, setIsConfigOpen] = useState(false);
+  const [config, setConfig] = useState<Config>({
+    maxLoad: 100,
+    baseLatency: 100,
+    loadImpact: 2,
+    defaultNodeThroughput: 10
   });
 
-  // Add a new node
-  const addNode = useCallback(() => {
+  // Add new node
+  const addNode = () => {
     const newNode: Node = {
-      id: `node-${nodes.length + 1}`,
+      id: nodes.length + 1,
       status: 'starting',
+      requests: 0,
+      throughput: config.defaultNodeThroughput,
       load: 0,
-      requestsHandled: 0,
-      latency: BASE_LATENCY,
-      currentRequests: 0
+      latency: config.baseLatency
     };
-
     setNodes(prev => [...prev, newNode]);
-
-    // Simulate node startup time
+    
     setTimeout(() => {
-      setNodes(prev =>
-        prev.map(node =>
+      setNodes(prev => 
+        prev.map(node => 
           node.id === newNode.id ? { ...node, status: 'active' } : node
         )
       );
-    }, 3000);
-  }, [nodes.length]);
+    }, 2000);
+  };
 
-  // Remove a node
-  const removeNode = useCallback((nodeId: string) => {
-    // Redistribute requests from the node being removed
-    setRequests(prev => 
-      prev.map(req => 
-        req.nodeId === nodeId && req.status === 'processing'
-          ? { ...req, status: 'pending', nodeId: undefined }
-          : req
+  // Update node throughput
+  const updateNodeThroughput = (nodeId: number, newThroughput: number) => {
+    setNodes(prev => 
+      prev.map(node => 
+        node.id === nodeId ? { ...node, throughput: newThroughput } : node
       )
     );
+  };
 
-    setNodes(prev => {
-      const updatedNodes = prev.map(node =>
-        node.id === nodeId ? { ...node, status: 'stopping' as const } : node
-      );
-
-      setTimeout(() => {
-        setNodes(current => current.filter(n => n.id !== nodeId));
-      }, 2000);
-
-      return updatedNodes;
-    });
-  }, []);
-
-  // Generate new requests
-  const generateRequest = useCallback(() => {
-    const newRequest: Request = {
-      id: Date.now(),
-      timestamp: Date.now(),
-      status: 'pending'
-    };
-
-    setRequests(prev => [...prev, newRequest]);
-  }, []);
-
-  // Process requests
-  const processRequests = useCallback(() => {
-    const now = Date.now();
-    const activeNodes = nodes.filter(n => n.status === 'active');
-    if (!activeNodes.length) return;
-
-    // Update requests status
-    setRequests(prev => {
-      let updatedRequests = [...prev];
-
-      // First, handle completed requests
-      updatedRequests = updatedRequests.map(req => {
-        if (req.status === 'processing' && req.startProcessingTime) {
-          const node = nodes.find(n => n.id === req.nodeId);
-          if (!node) return req;
-
-          const processingTime = now - req.startProcessingTime;
-          if (processingTime >= node.latency) {
-            return {
-              ...req,
-              status: 'completed',
-              completionTime: now
-            };
-          }
-        }
-        return req;
-      });
-
-      // Remove completed requests after a brief display period
-      updatedRequests = updatedRequests.filter(req => {
-        if (req.status === 'completed' && req.completionTime) {
-          return (now - req.completionTime) < 1000;
-        }
-        return true;
-      });
-
-      // Assign pending requests to available nodes
-      const pendingRequests = updatedRequests.filter(r => r.status === 'pending');
-      pendingRequests.forEach(req => {
-        // Find the least loaded node
-        const targetNode = activeNodes.reduce((min, node) => 
-          node.currentRequests < min.currentRequests ? node : min
-        , activeNodes[0]);
-
-        if (targetNode.currentRequests < MAX_NODE_REQUESTS * 2) {
-          const index = updatedRequests.findIndex(r => r.id === req.id);
-          if (index !== -1) {
-            updatedRequests[index] = {
-              ...req,
-              nodeId: targetNode.id,
-              status: 'processing',
-              startProcessingTime: now
-            };
-          }
-        }
-      });
-
-      return updatedRequests;
-    });
-
-    // Update node metrics
+  // Remove node
+  const removeNode = (nodeId: number) => {
     setNodes(prev => 
-      prev.map(node => {
-        if (node.status !== 'active') return node;
-
-        const nodeRequests = requests.filter(
-          r => r.nodeId === node.id && r.status === 'processing'
-        ).length;
-
-        const loadFactor = Math.min(nodeRequests / MAX_NODE_REQUESTS, 2);
-        const newLatency = BASE_LATENCY * (1 + loadFactor);
-
-        return {
-          ...node,
-          currentRequests: nodeRequests,
-          load: Math.min(100, (nodeRequests / MAX_NODE_REQUESTS) * 100),
-          latency: newLatency
-        };
-      })
+      prev.map(node => 
+        node.id === nodeId ? { ...node, status: 'stopping' } : node
+      )
     );
-
-    // Update global metrics
-    const completedRequests = requests.filter(r => r.status === 'completed' && r.completionTime);
-    if (completedRequests.length > 0) {
-      setMetrics(prev => {
-        const totalLatency = completedRequests.reduce((sum, req) => 
-          sum + (req.completionTime! - req.timestamp)
-        , 0);
-        const avgLatency = totalLatency / completedRequests.length;
-        const throughput = completedRequests.length / 
-          ((now - completedRequests[0].timestamp) / 1000);
-
-        return {
-          avgLatency,
-          throughput,
-          totalRequests: prev.totalRequests + completedRequests.length,
-          successRate: 100
-        };
-      });
-    }
-  }, [nodes, requests]);
+    
+    setTimeout(() => {
+      setNodes(prev => prev.filter(node => node.id !== nodeId));
+    }, 2000);
+  };
 
   // Main simulation loop
   useEffect(() => {
-    let intervals: number[] = [];
-    
-    if (isRunning) {
-      // Generate requests at specified rate
-      intervals.push(window.setInterval(generateRequest, 1000 / requestRate));
-      
-      // Process requests and update metrics more frequently
-      intervals.push(window.setInterval(processRequests, 100));
-    }
+    if (!isRunning) return;
 
-    return () => {
-      intervals.forEach(clearInterval);
-    };
-  }, [isRunning, requestRate, generateRequest, processRequests]);
+    const simulationInterval = setInterval(() => {
+      // Get active nodes
+      const activeNodes = nodes.filter(n => n.status === 'active');
+      if (activeNodes.length === 0) return;
+
+      // Calculate total system capacity
+      const totalCapacity = activeNodes.reduce((sum, node) => sum + node.throughput, 0);
+
+      // Calculate processed and dropped requests
+      const processedRequests = Math.min(requestsPerSecond, totalCapacity);
+      const droppedRequests = Math.max(0, requestsPerSecond - totalCapacity);
+
+      // Update total requests and metrics
+      setTotalRequests(prev => prev + requestsPerSecond);
+      setMetrics(prev => {
+        const newProcessed = prev.processed + processedRequests;
+        const newDropped = prev.dropped + droppedRequests;
+        const total = newProcessed + newDropped;
+        return {
+          processed: newProcessed,
+          dropped: newDropped,
+          successRate: total > 0 ? Math.round((newProcessed / total) * 100) : 100
+        };
+      });
+
+      // Update nodes with their current load and latency
+      setNodes(prev => 
+        prev.map(node => {
+          if (node.status !== 'active') return node;
+
+          // Calculate this node's share of requests
+          const nodeShare = node.throughput / totalCapacity;
+          const nodeRequests = Math.min(
+            Math.ceil(processedRequests * nodeShare),
+            node.throughput
+          );
+
+          // Calculate load and latency
+          const load = Math.min(100, (nodeRequests / node.throughput) * 100);
+          const loadFactor = load / 100;
+          const latency = config.baseLatency * (1 + (loadFactor * config.loadImpact));
+
+          return {
+            ...node,
+            requests: nodeRequests,
+            load,
+            latency: Math.round(latency)
+          };
+        })
+      );
+
+      // Update average latency
+      const newAvgLatency = activeNodes.reduce((sum, node) => sum + node.latency, 0) / activeNodes.length;
+      setAvgLatency(Math.round(newAvgLatency));
+    }, 1000); // Update every second
+
+    return () => clearInterval(simulationInterval);
+  }, [isRunning, nodes, requestsPerSecond, config]);
 
   // Reset simulation
-  const resetSimulation = useCallback(() => {
+  const resetSimulation = () => {
     setIsRunning(false);
-    setRequests([]);
-    setMetrics({
-      avgLatency: 0,
-      throughput: 0,
-      totalRequests: 0,
-      successRate: 100,
-    });
     setNodes([{ 
-      id: 'node-1', 
+      id: 1, 
       status: 'active', 
+      requests: 0, 
+      throughput: config.defaultNodeThroughput,
       load: 0, 
-      requestsHandled: 0, 
-      latency: BASE_LATENCY,
-      currentRequests: 0
+      latency: config.baseLatency 
     }]);
-  }, []);
+    setTotalRequests(0);
+    setMetrics({
+      processed: 0,
+      dropped: 0,
+      successRate: 100
+    });
+    setAvgLatency(0);
+  };
 
   return (
-    <div className="p-4 md:p-8 space-y-8">
-      <div className="bg-gray-900 p-4 md:p-6 rounded-lg">
-        <h2 className="text-xl font-bold text-white mb-4 md:mb-6">Escalabilidade Horizontal</h2>
+    <div className="p-4 space-y-6">
+      <div className="bg-gray-800 p-6 rounded-lg shadow-xl">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+            Escalabilidade Horizontal
+          </h2>
+          <button
+            onClick={() => setIsConfigOpen(!isConfigOpen)}
+            className="px-3 py-1 bg-gray-700 rounded-md hover:bg-gray-600 transition-colors flex items-center gap-2"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            Configurações
+          </button>
+        </div>
 
-        {/* Metrics Dashboard */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-gray-800 p-4 rounded-lg">
-            <h3 className="text-sm font-medium text-gray-400 mb-1">Latência Média</h3>
-            <p className="text-2xl font-bold text-white">
-              {Math.round(metrics.avgLatency)}ms
-            </p>
+        {isConfigOpen && (
+          <div className="mb-6 bg-gray-700 p-4 rounded-lg">
+            <h3 className="text-lg font-medium mb-4">Parâmetros de Simulação</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Carga Máxima (%)
+                </label>
+                <input
+                  type="number"
+                  value={config.maxLoad}
+                  onChange={(e) => setConfig(prev => ({ ...prev, maxLoad: Number(e.target.value) }))}
+                  className="w-full px-3 py-2 bg-gray-600 rounded-md"
+                  min="10"
+                  max="1000"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Latência Base (ms)
+                </label>
+                <input
+                  type="number"
+                  value={config.baseLatency}
+                  onChange={(e) => setConfig(prev => ({ ...prev, baseLatency: Number(e.target.value) }))}
+                  className="w-full px-3 py-2 bg-gray-600 rounded-md"
+                  min="10"
+                  max="1000"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Impacto da Carga
+                </label>
+                <input
+                  type="number"
+                  value={config.loadImpact}
+                  onChange={(e) => setConfig(prev => ({ ...prev, loadImpact: Number(e.target.value) }))}
+                  className="w-full px-3 py-2 bg-gray-600 rounded-md"
+                  min="0.1"
+                  max="10"
+                  step="0.1"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Throughput Padrão (req/s)
+                </label>
+                <input
+                  type="number"
+                  value={config.defaultNodeThroughput}
+                  onChange={(e) => setConfig(prev => ({ ...prev, defaultNodeThroughput: Number(e.target.value) }))}
+                  className="w-full px-3 py-2 bg-gray-600 rounded-md"
+                  min="1"
+                  max="100"
+                />
+              </div>
+            </div>
           </div>
-          <div className="bg-gray-800 p-4 rounded-lg">
-            <h3 className="text-sm font-medium text-gray-400 mb-1">Throughput</h3>
-            <p className="text-2xl font-bold text-white">
-              {Math.round(metrics.throughput)} req/s
-            </p>
-          </div>
-          <div className="bg-gray-800 p-4 rounded-lg">
-            <h3 className="text-sm font-medium text-gray-400 mb-1">Total de Requisições</h3>
-            <p className="text-2xl font-bold text-white">
-              {metrics.totalRequests}
-            </p>
-          </div>
-          <div className="bg-gray-800 p-4 rounded-lg">
-            <h3 className="text-sm font-medium text-gray-400 mb-1">Taxa de Sucesso</h3>
-            <p className="text-2xl font-bold text-white">
-              {Math.round(metrics.successRate)}%
-            </p>
+        )}
+        
+        {/* Controls */}
+        <div className="flex flex-wrap gap-4 mb-6">
+          <button
+            onClick={() => setIsRunning(!isRunning)}
+            className={`px-6 py-2 rounded-md font-medium transition-colors ${
+              isRunning 
+                ? 'bg-red-500 hover:bg-red-600' 
+                : 'bg-green-500 hover:bg-green-600'
+            }`}
+          >
+            {isRunning ? 'Parar' : 'Iniciar'}
+          </button>
+          <button
+            onClick={resetSimulation}
+            className="px-6 py-2 bg-gray-600 rounded-md font-medium hover:bg-gray-500 transition-colors"
+          >
+            Reiniciar
+          </button>
+          <div className="flex items-center gap-3">
+            <label className="font-medium">Requisições/s:</label>
+            <input
+              type="range"
+              value={requestsPerSecond}
+              onChange={(e) => setRequestsPerSecond(Number(e.target.value))}
+              className="w-32 h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-blue-500"
+              min="1"
+              max="100"
+            />
+            <span className="w-12 text-center">{requestsPerSecond}</span>
           </div>
         </div>
 
-        {/* Nodes Visualization */}
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold text-white">Nodes</h3>
+        {/* Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="bg-gradient-to-br from-gray-700 to-gray-600 p-4 rounded-lg shadow-lg">
+            <h3 className="text-sm font-medium text-gray-300 mb-2">Latência Média</h3>
+            <p className="text-3xl font-bold text-blue-400">{avgLatency}ms</p>
+          </div>
+          <div className="bg-gradient-to-br from-gray-700 to-gray-600 p-4 rounded-lg shadow-lg">
+            <h3 className="text-sm font-medium text-gray-300 mb-2">Throughput</h3>
+            <p className="text-3xl font-bold text-green-400">{Math.min(requestsPerSecond, nodes.reduce((sum, node) => sum + (node.status === 'active' ? node.throughput : 0), 0))} req/s</p>
+            <p className="text-sm text-gray-400">Requisitado: {requestsPerSecond} req/s</p>
+          </div>
+          <div className="bg-gradient-to-br from-gray-700 to-gray-600 p-4 rounded-lg shadow-lg">
+            <h3 className="text-sm font-medium text-gray-300 mb-2">Requisições</h3>
+            <div className="flex items-baseline gap-2">
+              <p className="text-3xl font-bold text-purple-400">{metrics.processed}</p>
+              <p className="text-sm text-gray-400">processadas</p>
+            </div>
+            <div className="flex items-baseline gap-2 mt-1">
+              <p className="text-xl font-bold text-red-400">{metrics.dropped}</p>
+              <p className="text-sm text-gray-400">perdidas</p>
+            </div>
+          </div>
+          <div className="bg-gradient-to-br from-gray-700 to-gray-600 p-4 rounded-lg shadow-lg">
+            <h3 className="text-sm font-medium text-gray-300 mb-2">Taxa de Sucesso</h3>
+            <div className="flex items-baseline gap-2">
+              <p className={`text-3xl font-bold ${
+                metrics.successRate > 90 ? 'text-green-400' :
+                metrics.successRate > 70 ? 'text-yellow-400' :
+                'text-red-400'
+              }`}>
+                {metrics.successRate}%
+              </p>
+            </div>
+            <div className="h-2 bg-gray-600 rounded-full overflow-hidden mt-2">
+              <div
+                className={`h-full transition-all duration-300 ${
+                  metrics.successRate > 90 ? 'bg-green-500' :
+                  metrics.successRate > 70 ? 'bg-yellow-500' :
+                  'bg-red-500'
+                }`}
+                style={{ width: `${metrics.successRate}%` }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Nodes */}
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-medium">Nodes ({nodes.length})</h3>
             <button
               onClick={addNode}
-              disabled={nodes.length >= 5 || nodes.some(n => n.status === 'starting')}
-              className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-blue-500 rounded-md hover:bg-blue-600 transition-colors flex items-center gap-2"
             >
-              + Add Node
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              Adicionar Node
             </button>
           </div>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {nodes.map(node => (
               <div
                 key={node.id}
-                className={`bg-gray-800 p-4 rounded-lg border-2 transition-colors duration-300
-                  ${node.status === 'active' ? 'border-green-500' : 
-                    node.status === 'starting' ? 'border-yellow-500' :
-                    node.status === 'stopping' ? 'border-red-500' :
-                    'border-gray-700'}`}
+                className={`bg-gray-700 p-4 rounded-lg shadow-lg border-2 transition-all duration-300 ${
+                  node.status === 'active'
+                    ? 'border-green-500'
+                    : node.status === 'starting'
+                    ? 'border-yellow-500'
+                    : 'border-red-500'
+                }`}
               >
-                <div className="flex justify-between items-start mb-3">
+                <div className="flex justify-between items-center mb-4">
                   <div>
-                    <h4 className="text-white font-medium">{node.id}</h4>
-                    <span className={`text-sm
-                      ${node.status === 'active' ? 'text-green-400' :
-                        node.status === 'starting' ? 'text-yellow-400' :
-                        node.status === 'stopping' ? 'text-red-400' :
-                        'text-gray-400'}`}
-                    >
+                    <h4 className="font-medium">Node {node.id}</h4>
+                    <span className={`text-sm ${
+                      node.status === 'active' 
+                        ? 'text-green-400' 
+                        : node.status === 'starting'
+                        ? 'text-yellow-400'
+                        : 'text-red-400'
+                    }`}>
                       {node.status.charAt(0).toUpperCase() + node.status.slice(1)}
                     </span>
                   </div>
-                  {node.status === 'active' && nodes.length > 1 && (
+                  {node.status === 'active' && (
                     <button
                       onClick={() => removeNode(node.id)}
-                      className="text-gray-400 hover:text-red-400"
+                      className="p-1 text-gray-400 hover:text-red-400 transition-colors"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -324,83 +379,58 @@ export default function HorizontalScaling() {
                     </button>
                   )}
                 </div>
-                <div className="space-y-2">
+                
+                <div className="space-y-3">
                   <div>
-                    <div className="flex justify-between text-sm text-gray-400 mb-1">
-                      <span>Load</span>
-                      <span>{Math.round(node.load)}%</span>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-gray-400">Carga</span>
+                      <span className={`font-medium ${
+                        node.load > 80 ? 'text-red-400' : 
+                        node.load > 60 ? 'text-yellow-400' : 
+                        'text-green-400'
+                      }`}>
+                        {Math.round(node.load)}%
+                      </span>
                     </div>
-                    <div className="h-2 bg-gray-700 rounded overflow-hidden">
+                    <div className="h-2 bg-gray-600 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-blue-500 transition-all duration-300"
+                        className={`h-full transition-all duration-300 ${
+                          node.load > 80 ? 'bg-red-500' :
+                          node.load > 60 ? 'bg-yellow-500' :
+                          'bg-green-500'
+                        }`}
                         style={{ width: `${node.load}%` }}
                       />
                     </div>
                   </div>
+                  
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-400">Requests Handled</span>
-                    <span className="text-white">{node.requestsHandled}</span>
+                    <span className="text-gray-400">Requisições</span>
+                    <span className="font-medium">{node.requests} req/s</span>
                   </div>
+
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-400">Latency</span>
-                    <span className="text-white">{Math.round(node.latency)}ms</span>
+                    <span className="text-gray-400">Throughput Máx</span>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        value={node.throughput}
+                        onChange={(e) => updateNodeThroughput(node.id, Number(e.target.value))}
+                        className="w-16 px-1 py-0.5 bg-gray-600 rounded text-right"
+                        min="1"
+                        max="100"
+                      />
+                      <span>req/s</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-400">Latência</span>
+                    <span className="font-medium">{node.latency}ms</span>
                   </div>
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-
-        {/* Controls */}
-        <div className="space-y-6">
-          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
-            <button
-              onClick={() => setIsRunning(!isRunning)}
-              className={`w-full sm:w-auto px-4 py-2 rounded font-medium transition-colors
-                ${isRunning 
-                  ? 'bg-red-500 hover:bg-red-600' 
-                  : 'bg-green-500 hover:bg-green-600'
-                } text-white`}
-            >
-              {isRunning ? 'Parar' : 'Iniciar'}
-            </button>
-            <button
-              onClick={() => {
-                setIsRunning(false);
-                setRequests([]);
-                setMetrics({
-                  avgLatency: 0,
-                  throughput: 0,
-                  totalRequests: 0,
-                  successRate: 100,
-                });
-                setNodes(nodes.map(node => ({
-                  ...node,
-                  load: 0,
-                  requestsHandled: 0,
-                  latency: 100,
-                })));
-              }}
-              className="w-full sm:w-auto px-4 py-2 bg-gray-700 text-white rounded font-medium hover:bg-gray-600"
-            >
-              Reiniciar
-            </button>
-          </div>
-
-          {/* Configuration */}
-          <div>
-            <div className="flex flex-col sm:flex-row sm:justify-between text-white mb-1">
-              <span className="mb-1 sm:mb-0">Taxa de Requisições (req/s)</span>
-              <span className="text-blue-400">{requestRate}</span>
-            </div>
-            <input
-              type="range"
-              min="1"
-              max="20"
-              value={requestRate}
-              onChange={(e) => setRequestRate(Number(e.target.value))}
-              className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
-            />
           </div>
         </div>
       </div>

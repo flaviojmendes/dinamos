@@ -69,6 +69,7 @@ export default function MessageQueue() {
           : msg
       )
     );
+    console.log('Processed message:', targetMessage.content);
     setProcessedCount(prev => prev + 1);
 
     // Remove completed message after showing completion
@@ -100,6 +101,7 @@ export default function MessageQueue() {
     if (isRunning) {
       processorInterval = window.setInterval(() => {
         processNextMessage();
+        console.log('Processing message:', messages.find(m => m.status === 'processing')?.content);
       }, 100); // Check for new messages frequently
     }
 
