@@ -3,6 +3,7 @@ import CacheSimulation from "./components/CacheSimulation/CacheSimulation";
 import HorizontalScaling from './components/HorizontalScaling/HorizontalScaling';
 import LoadBalancer from './components/LoadBalancer/LoadBalancer';
 import CircuitBreaker from './components/CircuitBreaker/CircuitBreaker';
+import Backpressure from './components/Backpressure/Backpressure';
 
 import "./App.css";
 
@@ -53,6 +54,16 @@ export default function App() {
               >
                 Circuit Breaker
               </NavLink>
+              <NavLink
+                to="/backpressure"
+                className={({ isActive }) =>
+                  `px-3 py-2 rounded-md text-sm font-medium ${
+                    isActive ? 'bg-zinc-800 text-white' : 'text-zinc-300 hover:bg-zinc-800 hover:text-white'
+                  }`
+                }
+              >
+                Backpressure
+              </NavLink>
             </div>
           </div>
         </div>
@@ -64,6 +75,7 @@ export default function App() {
           <Route path="/horizontal-scaling" element={<HorizontalScaling />} />
           <Route path="/load-balancer" element={<LoadBalancer />} />
           <Route path="/circuit-breaker" element={<CircuitBreaker />} />
+          <Route path="/backpressure" element={<Backpressure />} />
         </Routes>
       </main>
     </div>
