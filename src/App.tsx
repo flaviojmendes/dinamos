@@ -5,6 +5,7 @@ import LoadBalancer from './components/LoadBalancer/LoadBalancer';
 import CircuitBreaker from './components/CircuitBreaker/CircuitBreaker';
 import Backpressure from './components/Backpressure/Backpressure';
 import RateLimiter from './components/RateLimiter/RateLimiter';
+import Fallback from './components/Fallback/Fallback';
 
 import "./App.css";
 
@@ -75,6 +76,16 @@ export default function App() {
               >
                 Rate Limiter
               </NavLink>
+              <NavLink
+                to="/fallback"
+                className={({ isActive }) =>
+                  `px-3 py-2 rounded-md text-sm font-medium ${
+                    isActive ? 'bg-zinc-800 text-white' : 'text-zinc-300 hover:bg-zinc-800 hover:text-white'
+                  }`
+                }
+              >
+                Fallback
+              </NavLink>
             </div>
           </div>
         </div>
@@ -88,6 +99,7 @@ export default function App() {
           <Route path="/circuit-breaker" element={<CircuitBreaker />} />
           <Route path="/backpressure" element={<Backpressure />} />
           <Route path="/rate-limiter" element={<RateLimiter />} />
+          <Route path="/fallback" element={<Fallback />} />
         </Routes>
       </main>
     </div>
