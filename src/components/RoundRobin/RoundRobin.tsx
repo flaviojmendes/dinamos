@@ -143,7 +143,7 @@ export default function RoundRobin() {
         cancelAnimationFrame(animationFrameId.current);
       }
     };
-  }, [isRunning, config.requestsPerSecond]);
+  }, [isRunning, config.requestsPerSecond, config.serverCount, config.serverCapacity, config.strategy]);
 
   return (
     <div className="p-6">
