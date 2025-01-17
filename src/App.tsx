@@ -10,6 +10,7 @@ import AsyncSync from './components/AsyncSync/AsyncSync';
 import CDN from './components/CDN/CDN';
 
 import "./App.css";
+import RoundRobin from './components/RoundRobin/RoundRobin';
 
 export default function App() {
   return (
@@ -115,7 +116,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<CacheSimulation />} />
           <Route path="/horizontal-scaling" element={<HorizontalScaling />} />
-          <Route path="/load-balancer" element={<LoadBalancer />} />
+          <Route path="/load-balancer" element={<RoundRobin />} />
           <Route path="/circuit-breaker" element={<CircuitBreaker />} />
           <Route path="/backpressure" element={<Backpressure />} />
           <Route path="/rate-limiter" element={<RateLimiter />} />
