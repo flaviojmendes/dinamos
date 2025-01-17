@@ -157,9 +157,9 @@ export default function CacheSimulation() {
   };
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-4 md:p-8 space-y-4 md:space-y-8">
       {/* Animation */}
-      <div className="bg-gray-900 p-6 rounded-lg">
+      <div className="bg-gray-900 p-4 md:p-6 rounded-lg">
         <div className="relative h-20 flex items-center justify-between max-w-3xl mx-auto">
           {/* Connection Line */}
           <div className="absolute h-1 bg-gray-600 left-0 right-0 top-1/2 -translate-y-1/2" />
@@ -189,7 +189,7 @@ export default function CacheSimulation() {
             flex items-center justify-center`}>
             <span className="text-white text-sm">Cache</span>
           </div>
-          
+
           <div className={`relative z-10 w-16 h-16 rounded-lg border-2 transition-colors duration-300
             ${position === 'db' ? 'border-red-500 bg-red-500/20' : 'border-gray-600 bg-gray-900'}
             flex items-center justify-center`}>
@@ -199,14 +199,14 @@ export default function CacheSimulation() {
       </div>
 
       {/* Configuration */}
-      <div className="bg-gray-900 p-6 rounded-lg">
+      <div className="bg-gray-900 p-4 md:p-6 rounded-lg">
         <button
           onClick={() => setIsConfigOpen(!isConfigOpen)}
-          className="w-full flex items-center justify-between text-lg font-semibold text-white focus:outline-none"
+          className="w-full flex items-center justify-between text-base md:text-lg font-semibold text-white focus:outline-none"
         >
           <span>Configuração</span>
           <svg
-            className={`w-6 h-6 transform transition-transform duration-200 ${isConfigOpen ? 'rotate-180' : ''}`}
+            className={`w-5 h-5 md:w-6 md:h-6 transform transition-transform duration-200 ${isConfigOpen ? 'rotate-180' : ''}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -221,7 +221,7 @@ export default function CacheSimulation() {
         </button>
         
         <div className={`space-y-4 overflow-hidden transition-all duration-200 ease-in-out ${
-          isConfigOpen ? 'max-h-96 opacity-100 mt-6' : 'max-h-0 opacity-0'
+          isConfigOpen ? 'max-h-96 opacity-100 mt-4 md:mt-6' : 'max-h-0 opacity-0'
         }`}>
           <div className="flex items-center justify-between">
             <label className="text-white flex items-center space-x-2">
@@ -285,43 +285,45 @@ export default function CacheSimulation() {
       </div>
 
       {/* Controls */}
-      <div className="bg-gray-900 p-6 rounded-lg">
-        <div className="flex space-x-4">
+      <div className="bg-gray-900 p-4 md:p-6 rounded-lg">
+        <div className="flex flex-col md:flex-row gap-4">
           <input
             type="text"
             value={currentKey}
             onChange={(e) => setCurrentKey(e.target.value)}
             placeholder="Chave do cache"
-            className="flex-1 px-4 py-2 bg-gray-800 text-white rounded border border-gray-700 focus:outline-none focus:border-blue-500"
+            className="w-full md:flex-1 px-4 py-2 bg-gray-800 text-white rounded border border-gray-700 focus:outline-none focus:border-blue-500"
           />
-          <button
-            onClick={simulateRequest}
-            disabled={isProcessing}
-            className={`px-6 py-2 rounded font-medium transition-colors ${
-              isProcessing
-                ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
-                : 'bg-blue-500 text-white hover:bg-blue-600'
-            }`}
-          >
-            {isProcessing ? 'Processando...' : 'Enviar Requisição'}
-          </button>
-          <button
-            onClick={clearCache}
-            className="px-6 py-2 bg-red-500 text-white rounded font-medium hover:bg-red-600 transition-colors"
-          >
-            Limpar Cache
-          </button>
+          <div className="flex gap-2 md:gap-4">
+            <button
+              onClick={simulateRequest}
+              disabled={isProcessing}
+              className={`flex-1 md:flex-none px-4 md:px-6 py-2 rounded font-medium transition-colors ${
+                isProcessing
+                  ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                  : 'bg-blue-500 text-white hover:bg-blue-600'
+              }`}
+            >
+              {isProcessing ? 'Processando...' : 'Enviar'}
+            </button>
+            <button
+              onClick={clearCache}
+              className="flex-1 md:flex-none px-4 md:px-6 py-2 bg-red-500 text-white rounded font-medium hover:bg-red-600 transition-colors"
+            >
+              Limpar
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Cache Status */}
-      <div className="bg-gray-900 p-6 rounded-lg">
-        <h3 className="text-lg font-semibold text-white mb-4">Status do Cache</h3>
+      <div className="bg-gray-900 p-4 md:p-6 rounded-lg">
+        <h3 className="text-base md:text-lg font-semibold text-white mb-4">Status do Cache</h3>
         <div className="space-y-2">
           {Array.from(cache.entries()).map(([key, entry]) => (
-            <div key={key} className="flex justify-between items-center bg-gray-800 p-3 rounded">
-              <div className="text-white">{key}</div>
-              <div className="text-gray-400">
+            <div key={key} className="flex flex-col md:flex-row md:justify-between md:items-center bg-gray-800 p-3 rounded gap-2 md:gap-0">
+              <div className="text-white break-all">{key}</div>
+              <div className="text-gray-400 text-sm md:text-base">
                 expira em {getRemainingTime(entry.timestamp, config.cacheTTL)}s
               </div>
             </div>
@@ -333,15 +335,15 @@ export default function CacheSimulation() {
       </div>
 
       {/* Request Logs */}
-      <div className="bg-gray-900 p-6 rounded-lg">
-        <h3 className="text-lg font-semibold text-white mb-4">Registros</h3>
+      <div className="bg-gray-900 p-4 md:p-6 rounded-lg">
+        <h3 className="text-base md:text-lg font-semibold text-white mb-4">Registros</h3>
         <div className="space-y-2">
           {logs.map(log => (
             <div
               key={log.id}
-              className="flex justify-between items-center bg-gray-800 p-3 rounded"
+              className="flex flex-col md:flex-row md:justify-between md:items-center bg-gray-800 p-3 rounded gap-2 md:gap-0"
             >
-              <div className="flex items-center space-x-3">
+              <div className="flex flex-wrap items-center gap-2 md:gap-3">
                 <span className={`px-2 py-1 rounded text-sm ${
                   log.type === 'request' ? 'bg-blue-500 text-white' :
                   log.type === 'cache-hit' ? 'bg-green-500 text-white' :
@@ -353,9 +355,9 @@ export default function CacheSimulation() {
                    log.type === 'cache-miss' ? 'Cache Ausente' :
                    'Consulta BD'}
                 </span>
-                <span className="text-white">{log.key}</span>
+                <span className="text-white break-all">{log.key}</span>
               </div>
-              <span className="text-gray-400">{log.duration}ms</span>
+              <span className="text-gray-400 text-sm md:text-base">{log.duration}ms</span>
             </div>
           ))}
           {logs.length === 0 && (

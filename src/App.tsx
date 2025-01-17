@@ -43,7 +43,7 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black text-white flex">
+    <div className="min-h-screen h-full bg-black text-white flex">
       {/* Overlay for mobile */}
       {isMobile && isSidebarOpen && (
         <div
@@ -60,7 +60,7 @@ export default function App() {
             animate={{ x: 0 }}
             exit={{ x: -300 }}
             transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-            className={`bg-zinc-900 border-r border-zinc-800 w-72 fixed md:relative h-screen z-30 overflow-y-auto
+            className={`bg-zinc-900 border-r border-zinc-800 w-72 fixed md:relative h-full z-30 overflow-y-auto
               ${isMobile ? 'shadow-lg' : ''}`}
           >
             <div className="p-4">

@@ -122,11 +122,11 @@ export default function CircuitBreaker() {
   return (
     <div className="p-4">
       <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
           <h1 className="text-xl font-semibold">Circuit Breaker</h1>
           <button
             onClick={() => setIsConfigOpen(!isConfigOpen)}
-            className="px-3 py-1 bg-zinc-800 rounded-md hover:bg-zinc-700"
+            className="w-full sm:w-auto px-3 py-1 bg-zinc-800 rounded-md hover:bg-zinc-700"
           >
             Configurações
           </button>
@@ -134,7 +134,7 @@ export default function CircuitBreaker() {
 
         {isConfigOpen && (
           <div className="mb-4 p-4 bg-zinc-800 rounded-lg">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm mb-1">Limite de Falhas</label>
                 <input
@@ -166,44 +166,46 @@ export default function CircuitBreaker() {
           </div>
         )}
 
-        <div className="flex gap-4 mb-6">
-          <button
-            onClick={() => setIsRunning(!isRunning)}
-            className={`px-4 py-2 rounded-md ${
-              isRunning ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
-            }`}
-          >
-            {isRunning ? 'Parar' : 'Iniciar'}
-          </button>
-          <button
-            onClick={() => setErrorsEnabled(!errorsEnabled)}
-            className={`px-4 py-2 rounded-md ${
-              errorsEnabled ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'
-            }`}
-            disabled={!isRunning}
-          >
-            {errorsEnabled ? 'Parar Erros' : 'Iniciar Erros'}
-          </button>
-          <button
-            onClick={resetSimulation}
-            className="px-4 py-2 bg-zinc-700 rounded-md hover:bg-zinc-600"
-          >
-            Resetar
-          </button>
-          <div className="flex items-center gap-2">
-            <label className="text-sm">Requisições/s:</label>
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <div className="flex gap-2 sm:gap-4">
+            <button
+              onClick={() => setIsRunning(!isRunning)}
+              className={`flex-1 sm:flex-none px-4 py-2 rounded-md ${
+                isRunning ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
+              }`}
+            >
+              {isRunning ? 'Parar' : 'Iniciar'}
+            </button>
+            <button
+              onClick={() => setErrorsEnabled(!errorsEnabled)}
+              className={`flex-1 sm:flex-none px-4 py-2 rounded-md ${
+                errorsEnabled ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'
+              }`}
+              disabled={!isRunning}
+            >
+              {errorsEnabled ? 'Parar Erros' : 'Iniciar Erros'}
+            </button>
+            <button
+              onClick={resetSimulation}
+              className="flex-1 sm:flex-none px-4 py-2 bg-zinc-700 rounded-md hover:bg-zinc-600"
+            >
+              Resetar
+            </button>
+          </div>
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <label className="text-sm whitespace-nowrap">Requisições/s:</label>
             <input
               type="number"
               value={requestsPerSecond}
               onChange={e => setRequestsPerSecond(Math.max(1, Math.min(10, +e.target.value)))}
-              className="w-20 bg-zinc-700 rounded px-2 py-1"
+              className="w-full sm:w-20 bg-zinc-700 rounded px-2 py-1"
             />
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           <div className="bg-zinc-800 p-4 rounded-lg">
-            <div className="flex items-center gap-4 mb-4">
+            <div className="flex flex-wrap items-center gap-4 mb-4">
               <div className={`w-4 h-4 rounded-full ${getStateColor()}`} />
               <div>
                 <div className="text-sm text-zinc-400">Estado</div>
@@ -237,16 +239,21 @@ export default function CircuitBreaker() {
             {requests.map(request => (
               <div
                 key={request.id}
-                className={`p-2 rounded flex justify-between ${
+                className={`p-2 rounded flex flex-wrap justify-between gap-2 ${
                   request.status === 'success' ? 'bg-green-500/20' : 'bg-red-500/20'
                 }`}
               >
                 <span>
                   {request.status === 'success' ? '✓' : '✗'} {request.status.toUpperCase()}
                 </span>
-                <span>{request.duration.toFixed(0)}ms</span>
+                <span className="text-sm">{request.duration.toFixed(0)}ms</span>
               </div>
             ))}
+            {requests.length === 0 && (
+              <div className="text-zinc-500 text-center py-4">
+                Nenhuma requisição realizada
+              </div>
+            )}
           </div>
         </div>
       </div>

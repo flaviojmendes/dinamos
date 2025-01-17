@@ -87,16 +87,16 @@ export default function RateLimiter() {
       <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-xl font-semibold">Rate Limiter</h1>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
             <button
               onClick={() => setIsConfigOpen(!isConfigOpen)}
-              className="px-4 py-2 bg-zinc-800 rounded-md hover:bg-zinc-700 font-medium transition-colors"
+              className="w-full sm:w-auto px-4 py-2 bg-zinc-800 rounded-md hover:bg-zinc-700 font-medium transition-colors"
             >
               {isConfigOpen ? 'Fechar Config' : 'Configurar'}
             </button>
             <button
               onClick={() => setIsRunning(!isRunning)}
-              className={`px-4 py-2 rounded-md font-medium transition-colors ${
+              className={`w-full sm:w-auto px-4 py-2 rounded-md font-medium transition-colors ${
                 isRunning 
                   ? 'bg-red-500 hover:bg-red-600' 
                   : 'bg-green-500 hover:bg-green-600'
@@ -106,7 +106,7 @@ export default function RateLimiter() {
             </button>
             <button
               onClick={resetSimulation}
-              className="px-4 py-2 bg-zinc-800 rounded-md hover:bg-zinc-700 font-medium transition-colors"
+              className="w-full sm:w-auto px-4 py-2 bg-zinc-800 rounded-md hover:bg-zinc-700 font-medium transition-colors"
             >
               Resetar
             </button>
@@ -115,7 +115,7 @@ export default function RateLimiter() {
 
         {isConfigOpen && (
           <div className="mb-6 bg-zinc-800/50 rounded-lg p-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <label className="block text-sm text-zinc-400">
                   Taxa de Tokens (por segundo)
@@ -129,7 +129,7 @@ export default function RateLimiter() {
                     onChange={e => setRequestsPerSecond(Number(e.target.value))}
                     className="flex-1"
                   />
-                  <span className="text-sm font-mono w-6">{requestsPerSecond}</span>
+                  <span className="text-sm font-mono w-8 text-right">{requestsPerSecond}</span>
                 </div>
               </div>
 
@@ -146,7 +146,7 @@ export default function RateLimiter() {
                     onChange={e => setMessageRate(Number(e.target.value))}
                     className="flex-1"
                   />
-                  <span className="text-sm font-mono w-6">{messageRate}</span>
+                  <span className="text-sm font-mono w-8 text-right">{messageRate}</span>
                 </div>
               </div>
 
@@ -167,17 +167,17 @@ export default function RateLimiter() {
                     }}
                     className="flex-1"
                   />
-                  <span className="text-sm font-mono w-6">{maxTokens}</span>
+                  <span className="text-sm font-mono w-8 text-right">{maxTokens}</span>
                 </div>
               </div>
             </div>
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
           {/* Token Bucket Visualization */}
           <div className="bg-zinc-800/50 rounded-lg p-4">
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4 mb-4">
               <h2 className="text-lg font-medium">Token Bucket</h2>
               <div className="text-sm text-zinc-400">
                 Taxa: {requestsPerSecond} tokens/s
@@ -198,7 +198,7 @@ export default function RateLimiter() {
 
           {/* Recent Requests */}
           <div className="bg-zinc-800/50 rounded-lg p-4">
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4 mb-4">
               <h2 className="text-lg font-medium">Últimas Requisições</h2>
               <div className="text-sm text-zinc-400">
                 Taxa: {messageRate} msgs/s
@@ -208,7 +208,7 @@ export default function RateLimiter() {
               {requests.map(request => (
                 <div
                   key={request.id}
-                  className={`flex items-center gap-2 p-2 rounded-md ${
+                  className={`flex flex-wrap items-center gap-2 p-2 rounded-md ${
                     request.status === 'accepted' 
                       ? 'bg-green-500/20 text-green-300' 
                       : 'bg-red-500/20 text-red-300'
@@ -217,7 +217,7 @@ export default function RateLimiter() {
                   <span className="text-lg">
                     {request.status === 'accepted' ? '✓' : '✗'}
                   </span>
-                  <span className="flex-1">
+                  <span className="flex-1 min-w-[120px]">
                     {request.status === 'accepted' ? 'Requisição aceita' : 'Requisição rejeitada'}
                   </span>
                   <span className="text-sm opacity-75">
@@ -235,7 +235,7 @@ export default function RateLimiter() {
         </div>
 
         {/* Metrics */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-zinc-800/50 p-4 rounded-lg">
             <div className="text-sm text-zinc-400 mb-1">Total de Requisições</div>
             <div className="text-2xl font-medium">{metrics.totalRequests}</div>
