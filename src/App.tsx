@@ -7,6 +7,7 @@ import Backpressure from './components/Backpressure/Backpressure';
 import RateLimiter from './components/RateLimiter/RateLimiter';
 import Fallback from './components/Fallback/Fallback';
 import AsyncSync from './components/AsyncSync/AsyncSync';
+import CDN from './components/CDN/CDN';
 
 import "./App.css";
 
@@ -93,6 +94,18 @@ export default function App() {
               >
                 Sync vs Async
               </Link>
+              <NavLink
+                to="/cdn"
+                className={({ isActive }) =>
+                  `px-4 py-2 rounded-lg font-medium ${
+                    isActive
+                      ? 'bg-blue-500/10 text-blue-500 border border-blue-500/50'
+                      : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                  }`
+                }
+              >
+                CDN
+              </NavLink>
             </div>
           </div>
         </div>
@@ -108,6 +121,7 @@ export default function App() {
           <Route path="/rate-limiter" element={<RateLimiter />} />
           <Route path="/fallback" element={<Fallback />} />
           <Route path="/async-sync" element={<AsyncSync />} />
+          <Route path="/cdn" element={<CDN />} />
         </Routes>
       </main>
     </div>
