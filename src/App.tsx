@@ -1,4 +1,4 @@
-import { Routes, Route, NavLink } from 'react-router-dom';
+import { Routes, Route, NavLink, Link } from 'react-router-dom';
 import CacheSimulation from "./components/CacheSimulation/CacheSimulation";
 import HorizontalScaling from './components/HorizontalScaling/HorizontalScaling';
 import LoadBalancer from './components/LoadBalancer/LoadBalancer';
@@ -6,6 +6,7 @@ import CircuitBreaker from './components/CircuitBreaker/CircuitBreaker';
 import Backpressure from './components/Backpressure/Backpressure';
 import RateLimiter from './components/RateLimiter/RateLimiter';
 import Fallback from './components/Fallback/Fallback';
+import AsyncSync from './components/AsyncSync/AsyncSync';
 
 import "./App.css";
 
@@ -86,6 +87,12 @@ export default function App() {
               >
                 Fallback
               </NavLink>
+              <Link
+                to="/async-sync"
+                className="px-4 py-2 rounded-lg hover:bg-zinc-800"
+              >
+                Sync vs Async
+              </Link>
             </div>
           </div>
         </div>
@@ -100,6 +107,7 @@ export default function App() {
           <Route path="/backpressure" element={<Backpressure />} />
           <Route path="/rate-limiter" element={<RateLimiter />} />
           <Route path="/fallback" element={<Fallback />} />
+          <Route path="/async-sync" element={<AsyncSync />} />
         </Routes>
       </main>
     </div>
