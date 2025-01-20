@@ -1,4 +1,4 @@
-import { Routes, Route, NavLink } from 'react-router-dom';
+import { Routes, Route, NavLink, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CacheSimulation from "./components/CacheSimulation/CacheSimulation";
@@ -120,6 +120,20 @@ export default function App() {
 
   const MenuLink = ({ item }: { item: MenuItem }) => {
     const [isExpanded, setIsExpanded] = useState(false);
+    const { pathname } = useLocation();
+    
+    // Check if current path matches this item or any of its children
+    const isActive = pathname === item.path || 
+      (item.children?.some(child => 
+        pathname === child.path || child.children?.some(grandchild => pathname === grandchild.path)
+      ));
+
+    // Auto-expand when active and has children
+    useEffect(() => {
+      if (isActive && item.children) {
+        setIsExpanded(true);
+      }
+    }, [isActive, item.children]);
     
     return (
       <div>
@@ -142,7 +156,9 @@ export default function App() {
                 e.preventDefault();
                 setIsExpanded(!isExpanded);
               }}
-              className="p-2 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800"
+              className={`p-2 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-transform ${
+                isActive ? 'text-white' : ''
+              }`}
             >
               <svg
                 className={`w-4 h-4 transform transition-transform ${isExpanded ? 'rotate-90' : ''}`}
