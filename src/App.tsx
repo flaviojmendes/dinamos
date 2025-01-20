@@ -17,6 +17,7 @@ import SystemDesign101 from './components/SystemDesign101/SystemDesign101';
 import SystemComponents from './components/SystemComponents/SystemComponents';
 import Database from './components/SystemComponents/Database';
 import CacheComponent from './components/SystemComponents/Cache';
+import LoadBalancer from './components/SystemComponents/LoadBalancer';
 import { MenuItem } from './types/menu';
 
 import "./App.css";
@@ -46,6 +47,18 @@ const menuItems: MenuItem[] = [
             description: "Simulação interativa de cache"
           }
         ]
+      },
+      {
+        path: "/componentes/load-balancer",
+        name: "Balanceador de Carga",
+        description: "Distribuição de carga entre servidores",
+        children: [
+          {
+            path: "/componentes/load-balancer/simulator",
+            name: "Simulador de Load Balancer",
+            description: "Simulação de balanceamento de carga"
+          }
+        ]
       }
     ]
   },
@@ -64,29 +77,53 @@ export default function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
-  const MenuLink = ({ item }: { item: MenuItem }) => (
-    <div>
-      <NavLink
-        to={item.path}
-        className={({ isActive }: { isActive: boolean }) =>
-          `flex flex-col p-3 rounded-lg transition-colors ${
-            isActive ? 'bg-blue-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
-          }`
-        }
-        onClick={() => isMobile && setIsSidebarOpen(false)}
-      >
-        <span className="font-medium">{item.name}</span>
-        <span className="text-sm opacity-75">{item.description}</span>
-      </NavLink>
-      {item.children && (
-        <div className="ml-4 mt-1 space-y-1 border-l border-zinc-800 pl-3">
-          {item.children.map((child) => (
-            <MenuLink key={child.path} item={child} />
-          ))}
+  const MenuLink = ({ item }: { item: MenuItem }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+    
+    return (
+      <div>
+        <div className="flex items-center gap-1">
+          <NavLink
+            to={item.path}
+            className={({ isActive }: { isActive: boolean }) =>
+              `flex-1 flex flex-col p-3 rounded-lg transition-colors ${
+                isActive ? 'bg-blue-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
+              }`
+            }
+            onClick={() => isMobile && setIsSidebarOpen(false)}
+          >
+            <span className="font-medium">{item.name}</span>
+            <span className="text-sm opacity-75">{item.description}</span>
+          </NavLink>
+          {item.children && (
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                setIsExpanded(!isExpanded);
+              }}
+              className="p-2 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800"
+            >
+              <svg
+                className={`w-4 h-4 transform transition-transform ${isExpanded ? 'rotate-90' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          )}
         </div>
-      )}
-    </div>
-  );
+        {item.children && isExpanded && (
+          <div className="ml-4 mt-1 space-y-1 border-l border-zinc-800 pl-3">
+            {item.children.map((child) => (
+              <MenuLink key={child.path} item={child} />
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   useEffect(() => {
     const checkMobile = () => {
@@ -172,8 +209,9 @@ export default function App() {
             <Route path="/componentes/banco-dados" element={<Database />} />
             <Route path="/componentes/cache" element={<CacheComponent />} />
             <Route path="/componentes/cache/simulator" element={<CacheSimulation />} />
+            <Route path="/componentes/load-balancer" element={<LoadBalancer />} />
+            <Route path="/componentes/load-balancer/simulator" element={<RoundRobin />} />
             <Route path="/horizontal-scaling" element={<HorizontalScaling />} />
-            <Route path="/load-balancer" element={<RoundRobin />} />
             <Route path="/message-queue" element={<MessageQueue />} />
             <Route path="/circuit-breaker" element={<CircuitBreaker />} />
             <Route path="/backpressure" element={<Backpressure />} />
