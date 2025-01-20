@@ -1,0 +1,394 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+interface Request {
+  id: number;
+  type: 'auth' | 'products' | 'orders' | 'payments';
+  status: 'pending' | 'routing' | 'completed' | 'rejected';
+  timestamp: number;
+  serviceTime?: number;
+}
+
+interface Service {
+  name: string;
+  type: Request['type'];
+  color: string;
+  description: string;
+  errorRate: number;
+  processingTime: number;
+}
+
+interface SimulationConfig {
+  requestsPerSecond: number;
+  routingDelay: number;
+  errorRate: number;
+  removeDelay: number;
+}
+
+const defaultConfig: SimulationConfig = {
+  requestsPerSecond: 0.5,
+  routingDelay: 1000,
+  errorRate: 0.1,
+  removeDelay: 4000,
+};
+
+const services: Service[] = [
+  { 
+    name: 'Auth Service', 
+    type: 'auth', 
+    color: 'bg-purple-500',
+    description: 'Autenticação e autorização',
+    errorRate: 0.05,
+    processingTime: 1500
+  },
+  { 
+    name: 'Product Service', 
+    type: 'products', 
+    color: 'bg-blue-500',
+    description: 'Catálogo de produtos',
+    errorRate: 0.02,
+    processingTime: 800
+  },
+  { 
+    name: 'Order Service', 
+    type: 'orders', 
+    color: 'bg-green-500',
+    description: 'Gerenciamento de pedidos',
+    errorRate: 0.08,
+    processingTime: 2000
+  },
+  { 
+    name: 'Payment Service', 
+    type: 'payments', 
+    color: 'bg-yellow-500',
+    description: 'Processamento de pagamentos',
+    errorRate: 0.15,
+    processingTime: 2500
+  }
+];
+
+export default function APIGatewaySimulator() {
+  const [requests, setRequests] = useState<Request[]>([]);
+  const [isSimulationRunning, setIsSimulationRunning] = useState(false);
+  const [requestCount, setRequestCount] = useState(0);
+  const [config, setConfig] = useState<SimulationConfig>(defaultConfig);
+  const [showConfig, setShowConfig] = useState(false);
+  const [stats, setStats] = useState({
+    totalRequests: 0,
+    successfulRequests: 0,
+    failedRequests: 0,
+  });
+
+  // Function to generate a new request
+  const generateRequest = useCallback((): Request => {
+    const types: Request['type'][] = ['auth', 'products', 'orders', 'payments'];
+    const randomType = types[Math.floor(Math.random() * types.length)];
+    
+    return {
+      id: requestCount,
+      type: randomType,
+      status: 'pending',
+      timestamp: Date.now(),
+      serviceTime: 0
+    };
+  }, [requestCount]);
+
+  // Function to process a request through its lifecycle
+  const processRequest = useCallback((request: Request) => {
+    const service = services.find(s => s.type === request.type)!;
+    
+    // Update stats
+    setStats(prev => ({ ...prev, totalRequests: prev.totalRequests + 1 }));
+    
+    // Step 1: Add request to pending
+    setRequests(prev => [...prev, request]);
+    
+    // Step 2: Route request after delay
+    const routingTimer = setTimeout(() => {
+      setRequests(prev => 
+        prev.map(req => 
+          req.id === request.id ? { ...req, status: 'routing' } : req
+        )
+      );
+    }, config.routingDelay);
+
+    // Step 3: Process request and determine success/failure
+    const processingTimer = setTimeout(() => {
+      const failed = Math.random() < (service.errorRate + config.errorRate);
+      
+      setRequests(prev => 
+        prev.map(req => 
+          req.id === request.id 
+            ? { ...req, status: failed ? 'rejected' : 'completed' } 
+            : req
+        )
+      );
+      
+      setStats(prev => ({
+        ...prev,
+        successfulRequests: prev.successfulRequests + (failed ? 0 : 1),
+        failedRequests: prev.failedRequests + (failed ? 1 : 0),
+      }));
+    }, config.routingDelay + service.processingTime);
+
+    // Step 4: Remove request after completion
+    const removalTimer = setTimeout(() => {
+      setRequests(prev => prev.filter(req => req.id !== request.id));
+    }, config.removeDelay);
+
+    return () => {
+      clearTimeout(routingTimer);
+      clearTimeout(processingTimer);
+      clearTimeout(removalTimer);
+    };
+  }, [config.routingDelay, config.errorRate, config.removeDelay]);
+
+  // Main simulation loop
+  useEffect(() => {
+    if (!isSimulationRunning) return;
+
+    const interval = setInterval(() => {
+      const newRequest = generateRequest();
+      setRequestCount(prev => prev + 1);
+      processRequest(newRequest);
+    }, 1000 / config.requestsPerSecond);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [isSimulationRunning, config.requestsPerSecond, generateRequest, processRequest]);
+
+  // Reset simulation
+  const resetSimulation = () => {
+    setIsSimulationRunning(false);
+    setRequests([]);
+    setRequestCount(0);
+    setStats({
+      totalRequests: 0,
+      successfulRequests: 0,
+      failedRequests: 0,
+    });
+  };
+
+  return (
+    <div className="p-6 md:p-8 lg:p-12 max-w-6xl mx-auto">
+      <div className="prose prose-invert prose-lg max-w-none mb-8">
+        <h1 className="text-4xl font-bold mb-4 text-blue-400">
+          Simulador de API Gateway
+        </h1>
+        <p className="text-xl text-zinc-300">
+          Visualize como um API Gateway roteia diferentes tipos de requisições para os serviços apropriados 
+          em uma arquitetura de microsserviços.
+        </p>
+      </div>
+
+      <div className="flex gap-4 mb-8">
+        <button
+          onClick={() => {
+            if (isSimulationRunning) {
+              setIsSimulationRunning(false);
+            } else {
+              resetSimulation();
+              setIsSimulationRunning(true);
+            }
+          }}
+          className={`px-6 py-3 rounded-lg font-medium transition-colors ${
+            isSimulationRunning 
+              ? 'bg-red-600 hover:bg-red-700 text-white' 
+              : 'bg-blue-600 hover:bg-blue-700 text-white'
+          }`}
+        >
+          {isSimulationRunning ? 'Parar Simulação' : 'Iniciar Simulação'}
+        </button>
+        <button
+          onClick={() => setShowConfig(!showConfig)}
+          className="px-6 py-3 rounded-lg font-medium bg-zinc-800 hover:bg-zinc-700 text-white transition-colors"
+        >
+          {showConfig ? 'Ocultar Configurações' : 'Mostrar Configurações'}
+        </button>
+        <button
+          onClick={resetSimulation}
+          className="px-6 py-3 rounded-lg font-medium bg-zinc-800 hover:bg-zinc-700 text-white transition-colors"
+        >
+          Reiniciar
+        </button>
+      </div>
+
+      {showConfig && (
+        <div className="bg-zinc-900 p-6 rounded-lg mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-xl font-bold text-zinc-200">Configurações da Simulação</h3>
+            <button
+              onClick={() => setConfig(defaultConfig)}
+              className="px-4 py-2 text-sm bg-zinc-800 hover:bg-zinc-700 rounded-lg transition-colors"
+            >
+              Restaurar Padrões
+            </button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-zinc-400 mb-2">
+                Requisições por Segundo: {config.requestsPerSecond}
+              </label>
+              <input
+                type="range"
+                min="0.1"
+                max="2"
+                step="0.1"
+                value={config.requestsPerSecond}
+                onChange={(e) => setConfig(prev => ({ ...prev, requestsPerSecond: parseFloat(e.target.value) }))}
+                className="w-full"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-zinc-400 mb-2">
+                Delay de Roteamento: {config.routingDelay}ms
+              </label>
+              <input
+                type="range"
+                min="500"
+                max="2000"
+                step="100"
+                value={config.routingDelay}
+                onChange={(e) => setConfig(prev => ({ ...prev, routingDelay: parseInt(e.target.value) }))}
+                className="w-full"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-zinc-400 mb-2">
+                Taxa de Erro Adicional: {(config.errorRate * 100).toFixed(1)}%
+              </label>
+              <input
+                type="range"
+                min="0"
+                max="0.3"
+                step="0.01"
+                value={config.errorRate}
+                onChange={(e) => setConfig(prev => ({ ...prev, errorRate: parseFloat(e.target.value) }))}
+                className="w-full"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-zinc-400 mb-2">
+                Tempo de Remoção: {config.removeDelay}ms
+              </label>
+              <input
+                type="range"
+                min="2000"
+                max="8000"
+                step="500"
+                value={config.removeDelay}
+                onChange={(e) => setConfig(prev => ({ ...prev, removeDelay: parseInt(e.target.value) }))}
+                className="w-full"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="bg-zinc-900 p-4 rounded-lg">
+          <div className="text-sm text-zinc-400">Total de Requisições</div>
+          <div className="text-2xl font-bold text-white">{stats.totalRequests}</div>
+        </div>
+        <div className="bg-zinc-900 p-4 rounded-lg">
+          <div className="text-sm text-zinc-400">Requisições com Sucesso</div>
+          <div className="text-2xl font-bold text-green-500">{stats.successfulRequests}</div>
+        </div>
+        <div className="bg-zinc-900 p-4 rounded-lg">
+          <div className="text-sm text-zinc-400">Requisições com Erro</div>
+          <div className="text-2xl font-bold text-red-500">{stats.failedRequests}</div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Clients */}
+        <div className="bg-zinc-900 p-6 rounded-lg">
+          <h3 className="text-xl font-bold mb-4 text-zinc-200">Clientes</h3>
+          <div className="space-y-2">
+            <AnimatePresence>
+              {requests.filter(r => r.status === 'pending').map(request => (
+                <motion.div
+                  key={request.id}
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 50 }}
+                  className={`p-4 rounded ${services.find(s => s.type === request.type)?.color} bg-opacity-20 border-l-4 ${services.find(s => s.type === request.type)?.color}`}
+                >
+                  <div className="text-sm font-medium">
+                    Requisição #{request.id}
+                  </div>
+                  <div className="text-xs opacity-75">
+                    Tipo: {request.type}
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* API Gateway */}
+        <div className="bg-zinc-900 p-6 rounded-lg">
+          <h3 className="text-xl font-bold mb-4 text-zinc-200">API Gateway</h3>
+          <div className="space-y-2">
+            <AnimatePresence>
+              {requests.filter(r => r.status === 'routing').map(request => (
+                <motion.div
+                  key={request.id}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  className={`p-4 rounded ${services.find(s => s.type === request.type)?.color} bg-opacity-20 border-l-4 ${services.find(s => s.type === request.type)?.color}`}
+                >
+                  <div className="text-sm font-medium">
+                    Roteando #{request.id}
+                  </div>
+                  <div className="text-xs opacity-75">
+                    Para: {services.find(s => s.type === request.type)?.name}
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* Microservices */}
+        <div className="bg-zinc-900 p-6 rounded-lg">
+          <h3 className="text-xl font-bold mb-4 text-zinc-200">Microsserviços</h3>
+          <div className="space-y-4">
+            {services.map(service => (
+              <div key={service.type} className={`p-4 rounded ${service.color} bg-opacity-10`}>
+                <div className="font-medium mb-1">{service.name}</div>
+                <div className="text-sm opacity-75">{service.description}</div>
+                <div className="text-xs text-zinc-400 mt-1">
+                  Tempo de processamento: {service.processingTime}ms
+                  <br />
+                  Taxa de erro base: {(service.errorRate * 100).toFixed(1)}%
+                </div>
+                <AnimatePresence>
+                  {requests
+                    .filter(r => (r.status === 'completed' || r.status === 'rejected') && r.type === service.type)
+                    .map(request => (
+                      <motion.div
+                        key={request.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className={`mt-2 text-sm p-2 rounded ${
+                          request.status === 'rejected' 
+                            ? 'bg-red-900 bg-opacity-20 text-red-200' 
+                            : 'bg-black bg-opacity-20'
+                        }`}
+                      >
+                        {request.status === 'rejected' ? 'Erro' : 'Processando'} #{request.id}
+                      </motion.div>
+                    ))}
+                </AnimatePresence>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+} 

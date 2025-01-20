@@ -19,6 +19,10 @@ import SystemComponents from './components/SystemComponents/SystemComponents';
 import Database from './components/SystemComponents/Database';
 import CacheComponent from './components/SystemComponents/Cache';
 import LoadBalancer from './components/SystemComponents/LoadBalancer';
+import CDNComponent from './components/SystemComponents/CDN';
+import CDNSimulator from './components/CDN/CDN';
+import APIGateway from './components/SystemComponents/APIGateway';
+import APIGatewaySimulator from './components/APIGateway/APIGatewaySimulator';
 import { MenuItem } from './types/menu';
 
 import "./App.css";
@@ -70,6 +74,30 @@ const menuItems: MenuItem[] = [
             path: "/componentes/message-queue/simulator",
             name: "Simulador de Message Queue",
             description: "Simulação de filas de mensagens"
+          }
+        ]
+      },
+      {
+        path: "/componentes/cdn",
+        name: "CDN",
+        description: "Rede de distribuição de conteúdo",
+        children: [
+          {
+            path: "/componentes/cdn/simulator",
+            name: "Simulador de CDN",
+            description: "Simulação de distribuição de conteúdo"
+          }
+        ]
+      },
+      {
+        path: "/componentes/api-gateway",
+        name: "API Gateway",
+        description: "Intermediário entre clientes e serviços",
+        children: [
+          {
+            path: "/componentes/api-gateway/simulator",
+            name: "Simulador de API Gateway",
+            description: "Simulação de roteamento de requisições"
           }
         ]
       }
@@ -226,6 +254,10 @@ export default function App() {
             <Route path="/componentes/load-balancer/simulator" element={<RoundRobin />} />
             <Route path="/componentes/message-queue" element={<MessageQueueComponent />} />
             <Route path="/componentes/message-queue/simulator" element={<MessageQueueSimulator />} />
+            <Route path="/componentes/cdn" element={<CDNComponent />} />
+            <Route path="/componentes/cdn/simulator" element={<CDN />} />
+            <Route path="/componentes/api-gateway" element={<APIGateway />} />
+            <Route path="/componentes/api-gateway/simulator" element={<APIGatewaySimulator />} />
             <Route path="/horizontal-scaling" element={<HorizontalScaling />} />
             <Route path="/circuit-breaker" element={<CircuitBreaker />} />
             <Route path="/backpressure" element={<Backpressure />} />
