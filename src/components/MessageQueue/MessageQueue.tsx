@@ -78,7 +78,7 @@ export default function MessageQueue() {
     setMessages(prev => [newMessage, ...prev].slice(0, 50));
     setStats(prev => ({ ...prev, produced: prev.produced + 1 }));
 
-    // Add to queue after animation delay
+    // Add to queue after a brief visual delay
     setTimeout(() => {
       setMessages(prev => 
         prev.map(msg => 
@@ -86,7 +86,7 @@ export default function MessageQueue() {
         )
       );
       setQueuedMessages(prev => [...prev, { ...newMessage, status: 'queued' }]);
-    }, 500); // Increased delay to match animation
+    }, 300);
   }, [config.maxQueueSize, stats.produced, queuedMessages.length]);
 
   // Consumer logic - Processes messages from the queue
@@ -102,8 +102,10 @@ export default function MessageQueue() {
 
     // Get the next message from the queue
     const [messageToProcess, ...remainingMessages] = queuedMessages;
-    
-    // Start processing animation
+    setQueuedMessages(remainingMessages);
+
+    // Start processing the message
+    const startProcessing = Date.now();
     setMessages(prev =>
       prev.map(msg =>
         msg.id === messageToProcess.id 
@@ -111,19 +113,14 @@ export default function MessageQueue() {
           : msg
       )
     );
-    
-    // Remove from queue after a brief delay to allow animation to start
-    setTimeout(() => {
-      setQueuedMessages(remainingMessages);
-    }, 100);
 
     // Complete processing after the configured time
     setTimeout(() => {
       const endProcessing = Date.now();
       const processingTime = endProcessing - messageToProcess.producedAt;
 
-      setMessages(prev =>
-        prev.map(msg =>
+    setMessages(prev => 
+      prev.map(msg =>
           msg.id === messageToProcess.id
             ? { 
                 ...msg, 
@@ -131,9 +128,9 @@ export default function MessageQueue() {
                 processedAt: endProcessing,
                 consumerId: undefined 
               }
-            : msg
-        )
-      );
+          : msg
+      )
+    );
 
       setStats(prev => ({
         ...prev,
@@ -184,22 +181,22 @@ export default function MessageQueue() {
               >
                 {isConfigOpen ? 'Fechar Config' : 'Configurar'}
               </button>
-              <button
-                onClick={() => setIsRunning(!isRunning)}
+            <button
+              onClick={() => setIsRunning(!isRunning)}
                 className={`w-full sm:w-auto px-4 py-2 rounded-md font-medium transition-colors ${
                   isRunning 
-                    ? 'bg-red-500 hover:bg-red-600' 
-                    : 'bg-green-500 hover:bg-green-600'
+                  ? 'bg-red-500 hover:bg-red-600' 
+                  : 'bg-green-500 hover:bg-green-600'
                 }`}
-              >
-                {isRunning ? 'Parar' : 'Iniciar'}
-              </button>
-              <button
-                onClick={resetSimulation}
+            >
+              {isRunning ? 'Parar' : 'Iniciar'}
+            </button>
+            <button
+              onClick={resetSimulation}
                 className="w-full sm:w-auto px-4 py-2 bg-zinc-800 rounded-md hover:bg-zinc-700 font-medium transition-colors"
-              >
+            >
                 Resetar
-              </button>
+            </button>
             </div>
           </div>
 
@@ -212,39 +209,39 @@ export default function MessageQueue() {
               className="mb-6 bg-zinc-800/50 rounded-lg p-4 overflow-hidden"
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-4">
-                  <div>
+          <div className="space-y-4">
+            <div>
                     <div className="flex justify-between text-white mb-1">
                       <span>Produtores</span>
                       <span className="text-blue-400">{config.producerCount}</span>
-                    </div>
-                    <input
-                      type="range"
+              </div>
+              <input
+                type="range"
                       min="1"
                       max="5"
                       value={config.producerCount}
                       onChange={(e) => setConfig(c => ({ ...c, producerCount: parseInt(e.target.value) }))}
                       className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
-                    />
-                  </div>
+              />
+            </div>
 
-                  <div>
+            <div>
                     <div className="flex justify-between text-white mb-1">
                       <span>Taxa de Produção</span>
                       <span className="text-blue-400">{config.producerRate}ms</span>
-                    </div>
-                    <input
-                      type="range"
+              </div>
+              <input
+                type="range"
                       min="500"
                       max="5000"
-                      step="500"
+                step="500"
                       value={config.producerRate}
                       onChange={(e) => setConfig(c => ({ ...c, producerRate: parseInt(e.target.value) }))}
                       className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
-                    />
-                  </div>
+              />
+            </div>
 
-                  <div>
+            <div>
                     <div className="flex justify-between text-white mb-1">
                       <span>Tamanho Máximo da Fila</span>
                       <span className="text-blue-400">{config.maxQueueSize}</span>
@@ -265,10 +262,10 @@ export default function MessageQueue() {
                     <div className="flex justify-between text-white mb-1">
                       <span>Consumidores</span>
                       <span className="text-blue-400">{config.consumerCount}</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="1"
+              </div>
+              <input
+                type="range"
+                min="1"
                       max="5"
                       value={config.consumerCount}
                       onChange={(e) => setConfig(c => ({ ...c, consumerCount: parseInt(e.target.value) }))}
@@ -319,60 +316,6 @@ export default function MessageQueue() {
               {/* Connection Lines */}
               <div className="absolute h-1 bg-zinc-700 left-[25%] right-[25%] top-1/2 -translate-y-1/2" />
               
-              {/* Animated Messages */}
-              <AnimatePresence>
-                {messages.map(msg => {
-                  if (msg.status === 'produced') {
-                    const producerId = parseInt(msg.content.split('-')[1].replace('P', ''));
-                    const producerOffset = ((producerId - 1) * 32) + 16; // 32px per producer + 16px padding
-                    return (
-                      <motion.div
-                        key={msg.id}
-                        className="absolute z-20 h-4 w-24 bg-blue-500/20 border border-blue-500/50 rounded flex items-center justify-center text-xs text-blue-400"
-                        initial={{ 
-                          left: '12%', 
-                          top: `calc(50% - 32px + ${producerOffset}px)`,
-                          opacity: 0,
-                          scale: 0.5
-                        }}
-                        animate={{ 
-                          left: '40%',
-                          opacity: 1,
-                          scale: 1
-                        }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        {msg.content}
-                      </motion.div>
-                    );
-                  }
-                  if (msg.status === 'processing') {
-                    const consumerOffset = ((msg.consumerId! - 1) * 32) + 16;
-                    return (
-                      <motion.div
-                        key={msg.id}
-                        className="absolute z-20 h-4 w-24 bg-purple-500/20 border border-purple-500/50 rounded flex items-center justify-center text-xs text-purple-400"
-                        initial={{ 
-                          left: '50%',
-                          opacity: 1
-                        }}
-                        animate={{ 
-                          left: '75%',
-                          top: `calc(50% - 32px + ${consumerOffset}px)`,
-                          opacity: 1
-                        }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.5 }}
-                      >
-                        {msg.content}
-                      </motion.div>
-                    );
-                  }
-                  return null;
-                })}
-              </AnimatePresence>
-              
               {/* Producers Section */}
               <div className="relative z-10 w-1/4">
                 <div className="bg-zinc-800 p-4 rounded-lg border border-zinc-700">
@@ -381,7 +324,7 @@ export default function MessageQueue() {
                     {Array.from({ length: config.producerCount }).map((_, i) => (
                       <div
                         key={i}
-                        className="h-6 bg-blue-500/20 border border-blue-500/50 rounded flex items-center justify-center text-xs text-blue-400"
+                        className={`h-6 bg-blue-500/20 border border-blue-500/50 rounded flex items-center justify-center text-xs text-blue-400`}
                       >
                         P{i + 1}
                       </div>
@@ -400,9 +343,9 @@ export default function MessageQueue() {
                         {queuedMessages.slice(0, 5).map((msg, index) => (
                           <motion.div
                             key={msg.id}
-                            initial={{ opacity: 0, x: -20 }}
+                            initial={{ opacity: 0, x: -50 }}
                             animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: 20 }}
+                            exit={{ opacity: 0, x: 50 }}
                             transition={{ duration: 0.3 }}
                             className="absolute w-full p-2"
                             style={{ top: `${index * 20}%` }}
@@ -439,6 +382,16 @@ export default function MessageQueue() {
                           }`}>
                             C{i + 1}
                           </div>
+                          {processingMessage && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: "auto" }}
+                              exit={{ opacity: 0, height: 0 }}
+                              className="text-xs bg-purple-500/10 border border-purple-500/30 rounded p-1 text-purple-400 text-center"
+                            >
+                              {processingMessage.content}
+                            </motion.div>
+                          )}
                         </div>
                       );
                     })}

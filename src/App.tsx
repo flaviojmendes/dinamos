@@ -11,11 +11,44 @@ import AsyncSync from './components/AsyncSync/AsyncSync';
 import CDN from './components/CDN/CDN';
 import RoundRobin from './components/RoundRobin/RoundRobin';
 import MessageQueue from './components/MessageQueue/MessageQueue';
+import Introduction from './components/Introduction/Introduction';
+import DistributedSystems101 from './components/DistributedSystems101/DistributedSystems101';
+import SystemDesign101 from './components/SystemDesign101/SystemDesign101';
+import SystemComponents from './components/SystemComponents/SystemComponents';
+import Database from './components/SystemComponents/Database';
+import CacheComponent from './components/SystemComponents/Cache';
+import { MenuItem } from './types/menu';
 
 import "./App.css";
 
-const menuItems = [
-  { path: "/", name: "Cache", description: "Simulação de cache e seus impactos no desempenho" },
+const menuItems: MenuItem[] = [
+  { path: "/intro", name: "Introdução", description: "Sobre o curso e motivação" },
+  { path: "/sistemas-distribuidos-101", name: "Sistemas Distribuídos 101", description: "Conceitos fundamentais através de analogias" },
+  { path: "/system-design-101", name: "System Design 101", description: "Fundamentos de design de sistemas" },
+  { 
+    path: "/componentes", 
+    name: "Componentes de um Sistema", 
+    description: "Principais componentes de sistemas distribuídos",
+    children: [
+      { 
+        path: "/componentes/banco-dados", 
+        name: "Bancos de Dados", 
+        description: "SQL, NoSQL, Sharding e Replicação" 
+      },
+      {
+        path: "/componentes/cache",
+        name: "Cache",
+        description: "Estratégias e sistemas de cache",
+        children: [
+          {
+            path: "/componentes/cache/simulator",
+            name: "Simulador de Cache",
+            description: "Simulação interativa de cache"
+          }
+        ]
+      }
+    ]
+  },
   { path: "/horizontal-scaling", name: "Escalabilidade Horizontal", description: "Distribuição de carga entre múltiplos servidores" },
   { path: "/load-balancer", name: "Load Balancer", description: "Balanceamento de carga usando Round Robin" },
   { path: "/message-queue", name: "Message Queue", description: "Fila de mensagens com produtores e consumidores" },
@@ -26,6 +59,30 @@ const menuItems = [
   { path: "/async-sync", name: "Sync vs Async", description: "Comparação entre comunicação síncrona e assíncrona" },
   { path: "/cdn", name: "CDN", description: "Rede de distribuição de conteúdo" }
 ];
+
+const MenuLink = ({ item }: { item: MenuItem }) => (
+  <div>
+    <NavLink
+      to={item.path}
+      className={({ isActive }: { isActive: boolean }) =>
+        `flex flex-col p-3 rounded-lg transition-colors ${
+          isActive ? 'bg-blue-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
+        }`
+      }
+      onClick={() => isMobile && setIsSidebarOpen(false)}
+    >
+      <span className="font-medium">{item.name}</span>
+      <span className="text-sm opacity-75">{item.description}</span>
+    </NavLink>
+    {item.children && (
+      <div className="ml-4 mt-1 space-y-1 border-l border-zinc-800 pl-3">
+        {item.children.map((child) => (
+          <MenuLink key={child.path} item={child} />
+        ))}
+      </div>
+    )}
+  </div>
+);
 
 export default function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -82,19 +139,39 @@ export default function App() {
 
               <nav className="space-y-1">
                 {menuItems.map((item) => (
-                  <NavLink
-                    key={item.path}
-                    to={item.path}
-                    className={({ isActive }: { isActive: boolean }) =>
-                      `flex flex-col p-3 rounded-lg transition-colors ${
-                        isActive ? 'bg-blue-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
-                      }`
-                    }
-                    onClick={() => isMobile && setIsSidebarOpen(false)}
-                  >
-                    <span className="font-medium">{item.name}</span>
-                    <span className="text-sm opacity-75">{item.description}</span>
-                  </NavLink>
+                  <div key={item.path}>
+                    <NavLink
+                      to={item.path}
+                      className={({ isActive }: { isActive: boolean }) =>
+                        `flex flex-col p-3 rounded-lg transition-colors ${
+                          isActive ? 'bg-blue-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
+                        }`
+                      }
+                      onClick={() => isMobile && setIsSidebarOpen(false)}
+                    >
+                      <span className="font-medium">{item.name}</span>
+                      <span className="text-sm opacity-75">{item.description}</span>
+                    </NavLink>
+                    {item.children && (
+                      <div className="ml-4 mt-1 space-y-1 border-l border-zinc-800 pl-3">
+                        {item.children.map((child) => (
+                          <NavLink
+                            key={child.path}
+                            to={child.path}
+                            className={({ isActive }: { isActive: boolean }) =>
+                              `flex flex-col p-3 rounded-lg transition-colors ${
+                                isActive ? 'bg-blue-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
+                              }`
+                            }
+                            onClick={() => isMobile && setIsSidebarOpen(false)}
+                          >
+                            <span className="font-medium">{child.name}</span>
+                            <span className="text-sm opacity-75">{child.description}</span>
+                          </NavLink>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 ))}
               </nav>
             </div>
@@ -120,7 +197,13 @@ export default function App() {
           )}
           
           <Routes>
-            <Route path="/" element={<CacheSimulation />} />
+            <Route path="/intro" element={<Introduction />} />
+            <Route path="/sistemas-distribuidos-101" element={<DistributedSystems101 />} />
+            <Route path="/system-design-101" element={<SystemDesign101 />} />
+            <Route path="/componentes" element={<SystemComponents />} />
+            <Route path="/componentes/banco-dados" element={<Database />} />
+            <Route path="/componentes/cache" element={<CacheComponent />} />
+            <Route path="/componentes/cache/simulator" element={<CacheSimulation />} />
             <Route path="/horizontal-scaling" element={<HorizontalScaling />} />
             <Route path="/load-balancer" element={<RoundRobin />} />
             <Route path="/message-queue" element={<MessageQueue />} />
