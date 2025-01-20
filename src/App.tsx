@@ -10,7 +10,8 @@ import Fallback from './components/Fallback/Fallback';
 import AsyncSync from './components/AsyncSync/AsyncSync';
 import CDN from './components/CDN/CDN';
 import RoundRobin from './components/RoundRobin/RoundRobin';
-import MessageQueue from './components/MessageQueue/MessageQueue';
+import MessageQueueComponent from './components/SystemComponents/MessageQueue';
+import MessageQueueSimulator from './components/MessageQueue/MessageQueue';
 import Introduction from './components/Introduction/Introduction';
 import DistributedSystems101 from './components/DistributedSystems101/DistributedSystems101';
 import SystemDesign101 from './components/SystemDesign101/SystemDesign101';
@@ -57,6 +58,18 @@ const menuItems: MenuItem[] = [
             path: "/componentes/load-balancer/simulator",
             name: "Simulador de Load Balancer",
             description: "Simulação de balanceamento de carga"
+          }
+        ]
+      },
+      {
+        path: "/componentes/message-queue",
+        name: "Filas de Mensagens",
+        description: "Comunicação assíncrona entre sistemas",
+        children: [
+          {
+            path: "/componentes/message-queue/simulator",
+            name: "Simulador de Message Queue",
+            description: "Simulação de filas de mensagens"
           }
         ]
       }
@@ -211,8 +224,9 @@ export default function App() {
             <Route path="/componentes/cache/simulator" element={<CacheSimulation />} />
             <Route path="/componentes/load-balancer" element={<LoadBalancer />} />
             <Route path="/componentes/load-balancer/simulator" element={<RoundRobin />} />
+            <Route path="/componentes/message-queue" element={<MessageQueueComponent />} />
+            <Route path="/componentes/message-queue/simulator" element={<MessageQueueSimulator />} />
             <Route path="/horizontal-scaling" element={<HorizontalScaling />} />
-            <Route path="/message-queue" element={<MessageQueue />} />
             <Route path="/circuit-breaker" element={<CircuitBreaker />} />
             <Route path="/backpressure" element={<Backpressure />} />
             <Route path="/rate-limiter" element={<RateLimiter />} />
