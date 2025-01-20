@@ -60,33 +60,33 @@ const menuItems: MenuItem[] = [
   { path: "/cdn", name: "CDN", description: "Rede de distribuição de conteúdo" }
 ];
 
-const MenuLink = ({ item }: { item: MenuItem }) => (
-  <div>
-    <NavLink
-      to={item.path}
-      className={({ isActive }: { isActive: boolean }) =>
-        `flex flex-col p-3 rounded-lg transition-colors ${
-          isActive ? 'bg-blue-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
-        }`
-      }
-      onClick={() => isMobile && setIsSidebarOpen(false)}
-    >
-      <span className="font-medium">{item.name}</span>
-      <span className="text-sm opacity-75">{item.description}</span>
-    </NavLink>
-    {item.children && (
-      <div className="ml-4 mt-1 space-y-1 border-l border-zinc-800 pl-3">
-        {item.children.map((child) => (
-          <MenuLink key={child.path} item={child} />
-        ))}
-      </div>
-    )}
-  </div>
-);
-
 export default function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+
+  const MenuLink = ({ item }: { item: MenuItem }) => (
+    <div>
+      <NavLink
+        to={item.path}
+        className={({ isActive }: { isActive: boolean }) =>
+          `flex flex-col p-3 rounded-lg transition-colors ${
+            isActive ? 'bg-blue-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
+          }`
+        }
+        onClick={() => isMobile && setIsSidebarOpen(false)}
+      >
+        <span className="font-medium">{item.name}</span>
+        <span className="text-sm opacity-75">{item.description}</span>
+      </NavLink>
+      {item.children && (
+        <div className="ml-4 mt-1 space-y-1 border-l border-zinc-800 pl-3">
+          {item.children.map((child) => (
+            <MenuLink key={child.path} item={child} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
 
   useEffect(() => {
     const checkMobile = () => {
@@ -139,39 +139,7 @@ export default function App() {
 
               <nav className="space-y-1">
                 {menuItems.map((item) => (
-                  <div key={item.path}>
-                    <NavLink
-                      to={item.path}
-                      className={({ isActive }: { isActive: boolean }) =>
-                        `flex flex-col p-3 rounded-lg transition-colors ${
-                          isActive ? 'bg-blue-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
-                        }`
-                      }
-                      onClick={() => isMobile && setIsSidebarOpen(false)}
-                    >
-                      <span className="font-medium">{item.name}</span>
-                      <span className="text-sm opacity-75">{item.description}</span>
-                    </NavLink>
-                    {item.children && (
-                      <div className="ml-4 mt-1 space-y-1 border-l border-zinc-800 pl-3">
-                        {item.children.map((child) => (
-                          <NavLink
-                            key={child.path}
-                            to={child.path}
-                            className={({ isActive }: { isActive: boolean }) =>
-                              `flex flex-col p-3 rounded-lg transition-colors ${
-                                isActive ? 'bg-blue-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
-                              }`
-                            }
-                            onClick={() => isMobile && setIsSidebarOpen(false)}
-                          >
-                            <span className="font-medium">{child.name}</span>
-                            <span className="text-sm opacity-75">{child.description}</span>
-                          </NavLink>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                  <MenuLink key={item.path} item={item} />
                 ))}
               </nav>
             </div>
