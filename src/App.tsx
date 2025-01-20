@@ -1,4 +1,4 @@
-import { Routes, Route, NavLink, Link } from 'react-router-dom';
+import { Routes, Route, NavLink } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CacheSimulation from "./components/CacheSimulation/CacheSimulation";
@@ -60,7 +60,7 @@ export default function App() {
             animate={{ x: 0 }}
             exit={{ x: -300 }}
             transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-            className={`bg-zinc-900 border-r border-zinc-800 w-72 fixed md:relative h-full z-30 overflow-y-auto
+            className={`bg-zinc-900 border-r border-zinc-800 w-72 fixed md:relative h-screen z-30 overflow-y-auto
               ${isMobile ? 'shadow-lg' : ''}`}
           >
             <div className="p-4">
@@ -78,47 +78,45 @@ export default function App() {
                 )}
               </div>
 
-              <div className="space-y-2">
+              <nav className="space-y-1">
                 {menuItems.map((item) => (
                   <NavLink
                     key={item.path}
                     to={item.path}
-                    className={({ isActive }) =>
-                      `block p-3 rounded-lg transition-colors ${
-                        isActive
-                          ? 'bg-blue-500/10 text-blue-500 border border-blue-500/50'
-                          : 'text-zinc-300 hover:bg-zinc-800 hover:text-white'
+                    className={({ isActive }: { isActive: boolean }) =>
+                      `flex flex-col p-3 rounded-lg transition-colors ${
+                        isActive ? 'bg-blue-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
                       }`
                     }
                     onClick={() => isMobile && setIsSidebarOpen(false)}
                   >
-                    <div className="font-medium">{item.name}</div>
-                    <div className="text-sm text-zinc-400 mt-1">{item.description}</div>
+                    <span className="font-medium">{item.name}</span>
+                    <span className="text-sm opacity-75">{item.description}</span>
                   </NavLink>
                 ))}
-              </div>
+              </nav>
             </div>
           </motion.nav>
         )}
       </AnimatePresence>
 
       {/* Main Content */}
-      <div className="flex-1">
-        {/* Mobile Header */}
-        {isMobile && (
-          <div className="bg-zinc-900 border-b border-zinc-800 p-4 sticky top-0 z-10">
-            <button
-              onClick={() => setIsSidebarOpen(true)}
-              className="p-2 hover:bg-zinc-800 rounded-lg"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
-        )}
-
-        <main className="max-w-7xl mx-auto">
+      <main className="flex-1 h-screen overflow-auto">
+        <div className="h-full">
+          {/* Mobile Header */}
+          {isMobile && (
+            <div className="bg-zinc-900 border-b border-zinc-800 p-4 sticky top-0 z-10">
+              <button
+                onClick={() => setIsSidebarOpen(true)}
+                className="p-2 hover:bg-zinc-800 rounded-lg"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+            </div>
+          )}
+          
           <Routes>
             <Route path="/" element={<CacheSimulation />} />
             <Route path="/horizontal-scaling" element={<HorizontalScaling />} />
@@ -130,8 +128,8 @@ export default function App() {
             <Route path="/async-sync" element={<AsyncSync />} />
             <Route path="/cdn" element={<CDN />} />
           </Routes>
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   );
 }
