@@ -10,6 +10,7 @@ import Fallback from './components/Fallback/Fallback';
 import AsyncSync from './components/AsyncSync/AsyncSync';
 import CDN from './components/CDN/CDN';
 import RoundRobin from './components/RoundRobin/RoundRobin';
+import MessageQueue from './components/MessageQueue/MessageQueue';
 
 import "./App.css";
 
@@ -17,6 +18,7 @@ const menuItems = [
   { path: "/", name: "Cache", description: "Simulação de cache e seus impactos no desempenho" },
   { path: "/horizontal-scaling", name: "Escalabilidade Horizontal", description: "Distribuição de carga entre múltiplos servidores" },
   { path: "/load-balancer", name: "Load Balancer", description: "Balanceamento de carga usando Round Robin" },
+  { path: "/message-queue", name: "Message Queue", description: "Fila de mensagens com produtores e consumidores" },
   { path: "/circuit-breaker", name: "Circuit Breaker", description: "Prevenção de falhas em cascata" },
   { path: "/backpressure", name: "Backpressure", description: "Controle de fluxo em sistemas distribuídos" },
   { path: "/rate-limiter", name: "Rate Limiter", description: "Limitação de taxa de requisições" },
@@ -121,6 +123,7 @@ export default function App() {
             <Route path="/" element={<CacheSimulation />} />
             <Route path="/horizontal-scaling" element={<HorizontalScaling />} />
             <Route path="/load-balancer" element={<RoundRobin />} />
+            <Route path="/message-queue" element={<MessageQueue />} />
             <Route path="/circuit-breaker" element={<CircuitBreaker />} />
             <Route path="/backpressure" element={<Backpressure />} />
             <Route path="/rate-limiter" element={<RateLimiter />} />
