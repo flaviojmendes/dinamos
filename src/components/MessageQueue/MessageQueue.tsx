@@ -39,9 +39,9 @@ export default function MessageQueue() {
   });
   const [config, setConfig] = useState<Config>({
     producerRate: 1000,
-    consumerRate: 2000,
+    consumerRate: 500,
     maxQueueSize: 10,
-    processTime: 2000,
+    processTime: 500,
     producerCount: 2,
     consumerCount: 1
   });
