@@ -172,7 +172,7 @@ export default function HorizontalScaling() {
 
   return (
     <div className="flex flex-col gap-4 p-4">
-      <div className="bg-gray-900 rounded-lg p-4">
+      <div className="bg-zinc-900 rounded-lg p-4">
         <div className="flex flex-col gap-4">
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-bold text-white">
@@ -180,7 +180,7 @@ export default function HorizontalScaling() {
             </h2>
             <button
               onClick={() => setIsConfigOpen(!isConfigOpen)}
-              className="px-3 py-1 bg-gray-800 rounded-md hover:bg-zinc-700 transition-colors flex items-center gap-2"
+              className="px-3 py-1 bg-zinc-800 rounded-md hover:bg-zinc-700 transition-colors flex items-center gap-2"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -191,7 +191,7 @@ export default function HorizontalScaling() {
           </div>
 
           {isConfigOpen && (
-            <div className="bg-gray-800 p-4 rounded-lg">
+            <div className="bg-zinc-800 p-4 rounded-lg">
               <h3 className="text-lg font-medium mb-4">Parâmetros de Simulação</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -265,7 +265,7 @@ export default function HorizontalScaling() {
             </button>
             <button
               onClick={resetSimulation}
-              className="px-6 py-2 text-white bg-gray-800 rounded-md font-medium hover:bg-zinc-700 transition-colors"
+              className="px-6 py-2 text-white bg-zinc-800 rounded-md font-medium hover:bg-zinc-700 transition-colors"
             >
               Reiniciar
             </button>
@@ -285,16 +285,16 @@ export default function HorizontalScaling() {
 
           {/* Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="bg-gray-800 p-4 rounded-lg">
+            <div className="bg-zinc-800 p-4 rounded-lg">
               <h3 className="text-sm font-medium text-zinc-400 mb-2">Latência Média</h3>
               <p className="text-3xl font-bold text-blue-400">{avgLatency}ms</p>
             </div>
-            <div className="bg-gray-800 p-4 rounded-lg">
+            <div className="bg-zinc-800 p-4 rounded-lg">
               <h3 className="text-sm font-medium text-zinc-400 mb-2">Throughput</h3>
               <p className="text-3xl font-bold text-green-400">{Math.min(requestsPerSecond, nodes.reduce((sum, node) => sum + (node.status === 'active' ? node.throughput : 0), 0))} req/s</p>
               <p className="text-sm text-zinc-400">Requisitado: {requestsPerSecond} req/s</p>
             </div>
-            <div className="bg-gray-800 p-4 rounded-lg">
+            <div className="bg-zinc-800 p-4 rounded-lg">
               <h3 className="text-sm font-medium text-zinc-400 mb-2">Requisições</h3>
               <div className="flex items-baseline gap-2">
                 <p className="text-3xl font-bold text-purple-400">{metrics.processed}</p>
@@ -305,7 +305,7 @@ export default function HorizontalScaling() {
                 <p className="text-sm text-zinc-400">perdidas</p>
               </div>
             </div>
-            <div className="bg-gray-800 p-4 rounded-lg">
+            <div className="bg-zinc-800 p-4 rounded-lg">
               <h3 className="text-sm font-medium text-zinc-400 mb-2">Taxa de Sucesso</h3>
               <div className="flex items-baseline gap-2">
                 <p className={`text-3xl font-bold ${
@@ -348,7 +348,7 @@ export default function HorizontalScaling() {
               {nodes.map(node => (
                 <div
                   key={node.id}
-                  className={`bg-gray-800 p-4 rounded-lg border-2 transition-all duration-300 ${
+                  className={`bg-zinc-800 p-4 rounded-lg border-2 transition-all duration-300 ${
                     node.status === 'active'
                       ? 'border-green-500'
                       : node.status === 'starting'

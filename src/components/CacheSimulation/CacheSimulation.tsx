@@ -159,10 +159,10 @@ export default function CacheSimulation() {
   return (
     <div className="p-4 md:p-8 space-y-4 md:space-y-8">
       {/* Animation */}
-      <div className="bg-gray-900 p-4 md:p-6 rounded-lg">
+      <div className="bg-zinc-900 p-4 md:p-6 rounded-lg">
         <div className="relative h-20 flex items-center justify-between max-w-3xl mx-auto">
           {/* Connection Line */}
-          <div className="absolute h-1 bg-gray-600 left-0 right-0 top-1/2 -translate-y-1/2" />
+          <div className="absolute h-1 bg-zinc-600 left-0 right-0 top-1/2 -translate-y-1/2" />
 
           {/* Moving Dot */}
           <div
@@ -175,7 +175,7 @@ export default function CacheSimulation() {
 
           {/* Nodes */}
           <div className={`relative z-10 w-16 h-16 rounded-lg border-2 transition-colors duration-300
-            ${position === 'client' ? 'border-blue-500 bg-blue-500/20' : 'border-gray-600 bg-gray-900'}
+            ${position === 'client' ? 'border-blue-500 bg-blue-500/20' : 'border-zinc-600 bg-zinc-900'}
             flex items-center justify-center`}>
             <span className="text-white text-sm">Cliente</span>
           </div>
@@ -185,13 +185,13 @@ export default function CacheSimulation() {
               (cache.has(currentKey) && Date.now() - cache.get(currentKey)!.timestamp <= config.cacheTTL * 1000) ?
                 'border-green-500 bg-green-500/20' : 'border-yellow-500 bg-yellow-500/20'
               : position === 'cache' ? 'border-red-500 bg-red-500/20' 
-              : 'border-gray-600 bg-gray-900'}
+              : 'border-zinc-600 bg-zinc-900'}
             flex items-center justify-center`}>
             <span className="text-white text-sm">Cache</span>
           </div>
 
           <div className={`relative z-10 w-16 h-16 rounded-lg border-2 transition-colors duration-300
-            ${position === 'db' ? 'border-red-500 bg-red-500/20' : 'border-gray-600 bg-gray-900'}
+            ${position === 'db' ? 'border-red-500 bg-red-500/20' : 'border-zinc-600 bg-zinc-900'}
             flex items-center justify-center`}>
             <span className="text-white text-sm">DB</span>
           </div>
@@ -199,7 +199,7 @@ export default function CacheSimulation() {
       </div>
 
       {/* Configuration */}
-      <div className="bg-gray-900 p-4 md:p-6 rounded-lg">
+      <div className="bg-zinc-900 p-4 md:p-6 rounded-lg">
         <button
           onClick={() => setIsConfigOpen(!isConfigOpen)}
           className="w-full flex items-center justify-between text-base md:text-lg font-semibold text-white focus:outline-none"
@@ -229,7 +229,7 @@ export default function CacheSimulation() {
                 type="checkbox"
                 checked={config.cacheEnabled}
                 onChange={(e) => setConfig(c => ({ ...c, cacheEnabled: e.target.checked }))}
-                className="rounded bg-gray-700 border-gray-600 text-blue-500 focus:ring-blue-500"
+                className="rounded bg-zinc-700 border-zinc-600 text-blue-500 focus:ring-blue-500"
               />
               <span>Cache Ativado</span>
             </label>
@@ -246,7 +246,7 @@ export default function CacheSimulation() {
               max="60"
               value={config.cacheTTL}
               onChange={(e) => setConfig(c => ({ ...c, cacheTTL: parseInt(e.target.value) }))}
-              className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+              className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
             />
           </div>
 
@@ -262,7 +262,7 @@ export default function CacheSimulation() {
               step="100"
               value={config.requestDelay}
               onChange={(e) => setConfig(c => ({ ...c, requestDelay: parseInt(e.target.value) }))}
-              className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+              className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
             />
           </div>
 
@@ -278,21 +278,21 @@ export default function CacheSimulation() {
               step="100"
               value={config.dbDelay}
               onChange={(e) => setConfig(c => ({ ...c, dbDelay: parseInt(e.target.value) }))}
-              className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+              className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
             />
           </div>
         </div>
       </div>
 
       {/* Controls */}
-      <div className="bg-gray-900 p-4 md:p-6 rounded-lg">
+      <div className="bg-zinc-900 p-4 md:p-6 rounded-lg">
         <div className="flex flex-col md:flex-row gap-4">
           <input
             type="text"
             value={currentKey}
             onChange={(e) => setCurrentKey(e.target.value)}
             placeholder="Chave do cache"
-            className="w-full md:flex-1 px-4 py-2 bg-gray-800 text-white rounded border border-gray-700 focus:outline-none focus:border-blue-500"
+            className="w-full md:flex-1 px-4 py-2 bg-zinc-800 text-white rounded border border-zinc-700 focus:outline-none focus:border-blue-500"
           />
           <div className="flex gap-2 md:gap-4">
             <button
@@ -300,7 +300,7 @@ export default function CacheSimulation() {
               disabled={isProcessing}
               className={`flex-1 md:flex-none px-4 md:px-6 py-2 rounded font-medium transition-colors ${
                 isProcessing
-                  ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                  ? 'bg-zinc-700 text-zinc-400 cursor-not-allowed'
                   : 'bg-blue-500 text-white hover:bg-blue-600'
               }`}
             >
@@ -317,31 +317,31 @@ export default function CacheSimulation() {
       </div>
 
       {/* Cache Status */}
-      <div className="bg-gray-900 p-4 md:p-6 rounded-lg">
+      <div className="bg-zinc-900 p-4 md:p-6 rounded-lg">
         <h3 className="text-base md:text-lg font-semibold text-white mb-4">Status do Cache</h3>
         <div className="space-y-2">
           {Array.from(cache.entries()).map(([key, entry]) => (
-            <div key={key} className="flex flex-col md:flex-row md:justify-between md:items-center bg-gray-800 p-3 rounded gap-2 md:gap-0">
+            <div key={key} className="flex flex-col md:flex-row md:justify-between md:items-center bg-zinc-800 p-3 rounded gap-2 md:gap-0">
               <div className="text-white break-all">{key}</div>
-              <div className="text-gray-400 text-sm md:text-base">
+              <div className="text-zinc-400 text-sm md:text-base">
                 expira em {getRemainingTime(entry.timestamp, config.cacheTTL)}s
               </div>
             </div>
           ))}
           {cache.size === 0 && (
-            <div className="text-gray-500 text-center py-4">Cache está vazio</div>
+            <div className="text-zinc-500 text-center py-4">Cache está vazio</div>
           )}
         </div>
       </div>
 
       {/* Request Logs */}
-      <div className="bg-gray-900 p-4 md:p-6 rounded-lg">
+      <div className="bg-zinc-900 p-4 md:p-6 rounded-lg">
         <h3 className="text-base md:text-lg font-semibold text-white mb-4">Registros</h3>
         <div className="space-y-2">
           {logs.map(log => (
             <div
               key={log.id}
-              className="flex flex-col md:flex-row md:justify-between md:items-center bg-gray-800 p-3 rounded gap-2 md:gap-0"
+              className="flex flex-col md:flex-row md:justify-between md:items-center bg-zinc-800 p-3 rounded gap-2 md:gap-0"
             >
               <div className="flex flex-wrap items-center gap-2 md:gap-3">
                 <span className={`px-2 py-1 rounded text-sm ${
@@ -357,11 +357,11 @@ export default function CacheSimulation() {
                 </span>
                 <span className="text-white break-all">{log.key}</span>
               </div>
-              <span className="text-gray-400 text-sm md:text-base">{log.duration}ms</span>
+              <span className="text-zinc-400 text-sm md:text-base">{log.duration}ms</span>
             </div>
           ))}
           {logs.length === 0 && (
-            <div className="text-gray-500 text-center py-4">Nenhum registro disponível</div>
+            <div className="text-zinc-500 text-center py-4">Nenhum registro disponível</div>
           )}
         </div>
       </div>
