@@ -30,6 +30,9 @@ import { MenuItem } from './types/menu';
 
 import "./App.css";
 import ServiceOriented from './components/DesignPrinciples/ServiceOriented';
+import FaultTolerance from './components/DesignPrinciples/FaultTolerance';
+import Retries from './components/DesignPrinciples/Retries';
+import RetriesSimulator from './components/DesignPrinciples/RetriesSimulator';
 
 const menuItems: MenuItem[] = [
   { path: "/intro", name: "Introdução", description: "Sobre o curso e motivação" },
@@ -136,9 +139,16 @@ const menuItems: MenuItem[] = [
         description: "Retries, Circuit Breakers, Timeout e Fallback",
         children: [
           {
-            path: "/principios-design/tolerancia-falhas/simulator",
-            name: "Simulador de Tolerância a Falhas",
-            description: "Simulação de estratégias de resiliência"
+            path: "/principios-design/tolerancia-falhas/retries",
+            name: "Retries",
+            description: "Estratégia de tentativas para falhas temporárias",
+            children: [
+              {
+                path: "/principios-design/tolerancia-falhas/retries/simulator",
+                name: "Simulador de Retries",
+                description: "Simulação de estratégias de retry"
+              }
+            ]
           }
         ]
       },
@@ -350,7 +360,9 @@ export default function App() {
             <Route path="/principios-design/eventos" element={<EventDriven />} />
             <Route path="/principios-design/eventos/simulator" element={<EventSourcingSimulator />} />
             <Route path="/principios-design/servicos" element={<ServiceOriented />} />
-
+            <Route path="/principios-design/tolerancia-falhas" element={<FaultTolerance />} />
+            <Route path="/principios-design/tolerancia-falhas/retries" element={<Retries />} />
+            <Route path="/principios-design/tolerancia-falhas/retries/simulator" element={<RetriesSimulator />} />
           </Routes>
         </div>
       </main>
