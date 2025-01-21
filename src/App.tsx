@@ -33,6 +33,9 @@ import ServiceOriented from './components/DesignPrinciples/ServiceOriented';
 import FaultTolerance from './components/DesignPrinciples/FaultTolerance';
 import Retries from './components/DesignPrinciples/Retries';
 import RetriesSimulator from './components/DesignPrinciples/RetriesSimulator';
+import CircuitBreakerContent from './components/DesignPrinciples/CircuitBreaker';
+import Timeout from './components/DesignPrinciples/Timeout';
+import TimeoutSimulator from './components/DesignPrinciples/TimeoutSimulator';
 
 const menuItems: MenuItem[] = [
   { path: "/intro", name: "Introdução", description: "Sobre o curso e motivação" },
@@ -147,6 +150,30 @@ const menuItems: MenuItem[] = [
                 path: "/principios-design/tolerancia-falhas/retries/simulator",
                 name: "Simulador de Retries",
                 description: "Simulação de estratégias de retry"
+              }
+            ]
+          },
+          {
+            path: "/principios-design/tolerancia-falhas/circuit-breaker",
+            name: "Circuit Breaker",
+            description: "Prevenção de falhas em cascata",
+            children: [
+              {
+                path: "/principios-design/tolerancia-falhas/circuit-breaker/simulator",
+                name: "Simulador de Circuit Breaker",
+                description: "Simulação de circuit breaker"
+              }
+            ]
+          },
+          {
+            path: "/principios-design/tolerancia-falhas/timeout",
+            name: "Timeout",
+            description: "Controle de tempo de resposta",
+            children: [
+              {
+                path: "/principios-design/tolerancia-falhas/timeout/simulator",
+                name: "Simulador de Timeout",
+                description: "Simulação de timeouts"
               }
             ]
           }
@@ -363,6 +390,10 @@ export default function App() {
             <Route path="/principios-design/tolerancia-falhas" element={<FaultTolerance />} />
             <Route path="/principios-design/tolerancia-falhas/retries" element={<Retries />} />
             <Route path="/principios-design/tolerancia-falhas/retries/simulator" element={<RetriesSimulator />} />
+            <Route path="/principios-design/tolerancia-falhas/circuit-breaker" element={<CircuitBreakerContent />} />
+            <Route path="/principios-design/tolerancia-falhas/circuit-breaker/simulator" element={<CircuitBreaker />} />
+            <Route path="/principios-design/tolerancia-falhas/timeout" element={<Timeout />} />
+            <Route path="/principios-design/tolerancia-falhas/timeout/simulator" element={<TimeoutSimulator />} />
           </Routes>
         </div>
       </main>
