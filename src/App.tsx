@@ -23,9 +23,13 @@ import CDNComponent from './components/SystemComponents/CDN';
 import CDNSimulator from './components/CDN/CDN';
 import APIGateway from './components/SystemComponents/APIGateway';
 import APIGatewaySimulator from './components/APIGateway/APIGatewaySimulator';
+import DesignPrinciples from './components/DesignPrinciples/DesignPrinciples';
+import EventDriven from './components/DesignPrinciples/EventDriven';
+import EventSourcingSimulator from './components/DesignPrinciples/EventSourcingSimulator';
 import { MenuItem } from './types/menu';
 
 import "./App.css";
+import ServiceOriented from './components/DesignPrinciples/ServiceOriented';
 
 const menuItems: MenuItem[] = [
   { path: "/intro", name: "Introdução", description: "Sobre o curso e motivação" },
@@ -98,6 +102,67 @@ const menuItems: MenuItem[] = [
             path: "/componentes/api-gateway/simulator",
             name: "Simulador de API Gateway",
             description: "Simulação de roteamento de requisições"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    path: "/principios-design",
+    name: "Princípios de Design",
+    description: "Princípios fundamentais para sistemas distribuídos",
+    children: [
+      {
+        path: "/principios-design/eventos",
+        name: "Desenvolvimento Orientado a Eventos",
+        description: "Event Sourcing e sistemas de eventos distribuídos",
+        children: [
+          {
+            path: "/principios-design/eventos/simulator",
+            name: "Simulador de Event Sourcing",
+            description: "Simulação de sistemas orientados a eventos"
+          }
+        ]
+      },
+      {
+        path: "/principios-design/servicos",
+        name: "Design Orientado a Serviços",
+        description: "Microsserviços vs Arquitetura Monolítica",
+        
+      },
+      {
+        path: "/principios-design/tolerancia-falhas",
+        name: "Tolerância a Falhas",
+        description: "Retries, Circuit Breakers, Timeout e Fallback",
+        children: [
+          {
+            path: "/principios-design/tolerancia-falhas/simulator",
+            name: "Simulador de Tolerância a Falhas",
+            description: "Simulação de estratégias de resiliência"
+          }
+        ]
+      },
+      {
+        path: "/principios-design/escalabilidade",
+        name: "Design para Escalabilidade",
+        description: "Escalabilidade horizontal e vertical",
+        children: [
+          {
+            path: "/principios-design/escalabilidade/simulator",
+            name: "Simulador de Escalabilidade",
+            description: "Simulação de estratégias de escala"
+          }
+        ]
+      },
+      {
+        path: "/principios-design/disponibilidade",
+        name: "Alta Disponibilidade",
+        description: "Zonas de disponibilidade e replicação",
+        children: [
+          {
+            path: "/principios-design/disponibilidade/simulator",
+            name: "Simulador de Alta Disponibilidade",
+            description: "Simulação de estratégias de disponibilidade"
           }
         ]
       }
@@ -281,6 +346,11 @@ export default function App() {
             <Route path="/fallback" element={<Fallback />} />
             <Route path="/async-sync" element={<AsyncSync />} />
             <Route path="/cdn" element={<CDN />} />
+            <Route path="/principios-design" element={<DesignPrinciples />} />
+            <Route path="/principios-design/eventos" element={<EventDriven />} />
+            <Route path="/principios-design/eventos/simulator" element={<EventSourcingSimulator />} />
+            <Route path="/principios-design/servicos" element={<ServiceOriented />} />
+
           </Routes>
         </div>
       </main>
