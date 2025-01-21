@@ -2,11 +2,11 @@ import { Routes, Route, NavLink, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CacheSimulation from "./components/CacheSimulation/CacheSimulation";
-import HorizontalScaling from './components/HorizontalScaling/HorizontalScaling';
+import HorizontalScaling from './components/DesignPrinciples/HorizontalScaling';
 import CircuitBreaker from './components/CircuitBreaker/CircuitBreaker';
 import Backpressure from './components/Backpressure/Backpressure';
 import RateLimiter from './components/RateLimiter/RateLimiter';
-import Fallback from './components/Fallback/Fallback';
+import Fallback from './components/DesignPrinciples/Fallback';
 import AsyncSync from './components/AsyncSync/AsyncSync';
 import CDN from './components/CDN/CDN';
 import RoundRobin from './components/RoundRobin/RoundRobin';
@@ -36,6 +36,13 @@ import RetriesSimulator from './components/DesignPrinciples/RetriesSimulator';
 import CircuitBreakerContent from './components/DesignPrinciples/CircuitBreaker';
 import Timeout from './components/DesignPrinciples/Timeout';
 import TimeoutSimulator from './components/DesignPrinciples/TimeoutSimulator';
+import Escalabilidade from './components/DesignPrinciples/Escalabilidade';
+import VerticalScaling from './components/DesignPrinciples/VerticalScaling';
+import DataConsistency from './components/DesignPrinciples/DataConsistency';
+import Latency from './components/DesignPrinciples/Latency';
+import Failover from './components/DesignPrinciples/Failover';
+import HorizontalScalingSimulator from './components/HorizontalScaling/HorizontalScalingSimulator';
+import VerticalScalingSimulator from './components/DesignPrinciples/VerticalScalingSimulator';
 
 const menuItems: MenuItem[] = [
   { path: "/intro", name: "Introdução", description: "Sobre o curso e motivação" },
@@ -176,6 +183,18 @@ const menuItems: MenuItem[] = [
                 description: "Simulação de timeouts"
               }
             ]
+          },
+          {
+            path: "/principios-design/tolerancia-falhas/fallback",
+            name: "Fallback",
+            description: "Estratégias de recuperação de falhas",
+            children: [
+              {
+                path: "/principios-design/tolerancia-falhas/fallback/simulator",
+                name: "Simulador de Fallback",
+                description: "Simulação de estratégias de fallback"
+              }
+            ]
           }
         ]
       },
@@ -184,6 +203,45 @@ const menuItems: MenuItem[] = [
         name: "Design para Escalabilidade",
         description: "Escalabilidade horizontal e vertical",
         children: [
+          {
+            path: "/principios-design/escalabilidade/horizontal",
+            name: "Escalabilidade Horizontal",
+            description: "Distribuição de carga entre múltiplos servidores",
+            children: [
+              {
+                path: "/principios-design/escalabilidade/horizontal/simulator",
+                name: "Simulador de Escalabilidade Horizontal",
+                description: "Simulação de distribuição de carga"
+              }
+            ]
+          },
+          {
+            path: "/principios-design/escalabilidade/vertical",
+            name: "Escalabilidade Vertical",
+            description: "Aumento de recursos em um único servidor",
+            children: [
+              {
+                path: "/principios-design/escalabilidade/vertical/simulator",
+                name: "Simulador de Escalabilidade Vertical",
+                description: "Simulação de upgrade de recursos"
+              }
+            ]
+          },
+          {
+            path: "/principios-design/escalabilidade/consistencia",
+            name: "Consistência de Dados",
+            description: "Sincronização de dados entre servidores"
+          },
+          {
+            path: "/principios-design/escalabilidade/latencia",
+            name: "Latência",
+            description: "Gerenciamento de atrasos em sistemas distribuídos"
+          },
+          {
+            path: "/principios-design/escalabilidade/failover",
+            name: "Failover",
+            description: "Estratégias de recuperação automática"
+          },
           {
             path: "/principios-design/escalabilidade/simulator",
             name: "Simulador de Escalabilidade",
@@ -394,6 +452,15 @@ export default function App() {
             <Route path="/principios-design/tolerancia-falhas/circuit-breaker/simulator" element={<CircuitBreaker />} />
             <Route path="/principios-design/tolerancia-falhas/timeout" element={<Timeout />} />
             <Route path="/principios-design/tolerancia-falhas/timeout/simulator" element={<TimeoutSimulator />} />
+            <Route path="/principios-design/tolerancia-falhas/fallback" element={<Fallback />} />
+            <Route path="/principios-design/escalabilidade" element={<Escalabilidade />} />
+            <Route path="/principios-design/escalabilidade/horizontal" element={<HorizontalScaling />} />
+            <Route path="/principios-design/escalabilidade/horizontal/simulator" element={<HorizontalScalingSimulator />} />
+            <Route path="/principios-design/escalabilidade/vertical" element={<VerticalScaling />} />
+            <Route path="/principios-design/escalabilidade/vertical/simulator" element={<VerticalScalingSimulator />} />
+            <Route path="/principios-design/escalabilidade/consistencia" element={<DataConsistency />} />
+            <Route path="/principios-design/escalabilidade/latencia" element={<Latency />} />
+            <Route path="/principios-design/escalabilidade/failover" element={<Failover />} />
           </Routes>
         </div>
       </main>
