@@ -44,6 +44,8 @@ import Failover from './components/DesignPrinciples/Failover';
 import HorizontalScalingSimulator from './components/HorizontalScaling/HorizontalScalingSimulator';
 import VerticalScalingSimulator from './components/DesignPrinciples/VerticalScalingSimulator';
 import ScalabilitySimulator from './components/DesignPrinciples/ScalabilitySimulator';
+import Replicacao from './components/DesignPrinciples/Replicacao';
+import ReplicacaoSimulator from './components/DesignPrinciples/ReplicacaoSimulator';
 
 const menuItems: MenuItem[] = [
   { path: "/intro", name: "Introdução", description: "Sobre o curso e motivação" },
@@ -259,6 +261,16 @@ const menuItems: MenuItem[] = [
             path: "/principios-design/disponibilidade/simulator",
             name: "Simulador de Alta Disponibilidade",
             description: "Simulação de estratégias de disponibilidade"
+          },
+          {
+            path: "/principios-design/disponibilidade/replicacao",
+            name: "Replicação",
+            description: "Estratégias de replicação de dados e serviços"
+          },
+          {
+            path: "/principios-design/disponibilidade/failover",
+            name: "Failover",
+            description: "Recuperação automática de falhas"
           }
         ]
       }
@@ -463,6 +475,9 @@ export default function App() {
             <Route path="/principios-design/escalabilidade/latencia" element={<Latency />} />
             <Route path="/principios-design/escalabilidade/failover" element={<Failover />} />
             <Route path="/principios-design/escalabilidade/simulator" element={<ScalabilitySimulator />} />
+            <Route path="/principios-design/disponibilidade/simulator" element={<ReplicacaoSimulator />} />
+            <Route path="/principios-design/disponibilidade/replicacao" element={<Replicacao />} />
+            <Route path="/principios-design/disponibilidade/failover" element={<Failover />} />
           </Routes>
         </div>
       </main>
