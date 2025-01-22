@@ -48,76 +48,88 @@ import Replicacao from './components/DesignPrinciples/Replicacao';
 import ReplicacaoSimulator from './components/DesignPrinciples/ReplicacaoSimulator';
 
 const menuItems: MenuItem[] = [
-  { path: "/intro", name: "Introdução", description: "Sobre o curso e motivação" },
-  { path: "/sistemas-distribuidos-101", name: "Sistemas Distribuídos 101", description: "Conceitos fundamentais através de analogias" },
-  { path: "/system-design-101", name: "System Design 101", description: "Fundamentos de design de sistemas" },
+  { 
+    path: "/intro", 
+    name: "Introdução", 
+    description: "Sobre o curso e motivação" 
+  },
+  { 
+    path: "/sistemas-distribuidos-101", 
+    name: "Sistemas Distribuídos 101", 
+    description: "Conceitos fundamentais através de analogias" 
+  },
+  { 
+    path: "/system-design-101", 
+    name: "System Design 101", 
+    description: "Fundamentos de design de sistemas" 
+  },
   { 
     path: "/componentes", 
-    name: "Componentes de um Sistema", 
-    description: "Principais componentes de sistemas distribuídos",
+    name: "Componentes Básicos", 
+    description: "Blocos fundamentais de sistemas distribuídos",
     children: [
       { 
         path: "/componentes/banco-dados", 
         name: "Bancos de Dados", 
-        description: "SQL, NoSQL, Sharding e Replicação" 
+        description: "Armazenamento e gerenciamento de dados" 
       },
       {
         path: "/componentes/cache",
         name: "Cache",
-        description: "Estratégias e sistemas de cache",
+        description: "Armazenamento temporário para melhor performance",
         children: [
           {
             path: "/componentes/cache/simulator",
-            name: "Simulador de Cache",
-            description: "Simulação interativa de cache"
+            name: "Simulador",
+            description: "Experimente diferentes estratégias de cache"
           }
         ]
       },
       {
         path: "/componentes/load-balancer",
         name: "Balanceador de Carga",
-        description: "Distribuição de carga entre servidores",
+        description: "Distribuição de tráfego entre servidores",
         children: [
           {
             path: "/componentes/load-balancer/simulator",
-            name: "Simulador de Load Balancer",
-            description: "Simulação de balanceamento de carga"
+            name: "Simulador",
+            description: "Experimente diferentes algoritmos de balanceamento"
           }
         ]
       },
       {
         path: "/componentes/message-queue",
         name: "Filas de Mensagens",
-        description: "Comunicação assíncrona entre sistemas",
+        description: "Comunicação assíncrona entre serviços",
         children: [
           {
             path: "/componentes/message-queue/simulator",
-            name: "Simulador de Message Queue",
-            description: "Simulação de filas de mensagens"
+            name: "Simulador",
+            description: "Experimente o fluxo de mensagens"
           }
         ]
       },
       {
         path: "/componentes/cdn",
         name: "CDN",
-        description: "Rede de distribuição de conteúdo",
+        description: "Distribuição global de conteúdo",
         children: [
           {
             path: "/componentes/cdn/simulator",
-            name: "Simulador de CDN",
-            description: "Simulação de distribuição de conteúdo"
+            name: "Simulador",
+            description: "Veja como o CDN acelera entregas"
           }
         ]
       },
       {
         path: "/componentes/api-gateway",
         name: "API Gateway",
-        description: "Intermediário entre clientes e serviços",
+        description: "Ponto único de entrada para APIs",
         children: [
           {
             path: "/componentes/api-gateway/simulator",
-            name: "Simulador de API Gateway",
-            description: "Simulação de roteamento de requisições"
+            name: "Simulador",
+            description: "Experimente roteamento e proteção de APIs"
           }
         ]
       }
@@ -126,165 +138,128 @@ const menuItems: MenuItem[] = [
   {
     path: "/principios-design",
     name: "Princípios de Design",
-    description: "Princípios fundamentais para sistemas distribuídos",
+    description: "Conceitos essenciais para sistemas robustos",
     children: [
       {
-        path: "/principios-design/eventos",
-        name: "Desenvolvimento Orientado a Eventos",
-        description: "Event Sourcing e sistemas de eventos distribuídos",
-        children: [
-          {
-            path: "/principios-design/eventos/simulator",
-            name: "Simulador de Event Sourcing",
-            description: "Simulação de sistemas orientados a eventos"
-          }
-        ]
-      },
-      {
-        path: "/principios-design/servicos",
-        name: "Design Orientado a Serviços",
-        description: "Microsserviços vs Arquitetura Monolítica",
-        
-      },
-      {
-        path: "/principios-design/tolerancia-falhas",
-        name: "Tolerância a Falhas",
-        description: "Retries, Circuit Breakers, Timeout e Fallback",
-        children: [
-          {
-            path: "/principios-design/tolerancia-falhas/retries",
-            name: "Retries",
-            description: "Estratégia de tentativas para falhas temporárias",
-            children: [
-              {
-                path: "/principios-design/tolerancia-falhas/retries/simulator",
-                name: "Simulador de Retries",
-                description: "Simulação de estratégias de retry"
-              }
-            ]
-          },
-          {
-            path: "/principios-design/tolerancia-falhas/circuit-breaker",
-            name: "Circuit Breaker",
-            description: "Prevenção de falhas em cascata",
-            children: [
-              {
-                path: "/principios-design/tolerancia-falhas/circuit-breaker/simulator",
-                name: "Simulador de Circuit Breaker",
-                description: "Simulação de circuit breaker"
-              }
-            ]
-          },
-          {
-            path: "/principios-design/tolerancia-falhas/timeout",
-            name: "Timeout",
-            description: "Controle de tempo de resposta",
-            children: [
-              {
-                path: "/principios-design/tolerancia-falhas/timeout/simulator",
-                name: "Simulador de Timeout",
-                description: "Simulação de timeouts"
-              }
-            ]
-          },
-          {
-            path: "/principios-design/tolerancia-falhas/fallback",
-            name: "Fallback",
-            description: "Estratégias de recuperação de falhas",
-            children: [
-              {
-                path: "/principios-design/tolerancia-falhas/fallback/simulator",
-                name: "Simulador de Fallback",
-                description: "Simulação de estratégias de fallback"
-              }
-            ]
-          }
-        ]
-      },
-      {
         path: "/principios-design/escalabilidade",
-        name: "Design para Escalabilidade",
-        description: "Escalabilidade horizontal e vertical",
+        name: "Escalabilidade",
+        description: "Crescimento e adaptação do sistema",
         children: [
           {
             path: "/principios-design/escalabilidade/horizontal",
-            name: "Escalabilidade Horizontal",
-            description: "Distribuição de carga entre múltiplos servidores",
+            name: "Horizontal (Scale Out)",
+            description: "Adicionando mais máquinas",
             children: [
               {
                 path: "/principios-design/escalabilidade/horizontal/simulator",
-                name: "Simulador de Escalabilidade Horizontal",
-                description: "Simulação de distribuição de carga"
+                name: "Simulador",
+                description: "Experimente escalabilidade horizontal"
               }
             ]
           },
           {
             path: "/principios-design/escalabilidade/vertical",
-            name: "Escalabilidade Vertical",
-            description: "Aumento de recursos em um único servidor",
+            name: "Vertical (Scale Up)",
+            description: "Aumentando recursos da máquina",
             children: [
               {
                 path: "/principios-design/escalabilidade/vertical/simulator",
-                name: "Simulador de Escalabilidade Vertical",
-                description: "Simulação de upgrade de recursos"
+                name: "Simulador",
+                description: "Experimente escalabilidade vertical"
               }
             ]
           },
           {
-            path: "/principios-design/escalabilidade/consistencia",
-            name: "Consistência de Dados",
-            description: "Sincronização de dados entre servidores"
-          },
-          {
-            path: "/principios-design/escalabilidade/latencia",
-            name: "Latência",
-            description: "Gerenciamento de atrasos em sistemas distribuídos"
-          },
-          {
-            path: "/principios-design/escalabilidade/failover",
-            name: "Failover",
-            description: "Estratégias de recuperação automática"
-          },
-          {
             path: "/principios-design/escalabilidade/simulator",
-            name: "Simulador de Escalabilidade",
-            description: "Simulação de estratégias de escala"
+            name: "Simulador Completo",
+            description: "Compare diferentes estratégias de escala"
           }
         ]
       },
       {
         path: "/principios-design/disponibilidade",
         name: "Alta Disponibilidade",
-        description: "Zonas de disponibilidade e replicação",
+        description: "Mantendo o sistema sempre funcionando",
         children: [
-          {
-            path: "/principios-design/disponibilidade/simulator",
-            name: "Simulador de Alta Disponibilidade",
-            description: "Simulação de estratégias de disponibilidade"
-          },
           {
             path: "/principios-design/disponibilidade/replicacao",
             name: "Replicação",
-            description: "Estratégias de replicação de dados e serviços"
+            description: "Cópias sincronizadas dos dados"
           },
           {
             path: "/principios-design/disponibilidade/failover",
             name: "Failover",
             description: "Recuperação automática de falhas"
+          },
+          {
+            path: "/principios-design/disponibilidade/simulator",
+            name: "Simulador",
+            description: "Experimente estratégias de disponibilidade"
           }
         ]
+      },
+      {
+        path: "/principios-design/tolerancia-falhas",
+        name: "Tolerância a Falhas",
+        description: "Lidando com falhas no sistema",
+        children: [
+          {
+            path: "/principios-design/tolerancia-falhas/retries",
+            name: "Retries",
+            description: "Tentativas automáticas",
+            children: [
+              {
+                path: "/principios-design/tolerancia-falhas/retries/simulator",
+                name: "Simulador",
+                description: "Experimente diferentes estratégias de retry"
+              }
+            ]
+          },
+          {
+            path: "/principios-design/tolerancia-falhas/circuit-breaker",
+            name: "Circuit Breaker",
+            description: "Prevenindo falhas em cascata",
+            children: [
+              {
+                path: "/principios-design/tolerancia-falhas/circuit-breaker/simulator",
+                name: "Simulador",
+                description: "Veja o circuit breaker em ação"
+              }
+            ]
+          },
+          {
+            path: "/principios-design/tolerancia-falhas/timeout",
+            name: "Timeout",
+            description: "Limitando tempo de espera",
+            children: [
+              {
+                path: "/principios-design/tolerancia-falhas/timeout/simulator",
+                name: "Simulador",
+                description: "Experimente diferentes configurações de timeout"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        path: "/principios-design/eventos",
+        name: "Arquitetura Orientada a Eventos",
+        description: "Sistemas baseados em eventos",
+        children: [
+          {
+            path: "/principios-design/eventos/simulator",
+            name: "Simulador",
+            description: "Experimente event sourcing e event-driven"
+          }
+        ]
+      },
+      {
+        path: "/principios-design/servicos",
+        name: "Arquitetura de Serviços",
+        description: "Monolito vs Microsserviços"
       }
     ]
-  },
-  { path: "/horizontal-scaling", name: "Escalabilidade Horizontal", description: "Distribuição de carga entre múltiplos servidores" },
-  { path: "/load-balancer", name: "Load Balancer", description: "Balanceamento de carga usando Round Robin" },
-  { path: "/message-queue", name: "Message Queue", description: "Fila de mensagens com produtores e consumidores" },
-  { path: "/circuit-breaker", name: "Circuit Breaker", description: "Prevenção de falhas em cascata" },
-  { path: "/backpressure", name: "Backpressure", description: "Controle de fluxo em sistemas distribuídos" },
-  { path: "/rate-limiter", name: "Rate Limiter", description: "Limitação de taxa de requisições" },
-  { path: "/fallback", name: "Fallback", description: "Estratégias de recuperação de falhas" },
-  { path: "/async-sync", name: "Sync vs Async", description: "Comparação entre comunicação síncrona e assíncrona" },
-  { path: "/cdn", name: "CDN", description: "Rede de distribuição de conteúdo" }
+  }
 ];
 
 export default function App() {
