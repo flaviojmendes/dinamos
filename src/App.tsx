@@ -28,6 +28,9 @@ import EventDriven from './components/DesignPrinciples/EventDriven';
 import EventSourcingSimulator from './components/DesignPrinciples/EventSourcingSimulator';
 import { MenuItem } from './types/menu';
 import LandingPage from './components/LandingPage/LandingPage';
+import { AuthProvider } from './contexts/AuthContext';
+import Login from './components/Auth/Login';
+import ProtectedRoute from './components/Auth/ProtectedRoute';
 
 import "./App.css";
 import ServiceOriented from './components/DesignPrinciples/ServiceOriented';
@@ -345,119 +348,124 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-screen h-full bg-black text-white flex">
-      {/* Overlay for mobile */}
-      {isMobile && isSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-20"
-          onClick={() => setIsSidebarOpen(false)}
-        />
-      )}
-
-      {/* Sidebar */}
-      <AnimatePresence mode="wait">
-        {(isSidebarOpen || !isMobile) && (
-          <motion.nav
-            initial={{ x: -300 }}
-            animate={{ x: 0 }}
-            exit={{ x: -300 }}
-            transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-            className={`bg-zinc-900 border-r border-zinc-800 w-72 fixed md:relative h-screen z-30 overflow-y-auto
-              ${isMobile ? 'shadow-lg' : ''}`}
-          >
-            <div className="p-4">
-              <div className="flex items-center justify-between mb-8">
-                <h1 className="text-xl font-bold text-white">System Design</h1>
-                {isMobile && (
-                  <button
-                    onClick={() => setIsSidebarOpen(false)}
-                    className="p-2 hover:bg-zinc-800 rounded-lg"
-                  >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                )}
-              </div>
-
-              <nav className="space-y-1">
-                {menuItems.map((item) => (
-                  <MenuLink key={item.path} item={item} />
-                ))}
-              </nav>
-            </div>
-          </motion.nav>
+    <AuthProvider>
+      <div className="min-h-screen h-full bg-black text-white flex">
+        {/* Overlay for mobile */}
+        {isMobile && isSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-20"
+            onClick={() => setIsSidebarOpen(false)}
+          />
         )}
-      </AnimatePresence>
 
-      {/* Main Content */}
-      <main className="flex-1 h-screen overflow-auto">
-        <div className="h-full">
-          {/* Mobile Header */}
-          {isMobile && (
-            <div className="bg-zinc-900 border-b border-zinc-800 p-4 sticky top-0 z-10">
-              <button
-                onClick={() => setIsSidebarOpen(true)}
-                className="p-2 hover:bg-zinc-800 rounded-lg"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
-            </div>
+        {/* Sidebar */}
+        <AnimatePresence mode="wait">
+          {(isSidebarOpen || !isMobile) && (
+            <motion.nav
+              initial={{ x: -300 }}
+              animate={{ x: 0 }}
+              exit={{ x: -300 }}
+              transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+              className={`bg-zinc-900 border-r border-zinc-800 w-72 fixed md:relative h-screen z-30 overflow-y-auto
+                ${isMobile ? 'shadow-lg' : ''}`}
+            >
+              <div className="p-4">
+                <div className="flex items-center justify-between mb-8">
+                  <h1 className="text-xl font-bold text-white">System Design</h1>
+                  {isMobile && (
+                    <button
+                      onClick={() => setIsSidebarOpen(false)}
+                      className="p-2 hover:bg-zinc-800 rounded-lg"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+
+                <nav className="space-y-1">
+                  {menuItems.map((item) => (
+                    <MenuLink key={item.path} item={item} />
+                  ))}
+                </nav>
+              </div>
+            </motion.nav>
           )}
-          
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/intro" element={<Introduction />} />
-            <Route path="/sistemas-distribuidos-101" element={<DistributedSystems101 />} />
-            <Route path="/system-design-101" element={<SystemDesign101 />} />
-            <Route path="/componentes" element={<SystemComponents />} />
-            <Route path="/componentes/banco-dados" element={<Database />} />
-            <Route path="/componentes/cache" element={<CacheComponent />} />
-            <Route path="/componentes/cache/simulator" element={<CacheSimulation />} />
-            <Route path="/componentes/load-balancer" element={<LoadBalancer />} />
-            <Route path="/componentes/load-balancer/simulator" element={<RoundRobin />} />
-            <Route path="/componentes/message-queue" element={<MessageQueueComponent />} />
-            <Route path="/componentes/message-queue/simulator" element={<MessageQueueSimulator />} />
-            <Route path="/componentes/cdn" element={<CDNComponent />} />
-            <Route path="/componentes/cdn/simulator" element={<CDN />} />
-            <Route path="/componentes/api-gateway" element={<APIGateway />} />
-            <Route path="/componentes/api-gateway/simulator" element={<APIGatewaySimulator />} />
-            <Route path="/horizontal-scaling" element={<HorizontalScaling />} />
-            <Route path="/circuit-breaker" element={<CircuitBreaker />} />
-            <Route path="/backpressure" element={<Backpressure />} />
-            <Route path="/rate-limiter" element={<RateLimiter />} />
-            <Route path="/fallback" element={<Fallback />} />
-            <Route path="/async-sync" element={<AsyncSync />} />
-            <Route path="/cdn" element={<CDN />} />
-            <Route path="/principios-design" element={<DesignPrinciples />} />
-            <Route path="/principios-design/eventos" element={<EventDriven />} />
-            <Route path="/principios-design/eventos/simulator" element={<EventSourcingSimulator />} />
-            <Route path="/principios-design/servicos" element={<ServiceOriented />} />
-            <Route path="/principios-design/tolerancia-falhas" element={<FaultTolerance />} />
-            <Route path="/principios-design/tolerancia-falhas/retries" element={<Retries />} />
-            <Route path="/principios-design/tolerancia-falhas/retries/simulator" element={<RetriesSimulator />} />
-            <Route path="/principios-design/tolerancia-falhas/circuit-breaker" element={<CircuitBreakerContent />} />
-            <Route path="/principios-design/tolerancia-falhas/circuit-breaker/simulator" element={<CircuitBreaker />} />
-            <Route path="/principios-design/tolerancia-falhas/timeout" element={<Timeout />} />
-            <Route path="/principios-design/tolerancia-falhas/timeout/simulator" element={<TimeoutSimulator />} />
-            <Route path="/principios-design/tolerancia-falhas/fallback" element={<Fallback />} />
-            <Route path="/principios-design/escalabilidade" element={<Escalabilidade />} />
-            <Route path="/principios-design/escalabilidade/horizontal" element={<HorizontalScaling />} />
-            <Route path="/principios-design/escalabilidade/horizontal/simulator" element={<HorizontalScalingSimulator />} />
-            <Route path="/principios-design/escalabilidade/vertical" element={<VerticalScaling />} />
-            <Route path="/principios-design/escalabilidade/vertical/simulator" element={<VerticalScalingSimulator />} />
-            <Route path="/principios-design/escalabilidade/consistencia" element={<DataConsistency />} />
-            <Route path="/principios-design/escalabilidade/latencia" element={<Latency />} />
-            <Route path="/principios-design/escalabilidade/failover" element={<Failover />} />
-            <Route path="/principios-design/escalabilidade/simulator" element={<ScalabilitySimulator />} />
-            <Route path="/principios-design/disponibilidade/simulator" element={<ReplicacaoSimulator />} />
-            <Route path="/principios-design/disponibilidade/replicacao" element={<Replicacao />} />
-            <Route path="/principios-design/disponibilidade/failover" element={<Failover />} />
-          </Routes>
-        </div>
-      </main>
-    </div>
+        </AnimatePresence>
+
+        {/* Main Content */}
+        <main className="flex-1 h-screen overflow-auto">
+          <div className="h-full">
+            {/* Mobile Header */}
+            {isMobile && (
+              <div className="bg-zinc-900 border-b border-zinc-800 p-4 sticky top-0 z-10">
+                <button
+                  onClick={() => setIsSidebarOpen(true)}
+                  className="p-2 hover:bg-zinc-800 rounded-lg"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                </button>
+              </div>
+            )}
+            
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<Login />} />
+              
+              {/* Protected Routes */}
+              <Route path="/intro" element={<ProtectedRoute><Introduction /></ProtectedRoute>} />
+              <Route path="/sistemas-distribuidos-101" element={<ProtectedRoute><DistributedSystems101 /></ProtectedRoute>} />
+              <Route path="/system-design-101" element={<ProtectedRoute><SystemDesign101 /></ProtectedRoute>} />
+              <Route path="/componentes" element={<ProtectedRoute><SystemComponents /></ProtectedRoute>} />
+              <Route path="/componentes/banco-dados" element={<ProtectedRoute><Database /></ProtectedRoute>} />
+              <Route path="/componentes/cache" element={<ProtectedRoute><CacheComponent /></ProtectedRoute>} />
+              <Route path="/componentes/cache/simulator" element={<ProtectedRoute><CacheSimulation /></ProtectedRoute>} />
+              <Route path="/componentes/load-balancer" element={<ProtectedRoute><LoadBalancer /></ProtectedRoute>} />
+              <Route path="/componentes/load-balancer/simulator" element={<ProtectedRoute><RoundRobin /></ProtectedRoute>} />
+              <Route path="/componentes/message-queue" element={<ProtectedRoute><MessageQueueComponent /></ProtectedRoute>} />
+              <Route path="/componentes/message-queue/simulator" element={<ProtectedRoute><MessageQueueSimulator /></ProtectedRoute>} />
+              <Route path="/componentes/cdn" element={<ProtectedRoute><CDNComponent /></ProtectedRoute>} />
+              <Route path="/componentes/cdn/simulator" element={<ProtectedRoute><CDN /></ProtectedRoute>} />
+              <Route path="/componentes/api-gateway" element={<ProtectedRoute><APIGateway /></ProtectedRoute>} />
+              <Route path="/componentes/api-gateway/simulator" element={<ProtectedRoute><APIGatewaySimulator /></ProtectedRoute>} />
+              <Route path="/horizontal-scaling" element={<ProtectedRoute><HorizontalScaling /></ProtectedRoute>} />
+              <Route path="/circuit-breaker" element={<ProtectedRoute><CircuitBreaker /></ProtectedRoute>} />
+              <Route path="/backpressure" element={<ProtectedRoute><Backpressure /></ProtectedRoute>} />
+              <Route path="/rate-limiter" element={<ProtectedRoute><RateLimiter /></ProtectedRoute>} />
+              <Route path="/fallback" element={<ProtectedRoute><Fallback /></ProtectedRoute>} />
+              <Route path="/async-sync" element={<ProtectedRoute><AsyncSync /></ProtectedRoute>} />
+              <Route path="/cdn" element={<ProtectedRoute><CDN /></ProtectedRoute>} />
+              <Route path="/principios-design" element={<ProtectedRoute><DesignPrinciples /></ProtectedRoute>} />
+              <Route path="/principios-design/eventos" element={<ProtectedRoute><EventDriven /></ProtectedRoute>} />
+              <Route path="/principios-design/eventos/simulator" element={<ProtectedRoute><EventSourcingSimulator /></ProtectedRoute>} />
+              <Route path="/principios-design/servicos" element={<ProtectedRoute><ServiceOriented /></ProtectedRoute>} />
+              <Route path="/principios-design/tolerancia-falhas" element={<ProtectedRoute><FaultTolerance /></ProtectedRoute>} />
+              <Route path="/principios-design/tolerancia-falhas/retries" element={<ProtectedRoute><Retries /></ProtectedRoute>} />
+              <Route path="/principios-design/tolerancia-falhas/retries/simulator" element={<ProtectedRoute><RetriesSimulator /></ProtectedRoute>} />
+              <Route path="/principios-design/tolerancia-falhas/circuit-breaker" element={<ProtectedRoute><CircuitBreakerContent /></ProtectedRoute>} />
+              <Route path="/principios-design/tolerancia-falhas/circuit-breaker/simulator" element={<ProtectedRoute><CircuitBreaker /></ProtectedRoute>} />
+              <Route path="/principios-design/tolerancia-falhas/timeout" element={<ProtectedRoute><Timeout /></ProtectedRoute>} />
+              <Route path="/principios-design/tolerancia-falhas/timeout/simulator" element={<ProtectedRoute><TimeoutSimulator /></ProtectedRoute>} />
+              <Route path="/principios-design/tolerancia-falhas/fallback" element={<ProtectedRoute><Fallback /></ProtectedRoute>} />
+              <Route path="/principios-design/escalabilidade" element={<ProtectedRoute><Escalabilidade /></ProtectedRoute>} />
+              <Route path="/principios-design/escalabilidade/horizontal" element={<ProtectedRoute><HorizontalScaling /></ProtectedRoute>} />
+              <Route path="/principios-design/escalabilidade/horizontal/simulator" element={<ProtectedRoute><HorizontalScalingSimulator /></ProtectedRoute>} />
+              <Route path="/principios-design/escalabilidade/vertical" element={<ProtectedRoute><VerticalScaling /></ProtectedRoute>} />
+              <Route path="/principios-design/escalabilidade/vertical/simulator" element={<ProtectedRoute><VerticalScalingSimulator /></ProtectedRoute>} />
+              <Route path="/principios-design/escalabilidade/consistencia" element={<ProtectedRoute><DataConsistency /></ProtectedRoute>} />
+              <Route path="/principios-design/escalabilidade/latencia" element={<ProtectedRoute><Latency /></ProtectedRoute>} />
+              <Route path="/principios-design/escalabilidade/failover" element={<ProtectedRoute><Failover /></ProtectedRoute>} />
+              <Route path="/principios-design/escalabilidade/simulator" element={<ProtectedRoute><ScalabilitySimulator /></ProtectedRoute>} />
+              <Route path="/principios-design/disponibilidade/simulator" element={<ProtectedRoute><ReplicacaoSimulator /></ProtectedRoute>} />
+              <Route path="/principios-design/disponibilidade/replicacao" element={<ProtectedRoute><Replicacao /></ProtectedRoute>} />
+              <Route path="/principios-design/disponibilidade/failover" element={<ProtectedRoute><Failover /></ProtectedRoute>} />
+            </Routes>
+          </div>
+        </main>
+      </div>
+    </AuthProvider>
   );
 }
