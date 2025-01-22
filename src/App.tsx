@@ -27,6 +27,7 @@ import DesignPrinciples from './components/DesignPrinciples/DesignPrinciples';
 import EventDriven from './components/DesignPrinciples/EventDriven';
 import EventSourcingSimulator from './components/DesignPrinciples/EventSourcingSimulator';
 import { MenuItem } from './types/menu';
+import LandingPage from './components/LandingPage/LandingPage';
 
 import "./App.css";
 import ServiceOriented from './components/DesignPrinciples/ServiceOriented';
@@ -407,6 +408,7 @@ export default function App() {
           )}
           
           <Routes>
+            <Route path="/" element={<LandingPage />} />
             <Route path="/intro" element={<Introduction />} />
             <Route path="/sistemas-distribuidos-101" element={<DistributedSystems101 />} />
             <Route path="/system-design-101" element={<SystemDesign101 />} />
