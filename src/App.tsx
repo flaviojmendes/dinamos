@@ -43,6 +43,7 @@ import Latency from './components/DesignPrinciples/Latency';
 import Failover from './components/DesignPrinciples/Failover';
 import HorizontalScalingSimulator from './components/HorizontalScaling/HorizontalScalingSimulator';
 import VerticalScalingSimulator from './components/DesignPrinciples/VerticalScalingSimulator';
+import ScalabilitySimulator from './components/DesignPrinciples/ScalabilitySimulator';
 
 const menuItems: MenuItem[] = [
   { path: "/intro", name: "Introdução", description: "Sobre o curso e motivação" },
@@ -461,6 +462,7 @@ export default function App() {
             <Route path="/principios-design/escalabilidade/consistencia" element={<DataConsistency />} />
             <Route path="/principios-design/escalabilidade/latencia" element={<Latency />} />
             <Route path="/principios-design/escalabilidade/failover" element={<Failover />} />
+            <Route path="/principios-design/escalabilidade/simulator" element={<ScalabilitySimulator />} />
           </Routes>
         </div>
       </main>
