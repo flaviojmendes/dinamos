@@ -31,6 +31,7 @@ import LandingPage from './components/LandingPage/LandingPage';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Login from './components/Auth/Login';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
+import Subscription from './components/Subscription/Subscription';
 
 import "./App.css";
 import ServiceOriented from './components/DesignPrinciples/ServiceOriented';
@@ -468,6 +469,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/pagamento" element={<ProtectedRoute requiresSubscription={false}><Subscription /></ProtectedRoute>} />
             
             {/* Protected Routes */}
             <Route path="/intro" element={<ProtectedRoute><Introduction /></ProtectedRoute>} />
