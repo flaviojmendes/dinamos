@@ -1,5 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useAuth } from '../../contexts/AuthContext';
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 const features = [
   "Acesso a todos os simuladores interativos",
@@ -10,6 +14,11 @@ const features = [
 ];
 
 export default function Subscription() {
+  const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'annual'>('annual');
+
   const calculateSavings = () => {
     const monthlyAnnualCost = 49 * 12;
     const annualCost = 399;
@@ -20,9 +29,64 @@ export default function Subscription() {
 
   const { savings, percentage } = calculateSavings();
 
+  const handleSubscription = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      // Get Stripe instance
+      const stripe = await stripePromise;
+      if (!stripe) throw new Error('Stripe failed to load');
+
+      // Create checkout session
+      const response = await fetch('https://us-central1-systemo-76109.cloudfunctions.net/createCheckoutSession', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // get priceId from env
+        body: JSON.stringify({
+          priceId: selectedPlan === 'monthly' ? import.meta.env.VITE_MONTHLY_PRICE_ID : import.meta.env.VITE_ANNUAL_PRICE_ID,
+          userId: user?.uid,
+          userEmail: user?.email,
+        }),
+      });
+
+      const session = await response.json();
+
+      if (session.error) {
+        throw new Error(session.error);
+      }
+
+      // Redirect to Stripe Checkout
+      const { error } = await stripe.redirectToCheckout({
+        sessionId: session.id,
+      });
+
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.error('Error creating checkout session:', error);
+      setError('Ocorreu um erro ao processar o pagamento. Por favor, tente novamente.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-black text-white p-8">
       <div className="max-w-6xl mx-auto">
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-lg mb-8 text-center"
+          >
+            {error}
+          </motion.div>
+        )}
+
         <div className="text-center mb-16">
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
@@ -47,7 +111,12 @@ export default function Subscription() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-zinc-900/50 rounded-xl p-8 border border-zinc-800 hover:border-blue-500/50 transition-colors"
+            className={`bg-zinc-900/50 rounded-xl p-8 border cursor-pointer transition-all duration-300 ${
+              selectedPlan === 'monthly'
+                ? 'border-blue-500 ring-2 ring-blue-500/20'
+                : 'border-zinc-800 hover:border-blue-500/50'
+            }`}
+            onClick={() => setSelectedPlan('monthly')}
           >
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold mb-2">Plano Mensal</h2>
@@ -68,9 +137,27 @@ export default function Subscription() {
               ))}
             </ul>
 
-            <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium transition-colors">
-              Começar Agora
-            </button>
+            <div className="flex items-center justify-center">
+              <input
+                type="radio"
+                name="plan"
+                value="monthly"
+                checked={selectedPlan === 'monthly'}
+                onChange={() => setSelectedPlan('monthly')}
+                className="sr-only"
+              />
+              <div className={`w-6 h-6 rounded-full border-2 ${
+                selectedPlan === 'monthly'
+                  ? 'border-blue-500 bg-blue-500'
+                  : 'border-zinc-600'
+              } flex items-center justify-center`}>
+                {selectedPlan === 'monthly' && (
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                )}
+              </div>
+            </div>
           </motion.div>
 
           {/* Annual Plan */}
@@ -78,9 +165,13 @@ export default function Subscription() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-gradient-to-b from-blue-600/10 to-purple-600/10 rounded-xl p-8 border border-blue-500/20 hover:border-blue-500/50 transition-colors relative overflow-hidden"
+            className={`bg-gradient-to-b from-blue-600/10 to-purple-600/10 rounded-xl p-8 border cursor-pointer transition-all duration-300 relative overflow-hidden ${
+              selectedPlan === 'annual'
+                ? 'border-blue-500 ring-2 ring-blue-500/20'
+                : 'border-blue-500/20 hover:border-blue-500/50'
+            }`}
+            onClick={() => setSelectedPlan('annual')}
           >
-            {/* Best Value Badge */}
             <div className="absolute -right-12 top-8 bg-blue-500 text-white px-12 py-1 rotate-45 text-sm font-medium">
               Melhor Valor
             </div>
@@ -104,11 +195,59 @@ export default function Subscription() {
               ))}
             </ul>
 
-            <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 px-6 rounded-lg font-medium transition-colors">
-              Escolher Plano Anual
-            </button>
+            <div className="flex items-center justify-center">
+              <input
+                type="radio"
+                name="plan"
+                value="annual"
+                checked={selectedPlan === 'annual'}
+                onChange={() => setSelectedPlan('annual')}
+                className="sr-only"
+              />
+              <div className={`w-6 h-6 rounded-full border-2 ${
+                selectedPlan === 'annual'
+                  ? 'border-blue-500 bg-blue-500'
+                  : 'border-zinc-600'
+              } flex items-center justify-center`}>
+                {selectedPlan === 'annual' && (
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                )}
+              </div>
+            </div>
           </motion.div>
         </div>
+
+        {/* Subscribe Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="mt-8 text-center"
+        >
+          <button
+            onClick={handleSubscription}
+            disabled={isLoading}
+            className={`px-8 py-4 rounded-lg font-medium text-lg transition-all duration-300 ${
+              selectedPlan === 'annual'
+                ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'
+                : 'bg-blue-600 hover:bg-blue-700'
+            } text-white disabled:opacity-50 disabled:cursor-not-allowed`}
+          >
+            {isLoading ? (
+              <div className="flex items-center">
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Processando...
+              </div>
+            ) : (
+              'Assinar Agora'
+            )}
+          </button>
+        </motion.div>
 
         {/* Additional Information */}
         <motion.div
@@ -145,39 +284,6 @@ export default function Subscription() {
               <p className="text-zinc-400">
                 Faça parte de uma comunidade de desenvolvedores, compartilhe experiências e aprenda
                 com outros profissionais.
-              </p>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* FAQ Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mt-16 max-w-2xl mx-auto"
-        >
-          <h3 className="text-2xl font-bold mb-8 text-center">Perguntas Frequentes</h3>
-          <div className="space-y-6">
-            <div className="bg-zinc-900/50 p-6 rounded-lg">
-              <h4 className="text-lg font-semibold mb-2">Posso cancelar a qualquer momento?</h4>
-              <p className="text-zinc-400">
-                Sim, você pode cancelar sua assinatura a qualquer momento. Não há contratos de longo prazo
-                ou taxas de cancelamento.
-              </p>
-            </div>
-            <div className="bg-zinc-900/50 p-6 rounded-lg">
-              <h4 className="text-lg font-semibold mb-2">Como funciona o acesso ao conteúdo?</h4>
-              <p className="text-zinc-400">
-                Após a assinatura, você terá acesso imediato a todo o conteúdo da plataforma, incluindo
-                simuladores e material didático.
-              </p>
-            </div>
-            <div className="bg-zinc-900/50 p-6 rounded-lg">
-              <h4 className="text-lg font-semibold mb-2">Existe garantia de satisfação?</h4>
-              <p className="text-zinc-400">
-                Oferecemos garantia de 7 dias. Se você não estiver satisfeito, devolvemos seu dinheiro
-                sem questionamentos (salvo taxas de processamento).
               </p>
             </div>
           </div>

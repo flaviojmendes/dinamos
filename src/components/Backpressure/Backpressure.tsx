@@ -96,7 +96,7 @@ export default function Backpressure() {
         // Drop messages if queue is full
         if (queuedCount > consumer.maxQueueSize) {
           const overflow = queuedCount - consumer.maxQueueSize;
-          const droppedMessages = newMessages.slice(-overflow).map(m => ({ ...m, status: 'dropped' }));
+          const droppedMessages = newMessages.slice(-overflow).map(m => ({ ...m, status: 'dropped' as const }));
           setMetrics(prev => ({ ...prev, droppedTotal: prev.droppedTotal + overflow }));
           return [...updatedMessages.slice(0, -overflow), ...droppedMessages];
         }

@@ -25,7 +25,7 @@ export default function ProtectedRoute({ children, requiresSubscription = true }
 
   // Only check subscription if the route requires it
   if (requiresSubscription && !isSubscribed && location.pathname !== '/pagamento') {
-    return <Navigate to="/pagamento" state={{ from: location }} />;
+    return <Navigate to="/intro" state={{ from: location }} />;
   }
 
   return <>{children}</>;

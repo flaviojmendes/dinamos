@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
+    "@stripe/stripe-js": "^5.5.0",
     "autoprefixer": "^10.4.17",
     "firebase": "^11.2.0",
     "framer-motion": "^11.18.0",

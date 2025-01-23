@@ -21,12 +21,22 @@ interface AuthContextType {
   signInWithGithub: () => Promise<void>;
   signOut: () => Promise<void>;
   checkSubscription: () => Promise<boolean>;
+  setIsSubscribed: (isSubscribed: boolean) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+
+
 export function useAuth() {
   const context = useContext(AuthContext);
+  // get the token using getIdTokenResult method
+  const tokenResult = context?.user?.getIdTokenResult().then((result) => {
+    // get the field isSubscribed from the token claims and ensure it's boolean
+    const isSubscribed = result.claims.subscribed === true;
+    context?.setIsSubscribed(isSubscribed);
+  });
+  
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
@@ -34,30 +44,26 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [userState, setUserState] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isSubscribed, setIsSubscribed] = useState(false);
 
   const checkSubscription = async () => {
-    if (!user) return false;
+    if (!userState) return false;
     
-    try {
-      // Here you would typically make an API call to your backend
-      // to check the user's subscription status
-      // For now, we'll check if it exists in localStorage as a demo
-      const subscriptionStatus = localStorage.getItem(`subscription_${user.uid}`);
-      const isActive = subscriptionStatus === 'active';
-      setIsSubscribed(isActive);
-      return isActive;
-    } catch (error) {
-      console.error('Error checking subscription:', error);
-      return false;
-    }
+    // get from JWT
+    const idTokenResult = await userState.getIdTokenResult();
+    const isSubscribed = idTokenResult.claims.subscribed === true;
+    setIsSubscribed(isSubscribed);
+    return isSubscribed;
   };
+
+
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      setUser(user);
+      console.log("user", user);
+      setUserState(user);
       if (user) {
         await checkSubscription();
       } else {
@@ -65,6 +71,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       setLoading(false);
     });
+
+    
+
 
     return unsubscribe;
   }, []);
@@ -122,13 +131,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const value = {
-    user,
+    user: userState,
     loading,
     isSubscribed,
     signInWithGoogle,
     signInWithGithub,
     signOut,
-    checkSubscription
+    checkSubscription,
+    setIsSubscribed
   };
 
   return (
