@@ -1,82 +1,83 @@
-import { Routes, Route, NavLink, useLocation, Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Routes, Route, NavLink, useLocation, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import CacheSimulation from "./components/CacheSimulation/CacheSimulation";
-import HorizontalScaling from './components/DesignPrinciples/HorizontalScaling';
-import CircuitBreaker from './components/CircuitBreaker/CircuitBreaker';
-import Backpressure from './components/Backpressure/Backpressure';
-import RateLimiter from './components/RateLimiter/RateLimiter';
-import Fallback from './components/DesignPrinciples/Fallback';
-import AsyncSync from './components/AsyncSync/AsyncSync';
-import CDN from './components/CDN/CDN';
-import RoundRobin from './components/RoundRobin/RoundRobin';
-import MessageQueueComponent from './components/SystemComponents/MessageQueue';
-import MessageQueueSimulator from './components/MessageQueue/MessageQueue';
-import Introduction from './components/Introduction/Introduction';
-import DistributedSystems101 from './components/DistributedSystems101/DistributedSystems101';
-import SystemDesign101 from './components/SystemDesign101/SystemDesign101';
-import SystemComponents from './components/SystemComponents/SystemComponents';
-import Database from './components/SystemComponents/Database';
-import CacheComponent from './components/SystemComponents/Cache';
-import LoadBalancer from './components/SystemComponents/LoadBalancer';
-import CDNComponent from './components/SystemComponents/CDN';
-import CDNSimulator from './components/CDN/CDN';
-import APIGateway from './components/SystemComponents/APIGateway';
-import APIGatewaySimulator from './components/APIGateway/APIGatewaySimulator';
-import DesignPrinciples from './components/DesignPrinciples/DesignPrinciples';
-import EventDriven from './components/DesignPrinciples/EventDriven';
-import EventSourcingSimulator from './components/DesignPrinciples/EventSourcingSimulator';
-import { MenuItem } from './types/menu';
-import LandingPage from './components/LandingPage/LandingPage';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import Login from './components/Auth/Login';
-import ProtectedRoute from './components/Auth/ProtectedRoute';
-import Subscription from './components/Subscription/Subscription';
+import HorizontalScaling from "./components/DesignPrinciples/HorizontalScaling";
+import CircuitBreaker from "./components/CircuitBreaker/CircuitBreaker";
+import Backpressure from "./components/Backpressure/Backpressure";
+import RateLimiter from "./components/RateLimiter/RateLimiter";
+import Fallback from "./components/DesignPrinciples/Fallback";
+import AsyncSync from "./components/AsyncSync/AsyncSync";
+import CDN from "./components/CDN/CDN";
+import RoundRobin from "./components/RoundRobin/RoundRobin";
+import MessageQueueComponent from "./components/SystemComponents/MessageQueue";
+import MessageQueueSimulator from "./components/MessageQueue/MessageQueue";
+import Introduction from "./components/Introduction/Introduction";
+import DistributedSystems101 from "./components/DistributedSystems101/DistributedSystems101";
+import SystemDesign101 from "./components/SystemDesign101/SystemDesign101";
+import SystemComponents from "./components/SystemComponents/SystemComponents";
+import Database from "./components/SystemComponents/Database";
+import CacheComponent from "./components/SystemComponents/Cache";
+import LoadBalancer from "./components/SystemComponents/LoadBalancer";
+import CDNComponent from "./components/SystemComponents/CDN";
+import CDNSimulator from "./components/CDN/CDN";
+import APIGateway from "./components/SystemComponents/APIGateway";
+import APIGatewaySimulator from "./components/APIGateway/APIGatewaySimulator";
+import DesignPrinciples from "./components/DesignPrinciples/DesignPrinciples";
+import EventDriven from "./components/DesignPrinciples/EventDriven";
+import EventSourcingSimulator from "./components/DesignPrinciples/EventSourcingSimulator";
+import { MenuItem } from "./types/menu";
+import LandingPage from "./components/LandingPage/LandingPage";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import Login from "./components/Auth/Login";
+import ProtectedRoute from "./components/Auth/ProtectedRoute";
+import Subscription from "./components/Subscription/Subscription";
+import PaymentSuccess from './pages/PaymentSuccess';
 
 import "./App.css";
-import ServiceOriented from './components/DesignPrinciples/ServiceOriented';
-import FaultTolerance from './components/DesignPrinciples/FaultTolerance';
-import Retries from './components/DesignPrinciples/Retries';
-import RetriesSimulator from './components/DesignPrinciples/RetriesSimulator';
-import CircuitBreakerContent from './components/DesignPrinciples/CircuitBreaker';
-import Timeout from './components/DesignPrinciples/Timeout';
-import TimeoutSimulator from './components/DesignPrinciples/TimeoutSimulator';
-import Escalabilidade from './components/DesignPrinciples/Escalabilidade';
-import VerticalScaling from './components/DesignPrinciples/VerticalScaling';
-import DataConsistency from './components/DesignPrinciples/DataConsistency';
-import Latency from './components/DesignPrinciples/Latency';
-import Failover from './components/DesignPrinciples/Failover';
-import HorizontalScalingSimulator from './components/HorizontalScaling/HorizontalScalingSimulator';
-import VerticalScalingSimulator from './components/DesignPrinciples/VerticalScalingSimulator';
-import ScalabilitySimulator from './components/DesignPrinciples/ScalabilitySimulator';
-import Replicacao from './components/DesignPrinciples/Replicacao';
-import ReplicacaoSimulator from './components/DesignPrinciples/ReplicacaoSimulator';
+import ServiceOriented from "./components/DesignPrinciples/ServiceOriented";
+import FaultTolerance from "./components/DesignPrinciples/FaultTolerance";
+import Retries from "./components/DesignPrinciples/Retries";
+import RetriesSimulator from "./components/DesignPrinciples/RetriesSimulator";
+import CircuitBreakerContent from "./components/DesignPrinciples/CircuitBreaker";
+import Timeout from "./components/DesignPrinciples/Timeout";
+import TimeoutSimulator from "./components/DesignPrinciples/TimeoutSimulator";
+import Escalabilidade from "./components/DesignPrinciples/Escalabilidade";
+import VerticalScaling from "./components/DesignPrinciples/VerticalScaling";
+import DataConsistency from "./components/DesignPrinciples/DataConsistency";
+import Latency from "./components/DesignPrinciples/Latency";
+import Failover from "./components/DesignPrinciples/Failover";
+import HorizontalScalingSimulator from "./components/HorizontalScaling/HorizontalScalingSimulator";
+import VerticalScalingSimulator from "./components/DesignPrinciples/VerticalScalingSimulator";
+import ScalabilitySimulator from "./components/DesignPrinciples/ScalabilitySimulator";
+import Replicacao from "./components/DesignPrinciples/Replicacao";
+import ReplicacaoSimulator from "./components/DesignPrinciples/ReplicacaoSimulator";
 
 const menuItems: MenuItem[] = [
-  { 
-    path: "/intro", 
-    name: "Introdução", 
-    description: "Sobre o curso e motivação" 
+  {
+    path: "/intro",
+    name: "Introdução",
+    description: "Sobre o curso e motivação",
   },
-  { 
-    path: "/sistemas-distribuidos-101", 
-    name: "Sistemas Distribuídos 101", 
-    description: "Conceitos fundamentais através de analogias" 
+  {
+    path: "/sistemas-distribuidos-101",
+    name: "Sistemas Distribuídos 101",
+    description: "Conceitos fundamentais através de analogias",
   },
-  { 
-    path: "/system-design-101", 
-    name: "System Design 101", 
-    description: "Fundamentos de design de sistemas" 
+  {
+    path: "/system-design-101",
+    name: "System Design 101",
+    description: "Fundamentos de design de sistemas",
   },
-  { 
-    path: "/componentes", 
-    name: "Componentes Básicos", 
+  {
+    path: "/componentes",
+    name: "Componentes Básicos",
     description: "Blocos fundamentais de sistemas distribuídos",
     children: [
-      { 
-        path: "/componentes/banco-dados", 
-        name: "Bancos de Dados", 
-        description: "Armazenamento e gerenciamento de dados" 
+      {
+        path: "/componentes/banco-dados",
+        name: "Bancos de Dados",
+        description: "Armazenamento e gerenciamento de dados",
       },
       {
         path: "/componentes/cache",
@@ -86,9 +87,9 @@ const menuItems: MenuItem[] = [
           {
             path: "/componentes/cache/simulator",
             name: "Simulador",
-            description: "Experimente diferentes estratégias de cache"
-          }
-        ]
+            description: "Experimente diferentes estratégias de cache",
+          },
+        ],
       },
       {
         path: "/componentes/load-balancer",
@@ -98,9 +99,9 @@ const menuItems: MenuItem[] = [
           {
             path: "/componentes/load-balancer/simulator",
             name: "Simulador",
-            description: "Experimente diferentes algoritmos de balanceamento"
-          }
-        ]
+            description: "Experimente diferentes algoritmos de balanceamento",
+          },
+        ],
       },
       {
         path: "/componentes/message-queue",
@@ -110,9 +111,9 @@ const menuItems: MenuItem[] = [
           {
             path: "/componentes/message-queue/simulator",
             name: "Simulador",
-            description: "Experimente o fluxo de mensagens"
-          }
-        ]
+            description: "Experimente o fluxo de mensagens",
+          },
+        ],
       },
       {
         path: "/componentes/cdn",
@@ -122,9 +123,9 @@ const menuItems: MenuItem[] = [
           {
             path: "/componentes/cdn/simulator",
             name: "Simulador",
-            description: "Veja como o CDN acelera entregas"
-          }
-        ]
+            description: "Veja como o CDN acelera entregas",
+          },
+        ],
       },
       {
         path: "/componentes/api-gateway",
@@ -134,11 +135,11 @@ const menuItems: MenuItem[] = [
           {
             path: "/componentes/api-gateway/simulator",
             name: "Simulador",
-            description: "Experimente roteamento e proteção de APIs"
-          }
-        ]
-      }
-    ]
+            description: "Experimente roteamento e proteção de APIs",
+          },
+        ],
+      },
+    ],
   },
   {
     path: "/principios-design",
@@ -158,9 +159,9 @@ const menuItems: MenuItem[] = [
               {
                 path: "/principios-design/escalabilidade/horizontal/simulator",
                 name: "Simulador",
-                description: "Experimente escalabilidade horizontal"
-              }
-            ]
+                description: "Experimente escalabilidade horizontal",
+              },
+            ],
           },
           {
             path: "/principios-design/escalabilidade/vertical",
@@ -170,16 +171,16 @@ const menuItems: MenuItem[] = [
               {
                 path: "/principios-design/escalabilidade/vertical/simulator",
                 name: "Simulador",
-                description: "Experimente escalabilidade vertical"
-              }
-            ]
+                description: "Experimente escalabilidade vertical",
+              },
+            ],
           },
           {
             path: "/principios-design/escalabilidade/simulator",
             name: "Simulador Completo",
-            description: "Compare diferentes estratégias de escala"
-          }
-        ]
+            description: "Compare diferentes estratégias de escala",
+          },
+        ],
       },
       {
         path: "/principios-design/disponibilidade",
@@ -189,19 +190,19 @@ const menuItems: MenuItem[] = [
           {
             path: "/principios-design/disponibilidade/replicacao",
             name: "Replicação",
-            description: "Cópias sincronizadas dos dados"
+            description: "Cópias sincronizadas dos dados",
           },
           {
             path: "/principios-design/disponibilidade/failover",
             name: "Failover",
-            description: "Recuperação automática de falhas"
+            description: "Recuperação automática de falhas",
           },
           {
             path: "/principios-design/disponibilidade/simulator",
             name: "Simulador",
-            description: "Experimente estratégias de disponibilidade"
-          }
-        ]
+            description: "Experimente estratégias de disponibilidade",
+          },
+        ],
       },
       {
         path: "/principios-design/tolerancia-falhas",
@@ -216,9 +217,9 @@ const menuItems: MenuItem[] = [
               {
                 path: "/principios-design/tolerancia-falhas/retries/simulator",
                 name: "Simulador",
-                description: "Experimente diferentes estratégias de retry"
-              }
-            ]
+                description: "Experimente diferentes estratégias de retry",
+              },
+            ],
           },
           {
             path: "/principios-design/tolerancia-falhas/circuit-breaker",
@@ -228,9 +229,9 @@ const menuItems: MenuItem[] = [
               {
                 path: "/principios-design/tolerancia-falhas/circuit-breaker/simulator",
                 name: "Simulador",
-                description: "Veja o circuit breaker em ação"
-              }
-            ]
+                description: "Veja o circuit breaker em ação",
+              },
+            ],
           },
           {
             path: "/principios-design/tolerancia-falhas/timeout",
@@ -240,11 +241,11 @@ const menuItems: MenuItem[] = [
               {
                 path: "/principios-design/tolerancia-falhas/timeout/simulator",
                 name: "Simulador",
-                description: "Experimente diferentes configurações de timeout"
-              }
-            ]
-          }
-        ]
+                description: "Experimente diferentes configurações de timeout",
+              },
+            ],
+          },
+        ],
       },
       {
         path: "/principios-design/eventos",
@@ -254,17 +255,17 @@ const menuItems: MenuItem[] = [
           {
             path: "/principios-design/eventos/simulator",
             name: "Simulador",
-            description: "Experimente event sourcing e event-driven"
-          }
-        ]
+            description: "Experimente event sourcing e event-driven",
+          },
+        ],
       },
       {
         path: "/principios-design/servicos",
         name: "Arquitetura de Serviços",
-        description: "Monolito vs Microsserviços"
-      }
-    ]
-  }
+        description: "Monolito vs Microsserviços",
+      },
+    ],
+  },
 ];
 
 export default function App() {
@@ -275,12 +276,15 @@ export default function App() {
   const MenuLink = ({ item }: { item: MenuItem }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const { pathname } = useLocation();
-    
+
     // Check if current path matches this item or any of its children
-    const isActive = pathname === item.path || 
-      (item.children?.some(child => 
-        pathname === child.path || child.children?.some(grandchild => pathname === grandchild.path)
-      ));
+    const isActive =
+      pathname === item.path ||
+      item.children?.some(
+        (child) =>
+          pathname === child.path ||
+          child.children?.some((grandchild) => pathname === grandchild.path)
+      );
 
     // Auto-expand when active and has children
     useEffect(() => {
@@ -288,7 +292,7 @@ export default function App() {
         setIsExpanded(true);
       }
     }, [isActive, item.children]);
-    
+
     return (
       <div>
         <div className="flex items-center gap-1">
@@ -296,7 +300,9 @@ export default function App() {
             to={item.path}
             className={({ isActive }: { isActive: boolean }) =>
               `flex-1 flex flex-col p-3 rounded-lg transition-colors ${
-                isActive ? 'bg-blue-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
+                isActive
+                  ? "bg-blue-500 text-white"
+                  : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
               }`
             }
             onClick={() => isMobile && setIsSidebarOpen(false)}
@@ -311,16 +317,23 @@ export default function App() {
                 setIsExpanded(!isExpanded);
               }}
               className={`p-2 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-transform ${
-                isActive ? 'text-white' : ''
+                isActive ? "text-white" : ""
               }`}
             >
               <svg
-                className={`w-4 h-4 transform transition-transform ${isExpanded ? 'rotate-90' : ''}`}
+                className={`w-4 h-4 transform transition-transform ${
+                  isExpanded ? "rotate-90" : ""
+                }`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
               </svg>
             </button>
           )}
@@ -338,7 +351,7 @@ export default function App() {
 
   const handleSignOut = async () => {
     await signOut();
-    window.location.href = '/';
+    window.location.href = "/";
   };
 
   useEffect(() => {
@@ -350,8 +363,8 @@ export default function App() {
     };
 
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   return (
@@ -373,20 +386,36 @@ export default function App() {
             exit={{ x: -300 }}
             transition={{ type: "spring", bounce: 0, duration: 0.4 }}
             className={`bg-zinc-900 border-r border-zinc-800 w-72 fixed md:relative h-screen z-30 overflow-y-auto
-              ${isMobile ? 'shadow-lg' : ''}`}
+              ${isMobile ? "shadow-lg" : ""}`}
           >
-            <div className="p-4">
+            <div className="p-4 flex flex-col h-full">
               <div className="flex flex-col gap-4 mb-8">
                 {/* App Title */}
                 <div className="flex items-center justify-between">
-                  <h1 className="text-xl font-bold text-white">System Design</h1>
+                  <a href="/" className="mx-auto">
+                    <img
+                      src="/logo.png"
+                      alt="System Design"
+                      className="h-20 mx-auto"
+                    />
+                  </a>
                   {isMobile && (
                     <button
                       onClick={() => setIsSidebarOpen(false)}
                       className="p-2 hover:bg-zinc-800 rounded-lg"
                     >
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <svg
+                        className="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
                       </svg>
                     </button>
                   )}
@@ -396,9 +425,9 @@ export default function App() {
                 {user ? (
                   <div className="flex items-center gap-3 p-3 bg-zinc-800/50 rounded-lg">
                     {user.photoURL ? (
-                      <img 
-                        src={user.photoURL} 
-                        alt="Profile" 
+                      <img
+                        src={user.photoURL}
+                        alt="Profile"
                         className="w-10 h-10 rounded-full border-2 border-blue-500"
                       />
                     ) : (
@@ -413,7 +442,9 @@ export default function App() {
                         {user.displayName || user.email}
                       </p>
                       {user.displayName && (
-                        <p className="text-xs text-zinc-400 truncate">{user.email}</p>
+                        <p className="text-xs text-zinc-400 truncate">
+                          {user.email}
+                        </p>
                       )}
                     </div>
                     <button
@@ -421,8 +452,18 @@ export default function App() {
                       className="p-2 hover:bg-zinc-700 rounded-lg transition-colors"
                       title="Sair"
                     >
-                      <svg className="w-5 h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      <svg
+                        className="w-5 h-5 text-zinc-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                        />
                       </svg>
                     </button>
                   </div>
@@ -431,8 +472,18 @@ export default function App() {
                     to="/login"
                     className="flex items-center gap-2 p-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                      />
                     </svg>
                     <span>Fazer Login</span>
                   </Link>
@@ -444,6 +495,23 @@ export default function App() {
                   <MenuLink key={item.path} item={item} />
                 ))}
               </nav>
+
+              {/* Add flex-1 to push the footer to the bottom */}
+              <div className="flex-1"></div>
+              {/* Instagram Footer */}
+              <div className="mt-4 pt-4 border-t border-zinc-800">
+                <a
+                  href="https://instagram.com/trilhainfo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                  </svg>
+                  <span>Powered by: @trilhainfo</span>
+                </a>
+              </div>
             </div>
           </motion.nav>
         )}
@@ -459,65 +527,405 @@ export default function App() {
                 onClick={() => setIsSidebarOpen(true)}
                 className="p-2 hover:bg-zinc-800 rounded-lg"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
                 </svg>
               </button>
             </div>
           )}
-          
+
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/pagamento" element={<ProtectedRoute requiresSubscription={false}><Subscription /></ProtectedRoute>} />
-            
+            <Route
+              path="/pagamento"
+              element={
+                <ProtectedRoute requiresSubscription={false}>
+                  <Subscription />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/pagamento/sucesso" element={<PaymentSuccess />} />
+
             {/* Protected Routes */}
-            <Route path="/intro" element={<ProtectedRoute><Introduction /></ProtectedRoute>} />
-            <Route path="/sistemas-distribuidos-101" element={<ProtectedRoute><DistributedSystems101 /></ProtectedRoute>} />
-            <Route path="/system-design-101" element={<ProtectedRoute><SystemDesign101 /></ProtectedRoute>} />
-            <Route path="/componentes" element={<ProtectedRoute><SystemComponents /></ProtectedRoute>} />
-            <Route path="/componentes/banco-dados" element={<ProtectedRoute><Database /></ProtectedRoute>} />
-            <Route path="/componentes/cache" element={<ProtectedRoute><CacheComponent /></ProtectedRoute>} />
-            <Route path="/componentes/cache/simulator" element={<ProtectedRoute><CacheSimulation /></ProtectedRoute>} />
-            <Route path="/componentes/load-balancer" element={<ProtectedRoute><LoadBalancer /></ProtectedRoute>} />
-            <Route path="/componentes/load-balancer/simulator" element={<ProtectedRoute><RoundRobin /></ProtectedRoute>} />
-            <Route path="/componentes/message-queue" element={<ProtectedRoute><MessageQueueComponent /></ProtectedRoute>} />
-            <Route path="/componentes/message-queue/simulator" element={<ProtectedRoute><MessageQueueSimulator /></ProtectedRoute>} />
-            <Route path="/componentes/cdn" element={<ProtectedRoute><CDNComponent /></ProtectedRoute>} />
-            <Route path="/componentes/cdn/simulator" element={<ProtectedRoute><CDN /></ProtectedRoute>} />
-            <Route path="/componentes/api-gateway" element={<ProtectedRoute><APIGateway /></ProtectedRoute>} />
-            <Route path="/componentes/api-gateway/simulator" element={<ProtectedRoute><APIGatewaySimulator /></ProtectedRoute>} />
-            <Route path="/horizontal-scaling" element={<ProtectedRoute><HorizontalScaling /></ProtectedRoute>} />
-            <Route path="/circuit-breaker" element={<ProtectedRoute><CircuitBreaker /></ProtectedRoute>} />
-            <Route path="/backpressure" element={<ProtectedRoute><Backpressure /></ProtectedRoute>} />
-            <Route path="/rate-limiter" element={<ProtectedRoute><RateLimiter /></ProtectedRoute>} />
-            <Route path="/fallback" element={<ProtectedRoute><Fallback /></ProtectedRoute>} />
-            <Route path="/async-sync" element={<ProtectedRoute><AsyncSync /></ProtectedRoute>} />
-            <Route path="/cdn" element={<ProtectedRoute><CDN /></ProtectedRoute>} />
-            <Route path="/principios-design" element={<ProtectedRoute><DesignPrinciples /></ProtectedRoute>} />
-            <Route path="/principios-design/eventos" element={<ProtectedRoute><EventDriven /></ProtectedRoute>} />
-            <Route path="/principios-design/eventos/simulator" element={<ProtectedRoute><EventSourcingSimulator /></ProtectedRoute>} />
-            <Route path="/principios-design/servicos" element={<ProtectedRoute><ServiceOriented /></ProtectedRoute>} />
-            <Route path="/principios-design/tolerancia-falhas" element={<ProtectedRoute><FaultTolerance /></ProtectedRoute>} />
-            <Route path="/principios-design/tolerancia-falhas/retries" element={<ProtectedRoute><Retries /></ProtectedRoute>} />
-            <Route path="/principios-design/tolerancia-falhas/retries/simulator" element={<ProtectedRoute><RetriesSimulator /></ProtectedRoute>} />
-            <Route path="/principios-design/tolerancia-falhas/circuit-breaker" element={<ProtectedRoute><CircuitBreakerContent /></ProtectedRoute>} />
-            <Route path="/principios-design/tolerancia-falhas/circuit-breaker/simulator" element={<ProtectedRoute><CircuitBreaker /></ProtectedRoute>} />
-            <Route path="/principios-design/tolerancia-falhas/timeout" element={<ProtectedRoute><Timeout /></ProtectedRoute>} />
-            <Route path="/principios-design/tolerancia-falhas/timeout/simulator" element={<ProtectedRoute><TimeoutSimulator /></ProtectedRoute>} />
-            <Route path="/principios-design/tolerancia-falhas/fallback" element={<ProtectedRoute><Fallback /></ProtectedRoute>} />
-            <Route path="/principios-design/escalabilidade" element={<ProtectedRoute><Escalabilidade /></ProtectedRoute>} />
-            <Route path="/principios-design/escalabilidade/horizontal" element={<ProtectedRoute><HorizontalScaling /></ProtectedRoute>} />
-            <Route path="/principios-design/escalabilidade/horizontal/simulator" element={<ProtectedRoute><HorizontalScalingSimulator /></ProtectedRoute>} />
-            <Route path="/principios-design/escalabilidade/vertical" element={<ProtectedRoute><VerticalScaling /></ProtectedRoute>} />
-            <Route path="/principios-design/escalabilidade/vertical/simulator" element={<ProtectedRoute><VerticalScalingSimulator /></ProtectedRoute>} />
-            <Route path="/principios-design/escalabilidade/consistencia" element={<ProtectedRoute><DataConsistency /></ProtectedRoute>} />
-            <Route path="/principios-design/escalabilidade/latencia" element={<ProtectedRoute><Latency /></ProtectedRoute>} />
-            <Route path="/principios-design/escalabilidade/failover" element={<ProtectedRoute><Failover /></ProtectedRoute>} />
-            <Route path="/principios-design/escalabilidade/simulator" element={<ProtectedRoute><ScalabilitySimulator /></ProtectedRoute>} />
-            <Route path="/principios-design/disponibilidade/simulator" element={<ProtectedRoute><ReplicacaoSimulator /></ProtectedRoute>} />
-            <Route path="/principios-design/disponibilidade/replicacao" element={<ProtectedRoute><Replicacao /></ProtectedRoute>} />
-            <Route path="/principios-design/disponibilidade/failover" element={<ProtectedRoute><Failover /></ProtectedRoute>} />
+            <Route
+              path="/intro"
+              element={
+                <ProtectedRoute>
+                  <Introduction />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/sistemas-distribuidos-101"
+              element={
+                <ProtectedRoute>
+                  <DistributedSystems101 />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/system-design-101"
+              element={
+                <ProtectedRoute>
+                  <SystemDesign101 />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/componentes"
+              element={
+                <ProtectedRoute>
+                  <SystemComponents />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/componentes/banco-dados"
+              element={
+                <ProtectedRoute>
+                  <Database />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/componentes/cache"
+              element={
+                <ProtectedRoute>
+                  <CacheComponent />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/componentes/cache/simulator"
+              element={
+                <ProtectedRoute>
+                  <CacheSimulation />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/componentes/load-balancer"
+              element={
+                <ProtectedRoute>
+                  <LoadBalancer />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/componentes/load-balancer/simulator"
+              element={
+                <ProtectedRoute>
+                  <RoundRobin />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/componentes/message-queue"
+              element={
+                <ProtectedRoute>
+                  <MessageQueueComponent />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/componentes/message-queue/simulator"
+              element={
+                <ProtectedRoute>
+                  <MessageQueueSimulator />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/componentes/cdn"
+              element={
+                <ProtectedRoute>
+                  <CDNComponent />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/componentes/cdn/simulator"
+              element={
+                <ProtectedRoute>
+                  <CDN />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/componentes/api-gateway"
+              element={
+                <ProtectedRoute>
+                  <APIGateway />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/componentes/api-gateway/simulator"
+              element={
+                <ProtectedRoute>
+                  <APIGatewaySimulator />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/horizontal-scaling"
+              element={
+                <ProtectedRoute>
+                  <HorizontalScaling />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/circuit-breaker"
+              element={
+                <ProtectedRoute>
+                  <CircuitBreaker />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/backpressure"
+              element={
+                <ProtectedRoute>
+                  <Backpressure />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/rate-limiter"
+              element={
+                <ProtectedRoute>
+                  <RateLimiter />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/fallback"
+              element={
+                <ProtectedRoute>
+                  <Fallback />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/async-sync"
+              element={
+                <ProtectedRoute>
+                  <AsyncSync />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/cdn"
+              element={
+                <ProtectedRoute>
+                  <CDN />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design"
+              element={
+                <ProtectedRoute>
+                  <DesignPrinciples />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/eventos"
+              element={
+                <ProtectedRoute>
+                  <EventDriven />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/eventos/simulator"
+              element={
+                <ProtectedRoute>
+                  <EventSourcingSimulator />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/servicos"
+              element={
+                <ProtectedRoute>
+                  <ServiceOriented />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/tolerancia-falhas"
+              element={
+                <ProtectedRoute>
+                  <FaultTolerance />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/tolerancia-falhas/retries"
+              element={
+                <ProtectedRoute>
+                  <Retries />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/tolerancia-falhas/retries/simulator"
+              element={
+                <ProtectedRoute>
+                  <RetriesSimulator />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/tolerancia-falhas/circuit-breaker"
+              element={
+                <ProtectedRoute>
+                  <CircuitBreakerContent />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/tolerancia-falhas/circuit-breaker/simulator"
+              element={
+                <ProtectedRoute>
+                  <CircuitBreaker />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/tolerancia-falhas/timeout"
+              element={
+                <ProtectedRoute>
+                  <Timeout />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/tolerancia-falhas/timeout/simulator"
+              element={
+                <ProtectedRoute>
+                  <TimeoutSimulator />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/tolerancia-falhas/fallback"
+              element={
+                <ProtectedRoute>
+                  <Fallback />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/escalabilidade"
+              element={
+                <ProtectedRoute>
+                  <Escalabilidade />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/escalabilidade/horizontal"
+              element={
+                <ProtectedRoute>
+                  <HorizontalScaling />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/escalabilidade/horizontal/simulator"
+              element={
+                <ProtectedRoute>
+                  <HorizontalScalingSimulator />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/escalabilidade/vertical"
+              element={
+                <ProtectedRoute>
+                  <VerticalScaling />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/escalabilidade/vertical/simulator"
+              element={
+                <ProtectedRoute>
+                  <VerticalScalingSimulator />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/escalabilidade/consistencia"
+              element={
+                <ProtectedRoute>
+                  <DataConsistency />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/escalabilidade/latencia"
+              element={
+                <ProtectedRoute>
+                  <Latency />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/escalabilidade/failover"
+              element={
+                <ProtectedRoute>
+                  <Failover />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/escalabilidade/simulator"
+              element={
+                <ProtectedRoute>
+                  <ScalabilitySimulator />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/disponibilidade/simulator"
+              element={
+                <ProtectedRoute>
+                  <ReplicacaoSimulator />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/disponibilidade/replicacao"
+              element={
+                <ProtectedRoute>
+                  <Replicacao />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/disponibilidade/failover"
+              element={
+                <ProtectedRoute>
+                  <Failover />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </div>
       </main>

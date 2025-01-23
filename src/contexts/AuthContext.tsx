@@ -20,8 +20,9 @@ interface AuthContextType {
   signInWithGoogle: () => Promise<void>;
   signInWithGithub: () => Promise<void>;
   signOut: () => Promise<void>;
-  checkSubscription: () => Promise<boolean>;
   setIsSubscribed: (isSubscribed: boolean) => void;
+  checkSubscription: () => Promise<boolean>;
+  
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -30,12 +31,6 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  // get the token using getIdTokenResult method
-  const tokenResult = context?.user?.getIdTokenResult().then((result) => {
-    // get the field isSubscribed from the token claims and ensure it's boolean
-    const isSubscribed = result.claims.subscribed === true;
-    context?.setIsSubscribed(isSubscribed);
-  });
   
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');

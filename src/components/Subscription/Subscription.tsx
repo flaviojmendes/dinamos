@@ -20,14 +20,35 @@ export default function Subscription() {
   const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'annual'>('annual');
 
   const calculateSavings = () => {
-    const monthlyAnnualCost = 49 * 12;
-    const annualCost = 399;
-    const savings = monthlyAnnualCost - annualCost;
+    const originalMonthlyPrice = 79;
+    const discountedMonthlyPrice = 49;
+    const originalAnnualPrice = 599;
+    const discountedAnnualPrice = 399;
+    const monthlyAnnualCost = discountedMonthlyPrice * 12;
+    const savings = monthlyAnnualCost - discountedAnnualPrice;
     const percentage = Math.round((savings / monthlyAnnualCost) * 100);
-    return { savings, percentage };
+    return { 
+      savings, 
+      percentage,
+      originalMonthlyPrice,
+      discountedMonthlyPrice,
+      originalAnnualPrice,
+      discountedAnnualPrice,
+      monthlyDiscount: Math.round(((originalMonthlyPrice - discountedMonthlyPrice) / originalMonthlyPrice) * 100),
+      annualDiscount: Math.round(((originalAnnualPrice - discountedAnnualPrice) / originalAnnualPrice) * 100)
+    };
   };
 
-  const { savings, percentage } = calculateSavings();
+  const { 
+    savings, 
+    percentage, 
+    originalMonthlyPrice, 
+    discountedMonthlyPrice,
+    originalAnnualPrice,
+    discountedAnnualPrice,
+    monthlyDiscount,
+    annualDiscount 
+  } = calculateSavings();
 
   const handleSubscription = async () => {
     try {
@@ -55,6 +76,7 @@ export default function Subscription() {
       const session = await response.json();
 
       if (session.error) {
+        console.log(session.error);
         throw new Error(session.error);
       }
 
@@ -120,8 +142,12 @@ export default function Subscription() {
           >
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold mb-2">Plano Mensal</h2>
-              <div className="text-4xl font-bold text-blue-500 mb-2">
-                R$49<span className="text-lg text-zinc-400">/mês</span>
+              <div className="mb-2">
+                <span className="text-lg text-zinc-500 line-through">R${originalMonthlyPrice}</span>
+                <div className="text-4xl font-bold text-blue-500">
+                  R${discountedMonthlyPrice}<span className="text-lg text-zinc-400">/mês</span>
+                </div>
+                <p className="text-sm text-green-400">{monthlyDiscount}% de desconto</p>
               </div>
               <p className="text-zinc-400">Flexibilidade para você</p>
             </div>
@@ -178,10 +204,14 @@ export default function Subscription() {
 
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold mb-2">Plano Anual</h2>
-              <div className="text-4xl font-bold text-blue-500 mb-2">
-                R$399<span className="text-lg text-zinc-400">/ano</span>
+              <div className="mb-2">
+                <span className="text-lg text-zinc-500 line-through">R${originalAnnualPrice}</span>
+                <div className="text-4xl font-bold text-blue-500">
+                  R${discountedAnnualPrice}<span className="text-lg text-zinc-400">/ano</span>
+                </div>
+                <p className="text-sm text-green-400">{annualDiscount}% de desconto</p>
               </div>
-              <p className="text-zinc-400">Economize R${savings} ({percentage}% de desconto)</p>
+              <p className="text-zinc-400">Economize R${savings} ({percentage}% em relação ao plano mensal)</p>
             </div>
 
             <ul className="space-y-4 mb-8">

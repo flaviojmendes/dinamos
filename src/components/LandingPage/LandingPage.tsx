@@ -2,6 +2,26 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
+const calculatePricing = () => {
+  const originalMonthlyPrice = 79;
+  const discountedMonthlyPrice = 49;
+  const originalAnnualPrice = 599;
+  const discountedAnnualPrice = 399;
+  const monthlyAnnualCost = discountedMonthlyPrice * 12;
+  const savings = monthlyAnnualCost - discountedAnnualPrice;
+  const percentage = Math.round((savings / monthlyAnnualCost) * 100);
+  return { 
+    savings, 
+    percentage,
+    originalMonthlyPrice,
+    discountedMonthlyPrice,
+    originalAnnualPrice,
+    discountedAnnualPrice,
+    monthlyDiscount: Math.round(((originalMonthlyPrice - discountedMonthlyPrice) / originalMonthlyPrice) * 100),
+    annualDiscount: Math.round(((originalAnnualPrice - discountedAnnualPrice) / originalAnnualPrice) * 100)
+  };
+};
+
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-black text-white">
@@ -157,6 +177,67 @@ export default function LandingPage() {
                   </li>
                 </ul>
               </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Pricing Section */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+        >
+          <h2 className="text-3xl font-bold mb-4 text-center">Planos e Preços</h2>
+          <p className="text-xl text-zinc-400 text-center mb-12">
+            Invista em seu conhecimento e desenvolvimento profissional
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* Monthly Plan */}
+            <div className="bg-zinc-900/50 rounded-xl p-8 border border-zinc-800 hover:border-blue-500/50 transition-colors">
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold mb-2">Plano Mensal</h3>
+                <div className="mb-2">
+                  <span className="text-lg text-zinc-500 line-through">R${calculatePricing().originalMonthlyPrice}</span>
+                  <div className="text-4xl font-bold text-blue-500">
+                    R${calculatePricing().discountedMonthlyPrice}<span className="text-lg text-zinc-400">/mês</span>
+                  </div>
+                  <p className="text-sm text-green-400">{calculatePricing().monthlyDiscount}% de desconto</p>
+                </div>
+                <p className="text-zinc-400">Flexibilidade para você</p>
+              </div>
+              <Link
+                to="/pagamento"
+                className="block text-center bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+              >
+                Começar Agora
+              </Link>
+            </div>
+
+            {/* Annual Plan */}
+            <div className="bg-gradient-to-b from-blue-600/10 to-purple-600/10 rounded-xl p-8 border border-blue-500/20 hover:border-blue-500/50 transition-colors relative overflow-hidden">
+              <div className="absolute -right-12 top-8 bg-blue-500 text-white px-12 py-1 rotate-45 text-sm font-medium">
+                Melhor Valor
+              </div>
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold mb-2">Plano Anual</h3>
+                <div className="mb-2">
+                  <span className="text-lg text-zinc-500 line-through">R${calculatePricing().originalAnnualPrice}</span>
+                  <div className="text-4xl font-bold text-blue-500">
+                    R${calculatePricing().discountedAnnualPrice}<span className="text-lg text-zinc-400">/ano</span>
+                  </div>
+                  <p className="text-sm text-green-400">{calculatePricing().annualDiscount}% de desconto</p>
+                </div>
+                <p className="text-zinc-400">Economize R${calculatePricing().savings} ({calculatePricing().percentage}% em relação ao plano mensal)</p>
+              </div>
+              <Link
+                to="/pagamento"
+                className="block text-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+              >
+                Começar Agora
+              </Link>
             </div>
           </div>
         </motion.div>
