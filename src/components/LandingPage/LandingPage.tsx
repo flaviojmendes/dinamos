@@ -48,6 +48,88 @@ export default function LandingPage() {
         </motion.div>
       </div>
 
+      {/* Simulators Showcase */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="text-center mb-12"
+        >
+          
+          <p className="text-xl text-zinc-400">
+            Aprenda na prática com simuladores que demonstram cenários reais
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
+          {/* Circuit Breaker Simulator */}
+          <div className="bg-zinc-900/50 rounded-xl overflow-hidden">
+            <div className="aspect-video bg-zinc-800 relative">
+              {/* Placeholder for GIF */}
+              <div className="absolute inset-0 flex items-center justify-center text-zinc-600">
+                <img src="/circuit.gif" alt="Circuit Breaker" className="w-full h-full object-cover" />
+              </div>
+            </div>
+            <div className="p-4">
+              <h3 className="text-lg font-semibold mb-2">Circuit Breaker Pattern</h3>
+              <p className="text-zinc-400 text-sm">
+                Veja como o circuit breaker protege seu sistema contra falhas em cascata
+              </p>
+            </div>
+          </div>
+
+          {/* Load Balancer Simulator */}
+          <div className="bg-zinc-900/50 rounded-xl overflow-hidden">
+            <div className="aspect-video bg-zinc-800 relative">
+              {/* Placeholder for GIF */}
+              <div className="absolute inset-0 flex items-center justify-center text-zinc-600">
+                <img src="/loadbalancer.gif" alt="Load Balancer" className="w-full h-full object-cover" />
+              </div>
+            </div>
+            <div className="p-4">
+              <h3 className="text-lg font-semibold mb-2">Load Balancer</h3>
+              <p className="text-zinc-400 text-sm">
+                Experimente diferentes algoritmos de balanceamento de carga
+              </p>
+            </div>
+          </div>
+
+          {/* Cache Simulator */}
+          <div className="bg-zinc-900/50 rounded-xl overflow-hidden">
+            <div className="aspect-video bg-zinc-800 relative">
+              {/* Placeholder for GIF */}
+              <div className="absolute inset-0 flex items-center justify-center text-zinc-600">
+                <img src="/cache.gif" alt="Cache" className="w-full h-full object-cover" />
+              </div>
+            </div>
+            <div className="p-4">
+              <h3 className="text-lg font-semibold mb-2">Cache Strategies</h3>
+              <p className="text-zinc-400 text-sm">
+                Descubra como diferentes estratégias de cache impactam a performance
+              </p>
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="text-center mt-12"
+        >
+          <p className="text-zinc-400 text-lg">
+            E muito mais! No Dinamos você encontra simuladores para todos os conceitos importantes de sistemas distribuídos.
+          </p>
+          
+        </motion.div>
+      </div>
+
       {/* Features Grid */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <motion.div
