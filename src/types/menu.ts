@@ -3,4 +3,6 @@ export interface MenuItem {
   name: string;
   description: string;
   children?: MenuItem[];
+  disabled?: boolean;
+  comingSoon?: boolean;
 } 

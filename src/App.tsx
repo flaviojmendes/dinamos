@@ -266,6 +266,20 @@ const menuItems: MenuItem[] = [
       },
     ],
   },
+  {
+    path: "/estrategias-de-consistencia",
+    name: "Estratégias de Consistência",
+    description: "Como garantir a consistência em sistemas distribuídos",
+    comingSoon: true,
+    disabled: true,
+  },
+  {
+    path: "/monitoramento-e-manutencao",
+    name: "Monitoramento e Manutenção",
+    description: "Como monitorar e manter o sistema funcionando",
+    comingSoon: true,
+    disabled: true,
+  },
 ];
 
 export default function App() {
@@ -296,20 +310,30 @@ export default function App() {
     return (
       <div>
         <div className="flex items-center gap-1">
-          <NavLink
-            to={item.path}
-            className={({ isActive }: { isActive: boolean }) =>
-              `flex-1 flex flex-col p-3 rounded-lg transition-colors ${
-                isActive
-                  ? "bg-blue-500 text-white"
-                  : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
-              }`
-            }
-            onClick={() => isMobile && setIsSidebarOpen(false)}
-          >
-            <span className="font-medium">{item.name}</span>
-            <span className="text-sm opacity-75">{item.description}</span>
-          </NavLink>
+          {item.disabled ? (
+            <div className="flex-1 flex flex-col p-3 rounded-lg text-zinc-600 relative cursor-not-allowed">
+              <div className="absolute -top-2 right-2 bg-zinc-800 text-white text-xs px-2 py-0.5 rounded-full">
+                Em breve
+              </div>
+              <span className="font-medium">{item.name}</span>
+              <span className="text-sm opacity-75">{item.description}</span>
+            </div>
+          ) : (
+            <NavLink
+              to={item.path}
+              className={({ isActive }: { isActive: boolean }) =>
+                `flex-1 flex flex-col p-3 rounded-lg transition-colors ${
+                  isActive
+                    ? "bg-blue-500 text-white"
+                    : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
+                }`
+              }
+              onClick={() => !item.disabled && isMobile && setIsSidebarOpen(false)}
+            >
+              <span className="font-medium">{item.name}</span>
+              <span className="text-sm opacity-75">{item.description}</span>
+            </NavLink>
+          )}
           {item.children && (
             <button
               onClick={(e) => {
