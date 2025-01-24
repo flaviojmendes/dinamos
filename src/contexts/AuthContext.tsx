@@ -31,7 +31,8 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  
+
+
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
@@ -48,10 +49,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     
     // get from JWT
     const idTokenResult = await userState.getIdTokenResult();
-    const isSubscribed = idTokenResult.claims.subscribed === true;
-    setIsSubscribed(isSubscribed);
-    return isSubscribed;
+    const isSub = idTokenResult.claims.subscribed === true;
+    setIsSubscribed(isSub);
+    return isSub;
   };
+
+  useEffect(() => {
+    checkSubscription();
+  }, [userState]);
 
 
 
@@ -77,6 +82,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
+      
     } catch (error) {
       console.error('Error signing in with Google:', error);
     }

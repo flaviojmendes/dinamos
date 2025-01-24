@@ -14,7 +14,7 @@ export default function Login() {
       setError(null);
       setIsLoading(true);
       await signInWithGoogle();
-      navigate('/intro');
+      navigate('/');
     } catch (error) {
       setError('Erro ao fazer login com Google. Por favor, tente novamente.');
     } finally {
@@ -27,7 +27,7 @@ export default function Login() {
       setError(null);
       setIsLoading(true);
       await signInWithGithub();
-      navigate('/intro');
+      navigate('/');
     } catch (error) {
       setError('Erro ao fazer login com GitHub. Por favor, tente novamente.');
     } finally {

@@ -24,7 +24,7 @@ export default function ProtectedRoute({ children, requiresSubscription = true }
   }
 
   // Only check subscription if the route requires it and we're not on payment related pages
-  if (requiresSubscription && !checkSubscription() && 
+  if (requiresSubscription && !isSubscribed && 
       !location.pathname    .startsWith('/pagamento')) {
     return <Navigate to="/pagamento" state={{ from: location }} />;
   }
