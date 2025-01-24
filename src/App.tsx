@@ -33,6 +33,7 @@ import Login from "./components/Auth/Login";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
 import Subscription from "./components/Subscription/Subscription";
 import PaymentSuccess from './pages/PaymentSuccess';
+import ReactGA from 'react-ga4';
 
 import "./App.css";
 import ServiceOriented from "./components/DesignPrinciples/ServiceOriented";
@@ -289,6 +290,12 @@ export default function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const { user, signOut } = useAuth();
+
+
+  useEffect(() => {
+    ReactGA.initialize('G-GQDL3TBPEZ');
+    ReactGA.send('pageview');
+  }, [user]);
 
   const MenuLink = ({ item }: { item: MenuItem }) => {
     const [isExpanded, setIsExpanded] = useState(false);

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
 import { loadStripe } from '@stripe/stripe-js';
+import ReactGA from 'react-ga4';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -18,6 +19,19 @@ export default function Subscription() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'annual'>('annual');
+
+  useEffect(() => {
+    
+    ReactGA.set({
+      userId: user?.uid,
+      email: user?.email,
+    });
+    ReactGA.event({
+      category: 'User',
+      action: 'Viewed Subscription Page',
+      label: user?.email || '',
+    });
+  }, [user]);
 
   const calculateSavings = () => {
     const originalMonthlyPrice = 79;
