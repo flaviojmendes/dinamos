@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-
+import ReactGA from 'react-ga4';
 const calculatePricing = () => {
   const originalMonthlyPrice = 79;
   const discountedMonthlyPrice = 49;
@@ -41,6 +41,10 @@ export default function LandingPage() {
           </p>
           <Link
             to="/intro"
+            onClick={() => ReactGA.event({
+              category: 'User',
+              action: 'Clicked on Start Now Button',
+            })}
             className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
           >
             Começar Agora
@@ -292,6 +296,10 @@ export default function LandingPage() {
               </div>
               <Link
                 to="/pagamento"
+                onClick={() => ReactGA.event({
+                  category: 'User',
+                  action: 'Clicked on Start Now Button',
+                })}
                 className="block text-center bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
               >
                 Começar Agora
@@ -316,6 +324,10 @@ export default function LandingPage() {
               </div>
               <Link
                 to="/pagamento"
+                onClick={() => ReactGA.event({
+                  category: 'User',
+                  action: 'Clicked on Start Now Button',
+                })}
                 className="block text-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
               >
                 Começar Agora
@@ -339,6 +351,10 @@ export default function LandingPage() {
           </p>
           <Link
             to="/intro"
+            onClick={() => ReactGA.event({
+              category: 'User',
+              action: 'Clicked on Start Now Button',
+            })}
             className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg text-lg font-medium hover:bg-zinc-100 transition-colors"
           >
             Começar Jornada

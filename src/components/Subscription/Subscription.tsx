@@ -67,6 +67,11 @@ export default function Subscription() {
   const handleSubscription = async () => {
     try {
       setIsLoading(true);
+
+      ReactGA.event({
+        category: 'User',
+        action: `Clicked on Subscribe Now Button - ${selectedPlan}`,
+      });
       setError(null);
 
       // Get Stripe instance
@@ -272,6 +277,7 @@ export default function Subscription() {
         >
           <button
             onClick={handleSubscription}
+
             disabled={isLoading}
             className={`px-8 py-4 rounded-lg font-medium text-lg transition-all duration-300 ${
               selectedPlan === 'annual'

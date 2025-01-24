@@ -338,7 +338,16 @@ export default function App() {
                     : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
                 }`
               }
-              onClick={() => !item.disabled && isMobile && setIsSidebarOpen(false)}
+              onClick={() => {
+                if (!item.disabled && isMobile) {
+                  setIsSidebarOpen(false);
+                  ReactGA.event({
+                    category: 'User',
+                    action: 'Clicked on Menu Item',
+                    label: item.name,
+                  });
+                }
+              }}
             >
               <span className="font-medium">{item.name}</span>
               <span className="text-sm opacity-75">{item.description}</span>
@@ -349,6 +358,11 @@ export default function App() {
               onClick={(e) => {
                 e.preventDefault();
                 setIsExpanded(!isExpanded);
+                ReactGA.event({
+                  category: 'User',
+                  action: 'Clicked on Menu Item',
+                  label: item.name,
+                });
               }}
               className={`p-2 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-transform ${
                 isActive ? "text-white" : ""
