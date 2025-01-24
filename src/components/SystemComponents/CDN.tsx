@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function CDN() {
   return (
     <div className="p-6 md:p-8 lg:p-12 max-w-4xl mx-auto">
@@ -60,12 +62,12 @@ export default function CDN() {
             Experimente nossa simulação interativa de CDN para entender melhor como a distribuição geográfica 
             de conteúdo afeta a latência e disponibilidade.
           </p>
-          <a 
-            href="/componentes/cdn/simulator" 
+          <Link 
+            to="/componentes/cdn/simulator" 
             className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-lg transition-colors"
           >
             Acessar Simulador
-          </a>
+          </Link>
         </div>
       </div>
     </div>

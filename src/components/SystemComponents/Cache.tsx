@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function CacheComponent() {
   return (
     <div className="p-6 md:p-8 lg:p-12 max-w-4xl mx-auto">
@@ -127,12 +129,12 @@ export default function CacheComponent() {
             Experimente nossa simulação interativa de cache para entender melhor como o cache afeta o desempenho 
             de um sistema.
           </p>
-          <a 
-            href="/componentes/cache/simulator" 
+          <Link 
+            to="/componentes/cache/simulator" 
             className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-lg transition-colors"
           >
             Acessar Simulador
-          </a>
+          </Link>
         </div>
       </div>
     </div>

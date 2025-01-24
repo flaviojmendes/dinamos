@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function LoadBalancer() {
   return (
     <div className="p-6 md:p-8 lg:p-12 max-w-4xl mx-auto">
@@ -76,12 +78,12 @@ export default function LoadBalancer() {
             Experimente nossa simulação interativa de balanceamento de carga para entender melhor como os 
             diferentes algoritmos funcionam na prática.
           </p>
-          <a 
-            href="/componentes/load-balancer/simulator" 
+          <Link
+            to="/componentes/load-balancer/simulator" 
             className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-lg transition-colors"
           >
             Acessar Simulador
-          </a>
+          </Link>
         </div>
       </div>
     </div>

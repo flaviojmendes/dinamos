@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function MessageQueue() {
   return (
     <div className="p-6 md:p-8 lg:p-12 max-w-4xl mx-auto">
@@ -67,12 +69,12 @@ export default function MessageQueue() {
             Experimente nossa simulação interativa de filas de mensagens para entender melhor como funciona a 
             comunicação assíncrona entre produtores e consumidores.
           </p>
-          <a 
-            href="/componentes/message-queue/simulator" 
+          <Link 
+            to="/componentes/message-queue/simulator" 
             className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-lg transition-colors"
           >
             Acessar Simulador
-          </a>
+          </Link>
         </div>
       </div>
     </div>
