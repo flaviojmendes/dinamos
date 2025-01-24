@@ -291,12 +291,12 @@ export default function App() {
   const [isMobile, setIsMobile] = useState(false);
   const { user, signOut } = useAuth();
 
-  ReactGA.initialize('G-GQDL3TBPEZ');
+  ReactGA.initialize('G-FB645J9ZQH');
   ReactGA.send({
     hitType: 'pageview',
     page: window.location.pathname + window.location.search,
   });
-  
+
   const MenuLink = ({ item }: { item: MenuItem }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const { pathname } = useLocation();
