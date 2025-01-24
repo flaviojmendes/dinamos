@@ -43,6 +43,73 @@ export default function LandingPage() {
         </motion.div>
       </div>
 
+      {/* Credentials Section */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-zinc-800">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
+        >
+          <div>
+            <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              Quem vai te ensinar
+            </h2>
+            <div className="prose prose-invert">
+              <p className="text-lg text-zinc-300 mb-4">
+                Olá! Me chamo Flávio atualmente atuo como <a href='https://www.linkedin.com/in/flaviojmendes/' target='_blank'><span className="text-blue-400 font-medium">Engineering Manager</span></a> em Sistemas Distribuídos.
+              </p>
+              <ul className="space-y-3 text-zinc-300">
+                <li className="flex items-start gap-2">
+                  <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Mais de 16 anos de experiência em desenvolvimento de software</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Experiência em grandes instituições financeiras, órgãos públicos e institutos de pesquisa</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Vasta experiência em projetos de diferentes escalas e complexidades</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Conhecimento prático em arquiteturas modernas e sistemas distribuídos</span>
+                </li>
+                <li className="flex items-start gap-2">
+                    <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Divulgação de conteúdo gratuito para a comunidade <a href='https://instagram.com/trilhainfo' target='_blank'><span className="text-blue-400 font-medium">@trilhainfo</span></a></span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="bg-gradient-to-b from-blue-600/10 to-purple-600/10 rounded-xl p-8 border border-blue-500/20">
+            <blockquote className="text-lg text-zinc-300 italic">
+              "Nesse material a minha intenção é poder colocar todos esses mais de 16 anos de experiência em prática, de forma que você saia daqui com uma mentalidade de que é necessário, além de ter um repertório técnico, colocar a mão na massa, experimentar e validar suas soluções."
+            </blockquote>
+            <div className="mt-6 flex items-center gap-4">
+              <div className="h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-xl font-bold">
+                <img src="https://media.licdn.com/dms/image/v2/D4E03AQFMfMauUM84Fw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1707169753089?e=1743033600&v=beta&t=0dB9ultfR3WzXB0LfHq7nJ5QiVPBjX_7Ydk4OK-XwJM" alt="Flávio Mendes" className="w-full h-full rounded-full object-cover" />
+              </div>
+              <div>
+                <div className="font-medium">Flávio Mendes</div>
+                <div className="text-sm text-zinc-400">Engineering Manager</div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
       {/* Simulators Showcase */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <motion.div
