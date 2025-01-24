@@ -52,6 +52,8 @@ import VerticalScalingSimulator from "./components/DesignPrinciples/VerticalScal
 import ScalabilitySimulator from "./components/DesignPrinciples/ScalabilitySimulator";
 import Replicacao from "./components/DesignPrinciples/Replicacao";
 import ReplicacaoSimulator from "./components/DesignPrinciples/ReplicacaoSimulator";
+import ServiceArchitectureSimulator from "./components/DesignPrinciples/ServiceArchitectureSimulator";
+import Disponibilidade from "./components/DesignPrinciples/Disponibilidade";
 
 const menuItems: MenuItem[] = [
   {
@@ -263,6 +265,7 @@ const menuItems: MenuItem[] = [
         path: "/principios-design/servicos",
         name: "Arquitetura de Serviços",
         description: "Monolito vs Microsserviços",
+       
       },
     ],
   },
@@ -791,6 +794,14 @@ export default function App() {
               }
             />
             <Route
+              path="/principios-design/servicos/simulator"
+              element={
+                <ProtectedRoute>
+                  <ServiceArchitectureSimulator />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/principios-design/tolerancia-falhas"
               element={
                 <ProtectedRoute>
@@ -950,7 +961,16 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/principios-design/disponibilidade"
+              element={
+                <ProtectedRoute>
+                  <Disponibilidade />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
+          
         </div>
       </main>
     </div>
