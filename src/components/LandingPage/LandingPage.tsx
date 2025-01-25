@@ -363,7 +363,7 @@ export default function LandingPage() {
                 <h3 className="text-2xl font-bold mb-2">Acesso Vitalício</h3>
                 <div className="mb-2">
                   <span className="text-lg text-zinc-500 line-through">R${calculatePricing().originalPrice}</span>
-                  <div className="text-lg text-zinc-500 line-through">R${calculatePricing().discountedPrice}</div>
+                  {/* <div className="text-lg text-zinc-500 line-through">R${calculatePricing().discountedPrice}</div> */}
                   <div className="text-4xl font-bold text-blue-500">
                     R${calculatePricing().specialPrice}
                   </div>

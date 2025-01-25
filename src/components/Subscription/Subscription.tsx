@@ -147,7 +147,7 @@ export default function Subscription() {
             <div className="text-center mb-8">
               <div className="mb-2">
                 <span className="text-lg text-zinc-500 line-through">R${originalPrice}</span>
-                <div className="text-lg text-zinc-500 line-through">R${discountedPrice}</div>
+                {/* <div className="text-lg text-zinc-500 line-through">R${discountedPrice}</div> */}
                 <div className="text-4xl font-bold text-blue-500">
                   R${specialPrice}
                 </div>
