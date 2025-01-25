@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
 import { loadStripe } from '@stripe/stripe-js';
 import ReactGA from 'react-ga4';
+import Countdown from '../Countdown/Countdown';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -35,8 +36,10 @@ export default function Subscription() {
   const calculatePricing = () => {
     const originalPrice = 499;
     const discountedPrice = 399;
+    const specialPrice = 200;
     const discount = Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
-    return { originalPrice, discountedPrice, discount };
+    const specialDiscount = Math.round(((originalPrice - specialPrice) / originalPrice) * 100);
+    return { originalPrice, discountedPrice, specialPrice, discount, specialDiscount };
   };
 
   const handlePayment = async () => {
@@ -89,7 +92,7 @@ export default function Subscription() {
     }
   };
 
-  const { originalPrice, discountedPrice, discount } = calculatePricing();
+  const { originalPrice, discountedPrice, specialPrice, discount, specialDiscount } = calculatePricing();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-black text-white p-8">
@@ -129,16 +132,26 @@ export default function Subscription() {
             transition={{ delay: 0.2 }}
             className="bg-gradient-to-b from-blue-600/10 to-purple-600/10 rounded-xl p-8 border border-blue-500/20 relative overflow-hidden"
           >
-            <div className="absolute -right-12 top-8 bg-blue-500 text-white px-12 py-1 rotate-45 text-sm font-medium">
+            <div className="absolute -right-12 top-8 bg-red-500 text-white px-12 py-1 rotate-45 text-sm font-medium">
+              Oferta Especial
+            </div>
+            <div className="absolute -right-12 top-20 bg-blue-500 text-white px-12 py-1 rotate-45 text-sm font-medium">
               Preço de Lançamento
+            </div>
+            <div className="text-center mb-4">
+              <div className="inline-block bg-red-500/10 text-red-400 px-4 py-2 rounded-full text-sm mb-4">
+                Oferta válida até 31 de Janeiro
+              </div>
+              <Countdown />
             </div>
             <div className="text-center mb-8">
               <div className="mb-2">
                 <span className="text-lg text-zinc-500 line-through">R${originalPrice}</span>
+                <div className="text-lg text-zinc-500 line-through">R${discountedPrice}</div>
                 <div className="text-4xl font-bold text-blue-500">
-                  R${discountedPrice}
+                  R${specialPrice}
                 </div>
-                <p className="text-sm text-green-400">{discount}% de desconto</p>
+                <p className="text-sm text-green-400">{specialDiscount}% de desconto</p>
               </div>
               <p className="text-zinc-400">Pagamento único - Acesso para sempre</p>
             </div>
