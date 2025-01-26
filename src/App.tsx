@@ -643,7 +643,7 @@ export default function App() {
             <Route
               path="/intro"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requiresSubscription={false}>
                   <Introduction />
                 </ProtectedRoute>
               }
