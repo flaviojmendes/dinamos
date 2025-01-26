@@ -651,7 +651,7 @@ export default function App() {
             <Route
               path="/sistemas-distribuidos-101"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requiresSubscription={false}>
                   <DistributedSystems101 />
                 </ProtectedRoute>
               }
@@ -659,7 +659,7 @@ export default function App() {
             <Route
               path="/system-design-101"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requiresSubscription={false}>
                   <SystemDesign101 />
                 </ProtectedRoute>
               }
