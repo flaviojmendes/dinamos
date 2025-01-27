@@ -34,8 +34,6 @@ import ProtectedRoute from "./components/Auth/ProtectedRoute";
 import Subscription from "./components/Subscription/Subscription";
 import PaymentSuccess from './pages/PaymentSuccess';
 import ReactGA from 'react-ga4';
-
-import "./App.css";
 import ServiceOriented from "./components/DesignPrinciples/ServiceOriented";
 import FaultTolerance from "./components/DesignPrinciples/FaultTolerance";
 import Retries from "./components/DesignPrinciples/Retries";
@@ -56,6 +54,9 @@ import ReplicacaoSimulator from "./components/DesignPrinciples/ReplicacaoSimulat
 import ServiceArchitectureSimulator from "./components/DesignPrinciples/ServiceArchitectureSimulator";
 import Disponibilidade from "./components/DesignPrinciples/Disponibilidade";
 import Preferences from "./components/Preferences/Preferences";
+import ConsistencyStrategies from "./components/ConsistencyStrategies/ConsistencyStrategies";
+import ConsensusStrategy from "./components/ConsistencyStrategies/ConsensusStrategy";
+import ConsensusSimulator from './components/ConsistencyStrategies/ConsensusSimulator';
 
 const menuItems: MenuItem[] = [
   {
@@ -267,16 +268,27 @@ const menuItems: MenuItem[] = [
         path: "/principios-design/servicos",
         name: "Arquitetura de Serviços",
         description: "Monolito vs Microsserviços",
-       
       },
     ],
   },
   {
-    path: "/estrategias-de-consistencia",
-    name: "Estratégias de Consistência",
-    description: "Como garantir a consistência em sistemas distribuídos",
-    comingSoon: true,
-    disabled: true,
+    name: 'Estratégias de Consistência',
+    path: '/estrategias-de-consistencia',
+    description: 'Como garantir a consistência em sistemas distribuídos',
+    children: [
+      {
+        name: 'Estratégia de Consenso',
+        path: '/estrategias-de-consistencia/consenso',
+        description: 'Protocolos e mecanismos para garantir acordo entre nós',
+        children: [
+          {
+            name: 'Simulador',
+            path: '/estrategias-de-consistencia/consenso/simulador',
+            description: 'Simulação interativa dos protocolos de consenso'
+          }
+        ]
+      }
+    ]
   },
   {
     path: "/monitoramento-e-manutencao",
@@ -1021,6 +1033,30 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <Disponibilidade />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/estrategias-de-consistencia"
+              element={
+                <ProtectedRoute>
+                  <ConsistencyStrategies />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/estrategias-de-consistencia/consenso"
+              element={
+                <ProtectedRoute>
+                  <ConsensusStrategy />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/estrategias-de-consistencia/consenso/simulador"
+              element={
+                <ProtectedRoute>
+                  <ConsensusSimulator />
                 </ProtectedRoute>
               }
             />
