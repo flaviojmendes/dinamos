@@ -57,6 +57,8 @@ import Preferences from "./components/Preferences/Preferences";
 import ConsistencyStrategies from "./components/ConsistencyStrategies/ConsistencyStrategies";
 import ConsensusStrategy from "./components/ConsistencyStrategies/ConsensusStrategy";
 import ConsensusSimulator from './components/ConsistencyStrategies/ConsensusSimulator';
+import Firewall from "./components/SystemComponents/Firewall";
+import FirewallSimulator from "./components/SystemComponents/FirewallSimulator";
 
 const menuItems: MenuItem[] = [
   {
@@ -141,6 +143,18 @@ const menuItems: MenuItem[] = [
             path: "/componentes/api-gateway/simulator",
             name: "Simulador",
             description: "Experimente roteamento e proteção de APIs",
+          },
+        ],
+      },
+      {
+        path: "/componentes/firewall",
+        name: "Firewall",
+        description: "Segurança e controle de tráfego",
+        children: [
+          {
+            path: "/componentes/firewall/simulator",
+            name: "Simulador",
+            description: "Experimente regras de firewall",
           },
         ],
       },
@@ -1057,6 +1071,22 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <ConsensusSimulator />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/componentes/firewall"
+              element={
+                <ProtectedRoute>
+                  <Firewall />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/componentes/firewall/simulator"
+              element={
+                <ProtectedRoute>
+                  <FirewallSimulator />
                 </ProtectedRoute>
               }
             />
