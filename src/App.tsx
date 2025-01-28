@@ -59,6 +59,7 @@ import ConsensusStrategy from "./components/ConsistencyStrategies/ConsensusStrat
 import ConsensusSimulator from './components/ConsistencyStrategies/ConsensusSimulator';
 import Firewall from "./components/SystemComponents/Firewall";
 import FirewallSimulator from "./components/SystemComponents/FirewallSimulator";
+import SystemEditor from "./components/SystemEditor/SystemEditor";
 
 const menuItems: MenuItem[] = [
   {
@@ -70,6 +71,11 @@ const menuItems: MenuItem[] = [
     path: "/sistemas-distribuidos-101",
     name: "Sistemas Distribuídos 101",
     description: "Conceitos fundamentais através de analogias",
+  },
+  {
+    path: "/editor",
+    name: "Editor de Sistemas",
+    description: "Crie e visualize arquiteturas distribuídas",
   },
   {
     path: "/system-design-101",
@@ -159,6 +165,11 @@ const menuItems: MenuItem[] = [
         ],
       },
     ],
+  },
+  {
+    path: "/editor",
+    name: "Editor de Sistemas",
+    description: "Crie diagramas de sistemas distribuídos",
   },
   {
     path: "/principios-design",
@@ -1087,6 +1098,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <FirewallSimulator />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/editor"
+              element={
+                <ProtectedRoute>
+                  <SystemEditor />
                 </ProtectedRoute>
               }
             />
