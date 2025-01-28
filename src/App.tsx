@@ -59,6 +59,7 @@ import ConsensusStrategy from "./components/ConsistencyStrategies/ConsensusStrat
 import ConsensusSimulator from './components/ConsistencyStrategies/ConsensusSimulator';
 import Firewall from "./components/SystemComponents/Firewall";
 import FirewallSimulator from "./components/SystemComponents/FirewallSimulator";
+import SystemEditor from "./components/SystemEditor/SystemEditor";
 
 const menuItems: MenuItem[] = [
   {
@@ -70,6 +71,15 @@ const menuItems: MenuItem[] = [
     path: "/sistemas-distribuidos-101",
     name: "Sistemas Distribuídos 101",
     description: "Conceitos fundamentais através de analogias",
+  },
+  {
+    path: "/editor",
+    name: "Editor de Sistemas",
+    description: "Crie e visualize arquiteturas distribuídas",
+    badges: [
+      { text: "Alpha", color: "bg-blue-500" },
+      { text: "Grátis", color: "bg-green-500" }
+    ]
   },
   {
     path: "/system-design-101",
@@ -359,7 +369,7 @@ export default function App() {
             <NavLink
               to={item.path}
               className={({ isActive }: { isActive: boolean }) =>
-                `flex-1 flex flex-col p-3 rounded-lg transition-colors ${
+                `flex-1 flex flex-col p-3 rounded-lg transition-colors relative ${
                   isActive
                     ? "bg-blue-500 text-white"
                     : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
@@ -378,6 +388,18 @@ export default function App() {
             >
               <span className="font-medium">{item.name}</span>
               <span className="text-sm opacity-75">{item.description}</span>
+              {item.badges && (
+                <div className="absolute -top-2 right-2 flex gap-1">
+                  {item.badges.map((badge, index) => (
+                    <span
+                      key={index}
+                      className={`text-xs px-2 py-0.5 rounded-full text-white ${badge.color}`}
+                    >
+                      {badge.text}
+                    </span>
+                  ))}
+                </div>
+              )}
             </NavLink>
           )}
           {item.children && (
@@ -1087,6 +1109,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <FirewallSimulator />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/editor"
+              element={
+                <ProtectedRoute>
+                  <SystemEditor />
                 </ProtectedRoute>
               }
             />
