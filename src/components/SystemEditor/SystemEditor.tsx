@@ -17,9 +17,16 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
-// Basic interfaces
+type LoadBalancerAlgorithm = 'roundRobin' | 'random' | 'leastConnections';
+
 interface NodeData {
   label: string;
+  capacity?: number;
+  processingTime?: number;
+  algorithm?: LoadBalancerAlgorithm;
+  onCapacityChange?: (value: number) => void;
+  onProcessingTimeChange?: (value: number) => void;
+  onAlgorithmChange?: (value: LoadBalancerAlgorithm) => void;
   metrics?: {
     requestsPerSecond: number;
     activeRequests: number;
@@ -60,11 +67,38 @@ const LoadBalancerNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
     <div className="font-bold text-white">{data.label}</div>
     {data.metrics && (
       <div className="text-xs mt-2">
-        <div className="text-blue-300">Ativas: {data.metrics.activeRequests}</div>
+        <div className="text-blue-300 flex justify-between items-center">
+          <span>Conexões Ativas:</span>
+          <span className="font-bold text-lg">{data.metrics.activeRequests}</span>
+        </div>
         <div className="text-yellow-300">Requisições/s: {data.metrics.requestsPerSecond}</div>
         <div className="text-green-300">Resposta: {data.metrics.responseTime.toFixed(0)}ms</div>
       </div>
     )}
+    <div className="mt-2 text-xs text-white">
+      <label>Limite de Conexões:</label>
+      <input
+        type="range"
+        min="10"
+        max="200"
+        value={data.capacity || 100}
+        onChange={(e) => data.onCapacityChange?.(Number(e.target.value))}
+        className="w-full"
+      />
+      <div className="text-right">{data.capacity || 100} conexões</div>
+    </div>
+    <div className="mt-2 text-xs text-white">
+      <label>Algoritmo:</label>
+      <select
+        value={data.algorithm || 'roundRobin'}
+        onChange={(e) => data.onAlgorithmChange?.(e.target.value as LoadBalancerAlgorithm)}
+        className="w-full mt-1 bg-zinc-700 rounded px-2 py-1 text-white"
+      >
+        <option value="roundRobin">Round Robin</option>
+        <option value="random">Aleatório</option>
+        <option value="leastConnections">Menor Número de Conexões</option>
+      </select>
+    </div>
     <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
       <div
         className="h-full transition-all duration-500"
@@ -84,11 +118,38 @@ const ServerNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
     <div className="font-bold text-white">{data.label}</div>
     {data.metrics && (
       <div className="text-xs mt-2">
-        <div className="text-blue-300">Ativas: {data.metrics.activeRequests}</div>
+        <div className="text-blue-300 flex justify-between items-center">
+          <span>Conexões Ativas:</span>
+          <span className="font-bold text-lg">{data.metrics.activeRequests}</span>
+        </div>
         <div className="text-yellow-300">Requisições/s: {data.metrics.requestsPerSecond}</div>
         <div className="text-green-300">Resposta: {data.metrics.responseTime.toFixed(0)}ms</div>
       </div>
     )}
+    <div className="mt-2 text-xs text-white">
+      <label>Limite de Conexões:</label>
+      <input
+        type="range"
+        min="10"
+        max="150"
+        value={data.capacity || 50}
+        onChange={(e) => data.onCapacityChange?.(Number(e.target.value))}
+        className="w-full"
+      />
+      <div className="text-right">{data.capacity || 50} conexões</div>
+    </div>
+    <div className="mt-2 text-xs text-white">
+      <label>Tempo de Processamento (ms):</label>
+      <input
+        type="range"
+        min="10"
+        max="500"
+        value={data.processingTime || 100}
+        onChange={(e) => data.onProcessingTimeChange?.(Number(e.target.value))}
+        className="w-full"
+      />
+      <div className="text-right">{data.processingTime || 100}ms</div>
+    </div>
     <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
       <div
         className="h-full transition-all duration-500"
@@ -107,11 +168,26 @@ const DatabaseNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
     <div className="font-bold text-white">{data.label}</div>
     {data.metrics && (
       <div className="text-xs mt-2">
-        <div className="text-blue-300">Ativas: {data.metrics.activeRequests}</div>
+        <div className="text-blue-300 flex justify-between items-center">
+          <span>Conexões Ativas:</span>
+          <span className="font-bold text-lg">{data.metrics.activeRequests}</span>
+        </div>
         <div className="text-yellow-300">Requisições/s: {data.metrics.requestsPerSecond}</div>
         <div className="text-green-300">Resposta: {data.metrics.responseTime.toFixed(0)}ms</div>
       </div>
     )}
+    <div className="mt-2 text-xs text-white">
+      <label>Limite de Conexões:</label>
+      <input
+        type="range"
+        min="10"
+        max="100"
+        value={data.capacity || 30}
+        onChange={(e) => data.onCapacityChange?.(Number(e.target.value))}
+        className="w-full"
+      />
+      <div className="text-right">{data.capacity || 30} conexões</div>
+    </div>
     <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
       <div
         className="h-full transition-all duration-500"
@@ -136,32 +212,32 @@ const initialNodes: Node<NodeData>[] = [
     id: '1',
     type: 'input',
     data: { label: 'Cliente' },
-    position: { x: 250, y: 25 },
+    position: { x: 400, y: 50 },
     className: 'bg-transparent border-none',
   },
   {
     id: '2',
     type: 'loadBalancer',
     data: { label: 'Balanceador' },
-    position: { x: 250, y: 125 },
+    position: { x: 400, y: 200 },
   },
   {
     id: '3',
     type: 'server',
     data: { label: 'Servidor 1' },
-    position: { x: 150, y: 225 },
+    position: { x: 200, y: 400 },
   },
   {
     id: '4',
     type: 'server',
     data: { label: 'Servidor 2' },
-    position: { x: 350, y: 225 },
+    position: { x: 600, y: 400 },
   },
   {
     id: '5',
     type: 'database',
     data: { label: 'Banco de Dados' },
-    position: { x: 250, y: 325 },
+    position: { x: 400, y: 600 },
   },
 ];
 
@@ -186,8 +262,39 @@ export default function SystemEditor() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [isSimulationRunning, setIsSimulationRunning] = useState(false);
   const [clientRequestRate, setClientRequestRate] = useState(50);
+  const [roundRobinCounters, setRoundRobinCounters] = useState<Record<string, number>>({});
 
-  // Simple simulation logic
+  const onCapacityChange = useCallback((nodeId: string, capacity: number) => {
+    setNodes((nds) =>
+      nds.map((node) =>
+        node.id === nodeId
+          ? { ...node, data: { ...node.data, capacity } }
+          : node
+      )
+    );
+  }, [setNodes]);
+
+  const onProcessingTimeChange = useCallback((nodeId: string, processingTime: number) => {
+    setNodes((nds) =>
+      nds.map((node) =>
+        node.id === nodeId
+          ? { ...node, data: { ...node.data, processingTime } }
+          : node
+      )
+    );
+  }, [setNodes]);
+
+  const onAlgorithmChange = useCallback((nodeId: string, algorithm: LoadBalancerAlgorithm) => {
+    setNodes((nds) =>
+      nds.map((node) =>
+        node.id === nodeId
+          ? { ...node, data: { ...node.data, algorithm } }
+          : node
+      )
+    );
+  }, [setNodes]);
+
+  // Update simulateMetrics function
   const simulateMetrics = useCallback(() => {
     if (!isSimulationRunning) return;
 
@@ -206,6 +313,7 @@ export default function SystemEditor() {
 
       // Calculate request flow through the system
       const requestFlow = new Map<string, number>();
+      const activeRequestsMap = new Map<string, number>();
       
       // Initialize client requests
       requestFlow.set(clientNode.id, totalRequests);
@@ -217,8 +325,14 @@ export default function SystemEditor() {
           .map(e => requestFlow.get(e.source) || 0)
           .reduce((sum, curr) => sum + curr, 0);
 
-        // 5% loss at load balancer
-        const lbRequests = Math.floor(incomingRequests * 0.95);
+        // Calculate load balancer capacity and active requests
+        const lbCapacity = lb.data.capacity || 100;
+        const lbActiveRequests = Math.min(lbCapacity, Math.floor(incomingRequests * 0.1));
+        activeRequestsMap.set(lb.id, lbActiveRequests);
+
+        // Calculate how many requests the load balancer can handle
+        const maxLbRequests = Math.min(incomingRequests, lbCapacity * 10); // Each connection can handle ~10 req/s
+        const lbRequests = Math.floor(maxLbRequests * 0.95); // 5% loss at load balancer
         requestFlow.set(lb.id, lbRequests);
 
         // Find servers connected to this load balancer
@@ -227,15 +341,92 @@ export default function SystemEditor() {
           .map(e => nds.find(n => n.id === e.target))
           .filter(n => n?.type === 'server') as Node[];
 
-        // Distribute requests evenly among connected servers
         if (connectedServers.length > 0) {
-          const requestsPerServer = Math.floor(lbRequests / connectedServers.length);
-          connectedServers.forEach((server, index) => {
-            // Last server gets any remaining requests to handle rounding
-            const serverRequests = index === connectedServers.length - 1
-              ? lbRequests - (requestsPerServer * (connectedServers.length - 1))
-              : requestsPerServer;
-            requestFlow.set(server.id, (requestFlow.get(server.id) || 0) + serverRequests);
+          const algorithm = lb.data.algorithm || 'roundRobin';
+          
+          // Get server states for distribution decisions
+          const serverStates = connectedServers.map(server => {
+            const capacity = server.data.capacity || 50;
+            const processingTime = server.data.processingTime || 100;
+            const currentActive = server.data.metrics?.activeRequests || 0;
+            return {
+              server,
+              capacity,
+              processingTime,
+              currentActive,
+              available: Math.max(0, capacity - currentActive)
+            };
+          });
+
+          let distributedRequests = new Map<string, number>();
+
+          switch (algorithm) {
+            case 'random':
+              // Random distribution with capacity respect
+              serverStates.forEach(({ server, capacity }) => {
+                const randomFactor = 0.5 + Math.random();
+                const baseShare = lbRequests / connectedServers.length;
+                const maxForServer = Math.min(
+                  capacity * 10, // Each connection can handle ~10 req/s
+                  Math.floor(baseShare * randomFactor)
+                );
+                distributedRequests.set(server.id, maxForServer);
+              });
+              break;
+
+            case 'leastConnections':
+              // Distribute based on available capacity
+              const totalAvailable = serverStates.reduce((sum, state) => sum + state.available, 0);
+              
+              if (totalAvailable > 0) {
+                serverStates.forEach(({ server, available }) => {
+                  const share = available / totalAvailable;
+                  const maxForServer = Math.min(
+                    available * 10, // Each connection can handle ~10 req/s
+                    Math.floor(lbRequests * share)
+                  );
+                  distributedRequests.set(server.id, maxForServer);
+                });
+              } else {
+                // Fallback to even distribution if all servers are at capacity
+                const evenShare = Math.floor(lbRequests / connectedServers.length);
+                serverStates.forEach(({ server }) => {
+                  distributedRequests.set(server.id, evenShare);
+                });
+              }
+              break;
+
+            default: // Round Robin
+              const currentCounter = roundRobinCounters[lb.id] || 0;
+              setRoundRobinCounters(prev => ({
+                ...prev,
+                [lb.id]: (currentCounter + 1) % connectedServers.length
+              }));
+              
+              const baseShare = Math.floor(lbRequests / connectedServers.length);
+              serverStates.forEach(({ server, capacity }, index) => {
+                const adjustedIndex = (index + currentCounter) % connectedServers.length;
+                const serverShare = adjustedIndex === connectedServers.length - 1
+                  ? lbRequests - (baseShare * (connectedServers.length - 1))
+                  : baseShare;
+                const maxForServer = Math.min(capacity * 10, serverShare);
+                distributedRequests.set(server.id, maxForServer);
+              });
+              break;
+          }
+
+          // Apply the distribution and calculate active requests
+          serverStates.forEach(({ server, processingTime }) => {
+            const serverRequests = distributedRequests.get(server.id) || 0;
+            requestFlow.set(server.id, serverRequests);
+
+            // Calculate active requests based on processing time and capacity
+            const activeTime = processingTime / 1000; // Convert to seconds
+            const newActive = Math.floor(serverRequests * activeTime);
+            const currentActive = activeRequestsMap.get(server.id) || 0;
+            // Smooth transition for active requests
+            const smoothedActive = Math.floor(currentActive * 0.7 + newActive * 0.3);
+            activeRequestsMap.set(server.id, smoothedActive);
           });
         }
       });
@@ -244,24 +435,47 @@ export default function SystemEditor() {
       const databases = nds.filter(n => n.type === 'database');
       databases.forEach(db => {
         const dbIncomingEdges = edges.filter(e => e.target === db.id);
-        const incomingRequests = dbIncomingEdges
-          .map(e => requestFlow.get(e.source) || 0)
-          .reduce((sum, curr) => sum + curr, 0);
+        const dbCapacity = db.data.capacity || 30;
         
-        // 10% queries resolved in server cache
-        requestFlow.set(db.id, Math.floor(incomingRequests * 0.9));
+        // Sum up incoming requests considering server processing times
+        const incomingRequests = dbIncomingEdges
+          .map(e => {
+            const sourceNode = nds.find(n => n.id === e.source);
+            const sourceRequests = requestFlow.get(e.source) || 0;
+            
+            if (sourceNode?.type === 'server') {
+              const processingTime = sourceNode.data.processingTime || 100;
+              // Longer processing time means fewer requests make it to the database
+              return Math.floor(sourceRequests * (100 / processingTime));
+            }
+            return sourceRequests;
+          })
+          .reduce((sum, curr) => sum + curr, 0);
+
+        // Calculate active database connections
+        const dbActiveRequests = Math.min(
+          dbCapacity,
+          Math.floor(incomingRequests * 0.2) // Each request keeps connection active for ~200ms
+        );
+        activeRequestsMap.set(db.id, dbActiveRequests);
+        
+        // Calculate actual throughput based on capacity
+        const maxDbRequests = Math.min(incomingRequests, dbCapacity * 15); // Each connection handles ~15 req/s
+        const effectiveRequests = Math.floor(maxDbRequests * 0.9); // 10% cache hit rate
+        requestFlow.set(db.id, effectiveRequests);
       });
 
       // Update metrics for each node
       return nds.map(node => {
         const nodeRequests = requestFlow.get(node.id) || 0;
+        const activeRequests = activeRequestsMap.get(node.id) || 0;
         let metrics;
 
         switch (node.type) {
           case 'input':
             metrics = {
               requestsPerSecond: nodeRequests,
-              activeRequests: Math.floor(nodeRequests * 0.2),
+              activeRequests: Math.floor(nodeRequests * 0.1),
               responseTime: 50 + Math.random() * 20,
               errorRate: Math.random() * 2,
               load: Math.min(100, (nodeRequests / 100) * 100),
@@ -269,32 +483,38 @@ export default function SystemEditor() {
             break;
 
           case 'loadBalancer':
+            const lbCapacity = node.data.capacity || 100;
+            const lbLoad = (activeRequests / lbCapacity) * 100;
             metrics = {
               requestsPerSecond: nodeRequests,
-              activeRequests: Math.floor(nodeRequests * 0.1),
-              responseTime: 20 + Math.random() * 30,
-              errorRate: Math.random() * 3,
-              load: Math.min(100, (nodeRequests / 150) * 100),
+              activeRequests,
+              responseTime: 20 + (lbLoad > 70 ? lbLoad : 0),
+              errorRate: lbLoad > 80 ? 5 + Math.random() * 10 : Math.random() * 3,
+              load: Math.min(100, lbLoad),
             };
             break;
 
           case 'server':
-            const serverLoad = (nodeRequests / 75) * 100;
+            const serverCapacity = node.data.capacity || 50;
+            const processingTime = node.data.processingTime || 100;
+            const serverLoad = (activeRequests / serverCapacity) * 100;
+            
             metrics = {
               requestsPerSecond: nodeRequests,
-              activeRequests: Math.floor(nodeRequests * 0.3),
-              responseTime: 100 + (serverLoad > 80 ? serverLoad * 2 : serverLoad),
+              activeRequests,
+              responseTime: processingTime * (1 + (serverLoad > 80 ? (serverLoad - 80) / 100 : 0)),
               errorRate: serverLoad > 80 ? 5 + Math.random() * 10 : Math.random() * 5,
               load: Math.min(100, serverLoad),
             };
             break;
 
           case 'database':
-            const dbLoad = (nodeRequests / 50) * 100;
+            const dbCapacity = node.data.capacity || 30;
+            const dbLoad = (activeRequests / dbCapacity) * 100;
             metrics = {
               requestsPerSecond: nodeRequests,
-              activeRequests: Math.floor(nodeRequests * 0.4),
-              responseTime: 50 + (dbLoad > 70 ? dbLoad * 3 : dbLoad),
+              activeRequests,
+              responseTime: 50 * (1 + (dbLoad > 70 ? (dbLoad - 70) / 100 : 0)),
               errorRate: dbLoad > 80 ? 3 + Math.random() * 7 : Math.random() * 3,
               load: Math.min(100, dbLoad),
             };
@@ -309,12 +529,15 @@ export default function SystemEditor() {
           data: {
             ...node.data,
             metrics,
+            onCapacityChange: (value: number) => onCapacityChange(node.id, value),
+            onProcessingTimeChange: (value: number) => onProcessingTimeChange(node.id, value),
+            onAlgorithmChange: (value: LoadBalancerAlgorithm) => onAlgorithmChange(node.id, value),
           },
         };
       });
     });
 
-    // Update edge thicknesses based on load
+    // Update edge animations and thicknesses
     setEdges((eds) => {
       return eds.map(edge => {
         const sourceNode = nodes.find(n => n.id === edge.source);
@@ -323,9 +546,9 @@ export default function SystemEditor() {
         if (!sourceNode?.data.metrics || !targetNode) return edge;
 
         const requestFlow = sourceNode.data.metrics.requestsPerSecond;
-        const strokeWidth = Math.max(1, Math.min(8, (requestFlow / 20) + 1));
+        const strokeWidth = Math.max(1, Math.min(8, Math.log10(requestFlow + 1) * 2));
         const targetLoad = targetNode.data.metrics?.load || 0;
-        const stroke = targetLoad > 80 ? '#ef4444' : undefined;
+        const stroke = targetLoad > 80 ? '#ef4444' : targetLoad > 60 ? '#eab308' : undefined;
 
         return {
           ...edge,
@@ -338,7 +561,7 @@ export default function SystemEditor() {
         };
       });
     });
-  }, [isSimulationRunning, setNodes, setEdges, nodes, edges, clientRequestRate]);
+  }, [isSimulationRunning, setNodes, setEdges, nodes, edges, clientRequestRate, onCapacityChange, onProcessingTimeChange, onAlgorithmChange, roundRobinCounters]);
 
   // Run simulation every second
   useEffect(() => {
@@ -401,6 +624,25 @@ export default function SystemEditor() {
 
   return (
     <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
+      <div className="bg-blue-500/20 border border-blue-500 rounded-lg p-4 mb-8">
+        <div className="flex items-start gap-3">
+          <div className="text-blue-400 mt-1">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <h3 className="text-blue-400 font-semibold mb-1">Página em Desenvolvimento</h3>
+            <p className="text-zinc-300 mb-2">
+              Esta é uma prévia do Editor de Sistemas que está em desenvolvimento. Em breve, você poderá criar e simular arquiteturas distribuídas completas, com mais componentes, métricas e funcionalidades. Fique ligado nas próximas atualizações!
+            </p>
+            <p className="text-zinc-400 text-sm">
+              <span className="text-yellow-400">Nota:</span> Os cálculos e métricas apresentados nesta versão são aproximados e podem não refletir com precisão o comportamento de um sistema real. Estamos trabalhando para melhorar a precisão das simulações.
+            </p>
+          </div>
+        </div>
+      </div>
+
       <div className="prose prose-invert prose-lg max-w-none mb-8">
         <h1 className="text-4xl font-bold mb-4 text-blue-400">
           Simulador de Sistema Distribuído
@@ -464,6 +706,13 @@ export default function SystemEditor() {
           deleteKeyCode={['Backspace', 'Delete']}
           draggable={true}
           fitView
+          fitViewOptions={{
+            padding: 0.5,
+            maxZoom: 1,
+          }}
+          minZoom={0.2}
+          maxZoom={1.5}
+          defaultViewport={{ x: 0, y: 0, zoom: 0.7 }}
         >
           <Panel position="top-left" className="bg-zinc-800 p-4 rounded-lg">
             <div className="flex flex-col gap-2">

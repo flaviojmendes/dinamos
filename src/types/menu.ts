@@ -5,4 +5,8 @@ export interface MenuItem {
   children?: MenuItem[];
   disabled?: boolean;
   comingSoon?: boolean;
+  badges?: Array<{
+    text: string;
+    color: string;
+  }>;
 } 
