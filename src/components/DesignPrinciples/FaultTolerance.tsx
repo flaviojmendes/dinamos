@@ -104,4 +104,4 @@ export default function FaultTolerance() {
     
     </div>
   );
-} 
+}   

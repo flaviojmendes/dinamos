@@ -55,7 +55,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    checkSubscription();
+    if (userState) {
+      checkSubscription();
+    }
   }, [userState]);
 
 
