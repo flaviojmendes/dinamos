@@ -134,27 +134,18 @@ export default function LamportTimestamps() {
           </section>
 
           {/* Try it out */}
-          <Link
-            to="/estrategias-de-consistencia/lamport-timestamps/simulador"
-            className="block bg-blue-500 hover:bg-blue-600 transition-colors rounded-lg p-6"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-xl font-semibold text-white mb-2">
-                  Experimente na Prática
-                </h2>
-                <p className="text-blue-100">
-                  Visualize a troca de mensagens entre processos e como os timestamps são atualizados
-                  em nosso simulador interativo.
-                </p>
-              </div>
-              <div className="text-white">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </div>
-            </div>
-          </Link>
+          <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-6">
+            <h2 className="text-2xl font-semibold text-blue-400 mb-4">Experimente na Prática</h2>
+            <p className="text-zinc-300 mb-4">
+              Quer ver como os timestamps de Lamport funcionam na prática? Experimente nosso simulador interativo!
+            </p>
+            <Link
+              to="simulador"
+              className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-medium px-6 py-3 rounded-lg transition-colors"
+            >
+              Acessar Simulador
+            </Link>
+          </div>
         </div>
       </div>
     </div>

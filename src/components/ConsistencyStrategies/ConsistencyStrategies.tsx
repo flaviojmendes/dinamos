@@ -1,126 +1,121 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 export default function ConsistencyStrategies() {
   return (
-    <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
-      <div className="prose prose-invert prose-lg max-w-none mb-12">
-        <motion.h1 
-          className="text-4xl font-bold mb-4 text-blue-400"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          Estratégias de Consistência
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-xl text-zinc-300"
-        >
-          Em sistemas distribuídos, a consistência dos dados é um desafio fundamental que requer estratégias bem definidas para garantir a confiabilidade e integridade das informações.
-        </motion.p>
-      </div>
+    <div className="min-h-full bg-gradient-to-b from-zinc-900 to-black">
+      <div className="py-12 px-6 max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-12">
+          <h1 className="text-3xl font-bold text-white mb-4">
+            Estratégias de Consistência
+          </h1>
+          <p className="text-lg text-zinc-400">
+            Explore diferentes mecanismos para garantir consistência em sistemas distribuídos
+          </p>
+        </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Consensus Strategy Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="bg-zinc-900 rounded-lg p-6 hover:bg-zinc-800 transition-colors group"
-        >
-          <Link to="/estrategias-de-consistencia/consenso" className="space-y-4 block">
-            <div className="text-blue-400 mb-4">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+        {/* Info Banner */}
+        <div className="bg-blue-500/20 border border-blue-500 rounded-lg p-4 mb-8">
+          <div className="flex gap-3">
+            <div className="text-blue-400 mt-1">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
-              Estratégias de Consenso
-            </h2>
-            <p className="text-zinc-400">
-              Protocolos e mecanismos para garantir acordo entre múltiplos nós em um sistema distribuído.
+            <p className="text-blue-300">
+              A consistência é um dos principais desafios em sistemas distribuídos. 
+              Entenda como diferentes estratégias ajudam a manter a ordem e a coerência dos dados.
             </p>
-          </Link>
-        </motion.div>
-
-        {/* Strong Consistency Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="bg-zinc-900 rounded-lg p-6 hover:bg-zinc-800 transition-colors group"
-        >
-          <div className="space-y-4 block opacity-50 cursor-not-allowed">
-            <div className="text-blue-400 mb-4">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <h2 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
-              Consistência Forte
-            </h2>
-            <p className="text-zinc-400">
-              Garantia de que todos os nós têm a mesma visão dos dados em todos os momentos.
-            </p>
-            <div className="absolute -top-2 right-2 bg-zinc-800 text-white text-xs px-2 py-0.5 rounded-full">
-              Em breve
-            </div>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Eventual Consistency Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="bg-zinc-900 rounded-lg p-6 hover:bg-zinc-800 transition-colors group"
-        >
-          <div className="space-y-4 block opacity-50 cursor-not-allowed">
-            <div className="text-blue-400 mb-4">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        {/* Strategies Grid */}
+        <div className="grid gap-6 md:grid-cols-2">
+          {/* Consensus Strategy */}
+          <Link 
+            to="/estrategias-de-consistencia/consenso"
+            className="group bg-zinc-900/50 rounded-lg p-6 hover:bg-zinc-800/50 transition-colors"
+          >
+            <div className="flex items-start gap-4">
+              <div className="p-3 bg-purple-500/10 rounded-lg group-hover:bg-purple-500/20 transition-colors">
+                <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-purple-400 transition-colors">
+                  Estratégia de Consenso
+                </h2>
+                <p className="text-zinc-400 mb-4">
+                  Entenda como os sistemas distribuídos alcançam acordo em decisões críticas usando
+                  protocolos de consenso.
+                </p>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="px-2 py-1 bg-purple-500/20 text-purple-300 rounded">
+                    Consenso
+                  </span>
+                  <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+                    Acordo Distribuído
+                  </span>
+                </div>
+              </div>
+            </div>
+          </Link>
+
+          {/* Lamport Timestamps */}
+          <Link 
+            to="/estrategias-de-consistencia/lamport-timestamps"
+            className="group bg-zinc-900/50 rounded-lg p-6 hover:bg-zinc-800/50 transition-colors"
+          >
+            <div className="flex items-start gap-4">
+              <div className="p-3 bg-blue-500/10 rounded-lg group-hover:bg-blue-500/20 transition-colors">
+                <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-blue-400 transition-colors">
+                  Relógios Lógicos de Lamport
+                </h2>
+                <p className="text-zinc-400 mb-4">
+                  Descubra como os timestamps de Lamport estabelecem ordem em eventos distribuídos
+                  e garantem a consistência causal entre processos.
+                </p>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+                    Ordenação
+                  </span>
+                  <span className="px-2 py-1 bg-green-500/20 text-green-300 rounded">
+                    Causalidade
+                  </span>
+                </div>
+              </div>
+            </div>
+          </Link>
+        </div>
+
+        {/* Coming Soon Section */}
+        <div className="mt-12 p-6 bg-zinc-900/50 rounded-lg border border-zinc-800">
+          <h2 className="text-xl font-semibold text-white mb-4">Em Breve</h2>
+          <p className="text-zinc-400">
+            Mais estratégias de consistência serão adicionadas em breve, incluindo:
+          </p>
+          <ul className="mt-4 space-y-2">
+            <li className="flex items-center gap-2 text-zinc-500">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-            </div>
-            <h2 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
-              Consistência Eventual
-            </h2>
-            <p className="text-zinc-400">
-              Modelo onde as réplicas podem divergir temporariamente, mas convergem com o tempo.
-            </p>
-            <div className="absolute -top-2 right-2 bg-zinc-800 text-white text-xs px-2 py-0.5 rounded-full">
-              Em breve
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Causal Consistency Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="bg-zinc-900 rounded-lg p-6 hover:bg-zinc-800 transition-colors group"
-        >
-          <div className="space-y-4 block opacity-50 cursor-not-allowed">
-            <div className="text-blue-400 mb-4">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" />
+              Relógios Vetoriais
+            </li>
+            <li className="flex items-center gap-2 text-zinc-500">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-            </div>
-            <h2 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
-              Consistência Causal
-            </h2>
-            <p className="text-zinc-400">
-              Garante que operações relacionadas causalmente sejam vistas na mesma ordem por todos os nós.
-            </p>
-            <div className="absolute -top-2 right-2 bg-zinc-800 text-white text-xs px-2 py-0.5 rounded-full">
-              Em breve
-            </div>
-          </div>
-        </motion.div>
+              Consistência Eventual
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   );
