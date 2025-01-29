@@ -59,12 +59,10 @@ import ConsensusStrategy from "./components/ConsistencyStrategies/ConsensusStrat
 import ConsensusSimulator from './components/ConsistencyStrategies/ConsensusSimulator';
 import Firewall from "./components/SystemComponents/Firewall";
 import FirewallSimulator from "./components/SystemComponents/FirewallSimulator";
-<<<<<<< HEAD
 import LamportTimestamps from "./components/ConsistencyStrategies/LamportTimestamps";
 import LamportTimestampsSimulator from "./components/ConsistencyStrategies/LamportTimestampsSimulator";
-=======
 import SystemEditor from "./components/SystemEditor/SystemEditor";
->>>>>>> c0ee43b74dfcd81a953a9cd28d86535b1877d9e8
+
 
 const menuItems: MenuItem[] = [
   {
