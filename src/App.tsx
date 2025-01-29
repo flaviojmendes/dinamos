@@ -59,6 +59,8 @@ import ConsensusStrategy from "./components/ConsistencyStrategies/ConsensusStrat
 import ConsensusSimulator from './components/ConsistencyStrategies/ConsensusSimulator';
 import Firewall from "./components/SystemComponents/Firewall";
 import FirewallSimulator from "./components/SystemComponents/FirewallSimulator";
+import LamportTimestamps from "./components/ConsistencyStrategies/LamportTimestamps";
+import LamportTimestampsSimulator from "./components/ConsistencyStrategies/LamportTimestampsSimulator";
 
 const menuItems: MenuItem[] = [
   {
@@ -299,6 +301,18 @@ const menuItems: MenuItem[] = [
             name: 'Simulador',
             path: '/estrategias-de-consistencia/consenso/simulador',
             description: 'Simulação interativa dos protocolos de consenso'
+          }
+        ]
+      },
+      {
+        name: 'Relógios Lógicos de Lamport',
+        path: '/estrategias-de-consistencia/lamport-timestamps',
+        description: 'Ordenação de eventos em sistemas distribuídos',
+        children: [
+          {
+            name: 'Simulador',
+            path: '/estrategias-de-consistencia/lamport-timestamps/simulador',
+            description: 'Visualize a ordenação de eventos com timestamps de Lamport'
           }
         ]
       }
@@ -1071,6 +1085,22 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <ConsensusSimulator />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/estrategias-de-consistencia/lamport-timestamps"
+              element={
+                <ProtectedRoute>
+                  <LamportTimestamps />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/estrategias-de-consistencia/lamport-timestamps/simulador"
+              element={
+                <ProtectedRoute>
+                  <LamportTimestampsSimulator />
                 </ProtectedRoute>
               }
             />
