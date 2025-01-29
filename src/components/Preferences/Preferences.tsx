@@ -54,7 +54,7 @@ export default function Preferences() {
             </div>
 
             {/* Subscription Management */}
-            <div>
+            {/* <div>
               <h2 className="text-xl font-semibold mb-4 text-purple-400">Gerenciar Assinatura</h2>
               <div className="bg-zinc-800/50 rounded-lg p-6">
                 <p className="text-zinc-400 mb-4">
@@ -67,7 +67,7 @@ export default function Preferences() {
                   Gerenciar Assinatura
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
         </motion.div>
       </div>
