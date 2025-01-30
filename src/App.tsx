@@ -62,6 +62,13 @@ import FirewallSimulator from "./components/SystemComponents/FirewallSimulator";
 import LamportTimestamps from "./components/ConsistencyStrategies/LamportTimestamps";
 import LamportTimestampsSimulator from "./components/ConsistencyStrategies/LamportTimestampsSimulator";
 import SystemEditor from "./components/SystemEditor/SystemEditor";
+import SecurityOverview from "./components/Security/SecurityOverview";
+import Authentication from "./components/Security/Authentication";
+import Authorization from "./components/Security/Authorization";
+import Cryptography from "./components/Security/Cryptography";
+import TokensAndJWT from "./components/Security/TokensAndJWT";
+import SSLTLS from "./components/Security/SSLTLS";
+import CommonAttacks from "./components/Security/CommonAttacks";
 
 
 const menuItems: MenuItem[] = [
@@ -335,6 +342,43 @@ const menuItems: MenuItem[] = [
     description: "Como monitorar e manter o sistema funcionando",
     comingSoon: true,
     disabled: true,
+  },
+  {
+    path: "/seguranca",
+    name: "Segurança",
+    description: "Proteção e segurança em sistemas distribuídos",
+    children: [
+      {
+        path: "/seguranca/autenticacao",
+        name: "Autenticação",
+        description: "Verificação de identidade em sistemas distribuídos",
+      },
+      {
+        path: "/seguranca/autorizacao",
+        name: "Autorização",
+        description: "Controle de acesso e permissões",
+      },
+      {
+        path: "/seguranca/criptografia",
+        name: "Criptografia",
+        description: "Proteção de dados em trânsito e em repouso",
+      },
+      {
+        path: "/seguranca/tokens",
+        name: "Tokens e JWT",
+        description: "Gerenciamento de sessões e tokens de acesso",
+      },
+      {
+        path: "/seguranca/ssl-tls",
+        name: "SSL/TLS",
+        description: "Comunicação segura entre sistemas",
+      },
+      {
+        path: "/seguranca/ataques",
+        name: "Ataques Comuns",
+        description: "Prevenção contra ataques em sistemas distribuídos",
+      }
+    ]
   },
 ];
 
@@ -1148,6 +1192,62 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <SystemEditor />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/seguranca"
+              element={
+                <ProtectedRoute>
+                  <SecurityOverview />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/seguranca/autenticacao"
+              element={
+                <ProtectedRoute>
+                  <Authentication />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/seguranca/autorizacao"
+              element={
+                <ProtectedRoute>
+                  <Authorization />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/seguranca/criptografia"
+              element={
+                <ProtectedRoute>
+                  <Cryptography />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/seguranca/tokens"
+              element={
+                <ProtectedRoute>
+                  <TokensAndJWT />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/seguranca/ssl-tls"
+              element={
+                <ProtectedRoute>
+                  <SSLTLS />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/seguranca/ataques"
+              element={
+                <ProtectedRoute>
+                  <CommonAttacks />
                 </ProtectedRoute>
               }
             />
