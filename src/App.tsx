@@ -70,6 +70,8 @@ import TokensAndJWT from "./components/Security/TokensAndJWT";
 import SSLTLS from "./components/Security/SSLTLS";
 import CommonAttacks from "./components/Security/CommonAttacks";
 import TokensSimulator from './components/Security/TokensSimulator';
+import CryptographySimulator from './components/Security/CryptographySimulator';
+
 
 
 const menuItems: MenuItem[] = [
@@ -363,16 +365,31 @@ const menuItems: MenuItem[] = [
         path: "/seguranca/criptografia",
         name: "Criptografia",
         description: "Proteção de dados em trânsito e em repouso",
+        children: [
+          {
+            path: "/seguranca/criptografia/simulador",
+            name: "Simulador",
+            description: "Experimente diferentes tipos de criptografia na prática",
+          },
+        ],
       },
       {
         path: "/seguranca/tokens",
         name: "Tokens e JWT",
         description: "Gerenciamento de sessões e tokens de acesso",
+        children: [
+          {
+            path: "/seguranca/tokens/simulador",
+            name: "Simulador",
+            description: "Experimente a geração e validação de JWTs",
+          },
+        ],
       },
       {
         path: "/seguranca/ssl-tls",
         name: "SSL/TLS",
         description: "Comunicação segura entre sistemas",
+        
       },
       {
         path: "/seguranca/ataques",
@@ -1252,11 +1269,20 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+            
             <Route
               path="/seguranca/ataques"
               element={
                 <ProtectedRoute>
                   <CommonAttacks />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/seguranca/criptografia/simulador"
+              element={
+                <ProtectedRoute>
+                  <CryptographySimulator />
                 </ProtectedRoute>
               }
             />

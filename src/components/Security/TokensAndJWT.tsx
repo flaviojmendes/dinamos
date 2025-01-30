@@ -1,17 +1,27 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function TokensAndJWT() {
   return (
     <div className="min-h-full bg-gradient-to-b from-zinc-900 to-black">
-      <div className="py-12 px-6 max-w-4xl mx-auto">
+      <div className="py-12 px-6 max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-4xl font-bold text-white mb-4">
             Tokens e JWT em Sistemas Distribuídos
           </h1>
-          <p className="text-xl text-zinc-400">
-            Um guia completo sobre autenticação e autorização stateless em sistemas distribuídos
+          <p className="text-lg text-zinc-400 mb-6">
+            Entenda como funcionam tokens e JSON Web Tokens (JWT) em sistemas distribuídos
           </p>
+          <Link
+            to="/seguranca/tokens/simulador"
+            className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors"
+          >
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            Experimente o Simulador de JWT
+          </Link>
         </div>
 
         {/* Info Banner */}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function CommonAttacks() {
+export default function Attacks() {
   return (
     <div className="min-h-full bg-gradient-to-b from-zinc-900 to-black">
       <div className="py-12 px-6 max-w-7xl mx-auto">
