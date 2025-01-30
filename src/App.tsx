@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { Routes, Route, NavLink, Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import CacheSimulation from "./components/CacheSimulation/CacheSimulation";
@@ -32,8 +32,8 @@ import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import Login from "./components/Auth/Login";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
 import Subscription from "./components/Subscription/Subscription";
-import PaymentSuccess from './pages/PaymentSuccess';
-import ReactGA from 'react-ga4';
+import PaymentSuccess from "./pages/PaymentSuccess";
+import ReactGA from "react-ga4";
 import ServiceOriented from "./components/DesignPrinciples/ServiceOriented";
 import FaultTolerance from "./components/DesignPrinciples/FaultTolerance";
 import Retries from "./components/DesignPrinciples/Retries";
@@ -56,7 +56,7 @@ import Disponibilidade from "./components/DesignPrinciples/Disponibilidade";
 import Preferences from "./components/Preferences/Preferences";
 import ConsistencyStrategies from "./components/ConsistencyStrategies/ConsistencyStrategies";
 import ConsensusStrategy from "./components/ConsistencyStrategies/ConsensusStrategy";
-import ConsensusSimulator from './components/ConsistencyStrategies/ConsensusSimulator';
+import ConsensusSimulator from "./components/ConsistencyStrategies/ConsensusSimulator";
 import Firewall from "./components/SystemComponents/Firewall";
 import FirewallSimulator from "./components/SystemComponents/FirewallSimulator";
 import LamportTimestamps from "./components/ConsistencyStrategies/LamportTimestamps";
@@ -69,13 +69,27 @@ import Cryptography from "./components/Security/Cryptography";
 import TokensAndJWT from "./components/Security/TokensAndJWT";
 import SSLTLS from "./components/Security/SSLTLS";
 import CommonAttacks from "./components/Security/CommonAttacks";
-import TokensSimulator from './components/Security/TokensSimulator';
-import CryptographySimulator from './components/Security/CryptographySimulator';
-import AttackSimulatorPage from './components/Security/AttackSimulatorPage';
-
-
+import TokensSimulator from "./components/Security/TokensSimulator";
+import CryptographySimulator from "./components/Security/CryptographySimulator";
+import AttackSimulatorPage from "./components/Security/AttackSimulatorPage";
+import Roadmap from "./components/Roadmap/Roadmap";
+import ContentLayout from './components/Common/ContentLayout';
+import { useContentProgress } from './hooks/useContentProgress';
+import ContentPage from './components/Common/ContentPage';
 
 const menuItems: MenuItem[] = [
+  {
+    path: "/roadmap",
+    name: "🎯 Comece Aqui",
+    description: "Sua jornada de aprendizado passo a passo",
+    customStyle: "bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border-l-4 border-blue-500",
+    customHoverStyle: "hover:from-zinc-800 hover:to-zinc-900",
+    icon: (
+      <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+      </svg>
+    ),
+  },
   {
     path: "/intro",
     name: "Introdução",
@@ -92,8 +106,8 @@ const menuItems: MenuItem[] = [
     description: "Crie e visualize arquiteturas distribuídas",
     badges: [
       { text: "Alpha", color: "bg-blue-500" },
-      { text: "Grátis", color: "bg-green-500" }
-    ]
+      { text: "Grátis", color: "bg-green-500" },
+    ],
   },
   {
     path: "/system-design-101",
@@ -310,35 +324,36 @@ const menuItems: MenuItem[] = [
     ],
   },
   {
-    name: 'Estratégias de Consistência',
-    path: '/estrategias-de-consistencia',
-    description: 'Como garantir a consistência em sistemas distribuídos',
+    name: "Estratégias de Consistência",
+    path: "/estrategias-de-consistencia",
+    description: "Como garantir a consistência em sistemas distribuídos",
     children: [
       {
-        name: 'Estratégia de Consenso',
-        path: '/estrategias-de-consistencia/consenso',
-        description: 'Protocolos e mecanismos para garantir acordo entre nós',
+        name: "Estratégia de Consenso",
+        path: "/estrategias-de-consistencia/consenso",
+        description: "Protocolos e mecanismos para garantir acordo entre nós",
         children: [
           {
-            name: 'Simulador',
-            path: '/estrategias-de-consistencia/consenso/simulador',
-            description: 'Simulação interativa dos protocolos de consenso'
-          }
-        ]
+            name: "Simulador",
+            path: "/estrategias-de-consistencia/consenso/simulador",
+            description: "Simulação interativa dos protocolos de consenso",
+          },
+        ],
       },
       {
-        name: 'Relógios Lógicos de Lamport',
-        path: '/estrategias-de-consistencia/lamport-timestamps',
-        description: 'Ordenação de eventos em sistemas distribuídos',
+        name: "Relógios Lógicos de Lamport",
+        path: "/estrategias-de-consistencia/lamport-timestamps",
+        description: "Ordenação de eventos em sistemas distribuídos",
         children: [
           {
-            name: 'Simulador',
-            path: '/estrategias-de-consistencia/lamport-timestamps/simulador',
-            description: 'Visualize a ordenação de eventos com timestamps de Lamport'
-          }
-        ]
-      }
-    ]
+            name: "Simulador",
+            path: "/estrategias-de-consistencia/lamport-timestamps/simulador",
+            description:
+              "Visualize a ordenação de eventos com timestamps de Lamport",
+          },
+        ],
+      },
+    ],
   },
   {
     path: "/monitoramento-e-manutencao",
@@ -370,7 +385,8 @@ const menuItems: MenuItem[] = [
           {
             path: "/seguranca/criptografia/simulador",
             name: "Simulador",
-            description: "Experimente diferentes tipos de criptografia na prática",
+            description:
+              "Experimente diferentes tipos de criptografia na prática",
           },
         ],
       },
@@ -390,14 +406,13 @@ const menuItems: MenuItem[] = [
         path: "/seguranca/ssl-tls",
         name: "SSL/TLS",
         description: "Comunicação segura entre sistemas",
-        
       },
       {
         path: "/seguranca/ataques",
         name: "Ataques Comuns",
         description: "Prevenção contra ataques em sistemas distribuídos",
-      }
-    ]
+      },
+    ],
   },
 ];
 
@@ -405,10 +420,11 @@ export default function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const { user, signOut } = useAuth();
+  const { isCompleted } = useContentProgress();
 
-  ReactGA.initialize('G-FB645J9ZQH');
+  ReactGA.initialize("G-FB645J9ZQH");
   ReactGA.send({
-    hitType: 'pageview',
+    hitType: "pageview",
     page: window.location.pathname + window.location.search,
   });
 
@@ -450,6 +466,8 @@ export default function App() {
                 `flex-1 flex flex-col p-3 rounded-lg transition-colors relative ${
                   isActive
                     ? "bg-blue-500 text-white"
+                    : item.customStyle
+                    ? `${item.customStyle} ${item.customHoverStyle || "hover:bg-zinc-800"} text-zinc-400 hover:text-white`
                     : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
                 }`
               }
@@ -457,14 +475,14 @@ export default function App() {
                 if (!item.disabled && isMobile) {
                   setIsSidebarOpen(false);
                   ReactGA.event({
-                    category: 'User',
-                    action: 'Clicked on Menu Item',
+                    category: "User",
+                    action: "Clicked on Menu Item",
                     label: item.name,
                   });
                 }
               }}
             >
-              <span className="font-medium">{item.name}</span>
+                <span className="font-medium">{item.name}</span>
               <span className="text-sm opacity-75">{item.description}</span>
               {item.badges && (
                 <div className="absolute -top-2 right-2 flex gap-1">
@@ -486,8 +504,8 @@ export default function App() {
                 e.preventDefault();
                 setIsExpanded(!isExpanded);
                 ReactGA.event({
-                  category: 'User',
-                  action: 'Clicked on Menu Item',
+                  category: "User",
+                  action: "Clicked on Menu Item",
                   label: item.name,
                 });
               }}
@@ -706,8 +724,12 @@ export default function App() {
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors"
                 >
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
                   </svg>
                   <span>Powered by: @trilhainfo</span>
                 </a>
@@ -770,7 +792,9 @@ export default function App() {
               path="/intro"
               element={
                 <ProtectedRoute requiresSubscription={false}>
-                  <Introduction />
+                  <ContentPage>
+                    <Introduction />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -778,7 +802,9 @@ export default function App() {
               path="/sistemas-distribuidos-101"
               element={
                 <ProtectedRoute requiresSubscription={false}>
-                  <DistributedSystems101 />
+                  <ContentPage>
+                    <DistributedSystems101 />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -786,7 +812,9 @@ export default function App() {
               path="/system-design-101"
               element={
                 <ProtectedRoute requiresSubscription={false}>
-                  <SystemDesign101 />
+                  <ContentPage>
+                    <SystemDesign101 />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -794,7 +822,9 @@ export default function App() {
               path="/componentes"
               element={
                 <ProtectedRoute>
-                  <SystemComponents />
+                  <ContentPage>
+                    <SystemComponents />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -802,7 +832,9 @@ export default function App() {
               path="/componentes/banco-dados"
               element={
                 <ProtectedRoute>
-                  <Database />
+                  <ContentPage>
+                    <Database />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -810,7 +842,9 @@ export default function App() {
               path="/componentes/cache"
               element={
                 <ProtectedRoute>
-                  <CacheComponent />
+                  <ContentPage>
+                    <CacheComponent />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -818,7 +852,9 @@ export default function App() {
               path="/componentes/cache/simulator"
               element={
                 <ProtectedRoute>
-                  <CacheSimulation />
+                  <ContentPage>
+                    <CacheSimulation />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -826,7 +862,9 @@ export default function App() {
               path="/componentes/load-balancer"
               element={
                 <ProtectedRoute>
-                  <LoadBalancer />
+                  <ContentPage>
+                    <LoadBalancer />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -834,7 +872,9 @@ export default function App() {
               path="/componentes/load-balancer/simulator"
               element={
                 <ProtectedRoute>
-                  <RoundRobin />
+                  <ContentPage>
+                    <RoundRobin />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -842,7 +882,9 @@ export default function App() {
               path="/componentes/message-queue"
               element={
                 <ProtectedRoute>
-                  <MessageQueueComponent />
+                  <ContentPage>
+                    <MessageQueueComponent />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -850,7 +892,9 @@ export default function App() {
               path="/componentes/message-queue/simulator"
               element={
                 <ProtectedRoute>
-                  <MessageQueueSimulator />
+                  <ContentPage>
+                    <MessageQueueSimulator />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -858,7 +902,9 @@ export default function App() {
               path="/componentes/cdn"
               element={
                 <ProtectedRoute>
-                  <CDNComponent />
+                  <ContentPage>
+                    <CDNComponent />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -866,7 +912,9 @@ export default function App() {
               path="/componentes/cdn/simulator"
               element={
                 <ProtectedRoute>
-                  <CDN />
+                  <ContentPage>
+                    <CDN />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -874,7 +922,9 @@ export default function App() {
               path="/componentes/api-gateway"
               element={
                 <ProtectedRoute>
-                  <APIGateway />
+                  <ContentPage>
+                    <APIGateway />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -882,7 +932,9 @@ export default function App() {
               path="/componentes/api-gateway/simulator"
               element={
                 <ProtectedRoute>
-                  <APIGatewaySimulator />
+                  <ContentPage>
+                    <APIGatewaySimulator />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -890,7 +942,9 @@ export default function App() {
               path="/horizontal-scaling"
               element={
                 <ProtectedRoute>
-                  <HorizontalScaling />
+                  <ContentPage>
+                    <HorizontalScaling />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -898,7 +952,9 @@ export default function App() {
               path="/circuit-breaker"
               element={
                 <ProtectedRoute>
-                  <CircuitBreaker />
+                  <ContentPage>
+                    <CircuitBreaker />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -906,7 +962,9 @@ export default function App() {
               path="/backpressure"
               element={
                 <ProtectedRoute>
-                  <Backpressure />
+                  <ContentPage>
+                    <Backpressure />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -914,7 +972,9 @@ export default function App() {
               path="/rate-limiter"
               element={
                 <ProtectedRoute>
-                  <RateLimiter />
+                  <ContentPage>
+                    <RateLimiter />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -922,7 +982,9 @@ export default function App() {
               path="/fallback"
               element={
                 <ProtectedRoute>
-                  <Fallback />
+                  <ContentPage>
+                    <Fallback />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -930,7 +992,9 @@ export default function App() {
               path="/async-sync"
               element={
                 <ProtectedRoute>
-                  <AsyncSync />
+                  <ContentPage>
+                    <AsyncSync />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -938,7 +1002,9 @@ export default function App() {
               path="/cdn"
               element={
                 <ProtectedRoute>
-                  <CDN />
+                  <ContentPage>
+                    <CDN />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -946,7 +1012,9 @@ export default function App() {
               path="/principios-design"
               element={
                 <ProtectedRoute>
-                  <DesignPrinciples />
+                  <ContentPage>
+                    <DesignPrinciples />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -954,7 +1022,9 @@ export default function App() {
               path="/principios-design/eventos"
               element={
                 <ProtectedRoute>
-                  <EventDriven />
+                  <ContentPage>
+                    <EventDriven />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -962,7 +1032,9 @@ export default function App() {
               path="/principios-design/eventos/simulator"
               element={
                 <ProtectedRoute>
-                  <EventSourcingSimulator />
+                  <ContentPage>
+                    <EventSourcingSimulator />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -970,7 +1042,9 @@ export default function App() {
               path="/principios-design/servicos"
               element={
                 <ProtectedRoute>
-                  <ServiceOriented />
+                  <ContentPage>
+                    <ServiceOriented />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -978,7 +1052,9 @@ export default function App() {
               path="/principios-design/servicos/simulator"
               element={
                 <ProtectedRoute>
-                  <ServiceArchitectureSimulator />
+                  <ContentPage>
+                    <ServiceArchitectureSimulator />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -986,7 +1062,9 @@ export default function App() {
               path="/principios-design/tolerancia-falhas"
               element={
                 <ProtectedRoute>
-                  <FaultTolerance />
+                  <ContentPage>
+                    <FaultTolerance />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -994,7 +1072,9 @@ export default function App() {
               path="/principios-design/tolerancia-falhas/retries"
               element={
                 <ProtectedRoute>
-                  <Retries />
+                  <ContentPage>
+                    <Retries />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1002,7 +1082,9 @@ export default function App() {
               path="/principios-design/tolerancia-falhas/retries/simulator"
               element={
                 <ProtectedRoute>
-                  <RetriesSimulator />
+                  <ContentPage>
+                    <RetriesSimulator />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1010,7 +1092,9 @@ export default function App() {
               path="/principios-design/tolerancia-falhas/circuit-breaker"
               element={
                 <ProtectedRoute>
-                  <CircuitBreakerContent />
+                  <ContentPage>
+                    <CircuitBreakerContent />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1018,7 +1102,9 @@ export default function App() {
               path="/principios-design/tolerancia-falhas/circuit-breaker/simulator"
               element={
                 <ProtectedRoute>
-                  <CircuitBreaker />
+                  <ContentPage>
+                    <CircuitBreaker />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1026,7 +1112,9 @@ export default function App() {
               path="/principios-design/tolerancia-falhas/timeout"
               element={
                 <ProtectedRoute>
-                  <Timeout />
+                  <ContentPage>
+                    <Timeout />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1034,7 +1122,9 @@ export default function App() {
               path="/principios-design/tolerancia-falhas/timeout/simulator"
               element={
                 <ProtectedRoute>
-                  <TimeoutSimulator />
+                  <ContentPage>
+                    <TimeoutSimulator />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1042,7 +1132,9 @@ export default function App() {
               path="/principios-design/tolerancia-falhas/fallback"
               element={
                 <ProtectedRoute>
-                  <Fallback />
+                  <ContentPage>
+                    <Fallback />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1050,7 +1142,9 @@ export default function App() {
               path="/principios-design/escalabilidade"
               element={
                 <ProtectedRoute>
-                  <Escalabilidade />
+                  <ContentPage>
+                    <Escalabilidade />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1058,7 +1152,9 @@ export default function App() {
               path="/principios-design/escalabilidade/horizontal"
               element={
                 <ProtectedRoute>
-                  <HorizontalScaling />
+                  <ContentPage>
+                    <HorizontalScaling />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1066,7 +1162,9 @@ export default function App() {
               path="/principios-design/escalabilidade/horizontal/simulator"
               element={
                 <ProtectedRoute>
-                  <HorizontalScalingSimulator />
+                  <ContentPage>
+                    <HorizontalScalingSimulator />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1074,7 +1172,9 @@ export default function App() {
               path="/principios-design/escalabilidade/vertical"
               element={
                 <ProtectedRoute>
-                  <VerticalScaling />
+                  <ContentPage>
+                    <VerticalScaling />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1082,7 +1182,9 @@ export default function App() {
               path="/principios-design/escalabilidade/vertical/simulator"
               element={
                 <ProtectedRoute>
-                  <VerticalScalingSimulator />
+                  <ContentPage>
+                    <VerticalScalingSimulator />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1090,7 +1192,9 @@ export default function App() {
               path="/principios-design/escalabilidade/consistencia"
               element={
                 <ProtectedRoute>
-                  <DataConsistency />
+                  <ContentPage>
+                    <DataConsistency />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1098,7 +1202,9 @@ export default function App() {
               path="/principios-design/escalabilidade/latencia"
               element={
                 <ProtectedRoute>
-                  <Latency />
+                  <ContentPage>
+                    <Latency />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1106,7 +1212,9 @@ export default function App() {
               path="/principios-design/escalabilidade/failover"
               element={
                 <ProtectedRoute>
-                  <Failover />
+                  <ContentPage>
+                    <Failover />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1114,7 +1222,9 @@ export default function App() {
               path="/principios-design/escalabilidade/simulator"
               element={
                 <ProtectedRoute>
-                  <ScalabilitySimulator />
+                  <ContentPage>
+                    <ScalabilitySimulator />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1122,7 +1232,9 @@ export default function App() {
               path="/principios-design/disponibilidade/simulator"
               element={
                 <ProtectedRoute>
-                  <ReplicacaoSimulator />
+                  <ContentPage>
+                    <ReplicacaoSimulator />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1130,7 +1242,9 @@ export default function App() {
               path="/principios-design/disponibilidade/replicacao"
               element={
                 <ProtectedRoute>
-                  <Replicacao />
+                  <ContentPage>
+                    <Replicacao />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1138,7 +1252,9 @@ export default function App() {
               path="/principios-design/disponibilidade/failover"
               element={
                 <ProtectedRoute>
-                  <Failover />
+                  <ContentPage>
+                    <Failover />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1146,7 +1262,9 @@ export default function App() {
               path="/principios-design/disponibilidade"
               element={
                 <ProtectedRoute>
-                  <Disponibilidade />
+                  <ContentPage>
+                    <Disponibilidade />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1154,7 +1272,9 @@ export default function App() {
               path="/estrategias-de-consistencia"
               element={
                 <ProtectedRoute>
-                  <ConsistencyStrategies />
+                  <ContentPage>
+                    <ConsistencyStrategies />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1162,7 +1282,9 @@ export default function App() {
               path="/estrategias-de-consistencia/consenso"
               element={
                 <ProtectedRoute>
-                  <ConsensusStrategy />
+                  <ContentPage>
+                    <ConsensusStrategy />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1170,7 +1292,9 @@ export default function App() {
               path="/estrategias-de-consistencia/consenso/simulador"
               element={
                 <ProtectedRoute>
-                  <ConsensusSimulator />
+                  <ContentPage>
+                    <ConsensusSimulator />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1178,7 +1302,9 @@ export default function App() {
               path="/estrategias-de-consistencia/lamport-timestamps"
               element={
                 <ProtectedRoute>
-                  <LamportTimestamps />
+                  <ContentPage>
+                    <LamportTimestamps />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1186,7 +1312,9 @@ export default function App() {
               path="/estrategias-de-consistencia/lamport-timestamps/simulador"
               element={
                 <ProtectedRoute>
-                  <LamportTimestampsSimulator />
+                  <ContentPage>
+                    <LamportTimestampsSimulator />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1194,7 +1322,9 @@ export default function App() {
               path="/componentes/firewall"
               element={
                 <ProtectedRoute>
-                  <Firewall />
+                  <ContentPage>
+                    <Firewall />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1202,7 +1332,9 @@ export default function App() {
               path="/componentes/firewall/simulator"
               element={
                 <ProtectedRoute>
-                  <FirewallSimulator />
+                  <ContentPage>
+                    <FirewallSimulator />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1210,7 +1342,9 @@ export default function App() {
               path="/editor"
               element={
                 <ProtectedRoute>
-                  <SystemEditor />
+                  <ContentPage>
+                    <SystemEditor />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1218,7 +1352,9 @@ export default function App() {
               path="/seguranca"
               element={
                 <ProtectedRoute>
-                  <SecurityOverview />
+                  <ContentPage>
+                    <SecurityOverview />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1226,7 +1362,9 @@ export default function App() {
               path="/seguranca/autenticacao"
               element={
                 <ProtectedRoute>
-                  <Authentication />
+                  <ContentPage>
+                    <Authentication />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1234,7 +1372,9 @@ export default function App() {
               path="/seguranca/autorizacao"
               element={
                 <ProtectedRoute>
-                  <Authorization />
+                  <ContentPage>
+                    <Authorization />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1242,7 +1382,9 @@ export default function App() {
               path="/seguranca/criptografia"
               element={
                 <ProtectedRoute>
-                  <Cryptography />
+                  <ContentPage>
+                    <Cryptography />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1250,7 +1392,9 @@ export default function App() {
               path="/seguranca/tokens"
               element={
                 <ProtectedRoute>
-                  <TokensAndJWT />
+                  <ContentPage>
+                    <TokensAndJWT />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1258,7 +1402,9 @@ export default function App() {
               path="/seguranca/tokens/simulador"
               element={
                 <ProtectedRoute>
-                  <TokensSimulator />
+                  <ContentPage>
+                    <TokensSimulator />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1266,16 +1412,20 @@ export default function App() {
               path="/seguranca/ssl-tls"
               element={
                 <ProtectedRoute>
-                  <SSLTLS />
+                  <ContentPage>
+                    <SSLTLS />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
-            
+
             <Route
               path="/seguranca/ataques"
               element={
                 <ProtectedRoute>
-                  <CommonAttacks />
+                  <ContentPage>
+                    <CommonAttacks />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1283,7 +1433,9 @@ export default function App() {
               path="/seguranca/ataques/simulador"
               element={
                 <ProtectedRoute>
-                  <AttackSimulatorPage />
+                  <ContentPage>
+                    <AttackSimulatorPage />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
@@ -1291,12 +1443,23 @@ export default function App() {
               path="/seguranca/criptografia/simulador"
               element={
                 <ProtectedRoute>
-                  <CryptographySimulator />
+                  <ContentPage>
+                    <CryptographySimulator />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/roadmap"
+              element={
+                <ProtectedRoute requiresSubscription={false}>
+                  <ContentPage>
+                    <Roadmap />
+                  </ContentPage>
                 </ProtectedRoute>
               }
             />
           </Routes>
-          
         </div>
       </main>
     </div>

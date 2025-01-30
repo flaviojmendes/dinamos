@@ -9,4 +9,7 @@ export interface MenuItem {
     text: string;
     color: string;
   }>;
+  icon?: JSX.Element;
+  customStyle?: string;
+  customHoverStyle?: string;
 } 
