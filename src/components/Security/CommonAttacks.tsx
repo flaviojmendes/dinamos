@@ -33,6 +33,35 @@ export default function CommonAttacks() {
           </div>
         </div>
 
+        {/* Attack Simulator Link */}
+        <section className="mb-12">
+          <div className="bg-gradient-to-r from-red-500/10 to-red-500/5 rounded-lg p-8 border border-red-500/20">
+            <div className="flex items-start space-x-6">
+              <div className="flex-shrink-0">
+                <svg className="h-12 w-12 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-2xl font-bold text-white mb-2">Simulador Interativo de Ataques</h3>
+                <p className="text-lg text-zinc-400 mb-4">
+                  Experimente nossa ferramenta interativa que demonstra visualmente como funcionam os ataques DDoS e Man-in-the-Middle.
+                  Visualize o impacto dos ataques em tempo real e entenda melhor as estratégias de proteção.
+                </p>
+                <Link
+                  to="/seguranca/ataques/simulador"
+                  className="inline-flex items-center px-6 py-3 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition-colors"
+                >
+                  Acessar Simulador
+                  <svg className="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Main Content */}
         <div className="space-y-12">
           {/* Categorias de Ataques */}

@@ -71,6 +71,7 @@ import SSLTLS from "./components/Security/SSLTLS";
 import CommonAttacks from "./components/Security/CommonAttacks";
 import TokensSimulator from './components/Security/TokensSimulator';
 import CryptographySimulator from './components/Security/CryptographySimulator';
+import AttackSimulatorPage from './components/Security/AttackSimulatorPage';
 
 
 
@@ -1275,6 +1276,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <CommonAttacks />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/seguranca/ataques/simulador"
+              element={
+                <ProtectedRoute>
+                  <AttackSimulatorPage />
                 </ProtectedRoute>
               }
             />
