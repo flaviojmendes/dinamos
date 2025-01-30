@@ -69,6 +69,7 @@ import Cryptography from "./components/Security/Cryptography";
 import TokensAndJWT from "./components/Security/TokensAndJWT";
 import SSLTLS from "./components/Security/SSLTLS";
 import CommonAttacks from "./components/Security/CommonAttacks";
+import TokensSimulator from './components/Security/TokensSimulator';
 
 
 const menuItems: MenuItem[] = [
@@ -1232,6 +1233,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <TokensAndJWT />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/seguranca/tokens/simulador"
+              element={
+                <ProtectedRoute>
+                  <TokensSimulator />
                 </ProtectedRoute>
               }
             />
