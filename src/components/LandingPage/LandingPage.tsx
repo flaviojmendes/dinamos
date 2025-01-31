@@ -255,37 +255,63 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6">
               <div className="bg-zinc-900/50 rounded-xl p-6">
-                <h3 className="text-xl font-semibold mb-4 text-blue-400">Escalabilidade</h3>
+                <h3 className="text-xl font-semibold mb-4 text-blue-400">Fundamentos</h3>
                 <ul className="space-y-2 text-zinc-400">
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
-                    <span>Escalabilidade Horizontal (Scale Out)</span>
+                    <span>Introdução a Sistemas Distribuídos</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
-                    <span>Escalabilidade Vertical (Scale Up)</span>
+                    <span>Conceitos através de analogias práticas</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
-                    <span>Consistência e Latência</span>
+                    <span>System Design 101</span>
                   </li>
                 </ul>
               </div>
 
               <div className="bg-zinc-900/50 rounded-xl p-6">
-                <h3 className="text-xl font-semibold mb-4 text-purple-400">Alta Disponibilidade</h3>
+                <h3 className="text-xl font-semibold mb-4 text-purple-400">Componentes Básicos</h3>
                 <ul className="space-y-2 text-zinc-400">
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
-                    <span>Replicação de Dados</span>
+                    <span>Bancos de Dados (SQL e NoSQL)</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
-                    <span>Estratégias de Failover</span>
+                    <span>Cache e Estratégias de Caching</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
-                    <span>Zonas de Disponibilidade</span>
+                    <span>Load Balancer e Algoritmos</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-2">✓</span>
+                    <span>Message Queue e Event-Driven</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-2">✓</span>
+                    <span>CDN e API Gateway</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-zinc-900/50 rounded-xl p-6">
+                <h3 className="text-xl font-semibold mb-4 text-green-400">Princípios de Design</h3>
+                <ul className="space-y-2 text-zinc-400">
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-2">✓</span>
+                    <span>Arquitetura Orientada a Eventos</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-2">✓</span>
+                    <span>Monolito vs Microsserviços</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-2">✓</span>
+                    <span>Tolerância a Falhas</span>
                   </li>
                 </ul>
               </div>
@@ -293,7 +319,47 @@ export default function LandingPage() {
 
             <div className="space-y-6">
               <div className="bg-zinc-900/50 rounded-xl p-6">
-                <h3 className="text-xl font-semibold mb-4 text-green-400">Tolerância a Falhas</h3>
+                <h3 className="text-xl font-semibold mb-4 text-yellow-400">Estratégias de Consistência</h3>
+                <ul className="space-y-2 text-zinc-400">
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-2">✓</span>
+                    <span>Protocolos de Consenso</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-2">✓</span>
+                    <span>Relógios Lógicos de Lamport</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-2">✓</span>
+                    <span>Consistência Eventual</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-zinc-900/50 rounded-xl p-6">
+                <h3 className="text-xl font-semibold mb-4 text-red-400">Segurança</h3>
+                <ul className="space-y-2 text-zinc-400">
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-2">✓</span>
+                    <span>Autenticação e OAuth</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-2">✓</span>
+                    <span>Autorização e RBAC</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-2">✓</span>
+                    <span>Criptografia e SSL/TLS</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-2">✓</span>
+                    <span>Prevenção contra Ataques</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-zinc-900/50 rounded-xl p-6">
+                <h3 className="text-xl font-semibold mb-4 text-blue-400">Simuladores Interativos</h3>
                 <ul className="space-y-2 text-zinc-400">
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
@@ -301,29 +367,19 @@ export default function LandingPage() {
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
-                    <span>Estratégias de Retry</span>
+                    <span>Load Balancer Algorithms</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
-                    <span>Timeout e Fallback</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="bg-zinc-900/50 rounded-xl p-6">
-                <h3 className="text-xl font-semibold mb-4 text-yellow-400">Arquiteturas Modernas</h3>
-                <ul className="space-y-2 text-zinc-400">
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>Event-Driven Architecture</span>
+                    <span>Cache Strategies</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
-                    <span>Microsserviços</span>
+                    <span>JWT Token</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
-                    <span>Design Patterns Distribuídos</span>
+                    <span>E muito mais!</span>
                   </li>
                 </ul>
               </div>
