@@ -33,7 +33,7 @@ const getChildPaths = (step: RoadmapStep): string[] => {
 
 export default function Roadmap() {
   const { isCompleted } = useContentProgress();
-  
+
   const roadmapSteps: RoadmapStep[] = [
     {
       title: "Introdução",
@@ -132,7 +132,7 @@ export default function Roadmap() {
             </svg>
           ),
           skills: ["Round Robin", "Least Connections", "Health Checks"]
-        }
+      }
       ]
     },
     {
@@ -207,6 +207,20 @@ export default function Roadmap() {
       ),
       skills: ["Consenso", "Timestamps de Lamport", "Consistência eventual"],
       children: [
+        {
+          title: "Two-Phase Commit",
+          description: "Protocolo de consenso para transações distribuídas",
+          path: "/estrategias-de-consistencia/two-phase-commit",
+          status: "recommended",
+          prerequisites: [],
+          category: "Avançado",
+          icon: (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+            </svg>
+          ),
+          skills: ["2PC", "Transações Distribuídas", "Consenso Atômico"]
+        },
         {
           title: "Estratégia de Consenso",
           description: "Protocolos e mecanismos para garantir acordo entre nós",
@@ -329,7 +343,7 @@ export default function Roadmap() {
     if (isCompleted(step.path)) {
       return 'bg-green-500';
     }
-    
+      
     // Check if all children are completed
     if (step.children && step.children.length > 0) {
       const allChildrenCompleted = step.children.every(child => isCompleted(child.path));
@@ -349,7 +363,7 @@ export default function Roadmap() {
         return 'bg-gray-500';
     }
   };
-
+      
   const calculateProgress = () => {
     const getAllSteps = (steps: RoadmapStep[]): RoadmapStep[] => {
       return steps.reduce((acc: RoadmapStep[], step) => {
@@ -360,8 +374,9 @@ export default function Roadmap() {
           }
         }
         return acc;
-      }, []);
-    };
+    }, []);
+
+  };
 
     const allSteps = getAllSteps(roadmapSteps);
     const completedSteps = allSteps.filter(step => isCompleted(step.path));
@@ -372,8 +387,8 @@ export default function Roadmap() {
     const childPaths = getChildPaths(step);
     // Log the paths to debug
     console.log(`Child paths for ${step.path}:`, childPaths);
-    
-    return (
+
+  return (
       <div key={step.path} className={`bg-zinc-900 rounded-lg p-6 ${isChild ? 'ml-8 mt-4' : ''}`}>
         <div className="flex items-start gap-4">
           <div className={`p-3 rounded-lg ${getStepStatus(step)} relative group`}>
@@ -385,7 +400,7 @@ export default function Roadmap() {
                 </svg>
               </div>
             )}
-          </div>
+                </div>
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
               <h3 className="text-xl font-semibold">{step.title}</h3>
@@ -407,39 +422,39 @@ export default function Roadmap() {
                       {prereq}
                     </span>
                   ))}
-                </div>
-              </div>
-            )}
+          </div>
+        </div>
+                    )}
 
             {/* Skills */}
             <div className="mb-4">
               <div className="text-sm font-semibold mb-2">Habilidades:</div>
-              <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-2">
                 {step.skills.map(skill => (
                   <span key={skill} className="text-xs bg-zinc-800 px-2 py-1 rounded">
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                  </div>
 
-            <Link
+                    <Link
               to={step.path}
               state={{ childPaths }}
               className="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400"
-            >
+                    >
               {isCompleted(step.path) ? 'Revisar módulo' : 'Começar módulo'}
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
-            </Link>
-          </div>
-        </div>
+                    </Link>
+                  </div>
+                </div>
 
         {/* Render children */}
         {step.children && step.children.map(child => renderStep(child, true))}
-      </div>
-    );
+              </div>
+            );
   };
 
   return (
@@ -492,8 +507,8 @@ export default function Roadmap() {
           {/* Roadmap Steps */}
           <div className="space-y-6">
             {roadmapSteps.map(step => renderStep(step))}
-          </div>
         </div>
+      </div>
       </ContentLayout>
     </div>
   );

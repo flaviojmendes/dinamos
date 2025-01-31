@@ -1,15 +1,16 @@
 export interface MenuItem {
-  path: string;
   name: string;
   description: string;
-  children?: MenuItem[];
-  disabled?: boolean;
-  comingSoon?: boolean;
-  badges?: Array<{
-    text: string;
-    color: string;
-  }>;
+  path: string;
+  status?: 'required' | 'recommended' | 'optional';
+  prerequisites?: string[];
+  category?: string;
   icon?: JSX.Element;
+  skills?: string[];
+  children?: MenuItem[];
   customStyle?: string;
   customHoverStyle?: string;
+  badges?: Array<{ text: string; color: string; }>;
+  disabled?: boolean;
+  comingSoon?: boolean;
 } 

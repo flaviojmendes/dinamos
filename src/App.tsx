@@ -26,7 +26,7 @@ import APIGatewaySimulator from "./components/APIGateway/APIGatewaySimulator";
 import DesignPrinciples from "./components/DesignPrinciples/DesignPrinciples";
 import EventDriven from "./components/DesignPrinciples/EventDriven";
 import EventSourcingSimulator from "./components/DesignPrinciples/EventSourcingSimulator";
-import { MenuItem } from "./types/menu";
+import { MenuItem } from './types/menu';
 import LandingPage from "./components/LandingPage/LandingPage";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import Login from "./components/Auth/Login";
@@ -76,6 +76,8 @@ import Roadmap from "./components/Roadmap/Roadmap";
 import ContentLayout from './components/Common/ContentLayout';
 import { useContentProgress } from './hooks/useContentProgress';
 import ContentPage from './components/Common/ContentPage';
+import TwoPhaseCommit from "./components/ConsistencyStrategies/TwoPhaseCommit";
+import TwoPhaseCommitSimulator from "./components/ConsistencyStrategies/TwoPhaseCommitSimulator";
 
 const menuItems: MenuItem[] = [
   {
@@ -325,9 +327,39 @@ const menuItems: MenuItem[] = [
   },
   {
     name: "Estratégias de Consistência",
-    path: "/estrategias-de-consistencia",
     description: "Como garantir a consistência em sistemas distribuídos",
+    path: "/estrategias-de-consistencia",
+    status: "recommended",
+    prerequisites: ["Princípios de Design"],
+    category: "Avançado",
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+      </svg>
+    ),
+    skills: ["Consenso", "Timestamps de Lamport", "Consistência eventual"],
     children: [
+      {
+        name: "Two Phase Commit",
+        description: "Protocolo de consenso para transações distribuídas",
+        path: "/estrategias-de-consistencia/two-phase-commit",
+        status: "recommended",
+        prerequisites: [],
+        category: "Avançado",
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+          </svg>
+        ),
+        skills: ["2PC", "Transações Distribuídas", "Consenso Atômico"],
+        children: [
+          {
+            name: "Simulador",
+            path: "/estrategias-de-consistencia/two-phase-commit/simulador",
+            description: "Simulação interativa do protocolo Two Phase Commit",
+          }
+        ]
+      },
       {
         name: "Estratégia de Consenso",
         path: "/estrategias-de-consistencia/consenso",
@@ -1455,6 +1487,26 @@ export default function App() {
                 <ProtectedRoute requiresSubscription={false}>
                   <ContentPage>
                     <Roadmap />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/estrategias-de-consistencia/two-phase-commit"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <TwoPhaseCommit />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/estrategias-de-consistencia/two-phase-commit/simulador"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <TwoPhaseCommitSimulator />
                   </ContentPage>
                 </ProtectedRoute>
               }

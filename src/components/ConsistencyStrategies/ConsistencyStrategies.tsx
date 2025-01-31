@@ -32,6 +32,37 @@ export default function ConsistencyStrategies() {
 
         {/* Strategies Grid */}
         <div className="grid gap-6 md:grid-cols-2">
+          {/* Two Phase Commit */}
+          <Link 
+            to="/estrategias-de-consistencia/two-phase-commit"
+            className="group bg-zinc-900/50 rounded-lg p-6 hover:bg-zinc-800/50 transition-colors"
+          >
+            <div className="flex items-start gap-4">
+              <div className="p-3 bg-blue-500/10 rounded-lg group-hover:bg-blue-500/20 transition-colors">
+                <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-blue-400 transition-colors">
+                  Two-Phase Commit
+                </h2>
+                <p className="text-zinc-400 mb-4">
+                  Aprenda como garantir consistência em transações distribuídas usando o protocolo
+                  Two-Phase Commit (2PC).
+                </p>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+                    Transações
+                  </span>
+                  <span className="px-2 py-1 bg-green-500/20 text-green-300 rounded">
+                    Atomicidade
+                  </span>
+                </div>
+              </div>
+            </div>
+          </Link>
+
           {/* Consensus Strategy */}
           <Link 
             to="/estrategias-de-consistencia/consenso"
