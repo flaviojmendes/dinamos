@@ -411,7 +411,7 @@ export default function LandingPage() {
               </div>
               <div className="text-center mb-4">
                 <div className="inline-block bg-red-500/10 text-red-400 px-4 py-2 rounded-full text-sm mb-4">
-                  Oferta válida até 31 de Janeiro
+                  Oferta estendida até 11 de Fevereiro
                 </div>
                 <Countdown />
               </div>
