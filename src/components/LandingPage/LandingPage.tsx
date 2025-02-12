@@ -7,15 +7,11 @@ import Countdown from '../Countdown/Countdown';
 const calculatePricing = () => {
   const originalPrice = 499;
   const discountedPrice = 399;
-  const specialPrice = 200;
   const discount = Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
-  const specialDiscount = Math.round(((originalPrice - specialPrice) / originalPrice) * 100);
   return { 
     originalPrice,
     discountedPrice,
-    specialPrice,
-    discount,
-    specialDiscount
+    discount
   };
 };
 
@@ -354,248 +350,167 @@ export default function LandingPage() {
         </motion.div>
       </div>
 
-      {/* Features Grid */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      {/* Pricing Section */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-zinc-800">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="text-center mb-12"
         >
-          <div className="bg-zinc-900/50 rounded-xl p-6">
-            <div className="text-blue-500 mb-4">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold mb-2">Componentes Básicos</h3>
-            <p className="text-zinc-400">
-              Entenda os blocos fundamentais: Banco de Dados, Cache, Load Balancer, Message Queue, CDN e API Gateway
-            </p>
-          </div>
-
-          <div className="bg-zinc-900/50 rounded-xl p-6">
-            <div className="text-purple-500 mb-4">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold mb-2">Simuladores Interativos</h3>
-            <p className="text-zinc-400">
-              Experimente na prática conceitos complexos com simuladores que demonstram cenários reais
-            </p>
-          </div>
-
-          <div className="bg-zinc-900/50 rounded-xl p-6">
-            <div className="text-green-500 mb-4">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold mb-2">Princípios de Design</h3>
-            <p className="text-zinc-400">
-              Aprenda escalabilidade, alta disponibilidade, tolerância a falhas e arquiteturas modernas
-            </p>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Content Preview */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-        >
-          <h2 className="text-3xl font-bold mb-8 text-center">O que você vai aprender</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-6">
-              <div className="bg-zinc-900/50 rounded-xl p-6">
-                <h3 className="text-xl font-semibold mb-4 text-blue-400">Fundamentos</h3>
-                <ul className="space-y-2 text-zinc-400">
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>Introdução a Sistemas Distribuídos</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>Conceitos através de analogias práticas</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>System Design 101</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="bg-zinc-900/50 rounded-xl p-6">
-                <h3 className="text-xl font-semibold mb-4 text-purple-400">Componentes Básicos</h3>
-                <ul className="space-y-2 text-zinc-400">
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>Bancos de Dados (SQL e NoSQL)</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>Cache e Estratégias de Caching</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>Load Balancer e Algoritmos</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>Message Queue e Event-Driven</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>CDN e API Gateway</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="bg-zinc-900/50 rounded-xl p-6">
-                <h3 className="text-xl font-semibold mb-4 text-green-400">Princípios de Design</h3>
-                <ul className="space-y-2 text-zinc-400">
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>Arquitetura Orientada a Eventos</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>Monolito vs Microsserviços</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>Tolerância a Falhas</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              <div className="bg-zinc-900/50 rounded-xl p-6">
-                <h3 className="text-xl font-semibold mb-4 text-yellow-400">Estratégias de Consistência</h3>
-                <ul className="space-y-2 text-zinc-400">
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>Protocolos de Consenso</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>Relógios Lógicos de Lamport</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>Consistência Eventual</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="bg-zinc-900/50 rounded-xl p-6">
-                <h3 className="text-xl font-semibold mb-4 text-red-400">Segurança</h3>
-                <ul className="space-y-2 text-zinc-400">
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>Autenticação e OAuth</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>Autorização e RBAC</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>Criptografia e SSL/TLS</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>Prevenção contra Ataques</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="bg-zinc-900/50 rounded-xl p-6">
-                <h3 className="text-xl font-semibold mb-4 text-blue-400">Simuladores Interativos</h3>
-                <ul className="space-y-2 text-zinc-400">
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>Circuit Breaker Pattern</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>Load Balancer Algorithms</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>Cache Strategies</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>JWT Token</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>E muito mais!</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Pricing Section */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-        >
-          <h2 className="text-3xl font-bold mb-4 text-center">Planos e Preços</h2>
-          <p className="text-xl text-zinc-400 text-center mb-12">
-            Invista em seu conhecimento e desenvolvimento profissional
+          <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            Invista no Seu Futuro
+          </h2>
+          <p className="text-xl text-zinc-400">
+            Domine sistemas distribuídos com um investimento único e acesso vitalício
           </p>
-
-          <div className="grid grid-cols-1 max-w-lg mx-auto">
-            {/* Single Payment Plan */}
-            <div className="bg-gradient-to-b from-blue-600/10 to-purple-600/10 rounded-xl p-8 border border-blue-500/20 hover:border-blue-500/50 transition-colors relative overflow-hidden">
-              <div className="absolute -right-12 top-8 bg-red-500 text-white px-12 py-1 rotate-45 text-sm font-medium">
-                Oferta Especial
-              </div>
-              <div className="absolute -right-12 top-20 bg-blue-500 text-white px-12 py-1 rotate-45 text-sm font-medium">
-                Preço de Lançamento
-              </div>
-              <div className="text-center mb-4">
-                <div className="inline-block bg-red-500/10 text-red-400 px-4 py-2 rounded-full text-sm mb-4">
-                  Oferta estendida até 11 de Fevereiro
-                </div>
-                <Countdown />
-              </div>
-              <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold mb-2">Acesso Vitalício</h3>
-                <div className="mb-2">
-                  <span className="text-lg text-zinc-500 line-through">R${calculatePricing().originalPrice}</span>
-                  {/* <div className="text-lg text-zinc-500 line-through">R${calculatePricing().discountedPrice}</div> */}
-                  <div className="text-4xl font-bold text-blue-500">
-                    R${calculatePricing().specialPrice}
-                  </div>
-                  <p className="text-sm text-green-400">{calculatePricing().specialDiscount}% de desconto</p>
-                </div>
-                <p className="text-zinc-400">Pagamento único - Acesso para sempre</p>
-              </div>
-              <Link
-                to="/pagamento"
-                onClick={() => ReactGA.event({
-                  category: 'User',
-                  action: 'Clicked on Start Now Button',
-                })}
-                className="block text-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
-              >
-                Começar Agora
-              </Link>
-            </div>
-          </div>
         </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-gradient-to-b from-blue-600/10 to-purple-600/10 rounded-xl p-8 border border-blue-500/20 hover:border-blue-500/50 transition-colors relative overflow-hidden"
+          >
+            <div className="absolute -right-12 top-8 bg-blue-500 text-white px-12 py-1 rotate-45 text-sm font-medium">
+              Preço de Lançamento
+            </div>
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-bold mb-2">Acesso Vitalício</h3>
+              <div className="mb-2">
+                <span className="text-lg text-zinc-500 line-through">R${calculatePricing().originalPrice}</span>
+                <div className="text-4xl font-bold text-blue-500">
+                  R${calculatePricing().discountedPrice}
+                </div>
+                <p className="text-sm text-green-400">{calculatePricing().discount}% de desconto</p>
+              </div>
+              <p className="text-zinc-400">Pagamento único - Acesso para sempre</p>
+            </div>
+            <Link
+              to="/pagamento"
+              onClick={() => ReactGA.event({
+                category: 'User',
+                action: 'Clicked on Start Now Button',
+              })}
+              className="block text-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+            >
+              Começar Agora
+            </Link>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="space-y-6"
+          >
+            <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
+              <h4 className="text-lg font-semibold mb-4 text-blue-400 flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                Benefícios Exclusivos
+              </h4>
+              <ul className="space-y-3">
+                <li className="flex items-start gap-3 text-zinc-300">
+                  <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Acesso vitalício a todo o conteúdo</span>
+                </li>
+                <li className="flex items-start gap-3 text-zinc-300">
+                  <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Mais de 15 simuladores interativos</span>
+                </li>
+                <li className="flex items-start gap-3 text-zinc-300">
+                  <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Atualizações e novos conteúdos incluídos</span>
+                </li>
+                <li className="flex items-start gap-3 text-zinc-300">
+                  <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Exemplos práticos do mundo real</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
+              <h4 className="text-lg font-semibold mb-4 text-purple-400 flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Conteúdo Abrangente
+              </h4>
+              <ul className="space-y-3">
+                <li className="flex items-start gap-3 text-zinc-300">
+                  <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Fundamentos de Sistemas Distribuídos</span>
+                </li>
+                <li className="flex items-start gap-3 text-zinc-300">
+                  <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Arquiteturas Modernas (Microsserviços, Event-Driven)</span>
+                </li>
+                <li className="flex items-start gap-3 text-zinc-300">
+                  <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Segurança e Proteção contra Ataques</span>
+                </li>
+                <li className="flex items-start gap-3 text-zinc-300">
+                  <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Estratégias de Cache e Load Balancing</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
+              <h4 className="text-lg font-semibold mb-4 text-green-400 flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                </svg>
+                Aprendizado Prático
+              </h4>
+              <ul className="space-y-3">
+                <li className="flex items-start gap-3 text-zinc-300">
+                  <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Simuladores de Circuit Breaker e Falhas</span>
+                </li>
+                <li className="flex items-start gap-3 text-zinc-300">
+                  <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Simulações de Ataques e Proteções</span>
+                </li>
+                <li className="flex items-start gap-3 text-zinc-300">
+                  <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Cenários Reais de Escalabilidade</span>
+                </li>
+                <li className="flex items-start gap-3 text-zinc-300">
+                  <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Experimentos de Performance e Otimização</span>
+                </li>
+              </ul>
+            </div>
+          </motion.div>
+        </div>
       </div>
 
       {/* Call to Action */}
