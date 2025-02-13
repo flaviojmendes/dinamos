@@ -78,6 +78,7 @@ import { useContentProgress } from './hooks/useContentProgress';
 import ContentPage from './components/Common/ContentPage';
 import TwoPhaseCommit from "./components/ConsistencyStrategies/TwoPhaseCommit";
 import TwoPhaseCommitSimulator from "./components/ConsistencyStrategies/TwoPhaseCommitSimulator";
+import Coupling from "./components/DesignPrinciples/Coupling";
 
 const menuItems: MenuItem[] = [
   {
@@ -322,6 +323,16 @@ const menuItems: MenuItem[] = [
         path: "/principios-design/servicos",
         name: "Arquitetura de Serviços",
         description: "Monolito vs Microsserviços",
+      },
+      {
+        path: "/principios-design/acoplamento",
+        name: "Acoplamento",
+        description: "Acoplamento dinâmico e estático entre serviços",
+        badges: [
+          { text: "Novo", color: "bg-blue-500" },
+          
+        ],
+        
       },
     ],
   },
@@ -1507,6 +1518,16 @@ export default function App() {
                 <ProtectedRoute>
                   <ContentPage>
                     <TwoPhaseCommitSimulator />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/acoplamento"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <Coupling />
                   </ContentPage>
                 </ProtectedRoute>
               }
