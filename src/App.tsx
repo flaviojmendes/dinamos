@@ -26,7 +26,7 @@ import APIGatewaySimulator from "./components/APIGateway/APIGatewaySimulator";
 import DesignPrinciples from "./components/DesignPrinciples/DesignPrinciples";
 import EventDriven from "./components/DesignPrinciples/EventDriven";
 import EventSourcingSimulator from "./components/DesignPrinciples/EventSourcingSimulator";
-import { MenuItem } from './types/menu';
+
 import LandingPage from "./components/LandingPage/LandingPage";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import Login from "./components/Auth/Login";
