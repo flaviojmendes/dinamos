@@ -35,7 +35,7 @@ export default function Subscription() {
 
   const calculatePricing = () => {
     const originalPrice = 499;
-    const discountedPrice = 399;
+    const discountedPrice = 259;
     const discount = Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
     return { originalPrice, discountedPrice, discount };
   };

@@ -377,13 +377,12 @@ export default function LandingPage() {
               Preço de Lançamento
             </div>
             <div className="text-center mb-8">
-              <h3 className="text-2xl font-bold mb-2">Acesso Vitalício</h3>
-              <div className="mb-2">
-                <span className="text-lg text-zinc-500 line-through">R${calculatePricing().originalPrice}</span>
-                <div className="text-4xl font-bold text-blue-500">
-                  R${calculatePricing().discountedPrice}
-                </div>
-                <p className="text-sm text-green-400">{calculatePricing().discount}% de desconto</p>
+              <div className="text-center">
+                <span className="text-4xl font-bold">
+                  <span className="text-zinc-400 line-through">R$499</span>{" "}
+                  <span className="text-white">R$259</span>
+                </span>
+                <span className="text-green-400 text-sm ml-2">48% OFF</span>
               </div>
               <p className="text-zinc-400">Pagamento único - Acesso para sempre</p>
             </div>

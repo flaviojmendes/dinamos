@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, NavLink, Link, useLocation } from "react-router-dom";
+import { Routes, Route, NavLink, Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import CacheSimulation from "./components/CacheSimulation/CacheSimulation";
 import HorizontalScaling from "./components/DesignPrinciples/HorizontalScaling";
@@ -79,6 +79,29 @@ import ContentPage from './components/Common/ContentPage';
 import TwoPhaseCommit from "./components/ConsistencyStrategies/TwoPhaseCommit";
 import TwoPhaseCommitSimulator from "./components/ConsistencyStrategies/TwoPhaseCommitSimulator";
 import Coupling from "./components/DesignPrinciples/Coupling";
+import MonitoringMaintenance from "./components/MonitoringMaintenance/MonitoringMaintenance";
+import Metrics from "./components/MonitoringMaintenance/Metrics";
+import Logs from "./components/MonitoringMaintenance/Logs";
+import Alerts from "./components/MonitoringMaintenance/Alerts";
+import Performance from "./components/MonitoringMaintenance/Performance";
+import HealthChecks from "./components/MonitoringMaintenance/HealthChecks";
+
+interface MenuItem {
+  name: string;
+  description: string;
+  path: string;
+  icon?: React.ReactNode;
+  children?: MenuItem[];
+  status?: "recommended" | "new" | "coming-soon";
+  prerequisites?: string[];
+  category?: "Básico" | "Intermediário" | "Avançado";
+  skills?: string[];
+  badges?: { text: string; color: string }[];
+  component?: React.ComponentType;
+  disabled?: boolean;
+  customStyle?: string;
+  customHoverStyle?: string;
+}
 
 const menuItems: MenuItem[] = [
   {
@@ -401,9 +424,42 @@ const menuItems: MenuItem[] = [
   {
     path: "/monitoramento-e-manutencao",
     name: "Monitoramento e Manutenção",
-    description: "Como monitorar e manter o sistema funcionando",
-    comingSoon: true,
-    disabled: true,
+    description: "Monitoramento e manutenção de sistemas distribuídos",
+    badges: [
+      { text: "Novo", color: "bg-blue-500" },
+    ],
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+      </svg>
+    ),
+    children: [
+      {
+        path: "/monitoramento-e-manutencao/metricas",
+        name: "Métricas e KPIs",
+        description: "Indicadores essenciais para monitoramento",
+      },
+      {
+        path: "/monitoramento-e-manutencao/logs",
+        name: "Logs e Tracing",
+        description: "Rastreamento e análise de logs distribuídos",
+      },
+      {
+        path: "/monitoramento-e-manutencao/alertas",
+        name: "Alertas e Notificações",
+        description: "Configuração e gestão de alertas",
+      },
+      {
+        path: "/monitoramento-e-manutencao/performance",
+        name: "Análise de Performance",
+        description: "Identificação e resolução de gargalos",
+      },
+      {
+        path: "/monitoramento-e-manutencao/health-checks",
+        name: "Health Checks",
+        description: "Monitoramento de saúde dos serviços",
+      }
+    ],
   },
   {
     path: "/seguranca",
@@ -723,7 +779,7 @@ export default function App() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
                     />
                   </svg>
                 </button>
@@ -1532,7 +1588,72 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/monitoramento-e-manutencao"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <MonitoringMaintenance />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/monitoramento-e-manutencao/metricas"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <Metrics />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/monitoramento-e-manutencao/logs"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <Logs />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path="/monitoramento-e-manutencao/alertas"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <Alerts />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path="/monitoramento-e-manutencao/performance"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <Performance />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path="/monitoramento-e-manutencao/health-checks"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <HealthChecks />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            
           </Routes>
+          
         </div>
       </main>
     </div>
