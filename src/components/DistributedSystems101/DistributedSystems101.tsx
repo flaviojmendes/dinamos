@@ -12,6 +12,16 @@ export default function DistributedSystems101() {
           <span className="italic">"Como eu sei se trabalho com sistemas distribuídos?"</span>
         </p>
 
+        <div className="relative w-full aspect-video mb-12">
+          <iframe
+            src="https://www.youtube.com/embed/yj9jIfi3iR4"
+            title="O que são Sistemas Distribuídos?"
+            className="absolute top-0 left-0 w-full h-full rounded-lg"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
+
         <div className="space-y-6 text-zinc-200">
           <p>
             Por definição, podemos dizer que um sistema distribuído é:
