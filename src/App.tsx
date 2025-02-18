@@ -127,6 +127,9 @@ const menuItems: MenuItem[] = [
     path: "/sistemas-distribuidos-101",
     name: "Sistemas Distribuídos 101",
     description: "Conceitos fundamentais através de analogias",
+    badges: [
+      { text: "Grátis", color: "bg-green-500" },
+    ],
   },
   {
     path: "/editor",
@@ -141,6 +144,9 @@ const menuItems: MenuItem[] = [
     path: "/system-design-101",
     name: "System Design 101",
     description: "Fundamentos de design de sistemas",
+    badges: [
+      { text: "Grátis", color: "bg-green-500" },
+    ],
   },
   {
     path: "/componentes",
