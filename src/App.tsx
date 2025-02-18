@@ -85,6 +85,8 @@ import Logs from "./components/MonitoringMaintenance/Logs";
 import Alerts from "./components/MonitoringMaintenance/Alerts";
 import Performance from "./components/MonitoringMaintenance/Performance";
 import HealthChecks from "./components/MonitoringMaintenance/HealthChecks";
+import RealCases from "./components/RealCases/RealCases";
+import YouTube from "./components/RealCases/YouTube";
 
 interface MenuItem {
   name: string;
@@ -458,6 +460,57 @@ const menuItems: MenuItem[] = [
         path: "/monitoramento-e-manutencao/health-checks",
         name: "Health Checks",
         description: "Monitoramento de saúde dos serviços",
+      }
+    ],
+  },
+  {
+    path: "/casos-reais",
+    name: "Casos Reais",
+    description: "Exemplos reais de system design de grandes empresas",
+    badges: [
+      { text: "Novo", color: "bg-blue-500" },
+    ],
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+      </svg>
+    ),
+    children: [
+      {
+        path: "/casos-reais/youtube",
+        name: "YouTube",
+        description: "Como o YouTube processa e distribui vídeos globalmente",
+        disabled: true
+      },
+      {
+        path: "/casos-reais/spotify",
+        name: "Spotify",
+        description: "Arquitetura de streaming de música em tempo real",
+        disabled: true
+      },
+      {
+        path: "/casos-reais/url-shortener",
+        name: "Encurtador de URLs",
+        description: "Design de um serviço de encurtamento de URLs",
+        disabled: true
+      },
+      {
+        path: "/casos-reais/whatsapp",
+        name: "WhatsApp",
+        description: "Sistema de mensagens em tempo real",
+        disabled: true
+      },
+      {
+        path: "/casos-reais/netflix",
+        name: "Netflix",
+        description: "Streaming de vídeo e recomendação de conteúdo",
+        disabled: true
+      },
+      {
+        path: "/casos-reais/uber",
+        name: "Uber",
+        description: "Sistema de geolocalização e matching em tempo real",
+        disabled: true
       }
     ],
   },
@@ -1647,6 +1700,28 @@ export default function App() {
                 <ProtectedRoute>
                   <ContentPage>
                     <HealthChecks />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path="/casos-reais"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <RealCases />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path="/casos-reais/youtube"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <YouTube />
                   </ContentPage>
                 </ProtectedRoute>
               }
