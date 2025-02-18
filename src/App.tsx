@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, NavLink, Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  NavLink,
+  Link,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import CacheSimulation from "./components/CacheSimulation/CacheSimulation";
 import HorizontalScaling from "./components/DesignPrinciples/HorizontalScaling";
@@ -73,9 +80,9 @@ import TokensSimulator from "./components/Security/TokensSimulator";
 import CryptographySimulator from "./components/Security/CryptographySimulator";
 import AttackSimulatorPage from "./components/Security/AttackSimulatorPage";
 import Roadmap from "./components/Roadmap/Roadmap";
-import ContentLayout from './components/Common/ContentLayout';
-import { useContentProgress } from './hooks/useContentProgress';
-import ContentPage from './components/Common/ContentPage';
+import ContentLayout from "./components/Common/ContentLayout";
+import { useContentProgress } from "./hooks/useContentProgress";
+import ContentPage from "./components/Common/ContentPage";
 import TwoPhaseCommit from "./components/ConsistencyStrategies/TwoPhaseCommit";
 import TwoPhaseCommitSimulator from "./components/ConsistencyStrategies/TwoPhaseCommitSimulator";
 import Coupling from "./components/DesignPrinciples/Coupling";
@@ -87,6 +94,7 @@ import Performance from "./components/MonitoringMaintenance/Performance";
 import HealthChecks from "./components/MonitoringMaintenance/HealthChecks";
 import RealCases from "./components/RealCases/RealCases";
 import YouTube from "./components/RealCases/YouTube";
+import Spotify from "./components/RealCases/Spotify";
 
 interface MenuItem {
   name: string;
@@ -110,11 +118,22 @@ const menuItems: MenuItem[] = [
     path: "/roadmap",
     name: "🎯 Comece Aqui",
     description: "Sua jornada de aprendizado passo a passo",
-    customStyle: "bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border-l-4 border-blue-500",
+    customStyle:
+      "bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border-l-4 border-blue-500",
     customHoverStyle: "hover:from-zinc-800 hover:to-zinc-900",
     icon: (
-      <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+      <svg
+        className="w-6 h-6 text-blue-500"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M13 10V3L4 14h7v7l9-11h-7z"
+        />
       </svg>
     ),
   },
@@ -127,9 +146,7 @@ const menuItems: MenuItem[] = [
     path: "/sistemas-distribuidos-101",
     name: "Sistemas Distribuídos 101",
     description: "Conceitos fundamentais através de analogias",
-    badges: [
-      { text: "Grátis", color: "bg-green-500" },
-    ],
+    badges: [{ text: "Grátis", color: "bg-green-500" }],
   },
   {
     path: "/editor",
@@ -144,9 +161,7 @@ const menuItems: MenuItem[] = [
     path: "/system-design-101",
     name: "System Design 101",
     description: "Fundamentos de design de sistemas",
-    badges: [
-      { text: "Grátis", color: "bg-green-500" },
-    ],
+    badges: [{ text: "Grátis", color: "bg-green-500" }],
   },
   {
     path: "/componentes",
@@ -359,11 +374,7 @@ const menuItems: MenuItem[] = [
         path: "/principios-design/acoplamento",
         name: "Acoplamento",
         description: "Acoplamento dinâmico e estático entre serviços",
-        badges: [
-          { text: "Novo", color: "bg-blue-500" },
-          
-        ],
-        
+        badges: [{ text: "Novo", color: "bg-blue-500" }],
       },
     ],
   },
@@ -375,8 +386,18 @@ const menuItems: MenuItem[] = [
     prerequisites: ["Princípios de Design"],
     category: "Avançado",
     icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+      <svg
+        className="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+        />
       </svg>
     ),
     skills: ["Consenso", "Timestamps de Lamport", "Consistência eventual"],
@@ -389,8 +410,18 @@ const menuItems: MenuItem[] = [
         prerequisites: [],
         category: "Avançado",
         icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+            />
           </svg>
         ),
         skills: ["2PC", "Transações Distribuídas", "Consenso Atômico"],
@@ -399,8 +430,8 @@ const menuItems: MenuItem[] = [
             name: "Simulador",
             path: "/estrategias-de-consistencia/two-phase-commit/simulador",
             description: "Simulação interativa do protocolo Two Phase Commit",
-          }
-        ]
+          },
+        ],
       },
       {
         name: "Estratégia de Consenso",
@@ -433,12 +464,20 @@ const menuItems: MenuItem[] = [
     path: "/monitoramento-e-manutencao",
     name: "Monitoramento e Manutenção",
     description: "Monitoramento e manutenção de sistemas distribuídos",
-    badges: [
-      { text: "Novo", color: "bg-blue-500" },
-    ],
+    badges: [{ text: "Novo", color: "bg-blue-500" }],
     icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+      <svg
+        className="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+        />
       </svg>
     ),
     children: [
@@ -466,19 +505,27 @@ const menuItems: MenuItem[] = [
         path: "/monitoramento-e-manutencao/health-checks",
         name: "Health Checks",
         description: "Monitoramento de saúde dos serviços",
-      }
+      },
     ],
   },
   {
     path: "/casos-reais",
     name: "Casos Reais",
     description: "Exemplos reais de system design de grandes empresas",
-    badges: [
-      { text: "Novo", color: "bg-blue-500" },
-    ],
+    badges: [{ text: "Novo", color: "bg-blue-500" }],
     icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+      <svg
+        className="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
+        />
       </svg>
     ),
     children: [
@@ -486,38 +533,36 @@ const menuItems: MenuItem[] = [
         path: "/casos-reais/youtube",
         name: "YouTube",
         description: "Como o YouTube processa e distribui vídeos globalmente",
-        disabled: true
       },
       {
         path: "/casos-reais/spotify",
         name: "Spotify",
         description: "Arquitetura de streaming de música em tempo real",
-        disabled: true
       },
       {
         path: "/casos-reais/url-shortener",
         name: "Encurtador de URLs",
         description: "Design de um serviço de encurtamento de URLs",
-        disabled: true
+        disabled: true,
       },
       {
         path: "/casos-reais/whatsapp",
         name: "WhatsApp",
         description: "Sistema de mensagens em tempo real",
-        disabled: true
+        disabled: true,
       },
       {
         path: "/casos-reais/netflix",
         name: "Netflix",
         description: "Streaming de vídeo e recomendação de conteúdo",
-        disabled: true
+        disabled: true,
       },
       {
         path: "/casos-reais/uber",
         name: "Uber",
         description: "Sistema de geolocalização e matching em tempo real",
-        disabled: true
-      }
+        disabled: true,
+      },
     ],
   },
   {
@@ -625,7 +670,9 @@ export default function App() {
                   isActive
                     ? "bg-blue-500 text-white"
                     : item.customStyle
-                    ? `${item.customStyle} ${item.customHoverStyle || "hover:bg-zinc-800"} text-zinc-400 hover:text-white`
+                    ? `${item.customStyle} ${
+                        item.customHoverStyle || "hover:bg-zinc-800"
+                      } text-zinc-400 hover:text-white`
                     : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
                 }`
               }
@@ -640,7 +687,7 @@ export default function App() {
                 }
               }}
             >
-                <span className="font-medium">{item.name}</span>
+              <span className="font-medium">{item.name}</span>
               <span className="text-sm opacity-75">{item.description}</span>
               {item.badges && (
                 <div className="absolute -top-2 right-2 flex gap-1">
@@ -652,8 +699,8 @@ export default function App() {
                       {badge.text}
                     </span>
                   ))}
-                  </div>
-                )}
+                </div>
+              )}
             </NavLink>
           )}
           {item.children && (
@@ -722,9 +769,9 @@ export default function App() {
     <div className="min-h-screen h-full bg-black text-white flex">
       {/* Overlay for mobile */}
       {isMobile && isSidebarOpen && (
-      <div
+        <div
           className="fixed inset-0 bg-black bg-opacity-50 z-20"
-        onClick={() => setIsSidebarOpen(false)}
+          onClick={() => setIsSidebarOpen(false)}
         />
       )}
 
@@ -738,161 +785,161 @@ export default function App() {
             transition={{ type: "spring", bounce: 0, duration: 0.4 }}
             className={`bg-zinc-900 border-r border-zinc-800 w-72 fixed md:relative h-screen z-30 overflow-y-auto
               ${isMobile ? "shadow-lg" : ""}`}
-      >
-        <div className="p-4 flex flex-col h-full">
-          <div className="flex flex-col gap-4 mb-8">
-            {/* App Title */}
-            <div className="flex items-center justify-between">
-              <a href="/" className="mx-auto">
-                <img
-                  src="/logo.png"
-                  alt="System Design"
-                  className="h-20 mx-auto"
-                />
-              </a>
-              {isMobile && (
-                <button
-                  onClick={() => setIsSidebarOpen(false)}
-                  className="p-2 hover:bg-zinc-800 rounded-lg"
-                >
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
+          >
+            <div className="p-4 flex flex-col h-full">
+              <div className="flex flex-col gap-4 mb-8">
+                {/* App Title */}
+                <div className="flex items-center justify-between">
+                  <a href="/" className="mx-auto">
+                    <img
+                      src="/logo.png"
+                      alt="System Design"
+                      className="h-20 mx-auto"
                     />
-                  </svg>
-                </button>
-              )}
-            </div>
-
-            {/* User Profile Section */}
-            {user ? (
-              <div className="flex items-center gap-3 p-3 bg-zinc-800/50 rounded-lg">
-                {user.photoURL ? (
-                  <img
-                    src={user.photoURL}
-                    alt="Profile"
-                    className="w-10 h-10 rounded-full border-2 border-blue-500"
-                  />
-                ) : (
-                  <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
-                    <span className="text-lg font-bold">
-                      {user.email?.charAt(0).toUpperCase()}
-                    </span>
-                  </div>
-                )}
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">
-                    {user.displayName || user.email}
-                  </p>
-                  {user.displayName && (
-                    <p className="text-xs text-zinc-400 truncate">
-                      {user.email}
-                    </p>
+                  </a>
+                  {isMobile && (
+                    <button
+                      onClick={() => setIsSidebarOpen(false)}
+                      className="p-2 hover:bg-zinc-800 rounded-lg"
+                    >
+                      <svg
+                        className="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
                   )}
                 </div>
-                <Link
-                  to="/preferences"
-                  className="p-2 hover:bg-zinc-700 rounded-lg transition-colors"
-                  title="Preferências"
-                >
-                  <svg
-                    className="w-5 h-5 text-zinc-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+
+                {/* User Profile Section */}
+                {user ? (
+                  <div className="flex items-center gap-3 p-3 bg-zinc-800/50 rounded-lg">
+                    {user.photoURL ? (
+                      <img
+                        src={user.photoURL}
+                        alt="Profile"
+                        className="w-10 h-10 rounded-full border-2 border-blue-500"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
+                        <span className="text-lg font-bold">
+                          {user.email?.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">
+                        {user.displayName || user.email}
+                      </p>
+                      {user.displayName && (
+                        <p className="text-xs text-zinc-400 truncate">
+                          {user.email}
+                        </p>
+                      )}
+                    </div>
+                    <Link
+                      to="/preferences"
+                      className="p-2 hover:bg-zinc-700 rounded-lg transition-colors"
+                      title="Preferências"
+                    >
+                      <svg
+                        className="w-5 h-5 text-zinc-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                      </svg>
+                    </Link>
+                    <button
+                      onClick={handleSignOut}
+                      className="p-2 hover:bg-zinc-700 rounded-lg transition-colors"
+                      title="Sair"
+                    >
+                      <svg
+                        className="w-5 h-5 text-zinc-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                ) : (
+                  <Link
+                    to="/login"
+                    className="flex items-center gap-2 p-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
-                </Link>
-                <button
-                  onClick={handleSignOut}
-                  className="p-2 hover:bg-zinc-700 rounded-lg transition-colors"
-                  title="Sair"
-                >
-                  <svg
-                    className="w-5 h-5 text-zinc-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-                    />
-                  </svg>
-                </button>
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                      />
+                    </svg>
+                    <span>Fazer Login</span>
+                  </Link>
+                )}
               </div>
-            ) : (
-              <Link
-                to="/login"
-                className="flex items-center gap-2 p-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+
+              <nav className="space-y-1">
+                {menuItems.map((item) => (
+                  <MenuLink key={item.path} item={item} />
+                ))}
+              </nav>
+
+              {/* Add flex-1 to push the footer to the bottom */}
+              <div className="flex-1"></div>
+              {/* Instagram Footer */}
+              <div className="mt-4 pt-4 border-t border-zinc-800">
+                <a
+                  href="https://instagram.com/trilhainfo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-                  />
-                </svg>
-                <span>Fazer Login</span>
-              </Link>
-            )}
-          </div>
-
-          <nav className="space-y-1">
-            {menuItems.map((item) => (
-              <MenuLink key={item.path} item={item} />
-            ))}
-          </nav>
-
-          {/* Add flex-1 to push the footer to the bottom */}
-          <div className="flex-1"></div>
-          {/* Instagram Footer */}
-          <div className="mt-4 pt-4 border-t border-zinc-800">
-            <a
-              href="https://instagram.com/trilhainfo"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-              </svg>
-              <span>Powered by: @trilhainfo</span>
-            </a>
-          </div>
-        </div>
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                  </svg>
+                  <span>Powered by: @trilhainfo</span>
+                </a>
+              </div>
+            </div>
           </motion.nav>
         )}
       </AnimatePresence>
@@ -1677,7 +1724,7 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-            
+
             <Route
               path="/monitoramento-e-manutencao/alertas"
               element={
@@ -1688,7 +1735,7 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-            
+
             <Route
               path="/monitoramento-e-manutencao/performance"
               element={
@@ -1699,7 +1746,7 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-            
+
             <Route
               path="/monitoramento-e-manutencao/health-checks"
               element={
@@ -1710,7 +1757,7 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-            
+
             <Route
               path="/casos-reais"
               element={
@@ -1721,7 +1768,7 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-            
+
             <Route
               path="/casos-reais/youtube"
               element={
@@ -1732,9 +1779,22 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-            
+
+            <Route
+              path="/casos-reais/spotify"
+              element={
+                <>
+                  //{" "}
+                  {/* <ProtectedRoute> */}
+                    {/* <ContentPage> */}
+                    <Spotify />
+                    {/* </ContentPage>  */}
+                    //{" "}
+                  {/* </ProtectedRoute> */}
+                </>
+              }
+            />
           </Routes>
-          
         </div>
       </main>
     </div>
