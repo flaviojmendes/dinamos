@@ -95,6 +95,7 @@ import HealthChecks from "./components/MonitoringMaintenance/HealthChecks";
 import RealCases from "./components/RealCases/RealCases";
 import YouTube from "./components/RealCases/YouTube";
 import Spotify from "./components/RealCases/Spotify";
+import WhatsApp from "./components/RealCases/WhatsApp";
 
 interface MenuItem {
   name: string;
@@ -543,13 +544,11 @@ const menuItems: MenuItem[] = [
         path: "/casos-reais/url-shortener",
         name: "Encurtador de URLs",
         description: "Design de um serviço de encurtamento de URLs",
-        disabled: true,
       },
       {
         path: "/casos-reais/whatsapp",
         name: "WhatsApp",
-        description: "Sistema de mensagens em tempo real",
-        disabled: true,
+        description: "Sistema de mensagens em tempo real"
       },
       {
         path: "/casos-reais/netflix",
@@ -1783,15 +1782,22 @@ export default function App() {
             <Route
               path="/casos-reais/spotify"
               element={
-                <>
-                  //{" "}
-                  {/* <ProtectedRoute> */}
-                    {/* <ContentPage> */}
+                <ProtectedRoute>
+                  <ContentPage>
                     <Spotify />
-                    {/* </ContentPage>  */}
-                    //{" "}
-                  {/* </ProtectedRoute> */}
-                </>
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/casos-reais/whatsapp"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <WhatsApp />
+                  </ContentPage>
+                </ProtectedRoute>
               }
             />
           </Routes>
