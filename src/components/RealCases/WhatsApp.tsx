@@ -395,6 +395,46 @@ const WhatsApp: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* References Section */}
+      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+        <h2 className="text-2xl font-semibold text-emerald-500">Referências</h2>
+        <div className="space-y-3">
+          <div className="bg-zinc-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-emerald-400 mb-2">Documentação e Artigos Oficiais</h3>
+            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+              <li><a href="https://engineering.fb.com/category/whatsapp/" className="text-emerald-400 hover:underline" target="_blank" rel="noopener noreferrer">WhatsApp Engineering Blog</a></li>
+              <li><a href="https://www.whatsapp.com/security/" className="text-emerald-400 hover:underline" target="_blank" rel="noopener noreferrer">WhatsApp Security</a></li>
+              <li><a href="https://developers.facebook.com/docs/whatsapp/" className="text-emerald-400 hover:underline" target="_blank" rel="noopener noreferrer">WhatsApp Business API</a></li>
+            </ul>
+          </div>
+
+          <div className="bg-zinc-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-emerald-400 mb-2">Artigos Técnicos e Análises</h3>
+            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+              <li><a href="https://www.whatsapp.com/security/WhatsApp-Security-Whitepaper.pdf" className="text-emerald-400 hover:underline" target="_blank" rel="noopener noreferrer">WhatsApp Encryption Overview</a></li>
+              <li><a href="https://engineering.fb.com/2014/10/09/production-engineering/scaling-mercurial-at-facebook/" className="text-emerald-400 hover:underline" target="_blank" rel="noopener noreferrer">Scaling WhatsApp Infrastructure</a></li>
+              <li><a href="https://signal.org/docs/specifications/doubleratchet/" className="text-emerald-400 hover:underline" target="_blank" rel="noopener noreferrer">Signal Protocol Specification</a></li>
+            </ul>
+          </div>
+
+          <div className="bg-zinc-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-emerald-400 mb-2">Conferências e Apresentações</h3>
+            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+              <li><a href="https://www.youtube.com/watch?v=vvhC64hQZMk" className="text-emerald-400 hover:underline" target="_blank" rel="noopener noreferrer">F8 - WhatsApp Business Platform</a></li>
+              <li><a href="https://www.youtube.com/watch?v=5DgVkKHxKQk" className="text-emerald-400 hover:underline" target="_blank" rel="noopener noreferrer">Real-time Messaging Architecture</a></li>
+            </ul>
+          </div>
+
+          <div className="bg-zinc-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-emerald-400 mb-2">Segurança e Privacidade</h3>
+            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+              <li><a href="https://www.whatsapp.com/privacy" className="text-emerald-400 hover:underline" target="_blank" rel="noopener noreferrer">WhatsApp Privacy Policy</a></li>
+              <li><a href="https://scontent.whatsapp.net/v/t39.8562-34/316546300_547692750646518_7299107161331633308_n.pdf?ccb=1-7&_nc_sid=2fbf2a&_nc_ohc=t_1sHkqHzr4AX9QJTP-&_nc_ht=scontent.whatsapp.net&oh=01_AdTz6KJ_MWwjY_lQh6MH1_BPmXiC_1kdpvnNvCXcaHsUxw&oe=65C2F7C1" className="text-emerald-400 hover:underline" target="_blank" rel="noopener noreferrer">End-to-End Encryption Technical Paper</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
     </motion.div>
   );
 };

@@ -96,6 +96,9 @@ import RealCases from "./components/RealCases/RealCases";
 import YouTube from "./components/RealCases/YouTube";
 import Spotify from "./components/RealCases/Spotify";
 import WhatsApp from "./components/RealCases/WhatsApp";
+import Bitly from "./components/RealCases/Bitly";
+import Netflix from "./components/RealCases/Netflix";
+import Uber from "./components/RealCases/Uber";
 
 interface MenuItem {
   name: string;
@@ -541,9 +544,9 @@ const menuItems: MenuItem[] = [
         description: "Arquitetura de streaming de música em tempo real",
       },
       {
-        path: "/casos-reais/url-shortener",
-        name: "Encurtador de URLs",
-        description: "Design de um serviço de encurtamento de URLs",
+        path: "/casos-reais/bitly",
+        name: "Bit.ly",
+        description: "Design de um serviço de encurtamento de URLs em escala"
       },
       {
         path: "/casos-reais/whatsapp",
@@ -553,14 +556,12 @@ const menuItems: MenuItem[] = [
       {
         path: "/casos-reais/netflix",
         name: "Netflix",
-        description: "Streaming de vídeo e recomendação de conteúdo",
-        disabled: true,
+        description: "Streaming de vídeo e recomendação de conteúdo"
       },
       {
         path: "/casos-reais/uber",
         name: "Uber",
         description: "Sistema de geolocalização e matching em tempo real",
-        disabled: true,
       },
     ],
   },
@@ -1796,6 +1797,39 @@ export default function App() {
                 <ProtectedRoute>
                   <ContentPage>
                     <WhatsApp />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/casos-reais/bitly"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <Bitly />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/casos-reais/netflix"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <Netflix />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/casos-reais/uber"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <Uber />
                   </ContentPage>
                 </ProtectedRoute>
               }

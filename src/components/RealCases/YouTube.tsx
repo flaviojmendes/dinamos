@@ -600,6 +600,46 @@ const YouTube: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* References Section */}
+      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+        <h2 className="text-2xl font-semibold text-red-500">Referências</h2>
+        <div className="space-y-3">
+          <div className="bg-zinc-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-red-400 mb-2">Documentação e Artigos Oficiais</h3>
+            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+              <li><a href="https://www.youtube.com/howyoutubeworks" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">How YouTube Works - Official</a></li>
+              <li><a href="https://blog.youtube/inside-youtube/" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">YouTube Engineering Blog</a></li>
+              <li><a href="https://research.google/pubs/" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">Google Research Publications</a></li>
+            </ul>
+          </div>
+
+          <div className="bg-zinc-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-red-400 mb-2">Artigos Técnicos e Análises</h3>
+            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+              <li><a href="https://highscalability.com/youtube-architecture/" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">High Scalability - YouTube Architecture</a></li>
+              <li><a href="https://developers.google.com/youtube/v3/getting-started" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">YouTube API Documentation</a></li>
+              <li><a href="https://www.youtube.com/creators/how-things-work/" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">YouTube Creator Technical Resources</a></li>
+            </ul>
+          </div>
+
+          <div className="bg-zinc-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-red-400 mb-2">Conferências e Apresentações</h3>
+            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+              <li><a href="https://www.youtube.com/watch?v=w5WVu624fY8" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">Google I/O - YouTube Infrastructure</a></li>
+              <li><a href="https://www.youtube.com/watch?v=5yDO-tmIoXY" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">QCon - YouTube Scalability</a></li>
+            </ul>
+          </div>
+
+          <div className="bg-zinc-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-red-400 mb-2">Estatísticas e Métricas</h3>
+            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+              <li><a href="https://www.youtube.com/about/press/" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">YouTube Press Statistics</a></li>
+              <li><a href="https://www.statista.com/statistics/259477/hours-of-video-uploaded-to-youtube-every-minute/" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">Statista - YouTube Growth Statistics</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
     </motion.div>
   );
 };

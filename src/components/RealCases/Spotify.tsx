@@ -407,6 +407,46 @@ const Spotify: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* References Section */}
+      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+        <h2 className="text-2xl font-semibold text-green-500">Referências</h2>
+        <div className="space-y-3">
+          <div className="bg-zinc-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-green-400 mb-2">Documentação e Artigos Oficiais</h3>
+            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+              <li><a href="https://engineering.atspotify.com/" className="text-green-400 hover:underline" target="_blank" rel="noopener noreferrer">Spotify Engineering Blog</a></li>
+              <li><a href="https://spotify.design/" className="text-green-400 hover:underline" target="_blank" rel="noopener noreferrer">Spotify Design</a></li>
+              <li><a href="https://developer.spotify.com/" className="text-green-400 hover:underline" target="_blank" rel="noopener noreferrer">Spotify for Developers</a></li>
+            </ul>
+          </div>
+
+          <div className="bg-zinc-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-green-400 mb-2">Artigos Técnicos e Análises</h3>
+            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+              <li><a href="https://engineering.atspotify.com/2013/03/backend-infrastructure-at-spotify/" className="text-green-400 hover:underline" target="_blank" rel="noopener noreferrer">Backend Infrastructure at Spotify</a></li>
+              <li><a href="https://engineering.atspotify.com/2015/01/spotifys-event-delivery-the-road-to-the-cloud-part-i/" className="text-green-400 hover:underline" target="_blank" rel="noopener noreferrer">Event Delivery System</a></li>
+              <li><a href="https://engineering.atspotify.com/2016/02/spotifys-big-data-ecosystem/" className="text-green-400 hover:underline" target="_blank" rel="noopener noreferrer">Big Data Ecosystem</a></li>
+            </ul>
+          </div>
+
+          <div className="bg-zinc-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-green-400 mb-2">Conferências e Apresentações</h3>
+            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+              <li><a href="https://www.youtube.com/watch?v=Xr2soUVHxG8" className="text-green-400 hover:underline" target="_blank" rel="noopener noreferrer">QCon - Spotify's Audio Delivery at Scale</a></li>
+              <li><a href="https://www.youtube.com/watch?v=Z2JzVxP4H4w" className="text-green-400 hover:underline" target="_blank" rel="noopener noreferrer">InfoQ - Scaling Spotify</a></li>
+            </ul>
+          </div>
+
+          <div className="bg-zinc-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-green-400 mb-2">Ferramentas Open Source</h3>
+            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+              <li><a href="https://backstage.io/" className="text-green-400 hover:underline" target="_blank" rel="noopener noreferrer">Backstage - Developer Portal</a></li>
+              <li><a href="https://github.com/spotify/luigi" className="text-green-400 hover:underline" target="_blank" rel="noopener noreferrer">Luigi - Workflow Management</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
     </motion.div>
   );
 };
