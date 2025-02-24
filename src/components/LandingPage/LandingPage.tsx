@@ -6,7 +6,7 @@ import Countdown from '../Countdown/Countdown';
 
 const calculatePricing = () => {
   const originalPrice = 499;
-  const discountedPrice = 399;
+  const discountedPrice = 259;
   const discount = Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
   return { 
     originalPrice,
@@ -27,10 +27,10 @@ export default function LandingPage() {
           className="text-center"
         >
           <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-            Domine Sistemas Distribuídos
+            Domine Sistemas Distribuídos na Prática
           </h1>
           <p className="text-xl md:text-2xl text-zinc-400 mb-8">
-            Aprenda na prática com simuladores interativos e exemplos do mundo real
+            A plataforma mais completa para aprender arquitetura de sistemas com simuladores interativos e casos reais
           </p>
           <Link
             to="/intro"
@@ -45,74 +45,7 @@ export default function LandingPage() {
         </motion.div>
       </div>
 
-      {/* Credentials Section */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-zinc-800">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
-        >
-          <div>
-            <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-              Quem vai te ensinar
-            </h2>
-            <div className="prose prose-invert">
-              <p className="text-lg text-zinc-300 mb-4">
-                Olá! Me chamo Flávio atualmente atuo como <a href='https://www.linkedin.com/in/flaviojmendes/' target='_blank'><span className="text-blue-400 font-medium">Engineering Manager</span></a> em Sistemas Distribuídos.
-              </p>
-              <ul className="space-y-3 text-zinc-300">
-                <li className="flex items-start gap-2">
-                  <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span>Mais de 16 anos de experiência em desenvolvimento de software</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span>Experiência em grandes instituições financeiras, órgãos públicos e institutos de pesquisa</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span>Vasta experiência em projetos de diferentes escalas e complexidades</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span>Conhecimento prático em arquiteturas modernas e sistemas distribuídos</span>
-                </li>
-                <li className="flex items-start gap-2">
-                    <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span>Divulgação de conteúdo gratuito para a comunidade <a href='https://instagram.com/trilhainfo' target='_blank'><span className="text-blue-400 font-medium">@trilhainfo</span></a></span>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="bg-gradient-to-b from-blue-600/10 to-purple-600/10 rounded-xl p-8 border border-blue-500/20">
-            <blockquote className="text-lg text-zinc-300 italic">
-              "Nesse material a minha intenção é poder colocar todos esses mais de 16 anos de experiência em prática, de forma que você saia daqui com uma mentalidade de que é necessário, além de ter um repertório técnico, colocar a mão na massa, experimentar e validar suas soluções."
-            </blockquote>
-            <div className="mt-6 flex items-center gap-4">
-              <div className="h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-xl font-bold">
-                <img src="https://media.licdn.com/dms/image/v2/D4E03AQFMfMauUM84Fw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1707169753089?e=1743033600&v=beta&t=0dB9ultfR3WzXB0LfHq7nJ5QiVPBjX_7Ydk4OK-XwJM" alt="Flávio Mendes" className="w-full h-full rounded-full object-cover" />
-              </div>
-              <div>
-                <div className="font-medium">Flávio Mendes</div>
-                <div className="text-sm text-zinc-400">Engineering Manager</div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Content Showcase Section */}
+      {/* Key Features Grid */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-zinc-800">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -124,230 +57,204 @@ export default function LandingPage() {
             Conteúdo Completo e Prático
           </h2>
           <p className="text-xl text-zinc-400">
-            Uma experiência única de aprendizado que combina teoria aprofundada com prática interativa
+            Tudo que você precisa para se tornar um especialista em sistemas distribuídos
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Encyclopedia Section */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-8 border border-zinc-700/30"
-          >
-            <div className="flex items-start gap-4 mb-6">
-              <div className="bg-blue-500/10 p-3 rounded-lg">
-                <svg className="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold mb-2 text-blue-400">Conhecimento Estruturado</h3>
-                <p className="text-zinc-400">Base teórica sólida para dominar sistemas distribuídos</p>
-              </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/* Fundamentals */}
+          <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30">
+            <div className="bg-blue-500/10 p-3 rounded-lg w-12 h-12 mb-4">
+              <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+              </svg>
             </div>
-            <ul className="space-y-4 text-zinc-300">
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <div>
-                  <span className="font-medium text-white">Fundamentos Essenciais</span>
-                  <p className="text-sm text-zinc-400 mt-1">Conceitos fundamentais explicados de forma clara e objetiva, com analogias do mundo real</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <div>
-                  <span className="font-medium text-white">Arquiteturas Modernas</span>
-                  <p className="text-sm text-zinc-400 mt-1">Padrões arquiteturais atuais como Microsserviços, Event-Driven e Cloud-Native</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <div>
-                  <span className="font-medium text-white">Segurança e Confiabilidade</span>
-                  <p className="text-sm text-zinc-400 mt-1">Práticas avançadas de segurança, criptografia e proteção contra ataques comuns</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <div>
-                  <span className="font-medium text-white">Consistência e Disponibilidade</span>
-                  <p className="text-sm text-zinc-400 mt-1">Estratégias de consenso, replicação e balanceamento de carga em profundidade</p>
-                </div>
-              </li>
+            <h3 className="text-xl font-bold mb-3 text-blue-400">Fundamentos Sólidos</h3>
+            <ul className="space-y-2 text-zinc-300">
+              <li>• Sistemas Distribuídos 101</li>
+              <li>• System Design 101</li>
+              <li>• Componentes Básicos</li>
+              <li>• Arquiteturas Modernas</li>
             </ul>
-          </motion.div>
+          </div>
 
-          {/* Interactive Learning Section */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-8 border border-zinc-700/30"
-          >
-            <div className="flex items-start gap-4 mb-6">
-              <div className="bg-purple-500/10 p-3 rounded-lg">
-                <svg className="w-8 h-8 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold mb-2 text-purple-400">Simuladores Dinâmicos</h3>
-                <p className="text-zinc-400">Aprenda na prática com simulações interativas</p>
-              </div>
+          {/* Interactive Learning */}
+          <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30">
+            <div className="bg-purple-500/10 p-3 rounded-lg w-12 h-12 mb-4">
+              <svg className="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
             </div>
-            <ul className="space-y-4 text-zinc-300">
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-purple-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <div>
-                  <span className="font-medium text-white">Simuladores de Falhas</span>
-                  <p className="text-sm text-zinc-400 mt-1">Experimente cenários reais de falhas com Circuit Breaker, Timeout e Retry Patterns</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-purple-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <div>
-                  <span className="font-medium text-white">Balanceamento de Carga</span>
-                  <p className="text-sm text-zinc-400 mt-1">Visualize diferentes algoritmos de balanceamento em ação e seus impactos</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-purple-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <div>
-                  <span className="font-medium text-white">Estratégias de Cache</span>
-                  <p className="text-sm text-zinc-400 mt-1">Compare diferentes políticas de cache e seus efeitos na performance</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-purple-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <div>
-                  <span className="font-medium text-white">Segurança em Ação</span>
-                  <p className="text-sm text-zinc-400 mt-1">Simuladores de ataques comuns e implementação de medidas de proteção</p>
-                </div>
-              </li>
+            <h3 className="text-xl font-bold mb-3 text-purple-400">Simuladores Interativos</h3>
+            <ul className="space-y-2 text-zinc-300">
+              <li>• Circuit Breaker e Falhas</li>
+              <li>• Load Balancing e Cache</li>
+              <li>• Consenso e Consistência</li>
+              <li>• Segurança e Proteção</li>
             </ul>
-          </motion.div>
+          </div>
+
+          {/* Real Cases */}
+          <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30">
+            <div className="bg-green-500/10 p-3 rounded-lg w-12 h-12 mb-4">
+              <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold mb-3 text-green-400">Casos Reais</h3>
+            <ul className="space-y-2 text-zinc-300">
+              <li>• Netflix e YouTube</li>
+              <li>• WhatsApp e Uber</li>
+              <li>• Spotify e Bit.ly</li>
+              <li>• Decisões Técnicas</li>
+            </ul>
+          </div>
         </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="text-center mt-12"
-        >
-          <p className="text-lg text-zinc-400">
-            Mais de <span className="text-blue-400 font-semibold">15 simuladores interativos</span> e <span className="text-purple-400 font-semibold">conteúdo atualizado</span> para acelerar seu aprendizado
-          </p>
-          <Link
-            to="/intro"
-            onClick={() => ReactGA.event({
-              category: 'User',
-              action: 'Clicked on Content Preview CTA',
-            })}
-            className="inline-block mt-6 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
-          >
-            Explorar Conteúdo
-          </Link>
-        </motion.div>
       </div>
 
-      {/* Simulators Showcase */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      {/* Advanced Topics */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-zinc-800">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-center mb-12"
         >
-          
+          <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            Tópicos Avançados
+          </h2>
           <p className="text-xl text-zinc-400">
-            Aprenda na prática com simuladores que demonstram cenários reais
+            Domine conceitos essenciais para construir sistemas robustos e escaláveis
           </p>
         </motion.div>
 
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Design Principles */}
+          <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30">
+            <h3 className="text-xl font-bold mb-4 text-blue-400">Princípios de Design</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium mb-2 text-white">Escalabilidade</h4>
+                <ul className="space-y-1 text-sm text-zinc-400">
+                  <li>• Horizontal Scaling</li>
+                  <li>• Vertical Scaling</li>
+                  <li>• Replicação</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium mb-2 text-white">Disponibilidade</h4>
+                <ul className="space-y-1 text-sm text-zinc-400">
+                  <li>• Failover</li>
+                  <li>• Circuit Breaker</li>
+                  <li>• Timeout & Retries</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Security & Monitoring */}
+          <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30">
+            <h3 className="text-xl font-bold mb-4 text-purple-400">Segurança & Monitoramento</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium mb-2 text-white">Segurança</h4>
+                <ul className="space-y-1 text-sm text-zinc-400">
+                  <li>• Autenticação</li>
+                  <li>• Criptografia</li>
+                  <li>• Proteção contra Ataques</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium mb-2 text-white">Monitoramento</h4>
+                <ul className="space-y-1 text-sm text-zinc-400">
+                  <li>• Métricas & KPIs</li>
+                  <li>• Logs & Tracing</li>
+                  <li>• Health Checks</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* About Me Section */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-zinc-800">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="text-center mb-12"
         >
-          {/* Circuit Breaker Simulator */}
-          <div className="bg-zinc-900/50 rounded-xl overflow-hidden">
-            <div className="aspect-video bg-zinc-800 relative">
-              {/* Placeholder for GIF */}
-              <div className="absolute inset-0 flex items-center justify-center text-zinc-600">
-                <img src="/circuit.gif" alt="Circuit Breaker" className="w-full h-full object-cover" />
-              </div>
-            </div>
-            <div className="p-4">
-              <h3 className="text-lg font-semibold mb-2">Circuit Breaker Pattern</h3>
-              <p className="text-zinc-400 text-sm">
-                Veja como o circuit breaker protege seu sistema contra falhas em cascata
-              </p>
-            </div>
-          </div>
-
-          {/* Load Balancer Simulator */}
-          <div className="bg-zinc-900/50 rounded-xl overflow-hidden">
-            <div className="aspect-video bg-zinc-800 relative">
-              {/* Placeholder for GIF */}
-              <div className="absolute inset-0 flex items-center justify-center text-zinc-600">
-                <img src="/loadbalancer.gif" alt="Load Balancer" className="w-full h-full object-cover" />
-              </div>
-            </div>
-            <div className="p-4">
-              <h3 className="text-lg font-semibold mb-2">Load Balancer</h3>
-              <p className="text-zinc-400 text-sm">
-                Experimente diferentes algoritmos de balanceamento de carga
-              </p>
-            </div>
-          </div>
-
-          {/* Cache Simulator */}
-          <div className="bg-zinc-900/50 rounded-xl overflow-hidden">
-            <div className="aspect-video bg-zinc-800 relative">
-              {/* Placeholder for GIF */}
-              <div className="absolute inset-0 flex items-center justify-center text-zinc-600">
-                <img src="/cache.gif" alt="Cache" className="w-full h-full object-cover" />
-              </div>
-            </div>
-            <div className="p-4">
-              <h3 className="text-lg font-semibold mb-2">Cache Strategies</h3>
-              <p className="text-zinc-400 text-sm">
-                Descubra como diferentes estratégias de cache impactam a performance
-              </p>
-            </div>
-          </div>
+          <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            Quem vai te ensinar
+          </h2>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="text-center mt-12"
-        >
-          <p className="text-zinc-400 text-lg">
-            E muito mais! No Dinamos você encontra simuladores para todos os conceitos importantes de sistemas distribuídos.
-          </p>
-          
-        </motion.div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="space-y-6">
+            <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30">
+              <h3 className="text-xl font-bold mb-4 text-blue-400">Experiência</h3>
+              <ul className="space-y-3">
+                <li className="flex items-start gap-3 text-zinc-300">
+                  <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  <span>15+ anos de experiência em desenvolvimento de software</span>
+                </li>
+                <li className="flex items-start gap-3 text-zinc-300">
+                  <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                  </svg>
+                  <span>Liderança em empresas de tecnologia</span>
+                </li>
+                <li className="flex items-start gap-3 text-zinc-300">
+                  <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                  </svg>
+                  <span>Projetos em escala global</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30">
+              <h3 className="text-xl font-bold mb-4 text-purple-400">Especialidades</h3>
+              <ul className="space-y-3">
+                <li className="flex items-start gap-3 text-zinc-300">
+                  <svg className="w-5 h-5 text-purple-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  <span>Arquitetura de Sistemas Distribuídos</span>
+                </li>
+                <li className="flex items-start gap-3 text-zinc-300">
+                  <svg className="w-5 h-5 text-purple-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  <span>Escalabilidade e Performance</span>
+                </li>
+                <li className="flex items-start gap-3 text-zinc-300">
+                  <svg className="w-5 h-5 text-purple-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  <span>Segurança e Boas Práticas</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-8 border border-zinc-700/30">
+            <div className="space-y-6">
+              <p className="text-zinc-300 leading-relaxed">
+              Olá! Me chamo Flávio, e atualmente atuo como Engineering Manager em Sistemas Distribuídos.
+              </p>
+              <p className="text-zinc-300 leading-relaxed">
+              Nesse material a minha intenção é poder colocar todos esses mais de 16 anos de experiência em prática, de forma que você saia daqui com uma mentalidade de que é necessário, além de ter um repertório técnico, colocar a mão na massa, experimentar e validar suas soluções.
+              </p>
+              <p className="text-zinc-300 leading-relaxed">
+                No meu dia a dia trabalho em projetos de alta performance, escalabilidade e disponibilidade onde atingimos mais de <span className="font-bold text-green-400">1,5 bilhão</span> de requisições por ano.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Pricing Section */}
@@ -362,7 +269,7 @@ export default function LandingPage() {
             Invista no Seu Futuro
           </h2>
           <p className="text-xl text-zinc-400">
-            Domine sistemas distribuídos com um investimento único e acesso vitalício
+            Acesso vitalício a todo o conteúdo com um único pagamento
           </p>
         </motion.div>
 
@@ -379,22 +286,22 @@ export default function LandingPage() {
             <div className="text-center mb-8">
               <div className="text-center">
                 <span className="text-4xl font-bold">
-                  <span className="text-zinc-400 line-through">R$499</span>{" "}
-                  <span className="text-white">R$259</span>
+                  <span className="text-zinc-400 line-through">R${calculatePricing().originalPrice}</span>{" "}
+                  <span className="text-white">R${calculatePricing().discountedPrice}</span>
                 </span>
-                <span className="text-green-400 text-sm ml-2">48% OFF</span>
+                <span className="text-green-400 text-sm ml-2">{calculatePricing().discount}% OFF</span>
               </div>
-              <p className="text-zinc-400">Pagamento único - Acesso para sempre</p>
+              <p className="text-zinc-400">Pagamento único - Acesso vitalício</p>
             </div>
             <Link
               to="/pagamento"
               onClick={() => ReactGA.event({
                 category: 'User',
-                action: 'Clicked on Start Now Button',
+                action: 'Clicked on Payment Button',
               })}
               className="block text-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
             >
-              Começar Agora
+              Garantir Minha Vaga
             </Link>
           </motion.div>
 
@@ -409,32 +316,32 @@ export default function LandingPage() {
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
-                Benefícios Exclusivos
+                O Que Você Recebe
               </h4>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3 text-zinc-300">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>Acesso vitalício a todo o conteúdo</span>
+                  <span>Mais de 15 simuladores interativos para prática hands-on</span>
                 </li>
                 <li className="flex items-start gap-3 text-zinc-300">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>Mais de 15 simuladores interativos</span>
+                  <span>6 estudos de caso detalhados de empresas de tecnologia</span>
+                </li>
+                <li className="flex items-start gap-3 text-zinc-300">
+                  <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Conteúdo teórico completo com exemplos práticos</span>
                 </li>
                 <li className="flex items-start gap-3 text-zinc-300">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <span>Atualizações e novos conteúdos incluídos</span>
-                </li>
-                <li className="flex items-start gap-3 text-zinc-300">
-                  <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span>Exemplos práticos do mundo real</span>
                 </li>
               </ul>
             </div>
@@ -444,67 +351,32 @@ export default function LandingPage() {
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
-                Conteúdo Abrangente
+                Diferenciais
               </h4>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3 text-zinc-300">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>Fundamentos de Sistemas Distribuídos</span>
+                  <span>Simuladores exclusivos para praticar conceitos</span>
                 </li>
                 <li className="flex items-start gap-3 text-zinc-300">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>Arquiteturas Modernas (Microsserviços, Event-Driven)</span>
+                  <span>Análise detalhada de decisões técnicas reais</span>
                 </li>
                 <li className="flex items-start gap-3 text-zinc-300">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>Segurança e Proteção contra Ataques</span>
+                  <span>Conteúdo em português e focado na prática</span>
                 </li>
                 <li className="flex items-start gap-3 text-zinc-300">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>Estratégias de Cache e Load Balancing</span>
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-              <h4 className="text-lg font-semibold mb-4 text-green-400 flex items-center gap-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                </svg>
-                Aprendizado Prático
-              </h4>
-              <ul className="space-y-3">
-                <li className="flex items-start gap-3 text-zinc-300">
-                  <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span>Simuladores de Circuit Breaker e Falhas</span>
-                </li>
-                <li className="flex items-start gap-3 text-zinc-300">
-                  <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span>Simulações de Ataques e Proteções</span>
-                </li>
-                <li className="flex items-start gap-3 text-zinc-300">
-                  <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span>Cenários Reais de Escalabilidade</span>
-                </li>
-                <li className="flex items-start gap-3 text-zinc-300">
-                  <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span>Experimentos de Performance e Otimização</span>
+                  <span>Roadmap estruturado de aprendizado</span>
                 </li>
               </ul>
             </div>
@@ -520,19 +392,19 @@ export default function LandingPage() {
           transition={{ duration: 0.5, delay: 0.6 }}
           className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-8 text-center"
         >
-          <h2 className="text-3xl font-bold mb-4">Pronto para começar?</h2>
+          <h2 className="text-3xl font-bold mb-4">Pronto para se tornar um especialista?</h2>
           <p className="text-xl mb-8 text-zinc-200">
-            Junte-se a nós e aprenda a construir sistemas distribuídos robustos e escaláveis
+            Junte-se a centenas de desenvolvedores que já estão dominando sistemas distribuídos na prática
           </p>
           <Link
-            to="/intro"
+            to="/pagamento"
             onClick={() => ReactGA.event({
               category: 'User',
-              action: 'Clicked on Start Now Button',
+              action: 'Clicked on Final CTA',
             })}
             className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg text-lg font-medium hover:bg-zinc-100 transition-colors"
           >
-            Começar Jornada
+            Garantir Minha Vaga
           </Link>
         </motion.div>
       </div>
