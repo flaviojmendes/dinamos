@@ -33,6 +33,9 @@ import APIGatewaySimulator from "./components/APIGateway/APIGatewaySimulator";
 import DesignPrinciples from "./components/DesignPrinciples/DesignPrinciples";
 import EventDriven from "./components/DesignPrinciples/EventDriven";
 import EventSourcingSimulator from "./components/DesignPrinciples/EventSourcingSimulator";
+import LogSimulator from "./components/Monitoramento/LogSimulator";
+import LogsPage from './components/Monitoramento/LogsPage';
+import TracingSimulator from './components/Monitoramento/TracingSimulator';
 
 import LandingPage from "./components/LandingPage/LandingPage";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
@@ -494,6 +497,22 @@ const menuItems: MenuItem[] = [
         path: "/monitoramento-e-manutencao/logs",
         name: "Logs e Tracing",
         description: "Rastreamento e análise de logs distribuídos",
+        children: [
+          {
+            name: "Simulador de Logs",
+            description: "Experimente com bons e maus exemplos de logs",
+            path: "/monitoramento-e-manutencao/logs/simulador",
+            component: LogSimulator,
+            status: "new"
+          },
+          {
+            path: "/monitoramento-e-manutencao/logs/tracing",
+            name: "Tracing Simulator",
+            description: "Experimente o rastreamento de eventos",
+            component: TracingSimulator,
+            status: "new"
+          }
+        ]
       },
       {
         path: "/monitoramento-e-manutencao/alertas",
@@ -1719,7 +1738,7 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <ContentPage>
-                    <Logs />
+                    <LogsPage />
                   </ContentPage>
                 </ProtectedRoute>
               }
@@ -1830,6 +1849,27 @@ export default function App() {
                 <ProtectedRoute>
                   <ContentPage>
                     <Uber />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/monitoramento-e-manutencao/logs/simulador"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <LogSimulator />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/monitoramento-e-manutencao/logs/tracing"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <TracingSimulator />
                   </ContentPage>
                 </ProtectedRoute>
               }
