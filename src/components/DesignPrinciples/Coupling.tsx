@@ -458,20 +458,7 @@ spec:
         </div>
       </motion.div>
 
-      {/* Call to Action */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.7 }}
-        className="text-center"
-      >
-        <Link
-          to="/principios-design/acoplamento/simulator"
-          className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
-        >
-          Experimentar Simulador
-        </Link>
-      </motion.div>
+   
     </div>
   );
 } 

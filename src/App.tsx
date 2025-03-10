@@ -102,6 +102,8 @@ import WhatsApp from "./components/RealCases/WhatsApp";
 import Bitly from "./components/RealCases/Bitly";
 import Netflix from "./components/RealCases/Netflix";
 import Uber from "./components/RealCases/Uber";
+import AvailabilitySimulator from './components/DesignPrinciples/AvailabilitySimulator';
+import OrchestrationVsChoreography from './components/DesignPrinciples/OrchestrationVsChoreography';
 
 interface MenuItem {
   name: string;
@@ -383,6 +385,13 @@ const menuItems: MenuItem[] = [
         description: "Acoplamento dinâmico e estático entre serviços",
         badges: [{ text: "Novo", color: "bg-blue-500" }],
       },
+      {
+        path: "/principios-design/orquestracao-vs-coreografia",
+        name: "Orquestração vs Coreografia",
+        description: "Compare os padrões de orquestração e coreografia",
+        component: OrchestrationVsChoreography,
+        status: "new"
+      }
     ],
   },
   {
@@ -1709,6 +1718,16 @@ export default function App() {
                 <ProtectedRoute>
                   <ContentPage>
                     <Coupling />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/orquestracao-vs-coreografia"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <OrchestrationVsChoreography />
                   </ContentPage>
                 </ProtectedRoute>
               }
