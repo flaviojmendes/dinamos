@@ -102,7 +102,7 @@ import WhatsApp from "./components/RealCases/WhatsApp";
 import Bitly from "./components/RealCases/Bitly";
 import Netflix from "./components/RealCases/Netflix";
 import Uber from "./components/RealCases/Uber";
-import AvailabilitySimulator from './components/DesignPrinciples/AvailabilitySimulator';
+
 import OrchestrationVsChoreography from './components/DesignPrinciples/OrchestrationVsChoreography';
 
 interface MenuItem {
