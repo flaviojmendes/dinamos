@@ -6,7 +6,7 @@ import Countdown from '../Countdown/Countdown';
 
 const calculatePricing = () => {
   const originalPrice = 499;
-  const discountedPrice = 259;
+  const discountedPrice = 179;
   const discount = Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
   return { 
     originalPrice,
@@ -19,34 +19,56 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-black text-white">
       {/* Hero Section */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center"
-        >
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-            Domine Sistemas Distribuídos na Prática
-          </h1>
-          <p className="text-xl md:text-2xl text-zinc-400 mb-8">
-            A plataforma mais completa para aprender arquitetura de sistemas com simuladores interativos e casos reais
-          </p>
-          <Link
-            to="/intro"
-            onClick={() => ReactGA.event({
-              category: 'User',
-              action: 'Clicked on Start Now Button',
-            })}
-            className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10" />
+        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-center"
           >
-            Começar Agora
-          </Link>
-        </motion.div>
+            <div className="inline-block bg-blue-500/10 text-blue-400 px-4 py-2 rounded-full text-sm mb-6">
+              Nova Oferta Especial
+            </div>
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+              Domine Sistemas Distribuídos na Prática
+            </h1>
+            <p className="text-xl md:text-2xl text-zinc-400 mb-8 max-w-3xl mx-auto">
+              A plataforma mais completa para aprender arquitetura de sistemas com simuladores interativos e casos reais
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link
+                to="/intro"
+                onClick={() => ReactGA.event({
+                  category: 'User',
+                  action: 'Clicked on Start Now Button',
+                })}
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
+              >
+                <span>Começar Agora</span>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </Link>
+              <Link
+                to="/intro"
+                className="inline-flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
+              >
+                <span>Ver Conteúdo</span>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              </Link>
+            </div>
+          </motion.div>
+        </div>
       </div>
 
       {/* Key Features Grid */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-zinc-800">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -63,57 +85,132 @@ export default function LandingPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Fundamentals */}
-          <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30">
-            <div className="bg-blue-500/10 p-3 rounded-lg w-12 h-12 mb-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="group bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30 hover:border-blue-500/50 transition-colors"
+          >
+            <div className="bg-blue-500/10 p-3 rounded-lg w-12 h-12 mb-4 group-hover:bg-blue-500/20 transition-colors">
               <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
               </svg>
             </div>
             <h3 className="text-xl font-bold mb-3 text-blue-400">Fundamentos Sólidos</h3>
             <ul className="space-y-2 text-zinc-300">
-              <li>• Sistemas Distribuídos 101</li>
-              <li>• System Design 101</li>
-              <li>• Componentes Básicos</li>
-              <li>• Arquiteturas Modernas</li>
+              <li className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                Sistemas Distribuídos 101
+              </li>
+              <li className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                System Design 101
+              </li>
+              <li className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                Componentes Básicos
+              </li>
+              <li className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                Arquiteturas Modernas
+              </li>
             </ul>
-          </div>
+          </motion.div>
 
           {/* Interactive Learning */}
-          <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30">
-            <div className="bg-purple-500/10 p-3 rounded-lg w-12 h-12 mb-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="group bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30 hover:border-purple-500/50 transition-colors"
+          >
+            <div className="bg-purple-500/10 p-3 rounded-lg w-12 h-12 mb-4 group-hover:bg-purple-500/20 transition-colors">
               <svg className="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
             </div>
             <h3 className="text-xl font-bold mb-3 text-purple-400">Simuladores Interativos</h3>
             <ul className="space-y-2 text-zinc-300">
-              <li>• Circuit Breaker e Falhas</li>
-              <li>• Load Balancing e Cache</li>
-              <li>• Consenso e Consistência</li>
-              <li>• Segurança e Proteção</li>
+              <li className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                Circuit Breaker e Falhas
+              </li>
+              <li className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                Load Balancing e Cache
+              </li>
+              <li className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                Consenso e Consistência
+              </li>
+              <li className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                Segurança e Proteção
+              </li>
             </ul>
-          </div>
+          </motion.div>
 
           {/* Real Cases */}
-          <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30">
-            <div className="bg-green-500/10 p-3 rounded-lg w-12 h-12 mb-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="group bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30 hover:border-green-500/50 transition-colors"
+          >
+            <div className="bg-green-500/10 p-3 rounded-lg w-12 h-12 mb-4 group-hover:bg-green-500/20 transition-colors">
               <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
               </svg>
             </div>
             <h3 className="text-xl font-bold mb-3 text-green-400">Casos Reais</h3>
             <ul className="space-y-2 text-zinc-300">
-              <li>• Netflix e YouTube</li>
-              <li>• WhatsApp e Uber</li>
-              <li>• Spotify e Bit.ly</li>
-              <li>• Decisões Técnicas</li>
+              <li className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                Netflix e YouTube
+              </li>
+              <li className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                WhatsApp e Uber
+              </li>
+              <li className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                Spotify e Bit.ly
+              </li>
+              <li className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                Decisões Técnicas
+              </li>
             </ul>
-          </div>
+          </motion.div>
         </div>
       </div>
 
-      {/* Advanced Topics */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-zinc-800">
+      {/* Learning Roadmap Section */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -121,64 +218,176 @@ export default function LandingPage() {
           className="text-center mb-12"
         >
           <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            Tópicos Avançados
+            Sua Jornada de Aprendizado
           </h2>
           <p className="text-xl text-zinc-400">
-            Domine conceitos essenciais para construir sistemas robustos e escaláveis
+            Um caminho estruturado para dominar sistemas distribuídos
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Design Principles */}
-          <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30">
-            <h3 className="text-xl font-bold mb-4 text-blue-400">Princípios de Design</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <h4 className="font-medium mb-2 text-white">Escalabilidade</h4>
-                <ul className="space-y-1 text-sm text-zinc-400">
-                  <li>• Horizontal Scaling</li>
-                  <li>• Vertical Scaling</li>
-                  <li>• Replicação</li>
+        <div className="relative">
+          {/* Connecting Lines */}
+          <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 via-purple-500 to-yellow-500 transform -translate-x-1/2 hidden lg:block" />
+          
+          {/* Journey Steps */}
+          <div className="space-y-12">
+            {/* Fundamentos */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 }}
+              className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 items-center"
+            >
+              <div className="lg:text-right order-2 lg:order-1">
+                <h3 className="text-2xl font-bold text-blue-400 mb-4">Fundamentos</h3>
+                <ul className="space-y-3">
+                  <li className="flex items-center gap-2 lg:flex-row-reverse">
+                    <span className="text-zinc-300">Sistemas Distribuídos 101</span>
+                    <div className="h-2 w-2 rounded-full bg-blue-500" />
+                  </li>
+                  <li className="flex items-center gap-2 lg:flex-row-reverse">
+                    <span className="text-zinc-300">System Design 101</span>
+                    <div className="h-2 w-2 rounded-full bg-blue-500" />
+                  </li>
+                  <li className="flex items-center gap-2 lg:flex-row-reverse">
+                    <span className="text-zinc-300">Componentes Básicos</span>
+                    <div className="h-2 w-2 rounded-full bg-blue-500" />
+                  </li>
                 </ul>
               </div>
-              <div>
-                <h4 className="font-medium mb-2 text-white">Disponibilidade</h4>
-                <ul className="space-y-1 text-sm text-zinc-400">
-                  <li>• Failover</li>
-                  <li>• Circuit Breaker</li>
-                  <li>• Timeout & Retries</li>
-                </ul>
+              <div className="relative order-1 lg:order-2">
+                <div className="lg:pl-8">
+                  <div className="bg-gradient-to-br from-blue-500/20 to-blue-500/5 rounded-xl p-6 border border-blue-500/20">
+                    <div className="absolute left-0 top-1/2 w-8 h-1 bg-blue-500 hidden lg:block transform -translate-y-1/2" />
+                    <div className="absolute left-0 top-1/2 w-4 h-4 bg-blue-500 rounded-full hidden lg:block transform -translate-x-1/2 -translate-y-1/2" />
+                    <svg className="w-12 h-12 text-blue-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                    <p className="text-zinc-300">Aprenda os conceitos fundamentais e construa uma base sólida para sua jornada</p>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            </motion.div>
 
-          {/* Security & Monitoring */}
-          <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30">
-            <h3 className="text-xl font-bold mb-4 text-purple-400">Segurança & Monitoramento</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <h4 className="font-medium mb-2 text-white">Segurança</h4>
-                <ul className="space-y-1 text-sm text-zinc-400">
-                  <li>• Autenticação</li>
-                  <li>• Criptografia</li>
-                  <li>• Proteção contra Ataques</li>
-                </ul>
+            {/* Princípios de Design */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+              className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 items-center"
+            >
+              <div className="relative">
+                <div className="lg:pr-8">
+                  <div className="bg-gradient-to-br from-purple-500/20 to-purple-500/5 rounded-xl p-6 border border-purple-500/20">
+                    <div className="absolute right-0 top-1/2 w-8 h-1 bg-purple-500 hidden lg:block transform -translate-y-1/2" />
+                    <div className="absolute right-0 top-1/2 w-4 h-4 bg-purple-500 rounded-full hidden lg:block transform translate-x-1/2 -translate-y-1/2" />
+                    <svg className="w-12 h-12 text-purple-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    <p className="text-zinc-300">Domine os princípios essenciais de design de sistemas distribuídos</p>
+                  </div>
+                </div>
               </div>
               <div>
-                <h4 className="font-medium mb-2 text-white">Monitoramento</h4>
-                <ul className="space-y-1 text-sm text-zinc-400">
-                  <li>• Métricas & KPIs</li>
-                  <li>• Logs & Tracing</li>
-                  <li>• Health Checks</li>
+                <h3 className="text-2xl font-bold text-purple-400 mb-4">Princípios de Design</h3>
+                <ul className="space-y-3">
+                  <li className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-purple-500" />
+                    <span className="text-zinc-300">Escalabilidade Horizontal e Vertical</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-purple-500" />
+                    <span className="text-zinc-300">Alta Disponibilidade</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-purple-500" />
+                    <span className="text-zinc-300">Tolerância a Falhas</span>
+                  </li>
                 </ul>
               </div>
-            </div>
+            </motion.div>
+
+            {/* Tópicos Avançados */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.5 }}
+              className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 items-center"
+            >
+              <div className="lg:text-right order-2 lg:order-1">
+                <h3 className="text-2xl font-bold text-green-400 mb-4">Tópicos Avançados</h3>
+                <ul className="space-y-3">
+                  <li className="flex items-center gap-2 lg:flex-row-reverse">
+                    <span className="text-zinc-300">Estratégias de Consistência</span>
+                    <div className="h-2 w-2 rounded-full bg-green-500" />
+                  </li>
+                  <li className="flex items-center gap-2 lg:flex-row-reverse">
+                    <span className="text-zinc-300">Relógios Lógicos de Lamport</span>
+                    <div className="h-2 w-2 rounded-full bg-green-500" />
+                  </li>
+                  <li className="flex items-center gap-2 lg:flex-row-reverse">
+                    <span className="text-zinc-300">Arquitetura Orientada a Eventos</span>
+                    <div className="h-2 w-2 rounded-full bg-green-500" />
+                  </li>
+                </ul>
+              </div>
+              <div className="relative order-1 lg:order-2">
+                <div className="lg:pl-8">
+                  <div className="bg-gradient-to-br from-green-500/20 to-green-500/5 rounded-xl p-6 border border-green-500/20">
+                    <div className="absolute left-0 top-1/2 w-8 h-1 bg-green-500 hidden lg:block transform -translate-y-1/2" />
+                    <div className="absolute left-0 top-1/2 w-4 h-4 bg-green-500 rounded-full hidden lg:block transform -translate-x-1/2 -translate-y-1/2" />
+                    <svg className="w-12 h-12 text-green-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    <p className="text-zinc-300">Explore conceitos avançados e aprofunde seu conhecimento</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Casos Reais */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.6 }}
+              className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 items-center"
+            >
+              <div className="relative">
+                <div className="lg:pr-8">
+                  <div className="bg-gradient-to-br from-yellow-500/20 to-yellow-500/5 rounded-xl p-6 border border-yellow-500/20">
+                    <div className="absolute right-0 top-1/2 w-8 h-1 bg-yellow-500 hidden lg:block transform -translate-y-1/2" />
+                    <div className="absolute right-0 top-1/2 w-4 h-4 bg-yellow-500 rounded-full hidden lg:block transform translate-x-1/2 -translate-y-1/2" />
+                    <svg className="w-12 h-12 text-yellow-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                    </svg>
+                    <p className="text-zinc-300">Aplique seu conhecimento analisando casos reais de sucesso</p>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-yellow-400 mb-4">Casos Reais</h3>
+                <ul className="space-y-3">
+                  <li className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-yellow-500" />
+                    <span className="text-zinc-300">YouTube e Netflix</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-yellow-500" />
+                    <span className="text-zinc-300">Spotify e WhatsApp</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-yellow-500" />
+                    <span className="text-zinc-300">Uber e Bit.ly</span>
+                  </li>
+                </ul>
+              </div>
+            </motion.div>
           </div>
         </div>
       </div>
 
       {/* About Me Section */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-zinc-800">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -192,7 +401,12 @@ export default function LandingPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
-            <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 }}
+              className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30"
+            >
               <h3 className="text-xl font-bold mb-4 text-blue-400">Experiência</h3>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3 text-zinc-300">
@@ -214,9 +428,14 @@ export default function LandingPage() {
                   <span>Projetos em escala global</span>
                 </li>
               </ul>
-            </div>
+            </motion.div>
 
-            <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+              className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30"
+            >
               <h3 className="text-xl font-bold mb-4 text-purple-400">Especialidades</h3>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3 text-zinc-300">
@@ -238,27 +457,32 @@ export default function LandingPage() {
                   <span>Segurança e Boas Práticas</span>
                 </li>
               </ul>
-            </div>
+            </motion.div>
           </div>
 
-          <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-8 border border-zinc-700/30">
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.5 }}
+            className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-8 border border-zinc-700/30"
+          >
             <div className="space-y-6">
               <p className="text-zinc-300 leading-relaxed">
-              Olá! Me chamo Flávio, e atualmente atuo como Engineering Manager em Sistemas Distribuídos.
+                Olá! Me chamo Flávio, e atualmente atuo como Engineering Manager em Sistemas Distribuídos.
               </p>
               <p className="text-zinc-300 leading-relaxed">
-              Nesse material a minha intenção é poder colocar todos esses mais de 16 anos de experiência em prática, de forma que você saia daqui com uma mentalidade de que é necessário, além de ter um repertório técnico, colocar a mão na massa, experimentar e validar suas soluções.
+                Nesse material a minha intenção é poder colocar todos esses mais de 16 anos de experiência em prática, de forma que você saia daqui com uma mentalidade de que é necessário, além de ter um repertório técnico, colocar a mão na massa, experimentar e validar suas soluções.
               </p>
               <p className="text-zinc-300 leading-relaxed">
                 No meu dia a dia trabalho em projetos de alta performance, escalabilidade e disponibilidade onde atingimos mais de <span className="font-bold text-green-400">1,5 bilhão</span> de requisições por ano.
               </p>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
 
       {/* Pricing Section */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-zinc-800">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -281,7 +505,7 @@ export default function LandingPage() {
             className="bg-gradient-to-b from-blue-600/10 to-purple-600/10 rounded-xl p-8 border border-blue-500/20 hover:border-blue-500/50 transition-colors relative overflow-hidden"
           >
             <div className="absolute -right-12 top-8 bg-blue-500 text-white px-12 py-1 rotate-45 text-sm font-medium">
-              Preço de Lançamento
+              Nova Oferta
             </div>
             <div className="text-center mb-8">
               <div className="text-center">
@@ -294,7 +518,7 @@ export default function LandingPage() {
               <p className="text-zinc-400">Pagamento único - Acesso vitalício</p>
             </div>
             <Link
-              to="/pagamento"
+              to="/intro"
               onClick={() => ReactGA.event({
                 category: 'User',
                 action: 'Clicked on Payment Button',
@@ -390,22 +614,25 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.6 }}
-          className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-8 text-center"
+          className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-8 text-center relative overflow-hidden"
         >
-          <h2 className="text-3xl font-bold mb-4">Pronto para se tornar um especialista?</h2>
-          <p className="text-xl mb-8 text-zinc-200">
-            Junte-se a centenas de desenvolvedores que já estão dominando sistemas distribuídos na prática
-          </p>
-          <Link
-            to="/pagamento"
-            onClick={() => ReactGA.event({
-              category: 'User',
-              action: 'Clicked on Final CTA',
-            })}
-            className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg text-lg font-medium hover:bg-zinc-100 transition-colors"
-          >
-            Garantir Minha Vaga
-          </Link>
+          <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
+          <div className="relative">
+            <h2 className="text-3xl font-bold mb-4">Pronto para se tornar um especialista?</h2>
+            <p className="text-xl mb-8 text-zinc-200">
+              Junte-se a centenas de desenvolvedores que já estão dominando sistemas distribuídos na prática
+            </p>
+            <Link
+              to="/intro"
+              onClick={() => ReactGA.event({
+                category: 'User',
+                action: 'Clicked on Final CTA',
+              })}
+              className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg text-lg font-medium hover:bg-zinc-100 transition-colors"
+            >
+              Garantir Minha Vaga
+            </Link>
+          </div>
         </motion.div>
       </div>
     </div>

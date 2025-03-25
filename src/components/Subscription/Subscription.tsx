@@ -35,7 +35,7 @@ export default function Subscription() {
 
   const calculatePricing = () => {
     const originalPrice = 499;
-    const discountedPrice = 259;
+    const discountedPrice = 179;
     const discount = Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
     return { originalPrice, discountedPrice, discount };
   };
@@ -131,7 +131,7 @@ export default function Subscription() {
             className="bg-gradient-to-b from-blue-600/10 to-purple-600/10 rounded-xl p-8 border border-blue-500/20 relative overflow-hidden"
           >
             <div className="absolute -right-12 top-8 bg-blue-500 text-white px-12 py-1 rotate-45 text-sm font-medium">
-              Preço de Lançamento
+              Nova Oferta
             </div>
             <div className="text-center mb-4">
               <div className="inline-block bg-blue-500/10 text-blue-400 px-4 py-2 rounded-full text-sm mb-4">

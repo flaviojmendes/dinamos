@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useContentProgress } from '../../hooks/useContentProgress';
 import ContentLayout from '../Common/ContentLayout';
+import { motion } from 'framer-motion';
 
 interface RoadmapStep {
   title: string;
@@ -430,23 +431,15 @@ export default function Roadmap() {
       return 'bg-green-500';
     }
       
-    // Check if all children are completed
-    if (step.children && step.children.length > 0) {
-      const allChildrenCompleted = step.children.every(child => isCompleted(child.path));
-      if (allChildrenCompleted) {
-        return 'bg-green-500';
-      }
-    }
-
     switch (step.status) {
       case 'required':
-        return 'bg-blue-500';
+        return 'text-blue-400';
       case 'recommended':
-        return 'bg-purple-500';
+        return 'text-purple-400';
       case 'optional':
-        return 'bg-yellow-500';
+        return 'text-yellow-400';
       default:
-        return 'bg-gray-500';
+        return 'text-gray-400';
     }
   };
       
@@ -469,132 +462,143 @@ export default function Roadmap() {
     return Math.round((completedSteps.length / allSteps.length) * 100);
   };
 
-  const renderStep = (step: RoadmapStep, isChild = false) => {
+  const renderStep = (step: RoadmapStep, index: number, isChild = false) => {
     const childPaths = getChildPaths(step);
-    // Log the paths to debug
-    console.log(`Child paths for ${step.path}:`, childPaths);
 
-  return (
-      <div key={step.path} className={`bg-zinc-900 rounded-lg p-6 ${isChild ? 'ml-8 mt-4' : ''}`}>
-        <div className="flex items-start gap-4">
-          <div className={`p-3 rounded-lg ${getStepStatus(step)} relative group`}>
-            {step.icon}
-            {isCompleted(step.path) && (
-              <div className="absolute -top-2 -right-2 bg-green-500 rounded-full p-1">
-                <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: index * 0.1 }}
+        key={step.path}
+        className={`relative ${isChild ? 'ml-8 mt-4' : 'mb-8'}`}
+      >
+        <div className="bg-zinc-900 rounded-lg p-6 hover:bg-zinc-800/80 transition-colors">
+          <div className="flex items-start gap-4">
+            <div className={`p-3 rounded-lg bg-blue-500/20 relative group ${
+              isCompleted(step.path) ? 'bg-green-500/20' : ''
+            }`}>
+              <div className="text-blue-400">
+                {React.cloneElement(step.icon, {
+                  className: `w-6 h-6 ${isCompleted(step.path) ? 'text-green-400' : 'text-blue-400'}`
+                })}
               </div>
-            )}
+              {isCompleted(step.path) && (
+                <div className="absolute -top-2 -right-2 bg-green-500 rounded-full p-1">
+                  <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
                 </div>
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-2">
-              <h3 className="text-xl font-semibold">{step.title}</h3>
-              <span className={`text-xs px-2 py-1 rounded-full ${getStepStatus(step)} bg-opacity-20`}>
-                {isCompleted(step.path) ? 'Concluído' :
-                 step.status === 'required' ? 'Obrigatório' : 
-                 step.status === 'recommended' ? 'Recomendado' : 'Opcional'}
-              </span>
+              )}
             </div>
-            <p className="text-zinc-400 mb-4">{step.description}</p>
-            
-            {/* Prerequisites */}
-            {step.prerequisites.length > 0 && (
-              <div className="mb-4">
-                <div className="text-sm font-semibold mb-2">Pré-requisitos:</div>
-                <div className="flex flex-wrap gap-2">
-                  {step.prerequisites.map(prereq => (
-                    <span key={prereq} className="text-xs bg-zinc-800 px-2 py-1 rounded">
-                      {prereq}
-                    </span>
-                  ))}
-          </div>
-        </div>
-                    )}
-
-            {/* Skills */}
-            <div className="mb-4">
-              <div className="text-sm font-semibold mb-2">Habilidades:</div>
-                      <div className="flex flex-wrap gap-2">
-                {step.skills.map(skill => (
-                  <span key={skill} className="text-xs bg-zinc-800 px-2 py-1 rounded">
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                  </div>
-
-                    <Link
-              to={step.path}
-              state={{ childPaths }}
-              className="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400"
-                    >
-              {isCompleted(step.path) ? 'Revisar módulo' : 'Começar módulo'}
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-                    </Link>
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-2">
+                <h3 className="text-xl font-semibold text-white">{step.title}</h3>
+                <span className={`text-xs px-2 py-1 rounded-full bg-zinc-800 ${getStepStatus(step)}`}>
+                  {isCompleted(step.path) ? 'Concluído' :
+                   step.status === 'required' ? 'Obrigatório' : 
+                   step.status === 'recommended' ? 'Recomendado' : 'Opcional'}
+                </span>
+              </div>
+              <p className="text-zinc-300 mb-4">{step.description}</p>
+              
+              {step.prerequisites?.length > 0 && (
+                <div className="mb-4">
+                  <div className="text-sm font-semibold text-white mb-2">Pré-requisitos:</div>
+                  <div className="flex flex-wrap gap-2">
+                    {step.prerequisites.map(prereq => (
+                      <span key={prereq} className="text-xs bg-zinc-800 px-2 py-1 rounded text-zinc-300">
+                        {prereq}
+                      </span>
+                    ))}
                   </div>
                 </div>
+              )}
 
-        {/* Render children */}
-        {step.children && step.children.map(child => renderStep(child, true))}
-              </div>
-            );
+              {step.skills?.length > 0 && (
+                <div className="mb-4">
+                  <div className="text-sm font-semibold text-white mb-2">Habilidades:</div>
+                  <div className="flex flex-wrap gap-2">
+                    {step.skills.map(skill => (
+                      <span key={skill} className="text-xs bg-zinc-800 px-2 py-1 rounded text-zinc-300">
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <Link
+                to={step.path}
+                state={{ childPaths }}
+                className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors"
+              >
+                {isCompleted(step.path) ? 'Revisar módulo' : 'Começar módulo'}
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+
+          {step.children && (
+            <div className="mt-4 ml-8 space-y-4">
+              {step.children.map((child, childIndex) => renderStep(child, childIndex, true))}
+            </div>
+          )}
+        </div>
+      </motion.div>
+    );
   };
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      {/* Hide completion button for roadmap page */}
       <ContentLayout hideCompletion>
         <div className="space-y-8">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-4">Roadmap de Aprendizado</h1>
-            <p className="text-lg text-zinc-400 mb-4">
+            <h1 className="text-4xl font-bold mb-4 text-white">Roadmap de Aprendizado</h1>
+            <p className="text-lg text-zinc-300 mb-4">
               Siga este guia estruturado para dominar os conceitos de sistemas distribuídos.
               O roadmap está organizado em uma sequência lógica de aprendizado, com pré-requisitos
               claros e habilidades a serem desenvolvidas em cada etapa.
             </p>
             
-            {/* Progress Bar */}
             <div className="bg-zinc-800 rounded-full h-4 overflow-hidden">
               <div 
-                className="bg-gradient-to-r from-blue-500 to-green-500 h-full transition-all duration-500"
+                className="bg-blue-500 h-full transition-all duration-500"
                 style={{ width: `${calculateProgress()}%` }}
               />
             </div>
-            <p className="text-sm text-zinc-400 mt-2">
+            <p className="text-sm text-zinc-300 mt-2">
               {calculateProgress()}% do conteúdo completado
             </p>
           </div>
 
-          {/* Progress Overview */}
-          <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <div className="bg-zinc-900 p-4 rounded-lg">
-              <div className="text-blue-500 font-semibold mb-2">Obrigatório</div>
-              <div className="text-2xl font-bold">
+              <div className="text-blue-400 font-semibold mb-2">Obrigatório</div>
+              <div className="text-2xl font-bold text-white">
                 {roadmapSteps.filter(step => step.status === 'required').length} módulos
               </div>
             </div>
             <div className="bg-zinc-900 p-4 rounded-lg">
-              <div className="text-purple-500 font-semibold mb-2">Recomendado</div>
-              <div className="text-2xl font-bold">
+              <div className="text-purple-400 font-semibold mb-2">Recomendado</div>
+              <div className="text-2xl font-bold text-white">
                 {roadmapSteps.filter(step => step.status === 'recommended').length} módulos
               </div>
             </div>
             <div className="bg-zinc-900 p-4 rounded-lg">
-              <div className="text-yellow-500 font-semibold mb-2">Opcional</div>
-              <div className="text-2xl font-bold">
+              <div className="text-yellow-400 font-semibold mb-2">Opcional</div>
+              <div className="text-2xl font-bold text-white">
                 {roadmapSteps.filter(step => step.status === 'optional').length} módulos
               </div>
             </div>
           </div>
 
-          {/* Roadmap Steps */}
           <div className="space-y-6">
-            {roadmapSteps.map(step => renderStep(step))}
+            {roadmapSteps.map((step, index) => renderStep(step, index))}
+          </div>
         </div>
-      </div>
       </ContentLayout>
     </div>
   );
