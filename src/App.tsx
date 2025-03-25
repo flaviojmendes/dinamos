@@ -661,7 +661,7 @@ export default function App() {
     page: window.location.pathname + window.location.search,
   });
 
-  const MenuLink = ({ item }: { item: MenuItem }) => {
+  const MenuLink = ({ item, onNavigate }: { item: MenuItem; onNavigate?: () => void }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const { pathname } = useLocation();
 
@@ -707,8 +707,8 @@ export default function App() {
                 }`
               }
               onClick={() => {
-                if (!item.disabled && isMobile) {
-                  setIsSidebarOpen(false);
+                if (!item.disabled) {
+                  onNavigate?.();
                   ReactGA.event({
                     category: "User",
                     action: "Clicked on Menu Item",
@@ -769,7 +769,7 @@ export default function App() {
         {item.children && isExpanded && (
           <div className="ml-4 mt-1 space-y-1 border-l border-zinc-800 pl-3">
             {item.children.map((child) => (
-              <MenuLink key={child.path} item={child} />
+              <MenuLink key={child.path} item={child} onNavigate={onNavigate} />
             ))}
           </div>
         )}
@@ -784,77 +784,71 @@ export default function App() {
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth < 768) {
-        setIsSidebarOpen(false);
-      }
+      const isMobileView = window.innerWidth < 768;
+      setIsMobile(isMobileView);
+      setIsSidebarOpen(!isMobileView);
     };
 
     checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   return (
     <div className="min-h-screen bg-zinc-950">
       <div className="flex h-screen overflow-hidden">
-        {/* Only show sidebar when user is logged in */}
+        {/* Mobile Header */}
+        {isMobile && user && (
+          <div className="fixed top-0 left-0 right-0 z-50 bg-zinc-900/95 backdrop-blur-xl border-b border-zinc-800/50 px-4 py-3">
+            <div className="flex items-center justify-between">
+              <Link to="/" className="text-xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+                System Design
+              </Link>
+              <button
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className="p-2 text-zinc-300 hover:text-white rounded-lg hover:bg-zinc-800/80"
+              >
+                {isSidebarOpen ? (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                ) : (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                )}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Sidebar */}
         {user && (
           <aside
             className={`${
-              isSidebarOpen ? "w-80" : "w-20"
-            } bg-zinc-900/50 backdrop-blur-xl border-r border-zinc-800/50 h-screen sticky top-0 transition-all duration-300 ease-in-out overflow-hidden flex flex-col`}
+              isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+            } ${
+              isMobile ? 'fixed inset-y-0 left-0 z-40' : 'relative'
+            } w-80 bg-zinc-900/50 backdrop-blur-xl border-r border-zinc-800/50 transition-transform duration-300 ease-in-out flex flex-col`}
           >
-            <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
+            {/* Sidebar Content */}
+            <div className={`flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent ${isMobile ? 'pt-16' : ''}`}>
               <div className="p-6">
-                <div className="flex items-center justify-between mb-8">
-                  <Link
-                    to="/"
-                    className={`text-xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent ${
-                      !isSidebarOpen && "hidden"
-                    }`}
-                  >
-                    System Design
-                  </Link>
-                  <button
-                    onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                    className="text-zinc-400 hover:text-white transition-colors"
-                  >
-                    {isSidebarOpen ? (
-                      <svg
-                        className="w-6 h-6"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
-                        />
-                      </svg>
-                    ) : (
-                      <svg
-                        className="w-6 h-6"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M13 5l7 7-7 7M5 5l7 7-7 7"
-                        />
-                      </svg>
-                    )}
-                  </button>
-                </div>
+                {!isMobile && (
+                  <div className="flex items-center justify-between mb-8">
+                    <Link to="/" className="text-xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+                      System Design
+                    </Link>
+                  </div>
+                )}
 
                 <nav className="space-y-1">
                   {menuItems.map((item) => (
-                    <MenuLink key={item.path} item={item} />
+                    <MenuLink 
+                      key={item.path} 
+                      item={item} 
+                      onNavigate={() => isMobile && setIsSidebarOpen(false)}
+                    />
                   ))}
                 </nav>
               </div>
@@ -863,7 +857,7 @@ export default function App() {
             {/* User profile section */}
             {user && (
               <div className="p-4 border-t border-zinc-800/50">
-                <div className="flex items-center gap-3 p-3 bg-zinc-800/50 rounded-lg">
+                <div className="flex items-center gap-3 p-3 bg-zinc-800/80 backdrop-blur-xl rounded-lg">
                   {user.photoURL ? (
                     <img
                       src={user.photoURL}
@@ -872,24 +866,24 @@ export default function App() {
                     />
                   ) : (
                     <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
-                      <span className="text-lg font-bold">
+                      <span className="text-lg font-bold text-white">
                         {user.email?.charAt(0).toUpperCase()}
                       </span>
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">
+                    <p className="text-sm font-medium text-white truncate">
                       {user.displayName || user.email}
                     </p>
                     {user.displayName && (
-                      <p className="text-xs text-zinc-400 truncate">
+                      <p className="text-xs text-zinc-300 truncate">
                         {user.email}
                       </p>
                     )}
                   </div>
                   <button
                     onClick={signOut}
-                    className="text-zinc-400 hover:text-white transition-colors"
+                    className="text-zinc-300 hover:text-white transition-colors"
                   >
                     <svg
                       className="w-5 h-5"
@@ -911,8 +905,16 @@ export default function App() {
           </aside>
         )}
 
+        {/* Overlay for mobile */}
+        {isMobile && isSidebarOpen && (
+          <div 
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+
         {/* Main content */}
-        <main className="flex-1 overflow-y-auto bg-gradient-to-b from-zinc-900 to-black">
+        <main className={`flex-1 overflow-y-auto bg-gradient-to-b from-zinc-900 to-black ${isMobile ? 'pt-16' : ''}`}>
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
