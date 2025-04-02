@@ -900,7 +900,7 @@ export default function App() {
           <div className="fixed top-0 left-0 right-0 z-50 bg-zinc-900/95 backdrop-blur-xl border-b border-zinc-800/50 px-4 py-3">
             <div className="flex items-center justify-between">
               <Link to="/" className="text-xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-                System Design
+                <img src="/logo.png" alt="Logo" className="h-12" />
               </Link>
               <button
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -933,9 +933,9 @@ export default function App() {
             <div className={`flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent ${isMobile ? 'pt-16' : ''}`}>
               <div className="p-6">
                 {!isMobile && (
-                  <div className="flex items-center justify-between mb-8">
-                    <Link to="/" className="text-xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-                      System Design
+                  <div className="flex items-center justify-between mb-8 ">
+                    <Link to="/" className="text-xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent mx-auto">
+                      <img src="/logo.png" alt="Logo" className="h-14 mx-auto" /> 
                     </Link>
                   </div>
                 )}
