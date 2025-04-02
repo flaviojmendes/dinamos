@@ -459,7 +459,7 @@ class RicartAgrawala {
                         Processo {process.id}
                       </span>
                     </motion.div>
-                    {process.timestamp > 0 && process.state !== 'idle' && (
+                    {process.timestamp !== undefined && process.timestamp > 0 && process.state !== 'idle' && (
                       <motion.div
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
