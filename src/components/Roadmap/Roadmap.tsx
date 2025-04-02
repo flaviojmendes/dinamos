@@ -1,25 +1,40 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { useContentProgress } from '../../hooks/useContentProgress';
 import ContentLayout from '../Common/ContentLayout';
 import { motion } from 'framer-motion';
 
-interface RoadmapStep {
-  title: string;
-  description: string;
-  path: string;
-  status: 'required' | 'recommended' | 'optional';
-  prerequisites: string[];
-  category: string;
-  icon: JSX.Element;
-  skills: string[];
-  children?: RoadmapStep[];
+// Add a declaration for the window object with our custom property
+declare global {
+  interface Window {
+    __APP_DATA__?: {
+      menuItems: MenuItem[];
+    }
+  }
 }
 
-const getChildPaths = (step: RoadmapStep): string[] => {
+// Use the same MenuItem interface that App.tsx uses
+interface MenuItem {
+  name: string;
+  description: string;
+  path: string;
+  icon?: React.ReactNode;
+  children?: MenuItem[];
+  status?: "recommended" | "new" | "coming-soon";
+  prerequisites?: string[];
+  category?: "Básico" | "Intermediário" | "Avançado";
+  skills?: string[];
+  badges?: { text: string; color: string }[];
+  component?: React.ComponentType;
+  disabled?: boolean;
+  customStyle?: string;
+  customHoverStyle?: string;
+}
+
+const getChildPaths = (item: MenuItem): string[] => {
   const paths: string[] = [];
-  if (step.children) {
-    for (const child of step.children) {
+  if (item.children) {
+    for (const child of item.children) {
       paths.push(child.path);
       // Get paths from child's children (simulators, etc)
       if (child.children) {
@@ -34,456 +49,104 @@ const getChildPaths = (step: RoadmapStep): string[] => {
 
 export default function Roadmap() {
   const { isCompleted } = useContentProgress();
+  const location = useLocation();
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
-  const roadmapSteps: RoadmapStep[] = [
-    {
-      title: "Introdução",
-      description: "Fundamentos e motivação para estudar sistemas distribuídos",
-      path: "/intro",
-      status: "required",
-      prerequisites: [],
-      category: "Fundamentos",
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
-      ),
-      skills: ["Conceitos básicos", "Motivação", "Visão geral"]
-    },
-    {
-      title: "Sistemas Distribuídos 101",
-      description: "Conceitos fundamentais através de analogias",
-      path: "/sistemas-distribuidos-101",
-      status: "required",
-      prerequisites: ["Introdução"],
-      category: "Fundamentos",
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-        </svg>
-      ),
-      skills: ["Arquitetura básica", "Comunicação", "Escalabilidade"]
-    },
-    {
-      title: "System Design 101",
-      description: "Fundamentos de design de sistemas",
-      path: "/system-design-101",
-      status: "required",
-      prerequisites: ["Sistemas Distribuídos 101"],
-      category: "Fundamentos",
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-        </svg>
-      ),
-      skills: ["Design patterns", "Arquitetura", "Boas práticas"]
-    },
-    {
-      title: "Componentes Básicos",
-      description: "Blocos fundamentais de sistemas distribuídos",
-      path: "/componentes",
-      status: "required",
-      prerequisites: ["System Design 101"],
-      category: "Componentes",
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z" />
-        </svg>
-      ),
-      skills: ["Bancos de dados", "Cache", "Load Balancer", "Message Queue", "CDN"],
-      children: [
-        {
-          title: "Bancos de Dados",
-          description: "Armazenamento e gerenciamento de dados",
-          path: "/componentes/banco-dados",
-          status: "required",
-          prerequisites: [],
-          category: "Componentes",
-          icon: (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2 1.5 3 3.5 3h9c2 0 3.5-1 3.5-3V7c0-2-1.5-3-3.5-3h-9C5.5 4 4 5 4 7z" />
-            </svg>
-          ),
-          skills: ["SQL", "NoSQL", "Replicação", "Sharding"]
-        },
-        {
-          title: "Cache",
-          description: "Armazenamento temporário para melhor performance",
-          path: "/componentes/cache",
-          status: "required",
-          prerequisites: [],
-          category: "Componentes",
-          icon: (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-          ),
-          skills: ["Cache Strategies", "Redis", "Memcached"]
-        },
-        {
-          title: "Load Balancer",
-          description: "Distribuição de tráfego entre servidores",
-          path: "/componentes/load-balancer",
-          status: "required",
-          prerequisites: [],
-          category: "Componentes",
-          icon: (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-            </svg>
-          ),
-          skills: ["Round Robin", "Least Connections", "Health Checks"]
-        }
-      ]
-    },
-    {
-      title: "Princípios de Design",
-      description: "Conceitos fundamentais de arquitetura",
-      path: "/principios-design",
-      status: "required",
-      prerequisites: ["Componentes Básicos"],
-      category: "Arquitetura",
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-        </svg>
-      ),
-      skills: ["Event-Driven", "Microservices", "Fault Tolerance"],
-      children: [
-        {
-          title: "Arquitetura Orientada a Eventos",
-          description: "Sistemas baseados em eventos",
-          path: "/principios-design/eventos",
-          status: "required",
-          prerequisites: [],
-          category: "Arquitetura",
-          icon: (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
-          ),
-          skills: ["Event Sourcing", "Message Brokers", "Event-Driven Architecture"]
-        },
-        {
-          title: "Arquitetura de Serviços",
-          description: "Monolito vs Microsserviços",
-          path: "/principios-design/servicos",
-          status: "required",
-          prerequisites: [],
-          category: "Arquitetura",
-          icon: (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-            </svg>
-          ),
-          skills: ["Microservices", "Service Discovery", "API Gateway"]
-        },
-        {
-          title: "Tolerância a Falhas",
-          description: "Estratégias para lidar com falhas",
-          path: "/principios-design/tolerancia-falhas",
-          status: "required",
-          prerequisites: [],
-          category: "Arquitetura",
-          icon: (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-          ),
-          skills: ["Circuit Breaker", "Retries", "Fallback", "Timeout"]
-        }
-      ]
-    },
-    {
-      title: "Estratégias de Consistência",
-      description: "Como garantir a consistência em sistemas distribuídos",
-      path: "/estrategias-de-consistencia",
-      status: "recommended",
-      prerequisites: ["Princípios de Design"],
-      category: "Avançado",
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-        </svg>
-      ),
-      skills: ["Consenso", "Timestamps de Lamport", "Consistência eventual"],
-      children: [
-        {
-          title: "Two-Phase Commit",
-          description: "Protocolo de consenso para transações distribuídas",
-          path: "/estrategias-de-consistencia/two-phase-commit",
-          status: "recommended",
-          prerequisites: [],
-          category: "Avançado",
-          icon: (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-            </svg>
-          ),
-          skills: ["2PC", "Transações Distribuídas", "Consenso Atômico"]
-        },
-        {
-          title: "Estratégia de Consenso",
-          description: "Protocolos e mecanismos para garantir acordo entre nós",
-          path: "/estrategias-de-consistencia/consenso",
-          status: "recommended",
-          prerequisites: [],
-          category: "Avançado",
-          icon: (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          ),
-          skills: ["Raft", "Paxos", "Consenso Distribuído"]
-        },
-        {
-          title: "Relógios Lógicos de Lamport",
-          description: "Ordenação de eventos em sistemas distribuídos",
-          path: "/estrategias-de-consistencia/lamport-timestamps",
-          status: "recommended",
-          prerequisites: [],
-          category: "Avançado",
-          icon: (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          ),
-          skills: ["Timestamps Lógicos", "Ordenação Causal", "Relógios Vetoriais"]
-        }
-      ]
-    },
-    {
-      title: "Monitoramento e Manutenção",
-      description: "Observabilidade e manutenção de sistemas distribuídos",
-      path: "/monitoramento-e-manutencao",
-      status: "recommended",
-      prerequisites: ["Princípios de Design"],
-      category: "Avançado",
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-        </svg>
-      ),
-      skills: ["Observabilidade", "Métricas", "Logs", "Alertas", "Health Checks"],
-      children: [
-        {
-          title: "Métricas",
-          description: "Métricas e KPIs em sistemas distribuídos",
-          path: "/monitoramento-e-manutencao/metricas",
-          status: "recommended",
-          prerequisites: [],
-          category: "Avançado",
-          icon: (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-            </svg>
-          ),
-          skills: ["Prometheus", "Grafana", "APM", "SLI/SLO/SLA"]
-        },
-        {
-          title: "Logs",
-          description: "Logs e tracing em sistemas distribuídos",
-          path: "/monitoramento-e-manutencao/logs",
-          status: "recommended",
-          prerequisites: [],
-          category: "Avançado",
-          icon: (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-          ),
-          skills: ["ELK Stack", "Distributed Tracing", "Log Aggregation"]
-        },
-        {
-          title: "Alertas",
-          description: "Alertas e notificações em sistemas distribuídos",
-          path: "/monitoramento-e-manutencao/alertas",
-          status: "recommended",
-          prerequisites: [],
-          category: "Avançado",
-          icon: (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
-          ),
-          skills: ["PagerDuty", "Alert Configuration", "Incident Management"]
-        },
-        {
-          title: "Health Checks",
-          description: "Health checks e monitoramento de saúde",
-          path: "/monitoramento-e-manutencao/health-checks",
-          status: "recommended",
-          prerequisites: [],
-          category: "Avançado",
-          icon: (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          ),
-          skills: ["Kubernetes Probes", "Load Balancing", "Service Health"]
-        },
-        {
-          title: "Performance",
-          description: "Análise e otimização de performance",
-          path: "/monitoramento-e-manutencao/performance",
-          status: "recommended",
-          prerequisites: [],
-          category: "Avançado",
-          icon: (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-          ),
-          skills: ["Performance Testing", "Optimization", "Profiling"]
-        }
-      ]
-    },
-    {
-      title: "Segurança",
-      description: "Proteção e segurança em sistemas distribuídos",
-      path: "/seguranca",
-      status: "required",
-      prerequisites: ["Estratégias de Consistência"],
-      category: "Segurança",
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-        </svg>
-      ),
-      skills: ["Autenticação", "Autorização", "Criptografia", "SSL/TLS", "Ataques comuns"],
-      children: [
-        {
-          title: "Autenticação",
-          description: "Verificação de identidade em sistemas distribuídos",
-          path: "/seguranca/autenticacao",
-          status: "required",
-          prerequisites: [],
-          category: "Segurança",
-          icon: (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          ),
-          skills: ["OAuth", "OpenID Connect", "SSO"]
-        },
-        {
-          title: "Autorização",
-          description: "Controle de acesso e permissões",
-          path: "/seguranca/autorizacao",
-          status: "required",
-          prerequisites: [],
-          category: "Segurança",
-          icon: (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-            </svg>
-          ),
-          skills: ["RBAC", "ABAC", "ACLs"]
-        },
-        {
-          title: "Criptografia",
-          description: "Proteção de dados em trânsito e em repouso",
-          path: "/seguranca/criptografia",
-          status: "required",
-          prerequisites: [],
-          category: "Segurança",
-          icon: (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
-            </svg>
-          ),
-          skills: ["Criptografia Simétrica", "Criptografia Assimétrica", "Hashing"]
-        },
-        {
-          title: "SSL/TLS",
-          description: "Comunicação segura entre sistemas",
-          path: "/seguranca/ssl-tls",
-          status: "required",
-          prerequisites: [],
-          category: "Segurança",
-          icon: (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
-          ),
-          skills: ["Certificados", "Handshake", "HTTPS"]
-        },
-        {
-          title: "Ataques Comuns",
-          description: "Prevenção contra ataques em sistemas distribuídos",
-          path: "/seguranca/ataques",
-          status: "required",
-          prerequisites: [],
-          category: "Segurança",
-          icon: (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-          ),
-          skills: ["DDoS", "Man-in-the-Middle", "SQL Injection"]
-        }
-      ]
+  // Access the menuItems array from the window object
+  // This is added to window by App.tsx when it initializes
+  useEffect(() => {
+    // Check if we can access App's menuItems through the window object
+    // This is a hack, but it avoids circular dependencies
+    const getMenuItems = () => {
+      // Try to access from window.__APP_DATA__ if available (you need to add this in App.tsx)
+      if (window.__APP_DATA__ && window.__APP_DATA__.menuItems) {
+        return window.__APP_DATA__.menuItems;
+      }
+      
+      // Fallback method: get all link elements from the sidebar navigation
+      // This is a hacky approach that scrapes DOM elements
+      const menuContainer = document.querySelector('nav');
+      if (!menuContainer) return [];
+      
+      // Return empty array if we can't access menuItems
+      return [];
+    };
+
+    // Set menu items from App
+    const items = getMenuItems();
+    if (items && items.length > 0) {
+      setMenuItems(items);
     }
-  ];
+  }, [location]); // Re-run when location changes to catch any updates
 
-  const getStepStatus = (step: RoadmapStep) => {
-    if (isCompleted(step.path)) {
+  // Transform menuItems to the roadmap structure
+  const roadmapItems = menuItems.filter(item => 
+    // Filter out special items like "Comece Aqui" and the roadmap itself
+    item.path !== "/roadmap" && !item.path.includes("editor")
+  );
+
+  const getStepStatus = (item: MenuItem) => {
+    if (isCompleted(item.path)) {
       return 'bg-green-500';
     }
       
-    switch (step.status) {
-      case 'required':
-        return 'text-blue-400';
-      case 'recommended':
-        return 'text-purple-400';
-      case 'optional':
-        return 'text-yellow-400';
-      default:
-        return 'text-gray-400';
+    if (item.badges?.some(badge => badge.text === "Grátis")) {
+      return 'text-green-400'; // Free content
+    } else if (item.status === 'recommended' || item.status === 'new') {
+      return 'text-purple-400'; // Recommended content
+    } else {
+      return 'text-blue-400'; // Required content by default
     }
   };
       
   const calculateProgress = () => {
-    const getAllSteps = (steps: RoadmapStep[]): RoadmapStep[] => {
-      return steps.reduce((acc: RoadmapStep[], step) => {
-        if (step.path !== '/roadmap') {
-          acc.push(step);
-          if (step.children) {
-            acc.push(...getAllSteps(step.children));
+    const getAllItems = (items: MenuItem[]): MenuItem[] => {
+      return items.reduce((acc: MenuItem[], item) => {
+        if (item.path !== '/roadmap' && !item.disabled) {
+          acc.push(item);
+          if (item.children) {
+            acc.push(...getAllItems(item.children));
           }
         }
         return acc;
     }, []);
+    };
 
+    const allItems = getAllItems(menuItems);
+    const completedItems = allItems.filter(item => isCompleted(item.path));
+    return Math.round((completedItems.length / allItems.length) * 100);
   };
 
-    const allSteps = getAllSteps(roadmapSteps);
-    const completedSteps = allSteps.filter(step => isCompleted(step.path));
-    return Math.round((completedSteps.length / allSteps.length) * 100);
-  };
-
-  const renderStep = (step: RoadmapStep, index: number, isChild = false) => {
-    const childPaths = getChildPaths(step);
+  const renderItem = (item: MenuItem, index: number, isChild = false) => {
+    const childPaths = getChildPaths(item);
+    const defaultIcon = (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+      </svg>
+    );
 
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.1 }}
-        key={step.path}
+        key={item.path}
         className={`relative ${isChild ? 'ml-8 mt-4' : 'mb-8'}`}
       >
         <div className="bg-zinc-900 rounded-lg p-6 hover:bg-zinc-800/80 transition-colors">
           <div className="flex items-start gap-4">
             <div className={`p-3 rounded-lg bg-blue-500/20 relative group ${
-              isCompleted(step.path) ? 'bg-green-500/20' : ''
+              isCompleted(item.path) ? 'bg-green-500/20' : ''
             }`}>
               <div className="text-blue-400">
-                {React.cloneElement(step.icon, {
-                  className: `w-6 h-6 ${isCompleted(step.path) ? 'text-green-400' : 'text-blue-400'}`
+                {item.icon ? React.cloneElement(item.icon as React.ReactElement, {
+                  className: `w-6 h-6 ${isCompleted(item.path) ? 'text-green-400' : 'text-blue-400'}`
+                }) : 
+                React.cloneElement(defaultIcon, {
+                  className: `w-6 h-6 ${isCompleted(item.path) ? 'text-green-400' : 'text-blue-400'}`
                 })}
               </div>
-              {isCompleted(step.path) && (
+              {isCompleted(item.path) && (
                 <div className="absolute -top-2 -right-2 bg-green-500 rounded-full p-1">
                   <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -493,20 +156,27 @@ export default function Roadmap() {
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
-                <h3 className="text-xl font-semibold text-white">{step.title}</h3>
-                <span className={`text-xs px-2 py-1 rounded-full bg-zinc-800 ${getStepStatus(step)}`}>
-                  {isCompleted(step.path) ? 'Concluído' :
-                   step.status === 'required' ? 'Obrigatório' : 
-                   step.status === 'recommended' ? 'Recomendado' : 'Opcional'}
+                <h3 className="text-xl font-semibold text-white">{item.name}</h3>
+                <span className={`text-xs px-2 py-1 rounded-full bg-zinc-800 ${getStepStatus(item)}`}>
+                  {isCompleted(item.path) ? 'Concluído' :
+                   item.badges?.some(badge => badge.text === "Grátis") ? 'Grátis' : 
+                   item.status === 'recommended' ? 'Recomendado' : 
+                   item.status === 'new' ? 'Novo' :
+                   item.status === 'coming-soon' ? 'Em breve' : 'Conteúdo'}
                 </span>
+                {item.badges?.map((badge, i) => (
+                  <span key={i} className={`text-xs px-2 py-1 rounded-full ${badge.color} text-white`}>
+                    {badge.text}
+                  </span>
+                ))}
               </div>
-              <p className="text-zinc-300 mb-4">{step.description}</p>
+              <p className="text-zinc-300 mb-4">{item.description}</p>
               
-              {step.prerequisites?.length > 0 && (
+              {item.prerequisites && item.prerequisites.length > 0 && (
                 <div className="mb-4">
                   <div className="text-sm font-semibold text-white mb-2">Pré-requisitos:</div>
                   <div className="flex flex-wrap gap-2">
-                    {step.prerequisites.map(prereq => (
+                    {item.prerequisites.map(prereq => (
                       <span key={prereq} className="text-xs bg-zinc-800 px-2 py-1 rounded text-zinc-300">
                         {prereq}
                       </span>
@@ -515,11 +185,11 @@ export default function Roadmap() {
                 </div>
               )}
 
-              {step.skills?.length > 0 && (
+              {item.skills && item.skills.length > 0 && (
                 <div className="mb-4">
                   <div className="text-sm font-semibold text-white mb-2">Habilidades:</div>
                   <div className="flex flex-wrap gap-2">
-                    {step.skills.map(skill => (
+                    {item.skills.map(skill => (
                       <span key={skill} className="text-xs bg-zinc-800 px-2 py-1 rounded text-zinc-300">
                         {skill}
                       </span>
@@ -529,11 +199,11 @@ export default function Roadmap() {
               )}
 
               <Link
-                to={step.path}
+                to={item.path}
                 state={{ childPaths }}
                 className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors"
               >
-                {isCompleted(step.path) ? 'Revisar módulo' : 'Começar módulo'}
+                {isCompleted(item.path) ? 'Revisar módulo' : 'Começar módulo'}
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
@@ -541,15 +211,31 @@ export default function Roadmap() {
             </div>
           </div>
 
-          {step.children && (
+          {item.children && (
             <div className="mt-4 ml-8 space-y-4">
-              {step.children.map((child, childIndex) => renderStep(child, childIndex, true))}
+              {item.children.map((child, childIndex) => renderItem(child, childIndex, true))}
             </div>
           )}
         </div>
       </motion.div>
     );
   };
+
+  // Display a loading state until we've fetched the menu items
+  if (menuItems.length === 0) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <ContentLayout hideCompletion>
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto mb-4"></div>
+              <p className="text-zinc-300">Carregando o roadmap...</p>
+            </div>
+          </div>
+        </ContentLayout>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
@@ -576,27 +262,27 @@ export default function Roadmap() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <div className="bg-zinc-900 p-4 rounded-lg">
-              <div className="text-blue-400 font-semibold mb-2">Obrigatório</div>
+              <div className="text-green-400 font-semibold mb-2">Grátis</div>
               <div className="text-2xl font-bold text-white">
-                {roadmapSteps.filter(step => step.status === 'required').length} módulos
+                {menuItems.filter(item => item.badges?.some(b => b.text === "Grátis")).length} módulos
               </div>
             </div>
             <div className="bg-zinc-900 p-4 rounded-lg">
-              <div className="text-purple-400 font-semibold mb-2">Recomendado</div>
+              <div className="text-purple-400 font-semibold mb-2">Premium</div>
               <div className="text-2xl font-bold text-white">
-                {roadmapSteps.filter(step => step.status === 'recommended').length} módulos
+                {menuItems.filter(item => !item.badges?.some(b => b.text === "Grátis") && !item.disabled).length} módulos
               </div>
             </div>
             <div className="bg-zinc-900 p-4 rounded-lg">
-              <div className="text-yellow-400 font-semibold mb-2">Opcional</div>
+              <div className="text-blue-400 font-semibold mb-2">Em desenvolvimento</div>
               <div className="text-2xl font-bold text-white">
-                {roadmapSteps.filter(step => step.status === 'optional').length} módulos
+                {menuItems.filter(item => item.status === 'coming-soon' || item.disabled).length} módulos
               </div>
             </div>
           </div>
 
           <div className="space-y-6">
-            {roadmapSteps.map((step, index) => renderStep(step, index))}
+            {roadmapItems.map((item, index) => renderItem(item, index))}
           </div>
         </div>
       </ContentLayout>

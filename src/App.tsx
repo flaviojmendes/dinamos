@@ -84,7 +84,7 @@ import CryptographySimulator from "./components/Security/CryptographySimulator";
 import AttackSimulatorPage from "./components/Security/AttackSimulatorPage";
 import Roadmap from "./components/Roadmap/Roadmap";
 import ContentLayout from "./components/Common/ContentLayout";
-import { useContentProgress } from "./hooks/useContentProgress";
+import { useContentProgress, PROGRESS_UPDATED_EVENT } from "./hooks/useContentProgress";
 import ContentPage from "./components/Common/ContentPage";
 import TwoPhaseCommit from "./components/ConsistencyStrategies/TwoPhaseCommit";
 import TwoPhaseCommitSimulator from "./components/ConsistencyStrategies/TwoPhaseCommitSimulator";
@@ -713,7 +713,21 @@ export default function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const { user, signOut } = useAuth();
-  const { isCompleted } = useContentProgress();
+  const { isCompleted, progress, updateTrigger } = useContentProgress();
+
+  // Make menuItems accessible to other components via window object
+  // This helps avoid circular dependencies when components need to access menuItems
+  useEffect(() => {
+    // Initialize the __APP_DATA__ object if it doesn't exist
+    if (!window.__APP_DATA__) {
+      window.__APP_DATA__ = {
+        menuItems: []
+      };
+    }
+    
+    // Update menuItems in the window object
+    window.__APP_DATA__.menuItems = menuItems;
+  }, []);
 
   ReactGA.initialize("G-FB645J9ZQH");
   ReactGA.send({
@@ -724,7 +738,8 @@ export default function App() {
   const MenuLink = ({ item, onNavigate }: { item: MenuItem; onNavigate?: () => void }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const { pathname } = useLocation();
-
+    const { isCompleted, updateTrigger } = useContentProgress();
+    
     // Check if current path matches this item or any of its children
     const isActive =
       pathname === item.path ||
@@ -740,6 +755,11 @@ export default function App() {
         setIsExpanded(true);
       }
     }, [isActive, item.children]);
+    
+    // This forces the component to re-render when updateTrigger changes
+    useEffect(() => {
+      // Empty dependency on updateTrigger causes re-render
+    }, [updateTrigger]);
 
     return (
       <div className="text-white">
@@ -749,7 +769,16 @@ export default function App() {
               <div className="absolute -top-2 right-2 bg-zinc-800 text-white text-xs px-2 py-0.5 rounded-full">
                 Em breve
               </div>
-              <span className="font-medium">{item.name}</span>
+              <div className="flex items-center">
+                <span className="font-medium mr-2">{item.name}</span>
+                {isCompleted(item.path) && (
+                  <span className="flex-shrink-0 bg-green-500 rounded-full w-5 h-5 flex items-center justify-center text-white">
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                    </svg>
+                  </span>
+                )}
+              </div>
               <span className="text-sm opacity-75">{item.description}</span>
             </div>
           ) : (
@@ -777,7 +806,16 @@ export default function App() {
                 }
               }}
             >
-              <span className="font-medium">{item.name}</span>
+              <div className="flex items-center">
+                <span className="font-medium mr-2">{item.name}</span>
+                {isCompleted(item.path) && (
+                  <span className="flex-shrink-0 bg-green-500 rounded-full w-5 h-5 flex items-center justify-center text-white">
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                    </svg>
+                  </span>
+                )}
+              </div>
               <span className="text-sm opacity-75">{item.description}</span>
               {item.badges && (
                 <div className="absolute -top-2 right-2 flex gap-1">

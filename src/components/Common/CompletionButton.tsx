@@ -1,5 +1,5 @@
 import React from 'react';
-import { useContentProgress } from '../../hooks/useContentProgress';
+import { useContentProgress, emitProgressUpdate } from '../../hooks/useContentProgress';
 
 interface Props {
   path: string;
@@ -22,6 +22,11 @@ export default function CompletionButton({ path, childPaths }: Props) {
       console.log('Marking as complete:', path, childPaths);
       markAsCompleted(path, childPaths);
     }
+    
+    // Explicitly emit the update event to refresh all components
+    setTimeout(() => {
+      emitProgressUpdate();
+    }, 100);
   };
 
   return (

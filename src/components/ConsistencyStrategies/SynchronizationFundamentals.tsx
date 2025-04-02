@@ -513,9 +513,9 @@ export default function SynchronizationFundamentals() {
                     <p className="text-zinc-400 text-sm">Implementar mecanismos de justiça na distribuição</p>
                   </div>
                 </li>
-              </ul>
-            </div>
-          </div>
+          </ul>
+        </div>
+      </div>
         </div>
       </motion.div>
 
