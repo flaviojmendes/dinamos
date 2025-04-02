@@ -104,6 +104,12 @@ import Netflix from "./components/RealCases/Netflix";
 import Uber from "./components/RealCases/Uber";
 
 import OrchestrationVsChoreography from './components/DesignPrinciples/OrchestrationVsChoreography';
+import Synchronization from './components/ConsistencyStrategies/Synchronization';
+import SynchronizationFundamentals from './components/ConsistencyStrategies/SynchronizationFundamentals';
+import SynchronizationDeadlocks from './components/ConsistencyStrategies/SynchronizationDeadlocks';
+import SynchronizationAlgorithms from './components/ConsistencyStrategies/SynchronizationAlgorithms';
+import SynchronizationSimulator from "./components/ConsistencyStrategies/SynchronizationSimulator";
+
 
 interface MenuItem {
   name: string;
@@ -409,8 +415,62 @@ const menuItems: MenuItem[] = [
         />
       </svg>
     ),
-    skills: ["Consenso", "Timestamps de Lamport", "Consistência eventual"],
+    skills: ["Consenso", "Timestamps de Lamport", "Consistência eventual", "Sincronização"],
     children: [
+      {
+        name: "Sincronização",
+        description: "Coordenação e sincronização em sistemas distribuídos",
+        path: "/estrategias-de-consistencia/sincronizacao",
+        status: "recommended",
+        prerequisites: [],
+        category: "Avançado",
+        icon: (
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        ),
+        skills: ["Exclusão Mútua", "Deadlock Prevention", "Sincronização Distribuída"],
+        children: [
+          {
+            name: "Fundamentos",
+            path: "/estrategias-de-consistencia/sincronizacao/fundamentos",
+            description: "Conceitos básicos de sincronização usando o Jantar dos Filósofos",
+            status: "recommended",
+            skills: ["Exclusão Mútua", "Condições de Corrida", "Recursos Compartilhados"]
+          },
+          {
+            name: "Deadlocks",
+            path: "/estrategias-de-consistencia/sincronizacao/deadlocks",
+            description: "Prevenção e detecção de deadlocks no contexto dos Filósofos",
+            status: "recommended",
+            skills: ["Detecção de Deadlock", "Prevenção", "Recuperação"]
+          },
+          {
+            name: "Algoritmos",
+            path: "/estrategias-de-consistencia/sincronizacao/algoritmos",
+            description: "Algoritmos distribuídos para coordenação",
+            status: "recommended",
+            skills: ["Algoritmo do Padeiro", "Token Ring", "Ricart-Agrawala"]
+          },
+          // {
+          //   name: "Simulador dos Filósofos",
+          //   path: "/estrategias-de-consistencia/sincronizacao/simulador",
+          //   description: "Experimente diferentes estratégias de sincronização",
+          //   status: "recommended",
+          //   skills: ["Visualização", "Experimentação", "Análise de Soluções"]
+          // }
+        ]
+      },
       {
         name: "Two Phase Commit",
         description: "Protocolo de consenso para transações distribuídas",
@@ -682,7 +742,7 @@ export default function App() {
     }, [isActive, item.children]);
 
     return (
-      <div>
+      <div className="text-white">
         <div className="flex items-center gap-1">
           {item.disabled ? (
             <div className="flex-1 flex flex-col p-3 rounded-lg text-zinc-600 relative cursor-not-allowed">
@@ -1608,6 +1668,56 @@ export default function App() {
                 <ProtectedRoute>
                   <ContentPage>
                     <TwoPhaseCommitSimulator />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/estrategias-de-consistencia/sincronizacao"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <Synchronization />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/estrategias-de-consistencia/sincronizacao/fundamentos"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <SynchronizationFundamentals />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/estrategias-de-consistencia/sincronizacao/deadlocks"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <SynchronizationDeadlocks />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/estrategias-de-consistencia/sincronizacao/algoritmos"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <SynchronizationAlgorithms />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/estrategias-de-consistencia/sincronizacao/simulador"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <SynchronizationSimulator />
                   </ContentPage>
                 </ProtectedRoute>
               }

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import ReactGA from 'react-ga4';
 import Countdown from '../Countdown/Countdown';
+import { Typography } from '../Common';
 
 const calculatePricing = () => {
   const originalPrice = 499;
@@ -32,12 +33,18 @@ export default function LandingPage() {
             <div className="inline-block bg-blue-500/10 text-blue-400 px-4 py-2 rounded-full text-sm mb-6">
               Nova Oferta Especial
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+            <Typography 
+              variant="h1" 
+              className="mb-6 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent"
+            >
               Domine Sistemas Distribuídos na Prática
-            </h1>
-            <p className="text-xl md:text-2xl text-zinc-400 mb-8 max-w-3xl mx-auto">
+            </Typography>
+            <Typography 
+              variant="p" 
+              className="text-xl md:text-2xl text-zinc-400 mb-8 max-w-3xl mx-auto"
+            >
               A plataforma mais completa para aprender arquitetura de sistemas com simuladores interativos e casos reais
-            </p>
+            </Typography>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link
                 to="/intro"
@@ -75,12 +82,18 @@ export default function LandingPage() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+          <Typography 
+            variant="h2" 
+            className="mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+          >
             Conteúdo Completo e Prático
-          </h2>
-          <p className="text-xl text-zinc-400">
+          </Typography>
+          <Typography 
+            variant="p" 
+            className="text-xl text-zinc-400"
+          >
             Tudo que você precisa para se tornar um especialista em sistemas distribuídos
-          </p>
+          </Typography>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -96,7 +109,9 @@ export default function LandingPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
               </svg>
             </div>
-            <h3 className="text-xl font-bold mb-3 text-blue-400">Fundamentos Sólidos</h3>
+            <Typography variant="h3" className="mb-3 text-blue-400">
+              Fundamentos Sólidos
+            </Typography>
             <ul className="space-y-2 text-zinc-300">
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -137,7 +152,9 @@ export default function LandingPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
             </div>
-            <h3 className="text-xl font-bold mb-3 text-purple-400">Simuladores Interativos</h3>
+            <Typography variant="h3" className="mb-3 text-purple-400">
+              Simuladores Interativos
+            </Typography>
             <ul className="space-y-2 text-zinc-300">
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -178,7 +195,9 @@ export default function LandingPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
               </svg>
             </div>
-            <h3 className="text-xl font-bold mb-3 text-green-400">Casos Reais</h3>
+            <Typography variant="h3" className="mb-3 text-green-400">
+              Casos Reais
+            </Typography>
             <ul className="space-y-2 text-zinc-300">
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -217,12 +236,18 @@ export default function LandingPage() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+          <Typography 
+            variant="h2" 
+            className="mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+          >
             Sua Jornada de Aprendizado
-          </h2>
-          <p className="text-xl text-zinc-400">
+          </Typography>
+          <Typography 
+            variant="p" 
+            className="text-xl text-zinc-400"
+          >
             Um caminho estruturado para dominar sistemas distribuídos
-          </p>
+          </Typography>
         </motion.div>
 
         <div className="relative">
@@ -394,9 +419,12 @@ export default function LandingPage() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+          <Typography 
+            variant="h2" 
+            className="mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+          >
             Quem vai te ensinar
-          </h2>
+          </Typography>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -489,12 +517,18 @@ export default function LandingPage() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+          <Typography 
+            variant="h2" 
+            className="mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+          >
             Invista no Seu Futuro
-          </h2>
-          <p className="text-xl text-zinc-400">
+          </Typography>
+          <Typography 
+            variant="p" 
+            className="text-xl text-zinc-400"
+          >
             Acesso vitalício a todo o conteúdo com um único pagamento
-          </p>
+          </Typography>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">

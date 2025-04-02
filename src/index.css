@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  h1 {
+    @apply text-h1 font-title;
+  }
+  h2 {
+    @apply text-h2 font-title;
+  }
+  h3 {
+    @apply text-h3 font-title;
+  }
+  h4 {
+    @apply text-h4 font-title;
+  }
+  h5 {
+    @apply text-h5 font-title;
+  }
+  h6 {
+    @apply text-h6 font-title;
+  }
+  p {
+    @apply text-p font-content;
+  }
+}

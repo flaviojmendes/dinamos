@@ -403,132 +403,120 @@ export default function ServiceOriented() {
   const [hoveredModule, setHoveredModule] = useState<string | null>(null);
 
   return (
-    <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
-      <div className="prose prose-invert prose-lg max-w-none mb-12">
-        <motion.h1 
-          className="text-4xl font-bold mb-8 text-blue-400"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+    <div className="p-6 md:p-8 lg:p-12 max-w-4xl mx-auto">
+      <div className="prose prose-invert prose-lg max-w-none">
+        <h1 className="text-4xl md:text-5xl font-bold mb-8 text-blue-400">
           Design Orientado a Serviços
-        </motion.h1>
+        </h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="text-xl text-zinc-300 mb-12"
-        >
+        <p className="text-xl text-zinc-300 mb-12">
           Explore as diferentes abordagens de organização de serviços e suas implicações práticas.
           Cada arquitetura tem seus próprios trade-offs e casos de uso ideais.
-        </motion.p>
-      </div>
+        </p>
 
-      {/* Architecture Selection */}
-      <div className="flex gap-4 mb-12">
-        {architectures.map(arch => (
-          <motion.button
-            key={arch.type}
-            onClick={() => setSelectedArch(arch)}
-            className={`px-6 py-3 rounded-lg transition-colors ${
-              selectedArch.type === arch.type
-                ? 'bg-blue-500 text-white'
-                : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
-            }`}
-          >
-            {arch.name}
-          </motion.button>
-        ))}
-      </div>
-
-      {/* Architecture Content */}
-      <motion.div
-        key={selectedArch.type}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
-        className="space-y-12"
-      >
-        {/* Description Section */}
-        <div className="bg-zinc-800 p-6 rounded-lg">
-          <h2 className="text-2xl font-bold mb-4">{selectedArch.name}</h2>
-          <p className="text-zinc-300 mb-8">{selectedArch.description}</p>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Advantages */}
-            <div>
-              <h3 className="text-xl font-semibold text-zinc-200 mb-4">Vantagens</h3>
-              <ul className="space-y-2">
-                {selectedArch.advantages.map((advantage, index) => (
-                  <motion.li
-                    key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="flex items-start gap-2 text-zinc-300"
-                  >
-                    <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    {advantage}
-                  </motion.li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Disadvantages */}
-            <div>
-              <h3 className="text-xl font-semibold text-zinc-200 mb-4">Desvantagens</h3>
-              <ul className="space-y-2">
-                {selectedArch.disadvantages.map((disadvantage, index) => (
-                  <motion.li
-                    key={index}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="flex items-start gap-2 text-zinc-300"
-                  >
-                    <svg className="w-5 h-5 text-red-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                    {disadvantage}
-                  </motion.li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Example */}
-          <div className="mt-8 p-4 bg-zinc-900 rounded-lg">
-            <h4 className="text-lg font-semibold text-zinc-200 mb-2">Exemplo Prático</h4>
-            <p className="text-zinc-400">{selectedArch.example}</p>
-          </div>
+        {/* Architecture Selection */}
+        <div className="flex gap-4 mb-12">
+          {architectures.map(arch => (
+            <motion.button
+              key={arch.type}
+              onClick={() => setSelectedArch(arch)}
+              className={`px-6 py-3 rounded-lg transition-colors ${
+                selectedArch.type === arch.type
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
+              }`}
+            >
+              {arch.name}
+            </motion.button>
+          ))}
         </div>
 
-        {/* Diagram */}
-        <div className="relative bg-zinc-900/50 rounded-xl p-8">
-          <h3 className="text-2xl font-bold mb-6 text-zinc-200">Visualização da Arquitetura</h3>
-          
-          <ResponsiveDiagram
-            architecture={selectedArch}
-            hoveredModule={hoveredModule}
-            onHover={setHoveredModule}
-          />
+        {/* Architecture Content */}
+        <motion.div
+          key={selectedArch.type}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+          className="space-y-12"
+        >
+          {/* Description Section */}
+          <div className="bg-zinc-900 rounded-lg p-6">
+            <h2 className="text-3xl font-bold mb-6 text-blue-300">{selectedArch.name}</h2>
+            <p className="text-zinc-200 mb-8">{selectedArch.description}</p>
 
-          {/* Legend */}
-          <div className="mt-20 flex justify-center gap-8 text-sm text-zinc-400">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-[2px] bg-zinc-400"></div>
-              {selectedArch.type === 'monolithic' && 'Chamada direta'}
-              {selectedArch.type === 'modular' && 'Interface'}
-              {selectedArch.type === 'microservices' && 'API/Eventos'}
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Advantages */}
+              <div>
+                <h3 className="text-2xl font-bold text-blue-300 mb-4">Vantagens</h3>
+                <ul className="space-y-2">
+                  {selectedArch.advantages.map((advantage, index) => (
+                    <motion.li
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="flex items-start gap-2 text-zinc-200"
+                    >
+                      <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      {advantage}
+                    </motion.li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Disadvantages */}
+              <div>
+                <h3 className="text-2xl font-bold text-blue-300 mb-4">Desvantagens</h3>
+                <ul className="space-y-2">
+                  {selectedArch.disadvantages.map((disadvantage, index) => (
+                    <motion.li
+                      key={index}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="flex items-start gap-2 text-zinc-200"
+                    >
+                      <svg className="w-5 h-5 text-red-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                      {disadvantage}
+                    </motion.li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Example */}
+            <div className="mt-8 p-4 bg-zinc-800 rounded-lg">
+              <h4 className="text-xl font-bold text-blue-200 mb-2">Exemplo Prático</h4>
+              <p className="text-zinc-200">{selectedArch.example}</p>
             </div>
           </div>
-        </div>
-      </motion.div>
 
-      
+          {/* Diagram */}
+          <div className="relative bg-zinc-900 rounded-lg p-8">
+            <h3 className="text-3xl font-bold mb-6 text-blue-300">Visualização da Arquitetura</h3>
+            
+            <ResponsiveDiagram
+              architecture={selectedArch}
+              hoveredModule={hoveredModule}
+              onHover={setHoveredModule}
+            />
+
+            {/* Legend */}
+            <div className="mt-20 flex justify-center gap-8 text-sm text-zinc-400">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-[2px] bg-zinc-400"></div>
+                {selectedArch.type === 'monolithic' && 'Chamada direta'}
+                {selectedArch.type === 'modular' && 'Interface'}
+                {selectedArch.type === 'microservices' && 'API/Eventos'}
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 } 
