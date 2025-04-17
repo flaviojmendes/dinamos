@@ -164,7 +164,7 @@ export default function CDN() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-white">
       <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-semibold">Simulação de CDN</h2>

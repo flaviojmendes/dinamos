@@ -150,7 +150,7 @@ export default function RoundRobin() {
       <div className="p-4 h-full">
         <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-            <h1 className="text-xl font-semibold">Load Balancer</h1>
+            <h1 className="text-xl text-white font-semibold">Load Balancer</h1>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
               <button
                 onClick={() => setIsRunning(!isRunning)}

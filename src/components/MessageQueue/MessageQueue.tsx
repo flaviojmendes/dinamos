@@ -169,7 +169,7 @@ export default function MessageQueue() {
   }, [isRunning, config.consumerCount, config.consumerRate, consumeMessage]);
 
   return (
-    <div className="flex-1 min-h-full overflow-auto">
+    <div className="flex-1 min-h-full overflow-auto text-white">
       <div className="p-4 h-full">
         <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">

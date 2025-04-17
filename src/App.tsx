@@ -893,7 +893,7 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-zinc-950">
+    <div className="min-h-screen bg-zinc-950 text-white">
       <div className="flex h-screen overflow-hidden">
         {/* Mobile Header */}
         {isMobile && user && (
