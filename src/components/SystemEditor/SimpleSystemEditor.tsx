@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -14,13 +14,16 @@ import ReactFlow, {
   NodeProps,
   Handle,
   Position,
+  EdgeMouseHandler,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
 interface NodeData {
   label: string;
   throughput?: number;
+  algorithm?: 'roundRobin';
   onThroughputChange?: (value: number) => void;
+  onAlgorithmChange?: (value: 'roundRobin') => void;
   metrics?: {
     requestsPerSecond: number;
     activeRequests: number;
@@ -73,10 +76,6 @@ const ServerNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
     <div className="font-bold text-white">{data.label}</div>
     {data.metrics && (
       <div className="text-xs mt-2">
-        <div className="text-blue-300 flex justify-between items-center">
-          <span>Conexões Ativas:</span>
-          <span className="font-bold text-lg">{data.metrics.activeRequests}</span>
-        </div>
         <div className="text-yellow-300">Requisições/s: {data.metrics.requestsPerSecond}</div>
         <div className="text-green-300">Resposta: {data.metrics.responseTime.toFixed(0)}ms</div>
         <div className="text-red-300">Falhas/s: {data.metrics.failedRequests}</div>
@@ -112,10 +111,6 @@ const DatabaseNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
     <div className="font-bold text-white">{data.label}</div>
     {data.metrics && (
       <div className="text-xs mt-2">
-        <div className="text-blue-300 flex justify-between items-center">
-          <span>Conexões Ativas:</span>
-          <span className="font-bold text-lg">{data.metrics.activeRequests}</span>
-        </div>
         <div className="text-yellow-300">Requisições/s: {data.metrics.requestsPerSecond}</div>
         <div className="text-green-300">Resposta: {data.metrics.responseTime.toFixed(0)}ms</div>
         <div className="text-red-300">Falhas/s: {data.metrics.failedRequests}</div>
@@ -145,10 +140,57 @@ const DatabaseNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
   </div>
 );
 
+const LoadBalancerNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
+  <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-green-500 bg-zinc-800 min-w-[180px]">
+    <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
+    <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
+    <div className="font-bold text-white">{data.label}</div>
+    {data.metrics && (
+      <div className="text-xs mt-2">
+        <div className="text-yellow-300">Requisições/s: {data.metrics.requestsPerSecond}</div>
+        <div className="text-green-300">Resposta: {data.metrics.responseTime.toFixed(0)}ms</div>
+        <div className="text-red-300">Falhas/s: {data.metrics.failedRequests}</div>
+      </div>
+    )}
+    <div className="mt-2 text-xs text-white">
+      <label>Throughput (req/s):</label>
+      <input
+        type="range"
+        min="10"
+        max="300"
+        value={data.throughput || 150}
+        onChange={(e) => data.onThroughputChange?.(Number(e.target.value))}
+        className="w-full"
+      />
+      <div className="text-right">{data.throughput || 150} req/s</div>
+    </div>
+    <div className="mt-2 text-xs text-white">
+      <label>Algoritmo:</label>
+      <select
+        value={data.algorithm || 'roundRobin'}
+        onChange={(e) => data.onAlgorithmChange?.(e.target.value as 'roundRobin')}
+        className="w-full mt-1 bg-zinc-700 rounded px-2 py-1 text-white"
+      >
+        <option value="roundRobin">Round Robin</option>
+      </select>
+    </div>
+    <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+      <div
+        className="h-full transition-all duration-500"
+        style={{
+          width: `${data.metrics?.load || 0}%`,
+          backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e',
+        }}
+      />
+    </div>
+  </div>
+);
+
 const nodeTypes = {
   client: ClientNode,
   server: ServerNode,
   database: DatabaseNode,
+  loadBalancer: LoadBalancerNode,
 };
 
 const initialNodes: Node<NodeData>[] = [
@@ -160,12 +202,24 @@ const initialNodes: Node<NodeData>[] = [
   },
   {
     id: '2',
-    type: 'server',
-    data: { label: 'Servidor' },
-    position: { x: 400, y: 200 },
+    type: 'loadBalancer',
+    data: { label: 'Balanceador', algorithm: 'roundRobin' },
+    position: { x: 400, y: 150 },
   },
   {
     id: '3',
+    type: 'server',
+    data: { label: 'Servidor 1' },
+    position: { x: 250, y: 250 },
+  },
+  {
+    id: '4',
+    type: 'server',
+    data: { label: 'Servidor 2' },
+    position: { x: 550, y: 250 },
+  },
+  {
+    id: '5',
     type: 'database',
     data: { label: 'Banco de Dados' },
     position: { x: 400, y: 350 },
@@ -175,11 +229,15 @@ const initialNodes: Node<NodeData>[] = [
 const initialEdges: Edge[] = [
   { id: 'e1-2', source: '1', target: '2', animated: true },
   { id: 'e2-3', source: '2', target: '3', animated: true },
+  { id: 'e2-4', source: '2', target: '4', animated: true },
+  { id: 'e3-5', source: '3', target: '5', animated: true },
+  { id: 'e4-5', source: '4', target: '5', animated: true },
 ];
 
 // Available components configuration
 const availableComponents = [
   { type: 'client', label: 'Cliente', className: 'border-blue-500' },
+  { type: 'loadBalancer', label: 'Balanceador', className: 'border-green-500' },
   { type: 'server', label: 'Servidor', className: 'border-purple-500' },
   { type: 'database', label: 'Banco de Dados', className: 'border-yellow-500' },
 ];
@@ -188,12 +246,28 @@ export default function SimpleSystemEditor() {
   const [nodes, setNodes, onNodesChange] = useNodesState<NodeData>(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [isSimulationRunning, setIsSimulationRunning] = useState(false);
+  const [roundRobinCounters, setRoundRobinCounters] = useState<Record<string, number>>({});
+  const [contextMenu, setContextMenu] = useState<{
+    x: number;
+    y: number;
+    edgeId: string;
+  } | null>(null);
 
   const onThroughputChange = useCallback((nodeId: string, throughput: number) => {
     setNodes((nds) =>
       nds.map((node) =>
         node.id === nodeId
           ? { ...node, data: { ...node.data, throughput } }
+          : node
+      )
+    );
+  }, [setNodes]);
+
+  const onAlgorithmChange = useCallback((nodeId: string, algorithm: 'roundRobin') => {
+    setNodes((nds) =>
+      nds.map((node) =>
+        node.id === nodeId
+          ? { ...node, data: { ...node.data, algorithm } }
           : node
       )
     );
@@ -219,38 +293,113 @@ export default function SimpleSystemEditor() {
         failedRequestsMap.set(client.id, 0); // No failed requests for clients initially
       });
 
-      // Second pass: calculate server metrics
-      const servers = nds.filter(n => n.type === 'server');
-      servers.forEach(server => {
-        const serverIncomingEdges = edges.filter(e => e.target === server.id);
-        const throughput = server.data.throughput || 100;
+      // Process load balancers
+      const loadBalancers = nds.filter(n => n.type === 'loadBalancer');
+      loadBalancers.forEach(lb => {
+        const lbIncomingEdges = edges.filter(e => e.target === lb.id);
+        const throughput = lb.data.throughput || 150;
         
         // Sum up incoming requests
-        const incomingRequests = serverIncomingEdges
+        const incomingRequests = lbIncomingEdges
           .map(e => requestFlow.get(e.source) || 0)
           .reduce((sum, curr) => sum + curr, 0);
 
-        // Calculate how many requests the server can handle
+        // Calculate how many requests the load balancer can handle
         const maxHandled = Math.min(incomingRequests, throughput);
         const failedRequests = incomingRequests - maxHandled; // Calculate dropped requests
-        const activeRequests = Math.ceil(maxHandled * 0.1); // 10% of throughput are active connections
+        const activeRequests = Math.ceil(maxHandled * 0.05); // 5% of throughput are active connections
         
-        requestFlow.set(server.id, maxHandled);
-        failedRequestsMap.set(server.id, failedRequests);
-        activeRequestsMap.set(server.id, activeRequests);
+        requestFlow.set(lb.id, maxHandled);
+        failedRequestsMap.set(lb.id, failedRequests);
+        activeRequestsMap.set(lb.id, activeRequests);
         
-        // Propagate failures back to sources
+        // Propagate failures back to sources if any
         if (failedRequests > 0) {
-          serverIncomingEdges.forEach(edge => {
+          lbIncomingEdges.forEach(edge => {
             const sourceRequest = requestFlow.get(edge.source) || 0;
             if (sourceRequest > 0) {
-              // Proportionally distribute failures based on source contribution
               const sourceContribution = sourceRequest / incomingRequests;
               const sourceFailures = Math.floor(failedRequests * sourceContribution);
               failedRequestsMap.set(edge.source, (failedRequestsMap.get(edge.source) || 0) + sourceFailures);
             }
           });
         }
+        
+        // Find servers connected to this load balancer (for round robin distribution)
+        const connectedServers = edges
+          .filter(e => e.source === lb.id)
+          .map(e => nds.find(n => n.id === e.target))
+          .filter(Boolean) as Node[];
+        
+        if (connectedServers.length > 0) {
+          // Use Round Robin distribution
+          const currentCounter = roundRobinCounters[lb.id] || 0;
+          setRoundRobinCounters(prev => ({
+            ...prev,
+            [lb.id]: (currentCounter + 1) % connectedServers.length
+          }));
+          
+          // Distribute the requests evenly with round robin
+          const baseShare = Math.floor(maxHandled / connectedServers.length);
+          const remainder = maxHandled % connectedServers.length;
+          
+          connectedServers.forEach((server, index) => {
+            // Calculate how many requests go to each server
+            const adjustedIndex = (index + currentCounter) % connectedServers.length;
+            let serverShare = baseShare;
+            if (adjustedIndex < remainder) {
+              serverShare += 1; // Distribute remainder
+            }
+            
+            // Add to existing flow for this server
+            const currentFlow = requestFlow.get(server.id) || 0;
+            requestFlow.set(server.id, currentFlow + serverShare);
+          });
+        }
+      });
+
+      // Second pass: calculate server metrics
+      const servers = nds.filter(n => n.type === 'server');
+      servers.forEach(server => {
+        const serverIncomingEdges = edges.filter(e => e.target === server.id);
+        const throughput = server.data.throughput || 100;
+        
+        // For servers not connected to load balancers, sum up incoming requests directly
+        // For those behind load balancers, request flow was already set
+        if (!serverIncomingEdges.some(e => nds.find(n => n.id === e.source)?.type === 'loadBalancer')) {
+          const incomingRequests = serverIncomingEdges
+            .map(e => requestFlow.get(e.source) || 0)
+            .reduce((sum, curr) => sum + curr, 0);
+  
+          // Calculate how many requests the server can handle
+          const maxHandled = Math.min(incomingRequests, throughput);
+          const serverFailedRequests = incomingRequests - maxHandled;
+          
+          // Set or add to the current flow
+          const currentFlow = requestFlow.get(server.id) || 0;
+          requestFlow.set(server.id, currentFlow + maxHandled);
+          failedRequestsMap.set(server.id, (failedRequestsMap.get(server.id) || 0) + serverFailedRequests);
+          
+          // Propagate failures back
+          if (serverFailedRequests > 0) {
+            serverIncomingEdges.forEach(edge => {
+              const sourceNode = nds.find(n => n.id === edge.source);
+              if (sourceNode && sourceNode.type !== 'loadBalancer') {
+                const sourceRequest = requestFlow.get(edge.source) || 0;
+                if (sourceRequest > 0 && incomingRequests > 0) {
+                  const sourceContribution = sourceRequest / incomingRequests;
+                  const sourceFailures = Math.floor(serverFailedRequests * sourceContribution);
+                  failedRequestsMap.set(edge.source, (failedRequestsMap.get(edge.source) || 0) + sourceFailures);
+                }
+              }
+            });
+          }
+        }
+        
+        // Calculate active requests
+        const serverRequests = requestFlow.get(server.id) || 0;
+        const activeRequests = Math.ceil(serverRequests * 0.1); // 10% of throughput are active connections
+        activeRequestsMap.set(server.id, activeRequests);
       });
 
       // Third pass: calculate database metrics
@@ -332,6 +481,19 @@ export default function SimpleSystemEditor() {
             };
             break;
 
+          case 'loadBalancer':
+            const lbThroughput = node.data.throughput || 150;
+            const lbLoad = (nodeRequests / lbThroughput) * 100;
+            
+            metrics = {
+              requestsPerSecond: nodeRequests,
+              activeRequests,
+              responseTime: 10 + (lbLoad > 80 ? (lbLoad - 80) : 0) + Math.random() * 5,
+              load: Math.min(100, lbLoad),
+              failedRequests,
+            };
+            break;
+
           default:
             return node;
         }
@@ -342,6 +504,7 @@ export default function SimpleSystemEditor() {
             ...node.data,
             metrics,
             onThroughputChange: (value: number) => onThroughputChange(node.id, value),
+            onAlgorithmChange: (value: 'roundRobin') => onAlgorithmChange(node.id, value),
           },
         };
       });
@@ -371,7 +534,7 @@ export default function SimpleSystemEditor() {
         };
       });
     });
-  }, [isSimulationRunning, setNodes, setEdges, nodes, edges, onThroughputChange]);
+  }, [isSimulationRunning, setNodes, setEdges, nodes, edges, onThroughputChange, onAlgorithmChange, roundRobinCounters]);
 
   // Run simulation every second
   useEffect(() => {
@@ -412,7 +575,9 @@ export default function SimpleSystemEditor() {
         ? `Servidor ${nodes.filter(n => n.type === 'server').length + 1}`
         : type === 'database'
           ? `Banco de Dados ${nodes.filter(n => n.type === 'database').length + 1}`
-          : `Cliente ${nodes.filter(n => n.type === 'client').length + 1}`;
+          : type === 'loadBalancer'
+            ? `Load Balancer ${nodes.filter(n => n.type === 'loadBalancer').length + 1}`
+            : `Cliente ${nodes.filter(n => n.type === 'client').length + 1}`;
 
       const newNode = {
         id: `${Date.now()}`,
@@ -432,6 +597,45 @@ export default function SimpleSystemEditor() {
       !deleted.some(node => node.id === edge.source || node.id === edge.target)
     ));
   }, [setEdges]);
+
+  const onEdgeContextMenu: EdgeMouseHandler = useCallback(
+    (event, edge) => {
+      // Prevent default context menu
+      event.preventDefault();
+      
+      // Set the position of the custom context menu
+      setContextMenu({
+        x: event.clientX,
+        y: event.clientY,
+        edgeId: edge.id,
+      });
+    },
+    []
+  );
+
+  const onPaneClick = useCallback(() => {
+    // Close the context menu when clicking elsewhere
+    setContextMenu(null);
+  }, []);
+
+  const onRemoveEdge = useCallback(() => {
+    if (contextMenu) {
+      setEdges((eds) => eds.filter((edge) => edge.id !== contextMenu.edgeId));
+      setContextMenu(null);
+    }
+  }, [contextMenu, setEdges]);
+
+  // Close the context menu when clicking outside of it
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setContextMenu(null);
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
@@ -490,6 +694,8 @@ export default function SimpleSystemEditor() {
           minZoom={0.2}
           maxZoom={1.5}
           defaultViewport={{ x: 0, y: 0, zoom: 0.7 }}
+          onEdgeContextMenu={onEdgeContextMenu}
+          onPaneClick={onPaneClick}
         >
           <Panel position="top-left" className="bg-zinc-800 p-4 rounded-lg">
             <div className="flex flex-col gap-2">
@@ -513,6 +719,28 @@ export default function SimpleSystemEditor() {
           <MiniMap />
           <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
         </ReactFlow>
+        
+        {/* Custom context menu */}
+        {contextMenu && (
+          <div
+            className="absolute z-50 bg-zinc-800 rounded shadow-lg p-2"
+            style={{
+              top: contextMenu.y,
+              left: contextMenu.x,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={onRemoveEdge}
+              className="text-white hover:bg-red-600 py-1 px-3 rounded w-full text-left flex items-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              Remover Conexão
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
