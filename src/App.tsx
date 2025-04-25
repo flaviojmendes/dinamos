@@ -109,7 +109,7 @@ import SynchronizationFundamentals from './components/ConsistencyStrategies/Sync
 import SynchronizationDeadlocks from './components/ConsistencyStrategies/SynchronizationDeadlocks';
 import SynchronizationAlgorithms from './components/ConsistencyStrategies/SynchronizationAlgorithms';
 import SynchronizationSimulator from "./components/ConsistencyStrategies/SynchronizationSimulator";
-
+import SimpleSystemEditorPage from "./pages/SimpleSystemEditorPage";
 
 interface MenuItem {
   name: string;
@@ -701,11 +701,24 @@ const menuItems: MenuItem[] = [
   {
     path: "/editor",
     name: "Editor de Sistemas",
-    description: "Crie e visualize arquiteturas distribuídas",
-    badges: [
-      { text: "Alpha", color: "bg-blue-500" },
-      { text: "Grátis", color: "bg-green-500" },
-    ],
+    description: "Crie e simule sistemas distribuídos",
+    status: "new",
+    badges: [{ text: "Novo", color: "bg-blue-500" }],
+    icon: (
+      <svg
+        className="w-6 h-6 text-blue-400"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+        />
+      </svg>
+    ),
   },
 ];
 
@@ -1018,6 +1031,7 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/pagamento" element={<Subscription />} />
             <Route path="/pagamento/sucesso" element={<PaymentSuccess />} />
+            <Route path="/editor" element={<SimpleSystemEditorPage />} />
             {/* Protected routes */}
             <Route
               path="/intro"
@@ -1565,16 +1579,6 @@ export default function App() {
                 <ProtectedRoute>
                   <ContentPage>
                     <FirewallSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/editor"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <SystemEditor />
                   </ContentPage>
                 </ProtectedRoute>
               }
