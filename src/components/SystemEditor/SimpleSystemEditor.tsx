@@ -24,10 +24,14 @@ interface NodeData {
   algorithm?: 'roundRobin';
   rateLimit?: number;
   hitRate?: number; // For cache
+  maxQueue?: number; // For message queue
+  dequeueRate?: number; // For message queue
   onThroughputChange?: (value: number) => void;
   onAlgorithmChange?: (value: 'roundRobin') => void;
   onRateLimitChange?: (value: number) => void;
   onHitRateChange?: (value: number) => void; // For cache
+  onDequeueRateChange?: (value: number) => void; // For message queue
+  onMaxQueueChange?: (value: number) => void; // For message queue
   metrics?: {
     requestsPerSecond: number;
     activeRequests: number;
@@ -39,6 +43,10 @@ interface NodeData {
     cacheHits?: number;
     cacheMisses?: number;
     hitRate?: number;
+    queueLength?: number;
+    droppedMessages?: number;
+    dequeueRate?: number;
+    maxQueue?: number;
   };
 }
 
@@ -312,6 +320,57 @@ const CacheNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
   </div>
 );
 
+// MessageQueueNode component
+const MessageQueueNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
+  <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-orange-500 bg-zinc-800 min-w-[220px]">
+    <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
+    <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
+    <div className="font-bold text-white">{data.label}</div>
+    {data.metrics && (
+      <div className="text-xs mt-2">
+        <div className="text-orange-300">Fila: {data.metrics.queueLength}</div>
+        <div className="text-yellow-300">Enfileiradas/s: {data.metrics.requestsPerSecond}</div>
+        <div className="text-green-300">Desenfileiradas/s: {data.metrics.dequeueRate}</div>
+        <div className="text-red-300">Descartadas/s: {data.metrics.droppedMessages}</div>
+        <div className="text-cyan-300">Latência: {data.metrics.responseTime.toFixed(0)}ms</div>
+      </div>
+    )}
+    <div className="mt-2 text-xs text-white">
+      <label>Capacidade da Fila:</label>
+      <input
+        type="range"
+        min="10"
+        max="500"
+        value={data.maxQueue || 100}
+        onChange={(e) => data.onMaxQueueChange?.(Number(e.target.value))}
+        className="w-full"
+      />
+      <div className="text-right">{data.maxQueue || 100}</div>
+    </div>
+    <div className="mt-2 text-xs text-white">
+      <label>Desenfileirar (msgs/s):</label>
+      <input
+        type="range"
+        min="1"
+        max="200"
+        value={data.dequeueRate || 50}
+        onChange={(e) => data.onDequeueRateChange?.(Number(e.target.value))}
+        className="w-full"
+      />
+      <div className="text-right">{data.dequeueRate || 50} msgs/s</div>
+    </div>
+    <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+      <div
+        className="h-full transition-all duration-500"
+        style={{
+          width: `${Math.min(100, (data.metrics?.queueLength || 0) / (data.maxQueue || 100) * 100)}%`,
+          backgroundColor: (data.metrics?.queueLength || 0) > (data.maxQueue || 100) * 0.8 ? '#ef4444' : '#f59e42',
+        }}
+      />
+    </div>
+  </div>
+);
+
 const nodeTypes = {
   client: ClientNode,
   server: ServerNode,
@@ -319,6 +378,7 @@ const nodeTypes = {
   loadBalancer: LoadBalancerNode,
   apiGateway: APIGatewayNode,
   cache: CacheNode,
+  messageQueue: MessageQueueNode,
 };
 
 const initialNodes: Node<NodeData>[] = [
@@ -368,6 +428,7 @@ const availableComponents = [
   { type: 'loadBalancer', label: 'Balanceador', className: 'border-green-500' },
   { type: 'apiGateway', label: 'API Gateway', className: 'border-indigo-500' },
   { type: 'cache', label: 'Cache', className: 'border-pink-500' },
+  { type: 'messageQueue', label: 'Message Queue', className: 'border-orange-500' },
   { type: 'server', label: 'Servidor', className: 'border-purple-500' },
   { type: 'database', label: 'Banco de Dados', className: 'border-yellow-500' },
 ];
@@ -422,6 +483,26 @@ export default function SimpleSystemEditor() {
       nds.map((node) =>
         node.id === nodeId
           ? { ...node, data: { ...node.data, hitRate } }
+          : node
+      )
+    );
+  }, [setNodes]);
+
+  const onDequeueRateChange = useCallback((nodeId: string, dequeueRate: number) => {
+    setNodes((nds) =>
+      nds.map((node) =>
+        node.id === nodeId
+          ? { ...node, data: { ...node.data, dequeueRate } }
+          : node
+      )
+    );
+  }, [setNodes]);
+
+  const onMaxQueueChange = useCallback((nodeId: string, maxQueue: number) => {
+    setNodes((nds) =>
+      nds.map((node) =>
+        node.id === nodeId
+          ? { ...node, data: { ...node.data, maxQueue } }
           : node
       )
     );
@@ -611,6 +692,57 @@ export default function SimpleSystemEditor() {
             activeRequestsMap.set(node.id, activeRequests);
             break;
           }
+          case 'messageQueue': {
+            // Persistent queue state per node
+            if (!('queueState' in node.data)) {
+              (node.data as any).queueState = { length: 0 };
+            }
+            const queueState = (node.data as any).queueState;
+            const maxQueue = node.data.maxQueue || 100;
+            const dequeueRate = node.data.dequeueRate || 50;
+            // Enqueue incoming requests up to maxQueue
+            const toEnqueue = incomingRequests;
+            let dropped = 0;
+            if (queueState.length + toEnqueue > maxQueue) {
+              dropped = queueState.length + toEnqueue - maxQueue;
+              queueState.length = maxQueue;
+            } else {
+              queueState.length += toEnqueue;
+            }
+            // Dequeue up to dequeueRate
+            const toDequeue = Math.min(queueState.length, dequeueRate);
+            queueState.length -= toDequeue;
+            // Forward dequeued messages to downstream nodes
+            const outgoingEdges = edges.filter(e => e.source === node.id);
+            if (outgoingEdges.length > 0) {
+              const baseShare = Math.floor(toDequeue / outgoingEdges.length);
+              const remainder = toDequeue % outgoingEdges.length;
+              let totalDistributed = 0;
+              outgoingEdges.forEach((e, index) => {
+                let share = baseShare;
+                if (index < remainder) share += 1;
+                requestFlow.set(e.id, share);
+                totalDistributed += share;
+              });
+              if (totalDistributed !== toDequeue) {
+                console.warn(`MessageQueue distributed ${totalDistributed} but should have distributed ${toDequeue}`);
+              }
+            }
+            // Latency is proportional to queue length
+            const responseTime = 5 + queueState.length * 2;
+            node.data.metrics = {
+              requestsPerSecond: toEnqueue,
+              dequeueRate: toDequeue,
+              queueLength: queueState.length,
+              droppedMessages: dropped,
+              responseTime,
+              load: Math.min(100, (queueState.length / maxQueue) * 100),
+              failedRequests: 0,
+              maxQueue,
+              activeRequests: toDequeue,
+            };
+            break;
+          }
           default:
             break;
         }
@@ -754,6 +886,21 @@ export default function SimpleSystemEditor() {
             };
             break;
 
+          case 'messageQueue':
+            // Only set metrics here; queue processing is handled in the first simulation pass
+            metrics = node.data.metrics || {
+              requestsPerSecond: 0,
+              dequeueRate: 0,
+              queueLength: 0,
+              droppedMessages: 0,
+              responseTime: 0,
+              load: 0,
+              failedRequests: 0,
+              maxQueue: 0,
+              activeRequests: 0,
+            };
+            break;
+
           default:
             return node;
         }
@@ -771,6 +918,8 @@ export default function SimpleSystemEditor() {
             onAlgorithmChange: (value: 'roundRobin') => onAlgorithmChange(node.id, value),
             onRateLimitChange: (value: number) => onRateLimitChange(node.id, value),
             onHitRateChange: (value: number) => onHitRateChange(node.id, value),
+            onDequeueRateChange: (value: number) => onDequeueRateChange(node.id, value),
+            onMaxQueueChange: (value: number) => onMaxQueueChange(node.id, value),
           },
         };
       });
@@ -847,7 +996,9 @@ export default function SimpleSystemEditor() {
               ? `API Gateway ${nodes.filter(n => n.type === 'apiGateway').length + 1}`
               : type === 'cache'
                 ? `Cache ${nodes.filter(n => n.type === 'cache').length + 1}`
-                : `Cliente ${nodes.filter(n => n.type === 'client').length + 1}`;
+                : type === 'messageQueue'
+                  ? `Message Queue ${nodes.filter(n => n.type === 'messageQueue').length + 1}`
+                  : `Cliente ${nodes.filter(n => n.type === 'client').length + 1}`;
 
       // Set default values based on node type
       let nodeData: any = { label: newNodeLabel };
@@ -866,6 +1017,9 @@ export default function SimpleSystemEditor() {
       } else if (type === 'cache') {
         nodeData.throughput = 100;
         nodeData.hitRate = 0.8;
+      } else if (type === 'messageQueue') {
+        nodeData.maxQueue = 100;
+        nodeData.dequeueRate = 50;
       }
 
       const newNode = {
