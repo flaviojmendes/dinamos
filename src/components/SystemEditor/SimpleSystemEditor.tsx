@@ -35,12 +35,14 @@ interface NodeData {
   hitRate?: number; // For cache
   maxQueue?: number; // For message queue
   dequeueRate?: number; // For message queue
+  failureRate?: number; // Failure rate for any node
   onThroughputChange?: (value: number) => void;
   onAlgorithmChange?: (value: 'roundRobin') => void;
   onRateLimitChange?: (value: number) => void;
   onHitRateChange?: (value: number) => void; // For cache
   onDequeueRateChange?: (value: number) => void; // For message queue
   onMaxQueueChange?: (value: number) => void; // For message queue
+  onFailureRateChange?: (value: number) => void; // For failure rate
   metrics?: {
     requestsPerSecond: number;
     activeRequests: number;
@@ -94,6 +96,18 @@ const ClientNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
       />
       <div className="text-right">{data.throughput || 50} req/s</div>
     </div>
+    <div className="mt-2 text-xs text-white">
+      <label>Taxa de Falha (%):</label>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value={data.failureRate || 0}
+        onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))}
+        className="w-full"
+      />
+      <div className="text-right">{data.failureRate || 0}%</div>
+    </div>
     <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
       <div
         className="h-full transition-all duration-500"
@@ -134,6 +148,18 @@ const ServerNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
       />
       <div className="text-right">{data.throughput || 100} req/s</div>
     </div>
+    <div className="mt-2 text-xs text-white">
+      <label>Taxa de Falha (%):</label>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value={data.failureRate || 0}
+        onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))}
+        className="w-full"
+      />
+      <div className="text-right">{data.failureRate || 0}%</div>
+    </div>
     <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
       <div
         className="h-full transition-all duration-500"
@@ -172,6 +198,18 @@ const DatabaseNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
         className="w-full"
       />
       <div className="text-right">{data.throughput || 50} req/s</div>
+    </div>
+    <div className="mt-2 text-xs text-white">
+      <label>Taxa de Falha (%):</label>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value={data.failureRate || 0}
+        onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))}
+        className="w-full"
+      />
+      <div className="text-right">{data.failureRate || 0}%</div>
     </div>
     <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
       <div
@@ -222,6 +260,18 @@ const LoadBalancerNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
       >
         <option value="roundRobin">Round Robin</option>
       </select>
+    </div>
+    <div className="mt-2 text-xs text-white">
+      <label>Taxa de Falha (%):</label>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value={data.failureRate || 0}
+        onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))}
+        className="w-full"
+      />
+      <div className="text-right">{data.failureRate || 0}%</div>
     </div>
     <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
       <div
@@ -279,6 +329,18 @@ const APIGatewayNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
       />
       <div className="text-right">{data.rateLimit || 100} req/s</div>
     </div>
+    <div className="mt-2 text-xs text-white">
+      <label>Taxa de Falha (%):</label>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value={data.failureRate || 0}
+        onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))}
+        className="w-full"
+      />
+      <div className="text-right">{data.failureRate || 0}%</div>
+    </div>
     <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
       <div
         className="h-full transition-all duration-500"
@@ -335,12 +397,24 @@ const CacheNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
       />
       <div className="text-right">{data.hitRate !== undefined ? Math.round(data.hitRate * 100) : 80}%</div>
     </div>
+    <div className="mt-2 text-xs text-white">
+      <label>Taxa de Falha (%):</label>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value={data.failureRate || 0}
+        onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))}
+        className="w-full"
+      />
+      <div className="text-right">{data.failureRate || 0}%</div>
+    </div>
     <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
       <div
         className="h-full transition-all duration-500"
         style={{
           width: `${data.metrics?.load || 0}%`,
-          backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#ec4899',
+          backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e',
         }}
       />
     </div>
@@ -412,6 +486,18 @@ const MessageQueueNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
           />
         );
       })}
+    </div>
+    <div className="mt-2 text-xs text-white">
+      <label>Taxa de Falha (%):</label>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value={data.failureRate || 0}
+        onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))}
+        className="w-full"
+      />
+      <div className="text-right">{data.failureRate || 0}%</div>
     </div>
   </div>
 );
@@ -553,6 +639,16 @@ export default function SimpleSystemEditor() {
     );
   }, [setNodes]);
 
+  const onFailureRateChange = useCallback((nodeId: string, failureRate: number) => {
+    setNodes((nds) =>
+      nds.map((node) =>
+        node.id === nodeId
+          ? { ...node, data: { ...node.data, failureRate } }
+          : node
+      )
+    );
+  }, [setNodes]);
+
   // Simulation function
   const simulateMetrics = useCallback(() => {
     if (!isSimulationRunning) return;
@@ -601,48 +697,48 @@ export default function SimpleSystemEditor() {
           case 'client': {
             const throughput = node.data.throughput || 50;
             const randomFactor = 0.9 + Math.random() * 0.2;
-            const outgoingRequests = Math.floor(throughput * randomFactor);
-            // Set outgoing requests for all outgoing edges
+            const baseRequests = Math.floor(throughput * randomFactor);
+            const failureRate = node.data.failureRate || 0;
+            const failedRequests = Math.floor(baseRequests * (failureRate / 100));
+            const outgoingRequests = baseRequests - failedRequests;
+            
             edges.filter(e => e.source === node.id).forEach(e => {
               requestFlow.set(e.id, outgoingRequests);
             });
-            failedRequestsMap.set(node.id, 0);
+            failedRequestsMap.set(node.id, failedRequests);
             break;
           }
           case 'cache': {
             const cacheThroughput = node.data.throughput || 100;
             const cacheHitRate = node.data.hitRate !== undefined ? node.data.hitRate : 0.8;
+            const failureRate = node.data.failureRate || 0;
             const processed = Math.min(incomingRequests, cacheThroughput);
-            const failedRequestsCache = incomingRequests - processed;
-            const cacheHits = Math.floor(processed * cacheHitRate);
-            const cacheMisses = processed - cacheHits;
-            const activeRequestsCache = Math.ceil(processed * 0.05);
-            // Only misses go downstream
+            const failedDueToCapacity = incomingRequests - processed;
+            const failedDueToError = Math.floor(processed * (failureRate / 100));
+            const actualProcessed = processed - failedDueToError;
+            const cacheHits = Math.floor(actualProcessed * cacheHitRate);
+            const cacheMisses = actualProcessed - cacheHits;
+            const activeRequestsCache = Math.ceil(actualProcessed * 0.05);
+            
             const missesToSend = cacheMisses;
-            // Distribute misses to downstream nodes
             const outgoingEdges = edges.filter(e => e.source === node.id);
             if (outgoingEdges.length > 0) {
               const baseShare = Math.floor(missesToSend / outgoingEdges.length);
               const remainder = missesToSend % outgoingEdges.length;
-              let totalDistributed = 0;
               outgoingEdges.forEach((e, index) => {
                 let share = baseShare;
                 if (index < remainder) share += 1;
                 requestFlow.set(e.id, share);
-                totalDistributed += share;
               });
-              if (totalDistributed !== missesToSend) {
-                console.warn(`Cache distributed ${totalDistributed} misses but should have distributed ${missesToSend}`);
-              }
             }
-            failedRequestsMap.set(node.id, failedRequestsCache);
+            failedRequestsMap.set(node.id, failedDueToCapacity + failedDueToError);
             activeRequestsMap.set(node.id, activeRequestsCache);
             node.data.metrics = {
               requestsPerSecond: incomingRequests,
               activeRequests: activeRequestsCache,
               responseTime: 5 + Math.random() * 5,
               load: Math.min(100, (incomingRequests / cacheThroughput) * 100),
-              failedRequests: failedRequestsCache,
+              failedRequests: failedDueToCapacity + failedDueToError,
               cacheHits,
               cacheMisses,
               hitRate: cacheHitRate,
@@ -652,137 +748,147 @@ export default function SimpleSystemEditor() {
           case 'apiGateway': {
             const throughput = node.data.throughput || 200;
             const rateLimit = node.data.rateLimit || 100;
+            const failureRate = node.data.failureRate || 0;
             let requestsAfterRateLimit = Math.min(incomingRequests, rateLimit);
             let throttledRequests = Math.max(0, incomingRequests - rateLimit);
             let requestsAfterThroughput = Math.min(requestsAfterRateLimit, throughput);
-            let failedRequests = Math.max(0, requestsAfterRateLimit - throughput);
-            const activeRequests = Math.ceil(requestsAfterThroughput * 0.05);
-            // Distribute to downstream nodes
+            let failedDueToCapacity = Math.max(0, requestsAfterRateLimit - throughput);
+            let failedDueToError = Math.floor(requestsAfterThroughput * (failureRate / 100));
+            let actualProcessed = requestsAfterThroughput - failedDueToError;
+            
             const outgoingEdges = edges.filter(e => e.source === node.id);
             if (outgoingEdges.length > 0) {
-              const baseShare = Math.floor(requestsAfterThroughput / outgoingEdges.length);
-              const remainder = requestsAfterThroughput % outgoingEdges.length;
-              let totalDistributed = 0;
+              const baseShare = Math.floor(actualProcessed / outgoingEdges.length);
+              const remainder = actualProcessed % outgoingEdges.length;
               outgoingEdges.forEach((e, index) => {
                 let share = baseShare;
                 if (index < remainder) share += 1;
                 requestFlow.set(e.id, share);
-                totalDistributed += share;
               });
-              if (totalDistributed !== requestsAfterThroughput) {
-                console.warn(`API Gateway distributed ${totalDistributed} requests but should have distributed ${requestsAfterThroughput}`);
-              }
             }
             throttledRequestsMap.set(node.id, throttledRequests);
-            failedRequestsMap.set(node.id, failedRequests);
-            activeRequestsMap.set(node.id, activeRequests);
+            failedRequestsMap.set(node.id, failedDueToCapacity + failedDueToError);
+            activeRequestsMap.set(node.id, Math.ceil(actualProcessed * 0.05));
             break;
           }
           case 'loadBalancer': {
             const throughput = node.data.throughput || 150;
+            const failureRate = node.data.failureRate || 0;
             const maxHandled = Math.min(incomingRequests, throughput);
-            const failedRequests = incomingRequests - maxHandled;
-            // Distribute to downstream nodes
+            const failedDueToCapacity = incomingRequests - maxHandled;
+            const failedDueToError = Math.floor(maxHandled * (failureRate / 100));
+            const actualProcessed = maxHandled - failedDueToError;
+            
             const outgoingEdges = edges.filter(e => e.source === node.id);
             if (outgoingEdges.length > 0) {
-              const baseShare = Math.floor(maxHandled / outgoingEdges.length);
-              const remainder = maxHandled % outgoingEdges.length;
-              let totalDistributed = 0;
+              const baseShare = Math.floor(actualProcessed / outgoingEdges.length);
+              const remainder = actualProcessed % outgoingEdges.length;
               outgoingEdges.forEach((e, index) => {
                 let share = baseShare;
                 if (index < remainder) share += 1;
                 requestFlow.set(e.id, share);
-                totalDistributed += share;
               });
-              if (totalDistributed !== maxHandled) {
-                console.warn(`Load balancer distributed ${totalDistributed} requests but should have distributed ${maxHandled}`);
-              }
             }
-            failedRequestsMap.set(node.id, failedRequests);
-            activeRequestsMap.set(node.id, Math.ceil(maxHandled * 0.05));
+            failedRequestsMap.set(node.id, failedDueToCapacity + failedDueToError);
+            activeRequestsMap.set(node.id, Math.ceil(actualProcessed * 0.05));
             break;
           }
           case 'server': {
             const throughput = node.data.throughput || 100;
+            const failureRate = node.data.failureRate || 0;
             const maxHandled = Math.min(incomingRequests, throughput);
-            const failedRequests = incomingRequests - maxHandled;
-            // Distribute to downstream nodes
+            const failedDueToCapacity = incomingRequests - maxHandled;
+            const failedDueToError = Math.floor(maxHandled * (failureRate / 100));
+            const actualProcessed = maxHandled - failedDueToError;
+            
             const outgoingEdges = edges.filter(e => e.source === node.id);
             if (outgoingEdges.length > 0) {
-              const baseShare = Math.floor(maxHandled / outgoingEdges.length);
-              const remainder = maxHandled % outgoingEdges.length;
-              let totalDistributed = 0;
+              const baseShare = Math.floor(actualProcessed / outgoingEdges.length);
+              const remainder = actualProcessed % outgoingEdges.length;
               outgoingEdges.forEach((e, index) => {
                 let share = baseShare;
                 if (index < remainder) share += 1;
                 requestFlow.set(e.id, share);
-                totalDistributed += share;
               });
-              if (totalDistributed !== maxHandled) {
-                console.warn(`Server distributed ${totalDistributed} requests but should have distributed ${maxHandled}`);
-              }
             }
-            failedRequestsMap.set(node.id, failedRequests);
-            const activeRequests = Math.ceil(maxHandled * 0.1);
-            activeRequestsMap.set(node.id, activeRequests);
+            failedRequestsMap.set(node.id, failedDueToCapacity + failedDueToError);
+            activeRequestsMap.set(node.id, Math.ceil(actualProcessed * 0.1));
             break;
           }
           case 'database': {
             const throughput = node.data.throughput || 50;
+            const failureRate = node.data.failureRate || 0;
             const maxHandled = Math.min(incomingRequests, throughput);
-            const failedRequests = incomingRequests - maxHandled;
-            // No outgoing edges for database
-            failedRequestsMap.set(node.id, failedRequests);
-            const activeRequests = Math.ceil(maxHandled * 0.1);
-            activeRequestsMap.set(node.id, activeRequests);
+            const failedDueToCapacity = incomingRequests - maxHandled;
+            const failedDueToError = Math.floor(maxHandled * (failureRate / 100));
+            const actualProcessed = maxHandled - failedDueToError;
+            
+            failedRequestsMap.set(node.id, failedDueToCapacity + failedDueToError);
+            activeRequestsMap.set(node.id, Math.ceil(actualProcessed * 0.1));
             break;
           }
           case 'messageQueue': {
-            // Persistent queue state per node
             if (!('queueState' in node.data)) {
-              (node.data as any).queueState = { length: 0 };
+              (node.data as any).queueState = { length: 0, reprocessing: 0 };
             }
             const queueState = (node.data as any).queueState;
             const maxQueue = node.data.maxQueue || 100;
             const dequeueRate = node.data.dequeueRate || 50;
-            // Enqueue incoming requests up to maxQueue
-            const toEnqueue = incomingRequests;
+            const failureRate = node.data.failureRate || 0;
+            
+            // Calculate downstream failures that need to be requeued
+            const outgoingEdges = edges.filter(e => e.source === node.id);
+            let totalRequeued = 0;
+            outgoingEdges.forEach(edge => {
+              const targetNode = nodes.find(n => n.id === edge.target);
+              if (targetNode?.data.metrics && targetNode.data.failureRate) {
+                const edgeFlow = requestFlow.get(edge.id) || 0;
+                const downstreamFailureRate = targetNode.data.failureRate / 100;
+                const requeueCount = Math.floor(edgeFlow * downstreamFailureRate);
+                totalRequeued += requeueCount;
+              }
+            });
+            
+            // Add new incoming requests
+            const toEnqueue = incomingRequests + totalRequeued;
             let dropped = 0;
+            
+            // Check if we can accommodate new requests plus requeued messages
             if (queueState.length + toEnqueue > maxQueue) {
               dropped = queueState.length + toEnqueue - maxQueue;
               queueState.length = maxQueue;
             } else {
               queueState.length += toEnqueue;
             }
-            // Dequeue up to dequeueRate
-            const toDequeue = Math.min(queueState.length, dequeueRate);
-            queueState.length -= toDequeue;
-            // Forward dequeued messages to downstream nodes
-            const outgoingEdges = edges.filter(e => e.source === node.id);
+            
+            // Process dequeue with failure rate
+            const baseDequeue = Math.min(queueState.length, dequeueRate);
+            const failedDueToError = Math.floor(baseDequeue * (failureRate / 100));
+            const toDequeue = baseDequeue - failedDueToError;
+            
+            // Failed messages due to queue's own failure rate are requeued
+            queueState.length = Math.min(maxQueue, queueState.length - toDequeue + failedDueToError);
+            
+            // Distribute successfully dequeued messages
             if (outgoingEdges.length > 0) {
               const baseShare = Math.floor(toDequeue / outgoingEdges.length);
               const remainder = toDequeue % outgoingEdges.length;
-              let totalDistributed = 0;
               outgoingEdges.forEach((e, index) => {
                 let share = baseShare;
                 if (index < remainder) share += 1;
                 requestFlow.set(e.id, share);
-                totalDistributed += share;
               });
-              if (totalDistributed !== toDequeue) {
-                console.warn(`MessageQueue distributed ${totalDistributed} but should have distributed ${toDequeue}`);
-              }
             }
-            // Latency is proportional to queue length
+            
             const responseTime = 5 + queueState.length * 2;
             node.data.metrics = {
-              requestsPerSecond: toEnqueue,
+              requestsPerSecond: incomingRequests,
               dequeueRate: toDequeue,
               queueLength: queueState.length,
               droppedMessages: dropped,
               responseTime,
               load: Math.min(100, (queueState.length / maxQueue) * 100),
-              failedRequests: 0,
+              failedRequests: failedDueToError,
               maxQueue,
               activeRequests: toDequeue,
             };
@@ -819,6 +925,48 @@ export default function SimpleSystemEditor() {
         }
       });
 
+      // Add a new function to calculate propagated failures
+      const calculatePropagatedFailures = (nodes: Node<NodeData>[], edges: Edge[]) => {
+        const propagatedFailures = new Map<string, number>();
+        
+        // Process nodes in reverse topological order to propagate failures upstream
+        const reversedNodes = [...nodes].reverse();
+        
+        reversedNodes.forEach(node => {
+          // Get all incoming edges to this node
+          const incomingEdges = edges.filter(e => e.target === node.id);
+          const outgoingEdges = edges.filter(e => e.source === node.id);
+          
+          // Calculate total requests sent to downstream nodes
+          const totalDownstreamRequests = outgoingEdges.reduce((sum, edge) => 
+            sum + (requestFlow.get(edge.id) || 0), 0);
+          
+          if (totalDownstreamRequests > 0) {
+            // Calculate failure rate from downstream nodes
+            let totalDownstreamFailures = 0;
+            outgoingEdges.forEach(edge => {
+              const targetNode = nodes.find(n => n.id === edge.target);
+              if (targetNode?.data.metrics) {
+                const edgeFlow = requestFlow.get(edge.id) || 0;
+                const downstreamFailureRate = targetNode.data.metrics.failedRequests / 
+                  (targetNode.data.metrics.requestsPerSecond + targetNode.data.metrics.failedRequests);
+                totalDownstreamFailures += edgeFlow * downstreamFailureRate;
+              }
+            });
+            
+            // Add downstream failures to this node's failures
+            const currentFailures = failedRequestsMap.get(node.id) || 0;
+            failedRequestsMap.set(node.id, currentFailures + Math.floor(totalDownstreamFailures));
+          }
+        });
+        
+        return propagatedFailures;
+      };
+
+      // After processing all nodes in the first pass, add:
+      calculatePropagatedFailures(nds, edges);
+
+      // Update the metrics calculation for each node to include propagated failures
       return nds.map(node => {
         // Always sum the incoming edges' request flows for this node
         const incomingEdges = edges.filter(e => e.target === node.id);
@@ -965,6 +1113,7 @@ export default function SimpleSystemEditor() {
             onHitRateChange: (value: number) => onHitRateChange(node.id, value),
             onDequeueRateChange: (value: number) => onDequeueRateChange(node.id, value),
             onMaxQueueChange: (value: number) => onMaxQueueChange(node.id, value),
+            onFailureRateChange: (value: number) => onFailureRateChange(node.id, value),
           },
         };
       });
@@ -1046,7 +1195,10 @@ export default function SimpleSystemEditor() {
                   : `Cliente ${nodes.filter(n => n.type === 'client').length + 1}`;
 
       // Set default values based on node type
-      let nodeData: any = { label: newNodeLabel };
+      let nodeData: any = { 
+        label: newNodeLabel,
+        failureRate: 0 // Default failure rate
+      };
       
       if (type === 'loadBalancer') {
         nodeData.algorithm = 'roundRobin';
@@ -1071,7 +1223,10 @@ export default function SimpleSystemEditor() {
         id: `${Date.now()}`,
         type,
         position,
-        data: nodeData,
+        data: {
+          ...nodeData,
+          onFailureRateChange: (value: number) => onFailureRateChange(newNode.id, value),
+        },
       };
 
       setNodes((nds) => nds.concat(newNode));
