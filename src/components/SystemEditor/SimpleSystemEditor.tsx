@@ -17,6 +17,15 @@ import ReactFlow, {
   EdgeMouseHandler,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
+import {
+  Users,
+  Server,
+  Database as DatabaseIcon,
+  Network,
+  Shield,
+  HardDrive,
+  MessageSquare,
+} from 'lucide-react';
 
 interface NodeData {
   label: string;
@@ -61,7 +70,10 @@ interface DistributedSystemDesign {
 const ClientNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
   <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-blue-500 bg-zinc-800 min-w-[180px]">
     <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
-    <div className="font-bold text-white">{data.label}</div>
+    <div className="flex items-center gap-2 font-bold text-white">
+      <Users className="w-4 h-4" />
+      {data.label}
+    </div>
     {data.metrics && (
       <div className="text-xs mt-2">
         <div className="text-blue-300">Requisições/s: {data.metrics.requestsPerSecond}</div>
@@ -98,7 +110,10 @@ const ServerNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
   <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-purple-500 bg-zinc-800 min-w-[180px]">
     <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
     <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
-    <div className="font-bold text-white">{data.label}</div>
+    <div className="flex items-center gap-2 font-bold text-white">
+      <Server className="w-4 h-4" />
+      {data.label}
+    </div>
     {data.metrics && (
       <div className="text-xs mt-2">
         <div className="text-yellow-300">Requisições/s: {data.metrics.requestsPerSecond}</div>
@@ -134,7 +149,10 @@ const ServerNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
 const DatabaseNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
   <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-yellow-500 bg-zinc-800 min-w-[180px]">
     <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
-    <div className="font-bold text-white">{data.label}</div>
+    <div className="flex items-center gap-2 font-bold text-white">
+      <DatabaseIcon className="w-4 h-4" />
+      {data.label}
+    </div>
     {data.metrics && (
       <div className="text-xs mt-2">
         <div className="text-yellow-300">Requisições/s: {data.metrics.requestsPerSecond}</div>
@@ -171,7 +189,10 @@ const LoadBalancerNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
   <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-green-500 bg-zinc-800 min-w-[180px]">
     <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
     <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
-    <div className="font-bold text-white">{data.label}</div>
+    <div className="flex items-center gap-2 font-bold text-white">
+      <Network className="w-4 h-4" />
+      {data.label}
+    </div>
     {data.metrics && (
       <div className="text-xs mt-2">
         <div className="text-yellow-300">Requisições/s: {data.metrics.requestsPerSecond}</div>
@@ -218,7 +239,10 @@ const APIGatewayNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
   <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-indigo-500 bg-zinc-800 min-w-[220px]">
     <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
     <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
-    <div className="font-bold text-white">{data.label}</div>
+    <div className="flex items-center gap-2 font-bold text-white">
+      <Shield className="w-4 h-4" />
+      {data.label}
+    </div>
     {data.metrics && (
       <div className="text-xs mt-2">
         <div className="text-yellow-300">Requisições/s: {data.metrics.requestsPerSecond}</div>
@@ -272,7 +296,10 @@ const CacheNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
   <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-pink-500 bg-zinc-800 min-w-[200px]">
     <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
     <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
-    <div className="font-bold text-white">{data.label}</div>
+    <div className="flex items-center gap-2 font-bold text-white">
+      <HardDrive className="w-4 h-4" />
+      {data.label}
+    </div>
     {data.metrics && (
       <div className="text-xs mt-2">
         <div className="text-pink-300">Requisições/s: {data.metrics.requestsPerSecond}</div>
@@ -325,7 +352,10 @@ const MessageQueueNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
   <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-orange-500 bg-zinc-800 min-w-[220px]">
     <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
     <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
-    <div className="font-bold text-white">{data.label}</div>
+    <div className="flex items-center gap-2 font-bold text-white">
+      <MessageSquare className="w-4 h-4" />
+      {data.label}
+    </div>
     {data.metrics && (
       <div className="text-xs mt-2">
         <div className="text-orange-300">Fila: {data.metrics.queueLength}</div>
@@ -359,14 +389,29 @@ const MessageQueueNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
       />
       <div className="text-right">{data.dequeueRate || 50} msgs/s</div>
     </div>
-    <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
-      <div
-        className="h-full transition-all duration-500"
-        style={{
-          width: `${Math.min(100, (data.metrics?.queueLength || 0) / (data.maxQueue || 100) * 100)}%`,
-          backgroundColor: (data.metrics?.queueLength || 0) > (data.maxQueue || 100) * 0.8 ? '#ef4444' : '#f59e42',
-        }}
-      />
+    <div className="mt-3 flex gap-0.5">
+      {Array.from({ length: 10 }).map((_, index) => {
+        const queuePercentage = ((data.metrics?.queueLength || 0) / (data.maxQueue || 100)) * 100;
+        const blockPercentage = (index + 1) * 10;
+        const isActive = queuePercentage >= blockPercentage;
+        const isWarning = queuePercentage >= 80;
+        const isDanger = queuePercentage >= 90;
+        
+        return (
+          <div
+            key={index}
+            className={`h-4 flex-1 rounded-sm transition-colors ${
+              isActive
+                ? isDanger
+                  ? 'bg-red-500'
+                  : isWarning
+                    ? 'bg-yellow-500'
+                    : 'bg-orange-500'
+                : 'bg-zinc-700'
+            }`}
+          />
+        );
+      })}
     </div>
   </div>
 );
@@ -424,13 +469,13 @@ const initialEdges: Edge[] = [
 
 // Available components configuration
 const availableComponents = [
-  { type: 'client', label: 'Cliente', className: 'border-blue-500' },
-  { type: 'loadBalancer', label: 'Balanceador', className: 'border-green-500' },
-  { type: 'apiGateway', label: 'API Gateway', className: 'border-indigo-500' },
-  { type: 'cache', label: 'Cache', className: 'border-pink-500' },
-  { type: 'messageQueue', label: 'Message Queue', className: 'border-orange-500' },
-  { type: 'server', label: 'Servidor', className: 'border-purple-500' },
-  { type: 'database', label: 'Banco de Dados', className: 'border-yellow-500' },
+  { type: 'client', label: 'Cliente', className: 'border-blue-500', icon: Users },
+  { type: 'loadBalancer', label: 'Balanceador', className: 'border-green-500', icon: Network },
+  { type: 'apiGateway', label: 'API Gateway', className: 'border-indigo-500', icon: Shield },
+  { type: 'cache', label: 'Cache', className: 'border-pink-500', icon: HardDrive },
+  { type: 'messageQueue', label: 'Message Queue', className: 'border-orange-500', icon: MessageSquare },
+  { type: 'server', label: 'Servidor', className: 'border-purple-500', icon: Server },
+  { type: 'database', label: 'Banco de Dados', className: 'border-yellow-500', icon: DatabaseIcon },
 ];
 
 export default function SimpleSystemEditor() {
@@ -1378,17 +1423,23 @@ export default function SimpleSystemEditor() {
             <div className="flex flex-col gap-2">
               <h3 className="text-white font-semibold mb-2">Componentes</h3>
               <div className="flex flex-col gap-2">
-                {availableComponents.map((component) => (
-                  <div
-                    key={component.type}
-                    className={`px-4 py-2 bg-zinc-700 rounded cursor-move hover:bg-zinc-600 
-                      transition-colors border-2 ${component.className} text-white`}
-                    onDragStart={(e) => onDragStart(e, component.type)}
-                    draggable
-                  >
-                    {component.label}
-                  </div>
-                ))}
+                {availableComponents.map((component) => {
+                  const Icon = component.icon;
+                  return (
+                    <div
+                      key={component.type}
+                      className={`px-4 py-2 bg-zinc-700 rounded cursor-move hover:bg-zinc-600 
+                        transition-colors border-2 ${component.className} text-white`}
+                      onDragStart={(e) => onDragStart(e, component.type)}
+                      draggable
+                    >
+                      <div className="flex items-center gap-2">
+                        <Icon className="w-4 h-4" />
+                        {component.label}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </Panel>
