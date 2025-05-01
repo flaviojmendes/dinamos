@@ -290,6 +290,16 @@ const menuItems: MenuItem[] = [
             ],
           },
           {
+            path: "/principios-design/escalabilidade/latencia",
+            name: "Latência",
+            description: "Medindo e otimizando a latência",
+          },
+          {
+            path: "/principios-design/escalabilidade/failover",
+            name: "Failover",
+            description: "Recuperação automática de falhas",
+          },
+          {
             path: "/principios-design/escalabilidade/simulator",
             name: "Simulador Completo",
             description: "Compare diferentes estratégias de escala",
