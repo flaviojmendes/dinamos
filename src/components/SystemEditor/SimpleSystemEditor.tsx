@@ -25,6 +25,8 @@ import {
   Shield,
   HardDrive,
   MessageSquare,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 
 interface NodeData {
@@ -564,6 +566,59 @@ const availableComponents = [
   { type: 'database', label: 'Banco de Dados', className: 'border-yellow-500', icon: DatabaseIcon },
 ];
 
+// --- Cost Estimation Model ---
+const COST_MODELS = {
+  aws: {
+    compute: { price: 0.0348, product: 'EC2 (t3.medium)' },
+    database: { price: 0.095, product: 'RDS (db.t3.medium)' },
+    messageQueue: { price: 0.40, product: 'SQS Standard' },
+    apiGateway: { price: 3.50, product: 'API Gateway' },
+    loadBalancer: { price: 0.025, product: 'Elastic Load Balancer' },
+    storage: { price: 0.10, product: 'EBS' },
+    cache: { price: 0.0348, product: 'ElastiCache' },
+  },
+  gcp: {
+    compute: { price: 0.0332, product: 'Compute Engine (e2-standard-2, 2 vCPU, 8GB RAM)' },
+    database: { price: 0.090, product: 'Cloud SQL (db-f1-micro)' },
+    messageQueue: { price: 0.40, product: 'Pub/Sub' },
+    apiGateway: { price: 3.00, product: 'API Gateway' },
+    loadBalancer: { price: 0.025, product: 'Cloud Load Balancer' },
+    storage: { price: 0.10, product: 'Persistent Disk' },
+    cache: { price: 0.0332, product: 'Memorystore' },
+  },
+};
+
+function estimateNodeCost(
+  node: Node<NodeData>,
+  provider: 'aws' | 'gcp',
+  secondsPerMonth: number = 30 * 24 * 3600
+): { cost: number; product: string } {
+  const model = COST_MODELS[provider];
+  switch (node.type) {
+    case 'server':
+      // Assume 1 vCPU per server node
+      return { cost: model.compute.price * 24 * 30, product: model.compute.product };
+    case 'database':
+      return { cost: model.database.price * 24 * 30, product: model.database.product };
+    case 'messageQueue': {
+      const reqs = node.data.metrics?.requestsPerSecond || 0;
+      const monthlyReqs = reqs * secondsPerMonth;
+      return { cost: (monthlyReqs / 1_000_000) * model.messageQueue.price, product: model.messageQueue.product };
+    }
+    case 'apiGateway': {
+      const reqs = node.data.metrics?.requestsPerSecond || 0;
+      const monthlyReqs = reqs * secondsPerMonth;
+      return { cost: (monthlyReqs / 1_000_000) * model.apiGateway.price, product: model.apiGateway.product };
+    }
+    case 'loadBalancer':
+      return { cost: model.loadBalancer.price * 24 * 30, product: model.loadBalancer.product };
+    case 'cache':
+      return { cost: model.cache.price * 24 * 30, product: model.cache.product };
+    default:
+      return { cost: 0, product: '' };
+  }
+}
+
 export default function SimpleSystemEditor() {
   const [nodes, setNodes, onNodesChange] = useNodesState<NodeData>(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -575,6 +630,8 @@ export default function SimpleSystemEditor() {
     edgeId: string;
   } | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
+  const [provider, setProvider] = useState<'aws' | 'gcp'>('aws');
+  const [isCostPanelOpen, setIsCostPanelOpen] = useState(true);
   
   // Hidden file input for importing
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -1393,6 +1450,19 @@ export default function SimpleSystemEditor() {
     reader.readAsText(file);
   }, [isSimulationRunning, onThroughputChange, onAlgorithmChange, onRateLimitChange, setNodes, setEdges]);
 
+  // --- Cost Estimation ---
+  const costBreakdown = nodes.map(node => {
+    const { cost, product } = estimateNodeCost(node, provider);
+    return {
+      id: node.id,
+      label: node.data.label,
+      type: node.type,
+      cost,
+      product,
+    };
+  });
+  const totalCost = costBreakdown.reduce((sum, n) => sum + n.cost, 0);
+
   return (
     <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
       <div className="prose prose-invert prose-lg max-w-none mb-8">
@@ -1432,85 +1502,7 @@ export default function SimpleSystemEditor() {
               Importar (.din)
             </button>
             
-            <button
-              onClick={() => {
-                // Create an API Gateway example system
-                const newNodes: Node<NodeData>[] = [
-                  {
-                    id: 'client1',
-                    type: 'client',
-                    data: { label: 'Cliente', throughput: 150 },
-                    position: { x: 400, y: 50 },
-                  },
-                  {
-                    id: 'gateway1',
-                    type: 'apiGateway',
-                    data: { label: 'API Gateway', rateLimit: 120, throughput: 180 },
-                    position: { x: 400, y: 180 },
-                  },
-                  {
-                    id: 'server1',
-                    type: 'server',
-                    data: { label: 'Serviço Auth', throughput: 80 },
-                    position: { x: 200, y: 300 },
-                  },
-                  {
-                    id: 'server2',
-                    type: 'server',
-                    data: { label: 'Serviço Produtos', throughput: 100 },
-                    position: { x: 400, y: 300 },
-                  },
-                  {
-                    id: 'server3',
-                    type: 'server',
-                    data: { label: 'Serviço Pedidos', throughput: 60 },
-                    position: { x: 600, y: 300 },
-                  },
-                  {
-                    id: 'db1',
-                    type: 'database',
-                    data: { label: 'Banco de Dados', throughput: 80 },
-                    position: { x: 400, y: 450 },
-                  },
-                ];
-                
-                const newEdges: Edge[] = [
-                  { id: 'e-c1-g1', source: 'client1', target: 'gateway1', animated: true },
-                  { id: 'e-g1-s1', source: 'gateway1', target: 'server1', animated: true },
-                  { id: 'e-g1-s2', source: 'gateway1', target: 'server2', animated: true },
-                  { id: 'e-g1-s3', source: 'gateway1', target: 'server3', animated: true },
-                  { id: 'e-s1-db1', source: 'server1', target: 'db1', animated: true },
-                  { id: 'e-s2-db1', source: 'server2', target: 'db1', animated: true },
-                  { id: 'e-s3-db1', source: 'server3', target: 'db1', animated: true },
-                ];
-                
-                // Stop any running simulation
-                if (isSimulationRunning) {
-                  setIsSimulationRunning(false);
-                }
-                
-                // Reset round robin counters
-                setRoundRobinCounters({});
-                
-                // Apply the new configuration
-                setNodes(newNodes.map(node => ({
-                  ...node,
-                  data: {
-                    ...node.data,
-                    onThroughputChange: (value: number) => onThroughputChange(node.id, value),
-                    onAlgorithmChange: (value: 'roundRobin') => onAlgorithmChange(node.id, value),
-                    onRateLimitChange: (value: number) => onRateLimitChange(node.id, value),
-                  }
-                })));
-                setEdges(newEdges);
-              }}
-              className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded transition-colors flex items-center gap-2"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-              </svg>
-              Exemplo API Gateway
-            </button>
+          
             
             <input 
               type="file" 
@@ -1545,6 +1537,59 @@ export default function SimpleSystemEditor() {
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 rounded-full bg-red-500"></div>
               <span>Crítico (&gt;80%)</span>
+            </div>
+          </div>
+
+          {/* Cost Estimation Panel */}
+          <div className="bg-zinc-800 border border-zinc-700 rounded-lg mt-2 shadow-lg w-full max-w-3xl">
+            <div
+              className={`flex items-center justify-between px-4 py-2 cursor-pointer select-none rounded-t-lg ${!isCostPanelOpen ? 'bg-zinc-900/80' : ''}`}
+              onClick={() => setIsCostPanelOpen(open => !open)}
+              aria-label={isCostPanelOpen ? 'Esconder Estimativa de Custo' : 'Mostrar Estimativa de Custo'}
+            >
+              <div className="flex items-center gap-3 flex-wrap">
+                <label className="text-white font-semibold">Cloud:</label>
+                <select
+                  value={provider}
+                  onClick={e => e.stopPropagation()} // Prevent toggle when changing provider
+                  onChange={e => setProvider(e.target.value as 'aws' | 'gcp')}
+                  className="bg-zinc-700 text-white rounded px-2 py-1"
+                >
+                  <option value="aws">AWS</option>
+                  <option value="gcp">Google Cloud</option>
+                </select>
+                <span className="text-white font-bold text-lg ml-2 whitespace-nowrap">
+                  Estimativa de Custo Mensal ({provider === 'aws' ? 'AWS' : 'Google Cloud'})
+                </span>
+              </div>
+              <ChevronDown
+                className={`w-6 h-6 text-white chevron-animated ${isCostPanelOpen ? 'expanded' : 'collapsed'}`}
+              />
+            </div>
+            <div className={`cost-panel-content${isCostPanelOpen ? '' : ' collapsed'}`}
+              style={{ maxHeight: isCostPanelOpen ? 1000 : 0, opacity: isCostPanelOpen ? 1 : 0, transition: 'max-height 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.3s', overflow: 'hidden' }}
+            >
+              <div className="flex flex-col gap-1 text-sm px-4 pt-2">
+                {costBreakdown.map(n => (
+                  <div key={n.id} className="flex justify-between items-baseline">
+                    <span className="text-zinc-300 flex flex-col sm:flex-row sm:items-baseline gap-0.5">
+                      <span>{n.label} <span className="text-zinc-500">({n.type})</span></span>
+                      {n.product && (
+                        <span className="text-zinc-400 italic text-xs sm:ml-2">{n.product}</span>
+                      )}
+                    </span>
+                    <span className="text-green-400 font-mono">${n.cost.toFixed(2)}</span>
+                  </div>
+                ))}
+                <div className="flex justify-between border-t border-zinc-700 mt-2 pt-2 font-bold">
+                  <span className="text-white">Total</span>
+                  <span className="text-green-300 font-mono text-lg">${totalCost.toFixed(2)}</span>
+                </div>
+              </div>
+              <div className="text-xs text-zinc-400 mt-2 px-4 pb-2">
+                * Estimativa baseada em preços públicos de {provider === 'aws' ? 'AWS' : 'Google Cloud'} (2024), simplificada para simulação.<br />
+                <a href="https://aws.amazon.com/pricing/" target="_blank" rel="noopener noreferrer" className="underline">AWS Pricing</a> | <a href="https://cloud.google.com/pricing" target="_blank" rel="noopener noreferrer" className="underline">Google Cloud Pricing</a>
+              </div>
             </div>
           </div>
         </div>
