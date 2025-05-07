@@ -74,6 +74,27 @@ export default function LandingPage() {
         </div>
       </div>
 
+      {/* Free Editor Promo Section */}
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 mb-8">
+        <div className="bg-green-700/10 border border-green-500 rounded-xl p-6 flex flex-col items-center text-center shadow-lg">
+          <div className="flex items-center gap-2 mb-2">
+            <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2a4 4 0 014-4h3m4 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span className="text-green-400 font-bold text-lg">Editor Gratuito!</span>
+          </div>
+          <div className="text-zinc-200 text-lg mb-3">
+            Experimente o <span className="font-semibold text-green-300">Editor de Sistemas Distribuídos</span> totalmente grátis, sem cadastro!
+          </div>
+          <Link
+            to="/editor"
+            className="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg text-lg font-semibold transition-colors shadow-md mt-2"
+          >
+            Acessar Editor Grátis
+          </Link>
+        </div>
+      </div>
+
       {/* Key Features Grid */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <motion.div

@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect, useRef } from 'react';
+import { useCallback, useState, useEffect, useRef, useMemo } from 'react';
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -619,6 +619,34 @@ function estimateNodeCost(
   }
 }
 
+// Helper to attach all slider callbacks to nodes
+function withNodeCallbacks(
+  nodes: Node<NodeData>[],
+  callbacks: {
+    onThroughputChange: (id: string, v: number) => void,
+    onAlgorithmChange: (id: string, v: 'roundRobin') => void,
+    onRateLimitChange: (id: string, v: number) => void,
+    onHitRateChange: (id: string, v: number) => void,
+    onDequeueRateChange: (id: string, v: number) => void,
+    onMaxQueueChange: (id: string, v: number) => void,
+    onFailureRateChange: (id: string, v: number) => void,
+  }
+): Node<NodeData>[] {
+  return nodes.map(node => ({
+    ...node,
+    data: {
+      ...node.data,
+      onThroughputChange: (value: number) => callbacks.onThroughputChange(node.id, value),
+      onAlgorithmChange: (value: 'roundRobin') => callbacks.onAlgorithmChange(node.id, value),
+      onRateLimitChange: (value: number) => callbacks.onRateLimitChange(node.id, value),
+      onHitRateChange: (value: number) => callbacks.onHitRateChange(node.id, value),
+      onDequeueRateChange: (value: number) => callbacks.onDequeueRateChange(node.id, value),
+      onMaxQueueChange: (value: number) => callbacks.onMaxQueueChange(node.id, value),
+      onFailureRateChange: (value: number) => callbacks.onFailureRateChange(node.id, value),
+    }
+  }));
+}
+
 export default function SimpleSystemEditor() {
   const [nodes, setNodes, onNodesChange] = useNodesState<NodeData>(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -636,6 +664,7 @@ export default function SimpleSystemEditor() {
   // Hidden file input for importing
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // --- All slider callbacks ---
   const onThroughputChange = useCallback((nodeId: string, throughput: number) => {
     setNodes((nds) =>
       nds.map((node) =>
@@ -705,6 +734,21 @@ export default function SimpleSystemEditor() {
       )
     );
   }, [setNodes]);
+
+  // Attach callbacks to initial nodes on mount
+  useEffect(() => {
+    setNodes(nds => withNodeCallbacks(nds, {
+      onThroughputChange,
+      onAlgorithmChange,
+      onRateLimitChange,
+      onHitRateChange,
+      onDequeueRateChange,
+      onMaxQueueChange,
+      onFailureRateChange,
+    }));
+    // Only run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Simulation function
   const simulateMetrics = useCallback(() => {
@@ -1282,6 +1326,12 @@ export default function SimpleSystemEditor() {
         position,
         data: {
           ...nodeData,
+          onThroughputChange: (value: number) => onThroughputChange(newNode.id, value),
+          onAlgorithmChange: (value: 'roundRobin') => onAlgorithmChange(newNode.id, value),
+          onRateLimitChange: (value: number) => onRateLimitChange(newNode.id, value),
+          onHitRateChange: (value: number) => onHitRateChange(newNode.id, value),
+          onDequeueRateChange: (value: number) => onDequeueRateChange(newNode.id, value),
+          onMaxQueueChange: (value: number) => onMaxQueueChange(newNode.id, value),
           onFailureRateChange: (value: number) => onFailureRateChange(newNode.id, value),
         },
       };
@@ -1412,10 +1462,13 @@ export default function SimpleSystemEditor() {
           ...node,
           data: {
             ...node.data,
-            // Add callback functions
             onThroughputChange: (value: number) => onThroughputChange(node.id, value),
             onAlgorithmChange: (value: 'roundRobin') => onAlgorithmChange(node.id, value),
             onRateLimitChange: (value: number) => onRateLimitChange(node.id, value),
+            onHitRateChange: (value: number) => onHitRateChange(node.id, value),
+            onDequeueRateChange: (value: number) => onDequeueRateChange(node.id, value),
+            onMaxQueueChange: (value: number) => onMaxQueueChange(node.id, value),
+            onFailureRateChange: (value: number) => onFailureRateChange(node.id, value),
           }
         })));
         setEdges(design.edges);
@@ -1448,7 +1501,7 @@ export default function SimpleSystemEditor() {
     };
     
     reader.readAsText(file);
-  }, [isSimulationRunning, onThroughputChange, onAlgorithmChange, onRateLimitChange, setNodes, setEdges]);
+  }, [isSimulationRunning, onThroughputChange, onAlgorithmChange, onRateLimitChange, onHitRateChange, onDequeueRateChange, onMaxQueueChange, onFailureRateChange, setNodes, setEdges]);
 
   // --- Cost Estimation ---
   const costBreakdown = nodes.map(node => {
