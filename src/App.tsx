@@ -110,6 +110,8 @@ import SynchronizationDeadlocks from './components/ConsistencyStrategies/Synchro
 import SynchronizationAlgorithms from './components/ConsistencyStrategies/SynchronizationAlgorithms';
 import SynchronizationSimulator from "./components/ConsistencyStrategies/SynchronizationSimulator";
 import SimpleSystemEditorPage from "./pages/SimpleSystemEditorPage";
+import PollingWebhooks from "./components/SystemComponents/PollingWebhooks";
+import PollingWebhooksTheory from "./components/SystemComponents/PollingWebhooksTheory";
 
 interface MenuItem {
   name: string;
@@ -250,6 +252,25 @@ const menuItems: MenuItem[] = [
             path: "/componentes/firewall/simulator",
             name: "Simulador",
             description: "Experimente regras de firewall",
+          },
+        ],
+      },
+      {
+        path: "/componentes/polling-webhooks",
+        name: "Polling vs Webhooks",
+        description: "Estratégias de comunicação em tempo real",
+        status: "new",
+        badges: [{ text: "Novo", color: "bg-blue-500" }],
+        children: [
+          {
+            path: "/componentes/polling-webhooks",
+            name: "Teoria e Conceitos",
+            description: "Fundamentos e comparação detalhada",
+          },
+          {
+            path: "/componentes/polling-webhooks/simulator",
+            name: "Simulador Interativo",
+            description: "Veja a diferença na prática",
           },
         ],
       },
@@ -1589,6 +1610,26 @@ export default function App() {
                 <ProtectedRoute>
                   <ContentPage>
                     <FirewallSimulator />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/componentes/polling-webhooks"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <PollingWebhooksTheory />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/componentes/polling-webhooks/simulator"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <PollingWebhooks />
                   </ContentPage>
                 </ProtectedRoute>
               }
