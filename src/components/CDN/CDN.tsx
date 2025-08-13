@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface Datacenter {
   id: string;
@@ -31,6 +32,7 @@ interface Config {
 }
 
 export default function CDN() {
+  const { t, i18n } = useTranslation();
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [isRequesting, setIsRequesting] = useState(false);
   const [nearestDatacenter, setNearestDatacenter] = useState<string | null>(null);
@@ -138,8 +140,8 @@ export default function CDN() {
     const logEntry: RequestLog = {
       id: Date.now(),
       timestamp: new Date(),
-      country: country.name,
-      datacenter: datacenter.name,
+      country: t(`simulators.cdn.countries.${country.id}.name`, { defaultValue: country.name }),
+      datacenter: t(`simulators.cdn.datacenters.${datacenter.id}.name`, { defaultValue: datacenter.name }),
       latency,
       fromCache: datacenter.hasCache
     };
@@ -156,7 +158,8 @@ export default function CDN() {
   };
 
   const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('pt-BR', { 
+    const locale = i18n.language && i18n.language.startsWith('pt') ? 'pt-BR' : 'en-US';
+    return date.toLocaleTimeString(locale, { 
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit'
@@ -167,23 +170,23 @@ export default function CDN() {
     <div className="space-y-6 text-white">
       <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold">Simulação de CDN</h2>
+          <h2 className="text-xl font-semibold">{t('simulators.cdn.title')}</h2>
           <button
             onClick={() => setIsConfigOpen(!isConfigOpen)}
             className="px-3 py-1.5 rounded-lg text-sm font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
           >
-            Configurar
+            {isConfigOpen ? t('simulators.cdn.buttons.close_config') : t('simulators.cdn.buttons.configure')}
           </button>
         </div>
 
         {/* Configuration Panel */}
         {isConfigOpen && (
           <div className="mb-6 p-4 bg-zinc-800/50 rounded-lg">
-            <h3 className="text-sm font-medium mb-3">Configurações</h3>
+            <h3 className="text-sm font-medium mb-3">{t('simulators.cdn.config.title')}</h3>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm text-zinc-400 mb-1">
-                  Multiplicador de Latência Base (Sem Cache)
+                  {t('simulators.cdn.config.base_latency_multiplier')}
                 </label>
                 <input
                   type="range"
@@ -198,13 +201,13 @@ export default function CDN() {
                   className="w-full"
                 />
                 <div className="text-sm text-zinc-400 mt-1">
-                  {config.baseLatencyMultiplier}x
+                  {config.baseLatencyMultiplier}{t('simulators.cdn.labels.x_suffix')}
                 </div>
               </div>
               
               <div>
                 <label className="block text-sm text-zinc-400 mb-1">
-                  Multiplicador de Latência com Cache
+                  {t('simulators.cdn.config.cache_latency_multiplier')}
                 </label>
                 <input
                   type="range"
@@ -219,13 +222,13 @@ export default function CDN() {
                   className="w-full"
                 />
                 <div className="text-sm text-zinc-400 mt-1">
-                  {config.cacheLatencyMultiplier}x
+                  {config.cacheLatencyMultiplier}{t('simulators.cdn.labels.x_suffix')}
                 </div>
               </div>
 
               <div>
                 <label className="block text-sm text-zinc-400 mb-1">
-                  Número Máximo de Logs
+                  {t('simulators.cdn.config.max_logs')}
                 </label>
                 <input
                   type="range"
@@ -240,7 +243,7 @@ export default function CDN() {
                   className="w-full"
                 />
                 <div className="text-sm text-zinc-400 mt-1">
-                  {config.maxLogs} logs
+                  {config.maxLogs} {t('simulators.cdn.labels.logs_suffix')}
                 </div>
               </div>
             </div>
@@ -249,7 +252,7 @@ export default function CDN() {
         
         {/* Country Selection */}
         <div className="mb-8">
-          <h3 className="text-lg font-medium mb-4">Selecione seu país:</h3>
+          <h3 className="text-lg font-medium mb-4">{t('simulators.cdn.labels.country_select')}</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {countries.map((country) => (
               <button
@@ -262,8 +265,8 @@ export default function CDN() {
                     : 'border-zinc-700 bg-zinc-800 hover:bg-zinc-700'
                 }`}
               >
-                <div className="font-medium">{country.name}</div>
-                <div className="text-sm text-zinc-400">{country.region}</div>
+                <div className="font-medium">{t(`simulators.cdn.countries.${country.id}.name`, { defaultValue: country.name })}</div>
+                <div className="text-sm text-zinc-400">{t(`simulators.cdn.countries.${country.id}.region`, { defaultValue: country.region })}</div>
               </button>
             ))}
           </div>
@@ -271,7 +274,7 @@ export default function CDN() {
 
         {/* Datacenters */}
         <div className="mb-6">
-          <h3 className="text-lg font-medium mb-4">Datacenters:</h3>
+          <h3 className="text-lg font-medium mb-4">{t('simulators.cdn.labels.datacenters')}</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {datacenters.map((dc) => (
               <div
@@ -282,16 +285,16 @@ export default function CDN() {
                     : 'border-zinc-700 bg-zinc-800'
                 }`}
               >
-                <div className="font-medium">{dc.name}</div>
-                <div className="text-sm text-zinc-400">{dc.location}</div>
+                <div className="font-medium">{t(`simulators.cdn.datacenters.${dc.id}.name`, { defaultValue: dc.name })}</div>
+                <div className="text-sm text-zinc-400">{t(`simulators.cdn.datacenters.${dc.id}.location`, { defaultValue: dc.location })}</div>
                 {dc.hasCache && (
                   <div className="mt-2 text-xs px-2 py-1 rounded-full bg-green-500/20 text-green-500 inline-block">
-                    Cache ✓
+                    {t('simulators.cdn.labels.cache_badge')}
                   </div>
                 )}
                 {selectedCountry && nearestDatacenter === dc.id && (
                   <div className="mt-2 text-xs text-zinc-400">
-                    Latência: {countries.find(c => c.id === selectedCountry)?.latencyToDatacenters[dc.id]}ms
+                    {t('simulators.cdn.labels.latency')}: {countries.find(c => c.id === selectedCountry)?.latencyToDatacenters[dc.id]}ms
                   </div>
                 )}
               </div>
@@ -310,7 +313,7 @@ export default function CDN() {
               <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" />
               <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce [animation-delay:0.2s]" />
               <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce [animation-delay:0.4s]" />
-              <span className="ml-2 text-sm">Processando requisição...</span>
+              <span className="ml-2 text-sm">{t('simulators.cdn.messages.processing')}</span>
             </motion.div>
           </div>
         )}
@@ -318,7 +321,7 @@ export default function CDN() {
         {/* Request History */}
         {requestLogs.length > 0 && (
           <div className="mb-6">
-            <h3 className="text-lg font-medium mb-4">Histórico de Requisições:</h3>
+            <h3 className="text-lg font-medium mb-4">{t('simulators.cdn.history.title')}</h3>
             <div className="space-y-2">
               {requestLogs.map((log) => (
                 <div
@@ -334,10 +337,10 @@ export default function CDN() {
                       <span className="font-medium">{log.datacenter}</span>
                     </div>
                     <div className="text-sm text-zinc-400">
-                      Latência: {log.latency}ms
+                      {t('simulators.cdn.labels.latency')}: {log.latency}ms
                       {log.fromCache && (
                         <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-500">
-                          Cache Hit
+                          {t('simulators.cdn.history.cache_hit')}
                         </span>
                       )}
                     </div>
@@ -354,19 +357,19 @@ export default function CDN() {
             onClick={resetSimulation}
             className="px-4 py-2 rounded-lg font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
           >
-            Reiniciar
+            {t('simulators.cdn.buttons.reset')}
           </button>
         </div>
 
         {/* Explanation */}
         <div className="mt-6 p-4 bg-zinc-800/50 rounded-lg text-sm text-zinc-300">
-          <h3 className="font-medium mb-2">Como funciona?</h3>
+          <h3 className="font-medium mb-2">{t('simulators.cdn.info.title')}</h3>
           <ul className="space-y-2">
-            <li>• Selecione seu país para simular uma requisição</li>
-            <li>• O datacenter mais próximo será escolhido automaticamente</li>
-            <li>• Primeira requisição: Busca do servidor de origem ({config.baseLatencyMultiplier}x a latência)</li>
-            <li>• Requisições subsequentes: Servidas do cache local ({config.cacheLatencyMultiplier}x a latência)</li>
-            <li>• A latência varia de acordo com a distância entre seu país e o datacenter</li>
+            <li>• {t('simulators.cdn.info.i1')}</li>
+            <li>• {t('simulators.cdn.info.i2')}</li>
+            <li>• {t('simulators.cdn.info.i3', { base: config.baseLatencyMultiplier })}</li>
+            <li>• {t('simulators.cdn.info.i4', { cache: config.cacheLatencyMultiplier })}</li>
+            <li>• {t('simulators.cdn.info.i5')}</li>
           </ul>
         </div>
       </div>

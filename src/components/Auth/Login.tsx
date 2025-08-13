@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function Login() {
   const { signInWithGoogle, signInWithGithub } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useTranslation();
 
   const handleGoogleLogin = async () => {
     try {
@@ -16,7 +18,7 @@ export default function Login() {
       await signInWithGoogle();
       navigate('/');
     } catch (error) {
-      setError('Erro ao fazer login com Google. Por favor, tente novamente.');
+      setError(t('auth.error_google'));
     } finally {
       setIsLoading(false);
     }
@@ -29,7 +31,7 @@ export default function Login() {
       await signInWithGithub();
       navigate('/');
     } catch (error) {
-      setError('Erro ao fazer login com GitHub. Por favor, tente novamente.');
+      setError(t('auth.error_github'));
     } finally {
       setIsLoading(false);
     }
@@ -45,10 +47,10 @@ export default function Login() {
       >
         <div className="bg-zinc-900/50 rounded-xl p-8 backdrop-blur-sm">
           <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-            Bem-vindo ao System Design
+            {t('auth.welcome_title')}
           </h2>
           <p className="text-zinc-400 text-center mb-8">
-            Faça login para acessar o conteúdo completo e simuladores interativos
+            {t('auth.welcome_subtitle')}
           </p>
           
           <AnimatePresence mode="wait">
@@ -80,7 +82,7 @@ export default function Login() {
                   />
                 </svg>
               )}
-              Continuar com Google
+              {t('auth.login_google')}
             </button>
 
             <button
@@ -98,12 +100,12 @@ export default function Login() {
                   />
                 </svg>
               )}
-              Continuar com GitHub
+              {t('auth.login_github')}
             </button>
           </div>
 
           <p className="text-xs text-zinc-500 text-center mt-8">
-            Ao fazer login, você concorda com nossos termos de uso e política de privacidade.
+            {t('auth.terms_notice')}
           </p>
         </div>
       </motion.div>

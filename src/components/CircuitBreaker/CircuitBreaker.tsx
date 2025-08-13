@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface Config {
   failureThreshold: number;
@@ -17,6 +18,7 @@ interface Request {
 }
 
 export default function CircuitBreaker() {
+  const { t } = useTranslation();
   const [isRunning, setIsRunning] = useState(false);
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   const [errorsEnabled, setErrorsEnabled] = useState(false);
@@ -123,12 +125,12 @@ export default function CircuitBreaker() {
     <div className="p-4">
       <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-          <h1 className="text-xl font-semibold">Circuit Breaker</h1>
+          <h1 className="text-xl font-semibold">{t('simulators.circuit_breaker.title')}</h1>
           <button
             onClick={() => setIsConfigOpen(!isConfigOpen)}
             className="w-full sm:w-auto px-3 py-1 bg-zinc-800 rounded-md hover:bg-zinc-700"
           >
-            Configurações
+            {t('simulators.circuit_breaker.buttons.settings')}
           </button>
         </div>
 
@@ -174,7 +176,7 @@ export default function CircuitBreaker() {
                 isRunning ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
               }`}
             >
-              {isRunning ? 'Parar' : 'Iniciar'}
+              {isRunning ? t('simulators.circuit_breaker.buttons.stop') : t('simulators.circuit_breaker.buttons.start')}
             </button>
             <button
               onClick={() => setErrorsEnabled(!errorsEnabled)}
@@ -183,17 +185,17 @@ export default function CircuitBreaker() {
               }`}
               disabled={!isRunning}
             >
-              {errorsEnabled ? 'Parar Erros' : 'Iniciar Erros'}
+              {errorsEnabled ? t('simulators.circuit_breaker.buttons.stop_errors') : t('simulators.circuit_breaker.buttons.start_errors')}
             </button>
             <button
               onClick={resetSimulation}
               className="flex-1 sm:flex-none px-4 py-2 bg-zinc-700 rounded-md hover:bg-zinc-600"
             >
-              Resetar
+              {t('simulators.circuit_breaker.buttons.reset')}
             </button>
           </div>
           <div className="flex items-center gap-2 w-full sm:w-auto">
-            <label className="text-sm whitespace-nowrap">Requisições/s:</label>
+            <label className="text-sm whitespace-nowrap">{t('simulators.circuit_breaker.labels.rps')}</label>
             <input
               type="number"
               value={requestsPerSecond}
@@ -208,33 +210,33 @@ export default function CircuitBreaker() {
             <div className="flex flex-wrap items-center gap-4 mb-4">
               <div className={`w-4 h-4 rounded-full ${getStateColor()}`} />
               <div>
-                <div className="text-sm text-zinc-400">Estado</div>
+                <div className="text-sm text-zinc-400">{t('simulators.circuit_breaker.labels.state')}</div>
                 <div className="font-medium">{circuitState}</div>
               </div>
               {circuitState === 'OPEN' && resetCountdown > 0 && (
                 <div>
-                  <div className="text-sm text-zinc-400">Reset em</div>
+                  <div className="text-sm text-zinc-400">{t('simulators.circuit_breaker.labels.reset_in')}</div>
                   <div className="font-medium">{resetCountdown}s</div>
                 </div>
               )}
             </div>
-            <div className="text-sm text-zinc-400">Falhas Consecutivas</div>
+            <div className="text-sm text-zinc-400">{t('simulators.circuit_breaker.labels.consecutive_failures')}</div>
             <div className="font-medium">{consecutiveFailures}</div>
           </div>
           <div className="bg-zinc-800 p-4 rounded-lg">
-            <div className="text-sm text-zinc-400">Status dos Erros</div>
+            <div className="text-sm text-zinc-400">{t('simulators.circuit_breaker.labels.error_status')}</div>
             <div className="font-medium">
               {errorsEnabled ? (
-                <span className="text-red-400">Ativos ({config.errorRate}% de chance)</span>
+                <span className="text-red-400">{t('simulators.circuit_breaker.labels.active_with_chance', { percent: config.errorRate })}</span>
               ) : (
-                <span className="text-green-400">Inativos</span>
+                <span className="text-green-400">{t('simulators.circuit_breaker.labels.inactive')}</span>
               )}
             </div>
           </div>
         </div>
 
         <div className="bg-zinc-800 p-4 rounded-lg">
-          <h2 className="text-lg font-medium mb-3">Últimas Requisições</h2>
+          <h2 className="text-lg font-medium mb-3">{t('simulators.circuit_breaker.labels.latest_requests')}</h2>
           <div className="space-y-2">
             {requests.map(request => (
               <div
@@ -251,7 +253,7 @@ export default function CircuitBreaker() {
             ))}
             {requests.length === 0 && (
               <div className="text-zinc-500 text-center py-4">
-                Nenhuma requisição realizada
+                {t('simulators.circuit_breaker.labels.no_requests')}
               </div>
             )}
           </div>

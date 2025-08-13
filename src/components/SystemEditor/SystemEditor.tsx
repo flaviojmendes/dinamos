@@ -16,6 +16,7 @@ import ReactFlow, {
   Position,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
+import { useTranslation } from 'react-i18next';
 
 type LoadBalancerAlgorithm = 'roundRobin' | 'random' | 'leastConnections';
 
@@ -37,168 +38,130 @@ interface NodeData {
 }
 
 // Node components with metrics display
-const ClientNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
-  <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-blue-500 bg-zinc-800 min-w-[180px]">
-    <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
-    <div className="font-bold text-white">{data.label}</div>
-    {data.metrics && (
-      <div className="text-xs mt-2">
-        <div className="text-blue-300">Requisições/s: {data.metrics.requestsPerSecond}</div>
-        <div className="text-red-300">Taxa de Erro: {data.metrics.errorRate.toFixed(1)}%</div>
-        <div className="text-green-300">Resposta: {data.metrics.responseTime.toFixed(0)}ms</div>
-      </div>
-    )}
-    <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
-      <div
-        className="h-full transition-all duration-500"
-        style={{
-          width: `${data.metrics?.load || 0}%`,
-          backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e',
-        }}
-      />
-    </div>
-  </div>
-);
-
-const LoadBalancerNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
-  <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-green-500 bg-zinc-800 min-w-[180px]">
-    <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
-    <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
-    <div className="font-bold text-white">{data.label}</div>
-    {data.metrics && (
-      <div className="text-xs mt-2">
-        <div className="text-blue-300 flex justify-between items-center">
-          <span>Conexões Ativas:</span>
-          <span className="font-bold text-lg">{data.metrics.activeRequests}</span>
+const ClientNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
+  const { t } = useTranslation();
+  return (
+    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-blue-500 bg-zinc-800 min-w-[180px]">
+      <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
+      <div className="font-bold text-white">{data.label}</div>
+      {data.metrics && (
+        <div className="text-xs mt-2">
+          <div className="text-blue-300">{t('editor.metrics.requests_per_second')}: {data.metrics.requestsPerSecond}</div>
+          <div className="text-red-300">{t('editor.metrics.error_rate')}: {data.metrics.errorRate.toFixed(1)}%</div>
+          <div className="text-green-300">{t('editor.metrics.response_time_ms')}: {data.metrics.responseTime.toFixed(0)}ms</div>
         </div>
-        <div className="text-yellow-300">Requisições/s: {data.metrics.requestsPerSecond}</div>
-        <div className="text-green-300">Resposta: {data.metrics.responseTime.toFixed(0)}ms</div>
+      )}
+      <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+        <div
+          className="h-full transition-all duration-500"
+          style={{
+            width: `${data.metrics?.load || 0}%`,
+            backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e',
+          }}
+        />
       </div>
-    )}
-    <div className="mt-2 text-xs text-white">
-      <label>Limite de Conexões:</label>
-      <input
-        type="range"
-        min="10"
-        max="200"
-        value={data.capacity || 100}
-        onChange={(e) => data.onCapacityChange?.(Number(e.target.value))}
-        className="w-full"
-      />
-      <div className="text-right">{data.capacity || 100} conexões</div>
     </div>
-    <div className="mt-2 text-xs text-white">
-      <label>Algoritmo:</label>
-      <select
-        value={data.algorithm || 'roundRobin'}
-        onChange={(e) => data.onAlgorithmChange?.(e.target.value as LoadBalancerAlgorithm)}
-        className="w-full mt-1 bg-zinc-700 rounded px-2 py-1 text-white"
-      >
-        <option value="roundRobin">Round Robin</option>
-        <option value="random">Aleatório</option>
-        <option value="leastConnections">Menor Número de Conexões</option>
-      </select>
-    </div>
-    <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
-      <div
-        className="h-full transition-all duration-500"
-        style={{
-          width: `${data.metrics?.load || 0}%`,
-          backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e',
-        }}
-      />
-    </div>
-  </div>
-);
+  );
+};
 
-const ServerNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
-  <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-purple-500 bg-zinc-800 min-w-[180px]">
-    <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
-    <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
-    <div className="font-bold text-white">{data.label}</div>
-    {data.metrics && (
-      <div className="text-xs mt-2">
-        <div className="text-blue-300 flex justify-between items-center">
-          <span>Conexões Ativas:</span>
-          <span className="font-bold text-lg">{data.metrics.activeRequests}</span>
+const LoadBalancerNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
+  const { t } = useTranslation();
+  return (
+    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-green-500 bg-zinc-800 min-w-[180px]">
+      <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
+      <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
+      <div className="font-bold text-white">{data.label}</div>
+      {data.metrics && (
+        <div className="text-xs mt-2">
+          <div className="text-blue-300 flex justify-between items-center">
+            <span>{t('editor.metrics.active_connections')}:</span>
+            <span className="font-bold text-lg">{data.metrics.activeRequests}</span>
+          </div>
+          <div className="text-yellow-300">{t('editor.metrics.requests_per_second')}: {data.metrics.requestsPerSecond}</div>
+          <div className="text-green-300">{t('editor.metrics.response_time_ms')}: {data.metrics.responseTime.toFixed(0)}ms</div>
         </div>
-        <div className="text-yellow-300">Requisições/s: {data.metrics.requestsPerSecond}</div>
-        <div className="text-green-300">Resposta: {data.metrics.responseTime.toFixed(0)}ms</div>
+      )}
+      <div className="mt-2 text-xs text-white">
+        <label>{t('editor.metrics.connections_limit')}</label>
+        <input type="range" min="10" max="200" value={data.capacity || 100} onChange={(e) => data.onCapacityChange?.(Number(e.target.value))} className="w-full" />
+        <div className="text-right">{data.capacity || 100} {t('editor.metrics.connections')}</div>
       </div>
-    )}
-    <div className="mt-2 text-xs text-white">
-      <label>Limite de Conexões:</label>
-      <input
-        type="range"
-        min="10"
-        max="150"
-        value={data.capacity || 50}
-        onChange={(e) => data.onCapacityChange?.(Number(e.target.value))}
-        className="w-full"
-      />
-      <div className="text-right">{data.capacity || 50} conexões</div>
+      <div className="mt-2 text-xs text-white">
+        <label>{t('editor.metrics.algorithm')}</label>
+        <select value={data.algorithm || 'roundRobin'} onChange={(e) => data.onAlgorithmChange?.(e.target.value as LoadBalancerAlgorithm)} className="w-full mt-1 bg-zinc-700 rounded px-2 py-1 text-white">
+          <option value="roundRobin">Round Robin</option>
+          <option value="random">{t('editor.metrics.random')}</option>
+          <option value="leastConnections">{t('editor.metrics.least_connections')}</option>
+        </select>
+      </div>
+      <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+        <div className="h-full transition-all duration-500" style={{ width: `${data.metrics?.load || 0}%`, backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e' }} />
+      </div>
     </div>
-    <div className="mt-2 text-xs text-white">
-      <label>Tempo de Processamento (ms):</label>
-      <input
-        type="range"
-        min="10"
-        max="500"
-        value={data.processingTime || 100}
-        onChange={(e) => data.onProcessingTimeChange?.(Number(e.target.value))}
-        className="w-full"
-      />
-      <div className="text-right">{data.processingTime || 100}ms</div>
-    </div>
-    <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
-      <div
-        className="h-full transition-all duration-500"
-        style={{
-          width: `${data.metrics?.load || 0}%`,
-          backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e',
-        }}
-      />
-    </div>
-  </div>
-);
+  );
+};
 
-const DatabaseNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
-  <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-yellow-500 bg-zinc-800 min-w-[180px]">
-    <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
-    <div className="font-bold text-white">{data.label}</div>
-    {data.metrics && (
-      <div className="text-xs mt-2">
-        <div className="text-blue-300 flex justify-between items-center">
-          <span>Conexões Ativas:</span>
-          <span className="font-bold text-lg">{data.metrics.activeRequests}</span>
+const ServerNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
+  const { t } = useTranslation();
+  return (
+    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-purple-500 bg-zinc-800 min-w-[180px]">
+      <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
+      <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
+      <div className="font-bold text-white">{data.label}</div>
+      {data.metrics && (
+        <div className="text-xs mt-2">
+          <div className="text-blue-300 flex justify-between items-center">
+            <span>{t('editor.metrics.active_connections')}:</span>
+            <span className="font-bold text-lg">{data.metrics.activeRequests}</span>
+          </div>
+          <div className="text-yellow-300">{t('editor.metrics.requests_per_second')}: {data.metrics.requestsPerSecond}</div>
+          <div className="text-green-300">{t('editor.metrics.response_time_ms')}: {data.metrics.responseTime.toFixed(0)}ms</div>
         </div>
-        <div className="text-yellow-300">Requisições/s: {data.metrics.requestsPerSecond}</div>
-        <div className="text-green-300">Resposta: {data.metrics.responseTime.toFixed(0)}ms</div>
+      )}
+      <div className="mt-2 text-xs text-white">
+        <label>{t('editor.metrics.connections_limit')}</label>
+        <input type="range" min="10" max="150" value={data.capacity || 50} onChange={(e) => data.onCapacityChange?.(Number(e.target.value))} className="w-full" />
+        <div className="text-right">{data.capacity || 50} {t('editor.metrics.connections')}</div>
       </div>
-    )}
-    <div className="mt-2 text-xs text-white">
-      <label>Limite de Conexões:</label>
-      <input
-        type="range"
-        min="10"
-        max="100"
-        value={data.capacity || 30}
-        onChange={(e) => data.onCapacityChange?.(Number(e.target.value))}
-        className="w-full"
-      />
-      <div className="text-right">{data.capacity || 30} conexões</div>
+      <div className="mt-2 text-xs text-white">
+        <label>{t('editor.metrics.processing_time_ms')}</label>
+        <input type="range" min="10" max="500" value={data.processingTime || 100} onChange={(e) => data.onProcessingTimeChange?.(Number(e.target.value))} className="w-full" />
+        <div className="text-right">{data.processingTime || 100}ms</div>
+      </div>
+      <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+        <div className="h-full transition-all duration-500" style={{ width: `${data.metrics?.load || 0}%`, backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e' }} />
+      </div>
     </div>
-    <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
-      <div
-        className="h-full transition-all duration-500"
-        style={{
-          width: `${data.metrics?.load || 0}%`,
-          backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e',
-        }}
-      />
+  );
+};
+
+const DatabaseNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
+  const { t } = useTranslation();
+  return (
+    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-yellow-500 bg-zinc-800 min-w-[180px]">
+      <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
+      <div className="font-bold text-white">{data.label}</div>
+      {data.metrics && (
+        <div className="text-xs mt-2">
+          <div className="text-blue-300 flex justify-between items-center">
+            <span>{t('editor.metrics.active_connections')}:</span>
+            <span className="font-bold text-lg">{data.metrics.activeRequests}</span>
+          </div>
+          <div className="text-yellow-300">{t('editor.metrics.requests_per_second')}: {data.metrics.requestsPerSecond}</div>
+          <div className="text-green-300">{t('editor.metrics.response_time_ms')}: {data.metrics.responseTime.toFixed(0)}ms</div>
+        </div>
+      )}
+      <div className="mt-2 text-xs text-white">
+        <label>{t('editor.metrics.connections_limit')}</label>
+        <input type="range" min="10" max="100" value={data.capacity || 30} onChange={(e) => data.onCapacityChange?.(Number(e.target.value))} className="w-full" />
+        <div className="text-right">{data.capacity || 30} {t('editor.metrics.connections')}</div>
+      </div>
+      <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+        <div className="h-full transition-all duration-500" style={{ width: `${data.metrics?.load || 0}%`, backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e' }} />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const nodeTypes = {
   input: ClientNode,
@@ -258,6 +221,7 @@ const availableComponents = [
 ];
 
 export default function SystemEditor() {
+  const { t } = useTranslation();
   const [nodes, setNodes, onNodesChange] = useNodesState<NodeData>(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [isSimulationRunning, setIsSimulationRunning] = useState(false);
@@ -632,12 +596,12 @@ export default function SystemEditor() {
             </svg>
           </div>
           <div>
-            <h3 className="text-blue-400 font-semibold mb-1">Página em Desenvolvimento</h3>
+            <h3 className="text-blue-400 font-semibold mb-1">{t('editor.dev_page.title')}</h3>
             <p className="text-zinc-300 mb-2">
-              Esta é uma prévia do Editor de Sistemas que está em desenvolvimento. Em breve, você poderá criar e simular arquiteturas distribuídas completas, com mais componentes, métricas e funcionalidades. Fique ligado nas próximas atualizações!
+              {t('editor.dev_page.description')}
             </p>
             <p className="text-zinc-400 text-sm">
-              <span className="text-yellow-400">Nota:</span> Os cálculos e métricas apresentados nesta versão são aproximados e podem não refletir com precisão o comportamento de um sistema real. Estamos trabalhando para melhorar a precisão das simulações.
+              <span className="text-yellow-400">{t('editor.labels.note_prefix', { provider: '' }).split('* ')[1]?.split(' (')[0]}</span> {t('editor.dev_page.note')}
             </p>
           </div>
         </div>
@@ -645,48 +609,36 @@ export default function SystemEditor() {
 
       <div className="prose prose-invert prose-lg max-w-none mb-8">
         <h1 className="text-4xl font-bold mb-4 text-blue-400">
-          Simulador de Sistema Distribuído
+          {t('editor.title')}
         </h1>
         <div className="flex flex-col gap-4 mb-4">
           <div className="flex items-center gap-4">
-            <button
-              onClick={() => setIsSimulationRunning(!isSimulationRunning)}
-              className={`px-4 py-2 ${
-                isSimulationRunning ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
-              } text-white rounded transition-colors`}
-            >
-              {isSimulationRunning ? 'Parar Simulação' : 'Iniciar Simulação'}
+            <button onClick={() => setIsSimulationRunning(!isSimulationRunning)} className={`px-4 py-2 ${isSimulationRunning ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} text-white rounded transition-colors`}>
+              {isSimulationRunning ? t('editor.buttons.stop') : t('editor.buttons.start')}
             </button>
 
             <div className="flex items-center gap-2">
               <label className="text-white">
-                Requisições/s do Cliente:
+                {t('editor.labels.client_rps')}
               </label>
-              <input
-                type="range"
-                min="1"
-                max="200"
-                value={clientRequestRate}
-                onChange={(e) => setClientRequestRate(Number(e.target.value))}
-                className="w-48"
-              />
+              <input type="range" min="1" max="200" value={clientRequestRate} onChange={(e) => setClientRequestRate(Number(e.target.value))} className="w-48" />
               <span className="text-white min-w-[3rem]">{clientRequestRate}</span>
             </div>
           </div>
 
           <div className="flex gap-4 text-sm text-zinc-400">
-            <div>Status da Carga:</div>
+            <div>{t('editor.labels.load_status')}</div>
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 rounded-full bg-green-500"></div>
-              <span>Normal (&lt;60%)</span>
+              <span>{t('editor.labels.normal')}</span>
             </div>
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
-              <span>Alerta (60-80%)</span>
+              <span>{t('editor.labels.warning')}</span>
             </div>
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 rounded-full bg-red-500"></div>
-              <span>Crítico (&gt;80%)</span>
+              <span>{t('editor.labels.critical')}</span>
             </div>
           </div>
         </div>
@@ -706,26 +658,18 @@ export default function SystemEditor() {
           deleteKeyCode={['Backspace', 'Delete']}
           draggable={true}
           fitView
-          fitViewOptions={{
-            padding: 0.5,
-            maxZoom: 1,
-          }}
+          fitViewOptions={{ padding: 0.5, maxZoom: 1 }}
           minZoom={0.2}
           maxZoom={1.5}
           defaultViewport={{ x: 0, y: 0, zoom: 0.7 }}
         >
           <Panel position="top-left" className="bg-zinc-800 p-4 rounded-lg">
             <div className="flex flex-col gap-2">
-              <h3 className="text-white font-semibold mb-2">Componentes</h3>
+              <h3 className="text-white font-semibold mb-2">{t('editor.labels.components')}</h3>
               <div className="flex flex-col gap-2">
                 {availableComponents.map((component) => (
-                  <div
-                    key={component.type}
-                    className={`px-4 py-2 bg-zinc-700 rounded cursor-move hover:bg-zinc-600 
-                      transition-colors border-2 ${component.className} text-white`}
-                    onDragStart={(e) => onDragStart(e, component.type)}
-                    draggable
-                  >
+                  <div key={component.type} className={`px-4 py-2 bg-zinc-700 rounded cursor-move hover:bg-zinc-600 
+                      transition-colors border-2 ${component.className} text-white`} onDragStart={(e) => onDragStart(e, component.type)} draggable>
                     {component.label}
                   </div>
                 ))}

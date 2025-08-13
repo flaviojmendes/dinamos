@@ -28,6 +28,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface NodeData {
   label: string;
@@ -71,438 +72,348 @@ interface DistributedSystemDesign {
 }
 
 // Node components with metrics display
-const ClientNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
-  <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-blue-500 bg-zinc-800 min-w-[180px]">
-    <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
-    <div className="flex items-center gap-2 font-bold text-white">
-      <Users className="w-4 h-4" />
-      {data.label}
-    </div>
-    {data.metrics && (
-      <div className="text-xs mt-2">
-        <div className="text-blue-300">Requisições/s: {data.metrics.requestsPerSecond}</div>
-        <div className="text-green-300">Resposta: {data.metrics.responseTime.toFixed(0)}ms</div>
-        <div className="text-cyan-300">Latência total: {data.metrics.cumulativeLatency?.toFixed(0)}ms</div>
-        <div className="text-red-300">Falhas/s: {data.metrics.failedRequests}</div>
+const ClientNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
+  const { t } = useTranslation();
+  return (
+    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-blue-500 bg-zinc-800 min-w-[180px]">
+      <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
+      <div className="flex items-center gap-2 font-bold text-white">
+        <Users className="w-4 h-4" />
+        {data.label}
       </div>
-    )}
-    <div className="mt-2 text-xs text-white">
-      <label>Requisições/s:</label>
-      <input
-        type="range"
-        min="1"
-        max="200"
-        value={data.throughput || 50}
-        onChange={(e) => data.onThroughputChange?.(Number(e.target.value))}
-        className="w-full"
-      />
-      <div className="text-right">{data.throughput || 50} req/s</div>
-    </div>
-    <div className="mt-2 text-xs text-white">
-      <label>Taxa de Falha (%):</label>
-      <input
-        type="range"
-        min="0"
-        max="100"
-        value={data.failureRate || 0}
-        onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))}
-        className="w-full"
-      />
-      <div className="text-right">{data.failureRate || 0}%</div>
-    </div>
-    <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
-      <div
-        className="h-full transition-all duration-500"
-        style={{
-          width: `${data.metrics?.load || 0}%`,
-          backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e',
-        }}
-      />
-    </div>
-  </div>
-);
-
-const ServerNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
-  <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-purple-500 bg-zinc-800 min-w-[180px]">
-    <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
-    <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
-    <div className="flex items-center gap-2 font-bold text-white">
-      <Server className="w-4 h-4" />
-      {data.label}
-    </div>
-    {data.metrics && (
-      <div className="text-xs mt-2">
-        <div className="text-yellow-300">Requisições/s: {data.metrics.requestsPerSecond}</div>
-        <div className="text-green-300">Resposta: {data.metrics.responseTime.toFixed(0)}ms</div>
-        <div className="text-cyan-300">Latência total: {data.metrics.cumulativeLatency?.toFixed(0)}ms</div>
-        <div className="text-red-300">Falhas/s: {data.metrics.failedRequests}</div>
-      </div>
-    )}
-    <div className="mt-2 text-xs text-white">
-      <label>Throughput (req/s):</label>
-      <input
-        type="range"
-        min="10"
-        max="200"
-        value={data.throughput || 100}
-        onChange={(e) => data.onThroughputChange?.(Number(e.target.value))}
-        className="w-full"
-      />
-      <div className="text-right">{data.throughput || 100} req/s</div>
-    </div>
-    <div className="mt-2 text-xs text-white">
-      <label>Taxa de Falha (%):</label>
-      <input
-        type="range"
-        min="0"
-        max="100"
-        value={data.failureRate || 0}
-        onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))}
-        className="w-full"
-      />
-      <div className="text-right">{data.failureRate || 0}%</div>
-    </div>
-    <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
-      <div
-        className="h-full transition-all duration-500"
-        style={{
-          width: `${data.metrics?.load || 0}%`,
-          backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e',
-        }}
-      />
-    </div>
-  </div>
-);
-
-const DatabaseNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
-  <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-yellow-500 bg-zinc-800 min-w-[180px]">
-    <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
-    <div className="flex items-center gap-2 font-bold text-white">
-      <DatabaseIcon className="w-4 h-4" />
-      {data.label}
-    </div>
-    {data.metrics && (
-      <div className="text-xs mt-2">
-        <div className="text-yellow-300">Requisições/s: {data.metrics.requestsPerSecond}</div>
-        <div className="text-green-300">Resposta: {data.metrics.responseTime.toFixed(0)}ms</div>
-        <div className="text-cyan-300">Latência total: {data.metrics.cumulativeLatency?.toFixed(0)}ms</div>
-        <div className="text-red-300">Falhas/s: {data.metrics.failedRequests}</div>
-      </div>
-    )}
-    <div className="mt-2 text-xs text-white">
-      <label>Throughput (req/s):</label>
-      <input
-        type="range"
-        min="10"
-        max="200"
-        value={data.throughput || 50}
-        onChange={(e) => data.onThroughputChange?.(Number(e.target.value))}
-        className="w-full"
-      />
-      <div className="text-right">{data.throughput || 50} req/s</div>
-    </div>
-    <div className="mt-2 text-xs text-white">
-      <label>Taxa de Falha (%):</label>
-      <input
-        type="range"
-        min="0"
-        max="100"
-        value={data.failureRate || 0}
-        onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))}
-        className="w-full"
-      />
-      <div className="text-right">{data.failureRate || 0}%</div>
-    </div>
-    <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
-      <div
-        className="h-full transition-all duration-500"
-        style={{
-          width: `${data.metrics?.load || 0}%`,
-          backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e',
-        }}
-      />
-    </div>
-  </div>
-);
-
-const LoadBalancerNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
-  <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-green-500 bg-zinc-800 min-w-[180px]">
-    <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
-    <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
-    <div className="flex items-center gap-2 font-bold text-white">
-      <Network className="w-4 h-4" />
-      {data.label}
-    </div>
-    {data.metrics && (
-      <div className="text-xs mt-2">
-        <div className="text-yellow-300">Requisições/s: {data.metrics.requestsPerSecond}</div>
-        <div className="text-green-300">Resposta: {data.metrics.responseTime.toFixed(0)}ms</div>
-        <div className="text-cyan-300">Latência total: {data.metrics.cumulativeLatency?.toFixed(0)}ms</div>
-        <div className="text-red-300">Falhas/s: {data.metrics.failedRequests}</div>
-      </div>
-    )}
-    <div className="mt-2 text-xs text-white">
-      <label>Throughput (req/s):</label>
-      <input
-        type="range"
-        min="10"
-        max="300"
-        value={data.throughput || 150}
-        onChange={(e) => data.onThroughputChange?.(Number(e.target.value))}
-        className="w-full"
-      />
-      <div className="text-right">{data.throughput || 150} req/s</div>
-    </div>
-    <div className="mt-2 text-xs text-white">
-      <label>Algoritmo:</label>
-      <select
-        value={data.algorithm || 'roundRobin'}
-        onChange={(e) => data.onAlgorithmChange?.(e.target.value as 'roundRobin')}
-        className="w-full mt-1 bg-zinc-700 rounded px-2 py-1 text-white"
-      >
-        <option value="roundRobin">Round Robin</option>
-      </select>
-    </div>
-    <div className="mt-2 text-xs text-white">
-      <label>Taxa de Falha (%):</label>
-      <input
-        type="range"
-        min="0"
-        max="100"
-        value={data.failureRate || 0}
-        onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))}
-        className="w-full"
-      />
-      <div className="text-right">{data.failureRate || 0}%</div>
-    </div>
-    <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
-      <div
-        className="h-full transition-all duration-500"
-        style={{
-          width: `${data.metrics?.load || 0}%`,
-          backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e',
-        }}
-      />
-    </div>
-  </div>
-);
-
-const APIGatewayNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
-  <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-indigo-500 bg-zinc-800 min-w-[220px]">
-    <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
-    <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
-    <div className="flex items-center gap-2 font-bold text-white">
-      <Shield className="w-4 h-4" />
-      {data.label}
-    </div>
-    {data.metrics && (
-      <div className="text-xs mt-2">
-        <div className="text-yellow-300">Requisições/s: {data.metrics.requestsPerSecond}</div>
-        <div className="text-green-300">Resposta: {data.metrics.responseTime.toFixed(0)}ms</div>
-        <div className="text-cyan-300">Latência total: {data.metrics.cumulativeLatency?.toFixed(0)}ms</div>
-        <div className="text-red-300">Falhas/s: {data.metrics.failedRequests}</div>
-        <div className="text-orange-300 flex justify-between">
-          <span>Throttled/s:</span> 
-          <span className="font-bold">{data.metrics.throttledRequests || 0}</span>
+      {data.metrics && (
+        <div className="text-xs mt-2">
+          <div className="text-blue-300">{t('editor.metrics.requests_per_second')}: {data.metrics.requestsPerSecond}</div>
+          <div className="text-green-300">{t('editor.metrics.response_time_ms')}: {data.metrics.responseTime.toFixed(0)}ms</div>
+          <div className="text-cyan-300">{t('editor.metrics.total_latency_ms')}: {data.metrics.cumulativeLatency?.toFixed(0)}ms</div>
+          <div className="text-red-300">{t('editor.metrics.failures_per_s')}: {data.metrics.failedRequests}</div>
         </div>
+      )}
+      <div className="mt-2 text-xs text-white">
+        <label>{t('editor.metrics.throughput_reqs')}</label>
+        <input type="range" min="1" max="200" value={data.throughput || 50} onChange={(e) => data.onThroughputChange?.(Number(e.target.value))} className="w-full" />
+        <div className="text-right">{data.throughput || 50} req/s</div>
       </div>
-    )}
-    <div className="mt-2 text-xs text-white">
-      <label>Throughput (req/s):</label>
-      <input
-        type="range"
-        min="10"
-        max="300"
-        value={data.throughput || 200}
-        onChange={(e) => data.onThroughputChange?.(Number(e.target.value))}
-        className="w-full"
-      />
-      <div className="text-right">{data.throughput || 200} req/s</div>
+      <div className="mt-2 text-xs text-white">
+        <label>{t('editor.metrics.failure_rate_percent')}</label>
+        <input type="range" min="0" max="100" value={data.failureRate || 0} onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))} className="w-full" />
+        <div className="text-right">{data.failureRate || 0}%</div>
+      </div>
+      <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+        <div className="h-full transition-all duration-500" style={{ width: `${data.metrics?.load || 0}%`, backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e' }} />
+      </div>
     </div>
-    <div className="mt-2 text-xs text-white">
-      <label>Rate Limit (req/s):</label>
-      <input
-        type="range"
-        min="10"
-        max="250"
-        value={data.rateLimit || 100}
-        onChange={(e) => data.onRateLimitChange?.(Number(e.target.value))}
-        className="w-full"
-      />
-      <div className="text-right">{data.rateLimit || 100} req/s</div>
+  );
+};
+
+const ServerNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
+  const { t } = useTranslation();
+  return (
+    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-purple-500 bg-zinc-800 min-w-[180px]">
+      <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
+      <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
+      <div className="flex items-center gap-2 font-bold text-white">
+        <Server className="w-4 h-4" />
+        {data.label}
+      </div>
+      {data.metrics && (
+        <div className="text-xs mt-2">
+          <div className="text-yellow-300">{t('editor.metrics.requests_per_second')}: {data.metrics.requestsPerSecond}</div>
+          <div className="text-green-300">{t('editor.metrics.response_time_ms')}: {data.metrics.responseTime.toFixed(0)}ms</div>
+          <div className="text-cyan-300">{t('editor.metrics.total_latency_ms')}: {data.metrics.cumulativeLatency?.toFixed(0)}ms</div>
+          <div className="text-red-300">{t('editor.metrics.failures_per_s')}: {data.metrics.failedRequests}</div>
+        </div>
+      )}
+      <div className="mt-2 text-xs text-white">
+        <label>{t('editor.metrics.throughput_reqs')}</label>
+        <input type="range" min="10" max="200" value={data.throughput || 100} onChange={(e) => data.onThroughputChange?.(Number(e.target.value))} className="w-full" />
+        <div className="text-right">{data.throughput || 100} req/s</div>
+      </div>
+      <div className="mt-2 text-xs text-white">
+        <label>{t('editor.metrics.failure_rate_percent')} </label>
+        <input type="range" min="0" max="100" value={data.failureRate || 0} onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))} className="w-full" />
+        <div className="text-right">{data.failureRate || 0}%</div>
+      </div>
+      <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+        <div className="h-full transition-all duration-500" style={{ width: `${data.metrics?.load || 0}%`, backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e' }} />
+      </div>
     </div>
-    <div className="mt-2 text-xs text-white">
-      <label>Taxa de Falha (%):</label>
-      <input
-        type="range"
-        min="0"
-        max="100"
-        value={data.failureRate || 0}
-        onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))}
-        className="w-full"
-      />
-      <div className="text-right">{data.failureRate || 0}%</div>
+  );
+};
+
+const DatabaseNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
+  const { t } = useTranslation();
+  return (
+    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-yellow-500 bg-zinc-800 min-w-[180px]">
+      <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
+      <div className="flex items-center gap-2 font-bold text-white">
+        <DatabaseIcon className="w-4 h-4" />
+        {data.label}
+      </div>
+      {data.metrics && (
+        <div className="text-xs mt-2">
+          <div className="text-yellow-300">{t('editor.metrics.requests_per_second')}: {data.metrics.requestsPerSecond}</div>
+          <div className="text-green-300">{t('editor.metrics.response_time_ms')}: {data.metrics.responseTime.toFixed(0)}ms</div>
+          <div className="text-cyan-300">{t('editor.metrics.total_latency_ms')}: {data.metrics.cumulativeLatency?.toFixed(0)}ms</div>
+          <div className="text-red-300">{t('editor.metrics.failures_per_s')}: {data.metrics.failedRequests}</div>
+        </div>
+      )}
+      <div className="mt-2 text-xs text-white">
+        <label>{t('editor.metrics.throughput_reqs')}</label>
+        <input type="range" min="10" max="200" value={data.throughput || 50} onChange={(e) => data.onThroughputChange?.(Number(e.target.value))} className="w-full" />
+        <div className="text-right">{data.throughput || 50} req/s</div>
+      </div>
+      <div className="mt-2 text-xs text-white">
+        <label>{t('editor.metrics.failure_rate_percent')}</label>
+        <input type="range" min="0" max="100" value={data.failureRate || 0} onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))} className="w-full" />
+        <div className="text-right">{data.failureRate || 0}%</div>
+      </div>
+      <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+        <div className="h-full transition-all duration-500" style={{ width: `${data.metrics?.load || 0}%`, backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e' }} />
+      </div>
     </div>
-    <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
-      <div
-        className="h-full transition-all duration-500"
-        style={{
-          width: `${data.metrics?.load || 0}%`,
-          backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e',
-        }}
-      />
+  );
+};
+
+const LoadBalancerNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
+  const { t } = useTranslation();
+  return (
+    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-green-500 bg-zinc-800 min-w-[180px]">
+      <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
+      <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
+      <div className="flex items-center gap-2 font-bold text-white">
+        <Network className="w-4 h-4" />
+        {data.label}
+      </div>
+      {data.metrics && (
+        <div className="text-xs mt-2">
+          <div className="text-yellow-300">{t('editor.metrics.requests_per_second')}: {data.metrics.requestsPerSecond}</div>
+          <div className="text-green-300">{t('editor.metrics.response_time_ms')}: {data.metrics.responseTime.toFixed(0)}ms</div>
+          <div className="text-cyan-300">{t('editor.metrics.total_latency_ms')}: {data.metrics.cumulativeLatency?.toFixed(0)}ms</div>
+          <div className="text-red-300">{t('editor.metrics.failures_per_s')}: {data.metrics.failedRequests}</div>
+        </div>
+      )}
+      <div className="mt-2 text-xs text-white">
+        <label>{t('editor.metrics.throughput_reqs')}</label>
+        <input type="range" min="10" max="300" value={data.throughput || 150} onChange={(e) => data.onThroughputChange?.(Number(e.target.value))} className="w-full" />
+        <div className="text-right">{data.throughput || 150} req/s</div>
+      </div>
+      <div className="mt-2 text-xs text-white">
+        <label>{t('editor.metrics.algorithm')}</label>
+        <select value={data.algorithm || 'roundRobin'} onChange={(e) => data.onAlgorithmChange?.(e.target.value as 'roundRobin')} className="w-full mt-1 bg-zinc-700 rounded px-2 py-1 text-white">
+          <option value="roundRobin">Round Robin</option>
+        </select>
+      </div>
+      <div className="mt-2 text-xs text-white">
+        <label>{t('editor.metrics.failure_rate_percent')}</label>
+        <input type="range" min="0" max="100" value={data.failureRate || 0} onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))} className="w-full" />
+        <div className="text-right">{data.failureRate || 0}%</div>
+      </div>
+      <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+        <div className="h-full transition-all duration-500" style={{ width: `${data.metrics?.load || 0}%`, backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e' }} />
+      </div>
     </div>
-  </div>
-);
+  );
+};
+
+const APIGatewayNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
+  const { t } = useTranslation();
+  return (
+    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-indigo-500 bg-zinc-800 min-w-[220px]">
+      <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
+      <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
+      <div className="flex items-center gap-2 font-bold text-white">
+        <Shield className="w-4 h-4" />
+        {data.label}
+      </div>
+      {data.metrics && (
+        <div className="text-xs mt-2">
+          <div className="text-yellow-300">{t('editor.metrics.requests_per_second')}: {data.metrics.requestsPerSecond}</div>
+          <div className="text-green-300">{t('editor.metrics.response_time_ms')}: {data.metrics.responseTime.toFixed(0)}ms</div>
+          <div className="text-cyan-300">{t('editor.metrics.total_latency_ms')}: {data.metrics.cumulativeLatency?.toFixed(0)}ms</div>
+          <div className="text-red-300">{t('editor.metrics.failures_per_s')}: {data.metrics.failedRequests}</div>
+          <div className="text-orange-300 flex justify-between">
+            <span>{t('editor.metrics.throttled_per_s')}</span> 
+            <span className="font-bold">{data.metrics.throttledRequests || 0}</span>
+          </div>
+        </div>
+      )}
+      <div className="mt-2 text-xs text-white">
+        <label>{t('editor.metrics.throughput_reqs')}</label>
+        <input type="range" min="10" max="300" value={data.throughput || 200} onChange={(e) => data.onThroughputChange?.(Number(e.target.value))} className="w-full" />
+        <div className="text-right">{data.throughput || 200} req/s</div>
+      </div>
+      <div className="mt-2 text-xs text-white">
+        <label>{t('editor.metrics.rate_limit_reqs')}</label>
+        <input type="range" min="10" max="250" value={data.rateLimit || 100} onChange={(e) => data.onRateLimitChange?.(Number(e.target.value))} className="w-full" />
+        <div className="text-right">{data.rateLimit || 100} req/s</div>
+      </div>
+      <div className="mt-2 text-xs text-white">
+        <label>{t('editor.metrics.failure_rate_percent')}</label>
+        <input type="range" min="0" max="100" value={data.failureRate || 0} onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))} className="w-full" />
+        <div className="text-right">{data.failureRate || 0}%</div>
+      </div>
+      <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+        <div className="h-full transition-all duration-500" style={{ width: `${data.metrics?.load || 0}%`, backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e' }} />
+      </div>
+    </div>
+  );
+};
 
 // CacheNode component
-const CacheNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
-  <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-pink-500 bg-zinc-800 min-w-[200px]">
-    <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
-    <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
-    <div className="flex items-center gap-2 font-bold text-white">
-      <HardDrive className="w-4 h-4" />
-      {data.label}
-    </div>
-    {data.metrics && (
-      <div className="text-xs mt-2">
-        <div className="text-pink-300">Requisições/s: {data.metrics.requestsPerSecond}</div>
-        <div className="text-green-300">Resposta: {data.metrics.responseTime.toFixed(0)}ms</div>
-        <div className="text-cyan-300">Latência total: {data.metrics.cumulativeLatency?.toFixed(0)}ms</div>
-        <div className="text-yellow-300">Hits/s: {data.metrics.cacheHits}</div>
-        <div className="text-red-300">Misses/s: {data.metrics.cacheMisses}</div>
-        <div className="text-purple-300">Hit Rate: {Math.round((data.metrics.hitRate ?? 0) * 100)}%</div>
-        <div className="text-red-300">Falhas/s: {data.metrics.failedRequests}</div>
+const CacheNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
+  const { t } = useTranslation();
+  return (
+    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-pink-500 bg-zinc-800 min-w-[200px]">
+      <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
+      <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
+      <div className="flex items-center gap-2 font-bold text-white">
+        <HardDrive className="w-4 h-4" />
+        {data.label}
       </div>
-    )}
-    <div className="mt-2 text-xs text-white">
-      <label>Throughput (req/s):</label>
-      <input
-        type="range"
-        min="10"
-        max="300"
-        value={data.throughput || 100}
-        onChange={(e) => data.onThroughputChange?.(Number(e.target.value))}
-        className="w-full"
-      />
-      <div className="text-right">{data.throughput || 100} req/s</div>
+      {data.metrics && (
+        <div className="text-xs mt-2">
+          <div className="text-pink-300">{t('editor.cache_metrics.requests_per_second')}: {data.metrics.requestsPerSecond}</div>
+          <div className="text-green-300">{t('editor.cache_metrics.response_time')}: {data.metrics.responseTime.toFixed(0)}ms</div>
+          <div className="text-cyan-300">{t('editor.cache_metrics.total_latency')}: {data.metrics.cumulativeLatency?.toFixed(0)}ms</div>
+          <div className="text-yellow-300">{t('editor.cache_metrics.hits_per_second')}: {data.metrics.cacheHits}</div>
+          <div className="text-red-300">{t('editor.cache_metrics.misses_per_second')}: {data.metrics.cacheMisses}</div>
+          <div className="text-purple-300">{t('editor.cache_metrics.hit_rate')}: {Math.round((data.metrics.hitRate ?? 0) * 100)}%</div>
+          <div className="text-red-300">{t('editor.cache_metrics.failures_per_second')}: {data.metrics.failedRequests}</div>
+        </div>
+      )}
+      <div className="mt-2 text-xs text-white">
+        <label>{t('editor.metrics.throughput_reqs')}</label>
+        <input
+          type="range"
+          min="10"
+          max="300"
+          value={data.throughput || 100}
+          onChange={(e) => data.onThroughputChange?.(Number(e.target.value))}
+          className="w-full"
+        />
+        <div className="text-right">{data.throughput || 100} req/s</div>
+      </div>
+      <div className="mt-2 text-xs text-white">
+        <label>{t('editor.metrics.hit_rate')} (%):</label>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value={data.hitRate !== undefined ? Math.round(data.hitRate * 100) : 80}
+          onChange={(e) => data.onHitRateChange?.(Number(e.target.value) / 100)}
+          className="w-full"
+        />
+        <div className="text-right">{data.hitRate !== undefined ? Math.round(data.hitRate * 100) : 80}%</div>
+      </div>
+      <div className="mt-2 text-xs text-white">
+        <label>{t('editor.metrics.failure_rate_percent')}</label>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value={data.failureRate || 0}
+          onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))}
+          className="w-full"
+        />
+        <div className="text-right">{data.failureRate || 0}%</div>
+      </div>
+      <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+        <div
+          className="h-full transition-all duration-500"
+          style={{
+            width: `${data.metrics?.load || 0}%`,
+            backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e',
+          }}
+        />
+      </div>
     </div>
-    <div className="mt-2 text-xs text-white">
-      <label>Hit Rate (%):</label>
-      <input
-        type="range"
-        min="0"
-        max="100"
-        value={data.hitRate !== undefined ? Math.round(data.hitRate * 100) : 80}
-        onChange={(e) => data.onHitRateChange?.(Number(e.target.value) / 100)}
-        className="w-full"
-      />
-      <div className="text-right">{data.hitRate !== undefined ? Math.round(data.hitRate * 100) : 80}%</div>
-    </div>
-    <div className="mt-2 text-xs text-white">
-      <label>Taxa de Falha (%):</label>
-      <input
-        type="range"
-        min="0"
-        max="100"
-        value={data.failureRate || 0}
-        onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))}
-        className="w-full"
-      />
-      <div className="text-right">{data.failureRate || 0}%</div>
-    </div>
-    <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
-      <div
-        className="h-full transition-all duration-500"
-        style={{
-          width: `${data.metrics?.load || 0}%`,
-          backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e',
-        }}
-      />
-    </div>
-  </div>
-);
+  );
+};
 
 // MessageQueueNode component
-const MessageQueueNode = ({ data, isConnectable }: NodeProps<NodeData>) => (
-  <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-orange-500 bg-zinc-800 min-w-[220px]">
-    <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
-    <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
-    <div className="flex items-center gap-2 font-bold text-white">
-      <MessageSquare className="w-4 h-4" />
-      {data.label}
-    </div>
-    {data.metrics && (
-      <div className="text-xs mt-2">
-        <div className="text-orange-300">Fila: {data.metrics.queueLength}</div>
-        <div className="text-yellow-300">Enfileiradas/s: {data.metrics.requestsPerSecond}</div>
-        <div className="text-green-300">Desenfileiradas/s: {data.metrics.dequeueRate}</div>
-        <div className="text-red-300">Descartadas/s: {data.metrics.droppedMessages}</div>
-        <div className="text-cyan-300">Latência: {data.metrics.responseTime.toFixed(0)}ms</div>
+const MessageQueueNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
+  const { t } = useTranslation();
+  return (
+    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-orange-500 bg-zinc-800 min-w-[220px]">
+      <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
+      <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
+      <div className="flex items-center gap-2 font-bold text-white">
+        <MessageSquare className="w-4 h-4" />
+        {data.label}
       </div>
-    )}
-    <div className="mt-2 text-xs text-white">
-      <label>Capacidade da Fila:</label>
-      <input
-        type="range"
-        min="10"
-        max="500"
-        value={data.maxQueue || 100}
-        onChange={(e) => data.onMaxQueueChange?.(Number(e.target.value))}
-        className="w-full"
-      />
-      <div className="text-right">{data.maxQueue || 100}</div>
+      {data.metrics && (
+        <div className="text-xs mt-2">
+          <div className="text-orange-300">{t('editor.queue_metrics.queue')}: {data.metrics.queueLength}</div>
+          <div className="text-yellow-300">{t('editor.queue_metrics.enqueued_per_second')}: {data.metrics.requestsPerSecond}</div>
+          <div className="text-green-300">{t('editor.queue_metrics.dequeued_per_second')}: {data.metrics.dequeueRate}</div>
+          <div className="text-red-300">{t('editor.queue_metrics.dropped_per_second')}: {data.metrics.droppedMessages}</div>
+          <div className="text-cyan-300">{t('editor.queue_metrics.latency')}: {data.metrics.responseTime.toFixed(0)}ms</div>
+        </div>
+      )}
+      <div className="mt-2 text-xs text-white">
+        <label>{t('editor.metrics.queue_capacity')}</label>
+        <input
+          type="range"
+          min="10"
+          max="500"
+          value={data.maxQueue || 100}
+          onChange={(e) => data.onMaxQueueChange?.(Number(e.target.value))}
+          className="w-full"
+        />
+        <div className="text-right">{data.maxQueue || 100}</div>
+      </div>
+      <div className="mt-2 text-xs text-white">
+        <label>{t('editor.metrics.dequeue_msgs_per_s')}</label>
+        <input
+          type="range"
+          min="1"
+          max="200"
+          value={data.dequeueRate || 50}
+          onChange={(e) => data.onDequeueRateChange?.(Number(e.target.value))}
+          className="w-full"
+        />
+        <div className="text-right">{data.dequeueRate || 50} msgs/s</div>
+      </div>
+      <div className="mt-3 flex gap-0.5">
+        {Array.from({ length: 10 }).map((_, index) => {
+          const queuePercentage = ((data.metrics?.queueLength || 0) / (data.maxQueue || 100)) * 100;
+          const blockPercentage = (index + 1) * 10;
+          const isActive = queuePercentage >= blockPercentage;
+          const isWarning = queuePercentage >= 80;
+          const isDanger = queuePercentage >= 90;
+          
+          return (
+            <div
+              key={index}
+              className={`h-4 flex-1 rounded-sm transition-colors ${
+                isActive
+                  ? isDanger
+                    ? 'bg-red-500'
+                    : isWarning
+                      ? 'bg-yellow-500'
+                      : 'bg-orange-500'
+                  : 'bg-zinc-700'
+              }`}
+            />
+          );
+        })}
+      </div>
+      <div className="mt-2 text-xs text-white">
+        <label>{t('editor.metrics.failure_rate_percent')}</label>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value={data.failureRate || 0}
+          onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))}
+          className="w-full"
+        />
+        <div className="text-right">{data.failureRate || 0}%</div>
+      </div>
     </div>
-    <div className="mt-2 text-xs text-white">
-      <label>Desenfileirar (msgs/s):</label>
-      <input
-        type="range"
-        min="1"
-        max="200"
-        value={data.dequeueRate || 50}
-        onChange={(e) => data.onDequeueRateChange?.(Number(e.target.value))}
-        className="w-full"
-      />
-      <div className="text-right">{data.dequeueRate || 50} msgs/s</div>
-    </div>
-    <div className="mt-3 flex gap-0.5">
-      {Array.from({ length: 10 }).map((_, index) => {
-        const queuePercentage = ((data.metrics?.queueLength || 0) / (data.maxQueue || 100)) * 100;
-        const blockPercentage = (index + 1) * 10;
-        const isActive = queuePercentage >= blockPercentage;
-        const isWarning = queuePercentage >= 80;
-        const isDanger = queuePercentage >= 90;
-        
-        return (
-          <div
-            key={index}
-            className={`h-4 flex-1 rounded-sm transition-colors ${
-              isActive
-                ? isDanger
-                  ? 'bg-red-500'
-                  : isWarning
-                    ? 'bg-yellow-500'
-                    : 'bg-orange-500'
-                : 'bg-zinc-700'
-            }`}
-          />
-        );
-      })}
-    </div>
-    <div className="mt-2 text-xs text-white">
-      <label>Taxa de Falha (%):</label>
-      <input
-        type="range"
-        min="0"
-        max="100"
-        value={data.failureRate || 0}
-        onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))}
-        className="w-full"
-      />
-      <div className="text-right">{data.failureRate || 0}%</div>
-    </div>
-  </div>
-);
+  );
+};
 
 const nodeTypes = {
   client: ClientNode,
@@ -514,38 +425,7 @@ const nodeTypes = {
   messageQueue: MessageQueueNode,
 };
 
-const initialNodes: Node<NodeData>[] = [
-  {
-    id: '1',
-    type: 'client',
-    data: { label: 'Cliente' },
-    position: { x: 400, y: 50 },
-  },
-  {
-    id: '2',
-    type: 'loadBalancer',
-    data: { label: 'Balanceador', algorithm: 'roundRobin' },
-    position: { x: 400, y: 200 },
-  },
-  {
-    id: '3',
-    type: 'server',
-    data: { label: 'Servidor 1' },
-    position: { x: 200, y: 400 },
-  },
-  {
-    id: '4',
-    type: 'server',
-    data: { label: 'Servidor 2' },
-    position: { x: 600, y: 400 },
-  },
-  {
-    id: '5',
-    type: 'database',
-    data: { label: 'Banco de Dados' },
-    position: { x: 400, y: 550 },
-  },
-];
+// Initial nodes will be created dynamically with translations in the component
 
 const initialEdges: Edge[] = [
   { id: 'e1-2', source: '1', target: '2', animated: true },
@@ -555,16 +435,7 @@ const initialEdges: Edge[] = [
   { id: 'e4-5', source: '4', target: '5', animated: true },
 ];
 
-// Available components configuration
-const availableComponents = [
-  { type: 'client', label: 'Cliente', className: 'border-blue-500', icon: Users },
-  { type: 'loadBalancer', label: 'Balanceador', className: 'border-green-500', icon: Network },
-  { type: 'apiGateway', label: 'API Gateway', className: 'border-indigo-500', icon: Shield },
-  { type: 'cache', label: 'Cache', className: 'border-pink-500', icon: HardDrive },
-  { type: 'messageQueue', label: 'Message Queue', className: 'border-orange-500', icon: MessageSquare },
-  { type: 'server', label: 'Servidor', className: 'border-purple-500', icon: Server },
-  { type: 'database', label: 'Banco de Dados', className: 'border-yellow-500', icon: DatabaseIcon },
-];
+// Available components configuration - this will be dynamically generated in the component using translations
 
 // --- Cost Estimation Model ---
 const COST_MODELS = {
@@ -648,7 +519,43 @@ function withNodeCallbacks(
 }
 
 export default function SimpleSystemEditor() {
-  const [nodes, setNodes, onNodesChange] = useNodesState<NodeData>(initialNodes);
+  const { t } = useTranslation();
+  
+  // Create initial nodes with translations
+  const getInitialNodes = (): Node<NodeData>[] => [
+    {
+      id: '1',
+      type: 'client',
+      data: { label: t('editor.node_labels.client') },
+      position: { x: 400, y: 50 },
+    },
+    {
+      id: '2',
+      type: 'loadBalancer',
+      data: { label: t('editor.node_labels.load_balancer'), algorithm: 'roundRobin' },
+      position: { x: 400, y: 200 },
+    },
+    {
+      id: '3',
+      type: 'server',
+      data: { label: `${t('editor.node_labels.server')} 1` },
+      position: { x: 200, y: 400 },
+    },
+    {
+      id: '4',
+      type: 'server',
+      data: { label: `${t('editor.node_labels.server')} 2` },
+      position: { x: 600, y: 400 },
+    },
+    {
+      id: '5',
+      type: 'database',
+      data: { label: t('editor.node_labels.database') },
+      position: { x: 400, y: 550 },
+    },
+  ];
+
+  const [nodes, setNodes, onNodesChange] = useNodesState<NodeData>(getInitialNodes());
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [isSimulationRunning, setIsSimulationRunning] = useState(false);
   const [roundRobinCounters, setRoundRobinCounters] = useState<Record<string, number>>({});
@@ -663,6 +570,17 @@ export default function SimpleSystemEditor() {
   
   // Hidden file input for importing
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Available components configuration with translations
+  const availableComponents = [
+    { type: 'client', label: t('editor.components.client'), className: 'border-blue-500', icon: Users },
+    { type: 'loadBalancer', label: t('editor.components.load_balancer'), className: 'border-green-500', icon: Network },
+    { type: 'apiGateway', label: t('editor.components.api_gateway'), className: 'border-indigo-500', icon: Shield },
+    { type: 'cache', label: t('editor.components.cache'), className: 'border-pink-500', icon: HardDrive },
+    { type: 'messageQueue', label: t('editor.components.message_queue'), className: 'border-orange-500', icon: MessageSquare },
+    { type: 'server', label: t('editor.components.server'), className: 'border-purple-500', icon: Server },
+    { type: 'database', label: t('editor.components.database'), className: 'border-yellow-500', icon: DatabaseIcon },
+  ];
 
   // --- All slider callbacks ---
   const onThroughputChange = useCallback((nodeId: string, throughput: number) => {
@@ -1282,18 +1200,18 @@ export default function SimpleSystemEditor() {
       };
 
       const newNodeLabel = type === 'server' 
-        ? `Servidor ${nodes.filter(n => n.type === 'server').length + 1}`
+        ? `${t('editor.node_labels.server')} ${nodes.filter(n => n.type === 'server').length + 1}`
         : type === 'database'
-          ? `Banco de Dados ${nodes.filter(n => n.type === 'database').length + 1}`
+          ? `${t('editor.node_labels.database')} ${nodes.filter(n => n.type === 'database').length + 1}`
           : type === 'loadBalancer'
-            ? `Load Balancer ${nodes.filter(n => n.type === 'loadBalancer').length + 1}`
+            ? `${t('editor.node_labels.load_balancer')} ${nodes.filter(n => n.type === 'loadBalancer').length + 1}`
             : type === 'apiGateway'
-              ? `API Gateway ${nodes.filter(n => n.type === 'apiGateway').length + 1}`
+              ? `${t('editor.node_labels.api_gateway')} ${nodes.filter(n => n.type === 'apiGateway').length + 1}`
               : type === 'cache'
-                ? `Cache ${nodes.filter(n => n.type === 'cache').length + 1}`
+                ? `${t('editor.node_labels.cache')} ${nodes.filter(n => n.type === 'cache').length + 1}`
                 : type === 'messageQueue'
-                  ? `Message Queue ${nodes.filter(n => n.type === 'messageQueue').length + 1}`
-                  : `Cliente ${nodes.filter(n => n.type === 'client').length + 1}`;
+                  ? `${t('editor.node_labels.message_queue')} ${nodes.filter(n => n.type === 'messageQueue').length + 1}`
+                  : `${t('editor.node_labels.client')} ${nodes.filter(n => n.type === 'client').length + 1}`;
 
       // Set default values based on node type
       let nodeData: any = { 
@@ -1454,7 +1372,7 @@ export default function SimpleSystemEditor() {
         
         // Basic validation
         if (!design.nodes || !design.edges || !design.version) {
-          throw new Error('Arquivo inválido ou corrompido');
+          throw new Error(t('editor.errors.invalid_file'));
         }
         
         // Import the design
@@ -1482,7 +1400,7 @@ export default function SimpleSystemEditor() {
         }
       } catch (error) {
         console.error('Error importing file:', error);
-        setImportError('Erro ao importar arquivo. Formato inválido ou corrompido.');
+        setImportError(t('editor.errors.import_error'));
         
         // Clear the file input
         if (fileInputRef.current) {
@@ -1492,7 +1410,7 @@ export default function SimpleSystemEditor() {
     };
     
     reader.onerror = () => {
-      setImportError('Erro ao ler o arquivo. Tente novamente.');
+      setImportError(t('editor.errors.read_error'));
       
       // Clear the file input
       if (fileInputRef.current) {
@@ -1520,7 +1438,7 @@ export default function SimpleSystemEditor() {
     <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
       <div className="prose prose-invert prose-lg max-w-none mb-8">
         <h1 className="text-3xl font-bold mb-4 text-blue-400">
-          Simulador de Sistema Distribuído
+          {t('editor.title')}
         </h1>
         <div className="flex flex-col gap-4 mb-4">
           <div className="flex items-center gap-4 flex-wrap">
@@ -1530,7 +1448,7 @@ export default function SimpleSystemEditor() {
                 isSimulationRunning ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
               } text-white rounded transition-colors`}
             >
-              {isSimulationRunning ? 'Parar Simulação' : 'Iniciar Simulação'}
+              {isSimulationRunning ? t('editor.buttons.stop') : t('editor.buttons.start')}
             </button>
             
             <div className="border-l border-zinc-700 h-8 mx-2"></div>
@@ -1542,7 +1460,7 @@ export default function SimpleSystemEditor() {
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
               </svg>
-              Exportar (.din)
+              {t('editor.buttons.export')}
             </button>
             
             <button
@@ -1552,10 +1470,10 @@ export default function SimpleSystemEditor() {
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
               </svg>
-              Importar (.din)
+              {t('editor.buttons.import')}
             </button>
             
-          
+            
             
             <input 
               type="file" 
@@ -1578,18 +1496,18 @@ export default function SimpleSystemEditor() {
           )}
 
           <div className="flex gap-4 text-sm text-zinc-400">
-            <div>Status da Carga:</div>
+            <div>{t('editor.labels.load_status')}</div>
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 rounded-full bg-green-500"></div>
-              <span>Normal (&lt;60%)</span>
+              <span>{t('editor.labels.normal')}</span>
             </div>
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
-              <span>Alerta (60-80%)</span>
+              <span>{t('editor.labels.warning')}</span>
             </div>
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 rounded-full bg-red-500"></div>
-              <span>Crítico (&gt;80%)</span>
+              <span>{t('editor.labels.critical')}</span>
             </div>
           </div>
 
@@ -1598,10 +1516,10 @@ export default function SimpleSystemEditor() {
             <div
               className={`flex items-center justify-between px-4 py-2 cursor-pointer select-none rounded-t-lg ${!isCostPanelOpen ? 'bg-zinc-900/80' : ''}`}
               onClick={() => setIsCostPanelOpen(open => !open)}
-              aria-label={isCostPanelOpen ? 'Esconder Estimativa de Custo' : 'Mostrar Estimativa de Custo'}
+              aria-label={isCostPanelOpen ? t('editor.labels.monthly_cost_estimate', { provider: provider === 'aws' ? 'AWS' : 'Google Cloud' }) : t('editor.labels.monthly_cost_estimate', { provider: provider === 'aws' ? 'AWS' : 'Google Cloud' })}
             >
               <div className="flex items-center gap-3 flex-wrap">
-                <label className="text-white font-semibold">Cloud:</label>
+                <label className="text-white font-semibold">{t('editor.labels.cloud')}</label>
                 <select
                   value={provider}
                   onClick={e => e.stopPropagation()} // Prevent toggle when changing provider
@@ -1612,7 +1530,7 @@ export default function SimpleSystemEditor() {
                   <option value="gcp">Google Cloud</option>
                 </select>
                 <span className="text-white font-bold text-lg ml-2 whitespace-nowrap">
-                  Estimativa de Custo Mensal ({provider === 'aws' ? 'AWS' : 'Google Cloud'})
+                  {t('editor.labels.monthly_cost_estimate', { provider: provider === 'aws' ? 'AWS' : 'Google Cloud' })}
                 </span>
               </div>
               <ChevronDown
@@ -1635,12 +1553,13 @@ export default function SimpleSystemEditor() {
                   </div>
                 ))}
                 <div className="flex justify-between border-t border-zinc-700 mt-2 pt-2 font-bold">
-                  <span className="text-white">Total</span>
+                  <span className="text-white">{t('editor.labels.total')}</span>
                   <span className="text-green-300 font-mono text-lg">${totalCost.toFixed(2)}</span>
                 </div>
               </div>
               <div className="text-xs text-zinc-400 mt-2 px-4 pb-2">
-                * Estimativa baseada em preços públicos de {provider === 'aws' ? 'AWS' : 'Google Cloud'} (2024), simplificada para simulação.<br />
+                {t('editor.labels.note_prefix', { provider: provider === 'aws' ? 'AWS' : 'Google Cloud' })}
+                <br />
                 <a href="https://aws.amazon.com/pricing/" target="_blank" rel="noopener noreferrer" className="underline">AWS Pricing</a> | <a href="https://cloud.google.com/pricing" target="_blank" rel="noopener noreferrer" className="underline">Google Cloud Pricing</a>
               </div>
             </div>
@@ -1674,7 +1593,7 @@ export default function SimpleSystemEditor() {
         >
           <Panel position="top-left" className="bg-zinc-800 p-4 rounded-lg">
             <div className="flex flex-col gap-2">
-              <h3 className="text-white font-semibold mb-2">Componentes</h3>
+              <h3 className="text-white font-semibold mb-2">{t('editor.labels.components')}</h3>
               <div className="flex flex-col gap-2">
                 {availableComponents.map((component) => {
                   const Icon = component.icon;
@@ -1705,10 +1624,7 @@ export default function SimpleSystemEditor() {
         {contextMenu && (
           <div
             className="absolute z-50 bg-zinc-800 rounded shadow-lg p-2"
-            style={{
-              top: contextMenu.y,
-              left: contextMenu.x,
-            }}
+            style={{ top: contextMenu.y, left: contextMenu.x }}
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -1718,7 +1634,7 @@ export default function SimpleSystemEditor() {
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
-              Remover Conexão
+              {t('editor.buttons.remove_edge')}
             </button>
           </div>
         )}

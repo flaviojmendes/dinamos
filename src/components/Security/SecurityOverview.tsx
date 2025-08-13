@@ -1,17 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function SecurityOverview() {
+  const { t } = useTranslation();
+  const base = 'security';
+
   return (
     <div className="min-h-full bg-gradient-to-b from-zinc-900 to-black">
       <div className="py-12 px-6 max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-3xl font-bold text-white mb-4">
-            Segurança em Sistemas Distribuídos
+            {t(`${base}.title`)}
           </h1>
           <p className="text-lg text-zinc-400">
-            Explore os principais conceitos e práticas de segurança em sistemas distribuídos
+            {t(`${base}.subtitle`)}
           </p>
         </div>
 
@@ -24,8 +28,7 @@ export default function SecurityOverview() {
               </svg>
             </div>
             <p className="text-blue-300">
-              A segurança é um aspecto crítico em sistemas distribuídos. Entenda os principais
-              desafios e soluções para proteger seus sistemas.
+              {t(`${base}.info_banner`)}
             </p>
           </div>
         </div>
@@ -45,17 +48,17 @@ export default function SecurityOverview() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-purple-400 transition-colors">
-                  Autenticação
+                  {t(`${base}.topics.authentication.title`)}
                 </h2>
                 <p className="text-zinc-400 mb-4">
-                  Aprenda como verificar a identidade dos usuários e sistemas de forma segura e escalável.
+                  {t(`${base}.topics.authentication.description`)}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-purple-500/20 text-purple-300 rounded">
-                    Identidade
+                    {t(`${base}.topics.authentication.tag1`)}
                   </span>
                   <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
-                    Segurança
+                    {t(`${base}.topics.authentication.tag2`)}
                   </span>
                 </div>
               </div>
@@ -75,17 +78,17 @@ export default function SecurityOverview() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-green-400 transition-colors">
-                  Autorização
+                  {t(`${base}.topics.authorization.title`)}
                 </h2>
                 <p className="text-zinc-400 mb-4">
-                  Descubra como implementar controle de acesso granular e gerenciar permissões.
+                  {t(`${base}.topics.authorization.description`)}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-green-500/20 text-green-300 rounded">
-                    Permissões
+                    {t(`${base}.topics.authorization.tag1`)}
                   </span>
                   <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
-                    Controle
+                    {t(`${base}.topics.authorization.tag2`)}
                   </span>
                 </div>
               </div>
@@ -105,17 +108,17 @@ export default function SecurityOverview() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-yellow-400 transition-colors">
-                  Criptografia
+                  {t(`${base}.topics.cryptography.title`)}
                 </h2>
                 <p className="text-zinc-400 mb-4">
-                  Entenda como proteger dados em trânsito e em repouso usando criptografia.
+                  {t(`${base}.topics.cryptography.description`)}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-yellow-500/20 text-yellow-300 rounded">
-                    Proteção
+                    {t(`${base}.topics.cryptography.tag1`)}
                   </span>
                   <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
-                    Privacidade
+                    {t(`${base}.topics.cryptography.tag2`)}
                   </span>
                 </div>
               </div>
@@ -135,17 +138,17 @@ export default function SecurityOverview() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-blue-400 transition-colors">
-                  Tokens e JWT
+                  {t(`${base}.topics.tokens.title`)}
                 </h2>
                 <p className="text-zinc-400 mb-4">
-                  Aprenda sobre gerenciamento de sessões e tokens de acesso em sistemas distribuídos.
+                  {t(`${base}.topics.tokens.description`)}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
-                    Sessões
+                    {t(`${base}.topics.tokens.tag1`)}
                   </span>
                   <span className="px-2 py-1 bg-purple-500/20 text-purple-300 rounded">
-                    Stateless
+                    {t(`${base}.topics.tokens.tag2`)}
                   </span>
                 </div>
               </div>
@@ -165,17 +168,17 @@ export default function SecurityOverview() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-green-400 transition-colors">
-                  SSL/TLS
+                  {t(`${base}.topics.ssl_tls.title`)}
                 </h2>
                 <p className="text-zinc-400 mb-4">
-                  Explore como estabelecer comunicação segura entre sistemas usando SSL/TLS.
+                  {t(`${base}.topics.ssl_tls.description`)}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-green-500/20 text-green-300 rounded">
-                    HTTPS
+                    {t(`${base}.topics.ssl_tls.tag1`)}
                   </span>
                   <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
-                    Certificados
+                    {t(`${base}.topics.ssl_tls.tag2`)}
                   </span>
                 </div>
               </div>
@@ -195,17 +198,17 @@ export default function SecurityOverview() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-red-400 transition-colors">
-                  Ataques Comuns
+                  {t(`${base}.topics.attacks.title`)}
                 </h2>
                 <p className="text-zinc-400 mb-4">
-                  Conheça os ataques mais comuns e aprenda como proteger seus sistemas.
+                  {t(`${base}.topics.attacks.description`)}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-red-500/20 text-red-300 rounded">
-                    Prevenção
+                    {t(`${base}.topics.attacks.tag1`)}
                   </span>
                   <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
-                    Mitigação
+                    {t(`${base}.topics.attacks.tag2`)}
                   </span>
                 </div>
               </div>

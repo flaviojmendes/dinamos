@@ -1,8 +1,34 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const RealCases: React.FC = () => {
+  const { t } = useTranslation();
+  const base = 'real_cases';
+
+  const benefits = t(`${base}.benefits`, { returnObjects: true }) as {
+    practical_learning: { title: string; desc: string };
+    technical_evolution: { title: string; desc: string };
+    valuable_insights: { title: string; desc: string };
+  };
+
+  const cases = t(`${base}.cases`, { returnObjects: true }) as {
+    netflix: { title: string; desc: string };
+    uber: { title: string; desc: string };
+    whatsapp: { title: string; desc: string };
+    spotify: { title: string; desc: string };
+  };
+
+  const decisions = t(`${base}.decisions`, { returnObjects: true }) as {
+    netflix_open_connect: string;
+    whatsapp_erlang: string;
+    uber_geolocation: string;
+    spotify_microservices: string;
+    youtube_vitess: string;
+    bitly_consistency: string;
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -13,38 +39,38 @@ const RealCases: React.FC = () => {
       {/* Hero Section */}
       <div className="space-y-4 text-center">
         <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-          Aprenda com os Gigantes
+          {t(`${base}.title`)}
         </h1>
         <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
-          Mergulhe nas arquiteturas e decisões técnicas das empresas que definem o futuro da tecnologia
+          {t(`${base}.subtitle`)}
         </p>
       </div>
 
       {/* Key Benefits Section */}
       <section className="bg-zinc-900/50 rounded-lg p-8 space-y-6">
         <h2 className="text-3xl font-semibold text-blue-500 text-center mb-8">
-          Por que estudar casos reais?
+          {t(`${base}.why_study_title`)}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-zinc-800/50 p-6 rounded-lg">
             <div className="text-blue-400 text-4xl mb-4">🎯</div>
-            <h3 className="text-xl font-medium text-blue-400 mb-2">Aprendizado Prático</h3>
+            <h3 className="text-xl font-medium text-blue-400 mb-2">{benefits.practical_learning.title}</h3>
             <p className="text-zinc-300">
-              Veja como problemas reais são resolvidos em escala global, com decisões e trade-offs práticos.
+              {benefits.practical_learning.desc}
             </p>
           </div>
           <div className="bg-zinc-800/50 p-6 rounded-lg">
             <div className="text-blue-400 text-4xl mb-4">🚀</div>
-            <h3 className="text-xl font-medium text-blue-400 mb-2">Evolução Técnica</h3>
+            <h3 className="text-xl font-medium text-blue-400 mb-2">{benefits.technical_evolution.title}</h3>
             <p className="text-zinc-300">
-              Entenda como sistemas evoluem de MVPs para arquiteturas que atendem bilhões de usuários.
+              {benefits.technical_evolution.desc}
             </p>
           </div>
           <div className="bg-zinc-800/50 p-6 rounded-lg">
             <div className="text-blue-400 text-4xl mb-4">💡</div>
-            <h3 className="text-xl font-medium text-blue-400 mb-2">Insights Valiosos</h3>
+            <h3 className="text-xl font-medium text-blue-400 mb-2">{benefits.valuable_insights.title}</h3>
             <p className="text-zinc-300">
-              Descubra padrões e práticas que podem ser aplicados em projetos de qualquer escala.
+              {benefits.valuable_insights.desc}
             </p>
           </div>
         </div>
@@ -53,50 +79,50 @@ const RealCases: React.FC = () => {
       {/* Featured Case Studies */}
       <section className="bg-zinc-900/50 rounded-lg p-8 space-y-6">
         <h2 className="text-3xl font-semibold text-blue-500 text-center mb-8">
-          Casos de Estudo em Destaque
+          {t(`${base}.featured_title`)}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Link to="/casos-reais/netflix" className="group">
             <div className="bg-gradient-to-br from-red-500/10 to-red-700/10 p-6 rounded-lg transition-all duration-300 hover:scale-[1.02] hover:from-red-500/20 hover:to-red-700/20">
-              <h3 className="text-xl font-medium text-red-400 mb-2">Netflix</h3>
+              <h3 className="text-xl font-medium text-red-400 mb-2">{cases.netflix.title}</h3>
               <p className="text-zinc-300 mb-4">
-                Como entregar streaming de vídeo para milhões de usuários com baixa latência e alta qualidade.
+                {cases.netflix.desc}
               </p>
               <div className="text-red-400 group-hover:translate-x-2 transition-transform">
-                Explorar →
+                {t(`${base}.explore_button`)}
               </div>
             </div>
           </Link>
           <Link to="/casos-reais/uber" className="group">
             <div className="bg-gradient-to-br from-zinc-500/10 to-zinc-700/10 p-6 rounded-lg transition-all duration-300 hover:scale-[1.02] hover:from-zinc-500/20 hover:to-zinc-700/20">
-              <h3 className="text-xl font-medium text-zinc-200 mb-2">Uber</h3>
+              <h3 className="text-xl font-medium text-zinc-200 mb-2">{cases.uber.title}</h3>
               <p className="text-zinc-300 mb-4">
-                Sistema de matching em tempo real e geolocalização em escala global.
+                {cases.uber.desc}
               </p>
               <div className="text-zinc-200 group-hover:translate-x-2 transition-transform">
-                Explorar →
+                {t(`${base}.explore_button`)}
               </div>
             </div>
           </Link>
           <Link to="/casos-reais/whatsapp" className="group">
             <div className="bg-gradient-to-br from-emerald-500/10 to-emerald-700/10 p-6 rounded-lg transition-all duration-300 hover:scale-[1.02] hover:from-emerald-500/20 hover:to-emerald-700/20">
-              <h3 className="text-xl font-medium text-emerald-400 mb-2">WhatsApp</h3>
+              <h3 className="text-xl font-medium text-emerald-400 mb-2">{cases.whatsapp.title}</h3>
               <p className="text-zinc-300 mb-4">
-                Arquitetura de mensagens em tempo real com criptografia ponta a ponta.
+                {cases.whatsapp.desc}
               </p>
               <div className="text-emerald-400 group-hover:translate-x-2 transition-transform">
-                Explorar →
+                {t(`${base}.explore_button`)}
               </div>
             </div>
           </Link>
           <Link to="/casos-reais/spotify" className="group">
             <div className="bg-gradient-to-br from-green-500/10 to-green-700/10 p-6 rounded-lg transition-all duration-300 hover:scale-[1.02] hover:from-green-500/20 hover:to-green-700/20">
-              <h3 className="text-xl font-medium text-green-400 mb-2">Spotify</h3>
+              <h3 className="text-xl font-medium text-green-400 mb-2">{cases.spotify.title}</h3>
               <p className="text-zinc-300 mb-4">
-                Streaming de áudio e recomendação de música em escala massiva.
+                {cases.spotify.desc}
               </p>
               <div className="text-green-400 group-hover:translate-x-2 transition-transform">
-                Explorar →
+                {t(`${base}.explore_button`)}
               </div>
             </div>
           </Link>
@@ -106,7 +132,7 @@ const RealCases: React.FC = () => {
       {/* Technical Decisions Section */}
       <section className="bg-zinc-900/50 rounded-lg p-8 space-y-6">
         <h2 className="text-3xl font-semibold text-blue-500 text-center mb-8">
-          Decisões Técnicas que Mudaram o Jogo
+          {t(`${base}.tech_decisions_title`)}
         </h2>
         <div className="space-y-6">
           <div className="bg-zinc-800/50 p-6 rounded-lg">
@@ -116,8 +142,7 @@ const RealCases: React.FC = () => {
               <span className="text-zinc-400">Open Connect</span>
             </div>
             <p className="text-zinc-300">
-              Por que a Netflix decidiu construir sua própria CDN em vez de usar soluções de terceiros? 
-              Uma decisão que revolucionou a entrega de conteúdo e economizou milhões em custos de banda.
+              {decisions.netflix_open_connect}
             </p>
           </div>
 
@@ -128,8 +153,7 @@ const RealCases: React.FC = () => {
               <span className="text-zinc-400">Erlang</span>
             </div>
             <p className="text-zinc-300">
-              A escolha do Erlang para o backend do WhatsApp permitiu que apenas 50 engenheiros 
-              suportassem 1 bilhão de usuários. Uma lição sobre escolher a tecnologia certa para o problema certo.
+              {decisions.whatsapp_erlang}
             </p>
           </div>
 
@@ -140,8 +164,7 @@ const RealCases: React.FC = () => {
               <span className="text-zinc-400">Geolocalização</span>
             </div>
             <p className="text-zinc-300">
-              O desenvolvimento do H3, um sistema de indexação geoespacial hierárquico, 
-              resolveu problemas complexos de otimização de rotas e matching em tempo real.
+              {decisions.uber_geolocation}
             </p>
           </div>
 
@@ -152,8 +175,7 @@ const RealCases: React.FC = () => {
               <span className="text-zinc-400">Microsserviços</span>
             </div>
             <p className="text-zinc-300">
-              A migração para uma arquitetura de microsserviços permitiu ao Spotify escalar seus times 
-              e sua infraestrutura de forma independente, acelerando a inovação.
+              {decisions.spotify_microservices}
             </p>
           </div>
 
@@ -164,8 +186,7 @@ const RealCases: React.FC = () => {
               <span className="text-zinc-400">Vitess</span>
             </div>
             <p className="text-zinc-300">
-              O desenvolvimento do Vitess para escalar MySQL horizontalmente se tornou uma solução 
-              essencial para muitas outras empresas enfrentando desafios similares de dados.
+              {decisions.youtube_vitess}
             </p>
           </div>
 
@@ -176,8 +197,7 @@ const RealCases: React.FC = () => {
               <span className="text-zinc-400">Consistência</span>
             </div>
             <p className="text-zinc-300">
-              A escolha de consistência forte para URLs curtas enquanto mantém consistência eventual 
-              para analytics demonstra como balancear requisitos diferentes no mesmo sistema.
+              {decisions.bitly_consistency}
             </p>
           </div>
         </div>

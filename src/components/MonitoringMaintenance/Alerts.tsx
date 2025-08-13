@@ -1,8 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function Alerts() {
+  const { t } = useTranslation();
+  const base = 'monitoring_maintenance.alerts';
+
   return (
     <div className="max-w-4xl mx-auto">
       {/* Introduction */}
@@ -13,18 +17,14 @@ export default function Alerts() {
         className="mb-12"
       >
         <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-          Alertas e Notificações em Sistemas Distribuídos
+          {t(`${base}.title`)}
         </h1>
         <p className="text-lg text-zinc-300 mb-6">
-          Um sistema eficaz de alertas e notificações é crucial para manter a saúde e 
-          disponibilidade de sistemas distribuídos. Ele permite identificar e responder 
-          rapidamente a problemas antes que afetem significativamente os usuários.
+          {t(`${base}.intro_p1`)}
         </p>
         <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-blue-300">
-          <strong className="block mb-2">💡 Conceito Chave:</strong>
-          Alertas devem ser acionáveis, relevantes e evitar fadiga de alertas. Um bom sistema
-          de alertas diferencia entre situações críticas que exigem ação imediata e condições
-          que podem ser tratadas durante o horário normal de trabalho.
+          <strong className="block mb-2">💡 {t(`${base}.key_concept_label`)}:</strong>
+          {t(`${base}.key_concept_text`)}
         </div>
       </motion.div>
 
@@ -35,38 +35,35 @@ export default function Alerts() {
         transition={{ duration: 0.5, delay: 0.2 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Tipos de Alertas</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t(`${base}.types_title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Critical Alerts */}
           <div className="bg-gradient-to-br from-red-500/10 to-red-600/10 rounded-xl p-6 border border-red-500/20">
-            <h3 className="text-xl font-bold mb-4 text-red-400">Críticos</h3>
+            <h3 className="text-xl font-bold mb-4 text-red-400">{t(`${base}.types.critical.title`)}</h3>
             <ul className="space-y-2 text-zinc-300 text-sm">
-              <li>• Indisponibilidade de serviço</li>
-              <li>• Falhas de segurança</li>
-              <li>• Perda de dados</li>
-              <li>• Violações de SLA</li>
+              {(t(`${base}.types.critical.items`, { returnObjects: true }) as string[]).map((item, idx) => (
+                <li key={idx}>• {item}</li>
+              ))}
             </ul>
           </div>
 
           {/* Warning Alerts */}
           <div className="bg-gradient-to-br from-yellow-500/10 to-yellow-600/10 rounded-xl p-6 border border-yellow-500/20">
-            <h3 className="text-xl font-bold mb-4 text-yellow-400">Avisos</h3>
+            <h3 className="text-xl font-bold mb-4 text-yellow-400">{t(`${base}.types.warning.title`)}</h3>
             <ul className="space-y-2 text-zinc-300 text-sm">
-              <li>• Alta utilização de recursos</li>
-              <li>• Degradação de performance</li>
-              <li>• Tendências anômalas</li>
-              <li>• Erros não críticos</li>
+              {(t(`${base}.types.warning.items`, { returnObjects: true }) as string[]).map((item, idx) => (
+                <li key={idx}>• {item}</li>
+              ))}
             </ul>
           </div>
 
           {/* Info Alerts */}
           <div className="bg-gradient-to-br from-green-500/10 to-green-600/10 rounded-xl p-6 border border-green-500/20">
-            <h3 className="text-xl font-bold mb-4 text-green-400">Informativos</h3>
+            <h3 className="text-xl font-bold mb-4 text-green-400">{t(`${base}.types.info.title`)}</h3>
             <ul className="space-y-2 text-zinc-300 text-sm">
-              <li>• Deploys realizados</li>
-              <li>• Manutenções programadas</li>
-              <li>• Mudanças de configuração</li>
-              <li>• Eventos de rotina</li>
+              {(t(`${base}.types.info.items`, { returnObjects: true }) as string[]).map((item, idx) => (
+                <li key={idx}>• {item}</li>
+              ))}
             </ul>
           </div>
         </div>
@@ -79,35 +76,33 @@ export default function Alerts() {
         transition={{ duration: 0.5, delay: 0.3 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Configuração de Alertas</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t(`${base}.config_title`)}</h2>
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-xl font-bold mb-4 text-blue-400">Thresholds</h3>
+              <h3 className="text-xl font-bold mb-4 text-blue-400">{t(`${base}.thresholds_title`)}</h3>
               <div className="space-y-4">
                 <div className="bg-zinc-800/50 p-4 rounded-lg">
-                  <h4 className="text-white font-medium mb-2">Estáticos</h4>
+                  <h4 className="text-white font-medium mb-2">{t(`${base}.static_title`)}</h4>
                   <ul className="text-zinc-300 space-y-2 text-sm">
-                    <li>• CPU &gt; 80%</li>
-                    <li>• Memória &gt; 90%</li>
-                    <li>• Latência &gt; 500ms</li>
-                    <li>• Error rate &gt; 1%</li>
+                    {(t(`${base}.static_items`, { returnObjects: true }) as string[]).map((item, idx) => (
+                      <li key={idx}>• {item}</li>
+                    ))}
                   </ul>
                 </div>
                 <div className="bg-zinc-800/50 p-4 rounded-lg">
-                  <h4 className="text-white font-medium mb-2">Dinâmicos</h4>
+                  <h4 className="text-white font-medium mb-2">{t(`${base}.dynamic_title`)}</h4>
                   <ul className="text-zinc-300 space-y-2 text-sm">
-                    <li>• Baseados em histórico</li>
-                    <li>• Machine learning</li>
-                    <li>• Análise de tendências</li>
-                    <li>• Sazonalidade</li>
+                    {(t(`${base}.dynamic_items`, { returnObjects: true }) as string[]).map((item, idx) => (
+                      <li key={idx}>• {item}</li>
+                    ))}
                   </ul>
                 </div>
               </div>
             </div>
 
             <div>
-              <h3 className="text-xl font-bold mb-4 text-purple-400">Exemplo de Configuração</h3>
+              <h3 className="text-xl font-bold mb-4 text-purple-400">{t(`${base}.example_title`)}</h3>
               <div className="bg-black/30 p-4 rounded-lg overflow-x-auto">
                 <pre className="text-sm text-zinc-300">
 {`{
@@ -146,19 +141,19 @@ export default function Alerts() {
         transition={{ duration: 0.5, delay: 0.4 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Canais de Notificação</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t(`${base}.channels_title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Synchronous */}
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-            <h3 className="text-xl font-bold mb-4 text-blue-400">Síncronos</h3>
+            <h3 className="text-xl font-bold mb-4 text-blue-400">{t(`${base}.sync_title`)}</h3>
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-blue-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
                 <div>
-                  <span className="text-white font-medium">SMS</span>
-                  <p className="text-zinc-400 text-sm">Para alertas críticos que exigem ação imediata</p>
+                  <span className="text-white font-medium">{t(`${base}.sync_channels.sms.title`)}</span>
+                  <p className="text-zinc-400 text-sm">{t(`${base}.sync_channels.sms.desc`)}</p>
                 </div>
               </li>
               <li className="flex items-start gap-3">
@@ -166,8 +161,8 @@ export default function Alerts() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
                 <div>
-                  <span className="text-white font-medium">Ligações</span>
-                  <p className="text-zinc-400 text-sm">Para escalação de incidentes críticos</p>
+                  <span className="text-white font-medium">{t(`${base}.sync_channels.calls.title`)}</span>
+                  <p className="text-zinc-400 text-sm">{t(`${base}.sync_channels.calls.desc`)}</p>
                 </div>
               </li>
               <li className="flex items-start gap-3">
@@ -175,8 +170,8 @@ export default function Alerts() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
                 <div>
-                  <span className="text-white font-medium">PagerDuty</span>
-                  <p className="text-zinc-400 text-sm">Gestão de plantão e escalação</p>
+                  <span className="text-white font-medium">{t(`${base}.sync_channels.pagerduty.title`)}</span>
+                  <p className="text-zinc-400 text-sm">{t(`${base}.sync_channels.pagerduty.desc`)}</p>
                 </div>
               </li>
             </ul>
@@ -184,15 +179,15 @@ export default function Alerts() {
 
           {/* Asynchronous */}
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-            <h3 className="text-xl font-bold mb-4 text-purple-400">Assíncronos</h3>
+            <h3 className="text-xl font-bold mb-4 text-purple-400">{t(`${base}.async_title`)}</h3>
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-purple-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
                 <div>
-                  <span className="text-white font-medium">Email</span>
-                  <p className="text-zinc-400 text-sm">Para notificações não urgentes e relatórios</p>
+                  <span className="text-white font-medium">{t(`${base}.async_channels.email.title`)}</span>
+                  <p className="text-zinc-400 text-sm">{t(`${base}.async_channels.email.desc`)}</p>
                 </div>
               </li>
               <li className="flex items-start gap-3">
@@ -200,8 +195,8 @@ export default function Alerts() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
                 <div>
-                  <span className="text-white font-medium">Slack</span>
-                  <p className="text-zinc-400 text-sm">Para comunicação em equipe e discussões</p>
+                  <span className="text-white font-medium">{t(`${base}.async_channels.slack.title`)}</span>
+                  <p className="text-zinc-400 text-sm">{t(`${base}.async_channels.slack.desc`)}</p>
                 </div>
               </li>
               <li className="flex items-start gap-3">
@@ -209,8 +204,8 @@ export default function Alerts() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
                 <div>
-                  <span className="text-white font-medium">Dashboards</span>
-                  <p className="text-zinc-400 text-sm">Para visualização e histórico de alertas</p>
+                  <span className="text-white font-medium">{t(`${base}.async_channels.dashboards.title`)}</span>
+                  <p className="text-zinc-400 text-sm">{t(`${base}.async_channels.dashboards.desc`)}</p>
                 </div>
               </li>
             </ul>
@@ -225,62 +220,62 @@ export default function Alerts() {
         transition={{ duration: 0.5, delay: 0.5 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Gestão de Incidentes</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t(`${base}.incident_title`)}</h2>
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-xl font-bold mb-4 text-green-400">Processo</h3>
+              <h3 className="text-xl font-bold mb-4 text-green-400">{t(`${base}.process_title`)}</h3>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">
                   <div className="bg-green-500/20 text-green-400 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-1">1</div>
                   <div>
-                    <span className="text-white font-medium">Detecção</span>
-                    <p className="text-zinc-400 text-sm">Identificação do problema através de alertas</p>
+                    <span className="text-white font-medium">{t(`${base}.process_steps.detection.title`)}</span>
+                    <p className="text-zinc-400 text-sm">{t(`${base}.process_steps.detection.desc`)}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="bg-green-500/20 text-green-400 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-1">2</div>
                   <div>
-                    <span className="text-white font-medium">Resposta</span>
-                    <p className="text-zinc-400 text-sm">Acionamento da equipe responsável</p>
+                    <span className="text-white font-medium">{t(`${base}.process_steps.response.title`)}</span>
+                    <p className="text-zinc-400 text-sm">{t(`${base}.process_steps.response.desc`)}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="bg-green-500/20 text-green-400 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-1">3</div>
                   <div>
-                    <span className="text-white font-medium">Mitigação</span>
-                    <p className="text-zinc-400 text-sm">Ações para resolver o problema</p>
+                    <span className="text-white font-medium">{t(`${base}.process_steps.mitigation.title`)}</span>
+                    <p className="text-zinc-400 text-sm">{t(`${base}.process_steps.mitigation.desc`)}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="bg-green-500/20 text-green-400 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-1">4</div>
                   <div>
-                    <span className="text-white font-medium">Resolução</span>
-                    <p className="text-zinc-400 text-sm">Correção definitiva e documentação</p>
+                    <span className="text-white font-medium">{t(`${base}.process_steps.resolution.title`)}</span>
+                    <p className="text-zinc-400 text-sm">{t(`${base}.process_steps.resolution.desc`)}</p>
                   </div>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h3 className="text-xl font-bold mb-4 text-yellow-400">Ferramentas</h3>
+              <h3 className="text-xl font-bold mb-4 text-yellow-400">{t(`${base}.tools_title`)}</h3>
               <div className="space-y-4">
                 <div className="bg-zinc-800/50 p-4 rounded-lg">
-                  <h4 className="text-white font-medium mb-2">PagerDuty</h4>
+                  <h4 className="text-white font-medium mb-2">{t(`${base}.tools.pagerduty.title`)}</h4>
                   <p className="text-zinc-400 text-sm">
-                    Gestão de plantão e escalação de incidentes
+                    {t(`${base}.tools.pagerduty.desc`)}
                   </p>
                 </div>
                 <div className="bg-zinc-800/50 p-4 rounded-lg">
-                  <h4 className="text-white font-medium mb-2">OpsGenie</h4>
+                  <h4 className="text-white font-medium mb-2">{t(`${base}.tools.opsgenie.title`)}</h4>
                   <p className="text-zinc-400 text-sm">
-                    Alertas e coordenação de resposta a incidentes
+                    {t(`${base}.tools.opsgenie.desc`)}
                   </p>
                 </div>
                 <div className="bg-zinc-800/50 p-4 rounded-lg">
-                  <h4 className="text-white font-medium mb-2">ServiceNow</h4>
+                  <h4 className="text-white font-medium mb-2">{t(`${base}.tools.servicenow.title`)}</h4>
                   <p className="text-zinc-400 text-sm">
-                    ITSM e gestão do ciclo de vida de incidentes
+                    {t(`${base}.tools.servicenow.desc`)}
                   </p>
                 </div>
               </div>
@@ -296,18 +291,18 @@ export default function Alerts() {
         transition={{ duration: 0.5, delay: 0.6 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Melhores Práticas</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t(`${base}.best_practices_title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-            <h3 className="text-xl font-bold mb-4 text-blue-400">Configuração de Alertas</h3>
+            <h3 className="text-xl font-bold mb-4 text-blue-400">{t(`${base}.alert_config_title`)}</h3>
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-blue-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
-                  <span className="text-white font-medium">Alertas Acionáveis</span>
-                  <p className="text-zinc-400 text-sm">Configure apenas alertas que exigem ação</p>
+                  <span className="text-white font-medium">{t(`${base}.alert_practices.actionable.title`)}</span>
+                  <p className="text-zinc-400 text-sm">{t(`${base}.alert_practices.actionable.desc`)}</p>
                 </div>
               </li>
               <li className="flex items-start gap-3">
@@ -315,8 +310,8 @@ export default function Alerts() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
-                  <span className="text-white font-medium">Redução de Ruído</span>
-                  <p className="text-zinc-400 text-sm">Evite alertas duplicados ou desnecessários</p>
+                  <span className="text-white font-medium">{t(`${base}.alert_practices.noise_reduction.title`)}</span>
+                  <p className="text-zinc-400 text-sm">{t(`${base}.alert_practices.noise_reduction.desc`)}</p>
                 </div>
               </li>
               <li className="flex items-start gap-3">
@@ -324,23 +319,23 @@ export default function Alerts() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
-                  <span className="text-white font-medium">Contexto</span>
-                  <p className="text-zinc-400 text-sm">Forneça informações suficientes para diagnóstico</p>
+                  <span className="text-white font-medium">{t(`${base}.alert_practices.context.title`)}</span>
+                  <p className="text-zinc-400 text-sm">{t(`${base}.alert_practices.context.desc`)}</p>
                 </div>
               </li>
             </ul>
           </div>
 
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-            <h3 className="text-xl font-bold mb-4 text-purple-400">Resposta a Incidentes</h3>
+            <h3 className="text-xl font-bold mb-4 text-purple-400">{t(`${base}.incident_response_title`)}</h3>
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-purple-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
-                  <span className="text-white font-medium">Playbooks</span>
-                  <p className="text-zinc-400 text-sm">Mantenha procedimentos documentados</p>
+                  <span className="text-white font-medium">{t(`${base}.response_practices.playbooks.title`)}</span>
+                  <p className="text-zinc-400 text-sm">{t(`${base}.response_practices.playbooks.desc`)}</p>
                 </div>
               </li>
               <li className="flex items-start gap-3">
@@ -348,8 +343,8 @@ export default function Alerts() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
-                  <span className="text-white font-medium">Escalação</span>
-                  <p className="text-zinc-400 text-sm">Defina níveis claros de escalação</p>
+                  <span className="text-white font-medium">{t(`${base}.response_practices.escalation.title`)}</span>
+                  <p className="text-zinc-400 text-sm">{t(`${base}.response_practices.escalation.desc`)}</p>
                 </div>
               </li>
               <li className="flex items-start gap-3">
@@ -357,8 +352,8 @@ export default function Alerts() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
-                  <span className="text-white font-medium">Postmortem</span>
-                  <p className="text-zinc-400 text-sm">Realize análise após incidentes</p>
+                  <span className="text-white font-medium">{t(`${base}.response_practices.postmortem.title`)}</span>
+                  <p className="text-zinc-400 text-sm">{t(`${base}.response_practices.postmortem.desc`)}</p>
                 </div>
               </li>
             </ul>

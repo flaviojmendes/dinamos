@@ -1,8 +1,30 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function MonitoringMaintenance() {
+  const { t } = useTranslation();
+  const base = 'monitoring_maintenance.main';
+
+  const metricsItems = t(`${base}.pillars.metrics.items`, { returnObjects: true }) as string[];
+  const logsItems = t(`${base}.pillars.logs.items`, { returnObjects: true }) as string[];
+  const tracesItems = t(`${base}.pillars.traces.items`, { returnObjects: true }) as string[];
+
+  const useItems = t(`${base}.use_method_items`, { returnObjects: true }) as { title: string; desc: string }[];
+  const redItems = t(`${base}.red_method_items`, { returnObjects: true }) as { title: string; desc: string }[];
+
+  const toolsMetrics = t(`${base}.tools.metrics_items`, { returnObjects: true }) as { name: string; desc: string }[];
+  const toolsLogs = t(`${base}.tools.logs_items`, { returnObjects: true }) as { name: string; desc: string }[];
+  const toolsTracing = t(`${base}.tools.tracing_items`, { returnObjects: true }) as { name: string; desc: string }[];
+
+  const monitoringBest = t(`${base}.monitoring_items`, { returnObjects: true }) as { title: string; desc: string }[];
+  const maintenanceBest = t(`${base}.maintenance_items`, { returnObjects: true }) as { title: string; desc: string }[];
+
+  const sliItems = t(`${base}.sli_card.items`, { returnObjects: true }) as string[];
+  const sloItems = t(`${base}.slo_card.items`, { returnObjects: true }) as string[];
+  const slaItems = t(`${base}.sla_card.items`, { returnObjects: true }) as string[];
+
   return (
     <div className="max-w-4xl mx-auto">
       {/* Introduction */}
@@ -13,17 +35,14 @@ export default function MonitoringMaintenance() {
         className="mb-12"
       >
         <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-          Monitoramento e Manutenção de Sistemas Distribuídos
+          {t(`${base}.title`)}
         </h1>
         <p className="text-lg text-zinc-300 mb-6">
-          O monitoramento e manutenção são aspectos críticos para garantir a saúde, 
-          performance e confiabilidade de sistemas distribuídos. Uma estratégia eficaz 
-          combina diferentes aspectos de observabilidade com práticas proativas de manutenção.
+          {t(`${base}.intro_p1`)}
         </p>
         <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-blue-300">
-          <strong className="block mb-2">💡 Conceito Chave:</strong>
-          A observabilidade em sistemas distribuídos é construída sobre três pilares fundamentais:
-          métricas, logs e traces. Juntos, eles fornecem uma visão completa do estado e comportamento do sistema.
+          <strong className="block mb-2">💡 {t(`${base}.key_concept_label`)}:</strong>
+          {t(`${base}.key_concept_text`)}
         </div>
       </motion.div>
 
@@ -34,7 +53,7 @@ export default function MonitoringMaintenance() {
         transition={{ duration: 0.5, delay: 0.2 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Os Três Pilares da Observabilidade</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t(`${base}.pillars_title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Metrics */}
           <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 rounded-xl p-6 border border-blue-500/20">
@@ -42,13 +61,12 @@ export default function MonitoringMaintenance() {
               <svg className="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
-              <h3 className="text-xl font-bold text-blue-400">Métricas</h3>
+              <h3 className="text-xl font-bold text-blue-400">{t(`${base}.pillars.metrics.title`)}</h3>
             </div>
             <ul className="space-y-2 text-zinc-300">
-              <li>• Dados numéricos ao longo do tempo</li>
-              <li>• CPU, memória, latência, throughput</li>
-              <li>• Agregações e tendências</li>
-              <li>• Base para alertas e dashboards</li>
+              {metricsItems.map((item, idx) => (
+                <li key={idx}>• {item}</li>
+              ))}
             </ul>
           </div>
 
@@ -58,13 +76,12 @@ export default function MonitoringMaintenance() {
               <svg className="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-              <h3 className="text-xl font-bold text-purple-400">Logs</h3>
+              <h3 className="text-xl font-bold text-purple-400">{t(`${base}.pillars.logs.title`)}</h3>
             </div>
             <ul className="space-y-2 text-zinc-300">
-              <li>• Registros de eventos</li>
-              <li>• Debugging e auditoria</li>
-              <li>• Contexto detalhado</li>
-              <li>• Histórico de ações</li>
+              {logsItems.map((item, idx) => (
+                <li key={idx}>• {item}</li>
+              ))}
             </ul>
           </div>
 
@@ -74,13 +91,12 @@ export default function MonitoringMaintenance() {
               <svg className="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
-              <h3 className="text-xl font-bold text-green-400">Traces</h3>
+              <h3 className="text-xl font-bold text-green-400">{t(`${base}.pillars.traces.title`)}</h3>
             </div>
             <ul className="space-y-2 text-zinc-300">
-              <li>• Fluxo de requisições</li>
-              <li>• Dependências entre serviços</li>
-              <li>• Performance end-to-end</li>
-              <li>• Diagnóstico de problemas</li>
+              {tracesItems.map((item, idx) => (
+                <li key={idx}>• {item}</li>
+              ))}
             </ul>
           </div>
         </div>
@@ -93,79 +109,43 @@ export default function MonitoringMaintenance() {
         transition={{ duration: 0.5, delay: 0.3 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Métricas Essenciais (Golden Signals)</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t(`${base}.golden_signals_title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* USE Method */}
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-            <h3 className="text-xl font-bold mb-4 text-blue-400">Método USE</h3>
-            <p className="text-zinc-300 mb-4">
-              Utilization, Saturation, and Errors - um método para análise de performance de recursos.
-            </p>
+            <h3 className="text-xl font-bold mb-4 text-blue-400">{t(`${base}.use_method_title`)}</h3>
+            <p className="text-zinc-300 mb-4">{t(`${base}.use_method_p`)}</p>
             <ul className="space-y-3">
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-blue-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <div>
-                  <span className="text-white font-medium">Utilização</span>
-                  <p className="text-zinc-400 text-sm">Percentual de tempo que o recurso está ocupado</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-blue-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <div>
-                  <span className="text-white font-medium">Saturação</span>
-                  <p className="text-zinc-400 text-sm">Grau de sobrecarga do recurso</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-blue-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <div>
-                  <span className="text-white font-medium">Erros</span>
-                  <p className="text-zinc-400 text-sm">Taxa de falhas do recurso</p>
-                </div>
-              </li>
+              {useItems.map((item, idx) => (
+                <li key={idx} className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-blue-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div>
+                    <span className="text-white font-medium">{item.title}</span>
+                    <p className="text-zinc-400 text-sm">{item.desc}</p>
+                  </div>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* RED Method */}
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-            <h3 className="text-xl font-bold mb-4 text-purple-400">Método RED</h3>
-            <p className="text-zinc-300 mb-4">
-              Rate, Errors, and Duration - focado em métricas de requisições e serviços.
-            </p>
+            <h3 className="text-xl font-bold mb-4 text-purple-400">{t(`${base}.red_method_title`)}</h3>
+            <p className="text-zinc-300 mb-4">{t(`${base}.red_method_p`)}</p>
             <ul className="space-y-3">
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-purple-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <div>
-                  <span className="text-white font-medium">Taxa (Rate)</span>
-                  <p className="text-zinc-400 text-sm">Número de requisições por segundo</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-purple-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <div>
-                  <span className="text-white font-medium">Erros (Errors)</span>
-                  <p className="text-zinc-400 text-sm">Taxa de falhas nas requisições</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-purple-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <div>
-                  <span className="text-white font-medium">Duração (Duration)</span>
-                  <p className="text-zinc-400 text-sm">Tempo de resposta das requisições</p>
-                </div>
-              </li>
+              {redItems.map((item, idx) => (
+                <li key={idx} className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-purple-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div>
+                    <span className="text-white font-medium">{item.title}</span>
+                    <p className="text-zinc-400 text-sm">{item.desc}</p>
+                  </div>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
@@ -178,62 +158,44 @@ export default function MonitoringMaintenance() {
         transition={{ duration: 0.5, delay: 0.4 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Ferramentas de Monitoramento</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t(`${base}.tools_title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Metrics Tools */}
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-            <h3 className="text-xl font-bold mb-4 text-blue-400">Métricas</h3>
+            <h3 className="text-xl font-bold mb-4 text-blue-400">{t(`${base}.tools.metrics_title`)}</h3>
             <ul className="space-y-3">
-              <li className="bg-zinc-800/50 p-3 rounded-lg">
-                <span className="text-white font-medium">Prometheus</span>
-                <p className="text-zinc-400 text-sm">Coleta e armazenamento de métricas</p>
-              </li>
-              <li className="bg-zinc-800/50 p-3 rounded-lg">
-                <span className="text-white font-medium">Grafana</span>
-                <p className="text-zinc-400 text-sm">Visualização e dashboards</p>
-              </li>
-              <li className="bg-zinc-800/50 p-3 rounded-lg">
-                <span className="text-white font-medium">Datadog</span>
-                <p className="text-zinc-400 text-sm">Monitoramento como serviço</p>
-              </li>
+              {toolsMetrics.map((tool, idx) => (
+                <li key={idx} className="bg-zinc-800/50 p-3 rounded-lg">
+                  <span className="text-white font-medium">{tool.name}</span>
+                  <p className="text-zinc-400 text-sm">{tool.desc}</p>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Logging Tools */}
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-            <h3 className="text-xl font-bold mb-4 text-purple-400">Logs</h3>
+            <h3 className="text-xl font-bold mb-4 text-purple-400">{t(`${base}.tools.logs_title`)}</h3>
             <ul className="space-y-3">
-              <li className="bg-zinc-800/50 p-3 rounded-lg">
-                <span className="text-white font-medium">ELK Stack</span>
-                <p className="text-zinc-400 text-sm">Elasticsearch, Logstash, Kibana</p>
-              </li>
-              <li className="bg-zinc-800/50 p-3 rounded-lg">
-                <span className="text-white font-medium">Graylog</span>
-                <p className="text-zinc-400 text-sm">Gerenciamento centralizado de logs</p>
-              </li>
-              <li className="bg-zinc-800/50 p-3 rounded-lg">
-                <span className="text-white font-medium">Splunk</span>
-                <p className="text-zinc-400 text-sm">Análise avançada de logs</p>
-              </li>
+              {toolsLogs.map((tool, idx) => (
+                <li key={idx} className="bg-zinc-800/50 p-3 rounded-lg">
+                  <span className="text-white font-medium">{tool.name}</span>
+                  <p className="text-zinc-400 text-sm">{tool.desc}</p>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Tracing Tools */}
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-            <h3 className="text-xl font-bold mb-4 text-green-400">Tracing</h3>
+            <h3 className="text-xl font-bold mb-4 text-green-400">{t(`${base}.tools.tracing_title`)}</h3>
             <ul className="space-y-3">
-              <li className="bg-zinc-800/50 p-3 rounded-lg">
-                <span className="text-white font-medium">Jaeger</span>
-                <p className="text-zinc-400 text-sm">Tracing distribuído de código aberto</p>
-              </li>
-              <li className="bg-zinc-800/50 p-3 rounded-lg">
-                <span className="text-white font-medium">Zipkin</span>
-                <p className="text-zinc-400 text-sm">Rastreamento de latência</p>
-              </li>
-              <li className="bg-zinc-800/50 p-3 rounded-lg">
-                <span className="text-white font-medium">New Relic</span>
-                <p className="text-zinc-400 text-sm">APM e tracing como serviço</p>
-              </li>
+              {toolsTracing.map((tool, idx) => (
+                <li key={idx} className="bg-zinc-800/50 p-3 rounded-lg">
+                  <span className="text-white font-medium">{tool.name}</span>
+                  <p className="text-zinc-400 text-sm">{tool.desc}</p>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
@@ -246,73 +208,41 @@ export default function MonitoringMaintenance() {
         transition={{ duration: 0.5, delay: 0.5 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Melhores Práticas</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t(`${base}.best_practices_title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Monitoring Best Practices */}
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-            <h3 className="text-xl font-bold mb-4 text-blue-400">Monitoramento</h3>
+            <h3 className="text-xl font-bold mb-4 text-blue-400">{t(`${base}.monitoring_title`)}</h3>
             <ul className="space-y-3">
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-blue-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <div>
-                  <span className="text-white font-medium">Monitoramento Proativo</span>
-                  <p className="text-zinc-400 text-sm">Identifique problemas antes que afetem os usuários</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-blue-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <div>
-                  <span className="text-white font-medium">Alertas Significativos</span>
-                  <p className="text-zinc-400 text-sm">Configure alertas que realmente importam</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-blue-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <div>
-                  <span className="text-white font-medium">Automação</span>
-                  <p className="text-zinc-400 text-sm">Automatize respostas para problemas comuns</p>
-                </div>
-              </li>
+              {monitoringBest.map((item, idx) => (
+                <li key={idx} className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-blue-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <div>
+                    <span className="text-white font-medium">{item.title}</span>
+                    <p className="text-zinc-400 text-sm">{item.desc}</p>
+                  </div>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Maintenance Best Practices */}
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-            <h3 className="text-xl font-bold mb-4 text-purple-400">Manutenção</h3>
+            <h3 className="text-xl font-bold mb-4 text-purple-400">{t(`${base}.maintenance_title`)}</h3>
             <ul className="space-y-3">
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-purple-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <div>
-                  <span className="text-white font-medium">Manutenção Preventiva</span>
-                  <p className="text-zinc-400 text-sm">Agende manutenções regulares</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-purple-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <div>
-                  <span className="text-white font-medium">Documentação</span>
-                  <p className="text-zinc-400 text-sm">Mantenha documentação atualizada</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-purple-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <div>
-                  <span className="text-white font-medium">Backup e Recuperação</span>
-                  <p className="text-zinc-400 text-sm">Implemente e teste planos de recuperação</p>
-                </div>
-              </li>
+              {maintenanceBest.map((item, idx) => (
+                <li key={idx} className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-purple-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <div>
+                    <span className="text-white font-medium">{item.title}</span>
+                    <p className="text-zinc-400 text-sm">{item.desc}</p>
+                  </div>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
@@ -325,38 +255,35 @@ export default function MonitoringMaintenance() {
         transition={{ duration: 0.5, delay: 0.6 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Objetivos de Nível de Serviço</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t(`${base}.slo_title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 rounded-xl p-6 border border-blue-500/20">
-            <h3 className="text-xl font-bold mb-4 text-blue-400">SLI</h3>
-            <p className="text-zinc-300 mb-4">Service Level Indicator</p>
+            <h3 className="text-xl font-bold mb-4 text-blue-400">{t(`${base}.sli_card.title`)}</h3>
+            <p className="text-zinc-300 mb-4">{t(`${base}.sli_card.desc`)}</p>
             <ul className="space-y-2 text-zinc-300 text-sm">
-              <li>• Métricas específicas</li>
-              <li>• Latência</li>
-              <li>• Disponibilidade</li>
-              <li>• Taxa de erros</li>
+              {sliItems.map((item, idx) => (
+                <li key={idx}>• {item}</li>
+              ))}
             </ul>
           </div>
 
           <div className="bg-gradient-to-br from-purple-500/10 to-purple-600/10 rounded-xl p-6 border border-purple-500/20">
-            <h3 className="text-xl font-bold mb-4 text-purple-400">SLO</h3>
-            <p className="text-zinc-300 mb-4">Service Level Objective</p>
+            <h3 className="text-xl font-bold mb-4 text-purple-400">{t(`${base}.slo_card.title`)}</h3>
+            <p className="text-zinc-300 mb-4">{t(`${base}.slo_card.desc`)}</p>
             <ul className="space-y-2 text-zinc-300 text-sm">
-              <li>• Metas para SLIs</li>
-              <li>• 99.9% uptime</li>
-              <li>• Latência &lt; 200ms</li>
-              <li>• Error rate &lt; 0.1%</li>
+              {sloItems.map((item, idx) => (
+                <li key={idx}>• {item}</li>
+              ))}
             </ul>
           </div>
 
           <div className="bg-gradient-to-br from-green-500/10 to-green-600/10 rounded-xl p-6 border border-green-500/20">
-            <h3 className="text-xl font-bold mb-4 text-green-400">SLA</h3>
-            <p className="text-zinc-300 mb-4">Service Level Agreement</p>
+            <h3 className="text-xl font-bold mb-4 text-green-400">{t(`${base}.sla_card.title`)}</h3>
+            <p className="text-zinc-300 mb-4">{t(`${base}.sla_card.desc`)}</p>
             <ul className="space-y-2 text-zinc-300 text-sm">
-              <li>• Contrato formal</li>
-              <li>• Consequências</li>
-              <li>• Compensações</li>
-              <li>• Garantias</li>
+              {slaItems.map((item, idx) => (
+                <li key={idx}>• {item}</li>
+              ))}
             </ul>
           </div>
         </div>

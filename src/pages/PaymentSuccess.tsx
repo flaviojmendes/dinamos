@@ -2,11 +2,13 @@ import React, { useEffect, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 export default function PaymentSuccess() {
   const { user, checkSubscription } = useAuth();
   const navigate = useNavigate();
   const [hasChecked, setHasChecked] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const refreshToken = async () => {
@@ -65,9 +67,9 @@ export default function PaymentSuccess() {
             />
           </svg>
         </div>
-        <h1 className="text-4xl font-bold mb-4">Pagamento Confirmado!</h1>
+        <h1 className="text-4xl font-bold mb-4">{t('subscription.payment_confirmed')}</h1>
         <p className="text-xl text-zinc-400 mb-8">
-          Seu acesso foi liberado com sucesso. Redirecionando para o conteúdo...
+          {t('subscription.access_granted_redirect')}
         </p>
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
       </motion.div>

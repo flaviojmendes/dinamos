@@ -1,8 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function SynchronizationFundamentals() {
+  const { t } = useTranslation();
+  const philosopherNames = t('design_principles.consistency_strategies.synchronization_fundamentals.philosophers', { returnObjects: true }) as string[];
+  const statuses = t('design_principles.consistency_strategies.synchronization_fundamentals.statuses', { returnObjects: true }) as Record<string, string>;
+
   return (
     <div className="max-w-4xl mx-auto">
       {/* Introduction */}
@@ -13,23 +18,23 @@ export default function SynchronizationFundamentals() {
         className="mb-12"
       >
         <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-          Fundamentos da Sincronização
+          {t('design_principles.consistency_strategies.synchronization_fundamentals.title')}
         </h1>
         <p className="text-lg text-zinc-300 mb-6">
-          O problema do Jantar dos Filósofos é um exemplo clássico que ilustra os desafios fundamentais
-          da sincronização em sistemas distribuídos. Vamos explorar como ele nos ajuda a entender
-          conceitos importantes como exclusão mútua, deadlocks e starvation.
+          {t('design_principles.consistency_strategies.synchronization_fundamentals.intro_p1')}
+        </p>
+        <p className="text-lg text-zinc-300 mb-6">
+          {t('design_principles.consistency_strategies.synchronization_fundamentals.intro_p2')}
         </p>
         <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-blue-300">
-          <strong className="block mb-2">💡 Conceito Chave:</strong>
-          O Jantar dos Filósofos foi proposto por Edsger Dijkstra em 1965 e continua sendo uma excelente
-          ferramenta para entender os desafios de sincronização em sistemas distribuídos modernos.
+          <strong className="block mb-2">{t('design_principles.consistency_strategies.synchronization_fundamentals.key_concept_label')}</strong>
+          {t('design_principles.consistency_strategies.synchronization_fundamentals.key_concept_text')}
         </div>
 
         {/* Static Illustration */}
         <div className="mt-8 mb-8">
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-            <h3 className="text-xl font-semibold mb-4 text-blue-400">Ilustração do Problema</h3>
+            <h3 className="text-xl font-semibold mb-4 text-blue-400">{t('design_principles.consistency_strategies.synchronization_fundamentals.illustration_title')}</h3>
             <div className="relative w-full max-w-2xl mx-auto">
               <svg viewBox="0 0 600 450" className="w-full h-auto">
                 {/* Background */}
@@ -120,10 +125,10 @@ export default function SynchronizationFundamentals() {
                   const angle = (i * 2 * Math.PI) / 5;
                   const x = 300 + Math.cos(angle) * 130;
                   const y = 225 + Math.sin(angle) * 130;
-                  const names = ['Platão', 'Aristóteles', 'Kant', 'Sócrates', 'Descartes'];
+                  const names = philosopherNames;
                   
                   // Clearly defined states for philosophers
-                  const states = ["thinking", "eating", "hungry", "waiting", "eating"];
+                  const states = ["thinking", "eating", "hungry", "waiting", "eating"] as const;
                   const state = states[i];
                   
                   let fillColor;
@@ -133,19 +138,19 @@ export default function SynchronizationFundamentals() {
                   if (state === "thinking") {
                     fillColor = "#3b82f6";
                     borderColor = "#2563eb";
-                    statusLabel = "Pensando";
+                    statusLabel = statuses.thinking;
                   } else if (state === "eating") {
                     fillColor = "#22c55e";
                     borderColor = "#16a34a";
-                    statusLabel = "Comendo";
+                    statusLabel = statuses.eating;
                   } else if (state === "hungry") {
                     fillColor = "#eab308";
                     borderColor = "#ca8a04";
-                    statusLabel = "Com fome";
+                    statusLabel = statuses.hungry;
                   } else { // waiting
                     fillColor = "#94a3b8";
                     borderColor = "#64748b";
-                    statusLabel = "Esperando";
+                    statusLabel = statuses.waiting;
                   }
                   
                   return (
@@ -265,7 +270,7 @@ export default function SynchronizationFundamentals() {
                 
                 {/* Title */}
                 <text x="300" y="40" textAnchor="middle" fill="white" fontSize="24" fontWeight="bold">
-                  O Jantar dos Filósofos
+                  {t('design_principles.consistency_strategies.synchronization_fundamentals.dining_title')}
                 </text>
                 
                 {/* Legend */}
@@ -274,62 +279,54 @@ export default function SynchronizationFundamentals() {
                   
                   {/* Legend items */}
                   <circle cx="15" cy="15" r="8" fill="#3b82f6" fillOpacity="0.2" stroke="#2563eb" strokeWidth="2" />
-                  <text x="30" y="19" fill="white" fontSize="12" fontWeight="normal">Pensando</text>
+                  <text x="30" y="19" fill="white" fontSize="12" fontWeight="normal">{t('design_principles.consistency_strategies.synchronization_fundamentals.legend.thinking')}</text>
                   
                   <circle cx="15" cy="38" r="8" fill="#22c55e" fillOpacity="0.2" stroke="#16a34a" strokeWidth="2" />
-                  <text x="30" y="42" fill="white" fontSize="12" fontWeight="normal">Comendo</text>
+                  <text x="30" y="42" fill="white" fontSize="12" fontWeight="normal">{t('design_principles.consistency_strategies.synchronization_fundamentals.legend.eating')}</text>
                 </g>
               </svg>
             </div>
             <p className="text-zinc-300 text-center mt-4">
-              Cinco filósofos sentados em uma mesa redonda, cada um com um prato de macarrão e um garfo entre cada par de filósofos.
-              Para comer, um filósofo precisa pegar dois garfos adjacentes, mas há apenas cinco garfos no total.
+              {t('design_principles.consistency_strategies.synchronization_fundamentals.illustration_caption')}
             </p>
           </div>
           
           <div className="mt-6 bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-4">
-            <h3 className="text-lg font-semibold mb-2 text-blue-400">Estratégias de Sincronização</h3>
+            <h3 className="text-lg font-semibold mb-2 text-blue-400">{t('design_principles.consistency_strategies.synchronization_fundamentals.strategies_title')}</h3>
             <ul className="text-zinc-300 space-y-2 text-sm">
-              <li><strong className="text-blue-300">Naive:</strong> Filósofos simplesmente tentam pegar o garfo da esquerda e depois o da direita. Facilmente gera deadlock.</li>
-              <li><strong className="text-blue-300">Ordenada:</strong> Filósofos sempre pegam o garfo de menor número primeiro, prevenindo deadlocks.</li>
-              <li><strong className="text-blue-300">Garçom:</strong> Um "garçom" garante que apenas um filósofo por vez possa tentar pegar ambos os garfos.</li>
+              <li><strong className="text-blue-300">{t('design_principles.consistency_strategies.synchronization_fundamentals.strategies.naive').split(':')[0]}:</strong> {t('design_principles.consistency_strategies.synchronization_fundamentals.strategies.naive').split(':').slice(1).join(':').trim()}</li>
+              <li><strong className="text-blue-300">{t('design_principles.consistency_strategies.synchronization_fundamentals.strategies.ordered').split(':')[0]}:</strong> {t('design_principles.consistency_strategies.synchronization_fundamentals.strategies.ordered').split(':').slice(1).join(':').trim()}</li>
+              <li><strong className="text-blue-300">{t('design_principles.consistency_strategies.synchronization_fundamentals.strategies.waiter').split(':')[0]}:</strong> {t('design_principles.consistency_strategies.synchronization_fundamentals.strategies.waiter').split(':').slice(1).join(':').trim()}</li>
             </ul>
           </div>
         </div>
-
+        
         {/* Significance and Applications */}
         <div className="mt-8 space-y-6">
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-            <h3 className="text-xl font-semibold mb-4 text-purple-400">Significado e Aplicações</h3>
+            <h3 className="text-xl font-semibold mb-4 text-purple-400">{t('design_principles.consistency_strategies.synchronization_fundamentals.significance_title')}</h3>
             <div className="space-y-4">
               <p className="text-zinc-300">
-                O problema do Jantar dos Filósofos é mais do que um exercício acadêmico - é um modelo que representa
-                desafios reais em sistemas distribuídos modernos. Cada filósofo representa um processo ou thread que
-                precisa acessar recursos compartilhados (os garfos) de forma segura e eficiente.
+                {t('design_principles.consistency_strategies.synchronization_fundamentals.significance_p1')}
               </p>
               <p className="text-zinc-300">
-                Em sistemas reais, este problema se manifesta em diversos cenários: bancos de dados distribuídos
-                gerenciando transações concorrentes, sistemas de arquivos distribuídos controlando acesso a
-                recursos compartilhados, ou redes de sensores coordenando a coleta de dados. A solução deste
-                problema é fundamental para garantir a confiabilidade e eficiência de sistemas distribuídos.
+                {t('design_principles.consistency_strategies.synchronization_fundamentals.significance_p2')}
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div className="bg-purple-500/10 p-4 rounded-lg">
-                  <h4 className="text-purple-300 font-medium mb-2">Analogia com Sistemas Reais</h4>
+                  <h4 className="text-purple-300 font-medium mb-2">{t('design_principles.consistency_strategies.synchronization_fundamentals.analogy_title')}</h4>
                   <ul className="space-y-2 text-zinc-300">
-                    <li>• Filósofos = Processos/Threads</li>
-                    <li>• Garfos = Recursos Compartilhados</li>
-                    <li>• Comer = Execução de Operações Críticas</li>
-                    <li>• Pensar = Processamento Independente</li>
+                    {(t('design_principles.consistency_strategies.synchronization_fundamentals.analogy_points', { returnObjects: true }) as string[]).map((item, idx) => (
+                      <li key={idx}>• {item}</li>
+                    ))}
                   </ul>
                 </div>
                 <div className="bg-blue-500/10 p-4 rounded-lg">
-                  <h4 className="text-blue-300 font-medium mb-2">Desafios Modernos</h4>
+                  <h4 className="text-blue-300 font-medium mb-2">{t('design_principles.consistency_strategies.synchronization_fundamentals.modern_challenges_title')}</h4>
                   <ul className="space-y-2 text-zinc-300">
-                    <li>• Escalabilidade em Sistemas Distribuídos</li>
-                    <li>• Tolerância a Falhas</li>
-                    <li>• Balanceamento de Carga</li>
-                    <li>• Garantia de Justiça no Acesso</li>
+                    {(t('design_principles.consistency_strategies.synchronization_fundamentals.modern_challenges', { returnObjects: true }) as string[]).map((item, idx) => (
+                      <li key={idx}>• {item}</li>
+                    ))}
                   </ul>
                 </div>
               </div>
@@ -345,19 +342,19 @@ export default function SynchronizationFundamentals() {
         transition={{ duration: 0.5, delay: 0.2 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">O Problema</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t('design_principles.consistency_strategies.synchronization_fundamentals.problem_section.title')}</h2>
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-blue-400">Cenário</h3>
+              <h3 className="text-xl font-semibold mb-4 text-blue-400">{t('design_principles.consistency_strategies.synchronization_fundamentals.problem_section.scenario_title')}</h3>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">
                   <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                   <div>
-                    <span className="text-white font-medium">5 Filósofos</span>
-                    <p className="text-zinc-400">Sentados em uma mesa redonda</p>
+                    <span className="text-white font-medium">{t('design_principles.consistency_strategies.synchronization_fundamentals.problem_section.items.philosophers')}</span>
+                    <p className="text-zinc-400">{t('design_principles.consistency_strategies.synchronization_fundamentals.problem_section.items.round_table')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -365,8 +362,8 @@ export default function SynchronizationFundamentals() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                   <div>
-                    <span className="text-white font-medium">5 Garfos</span>
-                    <p className="text-zinc-400">Um entre cada par de filósofos</p>
+                    <span className="text-white font-medium">{t('design_principles.consistency_strategies.synchronization_fundamentals.problem_section.items.forks')}</span>
+                    <p className="text-zinc-400">{t('design_principles.consistency_strategies.synchronization_fundamentals.problem_section.items.forks_desc')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -374,22 +371,22 @@ export default function SynchronizationFundamentals() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                   <div>
-                    <span className="text-white font-medium">1 Prato</span>
-                    <p className="text-zinc-400">De macarrão para cada filósofo</p>
+                    <span className="text-white font-medium">{t('design_principles.consistency_strategies.synchronization_fundamentals.problem_section.items.plate')}</span>
+                    <p className="text-zinc-400">{t('design_principles.consistency_strategies.synchronization_fundamentals.problem_section.items.plate_desc')}</p>
                   </div>
                 </li>
               </ul>
             </div>
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-purple-400">Regras</h3>
+              <h3 className="text-xl font-semibold mb-4 text-purple-400">{t('design_principles.consistency_strategies.synchronization_fundamentals.problem_section.rules_title')}</h3>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">
                   <svg className="w-5 h-5 text-purple-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                   <div>
-                    <span className="text-white font-medium">2 Garfos</span>
-                    <p className="text-zinc-400">Necessários para comer</p>
+                    <span className="text-white font-medium">{t('design_principles.consistency_strategies.synchronization_fundamentals.problem_section.rules.two_forks')}</span>
+                    <p className="text-zinc-400">{t('design_principles.consistency_strategies.synchronization_fundamentals.problem_section.rules.two_forks_desc')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -397,8 +394,8 @@ export default function SynchronizationFundamentals() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                   <div>
-                    <span className="text-white font-medium">1 Garfo</span>
-                    <p className="text-zinc-400">Por vez por filósofo</p>
+                    <span className="text-white font-medium">{t('design_principles.consistency_strategies.synchronization_fundamentals.problem_section.rules.one_fork_time')}</span>
+                    <p className="text-zinc-400">{t('design_principles.consistency_strategies.synchronization_fundamentals.problem_section.rules.one_fork_time_desc')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -406,8 +403,8 @@ export default function SynchronizationFundamentals() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                   <div>
-                    <span className="text-white font-medium">Tempo Finito</span>
-                    <p className="text-zinc-400">Para comer e pensar</p>
+                    <span className="text-white font-medium">{t('design_principles.consistency_strategies.synchronization_fundamentals.problem_section.rules.finite_time')}</span>
+                    <p className="text-zinc-400">{t('design_principles.consistency_strategies.synchronization_fundamentals.problem_section.rules.finite_time_desc')}</p>
                   </div>
                 </li>
               </ul>
@@ -423,36 +420,34 @@ export default function SynchronizationFundamentals() {
         transition={{ duration: 0.5, delay: 0.3 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Desafios</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t('design_principles.consistency_strategies.synchronization_fundamentals.challenges.title')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-            <h3 className="text-xl font-semibold mb-4 text-red-400">Deadlock</h3>
+            <h3 className="text-xl font-semibold mb-4 text-red-400">{t('design_principles.consistency_strategies.synchronization_fundamentals.challenges.deadlock_title')}</h3>
             <p className="text-zinc-300 mb-4">
-              Se todos os filósofos pegarem o garfo da esquerda e esperarem pelo da direita,
-              nenhum deles conseguirá comer.
+              {t('design_principles.consistency_strategies.synchronization_fundamentals.challenges.deadlock_p')}
             </p>
             <div className="flex items-center gap-2 text-sm">
               <span className="px-2 py-1 bg-red-500/20 text-red-300 rounded">
-                Bloqueio Circular
+                {t('design_principles.consistency_strategies.synchronization_fundamentals.challenges.deadlock_badges.circular_wait')}
               </span>
               <span className="px-2 py-1 bg-red-500/20 text-red-300 rounded">
-                Espera Infinita
+                {t('design_principles.consistency_strategies.synchronization_fundamentals.challenges.deadlock_badges.infinite_wait')}
               </span>
             </div>
           </div>
 
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-            <h3 className="text-xl font-semibold mb-4 text-yellow-400">Starvation</h3>
+            <h3 className="text-xl font-semibold mb-4 text-yellow-400">{t('design_principles.consistency_strategies.synchronization_fundamentals.challenges.starvation_title')}</h3>
             <p className="text-zinc-300 mb-4">
-              Alguns filósofos podem nunca conseguir comer se a distribuição dos garfos
-              não for justa.
+              {t('design_principles.consistency_strategies.synchronization_fundamentals.challenges.starvation_p')}
             </p>
             <div className="flex items-center gap-2 text-sm">
               <span className="px-2 py-1 bg-yellow-500/20 text-yellow-300 rounded">
-                Inanição
+                {t('design_principles.consistency_strategies.synchronization_fundamentals.challenges.starvation_badges.starvation')}
               </span>
               <span className="px-2 py-1 bg-yellow-500/20 text-yellow-300 rounded">
-                Injustiça
+                {t('design_principles.consistency_strategies.synchronization_fundamentals.challenges.starvation_badges.unfairness')}
               </span>
             </div>
           </div>
@@ -466,19 +461,19 @@ export default function SynchronizationFundamentals() {
         transition={{ duration: 0.5, delay: 0.4 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Soluções</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t('design_principles.consistency_strategies.synchronization_fundamentals.solutions.title')}</h2>
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-green-400">Prevenção de Deadlock</h3>
+              <h3 className="text-xl font-semibold mb-4 text-green-400">{t('design_principles.consistency_strategies.synchronization_fundamentals.solutions.deadlock_prevention_title')}</h3>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <div>
-                    <span className="text-white font-medium">Ordem dos Garfos</span>
-                    <p className="text-zinc-400 text-sm">Sempre pegar o garfo com menor número primeiro</p>
+                    <span className="text-white font-medium">{t('design_principles.consistency_strategies.synchronization_fundamentals.solutions.fork_ordering_label')}</span>
+                    <p className="text-zinc-400 text-sm">{t('design_principles.consistency_strategies.synchronization_fundamentals.solutions.fork_ordering_desc')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -486,22 +481,22 @@ export default function SynchronizationFundamentals() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <div>
-                    <span className="text-white font-medium">Timeout</span>
-                    <p className="text-zinc-400 text-sm">Liberar garfos se não conseguir o segundo em tempo</p>
+                    <span className="text-white font-medium">{t('design_principles.consistency_strategies.synchronization_fundamentals.solutions.timeout_label')}</span>
+                    <p className="text-zinc-400 text-sm">{t('design_principles.consistency_strategies.synchronization_fundamentals.solutions.timeout_desc')}</p>
                   </div>
                 </li>
               </ul>
             </div>
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-blue-400">Prevenção de Starvation</h3>
+              <h3 className="text-xl font-semibold mb-4 text-blue-400">{t('design_principles.consistency_strategies.synchronization_fundamentals.solutions.starvation_prevention_title')}</h3>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
                   <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <div>
-                    <span className="text-white font-medium">Prioridade</span>
-                    <p className="text-zinc-400 text-sm">Dar prioridade a filósofos que não comeram há mais tempo</p>
+                    <span className="text-white font-medium">{t('design_principles.consistency_strategies.synchronization_fundamentals.solutions.priority_label')}</span>
+                    <p className="text-zinc-400 text-sm">{t('design_principles.consistency_strategies.synchronization_fundamentals.solutions.priority_desc')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -509,13 +504,13 @@ export default function SynchronizationFundamentals() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <div>
-                    <span className="text-white font-medium">Garantia de Acesso</span>
-                    <p className="text-zinc-400 text-sm">Implementar mecanismos de justiça na distribuição</p>
+                    <span className="text-white font-medium">{t('design_principles.consistency_strategies.synchronization_fundamentals.solutions.fairness_label')}</span>
+                    <p className="text-zinc-400 text-sm">{t('design_principles.consistency_strategies.synchronization_fundamentals.solutions.fairness_desc')}</p>
                   </div>
                 </li>
-          </ul>
-        </div>
-      </div>
+              </ul>
+            </div>
+          </div>
         </div>
       </motion.div>
 

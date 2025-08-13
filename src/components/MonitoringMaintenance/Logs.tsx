@@ -1,8 +1,27 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function Logs() {
+  const { t } = useTranslation();
+  const base = 'monitoring_maintenance.logs';
+
+  const appLogItems = t(`${base}.app_logs_items`, { returnObjects: true }) as string[];
+  const sysLogItems = t(`${base}.sys_logs_items`, { returnObjects: true }) as string[];
+  const secLogItems = t(`${base}.sec_logs_items`, { returnObjects: true }) as string[];
+
+  const benefits = t(`${base}.benefits_items`, { returnObjects: true }) as { title: string; desc: string }[];
+
+  const components = t(`${base}.components_items`, { returnObjects: true }) as { title: string; desc: string }[];
+  const elkItems = t(`${base}.elk_items`, { returnObjects: true }) as { title: string; desc: string }[];
+
+  const concepts = t(`${base}.concepts_items`, { returnObjects: true }) as { title: string; desc: string }[];
+  const tools = t(`${base}.tools_items`, { returnObjects: true }) as { title: string; desc: string }[];
+
+  const loggingBest = t(`${base}.logging_items`, { returnObjects: true }) as { title: string; desc: string }[];
+  const tracingBest = t(`${base}.tracing_bp_items`, { returnObjects: true }) as { title: string; desc: string }[];
+
   return (
     <div className="max-w-4xl mx-auto">
       {/* Introduction */}
@@ -13,17 +32,14 @@ export default function Logs() {
         className="mb-12"
       >
         <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-          Logs e Tracing em Sistemas Distribuídos
+          {t(`${base}.title`)}
         </h1>
         <p className="text-lg text-zinc-300 mb-6">
-          Logs e tracing são fundamentais para entender o comportamento, debugar problemas
-          e manter a observabilidade em sistemas distribuídos. Eles fornecem insights
-          detalhados sobre o fluxo de execução e o estado do sistema.
+          {t(`${base}.intro_p1`)}
         </p>
         <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-blue-300">
-          <strong className="block mb-2">💡 Conceito Chave:</strong>
-          Em sistemas distribuídos, logs devem ser tratados como streams de eventos,
-          centralizados e correlacionados para fornecer uma visão completa do sistema.
+          <strong className="block mb-2">💡 {t(`${base}.key_concept_label`)}:</strong>
+          {t(`${base}.key_concept_text`)}
         </div>
       </motion.div>
 
@@ -34,38 +50,35 @@ export default function Logs() {
         transition={{ duration: 0.5, delay: 0.2 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Tipos de Logs</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t(`${base}.types_title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Application Logs */}
           <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 rounded-xl p-6 border border-blue-500/20">
-            <h3 className="text-xl font-bold mb-4 text-blue-400">Logs de Aplicação</h3>
+            <h3 className="text-xl font-bold mb-4 text-blue-400">{t(`${base}.app_logs_title`)}</h3>
             <ul className="space-y-2 text-zinc-300 text-sm">
-              <li>• Eventos de negócio</li>
-              <li>• Fluxo de execução</li>
-              <li>• Erros e exceções</li>
-              <li>• Ações do usuário</li>
+              {appLogItems.map((item, idx) => (
+                <li key={idx}>• {item}</li>
+              ))}
             </ul>
           </div>
 
           {/* System Logs */}
           <div className="bg-gradient-to-br from-purple-500/10 to-purple-600/10 rounded-xl p-6 border border-purple-500/20">
-            <h3 className="text-xl font-bold mb-4 text-purple-400">Logs de Sistema</h3>
+            <h3 className="text-xl font-bold mb-4 text-purple-400">{t(`${base}.sys_logs_title`)}</h3>
             <ul className="space-y-2 text-zinc-300 text-sm">
-              <li>• Inicialização/shutdown</li>
-              <li>• Uso de recursos</li>
-              <li>• Eventos de sistema</li>
-              <li>• Problemas de hardware</li>
+              {sysLogItems.map((item, idx) => (
+                <li key={idx}>• {item}</li>
+              ))}
             </ul>
           </div>
 
           {/* Security Logs */}
           <div className="bg-gradient-to-br from-green-500/10 to-green-600/10 rounded-xl p-6 border border-green-500/20">
-            <h3 className="text-xl font-bold mb-4 text-green-400">Logs de Segurança</h3>
+            <h3 className="text-xl font-bold mb-4 text-green-400">{t(`${base}.sec_logs_title`)}</h3>
             <ul className="space-y-2 text-zinc-300 text-sm">
-              <li>• Tentativas de acesso</li>
-              <li>• Alterações de permissão</li>
-              <li>• Eventos de auditoria</li>
-              <li>• Alertas de segurança</li>
+              {secLogItems.map((item, idx) => (
+                <li key={idx}>• {item}</li>
+              ))}
             </ul>
           </div>
         </div>
@@ -78,49 +91,30 @@ export default function Logs() {
         transition={{ duration: 0.5, delay: 0.3 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Logging Estruturado</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t(`${base}.structured_title`)}</h2>
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-          <p className="text-zinc-300 mb-6">
-            Logging estruturado é uma abordagem que trata logs como objetos de dados
-            em vez de strings de texto simples, facilitando a análise e busca.
-          </p>
-          
+          <p className="text-zinc-300 mb-6">{t(`${base}.structured_desc`)}</p>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-xl font-bold mb-4 text-blue-400">Benefícios</h3>
+              <h3 className="text-xl font-bold mb-4 text-blue-400">{t(`${base}.benefits_title`)}</h3>
               <ul className="space-y-3">
-                <li className="flex items-start gap-3">
-                  <svg className="w-5 h-5 text-blue-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <div>
-                    <span className="text-white font-medium">Pesquisabilidade</span>
-                    <p className="text-zinc-400 text-sm">Facilita buscas e filtros complexos</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <svg className="w-5 h-5 text-blue-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <div>
-                    <span className="text-white font-medium">Análise</span>
-                    <p className="text-zinc-400 text-sm">Permite agregações e visualizações</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <svg className="w-5 h-5 text-blue-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <div>
-                    <span className="text-white font-medium">Padronização</span>
-                    <p className="text-zinc-400 text-sm">Formato consistente entre serviços</p>
-                  </div>
-                </li>
+                {benefits.map((item, idx) => (
+                  <li key={idx} className="flex items-start gap-3">
+                    <svg className="w-5 h-5 text-blue-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <div>
+                      <span className="text-white font-medium">{item.title}</span>
+                      <p className="text-zinc-400 text-sm">{item.desc}</p>
+                    </div>
+                  </li>
+                ))}
               </ul>
             </div>
 
             <div>
-              <h3 className="text-xl font-bold mb-4 text-purple-400">Exemplo</h3>
+              <h3 className="text-xl font-bold mb-4 text-purple-400">{t(`${base}.example_title`)}</h3>
               <div className="bg-black/30 p-4 rounded-lg overflow-x-auto">
                 <pre className="text-sm text-zinc-300">
 {`{
@@ -153,52 +147,30 @@ export default function Logs() {
         transition={{ duration: 0.5, delay: 0.4 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Agregação de Logs</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t(`${base}.aggregation_title`)}</h2>
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-xl font-bold mb-4 text-green-400">Componentes</h3>
+              <h3 className="text-xl font-bold mb-4 text-green-400">{t(`${base}.components_title`)}</h3>
               <ul className="space-y-4">
-                <li className="bg-zinc-800/50 p-3 rounded-lg">
-                  <span className="text-white font-medium">Coletores</span>
-                  <p className="text-zinc-400 text-sm">Agentes que coletam logs de diferentes fontes</p>
-                </li>
-                <li className="bg-zinc-800/50 p-3 rounded-lg">
-                  <span className="text-white font-medium">Processadores</span>
-                  <p className="text-zinc-400 text-sm">Filtram, transformam e enriquecem logs</p>
-                </li>
-                <li className="bg-zinc-800/50 p-3 rounded-lg">
-                  <span className="text-white font-medium">Armazenamento</span>
-                  <p className="text-zinc-400 text-sm">Sistema distribuído para persistência</p>
-                </li>
-                <li className="bg-zinc-800/50 p-3 rounded-lg">
-                  <span className="text-white font-medium">Interface</span>
-                  <p className="text-zinc-400 text-sm">UI para busca e análise</p>
-                </li>
+                {components.map((item, idx) => (
+                  <li key={idx} className="bg-zinc-800/50 p-3 rounded-lg">
+                    <span className="text-white font-medium">{item.title}</span>
+                    <p className="text-zinc-400 text-sm">{item.desc}</p>
+                  </li>
+                ))}
               </ul>
             </div>
 
             <div>
-              <h3 className="text-xl font-bold mb-4 text-yellow-400">Stack ELK</h3>
+              <h3 className="text-xl font-bold mb-4 text-yellow-400">{t(`${base}.elk_title`)}</h3>
               <div className="space-y-4">
-                <div className="bg-zinc-800/50 p-4 rounded-lg">
-                  <h4 className="text-white font-medium mb-2">Elasticsearch</h4>
-                  <p className="text-zinc-400 text-sm">
-                    Armazenamento e busca distribuída de logs
-                  </p>
-                </div>
-                <div className="bg-zinc-800/50 p-4 rounded-lg">
-                  <h4 className="text-white font-medium mb-2">Logstash</h4>
-                  <p className="text-zinc-400 text-sm">
-                    Pipeline de processamento de logs
-                  </p>
-                </div>
-                <div className="bg-zinc-800/50 p-4 rounded-lg">
-                  <h4 className="text-white font-medium mb-2">Kibana</h4>
-                  <p className="text-zinc-400 text-sm">
-                    Visualização e análise de logs
-                  </p>
-                </div>
+                {elkItems.map((item, idx) => (
+                  <div key={idx} className="bg-zinc-800/50 p-4 rounded-lg">
+                    <h4 className="text-white font-medium mb-2">{item.title}</h4>
+                    <p className="text-zinc-400 text-sm">{item.desc}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -212,68 +184,37 @@ export default function Logs() {
         transition={{ duration: 0.5, delay: 0.5 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Tracing Distribuído</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t(`${base}.tracing_title`)}</h2>
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-          <p className="text-zinc-300 mb-6">
-            Tracing distribuído permite rastrear o fluxo de uma requisição através
-            de múltiplos serviços, fornecendo visibilidade end-to-end.
-          </p>
+          <p className="text-zinc-300 mb-6">{t(`${base}.tracing_desc`)}</p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-xl font-bold mb-4 text-blue-400">Conceitos</h3>
+              <h3 className="text-xl font-bold mb-4 text-blue-400">{t(`${base}.concepts_title`)}</h3>
               <ul className="space-y-3">
-                <li className="flex items-start gap-3">
-                  <svg className="w-5 h-5 text-blue-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                  <div>
-                    <span className="text-white font-medium">Trace</span>
-                    <p className="text-zinc-400 text-sm">Representa uma transação end-to-end</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <svg className="w-5 h-5 text-blue-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                  <div>
-                    <span className="text-white font-medium">Span</span>
-                    <p className="text-zinc-400 text-sm">Unidade de trabalho dentro de um trace</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <svg className="w-5 h-5 text-blue-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                  <div>
-                    <span className="text-white font-medium">Context</span>
-                    <p className="text-zinc-400 text-sm">Metadados que acompanham o trace</p>
-                  </div>
-                </li>
+                {concepts.map((item, idx) => (
+                  <li key={idx} className="flex items-start gap-3">
+                    <svg className="w-5 h-5 text-blue-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                    <div>
+                      <span className="text-white font-medium">{item.title}</span>
+                      <p className="text-zinc-400 text-sm">{item.desc}</p>
+                    </div>
+                  </li>
+                ))}
               </ul>
             </div>
 
             <div>
-              <h3 className="text-xl font-bold mb-4 text-purple-400">Ferramentas</h3>
+              <h3 className="text-xl font-bold mb-4 text-purple-400">{t(`${base}.tools_title`)}</h3>
               <div className="space-y-4">
-                <div className="bg-zinc-800/50 p-4 rounded-lg">
-                  <h4 className="text-white font-medium mb-2">Jaeger</h4>
-                  <p className="text-zinc-400 text-sm">
-                    Sistema de tracing distribuído de código aberto
-                  </p>
-                </div>
-                <div className="bg-zinc-800/50 p-4 rounded-lg">
-                  <h4 className="text-white font-medium mb-2">Zipkin</h4>
-                  <p className="text-zinc-400 text-sm">
-                    Focado em latência e análise de dependências
-                  </p>
-                </div>
-                <div className="bg-zinc-800/50 p-4 rounded-lg">
-                  <h4 className="text-white font-medium mb-2">OpenTelemetry</h4>
-                  <p className="text-zinc-400 text-sm">
-                    Padrão aberto para instrumentação
-                  </p>
-                </div>
+                {tools.map((item, idx) => (
+                  <div key={idx} className="bg-zinc-800/50 p-4 rounded-lg">
+                    <h4 className="text-white font-medium mb-2">{item.title}</h4>
+                    <p className="text-zinc-400 text-sm">{item.desc}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -287,77 +228,44 @@ export default function Logs() {
         transition={{ duration: 0.5, delay: 0.6 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Melhores Práticas</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t(`${base}.best_practices_title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-            <h3 className="text-xl font-bold mb-4 text-blue-400">Logging</h3>
+            <h3 className="text-xl font-bold mb-4 text-blue-400">{t(`${base}.logging_title`)}</h3>
             <ul className="space-y-3">
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-blue-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <div>
-                  <span className="text-white font-medium">Níveis Apropriados</span>
-                  <p className="text-zinc-400 text-sm">Use níveis de log adequadamente (ERROR, WARN, INFO, DEBUG)</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-blue-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <div>
-                  <span className="text-white font-medium">Contexto</span>
-                  <p className="text-zinc-400 text-sm">Inclua informações relevantes para debugging</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-blue-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <div>
-                  <span className="text-white font-medium">Sensibilidade</span>
-                  <p className="text-zinc-400 text-sm">Evite dados sensíveis nos logs</p>
-                </div>
-              </li>
+              {loggingBest.map((item, idx) => (
+                <li key={idx} className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-blue-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <div>
+                    <span className="text-white font-medium">{item.title}</span>
+                    <p className="text-zinc-400 text-sm">{item.desc}</p>
+                  </div>
+                </li>
+              ))}
             </ul>
           </div>
 
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-            <h3 className="text-xl font-bold mb-4 text-purple-400">Tracing</h3>
+            <h3 className="text-xl font-bold mb-4 text-purple-400">{t(`${base}.tracing_bp_title`)}</h3>
             <ul className="space-y-3">
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-purple-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <div>
-                  <span className="text-white font-medium">Amostragem</span>
-                  <p className="text-zinc-400 text-sm">Configure taxas de amostragem adequadas</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-purple-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <div>
-                  <span className="text-white font-medium">Instrumentação</span>
-                  <p className="text-zinc-400 text-sm">Use bibliotecas padrão de instrumentação</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-purple-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <div>
-                  <span className="text-white font-medium">Correlação</span>
-                  <p className="text-zinc-400 text-sm">Mantenha correlação entre logs e traces</p>
-                </div>
-              </li>
+              {tracingBest.map((item, idx) => (
+                <li key={idx} className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-purple-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <div>
+                    <span className="text-white font-medium">{item.title}</span>
+                    <p className="text-zinc-400 text-sm">{item.desc}</p>
+                  </div>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
       </motion.div>
 
-     
     </div>
   );
 } 

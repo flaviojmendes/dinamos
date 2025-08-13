@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface Module {
   id: string;
@@ -246,6 +247,7 @@ const DiagramModule: React.FC<{
   containerWidth: number;
   containerHeight: number;
 }> = ({ module, isHighlighted, onHover, containerWidth, containerHeight }) => {
+  const { t } = useTranslation();
   // Calculate responsive positions
   const position = {
     x: (containerWidth * module.x) / 100,
@@ -272,9 +274,9 @@ const DiagramModule: React.FC<{
     >
       <h4 className="text-lg font-semibold mb-2">{module.name}</h4>
       <div className="text-sm space-y-1">
-        <div><strong>Deploy:</strong> {module.details.deployment}</div>
-        <div><strong>Comunicação:</strong> {module.details.communication}</div>
-        <div><strong>Banco:</strong> {module.details.database}</div>
+        <div><strong>{t('design_principles.service_oriented.sections.module_labels.deploy')}:</strong> {module.details.deployment}</div>
+        <div><strong>{t('design_principles.service_oriented.sections.module_labels.communication')}:</strong> {module.details.communication}</div>
+        <div><strong>{t('design_principles.service_oriented.sections.module_labels.database')}:</strong> {module.details.database}</div>
       </div>
     </motion.div>
   );
@@ -401,32 +403,35 @@ const ResponsiveDiagram: React.FC<{
 export default function ServiceOriented() {
   const [selectedArch, setSelectedArch] = useState<Architecture>(architectures[0]);
   const [hoveredModule, setHoveredModule] = useState<string | null>(null);
+  const { t, i18n } = useTranslation();
+
+  // Map the currently selectedArch.type to i18n content
+  const i18nArchBase = `design_principles.service_oriented.architectures.${selectedArch.type}`;
 
   return (
     <div className="p-6 md:p-8 lg:p-12 max-w-4xl mx-auto">
       <div className="prose prose-invert prose-lg max-w-none">
         <h1 className="text-4xl md:text-5xl font-bold mb-8 text-blue-400">
-          Design Orientado a Serviços
+          {t('design_principles.service_oriented.title')}
         </h1>
 
         <p className="text-xl text-zinc-300 mb-12">
-          Explore as diferentes abordagens de organização de serviços e suas implicações práticas.
-          Cada arquitetura tem seus próprios trade-offs e casos de uso ideais.
+          {t('design_principles.service_oriented.intro')}
         </p>
 
         {/* Architecture Selection */}
         <div className="flex gap-4 mb-12">
-          {architectures.map(arch => (
+          {(['monolithic','modular','microservices'] as const).map(type => (
             <motion.button
-              key={arch.type}
-              onClick={() => setSelectedArch(arch)}
+              key={type}
+              onClick={() => setSelectedArch(architectures.find(a => a.type === type)!)}
               className={`px-6 py-3 rounded-lg transition-colors ${
-                selectedArch.type === arch.type
+                selectedArch.type === type
                   ? 'bg-blue-500 text-white'
                   : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
               }`}
             >
-              {arch.name}
+              {t(`design_principles.service_oriented.architectures.${type}.name`)}
             </motion.button>
           ))}
         </div>
@@ -441,15 +446,15 @@ export default function ServiceOriented() {
         >
           {/* Description Section */}
           <div className="bg-zinc-900 rounded-lg p-6">
-            <h2 className="text-3xl font-bold mb-6 text-blue-300">{selectedArch.name}</h2>
-            <p className="text-zinc-200 mb-8">{selectedArch.description}</p>
+            <h2 className="text-3xl font-bold mb-6 text-blue-300">{t(`${i18nArchBase}.name`)}</h2>
+            <p className="text-zinc-200 mb-8">{t(`${i18nArchBase}.description`)}</p>
 
             <div className="grid md:grid-cols-2 gap-8">
               {/* Advantages */}
               <div>
-                <h3 className="text-2xl font-bold text-blue-300 mb-4">Vantagens</h3>
+                <h3 className="text-2xl font-bold text-blue-300 mb-4">{t('design_principles.service_oriented.sections.advantages')}</h3>
                 <ul className="space-y-2">
-                  {selectedArch.advantages.map((advantage, index) => (
+                  {(t(`${i18nArchBase}.advantages`, { returnObjects: true }) as string[]).map((advantage, index) => (
                     <motion.li
                       key={index}
                       initial={{ opacity: 0, x: -20 }}
@@ -468,9 +473,9 @@ export default function ServiceOriented() {
 
               {/* Disadvantages */}
               <div>
-                <h3 className="text-2xl font-bold text-blue-300 mb-4">Desvantagens</h3>
+                <h3 className="text-2xl font-bold text-blue-300 mb-4">{t('design_principles.service_oriented.sections.disadvantages')}</h3>
                 <ul className="space-y-2">
-                  {selectedArch.disadvantages.map((disadvantage, index) => (
+                  {(t(`${i18nArchBase}.disadvantages`, { returnObjects: true }) as string[]).map((disadvantage, index) => (
                     <motion.li
                       key={index}
                       initial={{ opacity: 0, x: 20 }}
@@ -490,17 +495,29 @@ export default function ServiceOriented() {
 
             {/* Example */}
             <div className="mt-8 p-4 bg-zinc-800 rounded-lg">
-              <h4 className="text-xl font-bold text-blue-200 mb-2">Exemplo Prático</h4>
-              <p className="text-zinc-200">{selectedArch.example}</p>
+              <h4 className="text-xl font-bold text-blue-200 mb-2">{t('design_principles.service_oriented.sections.example_title')}</h4>
+              <p className="text-zinc-200">{t(`${i18nArchBase}.example`)}</p>
             </div>
           </div>
 
           {/* Diagram */}
           <div className="relative bg-zinc-900 rounded-lg p-8">
-            <h3 className="text-3xl font-bold mb-6 text-blue-300">Visualização da Arquitetura</h3>
+            <h3 className="text-3xl font-bold mb-6 text-blue-300">{t('design_principles.service_oriented.sections.diagram_title')}</h3>
             
             <ResponsiveDiagram
-              architecture={selectedArch}
+              architecture={{
+                ...selectedArch,
+                modules: selectedArch.modules.map(m => ({
+                  ...m,
+                  name: t(`${i18nArchBase}.modules.${m.id}.name`),
+                  details: {
+                    ...m.details,
+                    deployment: t(`${i18nArchBase}.modules.${m.id}.details.deployment`),
+                    communication: t(`${i18nArchBase}.modules.${m.id}.details.communication`),
+                    database: t(`${i18nArchBase}.modules.${m.id}.details.database`),
+                  }
+                }))
+              }}
               hoveredModule={hoveredModule}
               onHover={setHoveredModule}
             />
@@ -509,9 +526,9 @@ export default function ServiceOriented() {
             <div className="mt-20 flex justify-center gap-8 text-sm text-zinc-400">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-[2px] bg-zinc-400"></div>
-                {selectedArch.type === 'monolithic' && 'Chamada direta'}
-                {selectedArch.type === 'modular' && 'Interface'}
-                {selectedArch.type === 'microservices' && 'API/Eventos'}
+                {selectedArch.type === 'monolithic' && t('design_principles.service_oriented.sections.legend.direct_call')}
+                {selectedArch.type === 'modular' && t('design_principles.service_oriented.sections.legend.interface')}
+                {selectedArch.type === 'microservices' && t('design_principles.service_oriented.sections.legend.api_events')}
               </div>
             </div>
           </div>

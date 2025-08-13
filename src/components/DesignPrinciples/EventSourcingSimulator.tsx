@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface Event {
   id: number;
@@ -45,6 +46,7 @@ const defaultConfig: SimulationConfig = {
 };
 
 export default function EventSourcingSimulator() {
+  const { t } = useTranslation();
   const [events, setEvents] = useState<Event[]>([]);
   const [currentState, setCurrentState] = useState<OrderState | null>(null);
   const [selectedItems, setSelectedItems] = useState<{ name: string; quantity: number }[]>([]);
@@ -189,7 +191,7 @@ export default function EventSourcingSimulator() {
       <div className="prose prose-invert prose-lg max-w-none mb-8">
         <div className="flex items-center justify-between">
           <h1 className="text-4xl font-bold mb-4 text-blue-400">
-            Simulador de Event Sourcing
+            {t('simulators.event_sourcing.title')}
           </h1>
           <div className="flex gap-4">
             <button
@@ -200,7 +202,7 @@ export default function EventSourcingSimulator() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
-              Configurações
+              {t('simulators.event_sourcing.buttons.settings')}
             </button>
             <button
               onClick={resetSimulator}
@@ -209,13 +211,12 @@ export default function EventSourcingSimulator() {
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
-              Reiniciar
+              {t('simulators.event_sourcing.buttons.reset')}
             </button>
           </div>
         </div>
         <p className="text-xl text-zinc-300">
-          Explore como o Event Sourcing funciona em um sistema de e-commerce, onde cada mudança 
-          de estado é registrada como um evento imutável.
+          {t('simulators.event_sourcing.intro')}
         </p>
       </div>
 
@@ -229,7 +230,7 @@ export default function EventSourcingSimulator() {
             transition={{ duration: 0.2 }}
             className="bg-zinc-900 p-6 rounded-lg mb-8"
           >
-            <h2 className="text-xl font-bold text-zinc-200 mb-6">Configurações da Simulação</h2>
+            <h2 className="text-xl font-bold text-zinc-200 mb-6">{t('simulators.event_sourcing.settings.title')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="flex items-center gap-2 text-zinc-300">
@@ -239,12 +240,12 @@ export default function EventSourcingSimulator() {
                     onChange={(e) => setConfig(prev => ({ ...prev, autoAdvance: e.target.checked }))}
                     className="rounded border-zinc-600"
                   />
-                  Avançar automaticamente
+                  {t('simulators.event_sourcing.settings.auto_advance')}
                 </label>
               </div>
               <div>
                 <label className="block text-sm font-medium text-zinc-400 mb-2">
-                  Delay entre Eventos: {config.eventDelay}ms
+                  {t('simulators.event_sourcing.settings.event_delay', { ms: config.eventDelay })}
                 </label>
                 <input
                   type="range"
@@ -264,12 +265,12 @@ export default function EventSourcingSimulator() {
                     onChange={(e) => setConfig(prev => ({ ...prev, showEventData: e.target.checked }))}
                     className="rounded border-zinc-600"
                   />
-                  Mostrar dados dos eventos
+                  {t('simulators.event_sourcing.settings.show_event_data')}
                 </label>
               </div>
               <div>
                 <label className="block text-sm font-medium text-zinc-400 mb-2">
-                  Duração da Animação: {config.animationDuration}s
+                  {t('simulators.event_sourcing.settings.animation_duration', { seconds: config.animationDuration })}
                 </label>
                 <input
                   type="range"
@@ -295,7 +296,7 @@ export default function EventSourcingSimulator() {
           transition={{ duration: config.animationDuration }}
         >
           <div className="bg-zinc-900 p-6 rounded-lg">
-            <h2 className="text-xl font-bold text-zinc-200 mb-4">Criar Pedido</h2>
+            <h2 className="text-xl font-bold text-zinc-200 mb-4">{t('simulators.event_sourcing.create_order.title')}</h2>
             <div className="grid grid-cols-2 gap-4 mb-4">
               {products.map(product => (
                 <button
@@ -310,14 +311,14 @@ export default function EventSourcingSimulator() {
             </div>
             {selectedItems.length > 0 && (
               <div className="mt-4 p-4 bg-zinc-800 rounded-lg">
-                <h3 className="font-medium text-zinc-200 mb-2">Itens Selecionados:</h3>
+                <h3 className="font-medium text-zinc-200 mb-2">{t('simulators.event_sourcing.create_order.selected_items')}</h3>
                 {selectedItems.map(item => (
                   <div key={item.name} className="text-sm text-zinc-400">
                     {item.name} x{item.quantity}
                   </div>
                 ))}
                 <div className="mt-2 text-zinc-200">
-                  Total: R$ {calculateTotal(selectedItems)}
+                  {t('simulators.event_sourcing.create_order.total', { amount: calculateTotal(selectedItems) })}
                 </div>
               </div>
             )}
@@ -326,7 +327,7 @@ export default function EventSourcingSimulator() {
               disabled={selectedItems.length === 0}
               className="mt-4 w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-zinc-700 disabled:cursor-not-allowed transition-colors"
             >
-              Criar Pedido
+              {t('simulators.event_sourcing.create_order.create_button')}
             </button>
           </div>
 
@@ -342,7 +343,7 @@ export default function EventSourcingSimulator() {
                 disabled={currentState.status !== 'PENDING'}
                 className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-zinc-700 disabled:cursor-not-allowed transition-colors"
               >
-                Confirmar Pagamento
+                {t('simulators.event_sourcing.actions.pay')}
               </button>
 
               <button
@@ -358,7 +359,7 @@ export default function EventSourcingSimulator() {
                 disabled={currentState.status !== 'PAID'}
                 className="w-full px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 disabled:bg-zinc-700 disabled:cursor-not-allowed transition-colors"
               >
-                Enviar Pedido
+                {t('simulators.event_sourcing.actions.ship')}
               </button>
 
               <button
@@ -371,7 +372,7 @@ export default function EventSourcingSimulator() {
                 disabled={currentState.status !== 'SHIPPED'}
                 className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-zinc-700 disabled:cursor-not-allowed transition-colors"
               >
-                Confirmar Entrega
+                {t('simulators.event_sourcing.actions.deliver')}
               </button>
 
               <button
@@ -387,7 +388,7 @@ export default function EventSourcingSimulator() {
                 disabled={!['PENDING', 'PAID'].includes(currentState.status)}
                 className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-zinc-700 disabled:cursor-not-allowed transition-colors"
               >
-                Cancelar Pedido
+                {t('simulators.event_sourcing.actions.cancel')}
               </button>
             </div>
           )}
@@ -411,29 +412,29 @@ export default function EventSourcingSimulator() {
                 transition={{ duration: config.animationDuration }}
                 className="bg-zinc-900 p-6 rounded-lg"
               >
-                <h2 className="text-xl font-bold text-zinc-200 mb-4">Estado Atual</h2>
+                <h2 className="text-xl font-bold text-zinc-200 mb-4">{t('simulators.event_sourcing.state.title')}</h2>
                 <div className="space-y-2 text-zinc-300">
-                  <div>Pedido: {currentState.orderId}</div>
+                  <div>{t('simulators.event_sourcing.state.order', { id: currentState.orderId })}</div>
                   <motion.div
                     key={currentState.status}
                     initial={{ color: '#60A5FA' }}
                     animate={{ color: '#E5E7EB' }}
                     transition={{ duration: 1 }}
                   >
-                    Status: {currentState.status}
+                    {t('simulators.event_sourcing.state.status', { status: currentState.status })}
                   </motion.div>
-                  <div>Total: R$ {currentState.amount}</div>
+                  <div>{t('simulators.event_sourcing.state.total', { amount: currentState.amount })}</div>
                   {currentState.trackingNumber && (
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: config.animationDuration }}
                     >
-                      Rastreamento: {currentState.trackingNumber}
+                      {t('simulators.event_sourcing.state.tracking', { code: currentState.trackingNumber })}
                     </motion.div>
                   )}
                   <div className="mt-4">
-                    <div className="font-medium mb-2">Itens:</div>
+                    <div className="font-medium mb-2">{t('simulators.event_sourcing.state.items')}</div>
                     {currentState.items.map(item => (
                       <div key={item.name} className="text-sm text-zinc-400">
                         {item.name} x{item.quantity}
@@ -448,19 +449,19 @@ export default function EventSourcingSimulator() {
           {/* Event Log */}
           <div className="bg-zinc-900 p-6 rounded-lg">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-zinc-200">Eventos</h2>
+              <h2 className="text-xl font-bold text-zinc-200">{t('simulators.event_sourcing.events.title')}</h2>
               {events.length > 0 && (
                 <div className="flex gap-4">
                   <div className="flex items-center gap-2">
-                    <label className="text-sm text-zinc-400">Velocidade:</label>
+                    <label className="text-sm text-zinc-400">{t('simulators.event_sourcing.events.speed')}</label>
                     <select
                       value={replaySpeed}
                       onChange={(e) => setReplaySpeed(Number(e.target.value))}
                       className="bg-zinc-800 text-zinc-200 rounded px-2 py-1"
                     >
-                      <option value={500}>0.5s</option>
-                      <option value={1000}>1s</option>
-                      <option value={2000}>2s</option>
+                      <option value={500}>{t('simulators.event_sourcing.events.speed_opts.half')}</option>
+                      <option value={1000}>{t('simulators.event_sourcing.events.speed_opts.one')}</option>
+                      <option value={2000}>{t('simulators.event_sourcing.events.speed_opts.two')}</option>
                     </select>
                   </div>
                   <button
@@ -472,7 +473,7 @@ export default function EventSourcingSimulator() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    Replay
+                    {t('simulators.event_sourcing.buttons.replay')}
                   </button>
                 </div>
               )}
@@ -499,15 +500,9 @@ export default function EventSourcingSimulator() {
                       </span>
                     </div>
                     {config.showEventData && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: config.animationDuration }}
-                        className="mt-1 text-xs text-zinc-400 overflow-hidden"
-                      >
-                        {JSON.stringify(event.data, null, 2)}
-                      </motion.div>
+                      <div className="mt-2 text-xs text-zinc-400">
+                        <pre className="whitespace-pre-wrap">{JSON.stringify(event.data, null, 2)}</pre>
+                      </div>
                     )}
                   </motion.div>
                 ))}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 /// <reference types="node" />
 
@@ -20,6 +21,8 @@ interface SimulationConfig {
 }
 
 export default function TimeoutSimulator() {
+  const { t } = useTranslation();
+
   const [config, setConfig] = useState<SimulationConfig>({
     timeout: 3000,
     minResponseTime: 1000,
@@ -135,9 +138,8 @@ export default function TimeoutSimulator() {
     }
   }, [config.requestsPerSecond]);
 
-  const formatTime = (ms: number) => {
-    return `${(ms / 1000).toFixed(1)}s`;
-  };
+  const toSeconds = (ms: number) => (ms / 1000).toFixed(1);
+  const formatTime = (ms: number) => `${toSeconds(ms)}s`;
 
   return (
     <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
@@ -149,7 +151,7 @@ export default function TimeoutSimulator() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            Simulador de Timeout
+            {t('simulators.timeout.title')}
           </motion.h1>
           <motion.button
             initial={{ opacity: 0, scale: 0.9 }}
@@ -161,7 +163,7 @@ export default function TimeoutSimulator() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            Configurações
+            {t('simulators.timeout.buttons.settings')}
           </motion.button>
         </div>
       </div>
@@ -174,11 +176,11 @@ export default function TimeoutSimulator() {
             exit={{ opacity: 0, height: 0 }}
             className="bg-zinc-900 rounded-lg p-6 mb-8 overflow-hidden"
           >
-            <h2 className="text-xl font-bold text-zinc-200 mb-6">Configurações da Simulação</h2>
+            <h2 className="text-xl font-bold text-zinc-200 mb-6">{t('simulators.timeout.settings.title')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-zinc-400 mb-2">
-                  Timeout: {formatTime(config.timeout)}
+                  {t('simulators.timeout.settings.timeout', { seconds: toSeconds(config.timeout) })}
                 </label>
                 <input
                   type="range"
@@ -192,7 +194,7 @@ export default function TimeoutSimulator() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-zinc-400 mb-2">
-                  Requisições por Segundo: {config.requestsPerSecond}
+                  {t('simulators.timeout.settings.rps', { value: config.requestsPerSecond })}
                 </label>
                 <input
                   type="range"
@@ -206,7 +208,7 @@ export default function TimeoutSimulator() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-zinc-400 mb-2">
-                  Tempo Mínimo de Resposta: {formatTime(config.minResponseTime)}
+                  {t('simulators.timeout.settings.min_response', { seconds: toSeconds(config.minResponseTime) })}
                 </label>
                 <input
                   type="range"
@@ -220,7 +222,7 @@ export default function TimeoutSimulator() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-zinc-400 mb-2">
-                  Tempo Máximo de Resposta: {formatTime(config.maxResponseTime)}
+                  {t('simulators.timeout.settings.max_response', { seconds: toSeconds(config.maxResponseTime) })}
                 </label>
                 <input
                   type="range"
@@ -234,7 +236,7 @@ export default function TimeoutSimulator() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-zinc-400 mb-2">
-                  Taxa de Sucesso: {config.successRate}%
+                  {t('simulators.timeout.settings.success_rate', { percent: config.successRate })}
                 </label>
                 <input
                   type="range"
@@ -254,7 +256,7 @@ export default function TimeoutSimulator() {
         {/* Left Column - Visualization */}
         <div className="bg-zinc-900 rounded-lg p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-zinc-200">Visualização</h2>
+            <h2 className="text-xl font-bold text-zinc-200">{t('simulators.timeout.visualization.title')}</h2>
             <div className="flex gap-2">
               {!isSimulating ? (
                 <button
@@ -264,7 +266,7 @@ export default function TimeoutSimulator() {
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                   </svg>
-                  Iniciar
+                  {t('simulators.timeout.buttons.start')}
                 </button>
               ) : (
                 <button
@@ -273,9 +275,9 @@ export default function TimeoutSimulator() {
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4z" />
                   </svg>
-                  Parar
+                  {t('simulators.timeout.buttons.stop')}
                 </button>
               )}
               <button
@@ -285,7 +287,7 @@ export default function TimeoutSimulator() {
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
-                Reiniciar
+                {t('simulators.timeout.buttons.reset')}
               </button>
             </div>
           </div>
@@ -305,7 +307,7 @@ export default function TimeoutSimulator() {
               >
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2">
-                    <span className="text-zinc-400">Requisição {request.id}</span>
+                    <span className="text-zinc-400">{t('simulators.timeout.request_label', { id: request.id })}</span>
                     {request.status === 'pending' && (
                       <motion.div
                         animate={{ rotate: 360 }}
@@ -338,13 +340,13 @@ export default function TimeoutSimulator() {
                 {request.status !== 'pending' && (
                   <div className="mt-2 text-sm">
                     {request.status === 'success' && (
-                      <span className="text-green-400">Requisição completada com sucesso</span>
+                      <span className="text-green-400">{t('simulators.timeout.statuses.success')}</span>
                     )}
                     {request.status === 'timeout' && (
-                      <span className="text-yellow-400">Timeout: Requisição excedeu {formatTime(config.timeout)}</span>
+                      <span className="text-yellow-400">{t('simulators.timeout.statuses.timeout', { seconds: toSeconds(config.timeout) })}</span>
                     )}
                     {request.status === 'error' && (
-                      <span className="text-red-400">Erro do servidor</span>
+                      <span className="text-red-400">{t('simulators.timeout.statuses.error')}</span>
                     )}
                   </div>
                 )}
@@ -356,14 +358,14 @@ export default function TimeoutSimulator() {
         {/* Right Column - Stats and Info */}
         <div className="space-y-6">
           <div className="bg-zinc-900 rounded-lg p-6">
-            <h2 className="text-xl font-bold text-zinc-200 mb-4">Estatísticas</h2>
+            <h2 className="text-xl font-bold text-zinc-200 mb-4">{t('simulators.timeout.stats.title')}</h2>
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-zinc-800 rounded-lg p-4">
-                <div className="text-sm text-zinc-400">Total de Requisições</div>
+                <div className="text-sm text-zinc-400">{t('simulators.timeout.stats.total')}</div>
                 <div className="text-2xl font-bold text-zinc-200">{nextRequestId.current - 1}</div>
               </div>
               <div className="bg-zinc-800 rounded-lg p-4">
-                <div className="text-sm text-zinc-400">Timeouts</div>
+                <div className="text-sm text-zinc-400">{t('simulators.timeout.stats.timeouts')}</div>
                 <div className="text-2xl font-bold text-zinc-200">
                   {requests.filter(r => r.status === 'timeout').length}
                 </div>
@@ -372,19 +374,16 @@ export default function TimeoutSimulator() {
           </div>
 
           <div className="bg-zinc-900 rounded-lg p-6">
-            <h2 className="text-xl font-bold text-zinc-200 mb-4">Explicação</h2>
+            <h2 className="text-xl font-bold text-zinc-200 mb-4">{t('simulators.timeout.info.title')}</h2>
             <div className="space-y-4 text-zinc-300">
               <p>
-                Este simulador demonstra como o mecanismo de timeout funciona em sistemas distribuídos. 
-                Cada requisição tem um tempo limite configurável para ser completada.
+                {t('simulators.timeout.info.p1')}
               </p>
               <p>
-                Se a resposta não chegar dentro do tempo limite, a requisição é cancelada e um erro 
-                de timeout é retornado, evitando que recursos fiquem presos indefinidamente.
+                {t('simulators.timeout.info.p2')}
               </p>
               <p>
-                Você pode ajustar o timeout, os tempos de resposta e a taxa de sucesso para ver 
-                como diferentes configurações afetam o comportamento do sistema.
+                {t('simulators.timeout.info.p3')}
               </p>
             </div>
           </div>

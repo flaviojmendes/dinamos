@@ -1,8 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function Timeout() {
+  const { t } = useTranslation();
   return (
     <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
       <div className="prose prose-invert prose-lg max-w-none mb-12">
@@ -12,7 +14,7 @@ export default function Timeout() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          Timeout (Tempo Limite)
+          {t('design_principles.timeout.title')} (Tempo Limite)
         </motion.h1>
         <motion.p
           initial={{ opacity: 0, y: -10 }}
@@ -20,8 +22,7 @@ export default function Timeout() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-xl text-zinc-300"
         >
-          Uma estratégia fundamental para evitar que operações lentas ou travadas 
-          comprometam a experiência do usuário e a saúde do sistema.
+          {t('design_principles.timeout.intro')}
         </motion.p>
       </div>
 
@@ -35,22 +36,19 @@ export default function Timeout() {
         >
           <div className="bg-zinc-900 rounded-lg p-6">
             <h2 className="text-2xl font-bold text-blue-400 mb-4">
-              Como Funciona
+              {t('design_principles.timeout.how_it_works.title')}
             </h2>
             <p className="text-zinc-300 mb-6">
-              Imagine que você está em um restaurante e faz seu pedido. Se o prato demorar muito 
-              para chegar, você provavelmente vai cancelar o pedido e ir embora. O "Timeout" 
-              funciona de forma similar.
+              {t('design_principles.timeout.how_it_works.p1')}
             </p>
             <p className="text-zinc-300">
-              Ele define um tempo máximo para uma operação ser concluída. Se esse tempo for 
-              ultrapassado, o sistema assume que algo deu errado e interrompe a operação.
+              {t('design_principles.timeout.how_it_works.p2')}
             </p>
           </div>
 
           <div className="bg-zinc-900 rounded-lg p-6">
             <h2 className="text-2xl font-bold text-blue-400 mb-4">
-              Benefícios
+              {t('design_principles.timeout.benefits.title')}
             </h2>
             <ul className="space-y-4">
               <motion.li 
@@ -63,8 +61,8 @@ export default function Timeout() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
-                  <h3 className="font-medium text-zinc-200">Melhor Experiência do Usuário</h3>
-                  <p className="text-zinc-400">Evita que usuários fiquem esperando indefinidamente</p>
+                  <h3 className="font-medium text-zinc-200">{t('design_principles.timeout.benefits.items.ux.title')}</h3>
+                  <p className="text-zinc-400">{t('design_principles.timeout.benefits.items.ux.desc')}</p>
                 </div>
               </motion.li>
               <motion.li 
@@ -77,8 +75,8 @@ export default function Timeout() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
-                  <h3 className="font-medium text-zinc-200">Liberação de Recursos</h3>
-                  <p className="text-zinc-400">Libera recursos do sistema que poderiam ficar presos</p>
+                  <h3 className="font-medium text-zinc-200">{t('design_principles.timeout.benefits.items.freeing_resources.title')}</h3>
+                  <p className="text-zinc-400">{t('design_principles.timeout.benefits.items.freeing_resources.desc')}</p>
                 </div>
               </motion.li>
               <motion.li 
@@ -91,8 +89,8 @@ export default function Timeout() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
-                  <h3 className="font-medium text-zinc-200">Prevenção de Falhas</h3>
-                  <p className="text-zinc-400">Evita que problemas em um serviço afetem outros</p>
+                  <h3 className="font-medium text-zinc-200">{t('design_principles.timeout.benefits.items.failure_prevention.title')}</h3>
+                  <p className="text-zinc-400">{t('design_principles.timeout.benefits.items.failure_prevention.desc')}</p>
                 </div>
               </motion.li>
             </ul>
@@ -108,41 +106,36 @@ export default function Timeout() {
         >
           <div className="bg-zinc-900 rounded-lg p-6">
             <h2 className="text-2xl font-bold text-blue-400 mb-4">
-              Exemplo do Mundo Real
+              {t('design_principles.timeout.real_world.title')}
             </h2>
             <div className="bg-zinc-800 rounded-lg p-4 mb-4">
               <p className="text-zinc-300">
-                Você está preenchendo um formulário online e, ao clicar em "Enviar", o site precisa 
-                se comunicar com um servidor para salvar as informações. Se o servidor estiver lento 
-                ou indisponível, a operação de envio pode demorar muito. Para evitar que você fique 
-                esperando indefinidamente, o site define um "Timeout" de, por exemplo, 30 segundos. 
-                Se o servidor não responder nesse tempo, o site exibe uma mensagem de erro e 
-                interrompe o envio.
+                {t('design_principles.timeout.real_world.text')}
               </p>
             </div>
           </div>
 
           <div className="bg-zinc-900 rounded-lg p-6">
             <h2 className="text-2xl font-bold text-blue-400 mb-4">
-              Melhores Práticas
+              {t('design_principles.timeout.best_practices.title')}
             </h2>
             <div className="space-y-4">
               <div className="bg-zinc-800 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-zinc-200 mb-2">Tempos Apropriados</h3>
+                <h3 className="text-lg font-semibold text-zinc-200 mb-2">{t('design_principles.timeout.best_practices.items.proper_times.title')}</h3>
                 <p className="text-zinc-400">
-                  Defina timeouts realistas baseados no tipo de operação e expectativas do usuário
+                  {t('design_principles.timeout.best_practices.items.proper_times.desc')}
                 </p>
               </div>
               <div className="bg-zinc-800 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-zinc-200 mb-2">Mensagens Claras</h3>
+                <h3 className="text-lg font-semibold text-zinc-200 mb-2">{t('design_principles.timeout.best_practices.items.clear_messages.title')}</h3>
                 <p className="text-zinc-400">
-                  Informe ao usuário o que aconteceu e o que ele pode fazer a seguir
+                  {t('design_principles.timeout.best_practices.items.clear_messages.desc')}
                 </p>
               </div>
               <div className="bg-zinc-800 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-zinc-200 mb-2">Retry Strategy</h3>
+                <h3 className="text-lg font-semibold text-zinc-200 mb-2">{t('design_principles.timeout.best_practices.items.retry_combo.title')}</h3>
                 <p className="text-zinc-400">
-                  Combine timeouts com retries para maior resiliência
+                  {t('design_principles.timeout.best_practices.items.retry_combo.desc')}
                 </p>
               </div>
             </div>
@@ -164,7 +157,7 @@ export default function Timeout() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          Explorar Simulador de Timeout
+          {t('design_principles.timeout.cta_simulator')}
         </Link>
       </motion.div>
     </div>

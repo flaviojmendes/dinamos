@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface Process {
   id: number;
@@ -10,6 +11,7 @@ interface Process {
 }
 
 export default function SynchronizationAlgorithms() {
+  const { t } = useTranslation();
   // Bakery Algorithm Demo State
   const [bakeryProcesses, setBakeryProcesses] = useState<Process[]>([
     { id: 0, state: 'idle' },
@@ -101,16 +103,14 @@ export default function SynchronizationAlgorithms() {
         className="mb-12"
       >
         <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-          Algoritmos de Sincronização
+          {t('design_principles.consistency_strategies.algorithms.title')}
         </h1>
         <p className="text-lg text-zinc-300 mb-6">
-          Existem vários algoritmos para garantir a sincronização em sistemas distribuídos.
-          Cada um tem suas características específicas e casos de uso ideais.
+          {t('design_principles.consistency_strategies.algorithms.intro')}
         </p>
         <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-blue-300">
-          <strong className="block mb-2">💡 Conceito Chave:</strong>
-          A escolha do algoritmo de sincronização depende de fatores como o número de nós,
-          a latência da rede, a tolerância a falhas e os requisitos de performance.
+          <strong className="block mb-2">{t('design_principles.consistency_strategies.algorithms.key_concept_label')}</strong>
+          {t('design_principles.consistency_strategies.algorithms.key_concept_text')}
         </div>
       </motion.div>
 
@@ -121,21 +121,20 @@ export default function SynchronizationAlgorithms() {
         transition={{ duration: 0.5, delay: 0.2 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Algoritmo do Padeiro</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t('design_principles.consistency_strategies.algorithms.bakery.title')}</h2>
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 mb-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-blue-400">Conceito</h3>
+              <h3 className="text-xl font-semibold mb-4 text-blue-400">{t('design_principles.consistency_strategies.algorithms.bakery.concept_title')}</h3>
               <p className="text-zinc-300 mb-4">
-                Baseado na ideia de uma padaria, onde cada cliente recebe um número de senha
-                e é atendido em ordem crescente.
+                {t('design_principles.consistency_strategies.algorithms.bakery.concept_p')}
               </p>
               <div className="flex items-center gap-2 text-sm mb-6">
                 <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
-                  Ordem Total
+                  {t('design_principles.consistency_strategies.algorithms.bakery.badges.total_order')}
                 </span>
                 <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
-                  Justo
+                  {t('design_principles.consistency_strategies.algorithms.bakery.badges.fairness')}
                 </span>
               </div>
 
@@ -185,7 +184,7 @@ function enterCriticalSection(process: Process, processes: Process[]) {
 
             {/* Interactive Demo */}
             <div className="bg-zinc-900/50 rounded-lg p-6">
-              <h4 className="text-lg font-semibold mb-4 text-blue-400">Demo Interativa</h4>
+              <h4 className="text-lg font-semibold mb-4 text-blue-400">{t('design_principles.consistency_strategies.algorithms.bakery.demo_title')}</h4>
               <div className="space-y-4">
                 {bakeryProcesses.map(process => (
                   <div 
@@ -204,7 +203,7 @@ function enterCriticalSection(process: Process, processes: Process[]) {
                       }}
                     >
                       <span className="text-white">
-                        Processo {process.id}
+                        {t('design_principles.consistency_strategies.algorithms.bakery.labels.process')} {process.id}
                       </span>
                     </motion.div>
                     {process.number && (
@@ -213,7 +212,7 @@ function enterCriticalSection(process: Process, processes: Process[]) {
                         animate={{ opacity: 1, x: 0 }}
                         className="bg-blue-500/20 px-3 py-1 rounded text-blue-300"
                       >
-                        Senha: {process.number}
+                        {t('design_principles.consistency_strategies.algorithms.bakery.labels.ticket')}: {process.number}
                       </motion.div>
                     )}
                     {process.state === 'idle' && (
@@ -221,7 +220,7 @@ function enterCriticalSection(process: Process, processes: Process[]) {
                         onClick={() => requestBakeryAccess(process.id)}
                         className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded hover:bg-blue-500/30"
                       >
-                        Solicitar Acesso
+                        {t('design_principles.consistency_strategies.algorithms.bakery.labels.request_access')}
                       </button>
                     )}
                   </div>
@@ -239,21 +238,20 @@ function enterCriticalSection(process: Process, processes: Process[]) {
         transition={{ duration: 0.5, delay: 0.3 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Token Ring</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t('design_principles.consistency_strategies.algorithms.token_ring.title')}</h2>
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 mb-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-green-400">Conceito</h3>
+              <h3 className="text-xl font-semibold mb-4 text-green-400">{t('design_principles.consistency_strategies.algorithms.token_ring.concept_title')}</h3>
               <p className="text-zinc-300 mb-4">
-                Um token circula entre os processos em um anel lógico, e apenas o processo
-                que possui o token pode acessar recursos compartilhados.
+                {t('design_principles.consistency_strategies.algorithms.token_ring.concept_p')}
               </p>
               <div className="flex items-center gap-2 text-sm mb-6">
                 <span className="px-2 py-1 bg-green-500/20 text-green-300 rounded">
-                  Token Único
+                  {t('design_principles.consistency_strategies.algorithms.token_ring.badges.single_token')}
                 </span>
                 <span className="px-2 py-1 bg-green-500/20 text-green-300 rounded">
-                  Passagem Circular
+                  {t('design_principles.consistency_strategies.algorithms.token_ring.badges.circular_passing')}
                 </span>
               </div>
 
@@ -305,7 +303,7 @@ class TokenRing {
 
             {/* Interactive Demo */}
             <div className="bg-zinc-900/50 rounded-lg p-6">
-              <h4 className="text-lg font-semibold mb-4 text-green-400">Demo Interativa</h4>
+              <h4 className="text-lg font-semibold mb-4 text-green-400">{t('design_principles.consistency_strategies.algorithms.token_ring.demo_title')}</h4>
               <div className="relative aspect-square">
                 {tokenRingProcesses.map((process, index) => {
                   const angle = (index * 2 * Math.PI) / tokenRingProcesses.length;
@@ -333,7 +331,7 @@ class TokenRing {
                       <span className={`${
                         tokenPosition === process.id ? 'text-green-300' : 'text-zinc-300'
                       }`}>
-                        P{process.id}
+                        {t('design_principles.consistency_strategies.algorithms.token_ring.labels.process_prefix')}{process.id}
                       </span>
                     </motion.div>
                   );
@@ -344,7 +342,7 @@ class TokenRing {
                     onClick={moveToken}
                     className="px-4 py-2 bg-green-500/20 text-green-300 rounded-lg hover:bg-green-500/30"
                   >
-                    Mover Token
+                    {t('design_principles.consistency_strategies.algorithms.token_ring.move_token')}
                   </button>
                 </div>
               </div>
@@ -360,21 +358,20 @@ class TokenRing {
         transition={{ duration: 0.5, delay: 0.4 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Ricart-Agrawala</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t('design_principles.consistency_strategies.algorithms.ricart_agrawala.title')}</h2>
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 mb-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-yellow-400">Conceito</h3>
+              <h3 className="text-xl font-semibold mb-4 text-yellow-400">{t('design_principles.consistency_strategies.algorithms.ricart_agrawala.concept_title')}</h3>
               <p className="text-zinc-300 mb-4">
-                Baseado em timestamps lógicos, onde processos solicitam permissão de todos
-                os outros processos antes de acessar recursos compartilhados.
+                {t('design_principles.consistency_strategies.algorithms.ricart_agrawala.concept_p')}
               </p>
               <div className="flex items-center gap-2 text-sm mb-6">
                 <span className="px-2 py-1 bg-yellow-500/20 text-yellow-300 rounded">
-                  Timestamps
+                  {t('design_principles.consistency_strategies.algorithms.ricart_agrawala.badges.timestamps')}
                 </span>
                 <span className="px-2 py-1 bg-yellow-500/20 text-yellow-300 rounded">
-                  Consenso
+                  {t('design_principles.consistency_strategies.algorithms.ricart_agrawala.badges.consensus')}
                 </span>
               </div>
 
@@ -437,7 +434,7 @@ class RicartAgrawala {
 
             {/* Interactive Demo */}
             <div className="bg-zinc-900/50 rounded-lg p-6">
-              <h4 className="text-lg font-semibold mb-4 text-yellow-400">Demo Interativa</h4>
+              <h4 className="text-lg font-semibold mb-4 text-yellow-400">{t('design_principles.consistency_strategies.algorithms.ricart_agrawala.demo_title')}</h4>
               <div className="space-y-4">
                 {ricartProcesses.map(process => (
                   <div 
@@ -456,7 +453,7 @@ class RicartAgrawala {
                       }}
                     >
                       <span className="text-white">
-                        Processo {process.id}
+                        {t('design_principles.consistency_strategies.algorithms.ricart_agrawala.labels.process')} {process.id}
                       </span>
                     </motion.div>
                     {process.timestamp !== undefined && process.timestamp > 0 && process.state !== 'idle' && (
@@ -465,7 +462,7 @@ class RicartAgrawala {
                         animate={{ opacity: 1, x: 0 }}
                         className="bg-yellow-500/20 px-3 py-1 rounded text-yellow-300"
                       >
-                        TS: {process.timestamp}
+                        {t('design_principles.consistency_strategies.algorithms.ricart_agrawala.labels.ts_prefix')}: {process.timestamp}
                       </motion.div>
                     )}
                     {process.state === 'idle' && (
@@ -473,7 +470,7 @@ class RicartAgrawala {
                         onClick={() => requestRicartAccess(process.id)}
                         className="px-3 py-1 bg-yellow-500/20 text-yellow-300 rounded hover:bg-yellow-500/30"
                       >
-                        Solicitar Acesso
+                        {t('design_principles.consistency_strategies.algorithms.ricart_agrawala.labels.request_access')}
                       </button>
                     )}
                   </div>
@@ -491,19 +488,19 @@ class RicartAgrawala {
         transition={{ duration: 0.5, delay: 0.5 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Comparação</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t('design_principles.consistency_strategies.algorithms.comparison.title')}</h2>
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-blue-400">Algoritmo do Padeiro</h3>
+              <h3 className="text-xl font-semibold mb-4 text-blue-400">{t('design_principles.consistency_strategies.algorithms.comparison.bakery_title')}</h3>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
                   <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <div>
-                    <span className="text-white font-medium">Vantagens</span>
-                    <p className="text-zinc-400 text-sm">Simples e justo</p>
+                    <span className="text-white font-medium">{t('design_principles.consistency_strategies.algorithms.comparison.advantages')}</span>
+                    <p className="text-zinc-400 text-sm">{t('design_principles.consistency_strategies.algorithms.comparison.bakery.pros')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -511,22 +508,22 @@ class RicartAgrawala {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                   <div>
-                    <span className="text-white font-medium">Desvantagens</span>
-                    <p className="text-zinc-400 text-sm">Alta complexidade de mensagens</p>
+                    <span className="text-white font-medium">{t('design_principles.consistency_strategies.algorithms.comparison.disadvantages')}</span>
+                    <p className="text-zinc-400 text-sm">{t('design_principles.consistency_strategies.algorithms.comparison.bakery.cons')}</p>
                   </div>
                 </li>
               </ul>
             </div>
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-green-400">Token Ring</h3>
+              <h3 className="text-xl font-semibold mb-4 text-green-400">{t('design_principles.consistency_strategies.algorithms.comparison.token_ring_title')}</h3>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <div>
-                    <span className="text-white font-medium">Vantagens</span>
-                    <p className="text-zinc-400 text-sm">Baixa complexidade de mensagens</p>
+                    <span className="text-white font-medium">{t('design_principles.consistency_strategies.algorithms.comparison.advantages')}</span>
+                    <p className="text-zinc-400 text-sm">{t('design_principles.consistency_strategies.algorithms.comparison.token_ring.pros')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -534,22 +531,22 @@ class RicartAgrawala {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                   <div>
-                    <span className="text-white font-medium">Desvantagens</span>
-                    <p className="text-zinc-400 text-sm">Ponto único de falha</p>
+                    <span className="text-white font-medium">{t('design_principles.consistency_strategies.algorithms.comparison.disadvantages')}</span>
+                    <p className="text-zinc-400 text-sm">{t('design_principles.consistency_strategies.algorithms.comparison.token_ring.cons')}</p>
                   </div>
                 </li>
               </ul>
             </div>
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-yellow-400">Ricart-Agrawala</h3>
+              <h3 className="text-xl font-semibold mb-4 text-yellow-400">{t('design_principles.consistency_strategies.algorithms.comparison.ricart_title')}</h3>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
                   <svg className="w-5 h-5 text-yellow-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <div>
-                    <span className="text-white font-medium">Vantagens</span>
-                    <p className="text-zinc-400 text-sm">Robusto a falhas</p>
+                    <span className="text-white font-medium">{t('design_principles.consistency_strategies.algorithms.comparison.advantages')}</span>
+                    <p className="text-zinc-400 text-sm">{t('design_principles.consistency_strategies.algorithms.comparison.ricart.pros')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -557,8 +554,8 @@ class RicartAgrawala {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                   <div>
-                    <span className="text-white font-medium">Desvantagens</span>
-                    <p className="text-zinc-400 text-sm">Alta latência</p>
+                    <span className="text-white font-medium">{t('design_principles.consistency_strategies.algorithms.comparison.disadvantages')}</span>
+                    <p className="text-zinc-400 text-sm">{t('design_principles.consistency_strategies.algorithms.comparison.ricart.cons')}</p>
                   </div>
                 </li>
               </ul>

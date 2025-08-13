@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface User {
   id: string;
@@ -14,6 +15,9 @@ interface DecodedToken {
 }
 
 export default function TokensSimulator() {
+  const { t } = useTranslation();
+  const base = 'jwt_simulator';
+
   const [user, setUser] = useState<User>({
     id: '123456',
     name: 'João Silva',
@@ -30,6 +34,10 @@ export default function TokensSimulator() {
     isValid: boolean;
     message: string;
   } | null>(null);
+
+  const roles = t(`${base}.roles`, { returnObjects: true }) as Record<string, string>;
+  const verificationMessages = t(`${base}.verification_messages`, { returnObjects: true }) as Record<string, string>;
+  const instructions = t(`${base}.instructions`, { returnObjects: true }) as string[];
 
   // Generate token function (moved outside to be reusable)
   const generateToken = () => {
@@ -83,7 +91,7 @@ export default function TokensSimulator() {
     if (!decodedToken) {
       setVerificationResult({
         isValid: false,
-        message: 'Nenhum token para verificar'
+        message: verificationMessages.no_token
       });
       return;
     }
@@ -94,14 +102,14 @@ export default function TokensSimulator() {
     if (payload.exp < now) {
       setVerificationResult({
         isValid: false,
-        message: 'Token expirado'
+        message: verificationMessages.expired
       });
       return;
     }
 
     setVerificationResult({
       isValid: true,
-      message: 'Token válido'
+      message: verificationMessages.valid
     });
   };
 
@@ -111,10 +119,10 @@ export default function TokensSimulator() {
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-4xl font-bold text-white mb-4">
-            Simulador de JWT
+            {t(`${base}.title`)}
           </h1>
           <p className="text-lg text-zinc-400">
-            Experimente a geração e validação de tokens JWT na prática
+            {t(`${base}.subtitle`)}
           </p>
         </div>
 
@@ -122,15 +130,15 @@ export default function TokensSimulator() {
           {/* Token Generation Section */}
           <div className="space-y-6">
             <div className="bg-zinc-900 rounded-lg p-6">
-              <h2 className="text-2xl font-bold text-blue-400 mb-6">Configuração do Token</h2>
+              <h2 className="text-2xl font-bold text-blue-400 mb-6">{t(`${base}.token_configuration_title`)}</h2>
               
               {/* User Information */}
               <div className="space-y-4 mb-6">
-                <h3 className="text-xl font-semibold text-white">Informações do Usuário</h3>
+                <h3 className="text-xl font-semibold text-white">{t(`${base}.user_information_title`)}</h3>
                 <div className="grid gap-4">
                   <div>
                     <label className="block text-sm font-medium text-zinc-400 mb-1">
-                      Nome
+                      {t(`${base}.name_label`)}
                     </label>
                     <input
                       type="text"
@@ -141,7 +149,7 @@ export default function TokensSimulator() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-zinc-400 mb-1">
-                      Email
+                      {t(`${base}.email_label`)}
                     </label>
                     <input
                       type="email"
@@ -152,16 +160,16 @@ export default function TokensSimulator() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-zinc-400 mb-1">
-                      Papel
+                      {t(`${base}.role_label`)}
                     </label>
                     <select
                       value={user.role}
                       onChange={e => updateUser('role', e.target.value)}
                       className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
                     >
-                      <option value="user">Usuário</option>
-                      <option value="admin">Administrador</option>
-                      <option value="guest">Convidado</option>
+                      <option value="user">{roles.user}</option>
+                      <option value="admin">{roles.admin}</option>
+                      <option value="guest">{roles.guest}</option>
                     </select>
                   </div>
                 </div>
@@ -169,11 +177,11 @@ export default function TokensSimulator() {
 
               {/* Token Settings */}
               <div className="space-y-4 mb-6">
-                <h3 className="text-xl font-semibold text-white">Configurações do Token</h3>
+                <h3 className="text-xl font-semibold text-white">{t(`${base}.token_settings_title`)}</h3>
                 <div className="grid gap-4">
                   <div>
                     <label className="block text-sm font-medium text-zinc-400 mb-1">
-                      Algoritmo de Assinatura
+                      {t(`${base}.algorithm_label`)}
                     </label>
                     <select
                       value={selectedAlgorithm}
@@ -188,7 +196,7 @@ export default function TokensSimulator() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-zinc-400 mb-1">
-                      Tempo de Expiração (segundos)
+                      {t(`${base}.expiration_label`)}
                     </label>
                     <input
                       type="number"
@@ -202,7 +210,7 @@ export default function TokensSimulator() {
 
               {/* Custom Claims */}
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-white">Claims Personalizadas</h3>
+                <h3 className="text-xl font-semibold text-white">{t(`${base}.custom_claims_title`)}</h3>
                 
                 {/* Display current claims */}
                 {Object.keys(customClaims).length > 0 && (
@@ -235,13 +243,13 @@ export default function TokensSimulator() {
                 <div className="grid grid-cols-2 gap-4">
                   <input
                     type="text"
-                    placeholder="Chave"
+                    placeholder={t(`${base}.key_placeholder`)}
                     className="bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
                     id="customClaimKey"
                   />
                   <input
                     type="text"
-                    placeholder="Valor"
+                    placeholder={t(`${base}.value_placeholder`)}
                     className="bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
                     id="customClaimValue"
                   />
@@ -254,7 +262,7 @@ export default function TokensSimulator() {
                   }}
                   className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium px-4 py-2 rounded transition-colors"
                 >
-                  Adicionar Claim
+                  {t(`${base}.add_claim_button`)}
                 </button>
               </div>
             </div>
@@ -264,7 +272,7 @@ export default function TokensSimulator() {
           <div className="space-y-6">
             {/* Generated Token */}
             <div className="bg-zinc-900 rounded-lg p-6">
-              <h2 className="text-2xl font-bold text-blue-400 mb-6">Token Gerado</h2>
+              <h2 className="text-2xl font-bold text-blue-400 mb-6">{t(`${base}.generated_token_title`)}</h2>
               {token ? (
                 <div className="space-y-4">
                   <div className="bg-zinc-800 p-4 rounded">
@@ -274,12 +282,12 @@ export default function TokensSimulator() {
                     onClick={verifyToken}
                     className="w-full bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded transition-colors"
                   >
-                    Verificar Token
+                    {t(`${base}.verify_token_button`)}
                   </button>
                 </div>
               ) : (
                 <p className="text-zinc-500">
-                  Configure e gere um token para visualizá-lo aqui
+                  {t(`${base}.no_token_message`)}
                 </p>
               )}
             </div>
@@ -287,10 +295,10 @@ export default function TokensSimulator() {
             {/* Decoded Token */}
             {decodedToken && (
               <div className="bg-zinc-900 rounded-lg p-6">
-                <h2 className="text-2xl font-bold text-blue-400 mb-6">Token Decodificado</h2>
+                <h2 className="text-2xl font-bold text-blue-400 mb-6">{t(`${base}.decoded_token_title`)}</h2>
                 <div className="space-y-4">
                   <div>
-                    <h3 className="text-lg font-semibold text-blue-300 mb-2">Header</h3>
+                    <h3 className="text-lg font-semibold text-blue-300 mb-2">{t(`${base}.header_title`)}</h3>
                     <div className="bg-zinc-800 p-4 rounded">
                       <pre className="text-zinc-400 text-sm">
                         {JSON.stringify(decodedToken.header, null, 2)}
@@ -298,7 +306,7 @@ export default function TokensSimulator() {
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-green-300 mb-2">Payload</h3>
+                    <h3 className="text-lg font-semibold text-green-300 mb-2">{t(`${base}.payload_title`)}</h3>
                     <div className="bg-zinc-800 p-4 rounded">
                       <pre className="text-zinc-400 text-sm">
                         {JSON.stringify(decodedToken.payload, null, 2)}
@@ -306,7 +314,7 @@ export default function TokensSimulator() {
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-purple-300 mb-2">Signature</h3>
+                    <h3 className="text-lg font-semibold text-purple-300 mb-2">{t(`${base}.signature_title`)}</h3>
                     <div className="bg-zinc-800 p-4 rounded">
                       <p className="text-zinc-400 font-mono text-sm break-all">
                         {decodedToken.signature}
@@ -323,7 +331,7 @@ export default function TokensSimulator() {
                 verificationResult.isValid ? 'border-green-500' : 'border-red-500'
               }`}>
                 <h2 className="text-2xl font-bold mb-4 text-white">
-                  Resultado da Verificação
+                  {t(`${base}.verification_result_title`)}
                 </h2>
                 <div className={`text-lg ${
                   verificationResult.isValid ? 'text-green-400' : 'text-red-400'
@@ -337,23 +345,13 @@ export default function TokensSimulator() {
 
         {/* Help Section */}
         <div className="mt-12 bg-zinc-900 rounded-lg p-6">
-          <h2 className="text-2xl font-bold text-blue-400 mb-6">Como Usar</h2>
+          <h2 className="text-2xl font-bold text-blue-400 mb-6">{t(`${base}.how_to_use_title`)}</h2>
           <div className="space-y-4 text-zinc-400">
-            <p>
-              1. Configure as informações do usuário e as configurações do token no painel esquerdo
-            </p>
-            <p>
-              2. Adicione claims personalizadas se desejar (opcional)
-            </p>
-            <p>
-              3. Clique em "Gerar Token" para criar um novo JWT
-            </p>
-            <p>
-              4. Visualize o token gerado e sua versão decodificada no painel direito
-            </p>
-            <p>
-              5. Use o botão "Verificar Token" para simular a validação do token
-            </p>
+            {instructions.map((instruction, index) => (
+              <p key={index}>
+                {index + 1}. {instruction}
+              </p>
+            ))}
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CryptoJS from 'crypto-js';
+import { useTranslation } from 'react-i18next';
 
 interface SimulationResult {
   input: string;
@@ -8,11 +9,21 @@ interface SimulationResult {
 }
 
 export default function CryptographySimulator() {
+  const { t } = useTranslation();
+  const base = 'cryptography_simulator';
+
   // Estados para entrada de dados
   const [plainText, setPlainText] = useState<string>('');
   const [key, setKey] = useState<string>('');
   const [selectedOperation, setSelectedOperation] = useState<string>('aes');
   const [results, setResults] = useState<SimulationResult[]>([]);
+
+  const operations = t(`${base}.operations`, { returnObjects: true }) as Record<string, string>;
+  const errorMessages = t(`${base}.error_messages`, { returnObjects: true }) as Record<string, string>;
+  const algorithmDetails = t(`${base}.algorithm_details`, { returnObjects: true }) as Record<string, string>;
+  const instructions = t(`${base}.instructions`, { returnObjects: true }) as string[];
+  const importantNotes = t(`${base}.important_notes`, { returnObjects: true }) as string[];
+  const resultLabels = t(`${base}.result_labels`, { returnObjects: true }) as Record<string, string>;
 
   // Função para limpar resultados
   const clearResults = () => {
@@ -28,36 +39,36 @@ export default function CryptographySimulator() {
   const encryptAES = (text: string, key: string) => {
     try {
       const encrypted = CryptoJS.AES.encrypt(text, key).toString();
-      addResult(text, encrypted, 'AES-256-CBC');
+      addResult(text, encrypted, algorithmDetails.aes);
     } catch (error) {
-      addResult(text, 'Erro na criptografia', 'Verifique a chave e os dados');
+      addResult(text, errorMessages.encryption_error, errorMessages.check_key_data);
     }
   };
 
   const hashSHA256 = (text: string) => {
     try {
       const hashed = CryptoJS.SHA256(text).toString();
-      addResult(text, hashed, 'SHA-256');
+      addResult(text, hashed, algorithmDetails.sha256);
     } catch (error) {
-      addResult(text, 'Erro no hash', 'Verifique os dados');
+      addResult(text, errorMessages.hash_error, errorMessages.check_data);
     }
   };
 
   const hashMD5 = (text: string) => {
     try {
       const hashed = CryptoJS.MD5(text).toString();
-      addResult(text, hashed, 'MD5 (Não recomendado para uso em produção)');
+      addResult(text, hashed, algorithmDetails.md5);
     } catch (error) {
-      addResult(text, 'Erro no hash', 'Verifique os dados');
+      addResult(text, errorMessages.hash_error, errorMessages.check_data);
     }
   };
 
   const encodeBase64 = (text: string) => {
     try {
       const encoded = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(text));
-      addResult(text, encoded, 'Base64');
+      addResult(text, encoded, algorithmDetails.base64);
     } catch (error) {
-      addResult(text, 'Erro na codificação', 'Verifique os dados');
+      addResult(text, errorMessages.encoding_error, errorMessages.check_data);
     }
   };
 
@@ -70,7 +81,7 @@ export default function CryptographySimulator() {
     switch (selectedOperation) {
       case 'aes':
         if (!key) {
-          addResult(plainText, 'Erro: Chave necessária', 'Forneça uma chave para criptografia AES');
+          addResult(plainText, errorMessages.key_required, errorMessages.provide_aes_key);
           return;
         }
         encryptAES(plainText, key);
@@ -93,10 +104,10 @@ export default function CryptographySimulator() {
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-4xl font-bold text-white mb-4">
-            Simulador de Criptografia
+            {t(`${base}.title`)}
           </h1>
           <p className="text-lg text-zinc-400">
-            Experimente diferentes tipos de criptografia, hashing e codificação na prática
+            {t(`${base}.subtitle`)}
           </p>
         </div>
 
@@ -109,26 +120,26 @@ export default function CryptographySimulator() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-zinc-400 mb-1">
-                    Texto para Processar
+                    {t(`${base}.text_input_label`)}
                   </label>
                   <textarea
                     value={plainText}
                     onChange={(e) => setPlainText(e.target.value)}
                     className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white h-32"
-                    placeholder="Digite o texto aqui..."
+                    placeholder={t(`${base}.text_input_placeholder`)}
                   />
                 </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-zinc-400 mb-1">
-                    Chave (necessária apenas para AES)
+                    {t(`${base}.key_label`)}
                   </label>
                   <input
                     type="text"
                     value={key}
                     onChange={(e) => setKey(e.target.value)}
                     className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
-                    placeholder="Chave secreta..."
+                    placeholder={t(`${base}.key_placeholder`)}
                   />
                 </div>
               </div>
@@ -137,17 +148,17 @@ export default function CryptographySimulator() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-zinc-400 mb-1">
-                    Operação
+                    {t(`${base}.operation_label`)}
                   </label>
                   <select
                     value={selectedOperation}
                     onChange={(e) => setSelectedOperation(e.target.value)}
                     className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
                   >
-                    <option value="aes">Criptografia AES</option>
-                    <option value="sha256">Hash SHA-256</option>
-                    <option value="md5">Hash MD5 (Não recomendado)</option>
-                    <option value="base64">Codificação Base64</option>
+                    <option value="aes">{operations.aes}</option>
+                    <option value="sha256">{operations.sha256}</option>
+                    <option value="md5">{operations.md5}</option>
+                    <option value="base64">{operations.base64}</option>
                   </select>
                 </div>
 
@@ -156,13 +167,13 @@ export default function CryptographySimulator() {
                     onClick={runSimulation}
                     className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded transition-colors"
                   >
-                    Processar
+                    {t(`${base}.process_button`)}
                   </button>
                   <button
                     onClick={clearResults}
                     className="w-full mt-2 bg-zinc-700 hover:bg-zinc-600 text-white font-medium px-4 py-2 rounded transition-colors"
                   >
-                    Limpar Resultados
+                    {t(`${base}.clear_button`)}
                   </button>
                 </div>
               </div>
@@ -170,10 +181,10 @@ export default function CryptographySimulator() {
 
             {/* Resultados */}
             <div className="space-y-4">
-              <h3 className="text-xl font-semibold text-white">Resultados</h3>
+              <h3 className="text-xl font-semibold text-white">{t(`${base}.results_title`)}</h3>
               {results.length === 0 ? (
                 <p className="text-zinc-500">
-                  Os resultados aparecerão aqui após o processamento...
+                  {t(`${base}.no_results`)}
                 </p>
               ) : (
                 <div className="space-y-4">
@@ -181,16 +192,16 @@ export default function CryptographySimulator() {
                     <div key={index} className="bg-zinc-800 p-4 rounded-lg">
                       <div className="grid gap-2">
                         <div>
-                          <span className="text-sm font-medium text-zinc-400">Entrada:</span>
+                          <span className="text-sm font-medium text-zinc-400">{resultLabels.input}</span>
                           <p className="text-zinc-300 font-mono break-all">{result.input}</p>
                         </div>
                         <div>
-                          <span className="text-sm font-medium text-zinc-400">Saída:</span>
+                          <span className="text-sm font-medium text-zinc-400">{resultLabels.output}</span>
                           <p className="text-zinc-300 font-mono break-all">{result.output}</p>
                         </div>
                         {result.details && (
                           <div>
-                            <span className="text-sm font-medium text-zinc-400">Detalhes:</span>
+                            <span className="text-sm font-medium text-zinc-400">{resultLabels.details}</span>
                             <p className="text-zinc-300">{result.details}</p>
                           </div>
                         )}
@@ -205,32 +216,21 @@ export default function CryptographySimulator() {
 
         {/* Informações Adicionais */}
         <div className="mt-12 bg-zinc-900 rounded-lg p-6">
-          <h3 className="text-xl font-semibold text-white mb-4">Como Usar</h3>
+          <h3 className="text-xl font-semibold text-white mb-4">{t(`${base}.instructions_title`)}</h3>
           <div className="space-y-4 text-zinc-400">
-            <p>
-              1. Digite o texto que deseja processar no campo de entrada
-            </p>
-            <p>
-              2. Se escolher criptografia AES, forneça uma chave secreta
-            </p>
-            <p>
-              3. Selecione a operação desejada no menu suspenso
-            </p>
-            <p>
-              4. Clique em "Processar" para ver o resultado
-            </p>
-            <p>
-              5. Os últimos 5 resultados serão mantidos para comparação
-            </p>
+            {instructions.map((instruction, index) => (
+              <p key={index}>
+                {index + 1}. {instruction}
+              </p>
+            ))}
           </div>
 
           <div className="mt-6">
-            <h4 className="text-lg font-semibold text-white mb-2">Notas Importantes</h4>
+            <h4 className="text-lg font-semibold text-white mb-2">{t(`${base}.important_notes_title`)}</h4>
             <ul className="list-disc list-inside text-zinc-400 space-y-2">
-              <li>AES é um algoritmo de criptografia simétrica seguro e amplamente utilizado</li>
-              <li>SHA-256 é recomendado para hashing seguro de dados</li>
-              <li>MD5 é incluído apenas para fins educacionais - não use em produção</li>
-              <li>Base64 é uma codificação, não uma forma de criptografia</li>
+              {importantNotes.map((note, index) => (
+                <li key={index}>{note}</li>
+              ))}
             </ul>
           </div>
         </div>

@@ -1,7 +1,20 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 const Uber: React.FC = () => {
+  const { t } = useTranslation();
+  const base = 'uber';
+
+  const functionalItems = t(`${base}.functional_items`, { returnObjects: true }) as string[];
+  const nonFunctionalItems = t(`${base}.non_functional_items`, { returnObjects: true }) as string[];
+  const matchingAlgorithmItems = t(`${base}.matching_algorithm_items`, { returnObjects: true }) as string[];
+  const factorsConsideredItems = t(`${base}.factors_considered_items`, { returnObjects: true }) as string[];
+  const locationProcessingItems = t(`${base}.location_processing_items`, { returnObjects: true }) as string[];
+  const optimizationsItems = t(`${base}.optimizations_items`, { returnObjects: true }) as string[];
+  const realtimeInfrastructureItems = t(`${base}.realtime_infrastructure_items`, { returnObjects: true }) as string[];
+  const featuresListItems = t(`${base}.features_list_items`, { returnObjects: true }) as string[];
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -11,57 +24,51 @@ const Uber: React.FC = () => {
     >
       {/* Title Section */}
       <div className="space-y-4">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-black to-zinc-700 bg-clip-text text-transparent">
-          Uber System Design
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent">
+          {t(`${base}.title`)}
         </h1>
         <p className="text-xl text-zinc-400">
-          Como o Uber conecta milhões de motoristas e passageiros em tempo real globalmente
+          {t(`${base}.subtitle`)}
         </p>
       </div>
 
       {/* Key Metrics Section */}
       <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
-        <h2 className="text-2xl font-semibold text-zinc-200">Números Impressionantes</h2>
+        <h2 className="text-2xl font-semibold text-zinc-200">{t(`${base}.metrics_title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
-            <div className="text-2xl font-bold text-zinc-200">130M+</div>
-            <div className="text-sm text-zinc-400">Usuários ativos mensais</div>
+            <div className="text-2xl font-bold text-zinc-200">{t(`${base}.metrics.monthly_users`)}</div>
+            <div className="text-sm text-zinc-400">{t(`${base}.metrics.monthly_users_desc`)}</div>
           </div>
           <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
-            <div className="text-2xl font-bold text-zinc-200">5M+</div>
-            <div className="text-sm text-zinc-400">Motoristas ativos</div>
+            <div className="text-2xl font-bold text-zinc-200">{t(`${base}.metrics.active_drivers`)}</div>
+            <div className="text-sm text-zinc-400">{t(`${base}.metrics.active_drivers_desc`)}</div>
           </div>
           <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
-            <div className="text-2xl font-bold text-zinc-200">20M+</div>
-            <div className="text-sm text-zinc-400">Viagens por dia</div>
+            <div className="text-2xl font-bold text-zinc-200">{t(`${base}.metrics.trips_per_day`)}</div>
+            <div className="text-sm text-zinc-400">{t(`${base}.metrics.trips_per_day_desc`)}</div>
           </div>
         </div>
       </section>
 
       {/* System Requirements */}
       <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
-        <h2 className="text-2xl font-semibold text-zinc-200">Requisitos do Sistema</h2>
+        <h2 className="text-2xl font-semibold text-zinc-200">{t(`${base}.requirements_title`)}</h2>
         <div className="space-y-4">
           <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-zinc-200 mb-2">Requisitos Funcionais</h3>
+            <h3 className="text-lg font-medium text-zinc-200 mb-2">{t(`${base}.functional_title`)}</h3>
             <ul className="list-disc list-inside space-y-2 text-zinc-300">
-              <li>Matching em tempo real de motoristas e passageiros</li>
-              <li>Geolocalização precisa</li>
-              <li>Estimativa de preço e tempo</li>
-              <li>Processamento de pagamentos</li>
-              <li>Sistema de avaliação</li>
-              <li>Múltiplos tipos de serviço (UberX, Black, etc.)</li>
+              {functionalItems.map((item, idx) => (
+                <li key={idx}>{item}</li>
+              ))}
             </ul>
           </div>
           <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-zinc-200 mb-2">Requisitos Não-Funcionais</h3>
+            <h3 className="text-lg font-medium text-zinc-200 mb-2">{t(`${base}.non_functional_title`)}</h3>
             <ul className="list-disc list-inside space-y-2 text-zinc-300">
-              <li>Latência ultra baixa (menor que 100ms)</li>
-              <li>Alta disponibilidade (99.99%)</li>
-              <li>Consistência eventual</li>
-              <li>Escalabilidade global</li>
-              <li>Tolerância a falhas</li>
-              <li>Segurança e privacidade</li>
+              {nonFunctionalItems.map((item, idx) => (
+                <li key={idx}>{item}</li>
+              ))}
             </ul>
           </div>
         </div>
@@ -69,65 +76,65 @@ const Uber: React.FC = () => {
 
       {/* Architecture Overview */}
       <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
-        <h2 className="text-2xl font-semibold text-zinc-200">Arquitetura do Sistema</h2>
+        <h2 className="text-2xl font-semibold text-zinc-200">{t(`${base}.architecture_title`)}</h2>
         
         {/* High Level Architecture Diagram */}
         <div className="bg-zinc-800/50 p-4 rounded-lg space-y-4">
-          <h3 className="text-xl font-medium text-zinc-200">Arquitetura de Alto Nível</h3>
+          <h3 className="text-xl font-medium text-zinc-200">{t(`${base}.high_level_title`)}</h3>
           <div className="relative h-[500px] bg-black/50 rounded-lg border border-zinc-900/30 overflow-hidden">
             <svg className="w-full h-full" viewBox="0 0 800 500">
               {/* Client Layer */}
               <g>
                 <rect x="250" y="20" width="300" height="60" rx="4" fill="#333333" fillOpacity="0.1" stroke="#333333" strokeWidth="2"/>
-                <text x="400" y="55" textAnchor="middle" fill="#FFFFFF" fontSize="14">Apps (Passageiro, Motorista)</text>
+                <text x="400" y="55" textAnchor="middle" fill="#FFFFFF" fontSize="14">{t(`${base}.apps_label`)}</text>
               </g>
 
               {/* API Gateway */}
               <g>
                 <rect x="250" y="120" width="300" height="60" rx="4" fill="#333333" fillOpacity="0.1" stroke="#333333" strokeWidth="2"/>
-                <text x="400" y="155" textAnchor="middle" fill="#FFFFFF" fontSize="14">API Gateway</text>
+                <text x="400" y="155" textAnchor="middle" fill="#FFFFFF" fontSize="14">{t(`${base}.api_gateway_label`)}</text>
               </g>
 
               {/* Core Services */}
               <g>
                 <rect x="50" y="220" width="200" height="60" rx="4" fill="#333333" fillOpacity="0.1" stroke="#333333" strokeWidth="2"/>
-                <text x="150" y="255" textAnchor="middle" fill="#FFFFFF" fontSize="14">Serviço de Matching</text>
+                <text x="150" y="255" textAnchor="middle" fill="#FFFFFF" fontSize="14">{t(`${base}.matching_service_label`)}</text>
               </g>
 
               {/* Location Services */}
               <g>
                 <rect x="300" y="220" width="200" height="60" rx="4" fill="#333333" fillOpacity="0.1" stroke="#333333" strokeWidth="2"/>
-                <text x="400" y="255" textAnchor="middle" fill="#FFFFFF" fontSize="14">Serviço de Localização</text>
+                <text x="400" y="255" textAnchor="middle" fill="#FFFFFF" fontSize="14">{t(`${base}.location_service_label`)}</text>
               </g>
 
               {/* Trip Services */}
               <g>
                 <rect x="550" y="220" width="200" height="60" rx="4" fill="#333333" fillOpacity="0.1" stroke="#333333" strokeWidth="2"/>
-                <text x="650" y="255" textAnchor="middle" fill="#FFFFFF" fontSize="14">Serviço de Viagens</text>
+                <text x="650" y="255" textAnchor="middle" fill="#FFFFFF" fontSize="14">{t(`${base}.trip_service_label`)}</text>
               </g>
 
               {/* Supporting Services */}
               <g>
                 <rect x="50" y="320" width="200" height="60" rx="4" fill="#333333" fillOpacity="0.1" stroke="#333333" strokeWidth="2"/>
-                <text x="150" y="355" textAnchor="middle" fill="#FFFFFF" fontSize="14">Serviço de Pagamentos</text>
+                <text x="150" y="355" textAnchor="middle" fill="#FFFFFF" fontSize="14">{t(`${base}.payment_service_label`)}</text>
               </g>
 
               {/* Analytics */}
               <g>
                 <rect x="300" y="320" width="200" height="60" rx="4" fill="#333333" fillOpacity="0.1" stroke="#333333" strokeWidth="2"/>
-                <text x="400" y="355" textAnchor="middle" fill="#FFFFFF" fontSize="14">Analytics</text>
+                <text x="400" y="355" textAnchor="middle" fill="#FFFFFF" fontSize="14">{t(`${base}.analytics_label`)}</text>
               </g>
 
               {/* Data Layer */}
               <g>
                 <rect x="50" y="420" width="200" height="50" rx="4" fill="#333333" fillOpacity="0.1" stroke="#333333" strokeWidth="2"/>
-                <text x="150" y="450" textAnchor="middle" fill="#FFFFFF" fontSize="12">PostgreSQL (Dados)</text>
+                <text x="150" y="450" textAnchor="middle" fill="#FFFFFF" fontSize="12">{t(`${base}.postgresql_data_label`)}</text>
 
                 <rect x="300" y="420" width="200" height="50" rx="4" fill="#333333" fillOpacity="0.1" stroke="#333333" strokeWidth="2"/>
-                <text x="400" y="450" textAnchor="middle" fill="#FFFFFF" fontSize="12">Redis (Cache)</text>
+                <text x="400" y="450" textAnchor="middle" fill="#FFFFFF" fontSize="12">{t(`${base}.redis_cache_label`)}</text>
 
                 <rect x="550" y="420" width="200" height="50" rx="4" fill="#333333" fillOpacity="0.1" stroke="#333333" strokeWidth="2"/>
-                <text x="650" y="450" textAnchor="middle" fill="#FFFFFF" fontSize="12">Kafka (Eventos)</text>
+                <text x="650" y="450" textAnchor="middle" fill="#FFFFFF" fontSize="12">{t(`${base}.kafka_events_label`)}</text>
               </g>
 
               {/* Connecting Lines */}
@@ -143,38 +150,37 @@ const Uber: React.FC = () => {
             </svg>
           </div>
           <p className="text-zinc-400">
-            Visão geral da arquitetura distribuída do Uber, mostrando os principais componentes
-            e suas interações.
+            {t(`${base}.high_level_description`)}
           </p>
         </div>
 
         {/* Matching Flow Architecture */}
         <div className="bg-zinc-800/50 p-4 rounded-lg space-y-4 mt-8">
-          <h3 className="text-xl font-medium text-zinc-200">Fluxo de Matching</h3>
+          <h3 className="text-xl font-medium text-zinc-200">{t(`${base}.matching_flow_title`)}</h3>
           <div className="relative h-[400px] bg-black/50 rounded-lg border border-zinc-900/30 overflow-hidden">
             <svg className="w-full h-full" viewBox="0 0 800 400">
               {/* Request */}
               <g>
                 <rect x="50" y="170" width="150" height="60" rx="4" fill="#333333" fillOpacity="0.1" stroke="#333333" strokeWidth="2"/>
-                <text x="125" y="205" textAnchor="middle" fill="#FFFFFF" fontSize="14">Solicitação</text>
+                <text x="125" y="205" textAnchor="middle" fill="#FFFFFF" fontSize="14">{t(`${base}.request_label`)}</text>
               </g>
 
               {/* Location Processing */}
               <g>
                 <rect x="250" y="170" width="150" height="60" rx="4" fill="#333333" fillOpacity="0.1" stroke="#333333" strokeWidth="2"/>
-                <text x="325" y="205" textAnchor="middle" fill="#FFFFFF" fontSize="14">Processamento</text>
+                <text x="325" y="205" textAnchor="middle" fill="#FFFFFF" fontSize="14">{t(`${base}.processing_label`)}</text>
               </g>
 
               {/* Driver Selection */}
               <g>
                 <rect x="450" y="170" width="150" height="60" rx="4" fill="#333333" fillOpacity="0.1" stroke="#333333" strokeWidth="2"/>
-                <text x="525" y="205" textAnchor="middle" fill="#FFFFFF" fontSize="14">Seleção Motorista</text>
+                <text x="525" y="205" textAnchor="middle" fill="#FFFFFF" fontSize="14">{t(`${base}.driver_selection_label`)}</text>
               </g>
 
               {/* Match */}
               <g>
                 <rect x="650" y="170" width="150" height="60" rx="4" fill="#333333" fillOpacity="0.1" stroke="#333333" strokeWidth="2"/>
-                <text x="725" y="205" textAnchor="middle" fill="#FFFFFF" fontSize="14">Match</text>
+                <text x="725" y="205" textAnchor="middle" fill="#FFFFFF" fontSize="14">{t(`${base}.match_label`)}</text>
               </g>
 
               {/* Connecting Lines */}
@@ -186,71 +192,64 @@ const Uber: React.FC = () => {
             </svg>
           </div>
           <p className="text-zinc-400">
-            Fluxo de matching entre passageiros e motoristas, demonstrando o processo desde a
-            solicitação até o match.
+            {t(`${base}.matching_flow_description`)}
           </p>
         </div>
 
         {/* Core Components */}
         <div className="space-y-4 mt-6">
-          <h3 className="text-xl font-medium text-zinc-200">1. Sistema de Matching</h3>
+          <h3 className="text-xl font-medium text-zinc-200">{t(`${base}.matching_system_title`)}</h3>
           <div className="bg-zinc-800/50 p-4 rounded-lg space-y-3">
-            <h4 className="font-medium text-zinc-200">Algoritmo de Matching</h4>
+            <h4 className="font-medium text-zinc-200">{t(`${base}.matching_algorithm_title`)}</h4>
             <ul className="list-disc list-inside space-y-2 text-zinc-300">
-              <li>Geohash para busca espacial</li>
-              <li>Quadtrees para indexação</li>
-              <li>Batching de requisições</li>
-              <li>Otimização multi-objetivo</li>
+              {matchingAlgorithmItems.map((item, idx) => (
+                <li key={idx}>{item}</li>
+              ))}
             </ul>
             
-            <h4 className="font-medium text-zinc-200 mt-4">Fatores Considerados</h4>
+            <h4 className="font-medium text-zinc-200 mt-4">{t(`${base}.factors_considered_title`)}</h4>
             <ul className="list-disc list-inside space-y-2 text-zinc-300">
-              <li>Distância e tempo estimado</li>
-              <li>Rating do motorista</li>
-              <li>Tipo de veículo</li>
-              <li>Histórico de cancelamentos</li>
-              <li>Demanda e oferta local</li>
+              {factorsConsideredItems.map((item, idx) => (
+                <li key={idx}>{item}</li>
+              ))}
             </ul>
           </div>
         </div>
 
         {/* Location System */}
         <div className="space-y-4 mt-6">
-          <h3 className="text-xl font-medium text-zinc-200">2. Sistema de Localização</h3>
+          <h3 className="text-xl font-medium text-zinc-200">{t(`${base}.location_system_title`)}</h3>
           <div className="bg-zinc-800/50 p-4 rounded-lg space-y-3">
-            <h4 className="font-medium text-zinc-200">Processamento de Localização</h4>
+            <h4 className="font-medium text-zinc-200">{t(`${base}.location_processing_title`)}</h4>
             <ul className="list-disc list-inside space-y-2 text-zinc-300">
-              <li>Atualização em tempo real</li>
-              <li>Filtro de Kalman</li>
-              <li>Map matching</li>
-              <li>Predição de rotas</li>
+              {locationProcessingItems.map((item, idx) => (
+                <li key={idx}>{item}</li>
+              ))}
             </ul>
 
-            <h4 className="font-medium text-zinc-200 mt-4">Otimizações</h4>
+            <h4 className="font-medium text-zinc-200 mt-4">{t(`${base}.optimizations_title`)}</h4>
             <ul className="list-disc list-inside space-y-2 text-zinc-300">
-              <li>Cache espacial distribuído</li>
-              <li>Compressão de coordenadas</li>
-              <li>Batching de atualizações</li>
-              <li>Sharding geográfico</li>
+              {optimizationsItems.map((item, idx) => (
+                <li key={idx}>{item}</li>
+              ))}
             </ul>
           </div>
         </div>
 
         {/* Real-time Features */}
         <div className="space-y-4 mt-6">
-          <h3 className="text-xl font-medium text-zinc-200">3. Sistema em Tempo Real</h3>
+          <h3 className="text-xl font-medium text-zinc-200">{t(`${base}.realtime_system_title`)}</h3>
           <div className="bg-zinc-800/50 p-4 rounded-lg space-y-3">
-            <h4 className="font-medium text-zinc-200">Infraestrutura Real-time</h4>
+            <h4 className="font-medium text-zinc-200">{t(`${base}.realtime_infrastructure_title`)}</h4>
             <ul className="list-disc list-inside space-y-2 text-zinc-300">
-              <li>WebSocket para conexões persistentes</li>
-              <li>Kafka para eventos</li>
-              <li>Redis para estado em tempo real</li>
-              <li>Features:
+              {realtimeInfrastructureItems.map((item, idx) => (
+                <li key={idx}>{item}</li>
+              ))}
+              <li>{t(`${base}.features_label`)}
                 <ul className="list-disc list-inside ml-6 mt-2">
-                  <li>Localização em tempo real</li>
-                  <li>ETA dinâmico</li>
-                  <li>Surge pricing</li>
-                  <li>Status da viagem</li>
+                  {featuresListItems.map((feature, idx) => (
+                    <li key={idx}>{feature}</li>
+                  ))}
                 </ul>
               </li>
             </ul>
@@ -260,37 +259,33 @@ const Uber: React.FC = () => {
 
       {/* Technical Decisions and Trade-offs */}
       <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
-        <h2 className="text-2xl font-semibold text-zinc-200">Decisões Técnicas e Trade-offs</h2>
+        <h2 className="text-2xl font-semibold text-zinc-200">{t(`${base}.technical_decisions_title`)}</h2>
         <div className="space-y-4">
           <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-zinc-200 mb-2">1. Precisão vs Latência</h3>
+            <h3 className="text-lg font-medium text-zinc-200 mb-2">{t(`${base}.decision_1_title`)}</h3>
             <p className="text-zinc-300">
-              Balance entre precisão do matching e tempo de resposta.
-              Uso de batching e aproximações para reduzir latência.
+              {t(`${base}.decision_1_text`)}
             </p>
           </div>
           
           <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-zinc-200 mb-2">2. Consistência vs Disponibilidade</h3>
+            <h3 className="text-lg font-medium text-zinc-200 mb-2">{t(`${base}.decision_2_title`)}</h3>
             <p className="text-zinc-300">
-              Preferência por disponibilidade em dados não críticos.
-              Consistência forte apenas em transações financeiras.
+              {t(`${base}.decision_2_text`)}
             </p>
           </div>
 
           <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-zinc-200 mb-2">3. Custo vs Qualidade</h3>
+            <h3 className="text-lg font-medium text-zinc-200 mb-2">{t(`${base}.decision_3_title`)}</h3>
             <p className="text-zinc-300">
-              Otimização de recursos computacionais vs qualidade do matching.
-              Uso de algoritmos adaptativos baseados na demanda.
+              {t(`${base}.decision_3_text`)}
             </p>
           </div>
 
           <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-zinc-200 mb-2">4. Cache vs Freshness</h3>
+            <h3 className="text-lg font-medium text-zinc-200 mb-2">{t(`${base}.decision_4_title`)}</h3>
             <p className="text-zinc-300">
-              Caching agressivo para performance vs dados atualizados.
-              Invalidação seletiva baseada em relevância.
+              {t(`${base}.decision_4_text`)}
             </p>
           </div>
         </div>
@@ -298,37 +293,33 @@ const Uber: React.FC = () => {
 
       {/* Scaling Challenges */}
       <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
-        <h2 className="text-2xl font-semibold text-zinc-200">Desafios de Escala</h2>
+        <h2 className="text-2xl font-semibold text-zinc-200">{t(`${base}.scaling_challenges_title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-zinc-200 mb-2">Matching em Massa</h3>
+            <h3 className="text-lg font-medium text-zinc-200 mb-2">{t(`${base}.mass_matching_title`)}</h3>
             <p className="text-zinc-300">
-              Processamento de milhões de matches por dia.
-              Solução: Sharding geográfico e batching.
+              {t(`${base}.mass_matching_text`)}
             </p>
           </div>
           
           <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-zinc-200 mb-2">Dados em Tempo Real</h3>
+            <h3 className="text-lg font-medium text-zinc-200 mb-2">{t(`${base}.realtime_data_title`)}</h3>
             <p className="text-zinc-300">
-              Atualizações de localização em massa.
-              Solução: Pipeline distribuído e filtros.
+              {t(`${base}.realtime_data_text`)}
             </p>
           </div>
 
           <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-zinc-200 mb-2">Consistência Global</h3>
+            <h3 className="text-lg font-medium text-zinc-200 mb-2">{t(`${base}.global_consistency_title`)}</h3>
             <p className="text-zinc-300">
-              Sincronização entre regiões.
-              Solução: Replicação multi-região e cache.
+              {t(`${base}.global_consistency_text`)}
             </p>
           </div>
 
           <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-zinc-200 mb-2">Picos de Demanda</h3>
+            <h3 className="text-lg font-medium text-zinc-200 mb-2">{t(`${base}.demand_peaks_title`)}</h3>
             <p className="text-zinc-300">
-              Handling de eventos e horários de pico.
-              Solução: Auto-scaling e surge pricing.
+              {t(`${base}.demand_peaks_text`)}
             </p>
           </div>
         </div>
@@ -336,14 +327,14 @@ const Uber: React.FC = () => {
 
       {/* Evolution Timeline */}
       <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
-        <h2 className="text-2xl font-semibold text-zinc-200">Evolução da Arquitetura</h2>
+        <h2 className="text-2xl font-semibold text-zinc-200">{t(`${base}.evolution_title`)}</h2>
         <div className="space-y-6">
           <div className="relative pl-8 border-l-2 border-zinc-500">
             <div className="absolute w-4 h-4 bg-zinc-500 rounded-full -left-[9px] top-0" />
             <div className="mb-2">
               <span className="text-zinc-400 font-semibold">2009</span>
-              <h3 className="text-lg font-medium">MVP Inicial</h3>
-              <p className="text-zinc-300">Monolito Ruby on Rails, matching manual.</p>
+              <h3 className="text-lg font-medium">{t(`${base}.timeline_2009_title`)}</h3>
+              <p className="text-zinc-300">{t(`${base}.timeline_2009_desc`)}</p>
             </div>
           </div>
 
@@ -351,8 +342,8 @@ const Uber: React.FC = () => {
             <div className="absolute w-4 h-4 bg-zinc-500 rounded-full -left-[9px] top-0" />
             <div className="mb-2">
               <span className="text-zinc-400 font-semibold">2011-2012</span>
-              <h3 className="text-lg font-medium">Primeira Escala</h3>
-              <p className="text-zinc-300">Matching automático, Redis para dispatch.</p>
+              <h3 className="text-lg font-medium">{t(`${base}.timeline_2011_title`)}</h3>
+              <p className="text-zinc-300">{t(`${base}.timeline_2011_desc`)}</p>
             </div>
           </div>
 
@@ -360,8 +351,8 @@ const Uber: React.FC = () => {
             <div className="absolute w-4 h-4 bg-zinc-500 rounded-full -left-[9px] top-0" />
             <div className="mb-2">
               <span className="text-zinc-400 font-semibold">2014-2015</span>
-              <h3 className="text-lg font-medium">Microsserviços</h3>
-              <p className="text-zinc-300">Decomposição em serviços, Kafka para eventos.</p>
+              <h3 className="text-lg font-medium">{t(`${base}.timeline_2014_title`)}</h3>
+              <p className="text-zinc-300">{t(`${base}.timeline_2014_desc`)}</p>
             </div>
           </div>
 
@@ -369,17 +360,17 @@ const Uber: React.FC = () => {
             <div className="absolute w-4 h-4 bg-zinc-500 rounded-full -left-[9px] top-0" />
             <div className="mb-2">
               <span className="text-zinc-400 font-semibold">2016-2018</span>
-              <h3 className="text-lg font-medium">Escala Global</h3>
-              <p className="text-zinc-300">Multi-região, otimização geográfica.</p>
+              <h3 className="text-lg font-medium">{t(`${base}.timeline_2016_title`)}</h3>
+              <p className="text-zinc-300">{t(`${base}.timeline_2016_desc`)}</p>
             </div>
           </div>
 
           <div className="relative pl-8 border-l-2 border-zinc-500">
             <div className="absolute w-4 h-4 bg-zinc-500 rounded-full -left-[9px] top-0" />
             <div className="mb-2">
-              <span className="text-zinc-400 font-semibold">2019-Presente</span>
-              <h3 className="text-lg font-medium">ML e Otimização</h3>
-              <p className="text-zinc-300">Machine learning para matching, predição de demanda.</p>
+              <span className="text-zinc-400 font-semibold">2019-{t(`${base}.timeline_2019_desc`).includes('Presente') ? 'Presente' : 'Present'}</span>
+              <h3 className="text-lg font-medium">{t(`${base}.timeline_2019_title`)}</h3>
+              <p className="text-zinc-300">{t(`${base}.timeline_2019_desc`)}</p>
             </div>
           </div>
         </div>
@@ -387,10 +378,10 @@ const Uber: React.FC = () => {
 
       {/* References Section */}
       <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
-        <h2 className="text-2xl font-semibold text-zinc-200">Referências</h2>
+        <h2 className="text-2xl font-semibold text-zinc-200">{t(`${base}.references_title`)}</h2>
         <div className="space-y-3">
           <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-zinc-200 mb-2">Documentação e Artigos Oficiais</h3>
+            <h3 className="text-lg font-medium text-zinc-200 mb-2">{t(`${base}.official_docs_title`)}</h3>
             <ul className="list-disc list-inside space-y-2 text-zinc-300">
               <li><a href="https://eng.uber.com/" className="text-zinc-400 hover:underline" target="_blank" rel="noopener noreferrer">Uber Engineering Blog</a></li>
               <li><a href="https://uber.github.io/" className="text-zinc-400 hover:underline" target="_blank" rel="noopener noreferrer">Uber Open Source</a></li>
@@ -399,7 +390,7 @@ const Uber: React.FC = () => {
           </div>
 
           <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-zinc-200 mb-2">Artigos Técnicos e Análises</h3>
+            <h3 className="text-lg font-medium text-zinc-200 mb-2">{t(`${base}.technical_articles_title`)}</h3>
             <ul className="list-disc list-inside space-y-2 text-zinc-300">
               <li><a href="https://eng.uber.com/h3/" className="text-zinc-400 hover:underline" target="_blank" rel="noopener noreferrer">H3: Uber's Hexagonal Hierarchical Spatial Index</a></li>
               <li><a href="https://eng.uber.com/marketplace-real-time-pricing/" className="text-zinc-400 hover:underline" target="_blank" rel="noopener noreferrer">Marketplace Real-time Pricing</a></li>
@@ -408,7 +399,7 @@ const Uber: React.FC = () => {
           </div>
 
           <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-zinc-200 mb-2">Ferramentas Open Source</h3>
+            <h3 className="text-lg font-medium text-zinc-200 mb-2">{t(`${base}.open_source_title`)}</h3>
             <ul className="list-disc list-inside space-y-2 text-zinc-300">
               <li><a href="https://github.com/uber/h3" className="text-zinc-400 hover:underline" target="_blank" rel="noopener noreferrer">H3 - Geospatial Indexing System</a></li>
               <li><a href="https://github.com/uber/cadence" className="text-zinc-400 hover:underline" target="_blank" rel="noopener noreferrer">Cadence - Workflow Engine</a></li>
@@ -417,7 +408,7 @@ const Uber: React.FC = () => {
           </div>
 
           <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-zinc-200 mb-2">Conferências e Apresentações</h3>
+            <h3 className="text-lg font-medium text-zinc-200 mb-2">{t(`${base}.conferences_title`)}</h3>
             <ul className="list-disc list-inside space-y-2 text-zinc-300">
               <li><a href="https://www.youtube.com/watch?v=nuiLcWE8sPA" className="text-zinc-400 hover:underline" target="_blank" rel="noopener noreferrer">QCon - Uber's Marketplace Platform</a></li>
               <li><a href="https://www.youtube.com/watch?v=kb-m2fasdDY" className="text-zinc-400 hover:underline" target="_blank" rel="noopener noreferrer">StrangeLoop - Uber's Real-time Tech Stack</a></li>

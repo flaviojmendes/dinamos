@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface Node {
   id: string;
@@ -18,6 +19,9 @@ interface Packet {
 }
 
 export default function AttackSimulator() {
+  const { t } = useTranslation();
+  const base = 'attack_simulator';
+  
   const [attackType, setAttackType] = useState<'ddos' | 'mitm'>('ddos');
   const [isPlaying, setIsPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
@@ -172,7 +176,7 @@ export default function AttackSimulator() {
             }`}
             onClick={() => setAttackType('ddos')}
           >
-            Ataque DDoS
+            {t(`${base}.ddos_attack_button`)}
           </button>
           <button
             className={`px-4 py-2 rounded-lg font-medium ${
@@ -182,13 +186,13 @@ export default function AttackSimulator() {
             }`}
             onClick={() => setAttackType('mitm')}
           >
-            Man-in-the-Middle
+            {t(`${base}.mitm_attack_button`)}
           </button>
         </div>
 
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
-            <label className="text-zinc-400">Velocidade:</label>
+            <label className="text-zinc-400">{t(`${base}.speed_label`)}</label>
             <select
               className="bg-zinc-800 text-zinc-400 rounded px-2 py-1"
               value={speed}
@@ -208,7 +212,7 @@ export default function AttackSimulator() {
             }`}
             onClick={() => setIsPlaying(!isPlaying)}
           >
-            {isPlaying ? 'Parar' : 'Iniciar'} Simulação
+            {isPlaying ? t(`${base}.stop_simulation`) : t(`${base}.start_simulation`)}
           </button>
         </div>
       </div>
@@ -329,21 +333,21 @@ export default function AttackSimulator() {
       {/* Description */}
       <div className="mt-6 p-4 bg-zinc-800 rounded-lg">
         <h3 className="text-lg font-semibold text-white mb-2">
-          {attackType === 'ddos' ? 'Simulação de Ataque DDoS' : 'Simulação de Ataque Man-in-the-Middle'}
+          {attackType === 'ddos' ? t(`${base}.ddos_simulation_title`) : t(`${base}.mitm_simulation_title`)}
         </h3>
         <p className="text-zinc-400">
           {attackType === 'ddos'
-            ? 'Esta simulação mostra como múltiplos atacantes sobrecarregam um servidor com tráfego malicioso, dificultando o acesso de usuários legítimos ao serviço. O servidor fica sobrecarregado ao receber muitas requisições.'
-            : 'Esta simulação demonstra como um atacante pode interceptar a comunicação entre cliente e servidor se posicionando no meio da conexão. O atacante pode ler e modificar os dados transmitidos.'}
+            ? t(`${base}.ddos_simulation_description`)
+            : t(`${base}.mitm_simulation_description`)}
         </p>
         <div className="mt-4 flex items-center space-x-6">
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 bg-emerald-500 rounded-full" />
-            <span className="text-zinc-400">Tráfego Legítimo</span>
+            <span className="text-zinc-400">{t(`${base}.legitimate_traffic`)}</span>
           </div>
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 bg-red-500 rounded-full" />
-            <span className="text-zinc-400">Tráfego Malicioso</span>
+            <span className="text-zinc-400">{t(`${base}.malicious_traffic`)}</span>
           </div>
         </div>
       </div>

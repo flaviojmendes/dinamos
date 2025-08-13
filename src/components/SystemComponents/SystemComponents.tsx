@@ -1,17 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function SystemComponents() {
+  const { t } = useTranslation();
   return (
     <div className="min-h-full bg-gradient-to-b from-zinc-900 to-black">
       <div className="py-12 px-6 max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-3xl font-bold text-white mb-4">
-            Componentes Básicos
+            {t('components.overview_title')}
           </h1>
           <p className="text-lg text-zinc-400">
-            Explore os blocos fundamentais que compõem sistemas distribuídos
+            {t('components.overview_subtitle')}
           </p>
         </div>
 
@@ -24,8 +26,7 @@ export default function SystemComponents() {
               </svg>
             </div>
             <p className="text-blue-300">
-              Cada componente tem um papel específico na construção de sistemas distribuídos.
-              Entenda suas características, vantagens e desafios.
+              {t('components.banner_text')}
             </p>
           </div>
         </div>
@@ -45,17 +46,17 @@ export default function SystemComponents() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-green-400 transition-colors">
-                  Bancos de Dados
+                  {t('components.cards.databases.title')}
                 </h2>
                 <p className="text-zinc-400 mb-4">
-                  Armazenamento e gerenciamento de dados em sistemas distribuídos.
+                  {t('components.cards.databases.description')}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-green-500/20 text-green-300 rounded">
-                    Persistência
+                    {t('components.cards.databases.badges.persistence')}
                   </span>
                   <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
-                    Dados
+                    {t('components.cards.databases.badges.data')}
                   </span>
                 </div>
               </div>
@@ -75,17 +76,17 @@ export default function SystemComponents() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-yellow-400 transition-colors">
-                  Cache
+                  {t('components.cards.cache.title')}
                 </h2>
                 <p className="text-zinc-400 mb-4">
-                  Armazenamento temporário para melhorar a performance e reduzir latência.
+                  {t('components.cards.cache.description')}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-yellow-500/20 text-yellow-300 rounded">
-                    Performance
+                    {t('components.cards.cache.badges.performance')}
                   </span>
                   <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
-                    Velocidade
+                    {t('components.cards.cache.badges.speed')}
                   </span>
                 </div>
               </div>
@@ -105,17 +106,17 @@ export default function SystemComponents() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-purple-400 transition-colors">
-                  Balanceador de Carga
+                  {t('components.cards.load_balancer.title')}
                 </h2>
                 <p className="text-zinc-400 mb-4">
-                  Distribuição inteligente de tráfego entre múltiplos servidores.
+                  {t('components.cards.load_balancer.description')}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-purple-500/20 text-purple-300 rounded">
-                    Distribuição
+                    {t('components.cards.load_balancer.badges.distribution')}
                   </span>
                   <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
-                    Escalabilidade
+                    {t('components.cards.load_balancer.badges.scalability')}
                   </span>
                 </div>
               </div>
@@ -135,17 +136,17 @@ export default function SystemComponents() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-blue-400 transition-colors">
-                  Filas de Mensagens
+                  {t('components.cards.message_queue.title')}
                 </h2>
                 <p className="text-zinc-400 mb-4">
-                  Comunicação assíncrona e desacoplada entre serviços.
+                  {t('components.cards.message_queue.description')}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
-                    Assíncrono
+                    {t('components.cards.message_queue.badges.async')}
                   </span>
                   <span className="px-2 py-1 bg-green-500/20 text-green-300 rounded">
-                    Mensageria
+                    {t('components.cards.message_queue.badges.messaging')}
                   </span>
                 </div>
               </div>
@@ -165,17 +166,17 @@ export default function SystemComponents() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-red-400 transition-colors">
-                  CDN
+                  {t('components.cards.cdn.title')}
                 </h2>
                 <p className="text-zinc-400 mb-4">
-                  Distribuição global de conteúdo para melhor performance.
+                  {t('components.cards.cdn.description')}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-red-500/20 text-red-300 rounded">
-                    Global
+                    {t('components.cards.cdn.badges.global')}
                   </span>
                   <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
-                    Conteúdo
+                    {t('components.cards.cdn.badges.content')}
                   </span>
                 </div>
               </div>
@@ -195,17 +196,17 @@ export default function SystemComponents() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-indigo-400 transition-colors">
-                  API Gateway
+                  {t('components.cards.api_gateway.title')}
                 </h2>
                 <p className="text-zinc-400 mb-4">
-                  Ponto único de entrada para gerenciamento de APIs.
+                  {t('components.cards.api_gateway.description')}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-indigo-500/20 text-indigo-300 rounded">
-                    Roteamento
+                    {t('components.cards.api_gateway.badges.routing')}
                   </span>
                   <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
-                    Segurança
+                    {t('components.cards.api_gateway.badges.security')}
                   </span>
                 </div>
               </div>
@@ -225,17 +226,17 @@ export default function SystemComponents() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-orange-400 transition-colors">
-                  Firewall
+                  {t('components.cards.firewall.title')}
                 </h2>
                 <p className="text-zinc-400 mb-4">
-                  Proteção e controle de tráfego em sistemas distribuídos.
+                  {t('components.cards.firewall.description')}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-orange-500/20 text-orange-300 rounded">
-                    Segurança
+                    {t('components.cards.firewall.badges.security')}
                   </span>
                   <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
-                    Controle
+                    {t('components.cards.api_gateway.badges.control')}
                   </span>
                 </div>
               </div>

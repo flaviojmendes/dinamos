@@ -1,8 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function Escalabilidade() {
+  const { t } = useTranslation();
   return (
     <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
       <div className="prose prose-invert prose-lg max-w-none mb-12">
@@ -12,7 +14,7 @@ export default function Escalabilidade() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          Design para Escalabilidade
+          {t('design_principles.scalability.overview.title')}
         </motion.h1>
         <motion.p
           initial={{ opacity: 0, y: -10 }}
@@ -20,8 +22,7 @@ export default function Escalabilidade() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-xl text-zinc-300"
         >
-          Escalabilidade é a capacidade de um sistema lidar com um aumento na carga de trabalho, 
-          seja aumentando a capacidade de hardware ou distribuindo a carga entre várias instâncias.
+          {t('design_principles.scalability.overview.intro')}
         </motion.p>
       </div>
 
@@ -40,11 +41,10 @@ export default function Escalabilidade() {
               </svg>
             </div>
             <h2 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
-              Escalabilidade Horizontal
+              {t('design_principles.scalability.overview.tiles.horizontal_title')}
             </h2>
             <p className="text-zinc-400">
-              Distribuição de carga entre múltiplos servidores, permitindo crescimento 
-              através da adição de mais máquinas.
+              {t('design_principles.scalability.overview.tiles.horizontal_desc')}
             </p>
           </Link>
         </motion.div>
@@ -63,11 +63,10 @@ export default function Escalabilidade() {
               </svg>
             </div>
             <h2 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
-              Escalabilidade Vertical
+              {t('design_principles.scalability.overview.tiles.vertical_title')}
             </h2>
             <p className="text-zinc-400">
-              Aumento de recursos em um único servidor, como memória RAM, 
-              processadores ou armazenamento.
+              {t('design_principles.scalability.overview.tiles.vertical_desc')}
             </p>
           </Link>
         </motion.div>
@@ -86,11 +85,10 @@ export default function Escalabilidade() {
               </svg>
             </div>
             <h2 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
-              Consistência de Dados
+              {t('design_principles.scalability.overview.tiles.consistency_title')}
             </h2>
             <p className="text-zinc-400">
-              Garantia de que todas as cópias de dados em diferentes servidores 
-              estejam sincronizadas.
+              {t('design_principles.scalability.overview.tiles.consistency_desc')}
             </p>
           </Link>
         </motion.div>
@@ -109,11 +107,10 @@ export default function Escalabilidade() {
               </svg>
             </div>
             <h2 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
-              Latência
+              {t('design_principles.scalability.overview.tiles.latency_title')}
             </h2>
             <p className="text-zinc-400">
-              Gerenciamento do atraso na entrega de dados ou respostas dentro 
-              do sistema distribuído.
+              {t('design_principles.scalability.overview.tiles.latency_desc')}
             </p>
           </Link>
         </motion.div>
@@ -132,15 +129,32 @@ export default function Escalabilidade() {
               </svg>
             </div>
             <h2 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
-              Failover
+              {t('design_principles.scalability.overview.tiles.failover_title')}
             </h2>
             <p className="text-zinc-400">
-              Processo de alternar automaticamente para um sistema de backup 
-              em caso de falha.
+              {t('design_principles.scalability.overview.tiles.failover_desc')}
             </p>
           </Link>
         </motion.div>
       </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.9 }}
+        className="mt-8 flex justify-center"
+      >
+        <Link
+          to="/principios-design/escalabilidade/simulator"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          {t('design_principles.scalability.overview.sim_cta')}
+        </Link>
+      </motion.div>
     </div>
   );
 } 

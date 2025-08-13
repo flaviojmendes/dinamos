@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useContentProgress } from '../../hooks/useContentProgress';
 import ContentLayout from '../Common/ContentLayout';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 // Add a declaration for the window object with our custom property
 declare global {
@@ -51,6 +52,7 @@ export default function Roadmap() {
   const { isCompleted } = useContentProgress();
   const location = useLocation();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const { t } = useTranslation();
 
   // Access the menuItems array from the window object
   // This is added to window by App.tsx when it initializes
@@ -62,13 +64,6 @@ export default function Roadmap() {
       if (window.__APP_DATA__ && window.__APP_DATA__.menuItems) {
         return window.__APP_DATA__.menuItems;
       }
-      
-      // Fallback method: get all link elements from the sidebar navigation
-      // This is a hacky approach that scrapes DOM elements
-      const menuContainer = document.querySelector('nav');
-      if (!menuContainer) return [];
-      
-      // Return empty array if we can't access menuItems
       return [];
     };
 
@@ -90,13 +85,21 @@ export default function Roadmap() {
       return 'bg-green-500';
     }
       
-    if (item.badges?.some(badge => badge.text === "Grátis")) {
+    if (item.badges?.some(badge => badge.text === "Grátis" || badge.text === "Free")) {
       return 'text-green-400'; // Free content
     } else if (item.status === 'recommended' || item.status === 'new') {
       return 'text-purple-400'; // Recommended content
     } else {
       return 'text-blue-400'; // Required content by default
     }
+  };
+  const makeMenuKey = (path: string, field: 'name' | 'description') => `menu.${path.replace(/^\//, '').replace(/\//g, '.')}.${field}`;
+  
+  const translateBadgeText = (badgeText: string) => {
+    if (!badgeText) return '';
+    if (badgeText.toLowerCase() === 'grátis') return t('badges.free');
+    if (badgeText.toLowerCase() === 'novo') return t('badges.new');
+    return badgeText;
   };
       
   const calculateProgress = () => {
@@ -124,6 +127,19 @@ export default function Roadmap() {
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
       </svg>
     );
+
+    const statusLabel = isCompleted(item.path)
+      ? t('roadmap.completed')
+      : item.badges?.some(badge => badge.text === "Grátis" || badge.text === "Free")
+        ? t('roadmap.free')
+        : item.status === 'recommended'
+          ? t('status.recommended')
+          : item.status === 'new'
+            ? t('status.new')
+            : t('status.content');
+
+    const displayName = t(makeMenuKey(item.path, 'name'), { defaultValue: item.name });
+    const displayDescription = t(makeMenuKey(item.path, 'description'), { defaultValue: item.description });
 
     return (
       <motion.div
@@ -156,25 +172,21 @@ export default function Roadmap() {
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
-                <h3 className="text-xl font-semibold text-white">{item.name}</h3>
+                <h3 className="text-xl font-semibold text-white">{displayName}</h3>
                 <span className={`text-xs px-2 py-1 rounded-full bg-zinc-800 ${getStepStatus(item)}`}>
-                  {isCompleted(item.path) ? 'Concluído' :
-                   item.badges?.some(badge => badge.text === "Grátis") ? 'Grátis' : 
-                   item.status === 'recommended' ? 'Recomendado' : 
-                   item.status === 'new' ? 'Novo' :
-                   item.status === 'coming-soon' ? 'Em breve' : 'Conteúdo'}
+                  {statusLabel}
                 </span>
                 {item.badges?.map((badge, i) => (
                   <span key={i} className={`text-xs px-2 py-1 rounded-full ${badge.color} text-white`}>
-                    {badge.text}
+                    {translateBadgeText(badge.text)}
                   </span>
                 ))}
               </div>
-              <p className="text-zinc-300 mb-4">{item.description}</p>
+              <p className="text-zinc-300 mb-4">{displayDescription}</p>
               
               {item.prerequisites && item.prerequisites.length > 0 && (
                 <div className="mb-4">
-                  <div className="text-sm font-semibold text-white mb-2">Pré-requisitos:</div>
+                  <div className="text-sm font-semibold text-white mb-2">{t('roadmap.prerequisites')}</div>
                   <div className="flex flex-wrap gap-2">
                     {item.prerequisites.map(prereq => (
                       <span key={prereq} className="text-xs bg-zinc-800 px-2 py-1 rounded text-zinc-300">
@@ -187,7 +199,7 @@ export default function Roadmap() {
 
               {item.skills && item.skills.length > 0 && (
                 <div className="mb-4">
-                  <div className="text-sm font-semibold text-white mb-2">Habilidades:</div>
+                  <div className="text-sm font-semibold text-white mb-2">{t('roadmap.skills')}</div>
                   <div className="flex flex-wrap gap-2">
                     {item.skills.map(skill => (
                       <span key={skill} className="text-xs bg-zinc-800 px-2 py-1 rounded text-zinc-300">
@@ -203,7 +215,7 @@ export default function Roadmap() {
                 state={{ childPaths }}
                 className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors"
               >
-                {isCompleted(item.path) ? 'Revisar módulo' : 'Começar módulo'}
+                {isCompleted(item.path) ? t('roadmap.review_module') : t('roadmap.start_module')}
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
@@ -229,7 +241,7 @@ export default function Roadmap() {
           <div className="flex items-center justify-center h-64">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto mb-4"></div>
-              <p className="text-zinc-300">Carregando o roadmap...</p>
+              <p className="text-zinc-300">{t('common.loading')}</p>
             </div>
           </div>
         </ContentLayout>
@@ -237,46 +249,48 @@ export default function Roadmap() {
     );
   }
 
+  const percent = calculateProgress();
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <ContentLayout hideCompletion>
         <div className="space-y-8">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-4 text-white">Roadmap de Aprendizado</h1>
+            <h1 className="text-4xl font-bold mb-4 text-white">{t('roadmap.title')}</h1>
             <p className="text-lg text-zinc-300 mb-4">
-              Siga este guia estruturado para dominar os conceitos de sistemas distribuídos.
-              O roadmap está organizado em uma sequência lógica de aprendizado, com pré-requisitos
-              claros e habilidades a serem desenvolvidas em cada etapa.
+              {t('roadmap.description_1')}
+              {" "}
+              {t('roadmap.description_2')}
             </p>
             
             <div className="bg-zinc-800 rounded-full h-4 overflow-hidden">
               <div 
                 className="bg-blue-500 h-full transition-all duration-500"
-                style={{ width: `${calculateProgress()}%` }}
+                style={{ width: `${percent}%` }}
               />
             </div>
             <p className="text-sm text-zinc-300 mt-2">
-              {calculateProgress()}% do conteúdo completado
+              {t('roadmap.completed_percent', { percent })}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <div className="bg-zinc-900 p-4 rounded-lg">
-              <div className="text-green-400 font-semibold mb-2">Grátis</div>
+              <div className="text-green-400 font-semibold mb-2">{t('roadmap.free')}</div>
               <div className="text-2xl font-bold text-white">
-                {menuItems.filter(item => item.badges?.some(b => b.text === "Grátis")).length} módulos
+                {menuItems.filter(item => item.badges?.some(b => b.text === "Grátis" || b.text === "Free")).length} {t('roadmap.modules')}
               </div>
             </div>
             <div className="bg-zinc-900 p-4 rounded-lg">
-              <div className="text-purple-400 font-semibold mb-2">Premium</div>
+              <div className="text-purple-400 font-semibold mb-2">{t('roadmap.premium')}</div>
               <div className="text-2xl font-bold text-white">
-                {menuItems.filter(item => !item.badges?.some(b => b.text === "Grátis") && !item.disabled).length} módulos
+                {menuItems.filter(item => !item.badges?.some(b => b.text === "Grátis" || b.text === "Free") && !item.disabled).length} {t('roadmap.modules')}
               </div>
             </div>
             <div className="bg-zinc-900 p-4 rounded-lg">
-              <div className="text-blue-400 font-semibold mb-2">Em desenvolvimento</div>
+              <div className="text-blue-400 font-semibold mb-2">{t('roadmap.in_dev')}</div>
               <div className="text-2xl font-bold text-white">
-                {menuItems.filter(item => item.status === 'coming-soon' || item.disabled).length} módulos
+                {menuItems.filter(item => item.status === 'coming-soon' || item.disabled).length} {t('roadmap.modules')}
               </div>
             </div>
           </div>

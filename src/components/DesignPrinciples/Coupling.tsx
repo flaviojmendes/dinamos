@@ -1,8 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function Coupling() {
+  const { t } = useTranslation();
   return (
     <div className="max-w-4xl mx-auto">
       {/* Introduction */}
@@ -13,18 +15,14 @@ export default function Coupling() {
         className="mb-12"
       >
         <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-          Acoplamento em Sistemas Distribuídos
+          {t('design_principles.coupling.title')}
         </h1>
         <p className="text-lg text-zinc-300 mb-6">
-          O acoplamento é uma medida de quão fortemente conectados ou dependentes são os componentes em um sistema.
-          Em sistemas distribuídos, o tipo e nível de acoplamento pode impactar significativamente a flexibilidade,
-          manutenibilidade e resiliência do sistema.
+          {t('design_principles.coupling.intro')}
         </p>
         <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-blue-300">
-          <strong className="block mb-2">💡 Conceito Chave:</strong>
-          Quanto menor o acoplamento entre os componentes, maior a flexibilidade e facilidade de manutenção do sistema.
-          No entanto, é importante encontrar o equilíbrio certo, pois um acoplamento muito baixo pode tornar o sistema
-          mais complexo e difícil de entender.
+          <strong className="block mb-2">💡 {t('design_principles.coupling.key_concept_label')}:</strong>
+          {t('design_principles.coupling.key_concept_text')}
         </div>
       </motion.div>
 
@@ -35,11 +33,11 @@ export default function Coupling() {
         transition={{ duration: 0.5, delay: 0.2 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Tipos de Acoplamento</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t('design_principles.coupling.types_title')}</h2>
         
         {/* Static Coupling */}
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 mb-8">
-          <h3 className="text-2xl font-bold mb-4 text-blue-400">Acoplamento Estático</h3>
+          <h3 className="text-2xl font-bold mb-4 text-blue-400">{t('design_principles.coupling.static_title')}</h3>
           <p className="text-zinc-300 mb-6">
             O acoplamento estático ocorre quando componentes são conectados em tempo de compilação,
             criando dependências rígidas que são difíceis de modificar sem alterar o código.
@@ -47,7 +45,7 @@ export default function Coupling() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-              <h4 className="text-lg font-semibold mb-3 text-blue-300">Características</h4>
+              <h4 className="text-lg font-semibold mb-3 text-blue-300">{t('design_principles.coupling.characteristics_title')}</h4>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">
                   <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -79,7 +77,7 @@ export default function Coupling() {
               </ul>
             </div>
             <div>
-              <h4 className="text-lg font-semibold mb-3 text-blue-300">Vantagens e Desvantagens</h4>
+              <h4 className="text-lg font-semibold mb-3 text-blue-300">{t('design_principles.coupling.advantages_title')}</h4>
               <div className="space-y-4">
                 <div className="bg-green-500/10 p-3 rounded-lg border border-green-500/20">
                   <h5 className="text-green-400 font-medium mb-2">Vantagens</h5>
@@ -102,7 +100,7 @@ export default function Coupling() {
           </div>
 
           <div className="bg-zinc-800/50 rounded-lg p-4 mb-4">
-            <h4 className="text-lg font-semibold mb-2 text-blue-300">Exemplo de Acoplamento Estático:</h4>
+            <h4 className="text-lg font-semibold mb-2 text-blue-300">{t('design_principles.coupling.example_static_title')}:</h4>
             <pre className="bg-black/30 p-4 rounded-lg overflow-x-auto">
               <code className="text-sm text-zinc-300">
 {`// Acoplamento estático através de importação direta
@@ -129,7 +127,7 @@ class OrderProcessor {
 
         {/* Dynamic Coupling */}
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 mb-8">
-          <h3 className="text-2xl font-bold mb-4 text-purple-400">Acoplamento Dinâmico</h3>
+          <h3 className="text-2xl font-bold mb-4 text-purple-400">{t('design_principles.coupling.dynamic_title')}</h3>
           <p className="text-zinc-300 mb-6">
             O acoplamento dinâmico permite que componentes sejam conectados em tempo de execução,
             oferecendo maior flexibilidade e facilitando mudanças sem necessidade de recompilação.
@@ -137,7 +135,7 @@ class OrderProcessor {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-              <h4 className="text-lg font-semibold mb-3 text-purple-300">Características</h4>
+              <h4 className="text-lg font-semibold mb-3 text-purple-300">{t('design_principles.coupling.characteristics_title')}</h4>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">
                   <svg className="w-5 h-5 text-purple-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -169,7 +167,7 @@ class OrderProcessor {
               </ul>
             </div>
             <div>
-              <h4 className="text-lg font-semibold mb-3 text-purple-300">Vantagens e Desvantagens</h4>
+              <h4 className="text-lg font-semibold mb-3 text-purple-300">{t('design_principles.coupling.advantages_title')} / {t('design_principles.coupling.disadvantages_title')}</h4>
               <div className="space-y-4">
                 <div className="bg-green-500/10 p-3 rounded-lg border border-green-500/20">
                   <h5 className="text-green-400 font-medium mb-2">Vantagens</h5>
@@ -192,7 +190,7 @@ class OrderProcessor {
           </div>
 
           <div className="bg-zinc-800/50 rounded-lg p-4 mb-4">
-            <h4 className="text-lg font-semibold mb-2 text-purple-300">Exemplo de Acoplamento Dinâmico:</h4>
+            <h4 className="text-lg font-semibold mb-2 text-purple-300">{t('design_principles.coupling.example_dynamic_title')}:</h4>
             <pre className="bg-black/30 p-4 rounded-lg overflow-x-auto">
               <code className="text-sm text-zinc-300">
 {`// Acoplamento dinâmico usando injeção de dependência e service discovery
@@ -228,15 +226,14 @@ class OrderProcessor {
 
         {/* Service Discovery */}
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 mb-8">
-          <h3 className="text-2xl font-bold mb-4 text-green-400">Service Discovery</h3>
+          <h3 className="text-2xl font-bold mb-4 text-green-400">{t('design_principles.coupling.service_discovery_title')}</h3>
           <p className="text-zinc-300 mb-6">
-            Service Discovery é um padrão fundamental para implementar acoplamento dinâmico em sistemas distribuídos.
-            Permite que serviços encontrem e se comuniquem uns com os outros sem conhecimento prévio de suas localizações.
+            {t('design_principles.coupling.service_discovery_intro')}
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-              <h4 className="text-lg font-semibold mb-3 text-green-300">Componentes Principais</h4>
+              <h4 className="text-lg font-semibold mb-3 text-green-300">{t('design_principles.coupling.components_title')}</h4>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -268,7 +265,7 @@ class OrderProcessor {
               </ul>
             </div>
             <div>
-              <h4 className="text-lg font-semibold mb-3 text-green-300">Ferramentas Populares</h4>
+              <h4 className="text-lg font-semibold mb-3 text-green-300">{t('design_principles.coupling.tools_title')}</h4>
               <div className="space-y-3">
                 <div className="bg-zinc-800/50 p-3 rounded-lg">
                   <h5 className="text-white font-medium mb-1">Consul</h5>
@@ -295,7 +292,7 @@ class OrderProcessor {
         transition={{ duration: 0.5, delay: 0.4 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Melhores Práticas</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t('design_principles.coupling.best_practices_title')}</h2>
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -373,7 +370,7 @@ class OrderProcessor {
         transition={{ duration: 0.5, delay: 0.5 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Trade-offs e Considerações</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t('design_principles.coupling.tradeoffs_title')}</h2>
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-blue-500/10 p-4 rounded-lg border border-blue-500/20">
@@ -411,7 +408,7 @@ class OrderProcessor {
         transition={{ duration: 0.5, delay: 0.6 }}
         className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">Exemplos do Mundo Real</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">{t('design_principles.coupling.real_world_title')}</h2>
         <div className="space-y-6">
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
             <h3 className="text-xl font-semibold mb-4 text-blue-400">Microsserviços na Netflix</h3>
@@ -458,7 +455,7 @@ spec:
         </div>
       </motion.div>
 
-   
+      
     </div>
   );
 } 

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type LoadBalancingStrategy = 'roundRobin' | 'leastConnections' | 'random';
 
@@ -29,6 +30,7 @@ const getLoadColor = (currentLoad: number, capacity: number): string => {
 };
 
 export default function RoundRobin() {
+  const { t } = useTranslation();
   const [servers, setServers] = useState<Server[]>([]);
   const [config, setConfig] = useState<SimulationConfig>({
     serverCount: 3,
@@ -150,7 +152,7 @@ export default function RoundRobin() {
       <div className="p-4 h-full">
         <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-            <h1 className="text-xl text-white font-semibold">Load Balancer</h1>
+            <h1 className="text-xl text-white font-semibold">{t('simulators.round_robin.title')}</h1>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
               <button
                 onClick={() => setIsRunning(!isRunning)}
@@ -160,7 +162,7 @@ export default function RoundRobin() {
                     : 'bg-green-500 hover:bg-green-600'
                 }`}
               >
-                {isRunning ? 'Parar' : 'Iniciar'} Simulação
+                {isRunning ? t('simulators.round_robin.buttons.stop') : t('simulators.round_robin.buttons.start')}
               </button>
             </div>
           </div>
@@ -170,7 +172,7 @@ export default function RoundRobin() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-white mb-2">
-                  Estratégia:
+                  {t('simulators.round_robin.config.strategy')}
                   <select
                     value={config.strategy}
                     onChange={(e) =>
@@ -191,7 +193,7 @@ export default function RoundRobin() {
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between text-white mb-1">
-                    <span>Número de Servidores</span>
+                    <span>{t('simulators.round_robin.config.server_count')}</span>
                     <span className="text-blue-400">{config.serverCount}</span>
                   </div>
                   <input
@@ -211,8 +213,8 @@ export default function RoundRobin() {
 
                 <div>
                   <div className="flex justify-between text-white mb-1">
-                    <span>Capacidade do Servidor</span>
-                    <span className="text-blue-400">{config.serverCapacity} requisições</span>
+                    <span>{t('simulators.round_robin.config.server_capacity')}</span>
+                    <span className="text-blue-400">{t('simulators.round_robin.server_card.requests', { current: config.serverCapacity, capacity: '' }).replace('undefined/', '').replace(' requests', '')}</span>
                   </div>
                   <input
                     type="range"
@@ -232,7 +234,7 @@ export default function RoundRobin() {
 
                 <div>
                   <div className="flex justify-between text-white mb-1">
-                    <span>Requisições por Segundo</span>
+                    <span>{t('simulators.round_robin.config.rps')}</span>
                     <span className="text-blue-400">{config.requestsPerSecond} req/s</span>
                   </div>
                   <input
@@ -254,15 +256,9 @@ export default function RoundRobin() {
 
             {/* Strategy Description */}
             <div className="mt-4 p-4 bg-zinc-800 rounded-lg text-zinc-300 text-sm">
-              {config.strategy === 'roundRobin' && (
-                "Round Robin: Distribui as requisições sequencialmente entre todos os servidores em ordem circular."
-              )}
-              {config.strategy === 'leastConnections' && (
-                "Least Connections: Envia novas requisições para o servidor com menor carga atual."
-              )}
-              {config.strategy === 'random' && (
-                "Random: Seleciona aleatoriamente um servidor para cada nova requisição."
-              )}
+              {config.strategy === 'roundRobin' && t('simulators.round_robin.strategies.round_robin')}
+              {config.strategy === 'leastConnections' && t('simulators.round_robin.strategies.least_conn')}
+              {config.strategy === 'random' && t('simulators.round_robin.strategies.random')}
             </div>
           </div>
 
@@ -278,14 +274,14 @@ export default function RoundRobin() {
                 <div className="flex flex-col space-y-3">
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                     <div className="flex items-center gap-4">
-                      <span className="text-white font-medium">Servidor {server.id + 1}</span>
+                      <span className="text-white font-medium">{t('simulators.round_robin.server_card.server_label', { id: server.id + 1 })}</span>
                       <div className="text-sm">
-                        <span className="text-zinc-400">{server.currentLoad}/{server.capacity} requisições</span>
-                        <span className="text-sm text-blue-400 ml-2">({server.responseTime}ms)</span>
+                        <span className="text-zinc-400">{t('simulators.round_robin.server_card.requests', { current: server.currentLoad, capacity: server.capacity })}</span>
+                        <span className="text-sm text-blue-400 ml-2">{t('simulators.round_robin.server_card.response_time_ms', { ms: server.responseTime })}</span>
                       </div>
                     </div>
                     <div className="w-full sm:w-1/3 flex items-center gap-2">
-                      <span className="text-zinc-400 text-sm whitespace-nowrap">Tempo de Resposta:</span>
+                      <span className="text-zinc-400 text-sm whitespace-nowrap">{t('simulators.round_robin.server_card.response_time_label')}</span>
                       <input
                         type="range"
                         min="100"

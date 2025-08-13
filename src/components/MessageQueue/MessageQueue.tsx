@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface Message {
   id: number;
@@ -27,6 +28,7 @@ interface Stats {
 }
 
 export default function MessageQueue() {
+  const { t } = useTranslation();
   const [isRunning, setIsRunning] = useState(false);
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -173,13 +175,13 @@ export default function MessageQueue() {
       <div className="p-4 h-full">
         <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-            <h1 className="text-xl font-semibold">Message Queue</h1>
+            <h1 className="text-xl font-semibold">{t('simulators.message_queue_sim.title')}</h1>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
               <button
                 onClick={() => setIsConfigOpen(!isConfigOpen)}
                 className="w-full sm:w-auto px-4 py-2 bg-zinc-800 rounded-md hover:bg-zinc-700 font-medium transition-colors"
               >
-                {isConfigOpen ? 'Fechar Config' : 'Configurar'}
+                {isConfigOpen ? t('simulators.message_queue_sim.buttons.close_config') : t('simulators.message_queue_sim.buttons.configure')}
               </button>
             <button
               onClick={() => setIsRunning(!isRunning)}
@@ -189,13 +191,13 @@ export default function MessageQueue() {
                   : 'bg-green-500 hover:bg-green-600'
                 }`}
             >
-              {isRunning ? 'Parar' : 'Iniciar'}
+              {isRunning ? t('simulators.message_queue_sim.buttons.stop') : t('simulators.message_queue_sim.buttons.start')}
             </button>
             <button
               onClick={resetSimulation}
                 className="w-full sm:w-auto px-4 py-2 bg-zinc-800 rounded-md hover:bg-zinc-700 font-medium transition-colors"
             >
-                Resetar
+                {t('simulators.message_queue_sim.buttons.reset')}
             </button>
             </div>
           </div>
@@ -212,7 +214,7 @@ export default function MessageQueue() {
           <div className="space-y-4">
             <div>
                     <div className="flex justify-between text-white mb-1">
-                      <span>Produtores</span>
+                      <span>{t('simulators.message_queue_sim.config.producers')}</span>
                       <span className="text-blue-400">{config.producerCount}</span>
               </div>
               <input
@@ -227,7 +229,7 @@ export default function MessageQueue() {
 
             <div>
                     <div className="flex justify-between text-white mb-1">
-                      <span>Taxa de Produção</span>
+                      <span>{t('simulators.message_queue_sim.config.production_rate')}</span>
                       <span className="text-blue-400">{config.producerRate}ms</span>
               </div>
               <input
@@ -243,7 +245,7 @@ export default function MessageQueue() {
 
             <div>
                     <div className="flex justify-between text-white mb-1">
-                      <span>Tamanho Máximo da Fila</span>
+                      <span>{t('simulators.message_queue_sim.config.max_queue_size')}</span>
                       <span className="text-blue-400">{config.maxQueueSize}</span>
                     </div>
                     <input
@@ -260,7 +262,7 @@ export default function MessageQueue() {
                 <div className="space-y-4">
                   <div>
                     <div className="flex justify-between text-white mb-1">
-                      <span>Consumidores</span>
+                      <span>{t('simulators.message_queue_sim.config.consumers')}</span>
                       <span className="text-blue-400">{config.consumerCount}</span>
               </div>
               <input
@@ -275,7 +277,7 @@ export default function MessageQueue() {
 
                   <div>
                     <div className="flex justify-between text-white mb-1">
-                      <span>Taxa de Consumo</span>
+                      <span>{t('simulators.message_queue_sim.config.consumption_rate')}</span>
                       <span className="text-blue-400">{config.consumerRate}ms</span>
                     </div>
                     <input
@@ -291,7 +293,7 @@ export default function MessageQueue() {
 
                   <div>
                     <div className="flex justify-between text-white mb-1">
-                      <span>Tempo de Processamento</span>
+                      <span>{t('simulators.message_queue_sim.config.process_time')}</span>
                       <span className="text-blue-400">{config.processTime}ms</span>
                     </div>
                     <input
@@ -311,7 +313,7 @@ export default function MessageQueue() {
 
           {/* Visual Flow Diagram */}
           <div className="mb-6 bg-zinc-800/50 rounded-lg p-4">
-            <h2 className="text-lg font-medium mb-4">Fluxo de Mensagens</h2>
+            <h2 className="text-lg font-medium mb-4">{t('simulators.message_queue_sim.flow.title')}</h2>
             <div className="relative h-48 flex items-center justify-between max-w-4xl mx-auto">
               {/* Connection Lines */}
               <div className="absolute h-1 bg-zinc-700 left-[25%] right-[25%] top-1/2 -translate-y-1/2" />
@@ -319,7 +321,7 @@ export default function MessageQueue() {
               {/* Producers Section */}
               <div className="relative z-10 w-1/4">
                 <div className="bg-zinc-800 p-4 rounded-lg border border-zinc-700">
-                  <h3 className="text-sm font-medium text-blue-400 mb-2">Produtores</h3>
+                  <h3 className="text-sm font-medium text-blue-400 mb-2">{t('simulators.message_queue_sim.config.producers')}</h3>
                   <div className="space-y-2">
                     {Array.from({ length: config.producerCount }).map((_, i) => (
                       <div
@@ -336,7 +338,7 @@ export default function MessageQueue() {
               {/* Queue Section */}
               <div className="relative z-10 w-1/3">
                 <div className="bg-zinc-800 p-4 rounded-lg border border-zinc-700">
-                  <h3 className="text-sm font-medium text-yellow-400 mb-2">Fila</h3>
+                  <h3 className="text-sm font-medium text-yellow-400 mb-2">{t('simulators.message_queue_sim.flow.queue')}</h3>
                   <div className="space-y-2">
                     <div className="relative h-24 bg-zinc-700/50 rounded-lg border border-zinc-600 overflow-hidden">
                       <AnimatePresence>
@@ -358,7 +360,7 @@ export default function MessageQueue() {
                       </AnimatePresence>
                       {queuedMessages.length > 5 && (
                         <div className="absolute bottom-0 inset-x-0 text-center text-xs text-zinc-400 py-1">
-                          +{queuedMessages.length - 5} mais
+                          {t('simulators.message_queue_sim.flow.more', { count: queuedMessages.length - 5 })}
                         </div>
                       )}
                     </div>
@@ -369,7 +371,7 @@ export default function MessageQueue() {
               {/* Consumers Section */}
               <div className="relative z-10 w-1/4">
                 <div className="bg-zinc-800 p-4 rounded-lg border border-zinc-700">
-                  <h3 className="text-sm font-medium text-green-400 mb-2">Consumidores</h3>
+                  <h3 className="text-sm font-medium text-green-400 mb-2">{t('simulators.message_queue_sim.config.consumers')}</h3>
                   <div className="space-y-2">
                     {Array.from({ length: config.consumerCount }).map((_, i) => {
                       const processingMessage = messages.find(m => m.status === 'processing' && m.consumerId === i + 1);
@@ -404,10 +406,10 @@ export default function MessageQueue() {
           {/* Queue Status */}
           <div className="mb-6">
             <div className="bg-zinc-800/50 rounded-lg p-4">
-              <h2 className="text-lg font-medium mb-4">Status da Fila</h2>
+              <h2 className="text-lg font-medium mb-4">{t('simulators.message_queue_sim.queue_status.title')}</h2>
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1">
-                  <div className="text-sm text-zinc-400 mb-1">Tamanho da Fila</div>
+                  <div className="text-sm text-zinc-400 mb-1">{t('simulators.message_queue_sim.queue_status.size')}</div>
                   <div className="relative h-8 bg-zinc-700 rounded-lg overflow-hidden">
                     <motion.div
                       className="absolute inset-y-0 left-0 bg-blue-500"
@@ -422,7 +424,7 @@ export default function MessageQueue() {
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div>
-                    <div className="text-sm text-zinc-400">Produzidas</div>
+                    <div className="text-sm text-zinc-400">{t('simulators.message_queue_sim.queue_status.produced')}</div>
                     <motion.div 
                       className="text-xl font-medium"
                       animate={{ scale: stats.produced > 0 ? [1, 1.1, 1] : 1 }}
@@ -432,7 +434,7 @@ export default function MessageQueue() {
                     </motion.div>
                   </div>
                   <div>
-                    <div className="text-sm text-zinc-400">Processadas</div>
+                    <div className="text-sm text-zinc-400">{t('simulators.message_queue_sim.queue_status.processed')}</div>
                     <motion.div 
                       className="text-xl font-medium text-green-400"
                       animate={{ scale: stats.processed > 0 ? [1, 1.1, 1] : 1 }}
@@ -442,7 +444,7 @@ export default function MessageQueue() {
                     </motion.div>
                   </div>
                   <div>
-                    <div className="text-sm text-zinc-400">Descartadas</div>
+                    <div className="text-sm text-zinc-400">{t('simulators.message_queue_sim.queue_status.dropped')}</div>
                     <motion.div 
                       className="text-xl font-medium text-red-400"
                       animate={{ scale: stats.dropped > 0 ? [1, 1.1, 1] : 1 }}
@@ -452,7 +454,7 @@ export default function MessageQueue() {
                     </motion.div>
                   </div>
                   <div>
-                    <div className="text-sm text-zinc-400">Tempo Médio</div>
+                    <div className="text-sm text-zinc-400">{t('simulators.message_queue_sim.queue_status.avg_time')}</div>
                     <div className="text-xl font-medium">
                       {Math.round(stats.avgProcessingTime)}ms
                     </div>
@@ -464,7 +466,7 @@ export default function MessageQueue() {
 
           {/* Message Log */}
           <div className="bg-zinc-800/50 rounded-lg p-4">
-            <h2 className="text-lg font-medium mb-4">Mensagens</h2>
+            <h2 className="text-lg font-medium mb-4">{t('simulators.message_queue_sim.messages.title')}</h2>
             <div className="space-y-2">
               <AnimatePresence>
                 {messages.map(message => (
@@ -501,7 +503,7 @@ export default function MessageQueue() {
               </AnimatePresence>
               {messages.length === 0 && (
                 <div className="text-zinc-500 text-center py-4">
-                  Nenhuma mensagem ainda
+                  {t('simulators.message_queue_sim.messages.none')}
                 </div>
               )}
             </div>

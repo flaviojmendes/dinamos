@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface Region {
   id: string;
@@ -30,6 +31,7 @@ interface SimulatorConfig {
 }
 
 export default function ReplicacaoSimulator() {
+  const { t } = useTranslation();
   const [regions, setRegions] = useState<Region[]>([
     {
       id: 'us-east',
@@ -122,7 +124,6 @@ export default function ReplicacaoSimulator() {
       const updatedRegions = [...regions];
       const primaryIndex = updatedRegions.findIndex(r => r.id === primaryRegion.id);
 
-      // Update primary region
       updatedRegions[primaryIndex] = {
         ...primaryRegion,
         data: {
@@ -135,11 +136,9 @@ export default function ReplicacaoSimulator() {
         }
       };
 
-      // Handle replication based on type
       const replicaRegions = updatedRegions.filter(r => r.role === 'replica' && r.status === 'healthy');
       
       if (config.replicationType === 'sync') {
-        // Synchronous replication - wait for all replicas
         await Promise.all(replicaRegions.map(async (region) => {
           const shouldFail = Math.random() < config.failureRate;
           await new Promise(resolve => setTimeout(resolve, region.latency + config.networkLatency));
@@ -159,31 +158,18 @@ export default function ReplicacaoSimulator() {
             };
             setOperations(prev => prev.map(op =>
               op.id === operation.id
-                ? {
-                    ...op,
-                    replicationStatus: {
-                      ...op.replicationStatus,
-                      [region.id]: 'completed'
-                    }
-                  }
+                ? { ...op, replicationStatus: { ...op.replicationStatus, [region.id]: 'completed' } }
                 : op
             ));
           } else {
             setOperations(prev => prev.map(op =>
               op.id === operation.id
-                ? {
-                    ...op,
-                    replicationStatus: {
-                      ...op.replicationStatus,
-                      [region.id]: 'failed'
-                    }
-                  }
+                ? { ...op, replicationStatus: { ...op.replicationStatus, [region.id]: 'failed' } }
                 : op
             ));
           }
         }));
       } else if (config.replicationType === 'semi-sync') {
-        // Semi-synchronous - wait for at least one replica
         const firstReplica = replicaRegions[0];
         if (firstReplica) {
           await new Promise(resolve => setTimeout(resolve, firstReplica.latency + config.networkLatency));
@@ -204,19 +190,12 @@ export default function ReplicacaoSimulator() {
             };
             setOperations(prev => prev.map(op =>
               op.id === operation.id
-                ? {
-                    ...op,
-                    replicationStatus: {
-                      ...op.replicationStatus,
-                      [firstReplica.id]: 'completed'
-                    }
-                  }
+                ? { ...op, replicationStatus: { ...op.replicationStatus, [firstReplica.id]: 'completed' } }
                 : op
             ));
           }
         }
 
-        // Asynchronously replicate to other replicas
         replicaRegions.slice(1).forEach(region => {
           setTimeout(() => {
             const shouldFail = Math.random() < config.failureRate;
@@ -238,32 +217,19 @@ export default function ReplicacaoSimulator() {
               ));
               setOperations(prev => prev.map(op =>
                 op.id === operation.id
-                  ? {
-                      ...op,
-                      replicationStatus: {
-                        ...op.replicationStatus,
-                        [region.id]: 'completed'
-                      }
-                    }
+                  ? { ...op, replicationStatus: { ...op.replicationStatus, [region.id]: 'completed' } }
                   : op
               ));
             } else {
               setOperations(prev => prev.map(op =>
                 op.id === operation.id
-                  ? {
-                      ...op,
-                      replicationStatus: {
-                        ...op.replicationStatus,
-                        [region.id]: 'failed'
-                      }
-                    }
+                  ? { ...op, replicationStatus: { ...op.replicationStatus, [region.id]: 'failed' } }
                   : op
               ));
             }
           }, region.latency + config.networkLatency);
         });
       } else {
-        // Asynchronous replication
         replicaRegions.forEach(region => {
           setTimeout(() => {
             const shouldFail = Math.random() < config.failureRate;
@@ -285,25 +251,13 @@ export default function ReplicacaoSimulator() {
               ));
               setOperations(prev => prev.map(op =>
                 op.id === operation.id
-                  ? {
-                      ...op,
-                      replicationStatus: {
-                        ...op.replicationStatus,
-                        [region.id]: 'completed'
-                      }
-                    }
+                  ? { ...op, replicationStatus: { ...op.replicationStatus, [region.id]: 'completed' } }
                   : op
               ));
             } else {
               setOperations(prev => prev.map(op =>
                 op.id === operation.id
-                  ? {
-                      ...op,
-                      replicationStatus: {
-                        ...op.replicationStatus,
-                        [region.id]: 'failed'
-                      }
-                    }
+                  ? { ...op, replicationStatus: { ...op.replicationStatus, [region.id]: 'failed' } }
                   : op
               ));
             }
@@ -322,10 +276,7 @@ export default function ReplicacaoSimulator() {
   const toggleRegionStatus = (regionId: string) => {
     setRegions(prev => prev.map(region => {
       if (region.id === regionId) {
-        return {
-          ...region,
-          status: region.status === 'healthy' ? 'failed' : 'healthy'
-        };
+        return { ...region, status: region.status === 'healthy' ? 'failed' : 'healthy' };
       }
       return region;
     }));
@@ -352,128 +303,66 @@ export default function ReplicacaoSimulator() {
     <div className="min-h-screen bg-zinc-950 text-white p-8">
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-4">Simulador de Replicação</h1>
+          <h1 className="text-3xl font-bold mb-4">{t('simulators_extra.replication.title')}</h1>
           <p className="text-zinc-400 mb-6">
-            Explore como diferentes estratégias de replicação afetam a consistência e disponibilidade dos dados.
+            {t('simulators_extra.replication.intro')}
           </p>
 
           <div className="bg-zinc-900/50 rounded-xl p-6 space-y-3 text-sm text-zinc-300">
-            <p className="font-semibold text-white">Como usar o simulador:</p>
+            <p className="font-semibold text-white">{t('simulators_extra.replication.how_title')}</p>
             <ol className="list-decimal list-inside space-y-2">
-              <li>Escolha o tipo de replicação:
-                <ul className="list-disc list-inside ml-4 text-zinc-400">
-                  <li><span className="text-blue-400">Síncrona</span>: Aguarda confirmação de todas as réplicas</li>
-                  <li><span className="text-blue-400">Semi-síncrona</span>: Aguarda confirmação de pelo menos uma réplica</li>
-                  <li><span className="text-blue-400">Assíncrona</span>: Não aguarda confirmação das réplicas</li>
-                </ul>
-              </li>
-              <li>Ajuste os parâmetros:
-                <ul className="list-disc list-inside ml-4 text-zinc-400">
-                  <li>Latência de rede entre as regiões</li>
-                  <li>Taxa de falha das operações</li>
-                  <li>Número de réplicas ativas</li>
-                </ul>
-              </li>
-              <li>Observe os resultados:
-                <ul className="list-disc list-inside ml-4 text-zinc-400">
-                  <li>Tempo de propagação dos dados</li>
-                  <li>Estado da replicação em cada região</li>
-                  <li>Impacto de falhas na consistência</li>
-                </ul>
-              </li>
+              {(t('simulators_extra.replication.steps', { returnObjects: true }) as string[]).map((s, idx) => (
+                <li key={idx}>{s}</li>
+              ))}
             </ol>
           </div>
         </div>
 
         {/* Configuration Panel */}
         <div className="bg-zinc-900 rounded-xl p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4">Configurações</h2>
+          <h2 className="text-xl font-semibold mb-4">{t('simulators_extra.replication.config_title')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Tipo de Replicação</label>
+              <label className="block text-sm font-medium mb-2">{t('simulators_extra.replication.replication_type')}</label>
               <select
                 value={config.replicationType}
                 onChange={(e) => setConfig(prev => ({ ...prev, replicationType: e.target.value as 'sync' | 'async' | 'semi-sync' }))}
                 className="w-full bg-zinc-800 rounded-lg p-2"
               >
-                <option value="sync">Síncrona</option>
-                <option value="semi-sync">Semi-síncrona</option>
-                <option value="async">Assíncrona</option>
+                <option value="sync">{t('simulators_extra.replication.sync')}</option>
+                <option value="semi-sync">{t('simulators_extra.replication.semi_sync')}</option>
+                <option value="async">{t('simulators_extra.replication.async')}</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Latência de Rede (ms)</label>
-              <input
-                type="range"
-                min="0"
-                max="2000"
-                value={config.networkLatency}
-                onChange={(e) => setConfig(prev => ({ ...prev, networkLatency: Number(e.target.value) }))}
-                className="w-full"
-              />
+              <label className="block text-sm font-medium mb-2">{t('simulators_extra.replication.network_latency_ms')}</label>
+              <input type="range" min="0" max="2000" value={config.networkLatency} onChange={(e) => setConfig(prev => ({ ...prev, networkLatency: Number(e.target.value) }))} className="w-full" />
               <span className="text-sm text-zinc-400">{config.networkLatency}ms</span>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Taxa de Falha</label>
-              <input
-                type="range"
-                min="0"
-                max="0.5"
-                step="0.05"
-                value={config.failureRate}
-                onChange={(e) => setConfig(prev => ({ ...prev, failureRate: Number(e.target.value) }))}
-                className="w-full"
-              />
+              <label className="block text-sm font-medium mb-2">{t('simulators_extra.replication.failure_rate')}</label>
+              <input type="range" min="0" max="0.5" step="0.05" value={config.failureRate} onChange={(e) => setConfig(prev => ({ ...prev, failureRate: Number(e.target.value) }))} className="w-full" />
               <span className="text-sm text-zinc-400">{Math.round(config.failureRate * 100)}%</span>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Número de Réplicas</label>
-              <input
-                type="range"
-                min="1"
-                max="3"
-                value={config.replicaCount}
-                onChange={(e) => setConfig(prev => ({ ...prev, replicaCount: Number(e.target.value) }))}
-                className="w-full"
-              />
-              <span className="text-sm text-zinc-400">{config.replicaCount} réplicas</span>
+              <label className="block text-sm font-medium mb-2">{t('simulators_extra.replication.replica_count')}</label>
+              <input type="range" min="1" max="3" value={config.replicaCount} onChange={(e) => setConfig(prev => ({ ...prev, replicaCount: Number(e.target.value) }))} className="w-full" />
+              <span className="text-sm text-zinc-400">{config.replicaCount} {t('simulators_extra.replication.keys_label', { count: config.replicaCount }).split(' ')[1]}</span>
             </div>
           </div>
         </div>
 
         {/* Manual Operation Panel */}
         <div className="bg-zinc-900 rounded-xl p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4">Operação Manual</h2>
+          <h2 className="text-xl font-semibold mb-4">{t('simulators_extra.replication.manual_title')}</h2>
           <div className="flex flex-wrap gap-4">
-            <input
-              type="text"
-              value={dataKey}
-              onChange={(e) => setDataKey(e.target.value)}
-              placeholder="Chave"
-              className="bg-zinc-800 rounded-lg p-2"
-            />
-            <input
-              type="text"
-              value={dataValue}
-              onChange={(e) => setDataValue(e.target.value)}
-              placeholder="Valor"
-              className="bg-zinc-800 rounded-lg p-2"
-            />
-            <button
-              onClick={() => addOperation('write')}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg"
-            >
-              Escrever
+            <input type="text" value={dataKey} onChange={(e) => setDataKey(e.target.value)} placeholder={t('simulators_extra.replication.key_placeholder') || 'Key'} className="bg-zinc-800 rounded-lg p-2" />
+            <input type="text" value={dataValue} onChange={(e) => setDataValue(e.target.value)} placeholder={t('simulators_extra.replication.value_placeholder') || 'Value'} className="bg-zinc-800 rounded-lg p-2" />
+            <button onClick={() => addOperation('write')} className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg">
+              {t('simulators_extra.replication.write')}
             </button>
-            <button
-              onClick={() => setIsRunning(!isRunning)}
-              className={`px-4 py-2 rounded-lg ${
-                isRunning 
-                  ? 'bg-red-600 hover:bg-red-700' 
-                  : 'bg-green-600 hover:bg-green-700'
-              }`}
-            >
-              {isRunning ? 'Parar Simulação' : 'Iniciar Simulação'}
+            <button onClick={() => setIsRunning(!isRunning)} className={`px-4 py-2 rounded-lg ${isRunning ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'}`}>
+              {isRunning ? t('simulators_extra.replication.stop') : t('simulators_extra.replication.start')}
             </button>
           </div>
         </div>
@@ -481,32 +370,21 @@ export default function ReplicacaoSimulator() {
         {/* Regions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {regions.slice(0, config.replicaCount + 1).map((region) => (
-            <motion.div
-              key={region.id}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-zinc-900 rounded-xl p-6"
-            >
+            <motion.div key={region.id} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-zinc-900 rounded-xl p-6">
               <div className="flex justify-between items-center mb-4">
                 <div>
                   <h3 className="text-lg font-medium">{region.name}</h3>
                   <p className="text-sm text-zinc-400">{region.location}</p>
                 </div>
-                <span
-                  className={`px-2 py-1 rounded-full text-sm ${
-                    region.status === 'healthy'
-                      ? 'bg-green-500/20 text-green-400'
-                      : 'bg-red-500/20 text-red-400'
-                  }`}
-                >
-                  {region.status}
+                <span className={`px-2 py-1 rounded-full text-sm ${region.status === 'healthy' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                  {t(`simulators.vertical_scaling.statuses.${region.status}`)}
                 </span>
               </div>
 
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between text-sm mb-1">
-                    <span>Role</span>
+                    <span>{t('simulators_extra.replication.statuses.role')}</span>
                     <span className={region.role === 'primary' ? 'text-blue-400' : 'text-zinc-400'}>
                       {region.role}
                     </span>
@@ -514,23 +392,19 @@ export default function ReplicacaoSimulator() {
                 </div>
 
                 <div>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span>Latência</span>
+                  <div className="flex justify_between text-sm mb-1">
+                    <span>{t('simulators_extra.replication.statuses.latency')}</span>
                     <span>{region.latency + config.networkLatency}ms</span>
                   </div>
                   <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
-                    <motion.div
-                      className="h-full bg-blue-500"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${((region.latency + config.networkLatency) / 2000) * 100}%` }}
-                    />
+                    <motion.div className="h-full bg-blue-500" initial={{ width: 0 }} animate={{ width: `${((region.latency + config.networkLatency) / 2000) * 100}%` }} />
                   </div>
                 </div>
 
                 <div>
                   <div className="flex justify-between text-sm mb-1">
-                    <span>Dados</span>
-                    <span>{Object.keys(region.data).length} chaves</span>
+                    <span>{t('simulators_extra.replication.statuses.data')}</span>
+                    <span>{t('simulators_extra.replication.statuses.keys_label', { count: Object.keys(region.data).length })}</span>
                   </div>
                   <div className="bg-zinc-800 rounded-lg p-2 max-h-24 overflow-auto text-sm">
                     {Object.entries(region.data).map(([key, data]) => (
@@ -541,7 +415,7 @@ export default function ReplicacaoSimulator() {
                         </div>
                         {data.replicatedAt && data.replicatedAt !== data.timestamp && (
                           <div className="text-xs text-zinc-500">
-                            Replicado após {Math.round((data.replicatedAt - data.timestamp) / 1000)}s
+                            {t('simulators_extra.replication.statuses.replicated_after', { seconds: Math.round((data.replicatedAt - data.timestamp) / 1000) })}
                           </div>
                         )}
                       </div>
@@ -549,15 +423,8 @@ export default function ReplicacaoSimulator() {
                   </div>
                 </div>
 
-                <button
-                  onClick={() => toggleRegionStatus(region.id)}
-                  className={`w-full py-1 px-3 rounded-lg text-sm ${
-                    region.status === 'healthy'
-                      ? 'bg-red-600 hover:bg-red-700'
-                      : 'bg-green-600 hover:bg-green-700'
-                  }`}
-                >
-                  {region.status === 'healthy' ? 'Simular Falha' : 'Recuperar'}
+                <button onClick={() => toggleRegionStatus(region.id)} className={`w-full py-1 px-3 rounded-lg text-sm ${region.status === 'healthy' ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'}`}>
+                  {region.status === 'healthy' ? t('simulators_extra.replication.simulate_failure') : t('simulators_extra.replication.recover')}
                 </button>
               </div>
             </motion.div>
@@ -566,47 +433,22 @@ export default function ReplicacaoSimulator() {
 
         {/* Recent Operations */}
         <div className="bg-zinc-900 rounded-xl p-6">
-          <h2 className="text-xl font-semibold mb-4">Operações Recentes</h2>
+          <h2 className="text-xl font-semibold mb-4">{t('simulators_extra.replication.recent_ops')}</h2>
           <div className="space-y-2">
             <AnimatePresence>
               {operations.slice(-5).map((operation) => (
-                <motion.div
-                  key={operation.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  className="bg-zinc-800 rounded-lg p-3"
-                >
+                <motion.div key={operation.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="bg-zinc-800 rounded-lg p-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <span className={`w-2 h-2 rounded-full ${
-                        operation.status === 'completed'
-                          ? 'bg-green-500'
-                          : operation.status === 'failed'
-                          ? 'bg-red-500'
-                          : operation.status === 'processing'
-                          ? 'bg-yellow-500'
-                          : 'bg-blue-500'
-                      }`} />
+                      <span className={`w-2 h-2 rounded-full ${operation.status === 'completed' ? 'bg-green-500' : operation.status === 'failed' ? 'bg-red-500' : operation.status === 'processing' ? 'bg-yellow-500' : 'bg-blue-500'}`} />
                       <span className="text-sm">
-                        {operation.type === 'write' ? 'Escrita' : 'Leitura'} - 
-                        Chave: {operation.key}
-                        {operation.value && ` Valor: ${operation.value}`}
+                        {t(`simulators_extra.replication.${operation.type === 'write' ? 'write_label' : 'read_label'}`)} - {t('simulators_extra.replication.key_placeholder')}: {operation.key}
+                        {operation.value && ` ${t('simulators_extra.replication.value_placeholder')}: ${operation.value}`}
                       </span>
                     </div>
                     <div className="flex items-center space-x-2">
                       {Object.entries(operation.replicationStatus).map(([regionId, status]) => (
-                        <span
-                          key={regionId}
-                          className={`w-2 h-2 rounded-full ${
-                            status === 'completed'
-                              ? 'bg-green-500'
-                              : status === 'failed'
-                              ? 'bg-red-500'
-                              : 'bg-yellow-500'
-                          }`}
-                          title={`${regions.find(r => r.id === regionId)?.name}: ${status}`}
-                        />
+                        <span key={regionId} className={`w-2 h-2 rounded-full ${status === 'completed' ? 'bg-green-500' : status === 'failed' ? 'bg-red-500' : 'bg-yellow-500'}`} title={`${regions.find(r => r.id === regionId)?.name}: ${status}`} />
                       ))}
                     </div>
                   </div>

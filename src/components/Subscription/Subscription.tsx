@@ -4,22 +4,15 @@ import { useAuth } from '../../contexts/AuthContext';
 import { loadStripe } from '@stripe/stripe-js';
 import ReactGA from 'react-ga4';
 import Countdown from '../Countdown/Countdown';
+import { useTranslation } from 'react-i18next';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
-
-const features = [
-  "Acesso a todos os simuladores interativos",
-  "Conteúdo completo sobre System Design",
-  "Atualizações regulares de conteúdo",
-  "Exemplos práticos do mundo real",
-  "Suporte via comunidade",
-  "Acesso vitalício ao conteúdo",
-];
 
 export default function Subscription() {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     ReactGA.set({
@@ -33,11 +26,20 @@ export default function Subscription() {
     });
   }, [user]);
 
-  const calculatePricing = () => {
-    const originalPrice = 499;
-    const discountedPrice = 179;
-    const discount = Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
-    return { originalPrice, discountedPrice, discount };
+  const calculatePricing = (language: string) => {
+    const isEnglish = language === 'en';
+    
+    if (isEnglish) {
+      const originalPrice = 89;
+      const discountedPrice = 39;
+      const discount = Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
+      return { originalPrice, discountedPrice, discount, currency: '$' };
+    } else {
+      const originalPrice = 499;
+      const discountedPrice = 179;
+      const discount = Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
+      return { originalPrice, discountedPrice, discount, currency: 'R$' };
+    }
   };
 
   const handlePayment = async () => {
@@ -84,13 +86,14 @@ export default function Subscription() {
       }
     } catch (error) {
       console.error('Error creating checkout session:', error);
-      setError('Ocorreu um erro ao processar o pagamento. Por favor, tente novamente.');
+      setError(t('subscription.error_processing'));
     } finally {
       setIsLoading(false);
     }
   };
 
-  const { originalPrice, discountedPrice, discount } = calculatePricing();
+  const { originalPrice, discountedPrice, discount, currency } = calculatePricing(i18n.language);
+  const features: string[] = t('subscription.features', { returnObjects: true }) as string[];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-black text-white p-8">
@@ -111,7 +114,7 @@ export default function Subscription() {
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent"
           >
-            Acesso Vitalício
+            {t('subscription.title')}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: -20 }}
@@ -119,7 +122,7 @@ export default function Subscription() {
             transition={{ delay: 0.1 }}
             className="text-xl text-zinc-400"
           >
-            Invista em seu conhecimento e desenvolvimento profissional
+            {t('subscription.subtitle')}
           </motion.p>
         </div>
 
@@ -131,23 +134,23 @@ export default function Subscription() {
             className="bg-gradient-to-b from-blue-600/10 to-purple-600/10 rounded-xl p-8 border border-blue-500/20 relative overflow-hidden"
           >
             <div className="absolute -right-12 top-8 bg-blue-500 text-white px-12 py-1 rotate-45 text-sm font-medium">
-              Nova Oferta
+              {t('common.new_offer')}
             </div>
             <div className="text-center mb-4">
               <div className="inline-block bg-blue-500/10 text-blue-400 px-4 py-2 rounded-full text-sm mb-4">
-                Oferta por tempo limitado
+                {t('subscription.limited_offer')}
               </div>
               <Countdown />
             </div>
             <div className="text-center mb-8">
               <div className="mb-2">
-                <span className="text-lg text-zinc-500 line-through">R${originalPrice}</span>
+                <span className="text-lg text-zinc-500 line-through">{currency}{originalPrice}</span>
                 <div className="text-4xl font-bold text-blue-500">
-                  R${discountedPrice}
+                  {currency}{discountedPrice}
                 </div>
-                <p className="text-sm text-green-400">{discount}% de desconto</p>
+                <p className="text-sm text-green-400">{t('common.discount_off', { percent: discount })}</p>
               </div>
-              <p className="text-zinc-400">Pagamento único - Acesso para sempre</p>
+              <p className="text-zinc-400">{t('subscription.one_time_lifetime')}</p>
             </div>
 
             <ul className="space-y-4 mb-8">
@@ -172,10 +175,10 @@ export default function Subscription() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Processando...
+                  {t('subscription.processing')}
                 </div>
               ) : (
-                'Comprar Agora'
+                t('subscription.buy_now')
               )}
             </button>
           </motion.div>
@@ -188,34 +191,30 @@ export default function Subscription() {
           transition={{ delay: 0.4 }}
           className="mt-16 text-center max-w-2xl mx-auto"
         >
-          <h3 className="text-2xl font-bold mb-4">Por que comprar?</h3>
+          <h3 className="text-2xl font-bold mb-4">{t('subscription.why_buy_title')}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left mt-8">
             <div className="bg-zinc-900/50 p-6 rounded-lg">
-              <h4 className="text-lg font-semibold mb-2 text-blue-400">Aprendizado Prático</h4>
+              <h4 className="text-lg font-semibold mb-2 text-blue-400">{t('subscription.why_practical_title')}</h4>
               <p className="text-zinc-400">
-                Simuladores interativos que permitem experimentar cenários reais de sistemas distribuídos,
-                facilitando a compreensão de conceitos complexos.
+                {t('subscription.why_practical_desc')}
               </p>
             </div>
             <div className="bg-zinc-900/50 p-6 rounded-lg">
-              <h4 className="text-lg font-semibold mb-2 text-purple-400">Conteúdo Atualizado</h4>
+              <h4 className="text-lg font-semibold mb-2 text-purple-400">{t('subscription.why_updated_title')}</h4>
               <p className="text-zinc-400">
-                Material constantemente atualizado com as últimas tendências e melhores práticas em
-                arquitetura de sistemas.
+                {t('subscription.why_updated_desc')}
               </p>
             </div>
             <div className="bg-zinc-900/50 p-6 rounded-lg">
-              <h4 className="text-lg font-semibold mb-2 text-yellow-400">Desenvolvimento Profissional</h4>
+              <h4 className="text-lg font-semibold mb-2 text-yellow-400">{t('subscription.why_career_title')}</h4>
               <p className="text-zinc-400">
-                Aprenda habilidades essenciais para avançar sua carreira como arquiteto ou engenheiro
-                de software.
+                {t('subscription.why_career_desc')}
               </p>
             </div>
             <div className="bg-zinc-900/50 p-6 rounded-lg">
-              <h4 className="text-lg font-semibold mb-2 text-orange-400">Comunidade</h4>
+              <h4 className="text-lg font-semibold mb-2 text-orange-400">{t('subscription.why_community_title')}</h4>
               <p className="text-zinc-400">
-                Faça parte de uma comunidade de desenvolvedores, compartilhe experiências e aprenda
-                com outros profissionais.
+                {t('subscription.why_community_desc')}
               </p>
             </div>
           </div>

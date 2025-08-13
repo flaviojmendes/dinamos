@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface Server {
   id: string;
@@ -30,6 +31,7 @@ interface SimulationConfig {
 }
 
 export default function ScalabilitySimulator() {
+  const { t } = useTranslation();
   const [servers, setServers] = useState<Server[]>([
     {
       id: 'server1',
@@ -137,7 +139,6 @@ export default function ScalabilitySimulator() {
         };
         
         if (config.consistencyMode === 'strong') {
-          // Synchronously update all healthy secondary servers
           updatedServers.forEach(server => {
             if (server.role === 'secondary' && server.status === 'healthy') {
               server.data[request.data.key] = {
@@ -148,7 +149,6 @@ export default function ScalabilitySimulator() {
             }
           });
         } else {
-          // Asynchronously update secondary servers
           setTimeout(() => {
             const replicationTimestamp = Date.now();
             setServers(prev => prev.map(server => 
@@ -219,54 +219,38 @@ export default function ScalabilitySimulator() {
     <div className="min-h-screen bg-zinc-950 text-white p-8">
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-4">Simulador de Escalabilidade</h1>
+          <h1 className="text-3xl font-bold mb-4">{t('simulators.scalability.title')}</h1>
           <p className="text-zinc-400 mb-6">
-            Explore como consistência, latência e failover funcionam em um sistema distribuído.
+            {t('simulators.scalability.intro')}
           </p>
           
           <div className="bg-zinc-900/50 rounded-xl p-6 space-y-3 text-sm text-zinc-300">
-            <p className="font-semibold text-white">Como usar o simulador:</p>
+            <p className="font-semibold text-white">{t('simulators.scalability.how_title')}</p>
             <ol className="list-decimal list-inside space-y-2">
-              <li>Configure o modo de consistência:
-                <ul className="list-disc list-inside ml-4 text-zinc-400">
-                  <li><span className="text-blue-400">Forte</span>: Dados são replicados instantaneamente para todos os servidores</li>
-                  <li><span className="text-blue-400">Eventual</span>: Dados são replicados com atraso baseado na latência</li>
-                </ul>
-              </li>
-              <li>Ajuste a latência de rede para ver como afeta a replicação:
-                <ul className="list-disc list-inside ml-4 text-zinc-400">
-                  <li>Valores mais altos tornam mais visível o atraso na consistência eventual</li>
-                  <li>Observe o tempo de replicação nos servidores secundários</li>
-                </ul>
-              </li>
-              <li>Experimente diferentes cenários:
-                <ul className="list-disc list-inside ml-4 text-zinc-400">
-                  <li>Simule falhas nos servidores para ver o failover em ação</li>
-                  <li>Compare a propagação dos dados entre os modos de consistência</li>
-                  <li>Observe como as requisições são afetadas por falhas e latência</li>
-                </ul>
-              </li>
+              {(t('simulators.scalability.how_steps', { returnObjects: true }) as string[]).map((s, idx) => (
+                <li key={idx}>{s}</li>
+              ))}
             </ol>
           </div>
         </div>
 
         {/* Configuration Panel */}
         <div className="bg-zinc-900 rounded-xl p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4">Configurações</h2>
+          <h2 className="text-xl font-semibold mb-4">{t('simulators.scalability.config_title')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Modo de Consistência</label>
+              <label className="block text-sm font-medium mb-2">{t('simulators.scalability.consistency_mode')}</label>
               <select
                 value={config.consistencyMode}
                 onChange={(e) => setConfig(prev => ({ ...prev, consistencyMode: e.target.value as 'strong' | 'eventual' }))}
                 className="w-full bg-zinc-800 rounded-lg p-2"
               >
-                <option value="strong">Forte</option>
-                <option value="eventual">Eventual</option>
+                <option value="strong">{t('simulators.scalability.strong')}</option>
+                <option value="eventual">{t('simulators.scalability.eventual')}</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Latência de Rede (ms)</label>
+              <label className="block text-sm font-medium mb-2">{t('simulators.scalability.network_latency_ms')}</label>
               <input
                 type="range"
                 min="0"
@@ -278,7 +262,7 @@ export default function ScalabilitySimulator() {
               <span className="text-sm text-zinc-400">{config.networkLatency}ms</span>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Taxa de Falha</label>
+              <label className="block text-sm font-medium mb-2">{t('simulators.scalability.failure_rate')}</label>
               <input
                 type="range"
                 min="0"
@@ -298,7 +282,7 @@ export default function ScalabilitySimulator() {
                   onChange={(e) => setConfig(prev => ({ ...prev, autoFailover: e.target.checked }))}
                   className="mr-2"
                 />
-                <span className="text-sm font-medium">Auto Failover</span>
+                <span className="text-sm font-medium">{t('simulators.scalability.auto_failover')}</span>
               </label>
             </div>
           </div>
@@ -306,21 +290,21 @@ export default function ScalabilitySimulator() {
 
         {/* Manual Operation Panel */}
         <div className="bg-zinc-900 rounded-xl p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4">Operação Manual</h2>
+          <h2 className="text-xl font-semibold mb-4">{t('simulators.scalability.manual_title')}</h2>
           <div className="flex flex-wrap gap-4">
             <select
               value={selectedOperation}
               onChange={(e) => setSelectedOperation(e.target.value as 'read' | 'write')}
               className="bg-zinc-800 rounded-lg p-2"
             >
-              <option value="read">Leitura</option>
-              <option value="write">Escrita</option>
+              <option value="read">{t('simulators.scalability.read')}</option>
+              <option value="write">{t('simulators.scalability.write')}</option>
             </select>
             <input
               type="text"
               value={dataKey}
               onChange={(e) => setDataKey(e.target.value)}
-              placeholder="Chave"
+              placeholder={t('simulators.scalability.key_placeholder') || 'Key'}
               className="bg-zinc-800 rounded-lg p-2"
             />
             {selectedOperation === 'write' && (
@@ -328,7 +312,7 @@ export default function ScalabilitySimulator() {
                 type="text"
                 value={dataValue}
                 onChange={(e) => setDataValue(e.target.value)}
-                placeholder="Valor"
+                placeholder={t('simulators.scalability.value_placeholder') || 'Value'}
                 className="bg-zinc-800 rounded-lg p-2"
               />
             )}
@@ -336,7 +320,7 @@ export default function ScalabilitySimulator() {
               onClick={() => addRequest(selectedOperation)}
               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg"
             >
-              Executar
+              {t('simulators.scalability.execute')}
             </button>
             <button
               onClick={() => setIsRunning(!isRunning)}
@@ -346,7 +330,7 @@ export default function ScalabilitySimulator() {
                   : 'bg-green-600 hover:bg-green-700'
               }`}
             >
-              {isRunning ? 'Parar Simulação' : 'Iniciar Simulação'}
+              {isRunning ? t('simulators.scalability.stop') : t('simulators.scalability.start')}
             </button>
           </div>
         </div>
@@ -374,14 +358,14 @@ export default function ScalabilitySimulator() {
                       : 'bg-red-500/20 text-red-400'
                   }`}
                 >
-                  {server.status}
+                  {t(`simulators.vertical_scaling.statuses.${server.status}`)}
                 </span>
               </div>
 
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between text-sm mb-1">
-                    <span>Role</span>
+                    <span>{t('simulators.scalability.role')}</span>
                     <span className={server.role === 'primary' ? 'text-blue-400' : 'text-zinc-400'}>
                       {server.role}
                     </span>
@@ -390,7 +374,7 @@ export default function ScalabilitySimulator() {
 
                 <div>
                   <div className="flex justify-between text-sm mb-1">
-                    <span>Latência</span>
+                    <span>{t('simulators.scalability.latency')}</span>
                     <span>{server.latency}ms</span>
                   </div>
                   <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
@@ -404,8 +388,8 @@ export default function ScalabilitySimulator() {
 
                 <div>
                   <div className="flex justify-between text-sm mb-1">
-                    <span>Dados</span>
-                    <span>{Object.keys(server.data).length} chaves</span>
+                    <span>{t('simulators.scalability.data')}</span>
+                    <span>{t('simulators.scalability.keys_label', { count: Object.keys(server.data).length })}</span>
                   </div>
                   <div className="bg-zinc-800 rounded-lg p-2 max-h-24 overflow-auto text-sm">
                     {Object.entries(server.data).map(([key, data]) => (
@@ -416,7 +400,7 @@ export default function ScalabilitySimulator() {
                         </div>
                         {data.replicatedAt && data.replicatedAt !== data.timestamp && (
                           <div className="text-xs text-zinc-500">
-                            Replicado após {Math.round((data.replicatedAt - data.timestamp) / 1000)}s
+                            {t('simulators.scalability.replicated_after', { seconds: Math.round((data.replicatedAt - data.timestamp) / 1000) })}
                           </div>
                         )}
                       </div>
@@ -432,7 +416,7 @@ export default function ScalabilitySimulator() {
                       : 'bg-green-600 hover:bg-green-700'
                   }`}
                 >
-                  {server.status === 'healthy' ? 'Simular Falha' : 'Recuperar'}
+                  {server.status === 'healthy' ? t('simulators.scalability.simulate_failure') : t('simulators.scalability.recover')}
                 </button>
               </div>
             </motion.div>
@@ -441,7 +425,7 @@ export default function ScalabilitySimulator() {
 
         {/* Recent Requests */}
         <div className="bg-zinc-900 rounded-xl p-6">
-          <h2 className="text-xl font-semibold mb-4">Requisições Recentes</h2>
+          <h2 className="text-xl font-semibold mb-4">{t('simulators.scalability.recent_requests')}</h2>
           <div className="space-y-2">
             <AnimatePresence>
               {requests.slice(-5).map((request) => (
@@ -463,9 +447,9 @@ export default function ScalabilitySimulator() {
                         : 'bg-blue-500'
                     }`} />
                     <span className="text-sm">
-                      {request.type === 'write' ? 'Escrita' : 'Leitura'} - 
-                      {request.data?.key && ` Chave: ${request.data.key}`}
-                      {request.data?.value && ` Valor: ${request.data.value}`}
+                      {t(`simulators.scalability.${request.type === 'write' ? 'write_label' : 'read_label'}`)} - 
+                      {request.data?.key && ` ${t('simulators.scalability.key_placeholder')}: ${request.data.key}`}
+                      {request.data?.value && ` ${t('simulators.scalability.value_placeholder')}: ${request.data.value}`}
                     </span>
                   </div>
                   <div className="flex items-center space-x-4">

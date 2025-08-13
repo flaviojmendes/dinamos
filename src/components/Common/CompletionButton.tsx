@@ -1,5 +1,6 @@
 import React from 'react';
 import { useContentProgress, emitProgressUpdate } from '../../hooks/useContentProgress';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   path: string;
@@ -9,6 +10,7 @@ interface Props {
 export default function CompletionButton({ path, childPaths }: Props) {
   const { isCompleted, markAsCompleted, markAsIncomplete } = useContentProgress();
   const completed = isCompleted(path);
+  const { t } = useTranslation();
 
   // Log for debugging
   console.log('CompletionButton path:', path);
@@ -39,7 +41,7 @@ export default function CompletionButton({ path, childPaths }: Props) {
       }`}
     >
       <span className="text-white font-medium">
-        {completed ? 'Concluído' : 'Marcar como concluído'}
+        {completed ? t('content.completed_label') : t('content.mark_complete')}
       </span>
       {completed && (
         <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface Node {
   id: number;
@@ -20,11 +21,12 @@ interface Message {
 }
 
 export default function TwoPhaseCommitSimulator() {
+  const { t } = useTranslation();
   const [nodes, setNodes] = useState<Node[]>([
-    { id: 0, name: 'Coordenador', type: 'coordinator', state: 'idle' },
-    { id: 1, name: 'Banco 1', type: 'participant', state: 'idle', hasResources: true, willVoteYes: true },
-    { id: 2, name: 'Banco 2', type: 'participant', state: 'idle', hasResources: true, willVoteYes: true },
-    { id: 3, name: 'Banco 3', type: 'participant', state: 'idle', hasResources: true, willVoteYes: true },
+    { id: 0, name: t('design_principles.consistency_strategies.two_phase_commit_simulator.nodes.coordinator'), type: 'coordinator', state: 'idle' },
+    { id: 1, name: t('design_principles.consistency_strategies.two_phase_commit_simulator.nodes.bank_n', { n: 1 }), type: 'participant', state: 'idle', hasResources: true, willVoteYes: true },
+    { id: 2, name: t('design_principles.consistency_strategies.two_phase_commit_simulator.nodes.bank_n', { n: 2 }), type: 'participant', state: 'idle', hasResources: true, willVoteYes: true },
+    { id: 3, name: t('design_principles.consistency_strategies.two_phase_commit_simulator.nodes.bank_n', { n: 3 }), type: 'participant', state: 'idle', hasResources: true, willVoteYes: true },
   ]);
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -81,18 +83,18 @@ export default function TwoPhaseCommitSimulator() {
 
   const simulateStep = useCallback(() => {
     switch (step) {
-      case 0: // Início da Fase 1: Prepare
+      case 0: // Phase 1 start: Prepare
         setNodes(prev => prev.map(node => 
           node.type === 'coordinator' ? { ...node, state: 'preparing' } : node
         ));
         nodes.forEach(node => {
           if (node.type === 'participant') {
-            addMessage(0, node.id, 'prepare', 'Preparar para transferência?');
+            addMessage(0, node.id, 'prepare', t('design_principles.consistency_strategies.two_phase_commit_simulator.messages.prepare_q'));
           }
         });
         break;
 
-      case 1: // Participantes respondem
+      case 1: // Participants respond
         setNodes(prev => prev.map(node => {
           if (node.type === 'participant') {
             return {
@@ -109,13 +111,13 @@ export default function TwoPhaseCommitSimulator() {
               node.id,
               0,
               'vote',
-              node.willVoteYes ? 'Sim, pronto para commit' : 'Não, recursos indisponíveis'
+              node.willVoteYes ? t('design_principles.consistency_strategies.two_phase_commit_simulator.messages.vote_yes') : t('design_principles.consistency_strategies.two_phase_commit_simulator.messages.vote_no')
             );
           }
         });
         break;
 
-      case 2: // Início da Fase 2: Decisão
+      case 2: // Phase 2 start: Decision
         const allPrepared = nodes.every(node => 
           node.type === 'coordinator' || (node.type === 'participant' && node.willVoteYes)
         );
@@ -131,20 +133,20 @@ export default function TwoPhaseCommitSimulator() {
               0,
               node.id,
               allPrepared ? 'commit' : 'abort',
-              allPrepared ? 'Commit: execute a transferência' : 'Abort: cancele a operação'
+              allPrepared ? t('design_principles.consistency_strategies.two_phase_commit_simulator.messages.decision_commit') : t('design_principles.consistency_strategies.two_phase_commit_simulator.messages.decision_abort')
             );
           }
         });
         break;
 
-      case 3: // Confirmação final
+      case 3: // Final acknowledgment
         nodes.forEach(node => {
           if (node.type === 'participant') {
             addMessage(
               node.id,
               0,
               'ack',
-              'Operação finalizada com sucesso'
+              t('design_principles.consistency_strategies.two_phase_commit_simulator.messages.done')
             );
           }
         });
@@ -156,7 +158,7 @@ export default function TwoPhaseCommitSimulator() {
         break;
     }
     setStep(prev => prev + 1);
-  }, [step, nodes]);
+  }, [step, nodes, t]);
 
   React.useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -169,10 +171,9 @@ export default function TwoPhaseCommitSimulator() {
   return (
     <div className="bg-zinc-900 rounded-lg p-6 mt-8">
       <div className="mb-6">
-        <h3 className="text-2xl font-bold text-white mb-4">Simulador de Two Phase Commit</h3>
+        <h3 className="text-2xl font-bold text-white mb-4">{t('design_principles.consistency_strategies.two_phase_commit_simulator.title')}</h3>
         <p className="text-zinc-400 mb-4">
-          Este simulador demonstra o protocolo Two Phase Commit em uma transferência bancária distribuída.
-          Configure as respostas dos bancos clicando neles antes de iniciar a simulação.
+          {t('design_principles.consistency_strategies.two_phase_commit_simulator.intro')}
         </p>
       </div>
 
@@ -183,24 +184,24 @@ export default function TwoPhaseCommitSimulator() {
           className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
           disabled={step >= 4}
         >
-          {isAutoPlaying ? 'Pausar' : 'Iniciar'} Simulação
+          {isAutoPlaying ? t('design_principles.consistency_strategies.two_phase_commit_simulator.controls.pause') : t('design_principles.consistency_strategies.two_phase_commit_simulator.controls.start')} {t('design_principles.consistency_strategies.two_phase_commit_simulator.controls.simulation')}
         </button>
         <button
           onClick={resetSimulation}
           className="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 text-white rounded-lg transition-colors"
         >
-          Reiniciar
+          {t('design_principles.consistency_strategies.two_phase_commit_simulator.controls.reset')}
         </button>
         <div className="flex items-center gap-2">
-          <label className="text-zinc-400">Velocidade:</label>
+          <label className="text-zinc-400">{t('design_principles.consistency_strategies.two_phase_commit_simulator.controls.speed_label')}</label>
           <select
             value={speed}
             onChange={(e) => setSpeed(Number(e.target.value))}
             className="bg-zinc-800 text-white px-3 py-2 rounded-lg"
           >
-            <option value={2000}>Lenta</option>
-            <option value={1500}>Normal</option>
-            <option value={800}>Rápida</option>
+            <option value={2000}>{t('design_principles.consistency_strategies.two_phase_commit_simulator.controls.speed_opts.slow')}</option>
+            <option value={1500}>{t('design_principles.consistency_strategies.two_phase_commit_simulator.controls.speed_opts.normal')}</option>
+            <option value={800}>{t('design_principles.consistency_strategies.two_phase_commit_simulator.controls.speed_opts.fast')}</option>
           </select>
         </div>
       </div>
@@ -218,11 +219,11 @@ export default function TwoPhaseCommitSimulator() {
               >
                 <h4 className="text-white font-semibold mb-2">{node.name}</h4>
                 <div className="text-sm text-zinc-300">
-                  Estado: {node.state}
-                  {node.response && <div>Resposta: {node.response}</div>}
+                  {t('design_principles.consistency_strategies.two_phase_commit_simulator.node_states.' + node.state, node.state)}
+                  {node.response && <div>{t('design_principles.consistency_strategies.two_phase_commit_simulator.responses.' + node.response)}</div>}
                   {node.type === 'participant' && step === 0 && (
                     <div className="mt-3 space-y-2">
-                        <div className="text-xs text-zinc-400">Configurar resposta:</div>
+                        <div className="text-xs text-zinc-400">{t('design_principles.consistency_strategies.two_phase_commit_simulator.config.configure_response')}</div>
                           <div className="flex gap-2">
                             <button
                               onClick={() => toggleNodeResponse(node.id)}
@@ -232,7 +233,7 @@ export default function TwoPhaseCommitSimulator() {
                                   : 'bg-zinc-700 hover:bg-zinc-600 text-zinc-300'
                               }`}
                             >
-                              Aprovar
+                              {t('design_principles.consistency_strategies.two_phase_commit_simulator.config.approve')}
                             </button>
                             <button
                               onClick={() => toggleNodeResponse(node.id)}
@@ -242,14 +243,14 @@ export default function TwoPhaseCommitSimulator() {
                                   : 'bg-zinc-700 hover:bg-zinc-600 text-zinc-300'
                               }`}
                             >
-                              Rejeitar
+                              {t('design_principles.consistency_strategies.two_phase_commit_simulator.config.reject')}
                             </button>
                           </div>
                           <div className="text-xs mt-2">
-                            Status: <span className={node.willVoteYes ? 'text-green-400' : 'text-red-400'}>
-                              {node.willVoteYes ? 'Irá aprovar a transação' : 'Irá rejeitar a transação'}
+                            {t('design_principles.consistency_strategies.two_phase_commit_simulator.config.status')} <span className={node.willVoteYes ? 'text-green-400' : 'text-red-400'}>
+                              {node.willVoteYes ? t('design_principles.consistency_strategies.two_phase_commit_simulator.config.will_approve') : t('design_principles.consistency_strategies.two_phase_commit_simulator.config.will_reject')}
                             </span>
-                      </div>
+                        </div>
                     </div>
                   )}
                 </div>
@@ -278,13 +279,13 @@ export default function TwoPhaseCommitSimulator() {
 
       {/* Step Description */}
       <div className="mt-6 p-4 bg-zinc-800 rounded-lg">
-        <h4 className="text-lg font-semibold text-white mb-2">Fase Atual:</h4>
+        <h4 className="text-lg font-semibold text-white mb-2">{t('design_principles.consistency_strategies.two_phase_commit_simulator.steps.current_phase')}</h4>
         <p className="text-zinc-300">
-          {step === 0 && "Clique nos bancos para configurar suas respostas e então inicie a simulação"}
-          {step === 1 && "Fase 1: Coordenador enviou 'prepare' para todos os participantes"}
-          {step === 2 && "Fase 1: Participantes responderam com seus votos"}
-          {step === 3 && "Fase 2: Coordenador tomou a decisão final"}
-          {step === 4 && "Simulação concluída! Você pode reiniciar para ver novamente."}
+          {step === 0 && t('design_principles.consistency_strategies.two_phase_commit_simulator.steps.s0')}
+          {step === 1 && t('design_principles.consistency_strategies.two_phase_commit_simulator.steps.s1')}
+          {step === 2 && t('design_principles.consistency_strategies.two_phase_commit_simulator.steps.s2')}
+          {step === 3 && t('design_principles.consistency_strategies.two_phase_commit_simulator.steps.s3')}
+          {step === 4 && t('design_principles.consistency_strategies.two_phase_commit_simulator.steps.s4')}
         </p>
       </div>
     </div>

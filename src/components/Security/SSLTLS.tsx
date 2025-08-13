@@ -1,19 +1,81 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function SSLTLS() {
+  const { t } = useTranslation();
+  const base = 'ssl_tls';
+
+  const sslTlsFeatures = t(`${base}.ssl_tls_features`, { returnObjects: true }) as string[];
+  const evolutionVersions = t(`${base}.evolution_versions`, { returnObjects: true }) as Array<{version: string, status: string, color: string}>;
+  const handshakeSteps = t(`${base}.handshake_steps`, { returnObjects: true }) as Array<{title: string, description: string, items: string[]}>;
+  const certificateStructureItems = t(`${base}.certificate_structure_items`, { returnObjects: true }) as string[];
+  const certificateTypes = t(`${base}.certificate_types`, { returnObjects: true }) as Array<{name: string, description: string}>;
+  const cipherComponents = t(`${base}.cipher_components`, { returnObjects: true }) as Array<{title: string, algorithms: string[]}>;
+  const configurationItems = t(`${base}.configuration_items`, { returnObjects: true }) as string[];
+  const certificatesItems = t(`${base}.certificates_items`, { returnObjects: true }) as string[];
+  const monitoringItems = t(`${base}.monitoring_items`, { returnObjects: true }) as string[];
+  const commonThreatsItems = t(`${base}.common_threats_items`, { returnObjects: true }) as string[];
+  const mitigationsItems = t(`${base}.mitigations_items`, { returnObjects: true }) as string[];
+
+  const getColorClass = (color: string) => {
+    switch (color) {
+      case 'red': return 'border-red-500';
+      case 'yellow': return 'border-yellow-500';
+      case 'green': return 'border-green-500';
+      case 'blue': return 'border-blue-500';
+      default: return 'border-gray-500';
+    }
+  };
+
+  const getTextColor = (color: string) => {
+    switch (color) {
+      case 'red': return 'text-red-400';
+      case 'yellow': return 'text-yellow-400';
+      case 'green': return 'text-green-400';
+      case 'blue': return 'text-blue-400';
+      default: return 'text-gray-400';
+    }
+  };
+
+  const getStepColor = (index: number) => {
+    const colors = ['blue', 'green', 'purple', 'yellow'];
+    return colors[index % colors.length];
+  };
+
+  const getStepColorClass = (index: number) => {
+    const color = getStepColor(index);
+    switch (color) {
+      case 'blue': return 'bg-blue-500/20 text-blue-400';
+      case 'green': return 'bg-green-500/20 text-green-400';
+      case 'purple': return 'bg-purple-500/20 text-purple-400';
+      case 'yellow': return 'bg-yellow-500/20 text-yellow-400';
+      default: return 'bg-gray-500/20 text-gray-400';
+    }
+  };
+
+  const getStepTextColor = (index: number) => {
+    const color = getStepColor(index);
+    switch (color) {
+      case 'blue': return 'text-blue-400';
+      case 'green': return 'text-green-400';
+      case 'purple': return 'text-purple-400';
+      case 'yellow': return 'text-yellow-400';
+      default: return 'text-gray-400';
+    }
+  };
+
   return (
     <div className="min-h-full bg-gradient-to-b from-zinc-900 to-black">
       <div className="py-12 px-6 max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-4xl font-bold text-white mb-4">
-            SSL/TLS em Sistemas Distribuídos
+            {t(`${base}.title`)}
           </h1>
           <p className="text-lg text-zinc-400 mb-6">
-            Protocolos de segurança para comunicação segura em redes e sistemas distribuídos
+            {t(`${base}.subtitle`)}
           </p>
-         
         </div>
 
         {/* Info Banner */}
@@ -26,8 +88,7 @@ export default function SSLTLS() {
             </div>
             <div className="ml-4">
               <p className="text-emerald-400">
-                SSL/TLS são protocolos fundamentais que garantem a segurança das comunicações na internet,
-                protegendo dados sensíveis e garantindo a autenticidade dos serviços.
+                {t(`${base}.info_banner`)}
               </p>
             </div>
           </div>
@@ -37,42 +98,29 @@ export default function SSLTLS() {
         <div className="space-y-12">
           {/* Visão Geral */}
           <section>
-            <h2 className="text-3xl font-bold text-white mb-6">Visão Geral</h2>
+            <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.overview_title`)}</h2>
             <div className="bg-zinc-900 rounded-lg p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-zinc-800 p-6 rounded-lg">
-                  <h3 className="text-xl font-semibold text-emerald-400 mb-3">O que é SSL/TLS?</h3>
+                  <h3 className="text-xl font-semibold text-emerald-400 mb-3">{t(`${base}.what_is_ssl_tls_title`)}</h3>
                   <p className="text-zinc-400">
-                    SSL (Secure Sockets Layer) e seu sucessor TLS (Transport Layer Security) são
-                    protocolos criptográficos que fornecem comunicação segura através da internet.
-                    Eles operam na camada de transporte, garantindo:
+                    {t(`${base}.what_is_ssl_tls_description`)}
                   </p>
                   <ul className="mt-4 space-y-2 text-zinc-400 list-disc pl-6">
-                    <li>Confidencialidade dos dados</li>
-                    <li>Integridade das mensagens</li>
-                    <li>Autenticação do servidor</li>
-                    <li>Autenticação opcional do cliente</li>
+                    {sslTlsFeatures.map((feature, index) => (
+                      <li key={index}>{feature}</li>
+                    ))}
                   </ul>
                 </div>
                 <div className="bg-zinc-800 p-6 rounded-lg">
-                  <h3 className="text-xl font-semibold text-emerald-400 mb-3">Evolução</h3>
+                  <h3 className="text-xl font-semibold text-emerald-400 mb-3">{t(`${base}.evolution_title`)}</h3>
                   <div className="space-y-4">
-                    <div className="border-l-2 border-red-500 pl-4">
-                      <p className="text-red-400 font-medium">SSL 2.0/3.0</p>
-                      <p className="text-zinc-400 text-sm">Obsoleto e inseguro</p>
-                    </div>
-                    <div className="border-l-2 border-yellow-500 pl-4">
-                      <p className="text-yellow-400 font-medium">TLS 1.0/1.1</p>
-                      <p className="text-zinc-400 text-sm">Descontinuado</p>
-                    </div>
-                    <div className="border-l-2 border-green-500 pl-4">
-                      <p className="text-green-400 font-medium">TLS 1.2</p>
-                      <p className="text-zinc-400 text-sm">Amplamente suportado</p>
-                    </div>
-                    <div className="border-l-2 border-blue-500 pl-4">
-                      <p className="text-blue-400 font-medium">TLS 1.3</p>
-                      <p className="text-zinc-400 text-sm">Versão mais recente e segura</p>
-                    </div>
+                    {evolutionVersions.map((version, index) => (
+                      <div key={index} className={`border-l-2 ${getColorClass(version.color)} pl-4`}>
+                        <p className={`${getTextColor(version.color)} font-medium`}>{version.version}</p>
+                        <p className="text-zinc-400 text-sm">{version.status}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -81,80 +129,29 @@ export default function SSLTLS() {
 
           {/* Como Funciona */}
           <section>
-            <h2 className="text-3xl font-bold text-white mb-6">Como Funciona</h2>
+            <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.how_it_works_title`)}</h2>
             <div className="bg-zinc-900 rounded-lg p-6">
               <div className="space-y-6">
-                <h3 className="text-2xl font-semibold text-emerald-400 mb-4">O Handshake TLS</h3>
+                <h3 className="text-2xl font-semibold text-emerald-400 mb-4">{t(`${base}.tls_handshake_title`)}</h3>
                 <div className="grid gap-4">
-                  <div className="bg-zinc-800 p-6 rounded-lg">
-                    <div className="flex items-start gap-4">
-                      <div className="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center text-blue-400">1</div>
-                      <div>
-                        <h4 className="text-lg font-medium text-blue-400 mb-2">Client Hello</h4>
-                        <p className="text-zinc-400">
-                          O cliente inicia a conexão enviando:
-                        </p>
-                        <ul className="mt-2 space-y-1 text-zinc-400 list-disc pl-6">
-                          <li>Versão TLS suportada</li>
-                          <li>Lista de cipher suites</li>
-                          <li>Número aleatório</li>
-                          <li>Extensões suportadas</li>
-                        </ul>
+                  {handshakeSteps.map((step, index) => (
+                    <div key={index} className="bg-zinc-800 p-6 rounded-lg">
+                      <div className="flex items-start gap-4">
+                        <div className={`w-8 h-8 ${getStepColorClass(index)} rounded-full flex items-center justify-center`}>{index + 1}</div>
+                        <div>
+                          <h4 className={`text-lg font-medium ${getStepTextColor(index)} mb-2`}>{step.title}</h4>
+                          <p className="text-zinc-400">
+                            {step.description}
+                          </p>
+                          <ul className="mt-2 space-y-1 text-zinc-400 list-disc pl-6">
+                            {step.items.map((item, itemIndex) => (
+                              <li key={itemIndex}>{item}</li>
+                            ))}
+                          </ul>
+                        </div>
                       </div>
                     </div>
-                  </div>
-
-                  <div className="bg-zinc-800 p-6 rounded-lg">
-                    <div className="flex items-start gap-4">
-                      <div className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center text-green-400">2</div>
-                      <div>
-                        <h4 className="text-lg font-medium text-green-400 mb-2">Server Hello</h4>
-                        <p className="text-zinc-400">
-                          O servidor responde com:
-                        </p>
-                        <ul className="mt-2 space-y-1 text-zinc-400 list-disc pl-6">
-                          <li>Certificado digital</li>
-                          <li>Cipher suite escolhida</li>
-                          <li>Número aleatório do servidor</li>
-                          <li>Extensões negociadas</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-zinc-800 p-6 rounded-lg">
-                    <div className="flex items-start gap-4">
-                      <div className="w-8 h-8 bg-purple-500/20 rounded-full flex items-center justify-center text-purple-400">3</div>
-                      <div>
-                        <h4 className="text-lg font-medium text-purple-400 mb-2">Key Exchange</h4>
-                        <p className="text-zinc-400">
-                          Troca de chaves e estabelecimento de segredos:
-                        </p>
-                        <ul className="mt-2 space-y-1 text-zinc-400 list-disc pl-6">
-                          <li>Cliente verifica o certificado</li>
-                          <li>Geração do pre-master secret</li>
-                          <li>Derivação das chaves de sessão</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-zinc-800 p-6 rounded-lg">
-                    <div className="flex items-start gap-4">
-                      <div className="w-8 h-8 bg-yellow-500/20 rounded-full flex items-center justify-center text-yellow-400">4</div>
-                      <div>
-                        <h4 className="text-lg font-medium text-yellow-400 mb-2">Finished</h4>
-                        <p className="text-zinc-400">
-                          Finalização do handshake:
-                        </p>
-                        <ul className="mt-2 space-y-1 text-zinc-400 list-disc pl-6">
-                          <li>Verificação de integridade</li>
-                          <li>Confirmação dos parâmetros</li>
-                          <li>Início da comunicação segura</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -162,36 +159,27 @@ export default function SSLTLS() {
 
           {/* Certificados Digitais */}
           <section>
-            <h2 className="text-3xl font-bold text-white mb-6">Certificados Digitais</h2>
+            <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.digital_certificates_title`)}</h2>
             <div className="bg-zinc-900 rounded-lg p-6">
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="bg-zinc-800 p-6 rounded-lg">
-                    <h3 className="text-xl font-semibold text-emerald-400 mb-3">Estrutura</h3>
+                    <h3 className="text-xl font-semibold text-emerald-400 mb-3">{t(`${base}.certificate_structure_title`)}</h3>
                     <ul className="space-y-2 text-zinc-400">
-                      <li>• Informações do titular</li>
-                      <li>• Chave pública</li>
-                      <li>• Período de validade</li>
-                      <li>• Emissor (CA)</li>
-                      <li>• Assinatura digital da CA</li>
-                      <li>• Número de série</li>
+                      {certificateStructureItems.map((item, index) => (
+                        <li key={index}>• {item}</li>
+                      ))}
                     </ul>
                   </div>
                   <div className="bg-zinc-800 p-6 rounded-lg">
-                    <h3 className="text-xl font-semibold text-emerald-400 mb-3">Tipos</h3>
+                    <h3 className="text-xl font-semibold text-emerald-400 mb-3">{t(`${base}.certificate_types_title`)}</h3>
                     <ul className="space-y-4 text-zinc-400">
-                      <li>
-                        <span className="text-emerald-400 font-medium">DV (Domain Validation)</span>
-                        <p className="mt-1">Validação básica do domínio</p>
-                      </li>
-                      <li>
-                        <span className="text-emerald-400 font-medium">OV (Organization Validation)</span>
-                        <p className="mt-1">Validação da organização</p>
-                      </li>
-                      <li>
-                        <span className="text-emerald-400 font-medium">EV (Extended Validation)</span>
-                        <p className="mt-1">Validação extendida e rigorosa</p>
-                      </li>
+                      {certificateTypes.map((type, index) => (
+                        <li key={index}>
+                          <span className="text-emerald-400 font-medium">{type.name}</span>
+                          <p className="mt-1">{type.description}</p>
+                        </li>
+                      ))}
                     </ul>
                   </div>
                 </div>
@@ -201,46 +189,27 @@ export default function SSLTLS() {
 
           {/* Cipher Suites */}
           <section>
-            <h2 className="text-3xl font-bold text-white mb-6">Cipher Suites</h2>
+            <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.cipher_suites_title`)}</h2>
             <div className="bg-zinc-900 rounded-lg p-6">
               <div className="space-y-6">
                 <p className="text-zinc-400">
-                  Cipher suites são conjuntos de algoritmos que definem como a comunicação
-                  será protegida. Uma cipher suite típica inclui:
+                  {t(`${base}.cipher_suites_description`)}
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <div className="bg-zinc-800 p-6 rounded-lg">
-                    <h3 className="text-xl font-semibold text-blue-400 mb-3">Key Exchange</h3>
-                    <ul className="space-y-2 text-zinc-400">
-                      <li>• ECDHE</li>
-                      <li>• DHE</li>
-                      <li>• RSA</li>
-                    </ul>
-                  </div>
-                  <div className="bg-zinc-800 p-6 rounded-lg">
-                    <h3 className="text-xl font-semibold text-green-400 mb-3">Authentication</h3>
-                    <ul className="space-y-2 text-zinc-400">
-                      <li>• RSA</li>
-                      <li>• ECDSA</li>
-                      <li>• PSK</li>
-                    </ul>
-                  </div>
-                  <div className="bg-zinc-800 p-6 rounded-lg">
-                    <h3 className="text-xl font-semibold text-purple-400 mb-3">Encryption</h3>
-                    <ul className="space-y-2 text-zinc-400">
-                      <li>• AES-GCM</li>
-                      <li>• ChaCha20</li>
-                      <li>• AES-CBC</li>
-                    </ul>
-                  </div>
-                  <div className="bg-zinc-800 p-6 rounded-lg">
-                    <h3 className="text-xl font-semibold text-yellow-400 mb-3">MAC</h3>
-                    <ul className="space-y-2 text-zinc-400">
-                      <li>• AEAD</li>
-                      <li>• SHA-384</li>
-                      <li>• POLY1305</li>
-                    </ul>
-                  </div>
+                  {cipherComponents.map((component, index) => {
+                    const colors = ['blue', 'green', 'purple', 'yellow'];
+                    const color = colors[index % colors.length];
+                    return (
+                      <div key={index} className="bg-zinc-800 p-6 rounded-lg">
+                        <h3 className={`text-xl font-semibold text-${color}-400 mb-3`}>{component.title}</h3>
+                        <ul className="space-y-2 text-zinc-400">
+                          {component.algorithms.map((algorithm, algorithmIndex) => (
+                            <li key={algorithmIndex}>• {algorithm}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -248,36 +217,33 @@ export default function SSLTLS() {
 
           {/* Melhores Práticas */}
           <section>
-            <h2 className="text-3xl font-bold text-white mb-6">Melhores Práticas</h2>
+            <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.best_practices_title`)}</h2>
             <div className="bg-zinc-900 rounded-lg p-6">
               <div className="grid gap-6">
                 <div className="bg-zinc-800 p-6 rounded-lg border-l-4 border-green-500">
-                  <h3 className="text-xl font-semibold text-green-400 mb-3">Configuração</h3>
+                  <h3 className="text-xl font-semibold text-green-400 mb-3">{t(`${base}.configuration_title`)}</h3>
                   <ul className="space-y-2 text-zinc-400">
-                    <li>• Use apenas TLS 1.2 e 1.3</li>
-                    <li>• Desative cipher suites inseguras</li>
-                    <li>• Configure HSTS</li>
-                    <li>• Implemente OCSP Stapling</li>
+                    {configurationItems.map((item, index) => (
+                      <li key={index}>• {item}</li>
+                    ))}
                   </ul>
                 </div>
 
                 <div className="bg-zinc-800 p-6 rounded-lg border-l-4 border-blue-500">
-                  <h3 className="text-xl font-semibold text-blue-400 mb-3">Certificados</h3>
+                  <h3 className="text-xl font-semibold text-blue-400 mb-3">{t(`${base}.certificates_title`)}</h3>
                   <ul className="space-y-2 text-zinc-400">
-                    <li>• Mantenha certificados atualizados</li>
-                    <li>• Use chaves fortes (RSA 2048+ ou ECC)</li>
-                    <li>• Implemente renovação automática</li>
-                    <li>• Proteja chaves privadas</li>
+                    {certificatesItems.map((item, index) => (
+                      <li key={index}>• {item}</li>
+                    ))}
                   </ul>
                 </div>
 
                 <div className="bg-zinc-800 p-6 rounded-lg border-l-4 border-red-500">
-                  <h3 className="text-xl font-semibold text-red-400 mb-3">Monitoramento</h3>
+                  <h3 className="text-xl font-semibold text-red-400 mb-3">{t(`${base}.monitoring_title`)}</h3>
                   <ul className="space-y-2 text-zinc-400">
-                    <li>• Monitore expiração de certificados</li>
-                    <li>• Verifique vulnerabilidades conhecidas</li>
-                    <li>• Realize testes de segurança regulares</li>
-                    <li>• Mantenha logs de acesso</li>
+                    {monitoringItems.map((item, index) => (
+                      <li key={index}>• {item}</li>
+                    ))}
                   </ul>
                 </div>
               </div>
@@ -286,26 +252,24 @@ export default function SSLTLS() {
 
           {/* Considerações de Segurança */}
           <section>
-            <h2 className="text-3xl font-bold text-white mb-6">Considerações de Segurança</h2>
+            <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.security_considerations_title`)}</h2>
             <div className="bg-red-500/10 border border-red-500 rounded-lg p-6">
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="bg-zinc-800/50 p-6 rounded-lg">
-                    <h3 className="text-xl font-semibold text-red-400 mb-3">Ameaças Comuns</h3>
+                    <h3 className="text-xl font-semibold text-red-400 mb-3">{t(`${base}.common_threats_title`)}</h3>
                     <ul className="space-y-2 text-zinc-400">
-                      <li>• MITM (Man-in-the-Middle)</li>
-                      <li>• Downgrade Attacks</li>
-                      <li>• Protocol Vulnerabilities</li>
-                      <li>• Certificate Spoofing</li>
+                      {commonThreatsItems.map((threat, index) => (
+                        <li key={index}>• {threat}</li>
+                      ))}
                     </ul>
                   </div>
                   <div className="bg-zinc-800/50 p-6 rounded-lg">
-                    <h3 className="text-xl font-semibold text-red-400 mb-3">Mitigações</h3>
+                    <h3 className="text-xl font-semibold text-red-400 mb-3">{t(`${base}.mitigations_title`)}</h3>
                     <ul className="space-y-2 text-zinc-400">
-                      <li>• Certificate Pinning</li>
-                      <li>• Perfect Forward Secrecy</li>
-                      <li>• Strong Cipher Preferences</li>
-                      <li>• Regular Security Updates</li>
+                      {mitigationsItems.map((mitigation, index) => (
+                        <li key={index}>• {mitigation}</li>
+                      ))}
                     </ul>
                   </div>
                 </div>

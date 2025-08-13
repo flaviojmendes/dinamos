@@ -84,6 +84,7 @@ import CryptographySimulator from "./components/Security/CryptographySimulator";
 import AttackSimulatorPage from "./components/Security/AttackSimulatorPage";
 import Roadmap from "./components/Roadmap/Roadmap";
 import ContentLayout from "./components/Common/ContentLayout";
+import LanguageDetectionDialog from "./components/Common/LanguageDetectionDialog";
 import { useContentProgress, PROGRESS_UPDATED_EVENT } from "./hooks/useContentProgress";
 import ContentPage from "./components/Common/ContentPage";
 import TwoPhaseCommit from "./components/ConsistencyStrategies/TwoPhaseCommit";
@@ -112,6 +113,8 @@ import SynchronizationSimulator from "./components/ConsistencyStrategies/Synchro
 import SimpleSystemEditorPage from "./pages/SimpleSystemEditorPage";
 import PollingWebhooks from "./components/SystemComponents/PollingWebhooks";
 import PollingWebhooksTheory from "./components/SystemComponents/PollingWebhooksTheory";
+import { LanguageSwitcher } from './components/Common';
+import { useTranslation } from 'react-i18next';
 
 interface MenuItem {
   name: string;
@@ -130,11 +133,11 @@ interface MenuItem {
   customHoverStyle?: string;
 }
 
-const menuItems: MenuItem[] = [
+const createMenuItems = (t: any): MenuItem[] => [
   {
     path: "/roadmap",
-    name: "🎯 Comece Aqui",
-    description: "Sua jornada de aprendizado passo a passo",
+    name: t('menu.roadmap.name'),
+    description: t('menu.roadmap.description'),
     customStyle:
       "bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border-l-4 border-blue-500",
     customHoverStyle: "hover:from-zinc-800 hover:to-zinc-900",
@@ -154,123 +157,123 @@ const menuItems: MenuItem[] = [
       </svg>
     ),
   },
-  {
+    {
     path: "/intro",
-    name: "Introdução",
-    description: "Sobre o curso e motivação",
-    badges: [{ text: "Grátis", color: "bg-green-500" }],
+    name: t('menu.intro.name'),
+    description: t('menu.intro.description'),
+    badges: [{ text: t('badges.free'), color: "bg-green-500" }],
   },
   {
     path: "/sistemas-distribuidos-101",
-    name: "Sistemas Distribuídos 101",
-    description: "Conceitos fundamentais através de analogias",
-    badges: [{ text: "Grátis", color: "bg-green-500" }],
+    name: t('menu.sistemas_distribuidos_101.name'),
+    description: t('menu.sistemas_distribuidos_101.description'),
+    badges: [{ text: t('badges.free'), color: "bg-green-500" }],
   },
- 
+
   {
     path: "/system-design-101",
-    name: "System Design 101",
-    description: "Fundamentos de design de sistemas",
-    badges: [{ text: "Grátis", color: "bg-green-500" }],
+    name: t('menu.system_design_101.name'),
+    description: t('menu.system_design_101.description'),
+    badges: [{ text: t('badges.free'), color: "bg-green-500" }],
   },
   {
     path: "/componentes",
-    name: "Componentes Básicos",
-    description: "Blocos fundamentais de sistemas distribuídos",
+    name: t('menu.componentes.name'),
+    description: t('menu.componentes.description'),
     children: [
       {
         path: "/componentes/banco-dados",
-        name: "Bancos de Dados",
-        description: "Armazenamento e gerenciamento de dados",
+        name: t('menu.componentes.banco_dados.name'),
+        description: t('menu.componentes.banco_dados.description'),
       },
       {
         path: "/componentes/cache",
-        name: "Cache",
-        description: "Armazenamento temporário para melhor performance",
+        name: t('menu.componentes.cache.name'),
+        description: t('menu.componentes.cache.description'),
         children: [
           {
             path: "/componentes/cache/simulator",
-            name: "Simulador",
-            description: "Experimente diferentes estratégias de cache",
+            name: t('menu.componentes.cache.simulator.name'),
+            description: t('menu.componentes.cache.simulator.description'),
           },
         ],
       },
       {
         path: "/componentes/load-balancer",
-        name: "Balanceador de Carga",
-        description: "Distribuição de tráfego entre servidores",
+        name: t('menu.componentes.load_balancer.name'),
+        description: t('menu.componentes.load_balancer.description'),
         children: [
           {
             path: "/componentes/load-balancer/simulator",
-            name: "Simulador",
-            description: "Experimente diferentes algoritmos de balanceamento",
+            name: t('menu.componentes.load_balancer.simulator.name'),
+            description: t('menu.componentes.load_balancer.simulator.description'),
           },
         ],
       },
       {
         path: "/componentes/message-queue",
-        name: "Filas de Mensagens",
-        description: "Comunicação assíncrona entre serviços",
+        name: t('menu.componentes.message_queue.name'),
+        description: t('menu.componentes.message_queue.description'),
         children: [
           {
             path: "/componentes/message-queue/simulator",
-            name: "Simulador",
-            description: "Experimente o fluxo de mensagens",
+            name: t('menu.componentes.message_queue.simulator.name'),
+            description: t('menu.componentes.message_queue.simulator.description'),
           },
         ],
       },
       {
         path: "/componentes/cdn",
-        name: "CDN",
-        description: "Distribuição global de conteúdo",
+        name: t('menu.componentes.cdn.name'),
+        description: t('menu.componentes.cdn.description'),
         children: [
           {
             path: "/componentes/cdn/simulator",
-            name: "Simulador",
-            description: "Veja como o CDN acelera entregas",
+            name: t('menu.componentes.cdn.simulator.name'),
+            description: t('menu.componentes.cdn.simulator.description'),
           },
         ],
       },
       {
         path: "/componentes/api-gateway",
-        name: "API Gateway",
-        description: "Ponto único de entrada para APIs",
+        name: t('menu.componentes.api_gateway.name'),
+        description: t('menu.componentes.api_gateway.description'),
         children: [
           {
             path: "/componentes/api-gateway/simulator",
-            name: "Simulador",
-            description: "Experimente roteamento e proteção de APIs",
+            name: t('menu.componentes.api_gateway.simulator.name'),
+            description: t('menu.componentes.api_gateway.simulator.description'),
           },
         ],
       },
       {
         path: "/componentes/firewall",
-        name: "Firewall",
-        description: "Segurança e controle de tráfego",
+        name: t('menu.componentes.firewall.name'),
+        description: t('menu.componentes.firewall.description'),
         children: [
           {
             path: "/componentes/firewall/simulator",
-            name: "Simulador",
-            description: "Experimente regras de firewall",
+            name: t('menu.componentes.firewall.simulator.name'),
+            description: t('menu.componentes.firewall.simulator.description'),
           },
         ],
       },
       {
         path: "/componentes/polling-webhooks",
-        name: "Polling vs Webhooks",
-        description: "Estratégias de comunicação em tempo real",
+        name: t('menu.componentes.polling_webhooks.name'),
+        description: t('menu.componentes.polling_webhooks.description'),
         status: "new",
-        badges: [{ text: "Novo", color: "bg-blue-500" }],
+        badges: [{ text: t('badges.new'), color: "bg-blue-500" }],
         children: [
           {
             path: "/componentes/polling-webhooks",
-            name: "Teoria e Conceitos",
-            description: "Fundamentos e comparação detalhada",
+            name: t('menu.componentes.polling_webhooks.teoria.name'),
+            description: t('menu.componentes.polling_webhooks.teoria.description'),
           },
           {
             path: "/componentes/polling-webhooks/simulator",
-            name: "Simulador Interativo",
-            description: "Veja a diferença na prática",
+            name: t('menu.componentes.polling_webhooks.simulator.name'),
+            description: t('menu.componentes.polling_webhooks.simulator.description'),
           },
         ],
       },
@@ -278,115 +281,115 @@ const menuItems: MenuItem[] = [
   },
   {
     path: "/principios-design",
-    name: "Princípios de Design",
-    description: "Conceitos essenciais para sistemas robustos",
+    name: t('menu.principios_design.name'),
+    description: t('menu.principios_design.description'),
     children: [
       {
         path: "/principios-design/escalabilidade",
-        name: "Escalabilidade",
-        description: "Crescimento e adaptação do sistema",
+        name: t('menu.principios_design.escalabilidade.name'),
+        description: t('menu.principios_design.escalabilidade.description'),
         children: [
           {
             path: "/principios-design/escalabilidade/horizontal",
-            name: "Horizontal (Scale Out)",
-            description: "Adicionando mais máquinas",
+            name: t('menu.principios_design.escalabilidade.horizontal.name'),
+            description: t('menu.principios_design.escalabilidade.horizontal.description'),
             children: [
               {
                 path: "/principios-design/escalabilidade/horizontal/simulator",
-                name: "Simulador",
-                description: "Experimente escalabilidade horizontal",
+                name: t('menu.principios_design.escalabilidade.horizontal.simulator.name'),
+                description: t('menu.principios_design.escalabilidade.horizontal.simulator.description'),
               },
             ],
           },
           {
             path: "/principios-design/escalabilidade/vertical",
-            name: "Vertical (Scale Up)",
-            description: "Aumentando recursos da máquina",
+            name: t('menu.principios_design.escalabilidade.vertical.name'),
+            description: t('menu.principios_design.escalabilidade.vertical.description'),
             children: [
               {
                 path: "/principios-design/escalabilidade/vertical/simulator",
-                name: "Simulador",
-                description: "Experimente escalabilidade vertical",
+                name: t('menu.principios_design.escalabilidade.vertical.simulator.name'),
+                description: t('menu.principios_design.escalabilidade.vertical.simulator.description'),
               },
             ],
           },
           {
             path: "/principios-design/escalabilidade/latencia",
-            name: "Latência",
-            description: "Medindo e otimizando a latência",
+            name: t('menu.principios_design.escalabilidade.latencia.name'),
+            description: t('menu.principios_design.escalabilidade.latencia.description'),
           },
           {
             path: "/principios-design/escalabilidade/failover",
-            name: "Failover",
-            description: "Recuperação automática de falhas",
+            name: t('menu.principios_design.escalabilidade.failover.name'),
+            description: t('menu.principios_design.escalabilidade.failover.description'),
           },
           {
             path: "/principios-design/escalabilidade/simulator",
-            name: "Simulador Completo",
-            description: "Compare diferentes estratégias de escala",
+            name: t('menu.principios_design.escalabilidade.simulator.name'),
+            description: t('menu.principios_design.escalabilidade.simulator.description'),
           },
         ],
       },
       {
         path: "/principios-design/disponibilidade",
-        name: "Alta Disponibilidade",
-        description: "Mantendo o sistema sempre funcionando",
+        name: t('menu.principios_design.disponibilidade.name'),
+        description: t('menu.principios_design.disponibilidade.description'),
         children: [
           {
             path: "/principios-design/disponibilidade/replicacao",
-            name: "Replicação",
-            description: "Cópias sincronizadas dos dados",
+            name: t('menu.principios_design.disponibilidade.replicacao.name'),
+            description: t('menu.principios_design.disponibilidade.replicacao.description'),
           },
           {
             path: "/principios-design/disponibilidade/failover",
-            name: "Failover",
-            description: "Recuperação automática de falhas",
+            name: t('menu.principios_design.disponibilidade.failover.name'),
+            description: t('menu.principios_design.disponibilidade.failover.description'),
           },
           {
             path: "/principios-design/disponibilidade/simulator",
-            name: "Simulador",
-            description: "Experimente estratégias de disponibilidade",
+            name: t('menu.principios_design.disponibilidade.simulator.name'),
+            description: t('menu.principios_design.disponibilidade.simulator.description'),
           },
         ],
       },
       {
         path: "/principios-design/tolerancia-falhas",
-        name: "Tolerância a Falhas",
-        description: "Lidando com falhas no sistema",
+        name: t('menu.principios_design.tolerancia_falhas.name'),
+        description: t('menu.principios_design.tolerancia_falhas.description'),
         children: [
           {
             path: "/principios-design/tolerancia-falhas/retries",
-            name: "Retries",
-            description: "Tentativas automáticas",
+            name: t('menu.principios_design.tolerancia_falhas.retries.name'),
+            description: t('menu.principios_design.tolerancia_falhas.retries.description'),
             children: [
               {
                 path: "/principios-design/tolerancia-falhas/retries/simulator",
-                name: "Simulador",
-                description: "Experimente diferentes estratégias de retry",
+                name: t('menu.principios_design.tolerancia_falhas.retries.simulator.name'),
+                description: t('menu.principios_design.tolerancia_falhas.retries.simulator.description'),
               },
             ],
           },
           {
             path: "/principios-design/tolerancia-falhas/circuit-breaker",
-            name: "Circuit Breaker",
-            description: "Prevenindo falhas em cascata",
+            name: t('menu.principios_design.tolerancia_falhas.circuit_breaker.name'),
+            description: t('menu.principios_design.tolerancia_falhas.circuit_breaker.description'),
             children: [
               {
                 path: "/principios-design/tolerancia-falhas/circuit-breaker/simulator",
-                name: "Simulador",
-                description: "Veja o circuit breaker em ação",
+                name: t('menu.principios_design.tolerancia_falhas.circuit_breaker.simulator.name'),
+                description: t('menu.principios_design.tolerancia_falhas.circuit_breaker.simulator.description'),
               },
             ],
           },
           {
             path: "/principios-design/tolerancia-falhas/timeout",
-            name: "Timeout",
-            description: "Limitando tempo de espera",
+            name: t('menu.principios_design.tolerancia_falhas.timeout.name'),
+            description: t('menu.principios_design.tolerancia_falhas.timeout.description'),
             children: [
               {
                 path: "/principios-design/tolerancia-falhas/timeout/simulator",
-                name: "Simulador",
-                description: "Experimente diferentes configurações de timeout",
+                name: t('menu.principios_design.tolerancia_falhas.timeout.simulator.name'),
+                description: t('menu.principios_design.tolerancia_falhas.timeout.simulator.description'),
               },
             ],
           },
@@ -394,43 +397,43 @@ const menuItems: MenuItem[] = [
       },
       {
         path: "/principios-design/eventos",
-        name: "Arquitetura Orientada a Eventos",
-        description: "Sistemas baseados em eventos",
+        name: t('menu.principios_design.eventos.name'),
+        description: t('menu.principios_design.eventos.description'),
         children: [
           {
             path: "/principios-design/eventos/simulator",
-            name: "Simulador",
-            description: "Experimente event sourcing e event-driven",
+            name: t('menu.principios_design.eventos.simulator.name'),
+            description: t('menu.principios_design.eventos.simulator.description'),
           },
         ],
       },
       {
         path: "/principios-design/servicos",
-        name: "Arquitetura de Serviços",
-        description: "Monolito vs Microsserviços",
+        name: t('menu.principios_design.servicos.name'),
+        description: t('menu.principios_design.servicos.description'),
       },
       {
         path: "/principios-design/acoplamento",
-        name: "Acoplamento",
-        description: "Acoplamento dinâmico e estático entre serviços",
-        badges: [{ text: "Novo", color: "bg-blue-500" }],
+        name: t('menu.principios_design.acoplamento.name'),
+        description: t('menu.principios_design.acoplamento.description'),
+        badges: [{ text: t('badges.new'), color: "bg-blue-500" }],
       },
       {
         path: "/principios-design/orquestracao-vs-coreografia",
-        name: "Orquestração vs Coreografia",
-        description: "Compare os padrões de orquestração e coreografia",
+        name: t('menu.principios_design.orquestracao_vs_coreografia.name'),
+        description: t('menu.principios_design.orquestracao_vs_coreografia.description'),
         component: OrchestrationVsChoreography,
         status: "new"
       }
     ],
   },
   {
-    name: "Estratégias de Consistência",
-    description: "Como garantir a consistência em sistemas distribuídos",
+    name: t('menu.estrategias_de_consistencia.name'),
+    description: t('menu.estrategias_de_consistencia.description'),
     path: "/estrategias-de-consistencia",
     status: "recommended",
-    prerequisites: ["Princípios de Design"],
-    category: "Avançado",
+    prerequisites: [t('prerequisites.design_principles')],
+    category: t('categories.advanced'),
     icon: (
       <svg
         className="w-6 h-6"
@@ -446,15 +449,15 @@ const menuItems: MenuItem[] = [
         />
       </svg>
     ),
-    skills: ["Consenso", "Timestamps de Lamport", "Consistência eventual", "Sincronização"],
+    skills: [t('skills.consensus'), t('skills.lamport_timestamps'), t('skills.eventual_consistency'), t('skills.synchronization')],
     children: [
       {
-        name: "Sincronização",
-        description: "Coordenação e sincronização em sistemas distribuídos",
+        name: t('menu.estrategias_de_consistencia.sincronizacao.name'),
+        description: t('menu.estrategias_de_consistencia.sincronizacao.description'),
         path: "/estrategias-de-consistencia/sincronizacao",
         status: "recommended",
         prerequisites: [],
-        category: "Avançado",
+        category: t('categories.advanced'),
         icon: (
           <svg
             className="w-6 h-6"
@@ -470,28 +473,28 @@ const menuItems: MenuItem[] = [
             />
           </svg>
         ),
-        skills: ["Exclusão Mútua", "Deadlock Prevention", "Sincronização Distribuída"],
+        skills: [t('skills.mutual_exclusion'), t('skills.deadlock_prevention'), t('skills.distributed_synchronization')],
         children: [
           {
-            name: "Fundamentos",
+            name: t('menu.estrategias_de_consistencia.sincronizacao.fundamentos.name'),
             path: "/estrategias-de-consistencia/sincronizacao/fundamentos",
-            description: "Conceitos básicos de sincronização usando o Jantar dos Filósofos",
+            description: t('menu.estrategias_de_consistencia.sincronizacao.fundamentos.description'),
             status: "recommended",
-            skills: ["Exclusão Mútua", "Condições de Corrida", "Recursos Compartilhados"]
+            skills: [t('skills.mutual_exclusion'), t('skills.race_conditions'), t('skills.shared_resources')]
           },
           {
-            name: "Deadlocks",
+            name: t('menu.estrategias_de_consistencia.sincronizacao.deadlocks.name'),
             path: "/estrategias-de-consistencia/sincronizacao/deadlocks",
-            description: "Prevenção e detecção de deadlocks no contexto dos Filósofos",
+            description: t('menu.estrategias_de_consistencia.sincronizacao.deadlocks.description'),
             status: "recommended",
-            skills: ["Detecção de Deadlock", "Prevenção", "Recuperação"]
+            skills: [t('skills.deadlock_detection'), t('skills.prevention'), t('skills.recovery')]
           },
           {
-            name: "Algoritmos",
+            name: t('menu.estrategias_de_consistencia.sincronizacao.algoritmos.name'),
             path: "/estrategias-de-consistencia/sincronizacao/algoritmos",
-            description: "Algoritmos distribuídos para coordenação",
+            description: t('menu.estrategias_de_consistencia.sincronizacao.algoritmos.description'),
             status: "recommended",
-            skills: ["Algoritmo do Padeiro", "Token Ring", "Ricart-Agrawala"]
+            skills: [t('skills.bakery_algorithm'), t('skills.token_ring'), t('skills.ricart_agrawala')]
           },
           // {
           //   name: "Simulador dos Filósofos",
@@ -503,12 +506,12 @@ const menuItems: MenuItem[] = [
         ]
       },
       {
-        name: "Two Phase Commit",
-        description: "Protocolo de consenso para transações distribuídas",
+        name: t('menu.estrategias_de_consistencia.two_phase_commit.name'),
+        description: t('menu.estrategias_de_consistencia.two_phase_commit.description'),
         path: "/estrategias-de-consistencia/two-phase-commit",
         status: "recommended",
         prerequisites: [],
-        category: "Avançado",
+        category: t('categories.advanced'),
         icon: (
           <svg
             className="w-6 h-6"
@@ -524,37 +527,36 @@ const menuItems: MenuItem[] = [
             />
           </svg>
         ),
-        skills: ["2PC", "Transações Distribuídas", "Consenso Atômico"],
+        skills: [t('skills.two_phase_commit'), t('skills.distributed_transactions'), t('skills.atomic_consensus')],
         children: [
           {
-            name: "Simulador",
+            name: t('menu.estrategias_de_consistencia.two_phase_commit.simulador.name'),
             path: "/estrategias-de-consistencia/two-phase-commit/simulador",
-            description: "Simulação interativa do protocolo Two Phase Commit",
+            description: t('menu.estrategias_de_consistencia.two_phase_commit.simulador.description'),
           },
         ],
       },
       {
-        name: "Estratégia de Consenso",
+        name: t('menu.estrategias_de_consistencia.consenso.name'),
         path: "/estrategias-de-consistencia/consenso",
-        description: "Protocolos e mecanismos para garantir acordo entre nós",
+        description: t('menu.estrategias_de_consistencia.consenso.description'),
         children: [
           {
-            name: "Simulador",
+            name: t('menu.estrategias_de_consistencia.consenso.simulador.name'),
             path: "/estrategias-de-consistencia/consenso/simulador",
-            description: "Simulação interativa dos protocolos de consenso",
+            description: t('menu.estrategias_de_consistencia.consenso.simulador.description'),
           },
         ],
       },
       {
-        name: "Relógios Lógicos de Lamport",
+        name: t('menu.estrategias_de_consistencia.lamport_timestamps.name'),
         path: "/estrategias-de-consistencia/lamport-timestamps",
-        description: "Ordenação de eventos em sistemas distribuídos",
+        description: t('menu.estrategias_de_consistencia.lamport_timestamps.description'),
         children: [
           {
-            name: "Simulador",
+            name: t('menu.estrategias_de_consistencia.lamport_timestamps.simulador.name'),
             path: "/estrategias-de-consistencia/lamport-timestamps/simulador",
-            description:
-              "Visualize a ordenação de eventos com timestamps de Lamport",
+            description: t('menu.estrategias_de_consistencia.lamport_timestamps.simulador.description'),
           },
         ],
       },
@@ -562,9 +564,9 @@ const menuItems: MenuItem[] = [
   },
   {
     path: "/monitoramento-e-manutencao",
-    name: "Monitoramento e Manutenção",
-    description: "Monitoramento e manutenção de sistemas distribuídos",
-    badges: [{ text: "Novo", color: "bg-blue-500" }],
+    name: t('menu.monitoramento_e_manutencao.name'),
+    description: t('menu.monitoramento_e_manutencao.description'),
+    badges: [{ text: t('badges.new'), color: "bg-blue-500" }],
     icon: (
       <svg
         className="w-6 h-6"
@@ -583,25 +585,25 @@ const menuItems: MenuItem[] = [
     children: [
       {
         path: "/monitoramento-e-manutencao/metricas",
-        name: "Métricas e KPIs",
-        description: "Indicadores essenciais para monitoramento",
+        name: t('menu.monitoramento_e_manutencao.metricas.name'),
+        description: t('menu.monitoramento_e_manutencao.metricas.description'),
       },
       {
         path: "/monitoramento-e-manutencao/logs",
-        name: "Logs e Tracing",
-        description: "Rastreamento e análise de logs distribuídos",
+        name: t('menu.monitoramento_e_manutencao.logs.name'),
+        description: t('menu.monitoramento_e_manutencao.logs.description'),
         children: [
           {
-            name: "Simulador de Logs",
-            description: "Experimente com bons e maus exemplos de logs",
+            name: t('menu.monitoramento_e_manutencao.logs.simulador.name'),
+            description: t('menu.monitoramento_e_manutencao.logs.simulador.description'),
             path: "/monitoramento-e-manutencao/logs/simulador",
             component: LogSimulator,
             status: "new"
           },
           {
             path: "/monitoramento-e-manutencao/logs/tracing",
-            name: "Tracing Simulator",
-            description: "Experimente o rastreamento de eventos",
+            name: t('menu.monitoramento_e_manutencao.logs.tracing.name'),
+            description: t('menu.monitoramento_e_manutencao.logs.tracing.description'),
             component: TracingSimulator,
             status: "new"
           }
@@ -609,26 +611,26 @@ const menuItems: MenuItem[] = [
       },
       {
         path: "/monitoramento-e-manutencao/alertas",
-        name: "Alertas e Notificações",
-        description: "Configuração e gestão de alertas",
+        name: t('menu.monitoramento_e_manutencao.alertas.name'),
+        description: t('menu.monitoramento_e_manutencao.alertas.description'),
       },
       {
         path: "/monitoramento-e-manutencao/performance",
-        name: "Análise de Performance",
-        description: "Identificação e resolução de gargalos",
+        name: t('menu.monitoramento_e_manutencao.performance.name'),
+        description: t('menu.monitoramento_e_manutencao.performance.description'),
       },
       {
         path: "/monitoramento-e-manutencao/health-checks",
-        name: "Health Checks",
-        description: "Monitoramento de saúde dos serviços",
+        name: t('menu.monitoramento_e_manutencao.health_checks.name'),
+        description: t('menu.monitoramento_e_manutencao.health_checks.description'),
       },
     ],
   },
   {
     path: "/casos-reais",
-    name: "Casos Reais",
-    description: "Exemplos reais de system design de grandes empresas",
-    badges: [{ text: "Novo", color: "bg-blue-500" }],
+    name: t('menu.casos_reais.name'),
+    description: t('menu.casos_reais.description'),
+    badges: [{ text: t('badges.new'), color: "bg-blue-500" }],
     icon: (
       <svg
         className="w-6 h-6"
@@ -647,94 +649,93 @@ const menuItems: MenuItem[] = [
     children: [
       {
         path: "/casos-reais/youtube",
-        name: "YouTube",
-        description: "Como o YouTube processa e distribui vídeos globalmente",
+        name: t('menu.casos_reais.youtube.name'),
+        description: t('menu.casos_reais.youtube.description'),
       },
       {
         path: "/casos-reais/spotify",
-        name: "Spotify",
-        description: "Arquitetura de streaming de música em tempo real",
+        name: t('menu.casos_reais.spotify.name'),
+        description: t('menu.casos_reais.spotify.description'),
       },
       {
         path: "/casos-reais/bitly",
-        name: "Bit.ly",
-        description: "Design de um serviço de encurtamento de URLs em escala"
+        name: t('menu.casos_reais.bitly.name'),
+        description: t('menu.casos_reais.bitly.description')
       },
       {
         path: "/casos-reais/whatsapp",
-        name: "WhatsApp",
-        description: "Sistema de mensagens em tempo real"
+        name: t('menu.casos_reais.whatsapp.name'),
+        description: t('menu.casos_reais.whatsapp.description')
       },
       {
         path: "/casos-reais/netflix",
-        name: "Netflix",
-        description: "Streaming de vídeo e recomendação de conteúdo"
+        name: t('menu.casos_reais.netflix.name'),
+        description: t('menu.casos_reais.netflix.description')
       },
       {
         path: "/casos-reais/uber",
-        name: "Uber",
-        description: "Sistema de geolocalização e matching em tempo real",
+        name: t('menu.casos_reais.uber.name'),
+        description: t('menu.casos_reais.uber.description'),
       },
     ],
   },
   {
     path: "/seguranca",
-    name: "Segurança",
-    description: "Proteção e segurança em sistemas distribuídos",
+    name: t('menu.seguranca.name'),
+    description: t('menu.seguranca.description'),
     children: [
       {
         path: "/seguranca/autenticacao",
-        name: "Autenticação",
-        description: "Verificação de identidade em sistemas distribuídos",
+        name: t('menu.seguranca.autenticacao.name'),
+        description: t('menu.seguranca.autenticacao.description'),
       },
       {
         path: "/seguranca/autorizacao",
-        name: "Autorização",
-        description: "Controle de acesso e permissões",
+        name: t('menu.seguranca.autorizacao.name'),
+        description: t('menu.seguranca.autorizacao.description'),
       },
       {
         path: "/seguranca/criptografia",
-        name: "Criptografia",
-        description: "Proteção de dados em trânsito e em repouso",
+        name: t('menu.seguranca.criptografia.name'),
+        description: t('menu.seguranca.criptografia.description'),
         children: [
           {
             path: "/seguranca/criptografia/simulador",
-            name: "Simulador",
-            description:
-              "Experimente diferentes tipos de criptografia na prática",
+            name: t('menu.seguranca.criptografia.simulador.name'),
+            description: t('menu.seguranca.criptografia.simulador.description'),
           },
         ],
       },
       {
         path: "/seguranca/tokens",
-        name: "Tokens e JWT",
-        description: "Gerenciamento de sessões e tokens de acesso",
+        name: t('menu.seguranca.tokens.name'),
+        description: t('menu.seguranca.tokens.description'),
         children: [
           {
             path: "/seguranca/tokens/simulador",
-            name: "Simulador",
-            description: "Experimente a geração e validação de JWTs",
+            name: t('menu.seguranca.tokens.simulador.name'),
+            description: t('menu.seguranca.tokens.simulador.description'),
           },
         ],
       },
       {
         path: "/seguranca/ssl-tls",
-        name: "SSL/TLS",
-        description: "Comunicação segura entre sistemas",
+        name: t('menu.seguranca.ssl_tls.name'),
+        description: t('menu.seguranca.ssl_tls.description'),
       },
       {
         path: "/seguranca/ataques",
-        name: "Ataques Comuns",
-        description: "Prevenção contra ataques em sistemas distribuídos",
+        name: t('menu.seguranca.ataques.name'),
+        description: t('menu.seguranca.ataques.description'),
       },
     ],
   },
   {
     path: "/editor",
-    name: "Editor de Sistemas",
-    description: "Crie e simule sistemas distribuídos",
+    name: t('menu.editor.name'),
+    description: t('menu.editor.description'),
     status: "new",
-    badges: [{ text: "Novo", color: "bg-blue-500" }],
+    badges: [{ text: t('badges.new'), color: "bg-blue-500" }],
     icon: (
       <svg
         className="w-6 h-6 text-blue-400"
@@ -758,6 +759,8 @@ export default function App() {
   const [isMobile, setIsMobile] = useState(false);
   const { user, signOut } = useAuth();
   const { isCompleted, progress, updateTrigger } = useContentProgress();
+  const { t } = useTranslation();
+  const menuItems = createMenuItems(t);
 
   // Make menuItems accessible to other components via window object
   // This helps avoid circular dependencies when components need to access menuItems
@@ -783,6 +786,10 @@ export default function App() {
     const [isExpanded, setIsExpanded] = useState(false);
     const { pathname } = useLocation();
     const { isCompleted, updateTrigger } = useContentProgress();
+    const { t } = useTranslation();
+    const makeMenuKey = (path: string, field: 'name' | 'description') => `menu.${path.replace(/^\//, '').replace(/\//g, '.')}.${field}`;
+    const displayName = t(makeMenuKey(item.path, 'name'), { defaultValue: item.name });
+    const displayDescription = t(makeMenuKey(item.path, 'description'), { defaultValue: item.description });
     
     // Check if current path matches this item or any of its children
     const isActive =
@@ -805,13 +812,20 @@ export default function App() {
       // Empty dependency on updateTrigger causes re-render
     }, [updateTrigger]);
 
+    const translatedBadge = (badgeText?: string) => {
+      if (!badgeText) return '';
+      if (badgeText.toLowerCase() === 'grátis' || badgeText.toLowerCase() === 'free') return t('badges.free');
+      if (badgeText.toLowerCase() === 'novo' || badgeText.toLowerCase() === 'new') return t('badges.new');
+      return badgeText;
+    };
+
     return (
       <div className="text-white">
         <div className="flex items-center gap-1">
           {item.disabled ? (
             <div className="flex-1 flex flex-col p-3 rounded-lg text-zinc-600 relative cursor-not-allowed">
               <div className="absolute -top-2 right-2 bg-zinc-800 text-white text-xs px-2 py-0.5 rounded-full">
-                Em breve
+                {t('status.coming_soon')}
               </div>
               <div className="flex items-center">
                 <span className="font-medium mr-2">{item.name}</span>
@@ -851,7 +865,7 @@ export default function App() {
               }}
             >
               <div className="flex items-center">
-                <span className="font-medium mr-2">{item.name}</span>
+                <span className="font-medium mr-2">{displayName}</span>
                 {isCompleted(item.path) && (
                   <span className="flex-shrink-0 bg-green-500 rounded-full w-5 h-5 flex items-center justify-center text-white">
                     <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
@@ -860,7 +874,7 @@ export default function App() {
                   </span>
                 )}
               </div>
-              <span className="text-sm opacity-75">{item.description}</span>
+              <span className="text-sm opacity-75">{displayDescription}</span>
               {item.badges && (
                 <div className="absolute -top-2 right-2 flex gap-1">
                   {item.badges.map((badge, index) => (
@@ -868,7 +882,7 @@ export default function App() {
                       key={index}
                       className={`text-xs px-2 py-0.5 rounded-full text-white ${badge.color}`}
                     >
-                      {badge.text}
+                      {translatedBadge(badge.text)}
                     </span>
                   ))}
                 </div>
@@ -883,7 +897,7 @@ export default function App() {
                 ReactGA.event({
                   category: "User",
                   action: "Clicked on Menu Item",
-                  label: item.name,
+                  label: displayName,
                 });
               }}
               className={`p-2 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-transform ${
@@ -946,20 +960,23 @@ export default function App() {
               <Link to="/" className="text-xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
                 <img src="/logo.png" alt="Logo" className="h-12" />
               </Link>
-              <button
-                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="p-2 text-zinc-300 hover:text-white rounded-lg hover:bg-zinc-800/80"
-              >
-                {isSidebarOpen ? (
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                ) : (
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                  </svg>
-                )}
-              </button>
+              <div className="flex items-center gap-2">
+                <LanguageSwitcher />
+                <button
+                  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                  className="p-2 text-zinc-300 hover:text-white rounded-lg hover:bg-zinc-800/80"
+                >
+                  {isSidebarOpen ? (
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  ) : (
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -983,6 +1000,9 @@ export default function App() {
                     </Link>
                   </div>
                 )}
+                <div className="flex justify-end mb-4">
+                  <LanguageSwitcher />
+                </div>
 
                 <nav className="space-y-1">
                   {menuItems.map((item) => (
@@ -1999,6 +2019,7 @@ export default function App() {
           </Routes>
         </main>
       </div>
+      <LanguageDetectionDialog />
     </div>
   );
 }

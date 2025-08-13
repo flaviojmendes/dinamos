@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface Message {
   id: number;
@@ -27,6 +28,7 @@ interface Metrics {
 }
 
 export default function Backpressure() {
+  const { t } = useTranslation();
   const [isRunning, setIsRunning] = useState(false);
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   
@@ -149,12 +151,12 @@ export default function Backpressure() {
     <div className="p-4">
       <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-xl font-semibold">Backpressure</h1>
+          <h1 className="text-xl font-semibold">{t('simulators.backpressure.title')}</h1>
           <button
             onClick={() => setIsConfigOpen(!isConfigOpen)}
             className="px-3 py-1 bg-zinc-800 rounded-md hover:bg-zinc-700"
           >
-            Configurações
+            {t('simulators.backpressure.buttons.settings')}
           </button>
         </div>
 
@@ -236,19 +238,19 @@ export default function Backpressure() {
               isRunning ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
             }`}
           >
-            {isRunning ? 'Parar' : 'Iniciar'}
+            {isRunning ? t('simulators.backpressure.buttons.stop') : t('simulators.backpressure.buttons.start')}
           </button>
           <button
             onClick={resetSimulation}
             className="px-4 py-2 bg-zinc-700 rounded-md hover:bg-zinc-600"
           >
-            Resetar
+            {t('simulators.backpressure.buttons.reset')}
           </button>
         </div>
 
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div className="bg-zinc-800 p-4 rounded-lg">
-            <div className="text-sm text-zinc-400 mb-2">Backpressure</div>
+            <div className="text-sm text-zinc-400 mb-2">{t('simulators.backpressure.title')}</div>
             <div className="h-2 bg-zinc-700 rounded-full overflow-hidden">
               <div
                 className={`h-full transition-all duration-300 ${
@@ -264,12 +266,12 @@ export default function Backpressure() {
             </div>
           </div>
           <div className="bg-zinc-800 p-4 rounded-lg">
-            <div className="text-sm text-zinc-400">Status do Produtor</div>
+            <div className="text-sm text-zinc-400">{t('simulators.backpressure.producer_status.title')}</div>
             <div className="font-medium">
               {producers[0].isThrottled ? (
-                <span className="text-yellow-400">Throttled</span>
+                <span className="text-yellow-400">{t('simulators.backpressure.producer_status.throttled')}</span>
               ) : (
-                <span className="text-green-400">Normal</span>
+                <span className="text-green-400">{t('simulators.backpressure.producer_status.normal')}</span>
               )}
             </div>
           </div>
@@ -277,21 +279,21 @@ export default function Backpressure() {
 
         <div className="grid grid-cols-3 gap-4 mb-6">
           <div className="bg-zinc-800 p-4 rounded-lg">
-            <div className="text-sm text-zinc-400">Mensagens Produzidas</div>
+            <div className="text-sm text-zinc-400">{t('simulators.backpressure.labels.produced')}</div>
             <div className="font-medium">{metrics.producedTotal}</div>
           </div>
           <div className="bg-zinc-800 p-4 rounded-lg">
-            <div className="text-sm text-zinc-400">Mensagens Processadas</div>
+            <div className="text-sm text-zinc-400">{t('simulators.backpressure.labels.processed')}</div>
             <div className="font-medium">{metrics.processedTotal}</div>
           </div>
           <div className="bg-zinc-800 p-4 rounded-lg">
-            <div className="text-sm text-zinc-400">Mensagens Descartadas</div>
+            <div className="text-sm text-zinc-400">{t('simulators.backpressure.labels.dropped')}</div>
             <div className="font-medium">{metrics.droppedTotal}</div>
           </div>
         </div>
 
         <div className="bg-zinc-800 p-4 rounded-lg">
-          <h2 className="text-lg font-medium mb-3">Últimas Mensagens</h2>
+          <h2 className="text-lg font-medium mb-3">{t('simulators.backpressure.labels.latest')}</h2>
           <div className="space-y-2">
             {messages.slice(-5).map(message => (
               <div

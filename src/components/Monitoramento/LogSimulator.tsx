@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface Log {
   timestamp: string;
@@ -115,6 +116,9 @@ const exemplosLogs = {
 };
 
 export default function LogSimulator() {
+  const { t } = useTranslation();
+  const base = 'monitoring_maintenance.logs_simulator';
+
   const [logs, setLogs] = useState<Log[]>([]);
   const [config, setConfig] = useState<SimulacaoConfig>(configuracaoPadrao);
   const [mostrarConfiguracoes, setMostrarConfiguracoes] = useState(false);
@@ -155,7 +159,7 @@ export default function LogSimulator() {
       <div className="prose prose-invert prose-lg max-w-none mb-8">
         <div className="flex items-center justify-between">
           <h1 className="text-4xl font-bold mb-4 text-blue-400">
-            Simulador de Logs
+            {t(`${base}.title`)}
           </h1>
           <div className="flex gap-4">
             <button
@@ -166,7 +170,7 @@ export default function LogSimulator() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
-              Configurações
+              {t(`${base}.actions.settings`)}
             </button>
             <button
               onClick={reiniciarSimulador}
@@ -175,18 +179,16 @@ export default function LogSimulator() {
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
-              Reiniciar
+              {t(`${base}.actions.reset`)}
             </button>
           </div>
         </div>
         <p className="text-xl text-zinc-300">
-          Explore diferentes práticas de logging em sistemas distribuídos. 
-          Experimente com bons e maus exemplos de logs e veja como eles afetam 
-          a capacidade de monitoramento e debugging.
+          {t(`${base}.intro`)}
         </p>
       </div>
 
-      {/* Painel de Configurações */}
+      {/* Settings Panel */}
       <AnimatePresence>
         {mostrarConfiguracoes && (
           <motion.div
@@ -196,7 +198,7 @@ export default function LogSimulator() {
             transition={{ duration: 0.2 }}
             className="bg-zinc-900 p-6 rounded-lg mb-8"
           >
-            <h2 className="text-xl font-bold text-zinc-200 mb-6">Configurações da Simulação</h2>
+            <h2 className="text-xl font-bold text-zinc-200 mb-6">{t(`${base}.settings_title`)}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="flex items-center gap-2 text-zinc-300">
@@ -206,12 +208,12 @@ export default function LogSimulator() {
                     onChange={(e) => setConfig(prev => ({ ...prev, autoAvancar: e.target.checked }))}
                     className="rounded border-zinc-600"
                   />
-                  Avançar automaticamente
+                  {t(`${base}.settings.auto_advance`)}
                 </label>
               </div>
               <div>
                 <label className="block text-sm font-medium text-zinc-400 mb-2">
-                  Delay entre Eventos: {config.delayEventos}ms
+                  {t(`${base}.settings.delay_label`, { ms: config.delayEventos })}
                 </label>
                 <input
                   type="range"
@@ -228,64 +230,46 @@ export default function LogSimulator() {
         )}
       </AnimatePresence>
 
-      {/* Controles de Simulação */}
+      {/* Simulation Controls */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-green-400">Logs de Informação</h3>
+          <h3 className="text-lg font-semibold text-green-400">{t(`${base}.controls.info_title`)}</h3>
           <div className="grid grid-cols-2 gap-4">
-            <button
-              onClick={() => adicionarLog(exemplosLogs.infoBom)}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-            >
-              Log INFO Bom
+            <button onClick={() => adicionarLog(exemplosLogs.infoBom)} className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+              {t(`${base}.controls.add_good_info`)}
             </button>
-            <button
-              onClick={() => adicionarLog(exemplosLogs.infoRuim)}
-              className="px-4 py-2 bg-green-400 text-white rounded-lg hover:bg-green-500 transition-colors"
-            >
-              Log INFO Ruim
+            <button onClick={() => adicionarLog(exemplosLogs.infoRuim)} className="px-4 py-2 bg-green-400 text-white rounded-lg hover:bg-green-500 transition-colors">
+              {t(`${base}.controls.add_bad_info`)}
             </button>
           </div>
         </div>
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-yellow-400">Logs de Aviso</h3>
+          <h3 className="text-lg font-semibold text-yellow-400">{t(`${base}.controls.warn_title`)}</h3>
           <div className="grid grid-cols-2 gap-4">
-            <button
-              onClick={() => adicionarLog(exemplosLogs.warnBom)}
-              className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors"
-            >
-              Log WARN Bom
+            <button onClick={() => adicionarLog(exemplosLogs.warnBom)} className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
+              {t(`${base}.controls.add_good_warn`)}
             </button>
-            <button
-              onClick={() => adicionarLog(exemplosLogs.warnRuim)}
-              className="px-4 py-2 bg-yellow-400 text-white rounded-lg hover:bg-yellow-500 transition-colors"
-            >
-              Log WARN Ruim
+            <button onClick={() => adicionarLog(exemplosLogs.warnRuim)} className="px-4 py-2 bg-yellow-400 text-white rounded-lg hover:bg-yellow-500 transition-colors">
+              {t(`${base}.controls.add_bad_warn`)}
             </button>
           </div>
         </div>
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-red-400">Logs de Erro</h3>
+          <h3 className="text-lg font-semibold text-red-400">{t(`${base}.controls.error_title`)}</h3>
           <div className="grid grid-cols-2 gap-4">
-            <button
-              onClick={() => adicionarLog(exemplosLogs.erroBom)}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-            >
-              Log ERROR Bom
+            <button onClick={() => adicionarLog(exemplosLogs.erroBom)} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+              {t(`${base}.controls.add_good_error`)}
             </button>
-            <button
-              onClick={() => adicionarLog(exemplosLogs.erroRuim)}
-              className="px-4 py-2 bg-red-400 text-white rounded-lg hover:bg-red-500 transition-colors"
-            >
-              Log ERROR Ruim
+            <button onClick={() => adicionarLog(exemplosLogs.erroRuim)} className="px-4 py-2 bg-red-400 text-white rounded-lg hover:bg-red-500 transition-colors">
+              {t(`${base}.controls.add_bad_error`)}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Visualizador de Logs */}
+      {/* Log Viewer */}
       <div className="bg-zinc-900 rounded-lg p-6">
-        <h2 className="text-xl font-bold text-zinc-200 mb-4">Visualizador de Logs</h2>
+        <h2 className="text-xl font-bold text-zinc-200 mb-4">{t(`${base}.viewer_title`)}</h2>
         <div className="bg-black p-4 rounded-lg h-[400px] overflow-y-auto font-mono text-sm">
           {logs.map((log, index) => {
             const isGood = Boolean(
@@ -302,46 +286,34 @@ export default function LogSimulator() {
                   <span className="font-bold">{log.nivel}</span>
                   <span className="text-xs opacity-75">{log.timestamp}</span>
                   {isGood ? (
-                    <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded">Bom</span>
+                    <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded">{t(`${base}.badges.good`)}</span>
                   ) : (
-                    <span className="text-xs bg-red-900 text-red-300 px-2 py-0.5 rounded">Ruim</span>
+                    <span className="text-xs bg-red-900 text-red-300 px-2 py-0.5 rounded">{t(`${base}.badges.bad`)}</span>
                   )}
                 </div>
-                <pre className="whitespace-pre-wrap">
-                  {JSON.stringify(log, null, 2)}
-                </pre>
+                <pre className="whitespace-pre-wrap">{JSON.stringify(log, null, 2)}</pre>
               </div>
             );
           })}
         </div>
       </div>
 
-      {/* Boas Práticas */}
+      {/* Best/Bad Practices */}
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="bg-zinc-900 p-6 rounded-lg">
-          <h2 className="text-xl font-bold text-zinc-200 mb-4">Boas Práticas</h2>
+          <h2 className="text-xl font-bold text-zinc-200 mb-4">{t(`${base}.best_practices_title`)}</h2>
           <ul className="space-y-2 text-zinc-300">
-            <li>• Use logs estruturados (formato JSON)</li>
-            <li>• Inclua IDs de correlação (traceId, spanId)</li>
-            <li>• Adicione informações contextuais</li>
-            <li>• Use níveis de log apropriados</li>
-            <li>• Inclua timestamps</li>
-            <li>• Identifique o serviço/componente</li>
-            <li>• Inclua metadados relevantes</li>
-            <li>• Mantenha formato consistente</li>
+            {(t(`${base}.best_practices_items`, { returnObjects: true }) as string[]).map((item, idx) => (
+              <li key={idx}>• {item}</li>
+            ))}
           </ul>
         </div>
         <div className="bg-zinc-900 p-6 rounded-lg">
-          <h2 className="text-xl font-bold text-zinc-200 mb-4">Más Práticas</h2>
+          <h2 className="text-xl font-bold text-zinc-200 mb-4">{t(`${base}.bad_practices_title`)}</h2>
           <ul className="space-y-2 text-zinc-300">
-            <li>• Logar informações sensíveis</li>
-            <li>• Usar formatos inconsistentes</li>
-            <li>• Logar sem contexto</li>
-            <li>• Usar níveis de log inadequados</li>
-            <li>• Logar informações excessivas</li>
-            <li>• Usar texto não estruturado</li>
-            <li>• Logar sem timestamps</li>
-            <li>• Misturar diferentes padrões</li>
+            {(t(`${base}.bad_practices_items`, { returnObjects: true }) as string[]).map((item, idx) => (
+              <li key={idx}>• {item}</li>
+            ))}
           </ul>
         </div>
       </div>

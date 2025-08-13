@@ -1,8 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function Retries() {
+  const { t } = useTranslation();
   return (
     <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
       <div className="prose prose-invert prose-lg max-w-none mb-12">
@@ -12,7 +14,7 @@ export default function Retries() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          Retries (Tentativas)
+          {t('design_principles.retries.title')}
         </motion.h1>
         <motion.p
           initial={{ opacity: 0, y: -10 }}
@@ -20,8 +22,7 @@ export default function Retries() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-xl text-zinc-300"
         >
-          Uma estratégia fundamental para lidar com falhas temporárias em sistemas distribuídos, 
-          permitindo que operações falhas sejam automaticamente repetidas.
+          {t('design_principles.retries.intro')}
         </motion.p>
       </div>
 
@@ -35,27 +36,22 @@ export default function Retries() {
         >
           <div className="bg-zinc-900 rounded-lg p-6">
             <h2 className="text-2xl font-bold text-blue-400 mb-4">
-              Como Funciona
+              {t('design_principles.retries.how_it_works.title')}
             </h2>
             <p className="text-zinc-300 mb-6">
-              Imagine que você está enviando uma mensagem para um amigo. Às vezes, a mensagem não chega 
-              de primeira por causa de problemas na rede. O que você faz? Tenta enviar de novo, certo? 
-              É exatamente isso que o "Retry" faz em sistemas computacionais.
+              {t('design_principles.retries.how_it_works.text')}
             </p>
             <div className="bg-zinc-800 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-zinc-200 mb-2">Exemplo do Mundo Real</h3>
+              <h3 className="text-lg font-semibold text-zinc-200 mb-2">{t('design_principles.retries.real_world_example.title')}</h3>
               <p className="text-zinc-400">
-                Pense em um aplicativo de compras online. Quando você clica em "Comprar", o app precisa 
-                se comunicar com um servidor para confirmar o pedido. Se a conexão com o servidor falhar 
-                momentaneamente, o app pode tentar enviar a requisição novamente algumas vezes antes de 
-                mostrar uma mensagem de erro.
+                {t('design_principles.retries.real_world_example.text')}
               </p>
             </div>
           </div>
 
           <div className="bg-zinc-900 rounded-lg p-6">
             <h2 className="text-2xl font-bold text-blue-400 mb-4">
-              Benefícios
+              {t('design_principles.retries.benefits.title')}
             </h2>
             <ul className="space-y-4">
               <motion.li 
@@ -68,8 +64,8 @@ export default function Retries() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
-                  <h3 className="font-medium text-zinc-200">Maior Resiliência</h3>
-                  <p className="text-zinc-400">Sistemas podem se recuperar automaticamente de falhas temporárias</p>
+                  <h3 className="font-medium text-zinc-200">{t('design_principles.retries.benefits.items.resilience.title')}</h3>
+                  <p className="text-zinc-400">{t('design_principles.retries.benefits.items.resilience.desc')}</p>
                 </div>
               </motion.li>
               <motion.li 
@@ -82,8 +78,8 @@ export default function Retries() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
-                  <h3 className="font-medium text-zinc-200">Melhor Experiência</h3>
-                  <p className="text-zinc-400">Usuários não precisam repetir ações manualmente em caso de falhas</p>
+                  <h3 className="font-medium text-zinc-200">{t('design_principles.retries.benefits.items.ux.title')}</h3>
+                  <p className="text-zinc-400">{t('design_principles.retries.benefits.items.ux.desc')}</p>
                 </div>
               </motion.li>
               <motion.li 
@@ -96,8 +92,8 @@ export default function Retries() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
-                  <h3 className="font-medium text-zinc-200">Confiabilidade</h3>
-                  <p className="text-zinc-400">Aumenta a taxa de sucesso das operações em redes instáveis</p>
+                  <h3 className="font-medium text-zinc-200">{t('design_principles.retries.benefits.items.reliability.title')}</h3>
+                  <p className="text-zinc-400">{t('design_principles.retries.benefits.items.reliability.desc')}</p>
                 </div>
               </motion.li>
             </ul>
@@ -113,28 +109,25 @@ export default function Retries() {
         >
           <div className="bg-zinc-900 rounded-lg p-6">
             <h2 className="text-2xl font-bold text-blue-400 mb-4">
-              Melhores Práticas
+              {t('design_principles.retries.best_practices.title')}
             </h2>
             <div className="space-y-4">
               <div className="bg-zinc-800 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-zinc-200 mb-2">Backoff Exponencial</h3>
+                <h3 className="text-lg font-semibold text-zinc-200 mb-2">{t('design_principles.retries.best_practices.items.backoff.title')}</h3>
                 <p className="text-zinc-400">
-                  Aumentar gradualmente o intervalo entre as tentativas para evitar sobrecarga do sistema. 
-                  Por exemplo: esperar 1s, depois 2s, 4s, 8s, etc.
+                  {t('design_principles.retries.best_practices.items.backoff.desc')}
                 </p>
               </div>
               <div className="bg-zinc-800 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-zinc-200 mb-2">Limite de Tentativas</h3>
+                <h3 className="text-lg font-semibold text-zinc-200 mb-2">{t('design_principles.retries.best_practices.items.limit.title')}</h3>
                 <p className="text-zinc-400">
-                  Definir um número máximo de tentativas para evitar loops infinitos e falhar rapidamente 
-                  quando necessário.
+                  {t('design_principles.retries.best_practices.items.limit.desc')}
                 </p>
               </div>
               <div className="bg-zinc-800 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-zinc-200 mb-2">Idempotência</h3>
+                <h3 className="text-lg font-semibold text-zinc-200 mb-2">{t('design_principles.retries.best_practices.items.idempotency.title')}</h3>
                 <p className="text-zinc-400">
-                  Garantir que múltiplas tentativas da mesma operação não causem efeitos colaterais 
-                  indesejados.
+                  {t('design_principles.retries.best_practices.items.idempotency.desc')}
                 </p>
               </div>
             </div>
@@ -142,7 +135,7 @@ export default function Retries() {
 
           <div className="bg-zinc-900 rounded-lg p-6">
             <h2 className="text-2xl font-bold text-blue-400 mb-4">
-              Considerações Importantes
+              {t('design_principles.retries.considerations.title')}
             </h2>
             <ul className="space-y-4">
               <motion.li 
@@ -155,8 +148,8 @@ export default function Retries() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
                 <div>
-                  <h3 className="font-medium text-zinc-200">Tipos de Falhas</h3>
-                  <p className="text-zinc-400">Nem todas as falhas devem ser retentadas. Erros de validação ou autenticação, por exemplo, não se beneficiam de retentativas.</p>
+                  <h3 className="font-medium text-zinc-200">{t('design_principles.retries.considerations.items.failure_types.title')}</h3>
+                  <p className="text-zinc-400">{t('design_principles.retries.considerations.items.failure_types.desc')}</p>
                 </div>
               </motion.li>
               <motion.li 
@@ -169,8 +162,8 @@ export default function Retries() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
                 <div>
-                  <h3 className="font-medium text-zinc-200">Impacto no Sistema</h3>
-                  <p className="text-zinc-400">Muitas retentativas simultâneas podem sobrecarregar o sistema. Use circuit breakers em conjunto quando necessário.</p>
+                  <h3 className="font-medium text-zinc-200">{t('design_principles.retries.considerations.items.impact.title')}</h3>
+                  <p className="text-zinc-400">{t('design_principles.retries.considerations.items.impact.desc')}</p>
                 </div>
               </motion.li>
             </ul>
@@ -192,7 +185,7 @@ export default function Retries() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          Explorar Simulador de Retries
+          {t('design_principles.retries.cta_simulator')}
         </Link>
       </motion.div>
     </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface Request {
   id: number;
@@ -68,6 +69,7 @@ const services: Service[] = [
 ];
 
 export default function APIGatewaySimulator() {
+  const { t } = useTranslation();
   const [requests, setRequests] = useState<Request[]>([]);
   const [isSimulationRunning, setIsSimulationRunning] = useState(false);
   const [requestCount, setRequestCount] = useState(0);
@@ -174,11 +176,10 @@ export default function APIGatewaySimulator() {
     <div className="p-6 md:p-8 lg:p-12 max-w-6xl mx-auto">
       <div className="prose prose-invert prose-lg max-w-none mb-8">
         <h1 className="text-4xl font-bold mb-4 text-blue-400">
-          Simulador de API Gateway
+          {t('simulators.gateway.title')}
         </h1>
         <p className="text-xl text-zinc-300">
-          Visualize como um API Gateway roteia diferentes tipos de requisições para os serviços apropriados 
-          em uma arquitetura de microsserviços.
+          {t('simulators.gateway.description')}
         </p>
       </div>
 
@@ -198,37 +199,37 @@ export default function APIGatewaySimulator() {
               : 'bg-blue-600 hover:bg-blue-700 text-white'
           }`}
         >
-          {isSimulationRunning ? 'Parar Simulação' : 'Iniciar Simulação'}
+          {isSimulationRunning ? t('simulators.gateway.buttons.stop') : t('simulators.gateway.buttons.start')}
         </button>
         <button
           onClick={() => setShowConfig(!showConfig)}
           className="px-6 py-3 rounded-lg font-medium bg-zinc-800 hover:bg-zinc-700 text-white transition-colors"
         >
-          {showConfig ? 'Ocultar Configurações' : 'Mostrar Configurações'}
+          {showConfig ? t('simulators.gateway.buttons.hide_config') : t('simulators.gateway.buttons.show_config')}
         </button>
         <button
           onClick={resetSimulation}
           className="px-6 py-3 rounded-lg font-medium bg-zinc-800 hover:bg-zinc-700 text-white transition-colors"
         >
-          Reiniciar
+          {t('simulators.gateway.buttons.reset')}
         </button>
       </div>
 
       {showConfig && (
         <div className="bg-zinc-900 p-6 rounded-lg mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-bold text-zinc-200">Configurações da Simulação</h3>
+            <h3 className="text-xl font-bold text-zinc-200">{t('simulators.gateway.config.title')}</h3>
             <button
               onClick={() => setConfig(defaultConfig)}
               className="px-4 py-2 text-sm bg-zinc-800 hover:bg-zinc-700 rounded-lg transition-colors"
             >
-              Restaurar Padrões
+              {t('simulators.gateway.buttons.restore_defaults')}
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-zinc-400 mb-2">
-                Requisições por Segundo: {config.requestsPerSecond}
+                {t('simulators.gateway.config.rps', { value: config.requestsPerSecond })}
               </label>
               <input
                 type="range"
@@ -242,7 +243,7 @@ export default function APIGatewaySimulator() {
             </div>
             <div>
               <label className="block text-sm font-medium text-zinc-400 mb-2">
-                Delay de Roteamento: {config.routingDelay}ms
+                {t('simulators.gateway.config.routing_delay', { ms: config.routingDelay })}
               </label>
               <input
                 type="range"
@@ -256,7 +257,7 @@ export default function APIGatewaySimulator() {
             </div>
             <div>
               <label className="block text-sm font-medium text-zinc-400 mb-2">
-                Taxa de Erro Adicional: {(config.errorRate * 100).toFixed(1)}%
+                {t('simulators.gateway.config.extra_error_rate', { percent: (config.errorRate * 100).toFixed(1) })}
               </label>
               <input
                 type="range"
@@ -270,7 +271,7 @@ export default function APIGatewaySimulator() {
             </div>
             <div>
               <label className="block text-sm font-medium text-zinc-400 mb-2">
-                Tempo de Remoção: {config.removeDelay}ms
+                {t('simulators.gateway.config.removal_delay', { ms: config.removeDelay })}
               </label>
               <input
                 type="range"
@@ -288,15 +289,15 @@ export default function APIGatewaySimulator() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <div className="bg-zinc-900 p-4 rounded-lg">
-          <div className="text-sm text-zinc-400">Total de Requisições</div>
+          <div className="text-sm text-zinc-400">{t('simulators.gateway.stats.total')}</div>
           <div className="text-2xl font-bold text-white">{stats.totalRequests}</div>
         </div>
         <div className="bg-zinc-900 p-4 rounded-lg">
-          <div className="text-sm text-zinc-400">Requisições com Sucesso</div>
+          <div className="text-sm text-zinc-400">{t('simulators.gateway.stats.success')}</div>
           <div className="text-2xl font-bold text-green-500">{stats.successfulRequests}</div>
         </div>
         <div className="bg-zinc-900 p-4 rounded-lg">
-          <div className="text-sm text-zinc-400">Requisições com Erro</div>
+          <div className="text-sm text-zinc-400">{t('simulators.gateway.stats.error')}</div>
           <div className="text-2xl font-bold text-red-500">{stats.failedRequests}</div>
         </div>
       </div>
@@ -304,7 +305,7 @@ export default function APIGatewaySimulator() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Clients */}
         <div className="bg-zinc-900 p-6 rounded-lg">
-          <h3 className="text-xl font-bold mb-4 text-zinc-200">Clientes</h3>
+          <h3 className="text-xl font-bold mb-4 text-zinc-200">{t('simulators.gateway.columns.clients')}</h3>
           <div className="space-y-2">
             <AnimatePresence>
               {requests.filter(r => r.status === 'pending').map(request => (
@@ -316,10 +317,10 @@ export default function APIGatewaySimulator() {
                   className={`p-4 rounded ${services.find(s => s.type === request.type)?.color} bg-opacity-20 border-l-4 ${services.find(s => s.type === request.type)?.color}`}
                 >
                   <div className="text-sm font-medium">
-                    Requisição #{request.id}
+                    {t('simulators.gateway.items.request_id', { id: request.id })}
                   </div>
                   <div className="text-xs opacity-75">
-                    Tipo: {request.type}
+                    {t('simulators.gateway.items.type', { type: request.type })}
                   </div>
                 </motion.div>
               ))}
@@ -329,7 +330,7 @@ export default function APIGatewaySimulator() {
 
         {/* API Gateway */}
         <div className="bg-zinc-900 p-6 rounded-lg">
-          <h3 className="text-xl font-bold mb-4 text-zinc-200">API Gateway</h3>
+          <h3 className="text-xl font-bold mb-4 text-zinc-200">{t('simulators.gateway.columns.apigw')}</h3>
           <div className="space-y-2">
             <AnimatePresence>
               {requests.filter(r => r.status === 'routing').map(request => (
@@ -341,10 +342,10 @@ export default function APIGatewaySimulator() {
                   className={`p-4 rounded ${services.find(s => s.type === request.type)?.color} bg-opacity-20 border-l-4 ${services.find(s => s.type === request.type)?.color}`}
                 >
                   <div className="text-sm font-medium">
-                    Roteando #{request.id}
+                    {t('simulators.gateway.items.routing_to', { id: request.id })}
                   </div>
                   <div className="text-xs opacity-75">
-                    Para: {services.find(s => s.type === request.type)?.name}
+                    {t('simulators.gateway.items.to_service', { service: services.find(s => s.type === request.type)?.name })}
                   </div>
                 </motion.div>
               ))}
@@ -354,16 +355,16 @@ export default function APIGatewaySimulator() {
 
         {/* Microservices */}
         <div className="bg-zinc-900 p-6 rounded-lg">
-          <h3 className="text-xl font-bold mb-4 text-zinc-200">Microsserviços</h3>
+          <h3 className="text-xl font-bold mb-4 text-zinc-200">{t('simulators.gateway.columns.microservices')}</h3>
           <div className="space-y-4">
             {services.map(service => (
               <div key={service.type} className={`p-4 rounded ${service.color} bg-opacity-10`}>
                 <div className="font-medium mb-1">{service.name}</div>
                 <div className="text-sm opacity-75">{service.description}</div>
                 <div className="text-xs text-zinc-400 mt-1">
-                  Tempo de processamento: {service.processingTime}ms
+                  {t('simulators.gateway.items.processing_time', { ms: service.processingTime })}
                   <br />
-                  Taxa de erro base: {(service.errorRate * 100).toFixed(1)}%
+                  {t('simulators.gateway.items.base_error_rate', { percent: (service.errorRate * 100).toFixed(1) })}
                 </div>
                 <AnimatePresence>
                   {requests
@@ -380,7 +381,7 @@ export default function APIGatewaySimulator() {
                             : 'bg-black bg-opacity-20'
                         }`}
                       >
-                        {request.status === 'rejected' ? 'Erro' : 'Processando'} #{request.id}
+                        {request.status === 'rejected' ? t('simulators.gateway.items.error') : t('simulators.gateway.items.processing')} #{request.id}
                       </motion.div>
                     ))}
                 </AnimatePresence>

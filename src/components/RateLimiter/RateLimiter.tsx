@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface Request {
   id: number;
@@ -13,6 +14,7 @@ interface Metrics {
 }
 
 export default function RateLimiter() {
+  const { t } = useTranslation();
   const [isRunning, setIsRunning] = useState(false);
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   const [requestsPerSecond, setRequestsPerSecond] = useState(5);
@@ -87,13 +89,13 @@ export default function RateLimiter() {
       <div className="p-4 h-full">
         <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-xl font-semibold">Rate Limiter</h1>
+            <h1 className="text-xl font-semibold">{t('simulators.rate_limiter.title')}</h1>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
               <button
                 onClick={() => setIsConfigOpen(!isConfigOpen)}
                 className="w-full sm:w-auto px-4 py-2 bg-zinc-800 rounded-md hover:bg-zinc-700 font-medium transition-colors"
               >
-                {isConfigOpen ? 'Fechar Config' : 'Configurar'}
+                {isConfigOpen ? t('simulators.rate_limiter.buttons.close_config') : t('simulators.rate_limiter.buttons.configure')}
               </button>
               <button
                 onClick={() => setIsRunning(!isRunning)}
@@ -103,13 +105,13 @@ export default function RateLimiter() {
                     : 'bg-green-500 hover:bg-green-600'
                 }`}
               >
-                {isRunning ? 'Parar' : 'Iniciar'}
+                {isRunning ? t('simulators.rate_limiter.buttons.stop') : t('simulators.rate_limiter.buttons.start')}
               </button>
               <button
                 onClick={resetSimulation}
                 className="w-full sm:w-auto px-4 py-2 bg-zinc-800 rounded-md hover:bg-zinc-700 font-medium transition-colors"
               >
-                Resetar
+                {t('simulators.rate_limiter.buttons.reset')}
               </button>
             </div>
           </div>
@@ -118,9 +120,7 @@ export default function RateLimiter() {
             <div className="mb-6 bg-zinc-800/50 rounded-lg p-4">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <label className="block text-sm text-zinc-400">
-                    Taxa de Tokens (por segundo)
-                  </label>
+                  <label className="block text-sm text-zinc-400">{t('simulators.rate_limiter.config.token_rate')}</label>
                   <div className="flex items-center gap-2">
                     <input
                       type="range"
@@ -135,9 +135,7 @@ export default function RateLimiter() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block text-sm text-zinc-400">
-                    Taxa de Mensagens (por segundo)
-                  </label>
+                  <label className="block text-sm text-zinc-400">{t('simulators.rate_limiter.config.message_rate')}</label>
                   <div className="flex items-center gap-2">
                     <input
                       type="range"
@@ -152,9 +150,7 @@ export default function RateLimiter() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block text-sm text-zinc-400">
-                    Tamanho do Bucket
-                  </label>
+                  <label className="block text-sm text-zinc-400">{t('simulators.rate_limiter.config.bucket_size')}</label>
                   <div className="flex items-center gap-2">
                     <input
                       type="range"
@@ -179,10 +175,8 @@ export default function RateLimiter() {
             {/* Token Bucket Visualization */}
             <div className="bg-zinc-800/50 rounded-lg p-4">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4 mb-4">
-                <h2 className="text-lg font-medium">Token Bucket</h2>
-                <div className="text-sm text-zinc-400">
-                  Taxa: {requestsPerSecond} tokens/s
-                </div>
+                <h2 className="text-lg font-medium">{t('simulators.rate_limiter.bucket.title')}</h2>
+                <div className="text-sm text-zinc-400">{t('simulators.rate_limiter.bucket.rate', { rate: requestsPerSecond })}</div>
               </div>
               <div className="relative h-32 bg-zinc-800 rounded-lg overflow-hidden border border-zinc-700">
                 <div 
@@ -200,10 +194,8 @@ export default function RateLimiter() {
             {/* Recent Requests */}
             <div className="bg-zinc-800/50 rounded-lg p-4">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4 mb-4">
-                <h2 className="text-lg font-medium">Últimas Requisições</h2>
-                <div className="text-sm text-zinc-400">
-                  Taxa: {messageRate} msgs/s
-                </div>
+                <h2 className="text-lg font-medium">{t('simulators.rate_limiter.recent.title')}</h2>
+                <div className="text-sm text-zinc-400">{t('simulators.rate_limiter.recent.rate', { rate: messageRate })}</div>
               </div>
               <div className="space-y-2">
                 {requests.map(request => (
@@ -219,7 +211,7 @@ export default function RateLimiter() {
                       {request.status === 'accepted' ? '✓' : '✗'}
                     </span>
                     <span className="flex-1 min-w-[120px]">
-                      {request.status === 'accepted' ? 'Requisição aceita' : 'Requisição rejeitada'}
+                      {request.status === 'accepted' ? t('simulators.rate_limiter.recent.accepted') : t('simulators.rate_limiter.recent.rejected')}
                     </span>
                     <span className="text-sm opacity-75">
                       {((Date.now() - request.timestamp) / 1000).toFixed(1)}s
@@ -228,7 +220,7 @@ export default function RateLimiter() {
                 ))}
                 {requests.length === 0 && (
                   <div className="text-zinc-500 text-center py-4">
-                    Nenhuma requisição ainda
+                    {t('simulators.rate_limiter.recent.none')}
                   </div>
                 )}
               </div>
@@ -238,11 +230,11 @@ export default function RateLimiter() {
           {/* Metrics */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="bg-zinc-800/50 p-4 rounded-lg">
-              <div className="text-sm text-zinc-400 mb-1">Total de Requisições</div>
+              <div className="text-sm text-zinc-400 mb-1">{t('simulators.rate_limiter.metrics.total')}</div>
               <div className="text-2xl font-medium">{metrics.totalRequests}</div>
             </div>
             <div className="bg-zinc-800/50 p-4 rounded-lg">
-              <div className="text-sm text-zinc-400 mb-1">Aceitas</div>
+              <div className="text-sm text-zinc-400 mb-1">{t('simulators.rate_limiter.metrics.accepted')}</div>
               <div className="text-2xl font-medium text-green-400">
                 {metrics.acceptedRequests}
                 <span className="text-sm text-zinc-400 ml-1">
@@ -253,7 +245,7 @@ export default function RateLimiter() {
               </div>
             </div>
             <div className="bg-zinc-800/50 p-4 rounded-lg">
-              <div className="text-sm text-zinc-400 mb-1">Rejeitadas</div>
+              <div className="text-sm text-zinc-400 mb-1">{t('simulators.rate_limiter.metrics.rejected')}</div>
               <div className="text-2xl font-medium text-red-400">
                 {metrics.rejectedRequests}
                 <span className="text-sm text-zinc-400 ml-1">

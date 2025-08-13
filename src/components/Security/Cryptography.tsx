@@ -1,17 +1,32 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function Cryptography() {
+  const { t } = useTranslation();
+  const base = 'cryptography';
+
+  const symmetricAlgorithms = t(`${base}.symmetric_algorithms`, { returnObjects: true }) as string[];
+  const asymmetricAlgorithms = t(`${base}.asymmetric_algorithms`, { returnObjects: true }) as string[];
+  const hashAlgorithms = t(`${base}.hash_algorithms`, { returnObjects: true }) as string[];
+  const lifecycleItems = t(`${base}.lifecycle_items`, { returnObjects: true }) as string[];
+  const bestPracticesItems = t(`${base}.best_practices_items`, { returnObjects: true }) as string[];
+  const tlsSslItems = t(`${base}.tls_ssl_items`, { returnObjects: true }) as string[];
+  const otherProtocolsItems = t(`${base}.other_protocols_items`, { returnObjects: true }) as string[];
+  const dontItems = t(`${base}.dont_items`, { returnObjects: true }) as string[];
+  const doItems = t(`${base}.do_items`, { returnObjects: true }) as string[];
+  const considerItems = t(`${base}.consider_items`, { returnObjects: true }) as string[];
+
   return (
     <div className="min-h-full bg-gradient-to-b from-zinc-900 to-black">
       <div className="py-12 px-6 max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-4xl font-bold text-white mb-4">
-            Criptografia em Sistemas Distribuídos
+            {t(`${base}.title`)}
           </h1>
           <p className="text-lg text-zinc-400 mb-6">
-            Proteção de dados, comunicação segura e gerenciamento de chaves em ambientes distribuídos
+            {t(`${base}.subtitle`)}
           </p>
           <Link
             to="/seguranca/criptografia/simulador"
@@ -20,7 +35,7 @@ export default function Cryptography() {
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
-            Experimente o Simulador de Criptografia
+            {t(`${base}.simulator_button`)}
           </Link>
         </div>
 
@@ -34,9 +49,7 @@ export default function Cryptography() {
             </div>
             <div className="ml-4">
               <p className="text-indigo-400">
-                A criptografia é fundamental para garantir a segurança em sistemas distribuídos, 
-                protegendo dados em repouso e em trânsito. Compreender seus conceitos e 
-                implementações é essencial para construir sistemas seguros e confiáveis.
+                {t(`${base}.info_banner`)}
               </p>
             </div>
           </div>
@@ -46,28 +59,25 @@ export default function Cryptography() {
         <div className="space-y-12">
           {/* Fundamentos da Criptografia */}
           <section>
-            <h2 className="text-3xl font-bold text-white mb-6">Fundamentos da Criptografia</h2>
+            <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.fundamentals_title`)}</h2>
             <div className="bg-zinc-900 rounded-lg p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div className="bg-zinc-800 p-6 rounded-lg">
-                  <h3 className="text-xl font-semibold text-blue-400 mb-3">Confidencialidade</h3>
+                  <h3 className="text-xl font-semibold text-blue-400 mb-3">{t(`${base}.confidentiality_title`)}</h3>
                   <p className="text-zinc-400">
-                    Garante que apenas as partes autorizadas possam acessar e 
-                    compreender as informações protegidas.
+                    {t(`${base}.confidentiality_description`)}
                   </p>
                 </div>
                 <div className="bg-zinc-800 p-6 rounded-lg">
-                  <h3 className="text-xl font-semibold text-blue-400 mb-3">Integridade</h3>
+                  <h3 className="text-xl font-semibold text-blue-400 mb-3">{t(`${base}.integrity_title`)}</h3>
                   <p className="text-zinc-400">
-                    Assegura que os dados não foram alterados durante o 
-                    armazenamento ou transmissão.
+                    {t(`${base}.integrity_description`)}
                   </p>
                 </div>
                 <div className="bg-zinc-800 p-6 rounded-lg">
-                  <h3 className="text-xl font-semibold text-blue-400 mb-3">Autenticidade</h3>
+                  <h3 className="text-xl font-semibold text-blue-400 mb-3">{t(`${base}.authenticity_title`)}</h3>
                   <p className="text-zinc-400">
-                    Confirma a origem dos dados e garante que as partes 
-                    envolvidas são quem dizem ser.
+                    {t(`${base}.authenticity_description`)}
                   </p>
                 </div>
               </div>
@@ -76,56 +86,50 @@ export default function Cryptography() {
 
           {/* Tipos de Criptografia */}
           <section>
-            <h2 className="text-3xl font-bold text-white mb-6">Tipos de Criptografia</h2>
+            <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.types_title`)}</h2>
             <div className="bg-zinc-900 rounded-lg p-6">
               <div className="grid gap-6">
                 <div className="border-b border-zinc-800 pb-6">
-                  <h3 className="text-xl font-semibold text-purple-400 mb-3">Criptografia Simétrica</h3>
+                  <h3 className="text-xl font-semibold text-purple-400 mb-3">{t(`${base}.symmetric_title`)}</h3>
                   <p className="text-zinc-300 mb-4">
-                    Utiliza a mesma chave para criptografar e descriptografar dados. 
-                    É rápida e eficiente para grandes volumes de dados.
+                    {t(`${base}.symmetric_description`)}
                   </p>
                   <div className="bg-zinc-800 p-4 rounded-lg">
-                    <h4 className="text-lg font-medium text-purple-300 mb-2">Algoritmos Comuns</h4>
+                    <h4 className="text-lg font-medium text-purple-300 mb-2">{t(`${base}.symmetric_algorithms_title`)}</h4>
                     <ul className="list-disc list-inside text-zinc-400 space-y-2">
-                      <li>AES (Advanced Encryption Standard)</li>
-                      <li>ChaCha20</li>
-                      <li>3DES (Triple DES)</li>
-                      <li>Blowfish</li>
+                      {symmetricAlgorithms.map((item, idx) => (
+                        <li key={idx}>{item}</li>
+                      ))}
                     </ul>
                   </div>
                 </div>
 
                 <div className="border-b border-zinc-800 pb-6">
-                  <h3 className="text-xl font-semibold text-purple-400 mb-3">Criptografia Assimétrica</h3>
+                  <h3 className="text-xl font-semibold text-purple-400 mb-3">{t(`${base}.asymmetric_title`)}</h3>
                   <p className="text-zinc-300 mb-4">
-                    Usa um par de chaves (pública e privada) para operações de 
-                    criptografia e descriptografia.
+                    {t(`${base}.asymmetric_description`)}
                   </p>
                   <div className="bg-zinc-800 p-4 rounded-lg">
-                    <h4 className="text-lg font-medium text-purple-300 mb-2">Algoritmos e Usos</h4>
+                    <h4 className="text-lg font-medium text-purple-300 mb-2">{t(`${base}.asymmetric_algorithms_title`)}</h4>
                     <ul className="list-disc list-inside text-zinc-400 space-y-2">
-                      <li>RSA: Criptografia e assinatura digital</li>
-                      <li>ECC: Curvas elípticas para dispositivos com recursos limitados</li>
-                      <li>Diffie-Hellman: Troca de chaves</li>
-                      <li>Ed25519: Assinaturas digitais modernas</li>
+                      {asymmetricAlgorithms.map((item, idx) => (
+                        <li key={idx}>{item}</li>
+                      ))}
                     </ul>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-semibold text-purple-400 mb-3">Funções Hash Criptográficas</h3>
+                  <h3 className="text-xl font-semibold text-purple-400 mb-3">{t(`${base}.hash_title`)}</h3>
                   <p className="text-zinc-300 mb-4">
-                    Geram uma impressão digital única dos dados, garantindo integridade 
-                    e não-repúdio.
+                    {t(`${base}.hash_description`)}
                   </p>
                   <div className="bg-zinc-800 p-4 rounded-lg">
-                    <h4 className="text-lg font-medium text-purple-300 mb-2">Algoritmos Populares</h4>
+                    <h4 className="text-lg font-medium text-purple-300 mb-2">{t(`${base}.hash_algorithms_title`)}</h4>
                     <ul className="list-disc list-inside text-zinc-400 space-y-2">
-                      <li>SHA-256/SHA-3: Padrão atual para hashing seguro</li>
-                      <li>BLAKE2/BLAKE3: Alta performance</li>
-                      <li>Argon2: Específico para senhas</li>
-                      <li>HMAC: Hash com chave para autenticação</li>
+                      {hashAlgorithms.map((item, idx) => (
+                        <li key={idx}>{item}</li>
+                      ))}
                     </ul>
                   </div>
                 </div>
@@ -135,26 +139,24 @@ export default function Cryptography() {
 
           {/* Gerenciamento de Chaves */}
           <section>
-            <h2 className="text-3xl font-bold text-white mb-6">Gerenciamento de Chaves</h2>
+            <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.key_management_title`)}</h2>
             <div className="bg-zinc-900 rounded-lg p-6">
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="bg-zinc-800 p-6 rounded-lg">
-                    <h3 className="text-xl font-semibold text-yellow-400 mb-3">Ciclo de Vida</h3>
+                    <h3 className="text-xl font-semibold text-yellow-400 mb-3">{t(`${base}.lifecycle_title`)}</h3>
                     <ul className="text-zinc-400 space-y-2">
-                      <li>• Geração de chaves segura</li>
-                      <li>• Distribuição e troca</li>
-                      <li>• Armazenamento protegido</li>
-                      <li>• Rotação e revogação</li>
+                      {lifecycleItems.map((item, idx) => (
+                        <li key={idx}>• {item}</li>
+                      ))}
                     </ul>
                   </div>
                   <div className="bg-zinc-800 p-6 rounded-lg">
-                    <h3 className="text-xl font-semibold text-yellow-400 mb-3">Boas Práticas</h3>
+                    <h3 className="text-xl font-semibold text-yellow-400 mb-3">{t(`${base}.best_practices_title`)}</h3>
                     <ul className="text-zinc-400 space-y-2">
-                      <li>• Hardware Security Modules (HSM)</li>
-                      <li>• Key Derivation Functions</li>
-                      <li>• Backup e recuperação</li>
-                      <li>• Auditoria de uso</li>
+                      {bestPracticesItems.map((item, idx) => (
+                        <li key={idx}>• {item}</li>
+                      ))}
                     </ul>
                   </div>
                 </div>
@@ -164,31 +166,29 @@ export default function Cryptography() {
 
           {/* Protocolos de Segurança */}
           <section>
-            <h2 className="text-3xl font-bold text-white mb-6">Protocolos de Segurança</h2>
+            <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.security_protocols_title`)}</h2>
             <div className="bg-zinc-900 rounded-lg p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-xl font-semibold text-green-400 mb-3">TLS/SSL</h3>
+                  <h3 className="text-xl font-semibold text-green-400 mb-3">{t(`${base}.tls_ssl_title`)}</h3>
                   <div className="bg-zinc-800 p-6 rounded-lg">
                     <p className="text-zinc-300 mb-4">
-                      Protocolo padrão para comunicação segura na web e entre serviços.
+                      {t(`${base}.tls_ssl_description`)}
                     </p>
                     <ul className="text-zinc-400 space-y-2">
-                      <li>• Handshake e negociação de cifras</li>
-                      <li>• Certificados digitais</li>
-                      <li>• Perfect Forward Secrecy</li>
-                      <li>• HTTPS e HSTS</li>
+                      {tlsSslItems.map((item, idx) => (
+                        <li key={idx}>• {item}</li>
+                      ))}
                     </ul>
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-green-400 mb-3">Outros Protocolos</h3>
+                  <h3 className="text-xl font-semibold text-green-400 mb-3">{t(`${base}.other_protocols_title`)}</h3>
                   <div className="bg-zinc-800 p-6 rounded-lg">
                     <ul className="text-zinc-400 space-y-2">
-                      <li>• SSH: Acesso remoto seguro</li>
-                      <li>• IPsec: Segurança na camada de rede</li>
-                      <li>• WireGuard: VPN moderna</li>
-                      <li>• Signal Protocol: Mensagens seguras</li>
+                      {otherProtocolsItems.map((item, idx) => (
+                        <li key={idx}>• {item}</li>
+                      ))}
                     </ul>
                   </div>
                 </div>
@@ -198,38 +198,35 @@ export default function Cryptography() {
 
           {/* Implementação Segura */}
           <section>
-            <h2 className="text-3xl font-bold text-white mb-6">Implementação Segura</h2>
+            <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.secure_implementation_title`)}</h2>
             <div className="bg-zinc-900 rounded-lg p-6">
               <div className="space-y-6">
                 <p className="text-zinc-300">
-                  Ao implementar criptografia em sistemas distribuídos, considere:
+                  {t(`${base}.implementation_intro`)}
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="bg-zinc-800 p-6 rounded-lg">
-                    <h3 className="text-xl font-semibold text-red-400 mb-3">Não Faça</h3>
+                    <h3 className="text-xl font-semibold text-red-400 mb-3">{t(`${base}.dont_title`)}</h3>
                     <ul className="text-zinc-400 space-y-2">
-                      <li>• Implementar próprios algoritmos</li>
-                      <li>• Reutilizar chaves ou IVs</li>
-                      <li>• Armazenar chaves no código</li>
-                      <li>• Ignorar validações</li>
+                      {dontItems.map((item, idx) => (
+                        <li key={idx}>• {item}</li>
+                      ))}
                     </ul>
                   </div>
                   <div className="bg-zinc-800 p-6 rounded-lg">
-                    <h3 className="text-xl font-semibold text-green-400 mb-3">Faça</h3>
+                    <h3 className="text-xl font-semibold text-green-400 mb-3">{t(`${base}.do_title`)}</h3>
                     <ul className="text-zinc-400 space-y-2">
-                      <li>• Use bibliotecas comprovadas</li>
-                      <li>• Implemente Perfect Forward Secrecy</li>
-                      <li>• Valide certificados</li>
-                      <li>• Monitore e atualize</li>
+                      {doItems.map((item, idx) => (
+                        <li key={idx}>• {item}</li>
+                      ))}
                     </ul>
                   </div>
                   <div className="bg-zinc-800 p-6 rounded-lg">
-                    <h3 className="text-xl font-semibold text-yellow-400 mb-3">Considere</h3>
+                    <h3 className="text-xl font-semibold text-yellow-400 mb-3">{t(`${base}.consider_title`)}</h3>
                     <ul className="text-zinc-400 space-y-2">
-                      <li>• Requisitos de performance</li>
-                      <li>• Conformidade legal</li>
-                      <li>• Recuperação de desastres</li>
-                      <li>• Auditoria e logging</li>
+                      {considerItems.map((item, idx) => (
+                        <li key={idx}>• {item}</li>
+                      ))}
                     </ul>
                   </div>
                 </div>

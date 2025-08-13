@@ -1,8 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function Failover() {
+  const { t } = useTranslation();
+  const types = t('design_principles.scalability.failover.types', { returnObjects: true }) as string[];
+  const components = t('design_principles.scalability.failover.components', { returnObjects: true }) as string[];
+  const best = t('design_principles.scalability.failover.best', { returnObjects: true }) as string[];
   return (
     <div className="min-h-screen bg-zinc-950 text-white p-8">
       <div className="max-w-4xl mx-auto">
@@ -12,130 +17,74 @@ export default function Failover() {
           className="space-y-8"
         >
           <div>
-            <h1 className="text-3xl font-bold mb-4">Failover em Sistemas Distribuídos</h1>
+            <h1 className="text-3xl font-bold mb-4">{t('design_principles.scalability.failover.title')}</h1>
             <p className="text-zinc-400">
-              Failover é uma estratégia crítica para garantir a continuidade do serviço em caso de falhas,
-              permitindo uma recuperação automática e minimizando o tempo de inatividade.
+              {t('design_principles.scalability.failover.intro')}
             </p>
           </div>
 
           <div className="bg-zinc-900 rounded-xl p-6">
-            <h2 className="text-xl font-semibold mb-4">O que é Failover?</h2>
+            <h2 className="text-xl font-semibold mb-4">{t('design_principles.scalability.failover.what_is_title')}</h2>
             <p className="text-zinc-300 mb-4">
-              Failover é um mecanismo de recuperação automática que transfere operações de um sistema 
-              ou componente falho para um backup ou sistema secundário. O objetivo é manter o serviço 
-              disponível mesmo quando ocorrem falhas.
+              {t('design_principles.scalability.failover.what_is_p')}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-zinc-900 rounded-xl p-6">
-              <h3 className="text-lg font-semibold mb-3">Tipos de Failover</h3>
+              <h3 className="text-lg font-semibold mb-3">{t('design_principles.scalability.failover.types_title')}</h3>
               <div className="space-y-4">
-                <div>
-                  <h4 className="text-blue-400 font-medium mb-2">Ativo-Passivo</h4>
-                  <p className="text-zinc-300 text-sm">
-                    Um sistema primário processa todas as requisições enquanto o secundário 
-                    aguarda em standby. Se o primário falha, o secundário assume.
-                  </p>
-                </div>
-                <div>
-                  <h4 className="text-blue-400 font-medium mb-2">Ativo-Ativo</h4>
-                  <p className="text-zinc-300 text-sm">
-                    Múltiplos sistemas processam requisições simultaneamente. Se um falha,
-                    os outros absorvem sua carga.
-                  </p>
-                </div>
-                <div>
-                  <h4 className="text-blue-400 font-medium mb-2">Failover em Cascata</h4>
-                  <p className="text-zinc-300 text-sm">
-                    Múltiplos níveis de backup, onde cada sistema assume em uma ordem 
-                    predefinida quando falhas ocorrem.
-                  </p>
-                </div>
+                {types.map((li, idx) => (
+                  <div key={idx}>
+                    <h4 className="text-blue-400 font-medium mb-2">{li.split(':')[0]}</h4>
+                    <p className="text-zinc-300 text-sm">{li.split(':').slice(1).join(':').trim()}</p>
+                  </div>
+                ))}
               </div>
             </div>
 
             <div className="bg-zinc-900 rounded-xl p-6">
-              <h3 className="text-lg font-semibold mb-3">Componentes Essenciais</h3>
+              <h3 className="text-lg font-semibold mb-3">{t('design_principles.scalability.failover.components_title')}</h3>
               <ul className="space-y-3 text-zinc-300 text-sm">
-                <li className="flex items-start">
-                  <span className="text-green-400 mr-2">✓</span>
-                  <span>Monitoramento de saúde (Health Check)</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-green-400 mr-2">✓</span>
-                  <span>Detecção de falhas</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-green-400 mr-2">✓</span>
-                  <span>Mecanismo de transição</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-green-400 mr-2">✓</span>
-                  <span>Sincronização de estado</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-green-400 mr-2">✓</span>
-                  <span>Recuperação automática</span>
-                </li>
+                {components.map((c, idx) => (
+                  <li key={idx} className="flex items-start">
+                    <span className="text-green-400 mr-2">✓</span>
+                    <span>{c}</span>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
 
           <div className="bg-zinc-900 rounded-xl p-6">
-            <h3 className="text-lg font-semibold mb-3">Exemplo do Mundo Real</h3>
+            <h3 className="text-lg font-semibold mb-3">{t('design_principles.scalability.failover.real_world_title')}</h3>
             <p className="text-zinc-300 mb-4">
-              Um serviço de streaming implementa failover em múltiplas regiões. Se um datacenter na 
-              Ásia falhar devido a um desastre natural, o tráfego é automaticamente redirecionado 
-              para servidores na Europa ou América, mantendo o serviço disponível para os usuários.
+              {t('design_principles.scalability.failover.real_world_p')}
             </p>
           </div>
 
           <div className="bg-zinc-900 rounded-xl p-6">
-            <h3 className="text-lg font-semibold mb-4">Melhores Práticas</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('design_principles.scalability.failover.best_title')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-              <div className="space-y-2">
-                <div className="flex items-start">
-                  <span className="text-blue-400 mr-2">1.</span>
-                  <p className="text-zinc-300">Teste regularmente os mecanismos de failover</p>
+              {best.map((b, idx) => (
+                <div key={idx} className="flex items-start">
+                  <span className="text-blue-400 mr-2">{idx + 1}.</span>
+                  <p className="text-zinc-300">{b}</p>
                 </div>
-                <div className="flex items-start">
-                  <span className="text-blue-400 mr-2">2.</span>
-                  <p className="text-zinc-300">Automatize o processo de detecção e transição</p>
-                </div>
-                <div className="flex items-start">
-                  <span className="text-blue-400 mr-2">3.</span>
-                  <p className="text-zinc-300">Mantenha logs detalhados de eventos de failover</p>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-start">
-                  <span className="text-blue-400 mr-2">4.</span>
-                  <p className="text-zinc-300">Configure timeouts e thresholds apropriados</p>
-                </div>
-                <div className="flex items-start">
-                  <span className="text-blue-400 mr-2">5.</span>
-                  <p className="text-zinc-300">Implemente monitoramento em tempo real</p>
-                </div>
-                <div className="flex items-start">
-                  <span className="text-blue-400 mr-2">6.</span>
-                  <p className="text-zinc-300">Documente procedimentos de failover e recuperação</p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
           <div className="bg-blue-600/20 rounded-xl p-6">
-            <h3 className="text-lg font-semibold mb-3">Explorar na Prática</h3>
+            <h3 className="text-lg font-semibold mb-3">{t('design_principles.scalability.failover.explore_title')}</h3>
             <p className="text-zinc-300 mb-4">
-              Experimente diferentes estratégias de failover e veja como elas afetam a disponibilidade do sistema.
+              {t('design_principles.scalability.failover.explore_p')}
             </p>
             <Link 
               to="/principios-design/escalabilidade/simulator"
               className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
             >
-              Abrir Simulador
+              {t('design_principles.scalability.failover.explore_cta')}
             </Link>
           </div>
         </motion.div>

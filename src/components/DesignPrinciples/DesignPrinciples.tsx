@@ -1,17 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function DesignPrinciples() {
+  const { t } = useTranslation();
   return (
     <div className="min-h-full bg-gradient-to-b from-zinc-900 to-black">
       <div className="py-12 px-6 max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-3xl font-bold text-white mb-4">
-            Princípios de Design
+            {t('design_principles.index.title')}
           </h1>
           <p className="text-lg text-zinc-400">
-            Explore os princípios fundamentais que orientam a criação de sistemas distribuídos
+            {t('design_principles.index.subtitle')}
           </p>
         </div>
 
@@ -24,8 +26,7 @@ export default function DesignPrinciples() {
               </svg>
             </div>
             <p className="text-blue-300">
-              Cada princípio aborda aspectos cruciais do design de sistemas distribuídos modernos.
-              Entenda como aplicá-los para criar sistemas escaláveis e resilientes.
+              {t('design_principles.index.banner1')} {t('design_principles.index.banner2')}
             </p>
           </div>
         </div>
@@ -45,17 +46,17 @@ export default function DesignPrinciples() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-purple-400 transition-colors">
-                  Desenvolvimento Orientado a Eventos
+                  {t('design_principles.index.cards.event_driven.title')}
                 </h2>
                 <p className="text-zinc-400 mb-4">
-                  Event Sourcing e sistemas de eventos distribuídos.
+                  {t('design_principles.index.cards.event_driven.description')}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-purple-500/20 text-purple-300 rounded">
-                    Eventos
+                    {t('design_principles.index.cards.event_driven.badge1')}
                   </span>
                   <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
-                    Assíncrono
+                    {t('design_principles.index.cards.event_driven.badge2')}
                   </span>
                 </div>
               </div>
@@ -75,17 +76,17 @@ export default function DesignPrinciples() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-green-400 transition-colors">
-                  Design Orientado a Serviços
+                  {t('design_principles.index.cards.service_oriented.title')}
                 </h2>
                 <p className="text-zinc-400 mb-4">
-                  Microsserviços vs Arquitetura Monolítica.
+                  {t('design_principles.index.cards.service_oriented.description')}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-green-500/20 text-green-300 rounded">
-                    Serviços
+                    {t('design_principles.index.cards.service_oriented.badge1')}
                   </span>
                   <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
-                    Arquitetura
+                    {t('design_principles.index.cards.service_oriented.badge2')}
                   </span>
                 </div>
               </div>
@@ -105,17 +106,17 @@ export default function DesignPrinciples() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-yellow-400 transition-colors">
-                  Tolerância a Falhas
+                  {t('design_principles.index.cards.fault_tolerance.title')}
                 </h2>
                 <p className="text-zinc-400 mb-4">
-                  Retries, Circuit Breakers, Timeout e Fallback.
+                  {t('design_principles.index.cards.fault_tolerance.description')}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-yellow-500/20 text-yellow-300 rounded">
-                    Resiliência
+                    {t('design_principles.index.cards.fault_tolerance.badge1')}
                   </span>
                   <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
-                    Recuperação
+                    {t('design_principles.index.cards.fault_tolerance.badge2')}
                   </span>
                 </div>
               </div>
@@ -135,17 +136,17 @@ export default function DesignPrinciples() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-red-400 transition-colors">
-                  Design para Escalabilidade
+                  {t('design_principles.index.cards.scalability.title')}
                 </h2>
                 <p className="text-zinc-400 mb-4">
-                  Escalabilidade horizontal e vertical.
+                  {t('design_principles.index.cards.scalability.description')}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-red-500/20 text-red-300 rounded">
-                    Crescimento
+                    {t('design_principles.index.cards.scalability.badge1')}
                   </span>
                   <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
-                    Performance
+                    {t('design_principles.index.cards.scalability.badge2')}
                   </span>
                 </div>
               </div>
@@ -165,17 +166,17 @@ export default function DesignPrinciples() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-indigo-400 transition-colors">
-                  Alta Disponibilidade
+                  {t('design_principles.index.cards.high_availability.title')}
                 </h2>
                 <p className="text-zinc-400 mb-4">
-                  Zonas de disponibilidade e replicação.
+                  {t('design_principles.index.cards.high_availability.description')}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-indigo-500/20 text-indigo-300 rounded">
-                    Uptime
+                    {t('design_principles.index.cards.high_availability.badge1')}
                   </span>
                   <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
-                    Replicação
+                    {t('design_principles.index.cards.high_availability.badge2')}
                   </span>
                 </div>
               </div>

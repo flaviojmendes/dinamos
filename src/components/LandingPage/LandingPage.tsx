@@ -4,19 +4,27 @@ import { Link } from 'react-router-dom';
 import ReactGA from 'react-ga4';
 import Countdown from '../Countdown/Countdown';
 import { Typography } from '../Common';
+import { useTranslation } from 'react-i18next';
 
-const calculatePricing = () => {
-  const originalPrice = 499;
-  const discountedPrice = 179;
-  const discount = Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
-  return { 
-    originalPrice,
-    discountedPrice,
-    discount
-  };
+const calculatePricing = (language: string) => {
+  const isEnglish = language === 'en';
+  
+  if (isEnglish) {
+    const originalPrice = 89;
+    const discountedPrice = 39;
+    const discount = Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
+    return { originalPrice, discountedPrice, discount, currency: '$' };
+  } else {
+    const originalPrice = 499;
+    const discountedPrice = 179;
+    const discount = Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
+    return { originalPrice, discountedPrice, discount, currency: 'R$' };
+  }
 };
 
 export default function LandingPage() {
+  const { t, i18n } = useTranslation();
+  const pricing = calculatePricing(i18n.language);
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-black text-white">
       {/* Hero Section */}
@@ -31,19 +39,19 @@ export default function LandingPage() {
             className="text-center"
           >
             <div className="inline-block bg-blue-500/10 text-blue-400 px-4 py-2 rounded-full text-sm mb-6">
-              Nova Oferta Especial
+              {t('common.new_offer')}
             </div>
             <Typography 
               variant="h1" 
               className="mb-6 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent"
             >
-              Domine Sistemas Distribuídos na Prática
+              {t('landing.hero_title')}
             </Typography>
             <Typography 
               variant="p" 
               className="text-xl md:text-2xl text-zinc-400 mb-8 max-w-3xl mx-auto"
             >
-              A plataforma mais completa para aprender arquitetura de sistemas com simuladores interativos e casos reais
+              {t('landing.hero_subtitle')}
             </Typography>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link
@@ -54,7 +62,7 @@ export default function LandingPage() {
                 })}
                 className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
               >
-                <span>Começar Agora</span>
+                <span>{t('common.start_now')}</span>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
@@ -63,7 +71,7 @@ export default function LandingPage() {
                 to="/intro"
                 className="inline-flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
               >
-                <span>Ver Conteúdo</span>
+                <span>{t('common.view_content')}</span>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -81,16 +89,16 @@ export default function LandingPage() {
             <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2a4 4 0 014-4h3m4 0a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span className="text-green-400 font-bold text-lg">Editor Gratuito!</span>
+            <span className="text-green-400 font-bold text-lg">{t('common.free_editor')}</span>
           </div>
           <div className="text-zinc-200 text-lg mb-3">
-            Experimente o <span className="font-semibold text-green-300">Editor de Sistemas Distribuídos</span> totalmente grátis, sem cadastro!
+            {t('common.access_free_editor')}
           </div>
           <Link
             to="/editor"
             className="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg text-lg font-semibold transition-colors shadow-md mt-2"
           >
-            Acessar Editor Grátis
+            {t('common.access_free_editor')}
           </Link>
         </div>
       </div>
@@ -107,13 +115,13 @@ export default function LandingPage() {
             variant="h2" 
             className="mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
           >
-            Conteúdo Completo e Prático
+            {t('landing.features_title')}
           </Typography>
           <Typography 
             variant="p" 
             className="text-xl text-zinc-400"
           >
-            Tudo que você precisa para se tornar um especialista em sistemas distribuídos
+            {t('landing.features_subtitle')}
           </Typography>
         </motion.div>
 
@@ -131,32 +139,32 @@ export default function LandingPage() {
               </svg>
             </div>
             <Typography variant="h3" className="mb-3 text-blue-400">
-              Fundamentos Sólidos
+              {t('landing.fundamentals_title')}
             </Typography>
             <ul className="space-y-2 text-zinc-300">
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Sistemas Distribuídos 101
+                {t('landing.fundamentals_item1')}
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                System Design 101
+                {t('landing.fundamentals_item2')}
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Componentes Básicos
+                {t('landing.fundamentals_item3')}
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Arquiteturas Modernas
+                {t('landing.fundamentals_item4')}
               </li>
             </ul>
           </motion.div>
@@ -174,32 +182,32 @@ export default function LandingPage() {
               </svg>
             </div>
             <Typography variant="h3" className="mb-3 text-purple-400">
-              Simuladores Interativos
+              {t('landing.simulators_title')}
             </Typography>
             <ul className="space-y-2 text-zinc-300">
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Circuit Breaker e Falhas
+                {t('landing.simulators_item1')}
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Load Balancing e Cache
+                {t('landing.simulators_item2')}
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Consenso e Consistência
+                {t('landing.simulators_item3')}
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Segurança e Proteção
+                {t('landing.simulators_item4')}
               </li>
             </ul>
           </motion.div>
@@ -217,32 +225,32 @@ export default function LandingPage() {
               </svg>
             </div>
             <Typography variant="h3" className="mb-3 text-green-400">
-              Casos Reais
+              {t('landing.real_cases_title')}
             </Typography>
             <ul className="space-y-2 text-zinc-300">
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Netflix e YouTube
+                {t('landing.real_cases_item1')}
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                WhatsApp e Uber
+                {t('landing.real_cases_item2')}
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Spotify e Bit.ly
+                {t('landing.real_cases_item3')}
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Decisões Técnicas
+                {t('landing.real_cases_item4')}
               </li>
             </ul>
           </motion.div>
@@ -261,13 +269,13 @@ export default function LandingPage() {
             variant="h2" 
             className="mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
           >
-            Sua Jornada de Aprendizado
+            {t('landing.journey_title')}
           </Typography>
           <Typography 
             variant="p" 
             className="text-xl text-zinc-400"
           >
-            Um caminho estruturado para dominar sistemas distribuídos
+            {t('landing.journey_subtitle')}
           </Typography>
         </motion.div>
 
@@ -285,18 +293,18 @@ export default function LandingPage() {
               className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 items-center"
             >
               <div className="lg:text-right order-2 lg:order-1">
-                <h3 className="text-2xl font-bold text-blue-400 mb-4">Fundamentos</h3>
+                <h3 className="text-2xl font-bold text-blue-400 mb-4">{t('landing.journey_fundamentals_title')}</h3>
                 <ul className="space-y-3">
                   <li className="flex items-center gap-2 lg:flex-row-reverse">
-                    <span className="text-zinc-300">Sistemas Distribuídos 101</span>
+                    <span className="text-zinc-300">{t('landing.journey_fundamentals_item1')}</span>
                     <div className="h-2 w-2 rounded-full bg-blue-500" />
                   </li>
                   <li className="flex items-center gap-2 lg:flex-row-reverse">
-                    <span className="text-zinc-300">System Design 101</span>
+                    <span className="text-zinc-300">{t('landing.journey_fundamentals_item2')}</span>
                     <div className="h-2 w-2 rounded-full bg-blue-500" />
                   </li>
                   <li className="flex items-center gap-2 lg:flex-row-reverse">
-                    <span className="text-zinc-300">Componentes Básicos</span>
+                    <span className="text-zinc-300">{t('landing.journey_fundamentals_item3')}</span>
                     <div className="h-2 w-2 rounded-full bg-blue-500" />
                   </li>
                 </ul>
@@ -309,7 +317,7 @@ export default function LandingPage() {
                     <svg className="w-12 h-12 text-blue-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
-                    <p className="text-zinc-300">Aprenda os conceitos fundamentais e construa uma base sólida para sua jornada</p>
+                    <p className="text-zinc-300">{t('landing.journey_fundamentals_description')}</p>
                   </div>
                 </div>
               </div>
@@ -330,24 +338,24 @@ export default function LandingPage() {
                     <svg className="w-12 h-12 text-purple-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
-                    <p className="text-zinc-300">Domine os princípios essenciais de design de sistemas distribuídos</p>
+                    <p className="text-zinc-300">{t('landing.journey_design_principles_description')}</p>
                   </div>
                 </div>
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-purple-400 mb-4">Princípios de Design</h3>
+                <h3 className="text-2xl font-bold text-purple-400 mb-4">{t('landing.journey_design_principles_title')}</h3>
                 <ul className="space-y-3">
                   <li className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-purple-500" />
-                    <span className="text-zinc-300">Escalabilidade Horizontal e Vertical</span>
+                    <span className="text-zinc-300">{t('landing.journey_design_principles_item1')}</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-purple-500" />
-                    <span className="text-zinc-300">Alta Disponibilidade</span>
+                    <span className="text-zinc-300">{t('landing.journey_design_principles_item2')}</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-purple-500" />
-                    <span className="text-zinc-300">Tolerância a Falhas</span>
+                    <span className="text-zinc-300">{t('landing.journey_design_principles_item3')}</span>
                   </li>
                 </ul>
               </div>
@@ -361,18 +369,18 @@ export default function LandingPage() {
               className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 items-center"
             >
               <div className="lg:text-right order-2 lg:order-1">
-                <h3 className="text-2xl font-bold text-green-400 mb-4">Tópicos Avançados</h3>
+                <h3 className="text-2xl font-bold text-green-400 mb-4">{t('landing.journey_advanced_topics_title')}</h3>
                 <ul className="space-y-3">
                   <li className="flex items-center gap-2 lg:flex-row-reverse">
-                    <span className="text-zinc-300">Estratégias de Consistência</span>
+                    <span className="text-zinc-300">{t('landing.journey_advanced_topics_item1')}</span>
                     <div className="h-2 w-2 rounded-full bg-green-500" />
                   </li>
                   <li className="flex items-center gap-2 lg:flex-row-reverse">
-                    <span className="text-zinc-300">Relógios Lógicos de Lamport</span>
+                    <span className="text-zinc-300">{t('landing.journey_advanced_topics_item2')}</span>
                     <div className="h-2 w-2 rounded-full bg-green-500" />
                   </li>
                   <li className="flex items-center gap-2 lg:flex-row-reverse">
-                    <span className="text-zinc-300">Arquitetura Orientada a Eventos</span>
+                    <span className="text-zinc-300">{t('landing.journey_advanced_topics_item3')}</span>
                     <div className="h-2 w-2 rounded-full bg-green-500" />
                   </li>
                 </ul>
@@ -385,7 +393,7 @@ export default function LandingPage() {
                     <svg className="w-12 h-12 text-green-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
-                    <p className="text-zinc-300">Explore conceitos avançados e aprofunde seu conhecimento</p>
+                    <p className="text-zinc-300">{t('landing.journey_advanced_topics_description')}</p>
                   </div>
                 </div>
               </div>
@@ -406,24 +414,24 @@ export default function LandingPage() {
                     <svg className="w-12 h-12 text-yellow-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                     </svg>
-                    <p className="text-zinc-300">Aplique seu conhecimento analisando casos reais de sucesso</p>
+                    <p className="text-zinc-300">{t('landing.journey_real_cases_description')}</p>
                   </div>
                 </div>
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-yellow-400 mb-4">Casos Reais</h3>
+                <h3 className="text-2xl font-bold text-yellow-400 mb-4">{t('landing.journey_real_cases_title')}</h3>
                 <ul className="space-y-3">
                   <li className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-yellow-500" />
-                    <span className="text-zinc-300">YouTube e Netflix</span>
+                    <span className="text-zinc-300">{t('landing.journey_real_cases_item1')}</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-yellow-500" />
-                    <span className="text-zinc-300">Spotify e WhatsApp</span>
+                    <span className="text-zinc-300">{t('landing.journey_real_cases_item2')}</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-yellow-500" />
-                    <span className="text-zinc-300">Uber e Bit.ly</span>
+                    <span className="text-zinc-300">{t('landing.journey_real_cases_item3')}</span>
                   </li>
                 </ul>
               </div>
@@ -444,13 +452,13 @@ export default function LandingPage() {
             variant="h2" 
             className="mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
           >
-            Aprenda com Simuladores Interativos
+            {t('landing.simulators_title')}
           </Typography>
           <Typography 
             variant="p" 
             className="text-xl text-zinc-400"
           >
-            Visualize e experimente conceitos complexos em tempo real
+            {t('landing.simulators_subtitle')}
           </Typography>
         </motion.div>
 
@@ -469,10 +477,10 @@ export default function LandingPage() {
               />
             </div>
             <Typography variant="h3" className="mb-2 text-blue-400">
-              Cache Simulator
+              {t('landing.simulators_item1')}
             </Typography>
             <Typography variant="p" className="text-zinc-300">
-              Entenda como o cache funciona e como ele melhora a performance dos sistemas
+              {t('landing.simulators_item1_description')}
             </Typography>
           </motion.div>
 
@@ -490,10 +498,10 @@ export default function LandingPage() {
               />
             </div>
             <Typography variant="h3" className="mb-2 text-purple-400">
-              Circuit Breaker
+              {t('landing.simulators_item2')}
             </Typography>
             <Typography variant="p" className="text-zinc-300">
-              Aprenda sobre tolerância a falhas e resiliência em sistemas distribuídos
+              {t('landing.simulators_item2_description')}
             </Typography>
           </motion.div>
 
@@ -511,10 +519,10 @@ export default function LandingPage() {
               />
             </div>
             <Typography variant="h3" className="mb-2 text-green-400">
-              Load Balancer
+              {t('landing.simulators_item3')}
             </Typography>
             <Typography variant="p" className="text-zinc-300">
-              Explore diferentes estratégias de balanceamento de carga e suas aplicações
+              {t('landing.simulators_item3_description')}
             </Typography>
           </motion.div>
         </div>
@@ -532,7 +540,7 @@ export default function LandingPage() {
             variant="h2" 
             className="mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
           >
-            Quem vai te ensinar
+            {t('landing.teacher_title')}
           </Typography>
         </motion.div>
 
@@ -544,25 +552,25 @@ export default function LandingPage() {
               transition={{ delay: 0.3 }}
               className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30"
             >
-              <h3 className="text-xl font-bold mb-4 text-blue-400">Experiência</h3>
+              <h3 className="text-xl font-bold mb-4 text-blue-400">{t('landing.teacher_experience_title')}</h3>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3 text-zinc-300">
                   <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
-                  <span>15+ anos de experiência em desenvolvimento de software</span>
+                  <span>{t('landing.teacher_experience_item1')}</span>
                 </li>
                 <li className="flex items-start gap-3 text-zinc-300">
                   <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
-                  <span>Liderança em empresas de tecnologia</span>
+                  <span>{t('landing.teacher_experience_item2')}</span>
                 </li>
                 <li className="flex items-start gap-3 text-zinc-300">
                   <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                   </svg>
-                  <span>Projetos em escala global</span>
+                  <span>{t('landing.teacher_experience_item3')}</span>
                 </li>
               </ul>
             </motion.div>
@@ -573,25 +581,25 @@ export default function LandingPage() {
               transition={{ delay: 0.4 }}
               className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30"
             >
-              <h3 className="text-xl font-bold mb-4 text-purple-400">Especialidades</h3>
+              <h3 className="text-xl font-bold mb-4 text-purple-400">{t('landing.teacher_specialties_title')}</h3>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3 text-zinc-300">
                   <svg className="w-5 h-5 text-purple-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
-                  <span>Arquitetura de Sistemas Distribuídos</span>
+                  <span>{t('landing.teacher_specialties_item1')}</span>
                 </li>
                 <li className="flex items-start gap-3 text-zinc-300">
                   <svg className="w-5 h-5 text-purple-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
-                  <span>Escalabilidade e Performance</span>
+                  <span>{t('landing.teacher_specialties_item2')}</span>
                 </li>
                 <li className="flex items-start gap-3 text-zinc-300">
                   <svg className="w-5 h-5 text-purple-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
-                  <span>Segurança e Boas Práticas</span>
+                  <span>{t('landing.teacher_specialties_item3')}</span>
                 </li>
               </ul>
             </motion.div>
@@ -605,13 +613,13 @@ export default function LandingPage() {
           >
             <div className="space-y-6">
               <p className="text-zinc-300 leading-relaxed">
-                Olá! Me chamo Flávio, e atualmente atuo como Engineering Manager em Sistemas Distribuídos.
+                {t('landing.teacher_about_me_text1')}
               </p>
               <p className="text-zinc-300 leading-relaxed">
-                Nesse material a minha intenção é poder colocar todos esses mais de 16 anos de experiência em prática, de forma que você saia daqui com uma mentalidade de que é necessário, além de ter um repertório técnico, colocar a mão na massa, experimentar e validar suas soluções.
+                {t('landing.teacher_about_me_text2')}
               </p>
               <p className="text-zinc-300 leading-relaxed">
-                No meu dia a dia trabalho em projetos de alta performance, escalabilidade e disponibilidade onde atingimos mais de <span className="font-bold text-green-400">1,5 bilhão</span> de requisições por ano.
+                {t('landing.teacher_about_me_text3')}
               </p>
             </div>
           </motion.div>
@@ -630,13 +638,13 @@ export default function LandingPage() {
             variant="h2" 
             className="mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
           >
-            Invista no Seu Futuro
+            {t('landing.invest_title')}
           </Typography>
           <Typography 
             variant="p" 
             className="text-xl text-zinc-400"
           >
-            Acesso vitalício a todo o conteúdo com um único pagamento
+            {t('landing.invest_subtitle')}
           </Typography>
         </motion.div>
 
@@ -648,17 +656,17 @@ export default function LandingPage() {
             className="bg-gradient-to-b from-blue-600/10 to-purple-600/10 rounded-xl p-8 border border-blue-500/20 hover:border-blue-500/50 transition-colors relative overflow-hidden"
           >
             <div className="absolute -right-12 top-8 bg-blue-500 text-white px-12 py-1 rotate-45 text-sm font-medium">
-              Nova Oferta
+              {t('common.new_offer')}
             </div>
             <div className="text-center mb-8">
               <div className="text-center">
                 <span className="text-4xl font-bold">
-                  <span className="text-zinc-400 line-through">R${calculatePricing().originalPrice}</span>{" "}
-                  <span className="text-white">R${calculatePricing().discountedPrice}</span>
+                  <span className="text-zinc-400 line-through">{pricing.currency}{pricing.originalPrice}</span>{" "}
+                  <span className="text-white">{pricing.currency}{pricing.discountedPrice}</span>
                 </span>
-                <span className="text-green-400 text-sm ml-2">{calculatePricing().discount}% OFF</span>
+                <span className="text-green-400 text-sm ml-2">{t('common.discount_off', { percent: pricing.discount })}</span>
               </div>
-              <p className="text-zinc-400">Pagamento único - Acesso vitalício</p>
+              <p className="text-zinc-400">{t('landing.invest_payment_info')}</p>
             </div>
             <Link
               to="/intro"
@@ -668,7 +676,7 @@ export default function LandingPage() {
               })}
               className="block text-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
             >
-              Garantir Minha Vaga
+              {t('common.guarantee_spot')}
             </Link>
           </motion.div>
 
@@ -683,32 +691,32 @@ export default function LandingPage() {
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
-                O Que Você Recebe
+                {t('landing.what_you_receive_title')}
               </h4>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3 text-zinc-300">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>Mais de 15 simuladores interativos para prática hands-on</span>
+                  <span>{t('landing.what_you_receive_item1')}</span>
                 </li>
                 <li className="flex items-start gap-3 text-zinc-300">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>6 estudos de caso detalhados de empresas de tecnologia</span>
+                  <span>{t('landing.what_you_receive_item2')}</span>
                 </li>
                 <li className="flex items-start gap-3 text-zinc-300">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>Conteúdo teórico completo com exemplos práticos</span>
+                  <span>{t('landing.what_you_receive_item3')}</span>
                 </li>
                 <li className="flex items-start gap-3 text-zinc-300">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>Atualizações e novos conteúdos incluídos</span>
+                  <span>{t('landing.what_you_receive_item4')}</span>
                 </li>
               </ul>
             </div>
@@ -718,32 +726,32 @@ export default function LandingPage() {
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
-                Diferenciais
+                {t('landing.differentials_title')}
               </h4>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3 text-zinc-300">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>Simuladores exclusivos para praticar conceitos</span>
+                  <span>{t('landing.differentials_item1')}</span>
                 </li>
                 <li className="flex items-start gap-3 text-zinc-300">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>Análise detalhada de decisões técnicas reais</span>
+                  <span>{t('landing.differentials_item2')}</span>
                 </li>
                 <li className="flex items-start gap-3 text-zinc-300">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>Conteúdo em português e focado na prática</span>
+                  <span>{t('landing.differentials_item3')}</span>
                 </li>
                 <li className="flex items-start gap-3 text-zinc-300">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>Roadmap estruturado de aprendizado</span>
+                  <span>{t('landing.differentials_item4')}</span>
                 </li>
               </ul>
             </div>
@@ -761,9 +769,9 @@ export default function LandingPage() {
         >
           <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
           <div className="relative">
-            <h2 className="text-3xl font-bold mb-4">Pronto para se tornar um especialista?</h2>
+            <h2 className="text-3xl font-bold mb-4">{t('landing.cta_title')}</h2>
             <p className="text-xl mb-8 text-zinc-200">
-              Junte-se a centenas de desenvolvedores que já estão dominando sistemas distribuídos na prática
+              {t('landing.cta_subtitle')}
             </p>
             <Link
               to="/intro"
@@ -773,7 +781,7 @@ export default function LandingPage() {
               })}
               className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg text-lg font-medium hover:bg-zinc-100 transition-colors"
             >
-              Garantir Minha Vaga
+              {t('landing.guarantee_spot')}
             </Link>
           </div>
         </motion.div>

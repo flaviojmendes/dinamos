@@ -1,8 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function CircuitBreaker() {
+  const { t } = useTranslation();
   return (
     <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
       <div className="prose prose-invert prose-lg max-w-none mb-12">
@@ -12,7 +14,7 @@ export default function CircuitBreaker() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          Circuit Breaker (Disjuntor)
+          {t('design_principles.circuit_breaker.title')} (Disjuntor)
         </motion.h1>
         <motion.p
           initial={{ opacity: 0, y: -10 }}
@@ -20,8 +22,7 @@ export default function CircuitBreaker() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-xl text-zinc-300"
         >
-          Uma estratégia essencial para prevenir falhas em cascata em sistemas distribuídos, 
-          funcionando de maneira similar a um disjuntor elétrico.
+          {t('design_principles.circuit_breaker.intro')}
         </motion.p>
       </div>
 
@@ -35,23 +36,19 @@ export default function CircuitBreaker() {
         >
           <div className="bg-zinc-900 rounded-lg p-6">
             <h2 className="text-2xl font-bold text-blue-400 mb-4">
-              Como Funciona
+              {t('design_principles.circuit_breaker.how_it_works.title')}
             </h2>
             <p className="text-zinc-300 mb-6">
-              Imagine que a internet da sua casa está com problemas sérios. Você tenta enviar uma mensagem 
-              para seu amigo várias vezes, mas ela nunca chega. Ficar insistindo só vai te frustrar e 
-              sobrecarregar a rede. É aí que entra o "Circuit Breaker".
+              {t('design_principles.circuit_breaker.how_it_works.p1')}
             </p>
             <p className="text-zinc-300 mb-6">
-              Ele funciona como um disjuntor na sua casa: quando a corrente elétrica está muito alta, 
-              ele desliga tudo para evitar danos. No caso dos sistemas, quando muitas tentativas de 
-              comunicação falham, o "Circuit Breaker" entra em ação e bloqueia novas tentativas por um tempo.
+              {t('design_principles.circuit_breaker.how_it_works.p2')}
             </p>
           </div>
 
           <div className="bg-zinc-900 rounded-lg p-6">
             <h2 className="text-2xl font-bold text-blue-400 mb-4">
-              Benefícios
+              {t('design_principles.circuit_breaker.benefits.title')}
             </h2>
             <ul className="space-y-4">
               <motion.li 
@@ -64,8 +61,8 @@ export default function CircuitBreaker() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
-                  <h3 className="font-medium text-zinc-200">Prevenção de Falhas em Cascata</h3>
-                  <p className="text-zinc-400">Evita que falhas em um serviço afetem todo o sistema</p>
+                  <h3 className="font-medium text-zinc-200">{t('design_principles.circuit_breaker.benefits.items.cascade_prevention.title')}</h3>
+                  <p className="text-zinc-400">{t('design_principles.circuit_breaker.benefits.items.cascade_prevention.desc')}</p>
                 </div>
               </motion.li>
               <motion.li 
@@ -78,8 +75,8 @@ export default function CircuitBreaker() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
-                  <h3 className="font-medium text-zinc-200">Recuperação Automática</h3>
-                  <p className="text-zinc-400">Permite que o sistema se recupere naturalmente após falhas</p>
+                  <h3 className="font-medium text-zinc-200">{t('design_principles.circuit_breaker.benefits.items.auto_recovery.title')}</h3>
+                  <p className="text-zinc-400">{t('design_principles.circuit_breaker.benefits.items.auto_recovery.desc')}</p>
                 </div>
               </motion.li>
               <motion.li 
@@ -92,8 +89,8 @@ export default function CircuitBreaker() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
-                  <h3 className="font-medium text-zinc-200">Melhor Experiência</h3>
-                  <p className="text-zinc-400">Falha rápido em vez de deixar usuários esperando</p>
+                  <h3 className="font-medium text-zinc-200">{t('design_principles.circuit_breaker.benefits.items.better_experience.title')}</h3>
+                  <p className="text-zinc-400">{t('design_principles.circuit_breaker.benefits.items.better_experience.desc')}</p>
                 </div>
               </motion.li>
             </ul>
@@ -109,40 +106,36 @@ export default function CircuitBreaker() {
         >
           <div className="bg-zinc-900 rounded-lg p-6">
             <h2 className="text-2xl font-bold text-blue-400 mb-4">
-              Exemplo do Mundo Real
+              {t('design_principles.circuit_breaker.real_world.title')}
             </h2>
             <div className="bg-zinc-800 rounded-lg p-4 mb-4">
               <p className="text-zinc-300">
-                Um site de notícias recebe muitas visitas durante um evento importante. De repente, 
-                o servidor que armazena as imagens fica sobrecarregado e começa a responder lentamente. 
-                O "Circuit Breaker", percebendo essa situação, entra em ação e impede que o site tente 
-                buscar novas imagens por alguns minutos. Assim, o site continua funcionando, exibindo 
-                as notícias (mesmo sem as imagens), e o servidor de imagens tem tempo para se recuperar.
+                {t('design_principles.circuit_breaker.real_world.text')}
               </p>
             </div>
           </div>
 
           <div className="bg-zinc-900 rounded-lg p-6">
             <h2 className="text-2xl font-bold text-blue-400 mb-4">
-              Estados do Circuit Breaker
+              {t('design_principles.circuit_breaker.states.title')}
             </h2>
             <div className="space-y-4">
               <div className="bg-zinc-800 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-green-400 mb-2">Fechado (Normal)</h3>
+                <h3 className="text-lg font-semibold text-green-400 mb-2">{t('design_principles.circuit_breaker.states.closed.title')}</h3>
                 <p className="text-zinc-400">
-                  Operação normal, requisições passam normalmente. O circuito monitora falhas.
+                  {t('design_principles.circuit_breaker.states.closed.desc')}
                 </p>
               </div>
               <div className="bg-zinc-800 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-red-400 mb-2">Aberto (Bloqueado)</h3>
+                <h3 className="text-lg font-semibold text-red-400 mb-2">{t('design_principles.circuit_breaker.states.open.title')}</h3>
                 <p className="text-zinc-400">
-                  Muitas falhas detectadas, requisições são bloqueadas por um período.
+                  {t('design_principles.circuit_breaker.states.open.desc')}
                 </p>
               </div>
               <div className="bg-zinc-800 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-yellow-400 mb-2">Semi-Aberto (Teste)</h3>
+                <h3 className="text-lg font-semibold text-yellow-400 mb-2">{t('design_principles.circuit_breaker.states.half_open.title')}</h3>
                 <p className="text-zinc-400">
-                  Permite algumas requisições para testar se o sistema se recuperou.
+                  {t('design_principles.circuit_breaker.states.half_open.desc')}
                 </p>
               </div>
             </div>
@@ -164,7 +157,7 @@ export default function CircuitBreaker() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          Explorar Simulador de Circuit Breaker
+          {t('design_principles.circuit_breaker.cta_simulator')}
         </Link>
       </motion.div>
     </div>

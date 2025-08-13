@@ -1,8 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function Disponibilidade() {
+  const { t } = useTranslation();
   return (
     <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
       <div className="prose prose-invert prose-lg max-w-none mb-12">
@@ -12,7 +14,7 @@ export default function Disponibilidade() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          Alta Disponibilidade
+          {t('design_principles.availability.index.title')}
         </motion.h1>
         <motion.p
           initial={{ opacity: 0, y: -10 }}
@@ -20,8 +22,7 @@ export default function Disponibilidade() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-xl text-zinc-300"
         >
-          Alta disponibilidade é a capacidade de um sistema manter-se operacional e acessível mesmo em situações de falha,
-          garantindo continuidade do serviço através de redundância e recuperação automática.
+          {t('design_principles.availability.index.intro')}
         </motion.p>
       </div>
 
@@ -40,11 +41,10 @@ export default function Disponibilidade() {
               </svg>
             </div>
             <h2 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
-              Replicação
+              {t('design_principles.availability.index.cards.replication_title')}
             </h2>
             <p className="text-zinc-400">
-              Mantenha cópias sincronizadas dos dados e serviços em diferentes servidores
-              para garantir redundância e distribuição de carga.
+              {t('design_principles.availability.index.cards.replication_desc')}
             </p>
           </Link>
         </motion.div>
@@ -63,11 +63,10 @@ export default function Disponibilidade() {
               </svg>
             </div>
             <h2 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
-              Failover
+              {t('design_principles.availability.index.cards.failover_title')}
             </h2>
             <p className="text-zinc-400">
-              Implemente mecanismos automáticos de recuperação que detectam falhas
-              e redirecionam o tráfego para sistemas de backup.
+              {t('design_principles.availability.index.cards.failover_desc')}
             </p>
           </Link>
         </motion.div>
@@ -86,11 +85,10 @@ export default function Disponibilidade() {
               </svg>
             </div>
             <h2 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
-              Zonas de Disponibilidade
+              {t('design_principles.availability.index.cards.zones_title')}
             </h2>
             <p className="text-zinc-400">
-              Distribua sua aplicação em diferentes zonas geográficas para proteção
-              contra falhas de infraestrutura localizadas.
+              {t('design_principles.availability.index.cards.zones_desc')}
             </p>
           </Link>
         </motion.div>
@@ -109,11 +107,10 @@ export default function Disponibilidade() {
               </svg>
             </div>
             <h2 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
-              Recuperação de Desastres
+              {t('design_principles.availability.index.cards.dr_title')}
             </h2>
             <p className="text-zinc-400">
-              Planeje e implemente estratégias para recuperação do sistema em caso
-              de falhas catastróficas.
+              {t('design_principles.availability.index.cards.dr_desc')}
             </p>
           </Link>
         </motion.div>
@@ -132,11 +129,10 @@ export default function Disponibilidade() {
               </svg>
             </div>
             <h2 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
-              Monitoramento de Saúde
+              {t('design_principles.availability.index.cards.monitoring_title')}
             </h2>
             <p className="text-zinc-400">
-              Monitore continuamente a saúde do sistema para detectar e resolver
-              problemas antes que afetem os usuários.
+              {t('design_principles.availability.index.cards.monitoring_desc')}
             </p>
           </Link>
         </motion.div>
@@ -155,11 +151,10 @@ export default function Disponibilidade() {
               </svg>
             </div>
             <h2 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
-              Distribuição de Carga
+              {t('design_principles.availability.index.cards.load_dist_title')}
             </h2>
             <p className="text-zinc-400">
-              Distribua o tráfego entre múltiplos servidores para evitar sobrecarga
-              e garantir resposta mesmo durante picos.
+              {t('design_principles.availability.index.cards.load_dist_desc')}
             </p>
           </Link>
         </motion.div>
@@ -180,7 +175,7 @@ export default function Disponibilidade() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          Explorar Simulador de Alta Disponibilidade
+          {t('design_principles.availability.index.sim_cta')}
         </Link>
       </motion.div>
     </div>
