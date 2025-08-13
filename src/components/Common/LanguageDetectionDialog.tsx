@@ -8,28 +8,34 @@ const LanguageDetectionDialog: React.FC = () => {
   const [detectedLanguage, setDetectedLanguage] = useState<string>('');
 
   useEffect(() => {
-    // Check if user has already made a language choice
+    // Check if user has already made an explicit language choice
     const hasChosenLanguage = localStorage.getItem('language-choice-made');
-    const existingLanguage = localStorage.getItem('i18nextLng');
     
-    // Only show dialog if user hasn't made a choice and no language is already set
-    if (!hasChosenLanguage && !existingLanguage) {
-      // Get browser language
-      const browserLang = navigator.language.toLowerCase();
-      const isPortuguese = browserLang.startsWith('pt');
-      
-      setDetectedLanguage(isPortuguese ? 'pt' : 'en');
-      setShowDialog(true);
+    // Only show dialog if user hasn't made an explicit choice through our dialog
+    if (!hasChosenLanguage) {
+      try {
+        // Get browser language with fallback
+        const browserLang = (navigator.language || 'en').toLowerCase();
+        const isPortuguese = browserLang.startsWith('pt');
+        
+        setDetectedLanguage(isPortuguese ? 'pt' : 'en');
+        setShowDialog(true);
+      } catch (error) {
+        // Fallback if navigator.language is not available
+        console.warn('Could not detect browser language, defaulting to English');
+        setDetectedLanguage('en');
+        setShowDialog(true);
+      }
     }
   }, []);
 
   const handleLanguageChoice = (language: string) => {
-    // Set the language
-    i18n.changeLanguage(language);
-    
-    // Store the user's choice
+    // Store the user's explicit choice first
     localStorage.setItem('language-choice-made', 'true');
     localStorage.setItem('i18nextLng', language);
+    
+    // Set the language (this will now find the localStorage value)
+    i18n.changeLanguage(language);
     
     // Close dialog
     setShowDialog(false);

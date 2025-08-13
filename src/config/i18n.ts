@@ -9487,8 +9487,9 @@ i18n
       escapeValue: false
     },
     detection: {
-      order: ['querystring', 'localStorage', 'navigator'],
-      caches: ['localStorage']
+      // Only use localStorage if language was explicitly chosen by user
+      order: ['localStorage'],
+      caches: [] // Don't auto-cache, let LanguageDetectionDialog handle this
     }
   });
 
