@@ -958,6 +958,39 @@ const resources = {
           simulator_title: 'Interactive Simulator',
           simulator_description: 'Try our interactive Firewall simulation to understand how security rules affect network traffic.',
           access_simulator: 'Access Simulator'
+        },
+        load_balancer_page: {
+          title: 'Load Balancers',
+          intro1: 'Load balancers evenly distribute network traffic or requests across multiple servers, preventing any single server from becoming overloaded. For example, an e-commerce system can use a load balancer to distribute requests.',
+          intro2: 'In load balancing, multiple server instances process requests simultaneously. This is essential in scalable systems, allowing you to add more servers as demand increases.',
+          algos_title: 'Load Balancing Algorithms',
+          rr_title: 'Round Robin',
+          rr_p: 'Requests are distributed sequentially among available servers, ensuring an even distribution.',
+          how_it_works: 'How it works:',
+          rr_example: 'If you have 3 servers (A, B, C), the first request goes to A, the second to B, the third to C, the fourth returns to A, and so on.',
+          hashing_title: 'Hashing',
+          hashing_p: 'Uses a hash (based on IP or another identifier) to ensure requests from a specific client are directed to the same server.',
+          use_case: 'Use case:',
+          hashing_example: 'Important for maintaining user sessions, ensuring a client always accesses the same server where their session is stored.',
+          least_title: 'Least Connections',
+          least_p: 'Directs new requests to the server with the fewest active connections, helping to better balance the load.',
+          advantage: 'Advantage:',
+          least_example: 'More efficient when servers have different capacities or when requests have very variable durations.'
+        },
+        message_queue_page: {
+          title: 'Message Queues',
+          intro: 'Message queues are systems used for asynchronous communication between different parts of a system, ensuring that messages can be sent and processed reliably.',
+          kafka_title: 'Kafka',
+          kafka_p: 'A distributed messaging system designed to process large volumes of data in real time. Used in data pipelines and streaming systems.',
+          rabbitmq_title: 'RabbitMQ',
+          rabbitmq_p: 'A message broker that supports a wide variety of messaging patterns, such as queuing and message exchange, used for communication between microservices.',
+          sqs_title: 'Amazon SQS',
+          sqs_p: 'AWS message queue service that offers a scalable and managed queue solution in the cloud.',
+          pubsub_title: 'Pub/Sub and Queue Systems',
+          pubsub_header: 'Pub/Sub (Publish/Subscribe)',
+          pubsub_p: 'A pattern where message producers (publishers) send messages to a channel, and consumers (subscribers) subscribe to receive these messages. The Pub/Sub model allows decoupling between producers and consumers.',
+          fifo_header: 'Queue Systems',
+          fifo_p: 'Messages are placed in a queue and processed in FIFO (first-in, first-out) manner, ensuring messages are delivered and processed in the order they were received.'
         }
       },
       simulators: {

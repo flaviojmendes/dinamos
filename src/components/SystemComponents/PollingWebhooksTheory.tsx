@@ -37,10 +37,10 @@ export default function PollingWebhooksTheory() {
           <h2 className="text-3xl font-bold mb-8 text-blue-400">{t('polling_webhooks_theory.problem_title')}</h2>
           <div className="bg-zinc-900/50 rounded-xl p-8 border border-zinc-700/50">
             <p className="text-lg text-zinc-300 leading-relaxed mb-6">
-              {t('components.polling_webhooks_theory.subtitle')}
+              {t('polling_webhooks_theory.subtitle')}
             </p>
             <p className="text-lg text-zinc-300 leading-relaxed mb-6">
-              {t('components.polling_webhooks_theory.subtitle')}
+              In distributed systems, keeping components synchronized is one of the biggest challenges. How can one service know when something has changed in another? There are two main approaches to solve this problem.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
               <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-6">
@@ -71,7 +71,7 @@ export default function PollingWebhooksTheory() {
           <div className="bg-zinc-900/50 rounded-xl p-8 border border-zinc-700/50 mb-8">
             <h3 className="text-2xl font-bold mb-6 text-blue-300">{t('polling_webhooks_theory.how_it_works')}</h3>
             <p className="text-lg text-zinc-300 leading-relaxed mb-6">
-              {t('components.polling_webhooks_theory.subtitle')}
+              Polling involves regularly checking for updates by making requests at specific intervals. It's like asking "Is there anything new?" every few seconds.
             </p>
             
             <div className="bg-zinc-800/50 rounded-lg p-6 mb-6">
@@ -125,7 +125,7 @@ export default function PollingWebhooksTheory() {
           <div className="bg-zinc-900/50 rounded-xl p-8 border border-zinc-700/50 mb-8">
             <h3 className="text-2xl font-bold mb-6 text-purple-300">{t('polling_webhooks_theory.how_it_works')}</h3>
             <p className="text-lg text-zinc-300 leading-relaxed mb-6">
-              {t('polling_webhooks_theory.subtitle')}
+              Webhooks use a push-based approach where the server notifies clients immediately when events occur. It's like having someone call you the moment something happens.
             </p>
             
             <div className="bg-zinc-800/50 rounded-lg p-6 mb-6">
