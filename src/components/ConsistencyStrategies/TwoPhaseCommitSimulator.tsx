@@ -23,10 +23,10 @@ interface Message {
 export default function TwoPhaseCommitSimulator() {
   const { t } = useTranslation();
   const [nodes, setNodes] = useState<Node[]>([
-    { id: 0, name: t('design_principles.consistency_strategies.two_phase_commit_simulator.nodes.coordinator'), type: 'coordinator', state: 'idle' },
-    { id: 1, name: t('design_principles.consistency_strategies.two_phase_commit_simulator.nodes.bank_n', { n: 1 }), type: 'participant', state: 'idle', hasResources: true, willVoteYes: true },
-    { id: 2, name: t('design_principles.consistency_strategies.two_phase_commit_simulator.nodes.bank_n', { n: 2 }), type: 'participant', state: 'idle', hasResources: true, willVoteYes: true },
-    { id: 3, name: t('design_principles.consistency_strategies.two_phase_commit_simulator.nodes.bank_n', { n: 3 }), type: 'participant', state: 'idle', hasResources: true, willVoteYes: true },
+    { id: 0, name: t('design_principles.two_phase_commit_simulator.nodes.coordinator'), type: 'coordinator', state: 'idle' },
+    { id: 1, name: t('design_principles.two_phase_commit_simulator.nodes.bank_n', { n: 1 }), type: 'participant', state: 'idle', hasResources: true, willVoteYes: true },
+    { id: 2, name: t('design_principles.two_phase_commit_simulator.nodes.bank_n', { n: 2 }), type: 'participant', state: 'idle', hasResources: true, willVoteYes: true },
+    { id: 3, name: t('design_principles.two_phase_commit_simulator.nodes.bank_n', { n: 3 }), type: 'participant', state: 'idle', hasResources: true, willVoteYes: true },
   ]);
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -89,7 +89,7 @@ export default function TwoPhaseCommitSimulator() {
         ));
         nodes.forEach(node => {
           if (node.type === 'participant') {
-            addMessage(0, node.id, 'prepare', t('design_principles.consistency_strategies.two_phase_commit_simulator.messages.prepare_q'));
+            addMessage(0, node.id, 'prepare', t('design_principles.two_phase_commit_simulator.messages.prepare_q'));
           }
         });
         break;
@@ -111,7 +111,7 @@ export default function TwoPhaseCommitSimulator() {
               node.id,
               0,
               'vote',
-              node.willVoteYes ? t('design_principles.consistency_strategies.two_phase_commit_simulator.messages.vote_yes') : t('design_principles.consistency_strategies.two_phase_commit_simulator.messages.vote_no')
+              node.willVoteYes ? t('design_principles.two_phase_commit_simulator.messages.vote_yes') : t('design_principles.two_phase_commit_simulator.messages.vote_no')
             );
           }
         });
@@ -133,7 +133,7 @@ export default function TwoPhaseCommitSimulator() {
               0,
               node.id,
               allPrepared ? 'commit' : 'abort',
-              allPrepared ? t('design_principles.consistency_strategies.two_phase_commit_simulator.messages.decision_commit') : t('design_principles.consistency_strategies.two_phase_commit_simulator.messages.decision_abort')
+              allPrepared ? t('design_principles.two_phase_commit_simulator.messages.decision_commit') : t('design_principles.two_phase_commit_simulator.messages.decision_abort')
             );
           }
         });
@@ -146,7 +146,7 @@ export default function TwoPhaseCommitSimulator() {
               node.id,
               0,
               'ack',
-              t('design_principles.consistency_strategies.two_phase_commit_simulator.messages.done')
+              t('design_principles.two_phase_commit_simulator.messages.done')
             );
           }
         });
@@ -171,9 +171,9 @@ export default function TwoPhaseCommitSimulator() {
   return (
     <div className="bg-zinc-900 rounded-lg p-6 mt-8">
       <div className="mb-6">
-        <h3 className="text-2xl font-bold text-white mb-4">{t('design_principles.consistency_strategies.two_phase_commit_simulator.title')}</h3>
+        <h3 className="text-2xl font-bold text-white mb-4">{t('design_principles.two_phase_commit_simulator.title')}</h3>
         <p className="text-zinc-400 mb-4">
-          {t('design_principles.consistency_strategies.two_phase_commit_simulator.intro')}
+          {t('design_principles.two_phase_commit_simulator.intro')}
         </p>
       </div>
 
@@ -184,24 +184,24 @@ export default function TwoPhaseCommitSimulator() {
           className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
           disabled={step >= 4}
         >
-          {isAutoPlaying ? t('design_principles.consistency_strategies.two_phase_commit_simulator.controls.pause') : t('design_principles.consistency_strategies.two_phase_commit_simulator.controls.start')} {t('design_principles.consistency_strategies.two_phase_commit_simulator.controls.simulation')}
+          {isAutoPlaying ? t('design_principles.two_phase_commit_simulator.controls.pause') : t('design_principles.two_phase_commit_simulator.controls.start')} {t('design_principles.two_phase_commit_simulator.controls.simulation')}
         </button>
         <button
           onClick={resetSimulation}
           className="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 text-white rounded-lg transition-colors"
         >
-          {t('design_principles.consistency_strategies.two_phase_commit_simulator.controls.reset')}
+          {t('design_principles.two_phase_commit_simulator.controls.reset')}
         </button>
         <div className="flex items-center gap-2">
-          <label className="text-zinc-400">{t('design_principles.consistency_strategies.two_phase_commit_simulator.controls.speed_label')}</label>
+          <label className="text-zinc-400">{t('design_principles.two_phase_commit_simulator.controls.speed_label')}</label>
           <select
             value={speed}
             onChange={(e) => setSpeed(Number(e.target.value))}
             className="bg-zinc-800 text-white px-3 py-2 rounded-lg"
           >
-            <option value={2000}>{t('design_principles.consistency_strategies.two_phase_commit_simulator.controls.speed_opts.slow')}</option>
-            <option value={1500}>{t('design_principles.consistency_strategies.two_phase_commit_simulator.controls.speed_opts.normal')}</option>
-            <option value={800}>{t('design_principles.consistency_strategies.two_phase_commit_simulator.controls.speed_opts.fast')}</option>
+            <option value={2000}>{t('design_principles.two_phase_commit_simulator.controls.speed_opts.slow')}</option>
+            <option value={1500}>{t('design_principles.two_phase_commit_simulator.controls.speed_opts.normal')}</option>
+            <option value={800}>{t('design_principles.two_phase_commit_simulator.controls.speed_opts.fast')}</option>
           </select>
         </div>
       </div>
@@ -219,11 +219,11 @@ export default function TwoPhaseCommitSimulator() {
               >
                 <h4 className="text-white font-semibold mb-2">{node.name}</h4>
                 <div className="text-sm text-zinc-300">
-                  {t('design_principles.consistency_strategies.two_phase_commit_simulator.node_states.' + node.state, node.state)}
-                  {node.response && <div>{t('design_principles.consistency_strategies.two_phase_commit_simulator.responses.' + node.response)}</div>}
+                  {t('design_principles.two_phase_commit_simulator.node_states.' + node.state, node.state)}
+                  {node.response && <div>{t('design_principles.two_phase_commit_simulator.responses.' + node.response)}</div>}
                   {node.type === 'participant' && step === 0 && (
                     <div className="mt-3 space-y-2">
-                        <div className="text-xs text-zinc-400">{t('design_principles.consistency_strategies.two_phase_commit_simulator.config.configure_response')}</div>
+                        <div className="text-xs text-zinc-400">{t('design_principles.two_phase_commit_simulator.config.configure_response')}</div>
                           <div className="flex gap-2">
                             <button
                               onClick={() => toggleNodeResponse(node.id)}
@@ -233,7 +233,7 @@ export default function TwoPhaseCommitSimulator() {
                                   : 'bg-zinc-700 hover:bg-zinc-600 text-zinc-300'
                               }`}
                             >
-                              {t('design_principles.consistency_strategies.two_phase_commit_simulator.config.approve')}
+                              {t('design_principles.two_phase_commit_simulator.config.approve')}
                             </button>
                             <button
                               onClick={() => toggleNodeResponse(node.id)}
@@ -243,12 +243,12 @@ export default function TwoPhaseCommitSimulator() {
                                   : 'bg-zinc-700 hover:bg-zinc-600 text-zinc-300'
                               }`}
                             >
-                              {t('design_principles.consistency_strategies.two_phase_commit_simulator.config.reject')}
+                              {t('design_principles.two_phase_commit_simulator.config.reject')}
                             </button>
                           </div>
                           <div className="text-xs mt-2">
-                            {t('design_principles.consistency_strategies.two_phase_commit_simulator.config.status')} <span className={node.willVoteYes ? 'text-green-400' : 'text-red-400'}>
-                              {node.willVoteYes ? t('design_principles.consistency_strategies.two_phase_commit_simulator.config.will_approve') : t('design_principles.consistency_strategies.two_phase_commit_simulator.config.will_reject')}
+                            {t('design_principles.two_phase_commit_simulator.config.status')} <span className={node.willVoteYes ? 'text-green-400' : 'text-red-400'}>
+                              {node.willVoteYes ? t('design_principles.two_phase_commit_simulator.config.will_approve') : t('design_principles.two_phase_commit_simulator.config.will_reject')}
                             </span>
                         </div>
                     </div>
@@ -279,13 +279,13 @@ export default function TwoPhaseCommitSimulator() {
 
       {/* Step Description */}
       <div className="mt-6 p-4 bg-zinc-800 rounded-lg">
-        <h4 className="text-lg font-semibold text-white mb-2">{t('design_principles.consistency_strategies.two_phase_commit_simulator.steps.current_phase')}</h4>
+        <h4 className="text-lg font-semibold text-white mb-2">{t('design_principles.two_phase_commit_simulator.steps.current_phase')}</h4>
         <p className="text-zinc-300">
-          {step === 0 && t('design_principles.consistency_strategies.two_phase_commit_simulator.steps.s0')}
-          {step === 1 && t('design_principles.consistency_strategies.two_phase_commit_simulator.steps.s1')}
-          {step === 2 && t('design_principles.consistency_strategies.two_phase_commit_simulator.steps.s2')}
-          {step === 3 && t('design_principles.consistency_strategies.two_phase_commit_simulator.steps.s3')}
-          {step === 4 && t('design_principles.consistency_strategies.two_phase_commit_simulator.steps.s4')}
+          {step === 0 && t('design_principles.two_phase_commit_simulator.steps.s0')}
+          {step === 1 && t('design_principles.two_phase_commit_simulator.steps.s1')}
+          {step === 2 && t('design_principles.two_phase_commit_simulator.steps.s2')}
+          {step === 3 && t('design_principles.two_phase_commit_simulator.steps.s3')}
+          {step === 4 && t('design_principles.two_phase_commit_simulator.steps.s4')}
         </p>
       </div>
     </div>
