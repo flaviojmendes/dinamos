@@ -5559,6 +5559,27 @@ const resources = {
           simulator_title: 'Simulador Interativo',
           access_simulator: 'Acessar Simulador'
         },
+        api_gateway: {
+          title: 'API Gateway',
+          lead1: 'Imagine um restaurante lotado. Você, o cliente, coloca seu pedido com o garçom (API Gateway). Ele garante que tudo funcione perfeitamente para você, mesmo se a cozinha for complexa e tiver vários cozinheiros especializados.',
+          lead2: 'O API Gateway atua como intermediário inteligente entre clientes e serviços de backend, simplificando o acesso, aumentando a segurança e melhorando o desempenho geral do sistema.',
+          functions_title: 'Funções do API Gateway',
+          auth_title: 'Autenticação e Autorização',
+          auth_p: 'Como a segurança na porta do restaurante, ele verifica sua identidade e se você tem permissão para entrar. O API Gateway verifica se o usuário está logado e tem permissão para acessar o recurso solicitado.',
+          auth_example: 'Para acessar sua conta bancária online, você insere seu nome de usuário e senha. O API Gateway garante que apenas você, com as credenciais corretas, possa acessar suas informações.',
+          routing_title: 'Roteamento',
+          routing_p: 'É o garçom que sabe exatamente qual cozinheiro (microserviço) enviar cada pedido. O API Gateway direciona as solicitações para o serviço correto.',
+          routing_example: 'Em um aplicativo de comércio eletrônico, um pedido de produto pode ser roteado para o serviço de inventário, enquanto o pagamento é roteado para o processamento de pagamento.',
+          ratelimit_title: 'Limite de Taxa',
+          ratelimit_p: 'É como limitar o número de clientes por hora para evitar sobrecarga. O API Gateway limita quantas solicitações um cliente pode fazer para proteger os serviços de backend.',
+          ratelimit_example: 'Um serviço de API de clima pode limitar o número de solicitações por usuário para evitar abuso e garantir disponibilidade para todos.',
+          aggregation_title: 'Agregação de Respostas',
+          aggregation_p: 'É o garçom que organiza todos os pratos de seu pedido em uma única bandeja. O API Gateway combina respostas de vários serviços em uma única resposta para o cliente.',
+          aggregation_example: 'Em um aplicativo de viagem, o API Gateway pode agregar informações de voos, hotéis e alugueis de carros de diferentes provedores em uma única resposta.',
+          micro_title: 'Exemplo de Arquiteturas Baseadas em Microserviços',
+          micro_intro: 'Em uma arquitetura de microserviços, o API Gateway atua como ponto central para clientes interagirem com microserviços. Ele encaminha solicitações para os serviços corretos e gerencia a comunicação entre o cliente e os componentes do sistema.',
+          micro_example: 'Em um aplicativo de comércio eletrônico baseado em microserviços, o API Gateway lida com solicitações de produtos, carrinhos e transações, redirecionando para os serviços de backend relevantes (produto, inventário, pagamento).'
+        },
         database: {
           title: 'Bancos de Dados',
           intro: 'Os bancos de dados são um dos componentes mais importantes de qualquer sistema, responsáveis pelo armazenamento, consulta e gerenciamento de grandes volumes de dados.',
@@ -5710,7 +5731,40 @@ const resources = {
           simulator_title: 'Simulador Interativo',
           simulator_description: 'Experimente nosso simulador de Firewall para entender como regras de segurança afetam o tráfego de rede.',
           access_simulator: 'Acessar Simulador'
-        }
+        },
+        load_balancer_page: {
+          title: 'Balanceadores de Carga',
+          intro1: 'Os balanceadores de carga distribuem uniformemente o tráfego de rede ou solicitações entre vários servidores, evitando que um único servidor fique sobrecarregado. Por exemplo, um sistema e-commerce pode usar um balanceador de carga para distribuir as solicitações.',
+          intro2: 'No balanceamento, várias instâncias de servidor processam as solicitações simultaneamente. Isso é essencial em sistemas escaláveis, permitindo adicionar mais servidores conforme a demanda aumenta.',
+          algos_title: 'Algoritmos de Balanceamento',
+          rr_title: 'Round Robin',
+          rr_p: 'As solicitações são distribuídas sequencialmente entre os servidores disponíveis, garantindo uma divisão uniforme.',
+          how_it_works: 'Como funciona:',
+          rr_example: 'Se você tem 3 servidores (A, B, C), a primeira requisição vai para A, a segunda para B, a terceira para C, a quarta volta para A, e assim por diante.',
+          hashing_title: 'Hashing',
+          hashing_p: 'Utiliza um hash (baseado em IP ou outro identificador) para garantir que as solicitações de um cliente específico sejam direcionadas ao mesmo servidor.',
+          use_case: 'Caso de uso:',
+          hashing_example: 'Importante para manter sessões de usuários, garantindo que um cliente sempre acesse o mesmo servidor onde sua sessão está armazenada.',
+          least_title: 'Least Connections',
+          least_p: 'Direciona as novas solicitações para o servidor com menos conexões ativas, ajudando a equilibrar melhor a carga.',
+          advantage: 'Vantagem:',
+          least_example: 'Mais eficiente quando os servidores têm diferentes capacidades ou quando as requisições têm durações muito variadas.'
+        },
+        message_queue_page: {
+          title: 'Filas de Mensagens',
+          intro: 'Filas de mensagens são sistemas usados para comunicação assíncrona entre diferentes partes de um sistema, garantindo que mensagens possam ser enviadas e processadas de forma confiável.',
+          kafka_title: 'Kafka',
+          kafka_p: 'Um sistema de mensagens distribuído projetado para processar grandes volumes de dados em tempo real. Usado em pipelines de dados e sistemas de streaming.',
+          rabbitmq_title: 'RabbitMQ',
+          rabbitmq_p: 'Um broker de mensagens que suporta uma ampla variedade de padrões de mensagens, como filas e troca de mensagens, usado para comunicação entre microsserviços.',
+          sqs_title: 'Amazon SQS',
+          sqs_p: 'Serviço de fila de mensagens da AWS, que oferece uma solução de fila escalável e gerenciada na nuvem.',
+          pubsub_title: 'Pub/Sub e Sistemas de Fila',
+          pubsub_header: 'Pub/Sub (Publicação/Assinatura)',
+          pubsub_p: 'Um padrão onde os produtores de mensagens (publicadores) enviam mensagens para um canal, e os consumidores (assinantes) se inscrevem para receber essas mensagens. O modelo Pub/Sub permite um desacoplamento entre produtores e consumidores.',
+          fifo_header: 'Sistemas de Fila',
+          fifo_p: 'As mensagens são colocadas em uma fila e processadas de forma FIFO (first-in, first-out), garantindo que as mensagens sejam entregues e processadas na ordem em que foram recebidas.'
+        },
       },
       simulators: {
         gateway: {
@@ -6041,39 +6095,8 @@ const resources = {
             i6: 'Use o modo "Auto Gerar" para ver um fluxo contínuo de pacotes'
           }
         },
-        load_balancer_page: {
-          title: 'Balanceadores de Carga',
-          intro1: 'Os balanceadores de carga distribuem uniformemente o tráfego de rede ou solicitações entre vários servidores, evitando que um único servidor fique sobrecarregado. Por exemplo, um sistema e-commerce pode usar um balanceador de carga para distribuir as solicitações.',
-          intro2: 'No balanceamento, várias instâncias de servidor processam as solicitações simultaneamente. Isso é essencial em sistemas escaláveis, permitindo adicionar mais servidores conforme a demanda aumenta.',
-          algos_title: 'Algoritmos de Balanceamento',
-          rr_title: 'Round Robin',
-          rr_p: 'As solicitações são distribuídas sequencialmente entre os servidores disponíveis, garantindo uma divisão uniforme.',
-          how_it_works: 'Como funciona:',
-          rr_example: 'Se você tem 3 servidores (A, B, C), a primeira requisição vai para A, a segunda para B, a terceira para C, a quarta volta para A, e assim por diante.',
-          hashing_title: 'Hashing',
-          hashing_p: 'Utiliza um hash (baseado em IP ou outro identificador) para garantir que as solicitações de um cliente específico sejam direcionadas ao mesmo servidor.',
-          use_case: 'Caso de uso:',
-          hashing_example: 'Importante para manter sessões de usuários, garantindo que um cliente sempre acesse o mesmo servidor onde sua sessão está armazenada.',
-          least_title: 'Least Connections',
-          least_p: 'Direciona as novas solicitações para o servidor com menos conexões ativas, ajudando a equilibrar melhor a carga.',
-          advantage: 'Vantagem:',
-          least_example: 'Mais eficiente quando os servidores têm diferentes capacidades ou quando as requisições têm durações muito variadas.'
-        },
-        message_queue_page: {
-          title: 'Filas de Mensagens',
-          intro: 'Filas de mensagens são sistemas usados para comunicação assíncrona entre diferentes partes de um sistema, garantindo que mensagens possam ser enviadas e processadas de forma confiável.',
-          kafka_title: 'Kafka',
-          kafka_p: 'Um sistema de mensagens distribuído projetado para processar grandes volumes de dados em tempo real. Usado em pipelines de dados e sistemas de streaming.',
-          rabbitmq_title: 'RabbitMQ',
-          rabbitmq_p: 'Um broker de mensagens que suporta uma ampla variedade de padrões de mensagens, como filas e troca de mensagens, usado para comunicação entre microsserviços.',
-          sqs_title: 'Amazon SQS',
-          sqs_p: 'Serviço de fila de mensagens da AWS, que oferece uma solução de fila escalável e gerenciada na nuvem.',
-          pubsub_title: 'Pub/Sub e Sistemas de Fila',
-          pubsub_header: 'Pub/Sub (Publicação/Assinatura)',
-          pubsub_p: 'Um padrão onde os produtores de mensagens (publicadores) enviam mensagens para um canal, e os consumidores (assinantes) se inscrevem para receber essas mensagens. O modelo Pub/Sub permite um desacoplamento entre produtores e consumidores.',
-          fifo_header: 'Sistemas de Fila',
-          fifo_p: 'As mensagens são colocadas em uma fila e processadas de forma FIFO (first-in, first-out), garantindo que as mensagens sejam entregues e processadas na ordem em que foram recebidas.'
-        },
+        
+        
         horizontal_scaling: {
           title: 'Simulador de Escalabilidade Horizontal',
           intro: 'Visualize como a carga é distribuída entre múltiplos servidores e como o sistema escala automaticamente baseado na demanda.',
