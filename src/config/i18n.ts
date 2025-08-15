@@ -206,6 +206,11 @@ const resources = {
         processing: 'Processing...',
         error_processing: 'An error occurred while processing the payment. Please try again.',
         select_currency: 'Select your currency',
+        coupon_code: 'Coupon Code (Optional)',
+        enter_coupon: 'Enter coupon code',
+        clear_coupon: 'Clear coupon',
+        coupon_will_apply: 'Coupon "{{code}}" will be applied at checkout',
+        coupon_invalid_format: 'Invalid coupon format. Use 3-20 characters (letters, numbers, - or _)',
         features: [
           'Access to all interactive simulators',
           'Complete content on System Design',
@@ -4987,6 +4992,11 @@ const resources = {
         processing: 'Processando...',
         error_processing: 'Ocorreu um erro ao processar o pagamento. Por favor, tente novamente.',
         select_currency: 'Selecione sua moeda',
+        coupon_code: 'Código do Cupom (Opcional)',
+        enter_coupon: 'Digite o código do cupom',
+        clear_coupon: 'Limpar cupom',
+        coupon_will_apply: 'Cupom "{{code}}" será aplicado no checkout',
+        coupon_invalid_format: 'Formato de cupom inválido. Use 3-20 caracteres (letras, números, - ou _)',
         features: [
           'Acesso a todos os simuladores interativos',
           'Conteúdo completo sobre System Design',

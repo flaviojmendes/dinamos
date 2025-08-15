@@ -14,6 +14,8 @@ export default function Subscription() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedCurrency, setSelectedCurrency] = useState<string>(() => detectUserCurrency());
+  const [couponCode, setCouponCode] = useState<string>('');
+  const [couponApplied, setCouponApplied] = useState<boolean>(false);
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
@@ -32,6 +34,19 @@ export default function Subscription() {
   const pricingData = calculatePricing(selectedCurrency);
   const availableCurrencies = getAvailableCurrencies();
 
+  // Validate coupon format (basic validation)
+  const validateCouponFormat = (code: string): boolean => {
+    // Basic validation: 3-20 characters, alphanumeric and dashes/underscores
+    const couponRegex = /^[A-Z0-9_-]{3,20}$/;
+    return couponRegex.test(code);
+  };
+
+  const handleCouponChange = (value: string) => {
+    const upperValue = value.toUpperCase().replace(/[^A-Z0-9_-]/g, '');
+    setCouponCode(upperValue);
+    setCouponApplied(false);
+  };
+
   const handlePayment = async () => {
     try {
       setIsLoading(true);
@@ -39,7 +54,18 @@ export default function Subscription() {
       ReactGA.event({
         category: 'User',
         action: 'Clicked on Payment Button',
+        label: couponCode.trim() ? `With Coupon: ${couponCode}` : 'No Coupon',
       });
+      
+      // Track coupon usage
+      if (couponCode.trim()) {
+        ReactGA.event({
+          category: 'Coupon',
+          action: 'Coupon Used',
+          label: couponCode.trim(),
+        });
+      }
+      
       setError(null);
 
       // Get Stripe instance
@@ -47,16 +73,21 @@ export default function Subscription() {
       if (!stripe) throw new Error('Stripe failed to load');
 
       // Create checkout session
+      const requestBody = {
+        priceId: import.meta.env.VITE_ONEOFF_PRICE_ID,
+        userId: user?.uid,
+        userEmail: user?.email,
+        ...(couponCode.trim() && validateCouponFormat(couponCode) && { promotionCode: couponCode.trim() }),
+      };
+      
+      console.log('Creating checkout session with:', requestBody);
+
       const response = await fetch(`${import.meta.env.VITE_FIREBASE_FUNCTIONS_BASE_URL}/createCheckoutSession`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          priceId: import.meta.env.VITE_ONEOFF_PRICE_ID,
-          userId: user?.uid,
-          userEmail: user?.email,
-        }),
+        body: JSON.stringify(requestBody),
       });
 
       const session = await response.json();
@@ -147,6 +178,66 @@ export default function Subscription() {
                   </option>
                 ))}
               </select>
+            </div>
+
+            {/* Coupon Code Input */}
+            <div className="text-center mb-6">
+              <label className="block text-sm text-zinc-400 mb-2">
+                {t('subscription.coupon_code', { defaultValue: 'Coupon Code (Optional)' })}
+              </label>
+              <div className="flex gap-2 max-w-xs mx-auto">
+                <input
+                  type="text"
+                  value={couponCode}
+                  onChange={(e) => handleCouponChange(e.target.value)}
+                  placeholder={t('subscription.enter_coupon', { defaultValue: 'Enter coupon code' })}
+                  className={`flex-1 bg-zinc-800 border rounded-lg px-4 py-2 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 text-center transition-colors ${
+                    couponCode.trim() && !validateCouponFormat(couponCode) 
+                      ? 'border-red-500 focus:ring-red-500' 
+                      : 'border-zinc-700 focus:ring-blue-500'
+                  }`}
+                  maxLength={20}
+                />
+                {couponCode.trim() && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCouponCode('');
+                      setCouponApplied(false);
+                    }}
+                    className="px-3 py-2 text-zinc-400 hover:text-white transition-colors"
+                    title={t('subscription.clear_coupon', { defaultValue: 'Clear coupon' })}
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+              {couponCode.trim() && (
+                <div className="mt-2 text-sm">
+                  {validateCouponFormat(couponCode) ? (
+                    <div className="text-blue-400">
+                      <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                      </svg>
+                      {t('subscription.coupon_will_apply', { 
+                        code: couponCode,
+                        defaultValue: 'Coupon "{{code}}" will be applied at checkout'
+                      })}
+                    </div>
+                  ) : (
+                    <div className="text-red-400">
+                      <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {t('subscription.coupon_invalid_format', { 
+                        defaultValue: 'Invalid coupon format. Use 3-20 characters (letters, numbers, - or _)'
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="text-center mb-8">
