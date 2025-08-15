@@ -14,18 +14,27 @@ export default function PaymentSuccess() {
     const handleSuccess = async () => {
       if (status === 'approved') {
         try {
-          // Update subscription status
-          const isActive = await checkSubscription();
+          // Update subscription status - wait a moment for backend to process
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          // Force refresh to get latest subscription claims after payment
+          const isActive = await checkSubscription(true);
+          
           if (!isActive) {
-            // If for some reason the subscription is not active, activate it locally
-            localStorage.setItem(`subscription_${externalReference}`, 'active');
-            await checkSubscription();
+            // Security: Never activate subscriptions locally
+            // If subscription is not active after payment, redirect to payment page
+            console.warn('Payment approved but subscription not active - possible backend delay');
+            navigate('/pagamento');
+            return;
           }
+          
+          // Success - redirect to content
+          navigate('/intro');
         } catch (error) {
-          console.error('Error updating subscription:', error);
+          console.error('Error validating subscription:', error);
           navigate('/pagamento');
         }
       } else {
+        console.warn('Payment not approved, redirecting to payment page');
         navigate('/pagamento');
       }
     };

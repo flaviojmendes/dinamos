@@ -23,8 +23,8 @@ export default function PaymentSuccess() {
         setHasChecked(true);
         // Force token refresh to get new claims
         await user.getIdToken(true);
-        // Check subscription status
-        const isSubscribed = await checkSubscription();
+        // Check subscription status with forced refresh after payment
+        const isSubscribed = await checkSubscription(true);
         
         if (isSubscribed) {
           // Redirect to intro after 3 seconds

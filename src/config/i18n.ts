@@ -17,6 +17,13 @@ const resources = {
         loading: 'Loading roadmap...',
         discount_off: '{{percent}}% OFF'
       },
+      protected_route: {
+        loading: 'Loading...',
+        verifying_access: 'Verifying access...',
+        attempt: 'Attempt {{attempt}}/{{total}}',
+        access_denied: 'Access denied',
+        redirecting: 'Redirecting...'
+      },
       language_dialog: {
         title: 'Choose Your Language',
         detected_portuguese: 'We detected that your browser language is Portuguese. Would you like to continue in Portuguese?',
@@ -4789,6 +4796,13 @@ const resources = {
         guarantee_spot: 'Garantir Minha Vaga',
         loading: 'Carregando o roadmap...',
         discount_off: '{{percent}}% OFF'
+      },
+      protected_route: {
+        loading: 'Carregando...',
+        verifying_access: 'Verificando acesso...',
+        attempt: 'Tentativa {{attempt}}/{{total}}',
+        access_denied: 'Acesso negado',
+        redirecting: 'Redirecionando...'
       },
       language_dialog: {
         title: 'Escolha seu Idioma',
