@@ -205,6 +205,7 @@ const resources = {
         buy_now: 'Buy Now',
         processing: 'Processing...',
         error_processing: 'An error occurred while processing the payment. Please try again.',
+        select_currency: 'Select your currency',
         features: [
           'Access to all interactive simulators',
           'Complete content on System Design',
@@ -4985,6 +4986,7 @@ const resources = {
         buy_now: 'Comprar Agora',
         processing: 'Processando...',
         error_processing: 'Ocorreu um erro ao processar o pagamento. Por favor, tente novamente.',
+        select_currency: 'Selecione sua moeda',
         features: [
           'Acesso a todos os simuladores interativos',
           'Conteúdo completo sobre System Design',

@@ -9,7 +9,7 @@ export default function Preferences() {
 
   const handleManageSubscription = async () => {
     try {
-      const response = await fetch('https://us-central1-systemo-76109.cloudfunctions.net/createPortalSession', {
+      const response = await fetch(`${import.meta.env.VITE_FIREBASE_FUNCTIONS_BASE_URL}/createPortalSession`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

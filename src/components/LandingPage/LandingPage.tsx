@@ -5,26 +5,14 @@ import ReactGA from 'react-ga4';
 import Countdown from '../Countdown/Countdown';
 import { Typography } from '../Common';
 import { useTranslation } from 'react-i18next';
-
-const calculatePricing = (language: string) => {
-  const isEnglish = language === 'en';
-  
-  if (isEnglish) {
-    const originalPrice = 89;
-    const discountedPrice = 39;
-    const discount = Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
-    return { originalPrice, discountedPrice, discount, currency: '$' };
-  } else {
-    const originalPrice = 499;
-    const discountedPrice = 179;
-    const discount = Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
-    return { originalPrice, discountedPrice, discount, currency: 'R$' };
-  }
-};
+import { calculatePricing, formatPrice, detectUserCurrency } from '../../utils/pricing';
 
 export default function LandingPage() {
   const { t, i18n } = useTranslation();
-  const pricing = calculatePricing(i18n.language);
+  
+  // Detect user currency based on location/language  
+  const userCurrency = detectUserCurrency();
+  const pricing = calculatePricing(userCurrency);
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-black text-white">
       {/* Hero Section */}
@@ -661,8 +649,8 @@ export default function LandingPage() {
             <div className="text-center mb-8">
               <div className="text-center">
                 <span className="text-4xl font-bold">
-                  <span className="text-zinc-400 line-through">{pricing.currency}{pricing.originalPrice}</span>{" "}
-                  <span className="text-white">{pricing.currency}{pricing.discountedPrice}</span>
+                  <span className="text-zinc-400 line-through">{formatPrice(pricing.originalPrice, pricing)}</span>{" "}
+                  <span className="text-white">{formatPrice(pricing.discountedPrice, pricing)}</span>
                 </span>
                 <span className="text-green-400 text-sm ml-2">{t('common.discount_off', { percent: pricing.discount })}</span>
               </div>

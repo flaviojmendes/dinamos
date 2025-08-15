@@ -5,6 +5,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import ReactGA from 'react-ga4';
 import Countdown from '../Countdown/Countdown';
 import { useTranslation } from 'react-i18next';
+import { calculatePricing, formatPrice, getAvailableCurrencies, detectUserCurrency } from '../../utils/pricing';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -12,6 +13,7 @@ export default function Subscription() {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedCurrency, setSelectedCurrency] = useState<string>(() => detectUserCurrency());
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
@@ -26,21 +28,9 @@ export default function Subscription() {
     });
   }, [user]);
 
-  const calculatePricing = (language: string) => {
-    const isEnglish = language === 'en';
-    
-    if (isEnglish) {
-      const originalPrice = 89;
-      const discountedPrice = 39;
-      const discount = Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
-      return { originalPrice, discountedPrice, discount, currency: '$' };
-    } else {
-      const originalPrice = 499;
-      const discountedPrice = 179;
-      const discount = Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
-      return { originalPrice, discountedPrice, discount, currency: 'R$' };
-    }
-  };
+  // Get pricing data based on selected currency
+  const pricingData = calculatePricing(selectedCurrency);
+  const availableCurrencies = getAvailableCurrencies();
 
   const handlePayment = async () => {
     try {
@@ -57,7 +47,7 @@ export default function Subscription() {
       if (!stripe) throw new Error('Stripe failed to load');
 
       // Create checkout session
-      const response = await fetch('https://us-central1-systemo-76109.cloudfunctions.net/createCheckoutSession', {
+      const response = await fetch(`${import.meta.env.VITE_FIREBASE_FUNCTIONS_BASE_URL}/createCheckoutSession`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -92,7 +82,6 @@ export default function Subscription() {
     }
   };
 
-  const { originalPrice, discountedPrice, discount, currency } = calculatePricing(i18n.language);
   const features: string[] = t('subscription.features', { returnObjects: true }) as string[];
 
   return (
@@ -142,13 +131,35 @@ export default function Subscription() {
               </div>
               <Countdown />
             </div>
+            {/* Currency Selector */}
+            <div className="text-center mb-6">
+              <label className="block text-sm text-zinc-400 mb-2">
+                {t('subscription.select_currency', { defaultValue: 'Select your currency' })}
+              </label>
+              <select
+                value={selectedCurrency}
+                onChange={(e) => setSelectedCurrency(e.target.value)}
+                className="bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {availableCurrencies.map((curr) => (
+                  <option key={curr.key} value={curr.key}>
+                    {curr.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div className="text-center mb-8">
               <div className="mb-2">
-                <span className="text-lg text-zinc-500 line-through">{currency}{originalPrice}</span>
+                <span className="text-lg text-zinc-500 line-through">
+                  {formatPrice(pricingData.originalPrice, pricingData)}
+                </span>
                 <div className="text-4xl font-bold text-blue-500">
-                  {currency}{discountedPrice}
+                  {formatPrice(pricingData.discountedPrice, pricingData)}
                 </div>
-                <p className="text-sm text-green-400">{t('common.discount_off', { percent: discount })}</p>
+                <p className="text-sm text-green-400">
+                  {t('common.discount_off', { percent: pricingData.discount })}
+                </p>
               </div>
               <p className="text-zinc-400">{t('subscription.one_time_lifetime')}</p>
             </div>

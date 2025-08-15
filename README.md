@@ -10,13 +10,23 @@ Para executar esse projeto, você precisa ter instalado em sua máquina:
 
 ## Configurações
 
-Esse boilerplate possui o Google Analytics e Auth0 pré configurados. Basta atualizar as seguintes variáveis do arquivo `.env`:
+Este projeto requer configuração de variáveis de ambiente. Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
 
 ```
-VITE_GOOGLE_ANALYTICS_ID=<GOOGLE_ANALYTICS_TAG_GA4>
-VITE_AUTH0_DOMAIN=<SEU_DOMINIO_DO AUTH0>
-VITE_AUTH0_CLIENT_ID=<CLIENT_ID>
-VITE_AUTH0_AUDIENCE=<AUDIENCE>
+# Firebase Configuration
+VITE_FIREBASE_API_KEY=your_firebase_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+
+# Firebase Cloud Functions
+VITE_FIREBASE_FUNCTIONS_BASE_URL=https://us-central1-your-project.cloudfunctions.net
+
+# Stripe Configuration
+VITE_STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key
+VITE_ONEOFF_PRICE_ID=price_your_stripe_price_id
 ```
 
 ## Personalização
