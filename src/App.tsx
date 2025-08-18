@@ -115,6 +115,11 @@ import PollingWebhooks from "./components/SystemComponents/PollingWebhooks";
 import PollingWebhooksTheory from "./components/SystemComponents/PollingWebhooksTheory";
 import { LanguageSwitcher } from './components/Common';
 import { useTranslation } from 'react-i18next';
+import CAPTheorem from "./components/TheoreticalFoundations/CAPTheorem";
+import ConsistencyModels from "./components/TheoreticalFoundations/ConsistencyModels";
+import DistributedChallenges from "./components/TheoreticalFoundations/DistributedChallenges";
+import NetworkPartitions from "./components/TheoreticalFoundations/NetworkPartitions";
+import TheoreticalFoundations from "./components/TheoreticalFoundations/TheoreticalFoundations";
 
 interface MenuItem {
   name: string;
@@ -122,9 +127,9 @@ interface MenuItem {
   path: string;
   icon?: React.ReactNode;
   children?: MenuItem[];
-  status?: "recommended" | "new" | "coming-soon";
+  status?: "recommended" | "new" | "coming-soon" | "required";
   prerequisites?: string[];
-  category?: "Básico" | "Intermediário" | "Avançado";
+  category?: "Básico" | "Intermediário" | "Avançado" | "Foundational" | "Building Blocks" | "Application" | "Advanced Concepts" | "Security & Safety";
   skills?: string[];
   badges?: { text: string; color: string }[];
   component?: React.ComponentType;
@@ -169,17 +174,60 @@ const createMenuItems = (t: any): MenuItem[] => [
     description: t('menu.sistemas_distribuidos_101.description'),
     badges: [{ text: t('badges.free'), color: "bg-green-500" }],
   },
-
   {
-    path: "/system-design-101",
-    name: t('menu.system_design_101.name'),
-    description: t('menu.system_design_101.description'),
-    badges: [{ text: t('badges.free'), color: "bg-green-500" }],
+    path: "/theoretical-foundations",
+    name: t('menu.theoretical_foundations.name'),
+    description: t('menu.theoretical_foundations.description'),
+    badges: [{ text: t('badges.new'), color: "bg-blue-500" }, { text: t('badges.free'), color: "bg-green-500" }],
+    status: "recommended",
+    prerequisites: ["sistemas-distribuidos-101"],
+    category: "Foundational",
+    icon: (
+      <svg
+        className="w-6 h-6 text-purple-500"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+        />
+      </svg>
+    ),
+    children: [
+      {
+        path: "/theoretical-foundations/cap-theorem",
+        name: t('menu.theoretical_foundations.cap_theorem.name'),
+        description: t('menu.theoretical_foundations.cap_theorem.description'),
+      },
+      {
+        path: "/theoretical-foundations/consistency-models",
+        name: t('menu.theoretical_foundations.consistency_models.name'),
+        description: t('menu.theoretical_foundations.consistency_models.description'),
+      },
+      {
+        path: "/theoretical-foundations/distributed-challenges",
+        name: t('menu.theoretical_foundations.distributed_challenges.name'),
+        description: t('menu.theoretical_foundations.distributed_challenges.description'),
+      },
+      {
+        path: "/theoretical-foundations/network-partitions",
+        name: t('menu.theoretical_foundations.network_partitions.name'),
+        description: t('menu.theoretical_foundations.network_partitions.description'),
+      },
+    ],
   },
   {
     path: "/componentes",
     name: t('menu.componentes.name'),
     description: t('menu.componentes.description'),
+
+    status: "required",
+    prerequisites: ["theoretical-foundations"],
+    category: "Building Blocks",
     children: [
       {
         path: "/componentes/banco-dados",
@@ -280,9 +328,22 @@ const createMenuItems = (t: any): MenuItem[] => [
     ],
   },
   {
+    path: "/system-design-101",
+    name: t('menu.system_design_101.name'),
+    description: t('menu.system_design_101.description'),
+    badges: [{ text: t('badges.free'), color: "bg-green-500" }],
+    status: "recommended",
+    prerequisites: ["componentes"],
+    category: "Application",
+  },
+  {
     path: "/principios-design",
     name: t('menu.principios_design.name'),
     description: t('menu.principios_design.description'),
+
+    status: "recommended",
+    prerequisites: ["system-design-101"],
+    category: "Advanced Concepts",
     children: [
       {
         path: "/principios-design/escalabilidade",
@@ -425,6 +486,61 @@ const createMenuItems = (t: any): MenuItem[] => [
         component: OrchestrationVsChoreography,
         status: "new"
       }
+    ],
+  },
+  {
+    path: "/seguranca",
+    name: t('menu.seguranca.name'),
+    description: t('menu.seguranca.description'),
+
+    status: "required",
+    prerequisites: ["principios-design"],
+    category: "Security & Safety",
+    children: [
+      {
+        path: "/seguranca/autenticacao",
+        name: t('menu.seguranca.autenticacao.name'),
+        description: t('menu.seguranca.autenticacao.description'),
+      },
+      {
+        path: "/seguranca/autorizacao",
+        name: t('menu.seguranca.autorizacao.name'),
+        description: t('menu.seguranca.autorizacao.description'),
+      },
+      {
+        path: "/seguranca/criptografia",
+        name: t('menu.seguranca.criptografia.name'),
+        description: t('menu.seguranca.criptografia.description'),
+        children: [
+          {
+            path: "/seguranca/criptografia/simulador",
+            name: t('menu.seguranca.criptografia.simulador.name'),
+            description: t('menu.seguranca.criptografia.simulador.description'),
+          },
+        ],
+      },
+      {
+        path: "/seguranca/tokens",
+        name: t('menu.seguranca.tokens.name'),
+        description: t('menu.seguranca.tokens.description'),
+        children: [
+          {
+            path: "/seguranca/tokens/simulador",
+            name: t('menu.seguranca.tokens.simulador.name'),
+            description: t('menu.seguranca.tokens.simulador.description'),
+          },
+        ],
+      },
+      {
+        path: "/seguranca/ssl-tls",
+        name: t('menu.seguranca.ssl_tls.name'),
+        description: t('menu.seguranca.ssl_tls.description'),
+      },
+      {
+        path: "/seguranca/ataques",
+        name: t('menu.seguranca.ataques.name'),
+        description: t('menu.seguranca.ataques.description'),
+      },
     ],
   },
   {
@@ -676,57 +792,6 @@ const createMenuItems = (t: any): MenuItem[] => [
         path: "/casos-reais/uber",
         name: t('menu.casos_reais.uber.name'),
         description: t('menu.casos_reais.uber.description'),
-      },
-    ],
-  },
-  {
-    path: "/seguranca",
-    name: t('menu.seguranca.name'),
-    description: t('menu.seguranca.description'),
-    children: [
-      {
-        path: "/seguranca/autenticacao",
-        name: t('menu.seguranca.autenticacao.name'),
-        description: t('menu.seguranca.autenticacao.description'),
-      },
-      {
-        path: "/seguranca/autorizacao",
-        name: t('menu.seguranca.autorizacao.name'),
-        description: t('menu.seguranca.autorizacao.description'),
-      },
-      {
-        path: "/seguranca/criptografia",
-        name: t('menu.seguranca.criptografia.name'),
-        description: t('menu.seguranca.criptografia.description'),
-        children: [
-          {
-            path: "/seguranca/criptografia/simulador",
-            name: t('menu.seguranca.criptografia.simulador.name'),
-            description: t('menu.seguranca.criptografia.simulador.description'),
-          },
-        ],
-      },
-      {
-        path: "/seguranca/tokens",
-        name: t('menu.seguranca.tokens.name'),
-        description: t('menu.seguranca.tokens.description'),
-        children: [
-          {
-            path: "/seguranca/tokens/simulador",
-            name: t('menu.seguranca.tokens.simulador.name'),
-            description: t('menu.seguranca.tokens.simulador.description'),
-          },
-        ],
-      },
-      {
-        path: "/seguranca/ssl-tls",
-        name: t('menu.seguranca.ssl_tls.name'),
-        description: t('menu.seguranca.ssl_tls.description'),
-      },
-      {
-        path: "/seguranca/ataques",
-        name: t('menu.seguranca.ataques.name'),
-        description: t('menu.seguranca.ataques.description'),
       },
     ],
   },
@@ -1105,11 +1170,51 @@ export default function App() {
               }
             />
             <Route
-              path="/system-design-101"
+              path="/theoretical-foundations"
               element={
                 <ProtectedRoute requiresSubscription={false}>
                   <ContentPage>
-                    <SystemDesign101 />
+                    <TheoreticalFoundations />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/theoretical-foundations/cap-theorem"
+              element={
+                <ProtectedRoute requiresSubscription={false}>
+                  <ContentPage>
+                    <CAPTheorem />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/theoretical-foundations/consistency-models"
+              element={
+                <ProtectedRoute requiresSubscription={false}>
+                  <ContentPage>
+                    <ConsistencyModels />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/theoretical-foundations/distributed-challenges"
+              element={
+                <ProtectedRoute requiresSubscription={false}>
+                  <ContentPage>
+                    <DistributedChallenges />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/theoretical-foundations/network-partitions"
+              element={
+                <ProtectedRoute requiresSubscription={false}>
+                  <ContentPage>
+                    <NetworkPartitions />
                   </ContentPage>
                 </ProtectedRoute>
               }
@@ -1650,6 +1755,16 @@ export default function App() {
                 <ProtectedRoute>
                   <ContentPage>
                     <PollingWebhooks />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/system-design-101"
+              element={
+                <ProtectedRoute requiresSubscription={false}>
+                  <ContentPage>
+                    <SystemDesign101 />
                   </ContentPage>
                 </ProtectedRoute>
               }
