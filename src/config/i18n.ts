@@ -302,7 +302,7 @@ const resources = {
         journey_real_cases_item3: 'Uber and Bit.ly',
         journey_real_cases_description: 'Apply your knowledge by analyzing real success cases',
 
-        invest_title: 'Invista no Seu Futuro',
+        invest_title: 'Invest in Your Future',
         invest_subtitle: 'Lifetime access to all content with a single payment',
         invest_payment_info: 'One-time payment - Lifetime access',
         new_offer_badge: 'New Offer',
@@ -337,6 +337,884 @@ const resources = {
           name: 'System Design 101',
           description: 'Fundamentals of system design'
         },
+        theoretical_foundations: {
+          name: 'Theoretical Foundations',
+          description: 'Core distributed systems theory and principles',
+          cap_theorem: {
+            name: 'CAP Theorem',
+            description: 'Consistency, Availability, and Partition tolerance trade-offs',
+            title: 'CAP Theorem',
+            subtitle: 'Understanding the fundamental trade-offs in distributed systems',
+            introduction: 'Proposed by Eric Brewer in 2000, the CAP theorem is one of the most important concepts in distributed systems. It states that any distributed system can only guarantee two out of three properties: Consistency, Availability, and Partition tolerance. This theorem helps architects make informed decisions about system design trade-offs.',
+            consistency: {
+              title: 'Consistency',
+              description: 'All nodes see the same data at the same time. Every read receives the most recent write or an error.',
+              detailed_explanation: 'Consistency means that all nodes in the distributed system have the same view of the data at any given time. When a write operation completes successfully, all subsequent read operations will return the updated value until the data is changed again.',
+              concrete_examples: [
+                'Banking system: When you transfer $100 from Account A to Account B, all ATMs must show the correct balances immediately',
+                'Social media: When you update your profile picture, all your friends must see the new picture, not a mix of old and new',
+                'E-commerce: When an item goes out of stock, no customer should be able to purchase it from any server',
+                'Gaming leaderboard: When a player achieves a high score, all players must see the updated rankings consistently'
+              ],
+              consistency_models: [
+                'Strong Consistency: All reads receive the most recent write (PostgreSQL with synchronous replication)',
+                'Eventual Consistency: System will become consistent over time (DNS propagation)',
+                'Weak Consistency: No guarantees about when consistency will be achieved (live video streaming)'
+              ]
+            },
+            availability: {
+              title: 'Availability', 
+              description: 'The system remains operational 100% of the time. Every request receives a response.',
+              detailed_explanation: 'Availability means that the system continues to function and respond to requests even when some components fail. Every request receives a response (either success or failure) without guaranteeing that it contains the most recent version of the information.',
+              concrete_examples: [
+                'Netflix: Must keep streaming videos even if some servers are down, even if recommendations might be stale',
+                'Amazon shopping: Website must stay accessible during peak shopping times, even if product details take time to sync',
+                'WhatsApp: Messages must be deliverable even during network issues, messages can be delivered out of order',
+                'Google Search: Must return results even if some data centers are unreachable, results might be slightly outdated'
+              ],
+              availability_metrics: [
+                '99% uptime = 3.65 days downtime per year',
+                '99.9% uptime = 8.76 hours downtime per year',
+                '99.99% uptime = 52.56 minutes downtime per year',
+                '99.999% uptime = 5.26 minutes downtime per year'
+              ],
+              strategies: [
+                'Load balancing across multiple servers',
+                'Redundant systems and failover mechanisms',
+                'Graceful degradation of features',
+                'Circuit breakers to prevent cascade failures'
+              ]
+            },
+            partition_tolerance: {
+              title: 'Partition Tolerance',
+              description: 'The system continues to operate despite network failures between nodes.',
+              detailed_explanation: 'Partition tolerance means the system continues to function even when network failures prevent some nodes from communicating with others. This is not optional in distributed systems - network failures are inevitable.',
+              concrete_examples: [
+                'Multi-region cloud: AWS East and West coast data centers lose connection but both continue serving users',
+                'Mobile app: Your phone loses internet but cached data still works, syncs when connection returns',
+                'Microservices: Payment service can\'t reach inventory service but can still process payments with cached data',
+                'CDN: Local edge servers serve content even when disconnected from origin servers'
+              ],
+              partition_scenarios: [
+                'Network cable gets cut between data centers',
+                'Router/switch failures isolate server racks',
+                'Internet provider outages affect regions',
+                'DDoS attacks overwhelm network infrastructure',
+                'Misconfigured firewalls block communication'
+              ],
+              handling_strategies: [
+                'Detect partition events quickly',
+                'Continue operating with available data',
+                'Queue operations for later synchronization',
+                'Implement conflict resolution mechanisms'
+              ]
+            },
+            theorem_statement: 'The CAP Theorem States:',
+            theorem_text: 'In the presence of a network partition, you must choose between consistency and availability',
+            real_world_note: 'In practice, you don\'t choose between CAP properties for your entire system. Different parts of your application can make different trade-offs based on business requirements.',
+            concrete_examples_title: 'Concrete Examples',
+            consistency_examples_title: 'Consistency Examples',
+            availability_examples_title: 'Availability Examples',
+            partition_examples_title: 'Partition Tolerance Examples',
+            characteristics_label: 'Characteristics:',
+            examples_label: 'Examples:',
+            use_cases_label: 'Use Cases:',
+            limitations_label: 'Limitations:',
+            cp_systems: {
+              title: 'CP Systems (Consistency + Partition Tolerance)',
+              description: 'Prioritize data consistency over availability during network partitions',
+              characteristics: [
+                'System becomes unavailable during partitions',
+                'When available, data is always consistent',
+                'Better for financial/critical data'
+              ],
+              examples: [
+                'Traditional ACID databases (PostgreSQL, MySQL) with synchronous replication',
+                'Apache HBase - ensures strong consistency',
+                'MongoDB with strong consistency settings',
+                'Zookeeper - coordination service requiring consensus',
+                'Banking systems where accuracy > availability'
+              ],
+              use_cases: [
+                'Financial transactions and banking',
+                'Inventory management systems',
+                'Configuration management',
+                'Authentication and authorization systems'
+              ]
+            },
+            ap_systems: {
+              title: 'AP Systems (Availability + Partition Tolerance)', 
+              description: 'Prioritize system availability over immediate consistency during partitions',
+              characteristics: [
+                'System remains available during partitions',
+                'Data may be temporarily inconsistent',
+                'Eventually becomes consistent when partition heals'
+              ],
+              examples: [
+                'Amazon DynamoDB - highly available NoSQL database',
+                'Apache Cassandra - distributed database prioritizing availability',
+                'DNS system - must always resolve names, eventual consistency is OK',
+                'Amazon S3 - object storage with eventual consistency',
+                'Social media feeds - better to show slightly stale content than be unavailable'
+              ],
+              use_cases: [
+                'Social media platforms',
+                'Content delivery networks',
+                'Shopping cart systems',
+                'User preference storage',
+                'Analytics and logging systems'
+              ]
+            },
+            ca_systems: {
+              title: 'CA Systems (Consistency + Availability)', 
+              description: 'Traditional systems that sacrifice partition tolerance',
+              characteristics: [
+                'Perfect consistency and availability',
+                'Only works in single location/no network partitions',
+                'Not truly distributed systems'
+              ],
+              examples: [
+                'Single-node databases (PostgreSQL, MySQL on one server)',
+                'In-memory databases (Redis) on single machine',
+                'Traditional RDBMS in single data center',
+                'Legacy monolithic applications'
+              ],
+              limitations: [
+                'Cannot handle network partitions',
+                'Single point of failure',
+                'Not suitable for geographically distributed systems',
+                'Limited scalability'
+              ],
+              note: 'In practice, CA systems don\'t exist in truly distributed environments because network partitions are inevitable.'
+            },
+            practical_considerations: {
+              title: 'Practical Considerations',
+              points: [
+                'Most modern systems are either CP or AP',
+                'You can choose different trade-offs for different parts of your system',
+                'Business requirements should drive your CAP decisions',
+                'Monitor and measure actual consistency and availability',
+                'Design for graceful degradation during partitions'
+              ]
+            },
+            decision_framework: {
+              title: 'How to Choose?',
+              questions: [
+                'Can your business tolerate temporary inconsistency?',
+                'Is system availability more important than data accuracy?',
+                'Are you operating across multiple geographic regions?',
+                'What are the costs of downtime vs. inconsistent data?',
+                'Can you implement conflict resolution mechanisms?'
+              ]
+            }
+          },
+          consistency_models: {
+            name: 'Consistency Models',
+            description: 'Strong, eventual, and weak consistency patterns',
+            title: 'Consistency Models',
+            subtitle: 'Different approaches to managing data consistency in distributed systems',
+            introduction: 'Consistency models define the rules about when and how data updates become visible across a distributed system. Understanding these models is crucial for designing systems that balance data accuracy, performance, and availability according to your specific requirements.',
+            strong_consistency: {
+              title: 'Strong Consistency',
+              description: 'All nodes see the same data at the same time. After a write operation, all subsequent reads will return the updated value.',
+              detailed_explanation: 'Strong consistency guarantees that once a write operation completes successfully, all subsequent read operations will return the updated value from any node in the system. This provides the strongest guarantees but comes with performance and availability trade-offs.',
+              characteristics: [
+                'Immediate consistency across all nodes',
+                'No stale data ever returned to clients',
+                'ACID transaction guarantees',
+                'Synchronous replication required',
+                'Higher latency due to coordination overhead'
+              ],
+              concrete_examples: [
+                'Bank account transfer: When you transfer money, both accounts must show correct balances immediately across all ATMs and branches',
+                'Inventory management: When the last item is sold, no other customer should be able to purchase it from any location',
+                'User authentication: Password changes must be effective immediately across all login servers',
+                'Stock trading: Order execution must reflect immediately across all trading systems to prevent arbitrage'
+              ],
+              implementations: [
+                'PostgreSQL with synchronous replication',
+                'MongoDB with majority write concern',
+                'Apache Zookeeper consensus protocol',
+                'Google Spanner with TrueTime',
+                'Traditional RDBMS with distributed transactions'
+              ],
+              use_cases: [
+                'Financial transactions and banking systems',
+                'Inventory and stock management',
+                'User authentication and authorization',
+                'Regulatory compliance systems',
+                'Mission-critical enterprise applications'
+              ],
+              tradeoffs: 'Trade-offs: High consistency but may impact availability and performance'
+            },
+            eventual_consistency: {
+              title: 'Eventual Consistency',
+              description: 'The system will become consistent over time, given that the system doesn\'t receive new updates. Reads may return stale data temporarily.',
+              detailed_explanation: 'Eventual consistency guarantees that if no new updates are made to a data item, eventually all accesses to that item will return the updated value. This model allows temporary inconsistencies but ensures high availability and partition tolerance.',
+              characteristics: [
+                'Temporary inconsistencies allowed',
+                'High availability and partition tolerance',
+                'Asynchronous replication',
+                'Lower latency for write operations',
+                'Conflict resolution mechanisms needed'
+              ],
+              concrete_examples: [
+                'Social media timeline: Your post appears immediately for you but may take time to show up in friends\' feeds',
+                'DNS propagation: Domain changes take time to propagate globally, different DNS servers may return different IPs temporarily',
+                'Amazon product reviews: Reviews appear eventually on all servers, but immediate consistency isn\'t critical',
+                'Email systems: Emails replicate to backup servers over time, temporary delays don\'t break functionality'
+              ],
+              implementations: [
+                'Amazon DynamoDB with eventual consistency reads',
+                'Apache Cassandra default consistency level',
+                'Amazon S3 object storage',
+                'DNS (Domain Name System)',
+                'NoSQL databases with async replication'
+              ],
+              use_cases: [
+                'Social media feeds and interactions',
+                'Content management systems',
+                'User preference storage',
+                'Shopping cart systems',
+                'Analytics and logging data'
+              ],
+              convergence_strategies: [
+                'Last-write-wins (timestamp-based)',
+                'Vector clocks for causality tracking',
+                'Conflict-free replicated data types (CRDTs)',
+                'Application-level conflict resolution',
+                'Multi-version concurrency control'
+              ],
+              tradeoffs: 'Trade-offs: High availability and partition tolerance, but temporary inconsistency'
+            },
+            weak_consistency: {
+              title: 'Weak Consistency',
+              description: 'After a write, reads may or may not see the updated value. The system makes no guarantees about when data will be consistent.',
+              detailed_explanation: 'Weak consistency makes no guarantees about when data will become consistent across nodes. This model prioritizes maximum performance and availability, accepting that data may be inconsistent for extended periods or even permanently in some cases.',
+              characteristics: [
+                'No consistency guarantees',
+                'Maximum performance and throughput',
+                'Best effort data propagation',
+                'Minimal coordination overhead',
+                'Application must handle inconsistencies'
+              ],
+              concrete_examples: [
+                'Live video streaming: Frame drops or quality changes are acceptable for real-time performance',
+                'Online gaming: Player positions may be slightly out of sync for better responsiveness',
+                'Real-time collaboration: Cursor positions in shared documents don\'t need perfect consistency',
+                'IoT sensor data: Occasional data loss is acceptable for high-frequency sensor readings'
+              ],
+              implementations: [
+                'Memcached distributed caching',
+                'Redis with no persistence',
+                'UDP-based real-time systems',
+                'Best-effort message queues',
+                'Real-time streaming platforms'
+              ],
+              use_cases: [
+                'Real-time gaming and simulations',
+                'Live video/audio streaming',
+                'High-frequency sensor data collection',
+                'Real-time collaboration tools',
+                'Performance monitoring and metrics'
+              ],
+              considerations: [
+                'Application must be designed for inconsistency',
+                'Data loss may be permanent',
+                'Client-side conflict resolution often needed',
+                'Suitable only for non-critical data',
+                'Monitoring becomes crucial'
+              ],
+              tradeoffs: 'Trade-offs: Maximum performance and availability, minimal consistency guarantees'
+            },
+            choosing_title: 'Choosing the Right Model',
+            use_cases: {
+              strong: 'Financial transactions, inventory systems, user authentication',
+              eventual: 'Social media feeds, comments, user profiles, shopping carts',
+              weak: 'Live video streaming, online gaming, real-time collaboration'
+            },
+            decision_matrix: {
+              title: 'Decision Matrix',
+              factors: [
+                'Data criticality: How important is data accuracy?',
+                'Performance requirements: What latency is acceptable?',
+                'Availability needs: Can the system tolerate downtime?',
+                'Scale requirements: How many concurrent users?',
+                'Geographic distribution: Multiple regions or data centers?'
+              ]
+            },
+            practical_guidelines: {
+              title: 'Practical Implementation Guidelines',
+              tips: [
+                'Different parts of your system can use different consistency models',
+                'Start with strong consistency and relax only where necessary',
+                'Monitor consistency metrics in production',
+                'Design conflict resolution strategies upfront',
+                'Consider hybrid approaches for complex applications'
+              ]
+            },
+            examples_title: 'Real-World Examples',
+            characteristics_label: 'Characteristics:',
+            examples_label: 'Examples:',
+            implementations_label: 'Implementations:',
+            use_cases_label: 'Use Cases:',
+            convergence_label: 'Convergence Strategies:',
+            considerations_label: 'Considerations:'
+          },
+          distributed_challenges: {
+            name: 'Distributed Challenges',
+            description: 'Common problems in distributed systems',
+            title: 'Distributed Systems Challenges',
+            subtitle: 'Common problems and complexities in distributed computing',
+            introduction: 'Distributed systems face unique challenges that don\'t exist in single-machine systems. Understanding these fundamental problems is crucial for designing resilient, scalable, and reliable distributed applications. Each challenge requires careful consideration and specific solutions.',
+            network_partitions: {
+              title: 'Network Partitions',
+              description: 'Network failures that split the system into isolated groups, forcing trade-offs between consistency and availability.',
+              detailed_explanation: 'Network partitions occur when network failures prevent some nodes from communicating with others, effectively splitting the system into isolated groups. This is one of the most challenging problems in distributed systems because it forces immediate decisions about consistency vs. availability.',
+              characteristics: [
+                'Communication failure between nodes',
+                'System splits into isolated islands',
+                'Immediate CAP theorem trade-offs required',
+                'Can be temporary or permanent',
+                'Affects data consistency guarantees'
+              ],
+              concrete_examples: [
+                'Data center connectivity: Cable cut between AWS regions causes 6-hour partition, each region must decide whether to stay online',
+                'Microservices: Payment service can\'t reach inventory service, must decide whether to process orders with stale inventory data',
+                'Database cluster: Master-slave replication breaks, slaves must decide whether to accept writes or remain read-only',
+                'CDN network: Internet routing issues isolate edge servers from origin, cached content becomes stale but users still served'
+              ],
+              causes: [
+                'Physical network failures (cable cuts, router failures)',
+                'Software bugs in networking stack',
+                'Overloaded network infrastructure',
+                'Security incidents (DDoS attacks)',
+                'Configuration errors in routing'
+              ],
+              detection_strategies: [
+                'Heartbeat mechanisms between nodes',
+                'Timeout-based failure detection',
+                'Gossip protocols for membership',
+                'External monitoring systems',
+                'Network-level health checks'
+              ],
+              mitigation_approaches: [
+                'Multiple network paths and redundancy',
+                'Graceful degradation strategies',
+                'Circuit breakers for failing services',
+                'Read-only mode during partitions',
+                'Conflict resolution for partition healing'
+              ],
+              impact: 'Impact: Loss of communication between nodes, potential data inconsistency'
+            },
+            clock_sync: {
+              title: 'Clock Synchronization',
+              description: 'Different nodes have different clocks, making it difficult to order events and maintain consistency.',
+              detailed_explanation: 'Clock synchronization is fundamental to distributed systems because nodes have independent clocks that drift at different rates. Without synchronized time, it becomes nearly impossible to order events, maintain causality, or implement time-based algorithms correctly.',
+              characteristics: [
+                'Clocks drift at different rates',
+                'No global notion of "now"',
+                'Event ordering becomes ambiguous',
+                'Impacts timestamps and logs',
+                'Critical for distributed algorithms'
+              ],
+              concrete_examples: [
+                'Banking transactions: Transfer appears to complete before it started due to clock skew, causing audit failures',
+                'Distributed logging: Error logs appear out of order across services, making debugging impossible',
+                'Cache invalidation: TTL expires at different times on different nodes, causing stale data',
+                'Lease management: Distributed locks expire at different times, leading to split-brain scenarios'
+              ],
+              problems_caused: [
+                'Incorrect event ordering in logs',
+                'Race conditions in time-based logic',
+                'Inconsistent cache expiration',
+                'Distributed lock failures',
+                'Audit trail corruption'
+              ],
+              sync_approaches: [
+                'Network Time Protocol (NTP)',
+                'Precision Time Protocol (PTP)',
+                'GPS-based time synchronization',
+                'Atomic clock references',
+                'Google TrueTime API'
+              ],
+              logical_alternatives: [
+                'Lamport timestamps for causality',
+                'Vector clocks for partial ordering',
+                'Hybrid logical clocks (HLC)',
+                'Event-based ordering instead of time',
+                'Consensus-based sequence numbers'
+              ],
+              solutions: 'Solutions: Logical clocks, Vector clocks, NTP'
+            },
+            partial_failures: {
+              title: 'Partial Failures',
+              description: 'Some parts of the system fail while others continue working, creating inconsistent states.',
+              detailed_explanation: 'Partial failures are perhaps the most insidious challenge in distributed systems. Unlike complete system failures that are obvious, partial failures create scenarios where some components work while others fail, leading to inconsistent states that are difficult to detect and handle.',
+              characteristics: [
+                'Only subset of system components fail',
+                'Difficult to detect and diagnose',
+                'Can cause cascading failures',
+                'System appears partially functional',
+                'Creates inconsistent global state'
+              ],
+              concrete_examples: [
+                'E-commerce checkout: Payment processed but inventory not updated due to database failure, overselling occurs',
+                'Email system: Message delivered to some recipients but not others due to server failures',
+                'Social media: Post visible to some users but not others due to replication lag',
+                'File storage: Data written to primary but replication to backups fails, data loss risk increases'
+              ],
+              failure_types: [
+                'Fail-stop: Component stops completely',
+                'Fail-slow: Component responds very slowly',
+                'Byzantine: Component behaves arbitrarily',
+                'Omission: Component drops some messages',
+                'Commission: Component sends wrong data'
+              ],
+              detection_challenges: [
+                'No clear failure signal',
+                'Timeouts are ambiguous',
+                'Network vs. node failures unclear',
+                'Silent data corruption possible',
+                'Partial state updates'
+              ],
+              handling_strategies: [
+                'Comprehensive health checks',
+                'Circuit breaker pattern',
+                'Graceful degradation',
+                'Compensation transactions',
+                'Idempotent operations'
+              ],
+              challenges: 'Challenges: Detecting failures, handling timeouts, recovery strategies'
+            },
+            consensus: {
+              title: 'Consensus',
+              description: 'Getting distributed nodes to agree on a single value or decision in the presence of failures.',
+              detailed_explanation: 'Consensus is the problem of getting multiple distributed nodes to agree on a single value, even when some nodes may fail or behave maliciously. This is fundamental to many distributed systems operations like leader election, configuration management, and ensuring consistency.',
+              characteristics: [
+                'All correct nodes must agree',
+                'Must handle node failures',
+                'Must terminate in finite time',
+                'Safety and liveness guarantees',
+                'Foundation for many distributed protocols'
+              ],
+              concrete_examples: [
+                'Database cluster: Nodes must agree on which transactions to commit in what order',
+                'Kubernetes cluster: Nodes must agree on which pods are running where',
+                'Blockchain: Miners must agree on the next block in the chain',
+                'Configuration management: Services must agree on current configuration version'
+              ],
+              problem_variants: [
+                'Byzantine fault tolerance: Handle malicious nodes',
+                'Crash fault tolerance: Handle only crash failures',
+                'Leader election: Choose single coordinator',
+                'Atomic broadcast: Order all messages',
+                'State machine replication: Keep replicas synchronized'
+              ],
+              famous_algorithms: [
+                'Paxos: Classic consensus with strong guarantees',
+                'Raft: Simpler alternative to Paxos',
+                'PBFT: Byzantine fault tolerant consensus',
+                'FLP impossibility: Theoretical limitations',
+                'RAFT: Leader-based consensus for log replication'
+              ],
+              real_world_usage: [
+                'Apache Zookeeper uses Zab protocol',
+                'etcd and Consul use Raft',
+                'Google Spanner uses Paxos',
+                'Blockchain networks use Proof of Work/Stake',
+                'Database replication protocols'
+              ],
+              algorithms: 'Algorithms: Raft, PBFT, Paxos'
+            },
+            state_management: {
+              title: 'State Management',
+              description: 'Keeping track of system state across multiple nodes while handling concurrent updates.',
+              detailed_explanation: 'State management in distributed systems involves maintaining consistent state across multiple nodes while handling concurrent updates, failures, and network partitions. This challenge becomes exponentially more complex as the number of nodes and the frequency of updates increase.',
+              characteristics: [
+                'State distributed across nodes',
+                'Concurrent updates from multiple sources',
+                'Must handle node failures gracefully',
+                'Consistency vs. performance trade-offs',
+                'Requires coordination mechanisms'
+              ],
+              concrete_examples: [
+                'Shopping cart: User adds items from mobile app while simultaneously from web, both updates must be preserved',
+                'Multiplayer game: Player position updates from multiple clients must be reconciled in real-time',
+                'Collaborative document: Multiple users editing same document simultaneously',
+                'Inventory system: Multiple warehouses updating stock levels concurrently'
+              ],
+              consistency_challenges: [
+                'Read-after-write consistency',
+                'Monotonic read consistency',
+                'Session consistency',
+                'Eventual consistency guarantees',
+                'Strong consistency requirements'
+              ],
+              concurrency_issues: [
+                'Lost updates problem',
+                'Dirty reads from uncommitted data',
+                'Non-repeatable reads',
+                'Phantom reads in range queries',
+                'Write-write conflicts'
+              ],
+              architectural_patterns: [
+                'Event sourcing: Store events, not state',
+                'CQRS: Separate command and query models',
+                'Saga pattern: Manage distributed transactions',
+                'Two-phase commit: Ensure atomicity',
+                'Compensation-based transactions'
+              ],
+              approaches: 'Approaches: Event sourcing, CQRS, distributed state machines'
+            },
+            race_conditions: {
+              title: 'Race Conditions',
+              description: 'Multiple processes accessing shared resources simultaneously, leading to unpredictable results.',
+              detailed_explanation: 'Race conditions in distributed systems occur when multiple processes or nodes attempt to access and modify shared resources simultaneously, leading to unpredictable and often incorrect results. Unlike single-machine race conditions, distributed race conditions are harder to detect and debug.',
+              characteristics: [
+                'Non-deterministic execution order',
+                'Shared resource contention',
+                'Timing-dependent bugs',
+                'Difficult to reproduce',
+                'Can cause data corruption'
+              ],
+              concrete_examples: [
+                'Bank account: Two ATMs withdraw simultaneously, both check balance ($100), both allow $60 withdrawal, account goes negative',
+                'Ticket booking: Two customers book last seat simultaneously, both get confirmation, airplane oversold',
+                'Counter increment: Multiple services increment global counter, final value incorrect due to lost updates',
+                'Resource allocation: Two processes allocate same server resources, causing resource conflicts'
+              ],
+              common_scenarios: [
+                'Check-then-act operations',
+                'Read-modify-write cycles',
+                'Double-checked locking patterns',
+                'Initialization race conditions',
+                'Cleanup race conditions'
+              ],
+              distributed_complications: [
+                'Network delays mask timing issues',
+                'Partial failures during operations',
+                'Clock synchronization problems',
+                'Message reordering effects',
+                'Distributed lock failures'
+              ],
+              prevention_techniques: [
+                'Atomic operations and Compare-And-Swap',
+                'Distributed locking mechanisms',
+                'Message ordering guarantees',
+                'Optimistic concurrency control',
+                'Pessimistic locking strategies'
+              ],
+              solutions: 'Solutions: Locks, atomic operations, message ordering'
+            },
+            fallacies_title: 'The Fallacies of Distributed Computing',
+            fallacies: {
+              f1: 'The network is reliable',
+              f2: 'Latency is zero',
+              f3: 'Bandwidth is infinite',
+              f4: 'The network is secure',
+              f5: 'Topology doesn\'t change',
+              f6: 'There is one administrator',
+              f7: 'Transport cost is zero',
+              f8: 'The network is homogeneous'
+            },
+            fallacies_warning: 'These false assumptions lead to many distributed systems problems',
+            fallacies_explanation: 'The Eight Fallacies of Distributed Computing, identified by Peter Deutsch and others, represent common misconceptions that developers make when designing distributed systems. Understanding these fallacies is crucial for building robust distributed applications.',
+            mitigation_strategies: {
+              title: 'General Mitigation Strategies',
+              strategies: [
+                'Design for failure: Assume components will fail',
+                'Implement comprehensive monitoring and alerting',
+                'Use circuit breakers to prevent cascade failures',
+                'Build in graceful degradation capabilities',
+                'Test failure scenarios regularly (chaos engineering)',
+                'Implement proper logging and distributed tracing',
+                'Use idempotent operations where possible',
+                'Design for eventual consistency when appropriate'
+              ]
+            },
+            characteristics_label: 'Characteristics:',
+            examples_label: 'Examples:',
+            causes_label: 'Common Causes:',
+            detection_label: 'Detection Strategies:',
+            mitigation_label: 'Mitigation Approaches:',
+            problems_label: 'Problems Caused:',
+            approaches_label: 'Approaches:',
+            algorithms_label: 'Algorithms:',
+            usage_label: 'Real-World Usage:',
+            patterns_label: 'Architectural Patterns:',
+            techniques_label: 'Prevention Techniques:',
+            scenarios_label: 'Common Scenarios:',
+            complications_label: 'Distributed Complications:',
+            sync_approaches_label: 'Synchronization Approaches:',
+            logical_alternatives_label: 'Logical Alternatives:',
+            failure_types_label: 'Failure Types:',
+            detection_challenges_label: 'Detection Challenges:',
+            handling_strategies_label: 'Handling Strategies:',
+            problem_variants_label: 'Problem Variants:',
+            consistency_challenges_label: 'Consistency Challenges:',
+            concurrency_issues_label: 'Concurrency Issues:'
+          },
+          network_partitions: {
+            name: 'Network Partitions & Failures',
+            description: 'Handling network splits and node failures',
+            title: 'Network Partitions & Failures',
+            subtitle: 'Understanding and handling network splits and node failures in distributed systems',
+            introduction: 'Network partitions are one of the most fundamental and challenging problems in distributed systems. When network failures prevent nodes from communicating, systems must make critical decisions about consistency versus availability. Understanding how to detect, prevent, and handle partitions is essential for building resilient distributed applications.',
+            what_is: {
+              title: 'What is a Network Partition?',
+              description: 'A network partition occurs when the network between nodes fails, splitting the system into isolated groups that cannot communicate with each other.',
+              detailed_explanation: 'Network partitions represent a failure mode where the distributed system becomes divided into isolated islands of nodes that can communicate internally but not across the partition boundary. This is particularly challenging because each partition may continue operating independently, potentially making conflicting decisions.',
+              note: 'Also known as a "split-brain" scenario, where different parts of the system may make independent decisions, potentially leading to inconsistency.',
+              characteristics: [
+                'Communication between node groups is impossible',
+                'Each partition can make independent decisions',
+                'CAP theorem trade-offs become immediately relevant',
+                'System state can diverge across partitions',
+                'Recovery requires conflict resolution strategies'
+              ]
+            },
+            causes: {
+              title: 'Causes of Partitions',
+              description: 'Network partitions can arise from various infrastructure and configuration issues that affect connectivity between distributed nodes.',
+              items: [
+                'Router or switch failures',
+                'Cable cuts or damage', 
+                'ISP or datacenter outages',
+                'Software bugs in network stack',
+                'Misconfigured firewalls'
+              ],
+              detailed_causes: [
+                'Physical infrastructure failures: Cable cuts, router hardware failures, power outages affecting network equipment',
+                'Software bugs: Network stack bugs, driver issues, routing protocol failures, DNS resolution problems',
+                'Configuration errors: Firewall misconfigurations, routing table errors, security policy conflicts',
+                'Overload conditions: Network congestion, DDoS attacks, resource exhaustion causing packet drops',
+                'Environmental factors: Natural disasters, construction accidents, electromagnetic interference'
+              ]
+            },
+            failure_types: {
+              title: 'Types of Failures',
+              description: 'Different failure modes require different detection and handling strategies in distributed systems.',
+              fail_stop: {
+                title: 'Fail-Stop',
+                description: 'Node stops completely and other nodes can detect the failure',
+                detailed_explanation: 'In fail-stop failures, a node completely ceases operation and stops responding to all requests. This is the easiest type of failure to detect and handle because the failure is clean and observable by other nodes.',
+                characteristics: [
+                  'Node stops responding completely',
+                  'Easy to detect with timeouts',
+                  'No risk of partial state corruption',
+                  'Clean failure semantics'
+                ],
+                examples: [
+                  'Server power failure causing immediate shutdown',
+                  'Process crash due to out-of-memory condition',
+                  'Network interface failure making node unreachable',
+                  'Container or VM termination'
+                ]
+              },
+              fail_slow: {
+                title: 'Fail-Slow', 
+                description: 'Node becomes very slow but doesn\'t crash completely',
+                detailed_explanation: 'Fail-slow failures are particularly insidious because the node continues to operate but with severely degraded performance. This can cause timeouts, cascading failures, and make it difficult to distinguish between network latency and node problems.',
+                characteristics: [
+                  'Node responds but very slowly',
+                  'Difficult to distinguish from network latency',
+                  'Can cause cascading performance issues',
+                  'May lead to resource exhaustion in other nodes'
+                ],
+                examples: [
+                  'CPU overload causing request processing delays',
+                  'Memory pressure leading to excessive garbage collection',
+                  'Disk I/O bottlenecks slowing down operations',
+                  'Network congestion causing intermittent delays'
+                ]
+              },
+              byzantine: {
+                title: 'Byzantine',
+                description: 'Node behaves arbitrarily or maliciously',
+                detailed_explanation: 'Byzantine failures represent the most complex failure mode where nodes may send conflicting, corrupted, or malicious messages. These failures require sophisticated consensus algorithms and are especially important in adversarial environments.',
+                characteristics: [
+                  'Node sends incorrect or conflicting messages',
+                  'May appear to work correctly to some nodes',
+                  'Requires majority agreement to handle',
+                  'Most difficult type of failure to detect and handle'
+                ],
+                examples: [
+                  'Memory corruption causing incorrect computations',
+                  'Software bugs leading to inconsistent responses',
+                  'Malicious attacks attempting to compromise consensus',
+                  'Clock skew causing timestamp inconsistencies'
+                ]
+              }
+            },
+            concrete_examples: {
+              title: 'Real-World Partition Scenarios',
+              examples: [
+                'AWS region isolation: Inter-region network failure isolates US-East from US-West, each region continues serving traffic independently',
+                'Database cluster split: Master-slave replication breaks, slaves must decide whether to accept writes or remain read-only to prevent conflicts',
+                'Microservices partition: Payment service loses connection to inventory service during checkout, must decide whether to process orders with stale inventory data',
+                'CDN edge isolation: Internet routing issues isolate edge servers from origin, cached content becomes stale but users continue to be served',
+                'Kubernetes cluster partition: Worker nodes lose connection to master, pods continue running but new deployments fail'
+              ]
+            },
+            partition_scenarios: {
+              title: 'Common Partition Scenarios',
+              datacenter_split: {
+                title: 'Multi-Datacenter Partitions',
+                description: 'When datacenters lose connectivity, each must decide how to handle ongoing operations',
+                strategies: [
+                  'Designate primary datacenter for writes',
+                  'Switch to read-only mode in secondary datacenters',
+                  'Use consensus to elect new primary',
+                  'Implement conflict-free data structures'
+                ]
+              },
+              service_mesh_partition: {
+                title: 'Service Mesh Partitions',
+                description: 'When services in a mesh lose connectivity to subsets of other services',
+                strategies: [
+                  'Circuit breaker pattern to fail fast',
+                  'Fallback to cached responses',
+                  'Graceful degradation of functionality',
+                  'Queue requests for later processing'
+                ]
+              },
+              database_partition: {
+                title: 'Database Cluster Partitions',
+                description: 'When database nodes become isolated from each other',
+                strategies: [
+                  'Use quorum-based writes to maintain consistency',
+                  'Switch minority partitions to read-only mode',
+                  'Implement last-write-wins conflict resolution',
+                  'Use vector clocks for causality tracking'
+                ]
+              }
+            },
+            handling_title: 'Handling Strategies',
+            detection: {
+              title: 'Detection',
+              description: 'Early and accurate detection of network partitions is crucial for implementing appropriate response strategies.',
+              items: [
+                'Heartbeat mechanisms',
+                'Timeout-based detection',
+                'Gossip protocols',
+                'External monitoring'
+              ],
+              detailed_strategies: [
+                'Heartbeat mechanisms: Regular ping/pong messages between nodes to detect connectivity loss',
+                'Timeout-based detection: Set reasonable timeouts to distinguish slow responses from failures',
+                'Gossip protocols: Distributed failure detection where nodes share information about other nodes',
+                'External monitoring: Third-party services to validate connectivity from multiple perspectives',
+                'Application-level probes: Health checks specific to business logic functionality'
+              ],
+              challenges: [
+                'Distinguishing between network delays and actual partitions',
+                'False positives due to temporary network congestion',
+                'Setting appropriate timeout values for different scenarios',
+                'Handling partial connectivity (some nodes reachable, others not)'
+              ]
+            },
+            prevention: {
+              title: 'Prevention',
+              description: 'While partitions cannot be completely prevented, their likelihood and impact can be significantly reduced through proper infrastructure design.',
+              items: [
+                'Redundant network paths',
+                'Multiple datacenters',
+                'Quality network equipment',
+                'Regular maintenance'
+              ],
+              detailed_strategies: [
+                'Network redundancy: Multiple independent network paths, diverse ISPs, redundant routers and switches',
+                'Geographic distribution: Multi-region deployments, availability zones, edge locations',
+                'Infrastructure quality: Enterprise-grade networking equipment, proper capacity planning, regular hardware refresh',
+                'Operational excellence: Scheduled maintenance windows, change management processes, monitoring and alerting',
+                'Chaos engineering: Regularly testing partition scenarios to validate system behavior'
+              ]
+            },
+            recovery: {
+              title: 'Recovery',
+              description: 'When partitions heal, systems must carefully reconcile state and resolve any conflicts that occurred during the partition.',
+              items: [
+                'Automatic failover',
+                'Data reconciliation', 
+                'Split-brain resolution',
+                'Graceful degradation'
+              ],
+              detailed_strategies: [
+                'Conflict detection: Identify divergent state changes that occurred during the partition',
+                'Merge strategies: Implement application-specific logic to resolve conflicts automatically',
+                'Manual intervention: Provide tools for operators to resolve complex conflicts manually',
+                'Compensation transactions: Implement undo operations for conflicting state changes',
+                'Version vectors: Use logical timestamps to establish causality and conflict resolution order'
+              ]
+            },
+            design_principles: {
+              title: 'Design Principles for Partition Tolerance',
+              architectural: {
+                title: 'Architectural Patterns',
+                items: [
+                  'Use consensus algorithms (Raft, Paxos)',
+                  'Implement quorum-based decisions',
+                  'Design for eventual consistency',
+                  'Use circuit breakers and bulkheads'
+                ],
+                detailed_patterns: [
+                  'Consensus algorithms: Raft, Paxos, PBFT for maintaining agreement across partitions',
+                  'Quorum systems: Majority-based decision making to ensure consistency during partitions',
+                  'Event sourcing: Immutable event logs that can be merged when partitions heal',
+                  'CQRS: Separate read and write models to handle partition scenarios differently',
+                  'Saga pattern: Long-running transactions with compensation for distributed consistency'
+                ]
+              },
+              operational: {
+                title: 'Operational Practices',
+                items: [
+                  'Regular disaster recovery testing',
+                  'Monitoring and alerting systems',
+                  'Automated deployment and scaling',
+                  'Documentation and runbooks'
+                ],
+                detailed_practices: [
+                  'Chaos engineering: Regularly induce partitions to test system behavior',
+                  'Game day exercises: Practice partition scenarios with entire teams',
+                  'Automated testing: Include partition testing in CI/CD pipelines',
+                  'Monitoring dashboards: Real-time visibility into partition detection and recovery',
+                  'Runbook procedures: Step-by-step guides for handling partition scenarios'
+                ]
+              }
+            },
+            cap_theorem_connection: {
+              title: 'Connection to CAP Theorem',
+              explanation: 'Network partitions force immediate CAP theorem trade-offs between consistency and availability',
+              trade_offs: [
+                'Choose Consistency: Reject operations to maintain data consistency, sacrificing availability',
+                'Choose Availability: Continue operations with potentially stale data, sacrificing consistency',
+                'Hybrid approach: Different services may make different trade-offs based on business requirements'
+              ]
+            },
+            best_practices: {
+              title: 'Best Practices',
+              practices: [
+                'Design for partition tolerance from the beginning',
+                'Implement comprehensive monitoring and alerting',
+                'Test partition scenarios regularly through chaos engineering',
+                'Document decision-making processes for partition handling',
+                'Train operations teams on partition response procedures',
+                'Use proven consensus algorithms rather than building custom solutions',
+                'Implement graceful degradation rather than complete service failure',
+                'Monitor business metrics during partition scenarios'
+              ]
+            },
+            characteristics_label: 'Characteristics:',
+            examples_label: 'Examples:',
+            causes_label: 'Detailed Causes:',
+            strategies_label: 'Strategies:',
+            challenges_label: 'Challenges:',
+            patterns_label: 'Detailed Patterns:',
+            practices_label: 'Detailed Practices:'
+          }
+        },
+        
         componentes: {
           name: 'Basic Components',
           description: 'Fundamental building blocks of distributed systems',
@@ -789,6 +1667,26 @@ const resources = {
           description: 'This is a preview of the Systems Editor under development. Soon, you will be able to create and simulate complete distributed architectures with more components, metrics, and features. Stay tuned for updates!',
           note: 'Note: The calculations and metrics shown in this version are approximations and may not accurately reflect the behavior of a real system. We are working to improve the accuracy of the simulations.'
         }
+      },
+      theoretical_foundations_main: {
+        subtitle: 'Building unshakeable knowledge for distributed systems',
+        hero: {
+            title: 'Why Theory Matters in Practice',
+            description: 'In the fast-paced world of today, it might seem tempting to jump straight into implementation. However, without solid theoretical foundations, even the most experienced engineers can make costly mistakes that could have been avoided with proper understanding of fundamental principles.'
+          },
+          paragraph1: 'Understanding theoretical foundations in distributed systems is not an academic luxury—it\'s a practical necessity. Just as a skyscraper requires a solid foundation to withstand earthquakes and storms, distributed systems require theoretical understanding to handle the inevitable challenges of network failures, data inconsistencies, and scalability pressures. Engineers who master these concepts don\'t just build systems; they build systems that last, scale, and adapt to changing requirements.',
+          paragraph2: 'Consider the consequences of building without theory: teams that implement caching without understanding consistency models often create systems where users see their own updates disappear intermittently. Developers who don\'t grasp the CAP theorem might architect systems that promise both perfect consistency and 100% availability, only to discover during critical moments that such guarantees are mathematically impossible in the presence of network partitions.',
+          paragraph3: 'The CAP theorem, one of our foundational topics, provides crucial decision-making framework for system architects. It\'s not just about knowing that you can\'t have consistency, availability, and partition tolerance simultaneously—it\'s about understanding what this means for your specific use case. Should your e-commerce platform prioritize showing consistent prices (consistency) or ensure the site stays online during network issues (availability)? The answer depends on business requirements, but the framework for making this decision comes from understanding the theoretical implications.',
+          paragraph4: 'Consistency models form another pillar of theoretical knowledge that directly impacts practical implementation. When Netflix decides to use eventual consistency for user recommendation updates but strong consistency for billing information, they\'re applying theoretical knowledge to solve real business problems. Understanding when to apply strong, eventual, or weak consistency isn\'t intuitive—it requires grasping the trade-offs between performance, availability, and data accuracy.',
+          paragraph5: 'The theoretical understanding of trade-offs extends far beyond academic interest—it directly translates to business value. Engineers who understand these concepts can make informed decisions about technology choices, avoiding costly rewrites and performance issues. They can estimate the true cost of consistency guarantees, predict how systems will behave under load, and design architectures that gracefully handle failure scenarios.',
+          paragraph6: 'Theoretical foundations also serve as a shield against common pitfalls that plague distributed systems. The "8 Fallacies of Distributed Computing" aren\'t just historical curiosities—they\'re practical warnings about assumptions that continue to trip up modern development teams. Understanding that "the network is reliable" is false helps engineers design systems with proper retry mechanisms, circuit breakers, and graceful degradation strategies.',
+          paragraph7: 'From a collaboration perspective, theoretical knowledge provides a common language for technical discussions. When architects discuss whether to implement read replicas, conversations become more productive when everyone understands concepts like read consistency, lag tolerance, and split-brain scenarios. Theory provides the vocabulary for precise technical communication, reducing misunderstandings that lead to architectural misalignments.',
+          paragraph8: 'These foundations also provide a systematic approach to problem-solving. When a production system exhibits strange behavior—users in different regions seeing different data, or performance degrading under specific conditions—engineers with theoretical grounding can quickly narrow down root causes. They understand the relationship between network topology, consistency guarantees, and performance characteristics, enabling faster diagnosis and resolution.',
+          paragraph9: 'As technology evolves, theoretical foundations remain constant while implementations change. The principles behind consensus algorithms apply whether you\'re using Raft in etcd, Paxos in Spanner, or Byzantine fault tolerance in blockchain systems. Engineers who understand the theory can adapt to new technologies more quickly because they recognize familiar patterns and can predict how new systems will behave.',
+          paragraph10: 'Career-wise, engineers with strong theoretical foundations become force multipliers in their organizations. They can mentor junior developers, participate meaningfully in architectural decisions, and avoid the "cargo cult programming" trap where solutions are copied without understanding. They become the engineers that companies turn to for complex problems and system design decisions.',
+          paragraph11: 'Furthermore, theoretical knowledge enables innovation and contribution to the field. Understanding existing algorithms and their limitations is the first step toward developing improvements or entirely new approaches. Many of today\'s most successful distributed systems innovations came from engineers who deeply understood existing theory and identified opportunities for advancement.',
+          conclusion: 'In conclusion, theoretical foundations in distributed systems are not just academic prerequisites—they are practical tools that enable better decision-making, more effective communication, and more robust system design. They provide the intellectual framework for understanding why certain approaches work, when they might fail, and how to adapt them to specific requirements. For any engineer serious about building reliable, scalable distributed systems, investing time in these theoretical foundations pays dividends throughout their entire career.',
+          explore_topics: 'Explore Key Foundation Topics'
       },
       components: {
         overview_title: 'Basic Components',
@@ -5123,6 +6021,884 @@ const resources = {
           name: 'System Design 101',
           description: 'Fundamentos de design de sistemas'
         },
+        theoretical_foundations: {
+          name: 'Fundamentos Teóricos',
+          description: 'Teoria e princípios fundamentais de sistemas distribuídos',
+          cap_theorem: {
+            name: 'Teorema CAP',
+            description: 'Trade-offs entre Consistência, Disponibilidade e Tolerância a Partições',
+            title: 'Teorema CAP',
+            subtitle: 'Compreendendo os trade-offs fundamentais em sistemas distribuídos',
+            introduction: 'Proposto por Eric Brewer em 2000, o teorema CAP é um dos conceitos mais importantes em sistemas distribuídos. Ele estabelece que qualquer sistema distribuído pode garantir apenas duas das três propriedades: Consistência, Disponibilidade e Tolerância a partições. Este teorema ajuda arquitetos a tomar decisões informadas sobre trade-offs no design de sistemas.',
+            consistency: {
+              title: 'Consistência',
+              description: 'Todos os nós veem os mesmos dados ao mesmo tempo. Toda leitura recebe a escrita mais recente ou um erro.',
+              detailed_explanation: 'Consistência significa que todos os nós no sistema distribuído têm a mesma visão dos dados a qualquer momento. Quando uma operação de escrita é concluída com sucesso, todas as operações de leitura subsequentes retornarão o valor atualizado até que os dados sejam alterados novamente.',
+              concrete_examples: [
+                'Sistema bancário: Quando você transfere R$ 100 da Conta A para a Conta B, todos os caixas eletrônicos devem mostrar os saldos corretos imediatamente',
+                'Redes sociais: Quando você atualiza sua foto de perfil, todos os seus amigos devem ver a nova foto, não uma mistura de antiga e nova',
+                'E-commerce: Quando um item sai de estoque, nenhum cliente deve conseguir comprá-lo de qualquer servidor',
+                'Ranking de jogos: Quando um jogador atinge uma pontuação alta, todos os jogadores devem ver o ranking atualizado consistentemente'
+              ],
+              consistency_models: [
+                'Consistência Forte: Todas as leituras recebem a escrita mais recente (PostgreSQL com replicação síncrona)',
+                'Consistência Eventual: Sistema se tornará consistente ao longo do tempo (propagação DNS)',
+                'Consistência Fraca: Sem garantias sobre quando a consistência será alcançada (streaming de vídeo ao vivo)'
+              ]
+            },
+            availability: {
+              title: 'Disponibilidade', 
+              description: 'O sistema permanece operacional 100% do tempo. Toda requisição recebe uma resposta.',
+              detailed_explanation: 'Disponibilidade significa que o sistema continua funcionando e respondendo a solicitações mesmo quando alguns componentes falham. Toda solicitação recebe uma resposta (sucesso ou falha) sem garantir que contenha a versão mais recente das informações.',
+              concrete_examples: [
+                'Netflix: Deve continuar reproduzindo vídeos mesmo se alguns servidores estiverem inativos, mesmo que recomendações possam estar desatualizadas',
+                'Amazon: Site deve permanecer acessível durante picos de compras, mesmo que detalhes de produtos demorem para sincronizar',
+                'WhatsApp: Mensagens devem ser entregues mesmo durante problemas de rede, mensagens podem ser entregues fora de ordem',
+                'Google Search: Deve retornar resultados mesmo se alguns data centers estiverem inacessíveis, resultados podem estar ligeiramente desatualizados'
+              ],
+              availability_metrics: [
+                '99% uptime = 3,65 dias de inatividade por ano',
+                '99,9% uptime = 8,76 horas de inatividade por ano',
+                '99,99% uptime = 52,56 minutos de inatividade por ano',
+                '99,999% uptime = 5,26 minutos de inatividade por ano'
+              ],
+              strategies: [
+                'Balanceamento de carga entre múltiplos servidores',
+                'Sistemas redundantes e mecanismos de failover',
+                'Degradação graciosa de funcionalidades',
+                'Circuit breakers para prevenir falhas em cascata'
+              ]
+            },
+            partition_tolerance: {
+              title: 'Tolerância a Partições',
+              description: 'O sistema continua operando apesar de falhas de rede entre os nós.',
+              detailed_explanation: 'Tolerância a partições significa que o sistema continua funcionando mesmo quando falhas de rede impedem que alguns nós se comuniquem com outros. Isso não é opcional em sistemas distribuídos - falhas de rede são inevitáveis.',
+              concrete_examples: [
+                'Nuvem multi-região: Data centers da AWS na costa leste e oeste perdem conexão mas ambos continuam servindo usuários',
+                'App móvel: Seu telefone perde internet mas dados em cache ainda funcionam, sincroniza quando conexão retorna',
+                'Microserviços: Serviço de pagamento não consegue alcançar serviço de estoque mas ainda pode processar pagamentos com dados em cache',
+                'CDN: Servidores edge locais servem conteúdo mesmo quando desconectados dos servidores de origem'
+              ],
+              partition_scenarios: [
+                'Cabo de rede cortado entre data centers',
+                'Falhas de roteador/switch isolam racks de servidores',
+                'Interrupções de provedor de internet afetam regiões',
+                'Ataques DDoS sobrecarregam infraestrutura de rede',
+                'Firewalls mal configurados bloqueiam comunicação'
+              ],
+              handling_strategies: [
+                'Detectar eventos de partição rapidamente',
+                'Continuar operando com dados disponíveis',
+                'Enfileirar operações para sincronização posterior',
+                'Implementar mecanismos de resolução de conflitos'
+              ]
+            },
+            theorem_statement: 'O Teorema CAP Estabelece:',
+            theorem_text: 'Na presença de uma partição de rede, você deve escolher entre consistência e disponibilidade',
+            real_world_note: 'Na prática, você não escolhe entre propriedades CAP para todo o seu sistema. Diferentes partes da sua aplicação podem fazer diferentes trade-offs baseados em requisitos de negócio.',
+            concrete_examples_title: 'Exemplos Concretos',
+            consistency_examples_title: 'Exemplos de Consistência',
+            availability_examples_title: 'Exemplos de Disponibilidade',
+            partition_examples_title: 'Exemplos de Tolerância a Partições',
+            characteristics_label: 'Características:',
+            examples_label: 'Exemplos:',
+            use_cases_label: 'Casos de Uso:',
+            limitations_label: 'Limitações:',
+            cp_systems: {
+              title: 'Sistemas CP (Consistência + Tolerância a Partições)',
+              description: 'Priorizam consistência de dados sobre disponibilidade durante partições de rede',
+              characteristics: [
+                'Sistema fica indisponível durante partições',
+                'Quando disponível, dados são sempre consistentes',
+                'Melhor para dados financeiros/críticos'
+              ],
+              examples: [
+                'Bancos de dados ACID tradicionais (PostgreSQL, MySQL) com replicação síncrona',
+                'Apache HBase - garante consistência forte',
+                'MongoDB com configurações de consistência forte',
+                'Zookeeper - serviço de coordenação requerendo consenso',
+                'Sistemas bancários onde precisão > disponibilidade'
+              ],
+              use_cases: [
+                'Transações financeiras e bancárias',
+                'Sistemas de gerenciamento de estoque',
+                'Gerenciamento de configuração',
+                'Sistemas de autenticação e autorização'
+              ]
+            },
+            ap_systems: {
+              title: 'Sistemas AP (Disponibilidade + Tolerância a Partições)', 
+              description: 'Priorizam disponibilidade do sistema sobre consistência imediata durante partições',
+              characteristics: [
+                'Sistema permanece disponível durante partições',
+                'Dados podem estar temporariamente inconsistentes',
+                'Eventualmente se torna consistente quando partição se cura'
+              ],
+              examples: [
+                'Amazon DynamoDB - banco NoSQL altamente disponível',
+                'Apache Cassandra - banco distribuído priorizando disponibilidade',
+                'Sistema DNS - deve sempre resolver nomes, consistência eventual é OK',
+                'Amazon S3 - armazenamento de objetos com consistência eventual',
+                'Feeds de redes sociais - melhor mostrar conteúdo ligeiramente desatualizado que ficar indisponível'
+              ],
+              use_cases: [
+                'Plataformas de redes sociais',
+                'Redes de entrega de conteúdo',
+                'Sistemas de carrinho de compras',
+                'Armazenamento de preferências do usuário',
+                'Sistemas de analytics e logging'
+              ]
+            },
+            ca_systems: {
+              title: 'Sistemas CA (Consistência + Disponibilidade)', 
+              description: 'Sistemas tradicionais que sacrificam tolerância a partições',
+              characteristics: [
+                'Consistência e disponibilidade perfeitas',
+                'Funciona apenas em local único/sem partições de rede',
+                'Não são verdadeiramente sistemas distribuídos'
+              ],
+              examples: [
+                'Bancos de dados de nó único (PostgreSQL, MySQL em um servidor)',
+                'Bancos em memória (Redis) em máquina única',
+                'RDBMS tradicionais em data center único',
+                'Aplicações monolíticas legadas'
+              ],
+              limitations: [
+                'Não consegue lidar com partições de rede',
+                'Ponto único de falha',
+                'Não adequado para sistemas geograficamente distribuídos',
+                'Escalabilidade limitada'
+              ],
+              note: 'Na prática, sistemas CA não existem em ambientes verdadeiramente distribuídos porque partições de rede são inevitáveis.'
+            },
+            practical_considerations: {
+              title: 'Considerações Práticas',
+              points: [
+                'A maioria dos sistemas modernos são CP ou AP',
+                'Você pode escolher diferentes trade-offs para diferentes partes do seu sistema',
+                'Requisitos de negócio devem dirigir suas decisões CAP',
+                'Monitore e meça consistência e disponibilidade reais',
+                'Projete para degradação graciosa durante partições'
+              ]
+            },
+            decision_framework: {
+              title: 'Como Escolher?',
+              questions: [
+                'Seu negócio pode tolerar inconsistência temporária?',
+                'Disponibilidade do sistema é mais importante que precisão dos dados?',
+                'Você está operando em múltiplas regiões geográficas?',
+                'Quais são os custos de inatividade vs. dados inconsistentes?',
+                'Você pode implementar mecanismos de resolução de conflitos?'
+              ]
+            }
+          },
+          consistency_models: {
+            name: 'Modelos de Consistência',
+            description: 'Padrões de consistência forte, eventual e fraca',
+            title: 'Modelos de Consistência',
+            subtitle: 'Diferentes abordagens para gerenciar consistência de dados em sistemas distribuídos',
+            introduction: 'Modelos de consistência definem as regras sobre quando e como atualizações de dados se tornam visíveis em um sistema distribuído. Compreender esses modelos é crucial para projetar sistemas que equilibram precisão de dados, performance e disponibilidade de acordo com seus requisitos específicos.',
+            strong_consistency: {
+              title: 'Consistência Forte',
+              description: 'Todos os nós veem os mesmos dados ao mesmo tempo. Após uma operação de escrita, todas as leituras subsequentes retornarão o valor atualizado.',
+              detailed_explanation: 'Consistência forte garante que uma vez que uma operação de escrita seja concluída com sucesso, todas as operações de leitura subsequentes retornarão o valor atualizado de qualquer nó no sistema. Isso fornece as garantias mais fortes, mas vem com trade-offs de performance e disponibilidade.',
+              characteristics: [
+                'Consistência imediata em todos os nós',
+                'Nunca retorna dados obsoletos aos clientes',
+                'Garantias de transações ACID',
+                'Replicação síncrona necessária',
+                'Maior latência devido ao overhead de coordenação'
+              ],
+              concrete_examples: [
+                'Transferência bancária: Quando você transfere dinheiro, ambas as contas devem mostrar saldos corretos imediatamente em todos os caixas eletrônicos e agências',
+                'Gestão de estoque: Quando o último item é vendido, nenhum outro cliente deve conseguir comprá-lo de qualquer localização',
+                'Autenticação de usuário: Mudanças de senha devem ser efetivas imediatamente em todos os servidores de login',
+                'Negociação de ações: Execução de ordens deve refletir imediatamente em todos os sistemas de negociação para prevenir arbitragem'
+              ],
+              implementations: [
+                'PostgreSQL com replicação síncrona',
+                'MongoDB com write concern de maioria',
+                'Protocolo de consenso Apache Zookeeper',
+                'Google Spanner com TrueTime',
+                'RDBMS tradicionais com transações distribuídas'
+              ],
+              use_cases: [
+                'Transações financeiras e sistemas bancários',
+                'Gestão de estoque e inventário',
+                'Autenticação e autorização de usuários',
+                'Sistemas de conformidade regulatória',
+                'Aplicações empresariais críticas'
+              ],
+              tradeoffs: 'Trade-offs: Alta consistência mas pode impactar disponibilidade e performance'
+            },
+            eventual_consistency: {
+              title: 'Consistência Eventual',
+              description: 'O sistema se tornará consistente com o tempo, desde que não receba novas atualizações. Leituras podem retornar dados obsoletos temporariamente.',
+              detailed_explanation: 'Consistência eventual garante que se nenhuma nova atualização for feita a um item de dados, eventualmente todos os acessos a esse item retornarão o valor atualizado. Este modelo permite inconsistências temporárias mas garante alta disponibilidade e tolerância a partições.',
+              characteristics: [
+                'Inconsistências temporárias permitidas',
+                'Alta disponibilidade e tolerância a partições',
+                'Replicação assíncrona',
+                'Menor latência para operações de escrita',
+                'Mecanismos de resolução de conflitos necessários'
+              ],
+              concrete_examples: [
+                'Timeline de redes sociais: Sua postagem aparece imediatamente para você, mas pode demorar para aparecer nos feeds dos amigos',
+                'Propagação DNS: Mudanças de domínio levam tempo para propagar globalmente, servidores DNS diferentes podem retornar IPs diferentes temporariamente',
+                'Avaliações de produtos Amazon: Avaliações aparecem eventualmente em todos os servidores, mas consistência imediata não é crítica',
+                'Sistemas de email: Emails se replicam para servidores de backup ao longo do tempo, atrasos temporários não quebram a funcionalidade'
+              ],
+              implementations: [
+                'Amazon DynamoDB com leituras de consistência eventual',
+                'Apache Cassandra nível de consistência padrão',
+                'Amazon S3 armazenamento de objetos',
+                'DNS (Sistema de Nomes de Domínio)',
+                'Bancos NoSQL com replicação assíncrona'
+              ],
+              use_cases: [
+                'Feeds e interações de redes sociais',
+                'Sistemas de gerenciamento de conteúdo',
+                'Armazenamento de preferências de usuário',
+                'Sistemas de carrinho de compras',
+                'Dados de analytics e logging'
+              ],
+              convergence_strategies: [
+                'Last-write-wins (baseado em timestamp)',
+                'Vector clocks para rastreamento de causalidade',
+                'Tipos de dados replicados livres de conflito (CRDTs)',
+                'Resolução de conflitos no nível da aplicação',
+                'Controle de concorrência multi-versão'
+              ],
+              tradeoffs: 'Trade-offs: Alta disponibilidade e tolerância a partições, mas inconsistência temporária'
+            },
+            weak_consistency: {
+              title: 'Consistência Fraca',
+              description: 'Após uma escrita, leituras podem ou não ver o valor atualizado. O sistema não faz garantias sobre quando os dados estarão consistentes.',
+              detailed_explanation: 'Consistência fraca não faz garantias sobre quando os dados se tornarão consistentes entre os nós. Este modelo prioriza máxima performance e disponibilidade, aceitando que dados podem estar inconsistentes por períodos estendidos ou mesmo permanentemente em alguns casos.',
+              characteristics: [
+                'Nenhuma garantia de consistência',
+                'Máxima performance e throughput',
+                'Propagação de dados por melhor esforço',
+                'Overhead mínimo de coordenação',
+                'Aplicação deve lidar com inconsistências'
+              ],
+              concrete_examples: [
+                'Streaming de vídeo ao vivo: Perda de frames ou mudanças de qualidade são aceitáveis para performance em tempo real',
+                'Jogos online: Posições de jogadores podem estar ligeiramente dessincronizadas para melhor responsividade',
+                'Colaboração em tempo real: Posições de cursor em documentos compartilhados não precisam de consistência perfeita',
+                'Dados de sensores IoT: Perda ocasional de dados é aceitável para leituras de sensores de alta frequência'
+              ],
+              implementations: [
+                'Cache distribuído Memcached',
+                'Redis sem persistência',
+                'Sistemas em tempo real baseados em UDP',
+                'Filas de mensagens por melhor esforço',
+                'Plataformas de streaming em tempo real'
+              ],
+              use_cases: [
+                'Jogos e simulações em tempo real',
+                'Streaming de vídeo/áudio ao vivo',
+                'Coleta de dados de sensores de alta frequência',
+                'Ferramentas de colaboração em tempo real',
+                'Monitoramento de performance e métricas'
+              ],
+              considerations: [
+                'Aplicação deve ser projetada para inconsistência',
+                'Perda de dados pode ser permanente',
+                'Resolução de conflitos no cliente frequentemente necessária',
+                'Adequado apenas para dados não críticos',
+                'Monitoramento se torna crucial'
+              ],
+              tradeoffs: 'Trade-offs: Máxima performance e disponibilidade, garantias mínimas de consistência'
+            },
+            choosing_title: 'Escolhendo o Modelo Certo',
+            use_cases: {
+              strong: 'Transações financeiras, sistemas de inventário, autenticação de usuário',
+              eventual: 'Feeds de redes sociais, comentários, perfis de usuário, carrinhos de compra',
+              weak: 'Streaming de vídeo ao vivo, jogos online, colaboração em tempo real'
+            },
+            decision_matrix: {
+              title: 'Matriz de Decisão',
+              factors: [
+                'Criticidade dos dados: Quão importante é a precisão dos dados?',
+                'Requisitos de performance: Qual latência é aceitável?',
+                'Necessidades de disponibilidade: O sistema pode tolerar downtime?',
+                'Requisitos de escala: Quantos usuários simultâneos?',
+                'Distribuição geográfica: Múltiplas regiões ou data centers?'
+              ]
+            },
+            practical_guidelines: {
+              title: 'Diretrizes Práticas de Implementação',
+              tips: [
+                'Diferentes partes do seu sistema podem usar diferentes modelos de consistência',
+                'Comece com consistência forte e relaxe apenas onde necessário',
+                'Monitore métricas de consistência em produção',
+                'Projete estratégias de resolução de conflitos antecipadamente',
+                'Considere abordagens híbridas para aplicações complexas'
+              ]
+            },
+            examples_title: 'Exemplos do Mundo Real',
+            characteristics_label: 'Características:',
+            examples_label: 'Exemplos:',
+            implementations_label: 'Implementações:',
+            use_cases_label: 'Casos de Uso:',
+            convergence_label: 'Estratégias de Convergência:',
+            considerations_label: 'Considerações:'
+          },
+          distributed_challenges: {
+            name: 'Desafios Distribuídos',
+            description: 'Problemas comuns em sistemas distribuídos',
+            title: 'Desafios de Sistemas Distribuídos',
+            subtitle: 'Problemas e complexidades comuns na computação distribuída',
+            introduction: 'Sistemas distribuídos enfrentam desafios únicos que não existem em sistemas de uma única máquina. Compreender esses problemas fundamentais é crucial para projetar aplicações distribuídas resilientes, escaláveis e confiáveis. Cada desafio requer consideração cuidadosa e soluções específicas.',
+            network_partitions: {
+              title: 'Partições de Rede',
+              description: 'Falhas de rede que dividem o sistema em grupos isolados, forçando trade-offs entre consistência e disponibilidade.',
+              detailed_explanation: 'Partições de rede ocorrem quando falhas de rede impedem que alguns nós se comuniquem com outros, efetivamente dividindo o sistema em grupos isolados. Este é um dos problemas mais desafiadores em sistemas distribuídos porque força decisões imediatas sobre consistência vs. disponibilidade.',
+              characteristics: [
+                'Falha de comunicação entre nós',
+                'Sistema se divide em ilhas isoladas',
+                'Trade-offs imediatos do teorema CAP necessários',
+                'Pode ser temporário ou permanente',
+                'Afeta garantias de consistência de dados'
+              ],
+              concrete_examples: [
+                'Conectividade de data center: Cabo cortado entre regiões AWS causa partição de 6 horas, cada região deve decidir se permanece online',
+                'Microserviços: Serviço de pagamento não consegue alcançar serviço de estoque, deve decidir se processa pedidos com dados de estoque obsoletos',
+                'Cluster de banco: Replicação master-slave quebra, slaves devem decidir se aceitam escritas ou permanecem somente leitura',
+                'Rede CDN: Problemas de roteamento isolam servidores edge da origem, conteúdo em cache fica obsoleto mas usuários ainda são servidos'
+              ],
+              causes: [
+                'Falhas físicas de rede (corte de cabos, falhas de roteador)',
+                'Bugs de software na pilha de rede',
+                'Infraestrutura de rede sobrecarregada',
+                'Incidentes de segurança (ataques DDoS)',
+                'Erros de configuração no roteamento'
+              ],
+              detection_strategies: [
+                'Mecanismos de heartbeat entre nós',
+                'Detecção de falhas baseada em timeout',
+                'Protocolos de gossip para associação',
+                'Sistemas de monitoramento externos',
+                'Verificações de saúde no nível da rede'
+              ],
+              mitigation_approaches: [
+                'Múltiplos caminhos de rede e redundância',
+                'Estratégias de degradação graciosa',
+                'Circuit breakers para serviços com falha',
+                'Modo somente leitura durante partições',
+                'Resolução de conflitos para cura de partições'
+              ],
+              impact: 'Impacto: Perda de comunicação entre nós, potencial inconsistência de dados'
+            },
+            clock_sync: {
+              title: 'Sincronização de Relógio',
+              description: 'Diferentes nós têm relógios diferentes, dificultando ordenar eventos e manter consistência.',
+              detailed_explanation: 'Sincronização de relógio é fundamental para sistemas distribuídos porque os nós têm relógios independentes que derivam em taxas diferentes. Sem tempo sincronizado, torna-se quase impossível ordenar eventos, manter causalidade ou implementar algoritmos baseados em tempo corretamente.',
+              characteristics: [
+                'Relógios derivam em taxas diferentes',
+                'Não há noção global de "agora"',
+                'Ordenação de eventos se torna ambígua',
+                'Impacta timestamps e logs',
+                'Crítico para algoritmos distribuídos'
+              ],
+              concrete_examples: [
+                'Transações bancárias: Transferência parece completar antes de começar devido ao skew de relógio, causando falhas de auditoria',
+                'Log distribuído: Logs de erro aparecem fora de ordem entre serviços, tornando debug impossível',
+                'Invalidação de cache: TTL expira em tempos diferentes em nós diferentes, causando dados obsoletos',
+                'Gerenciamento de lease: Locks distribuídos expiram em tempos diferentes, levando a cenários split-brain'
+              ],
+              problems_caused: [
+                'Ordenação incorreta de eventos em logs',
+                'Condições de corrida em lógica baseada em tempo',
+                'Expiração inconsistente de cache',
+                'Falhas de lock distribuído',
+                'Corrupção de trilha de auditoria'
+              ],
+              sync_approaches: [
+                'Network Time Protocol (NTP)',
+                'Precision Time Protocol (PTP)',
+                'Sincronização baseada em GPS',
+                'Referências de relógio atômico',
+                'API Google TrueTime'
+              ],
+              logical_alternatives: [
+                'Timestamps Lamport para causalidade',
+                'Vector clocks para ordenação parcial',
+                'Hybrid logical clocks (HLC)',
+                'Ordenação baseada em eventos em vez de tempo',
+                'Números de sequência baseados em consenso'
+              ],
+              solutions: 'Soluções: Relógios lógicos, Relógios vetoriais, NTP'
+            },
+            partial_failures: {
+              title: 'Falhas Parciais',
+              description: 'Algumas partes do sistema falham enquanto outras continuam funcionando, criando estados inconsistentes.',
+              detailed_explanation: 'Falhas parciais são talvez o desafio mais insidioso em sistemas distribuídos. Diferente de falhas completas do sistema que são óbvias, falhas parciais criam cenários onde alguns componentes funcionam enquanto outros falham, levando a estados inconsistentes difíceis de detectar e lidar.',
+              characteristics: [
+                'Apenas subconjunto de componentes do sistema falha',
+                'Difícil de detectar e diagnosticar',
+                'Pode causar falhas em cascata',
+                'Sistema parece parcialmente funcional',
+                'Cria estado global inconsistente'
+              ],
+              concrete_examples: [
+                'Checkout e-commerce: Pagamento processado mas estoque não atualizado devido a falha do banco, ocorre overselling',
+                'Sistema de email: Mensagem entregue para alguns destinatários mas não outros devido a falhas de servidor',
+                'Redes sociais: Post visível para alguns usuários mas não outros devido a lag de replicação',
+                'Armazenamento de arquivo: Dados escritos no primário mas replicação para backups falha, risco de perda de dados aumenta'
+              ],
+              failure_types: [
+                'Fail-stop: Componente para completamente',
+                'Fail-slow: Componente responde muito lentamente',
+                'Byzantine: Componente se comporta arbitrariamente',
+                'Omissão: Componente descarta algumas mensagens',
+                'Comissão: Componente envia dados errados'
+              ],
+              detection_challenges: [
+                'Nenhum sinal claro de falha',
+                'Timeouts são ambíguos',
+                'Falhas de rede vs. nó não claras',
+                'Corrupção silenciosa de dados possível',
+                'Atualizações parciais de estado'
+              ],
+              handling_strategies: [
+                'Verificações de saúde abrangentes',
+                'Padrão circuit breaker',
+                'Degradação graciosa',
+                'Transações de compensação',
+                'Operações idempotentes'
+              ],
+              challenges: 'Desafios: Detectar falhas, lidar com timeouts, estratégias de recuperação'
+            },
+            consensus: {
+              title: 'Consenso',
+              description: 'Fazer nós distribuídos concordarem com um único valor ou decisão na presença de falhas.',
+              detailed_explanation: 'Consenso é o problema de fazer múltiplos nós distribuídos concordarem com um único valor, mesmo quando alguns nós podem falhar ou se comportar maliciosamente. Isso é fundamental para muitas operações de sistemas distribuídos como eleição de líder, gerenciamento de configuração e garantia de consistência.',
+              characteristics: [
+                'Todos os nós corretos devem concordar',
+                'Deve lidar com falhas de nó',
+                'Deve terminar em tempo finito',
+                'Garantias de segurança e vivacidade',
+                'Base para muitos protocolos distribuídos'
+              ],
+              concrete_examples: [
+                'Cluster de banco: Nós devem concordar sobre quais transações commitar em que ordem',
+                'Cluster Kubernetes: Nós devem concordar sobre quais pods estão rodando onde',
+                'Blockchain: Mineradores devem concordar sobre o próximo bloco na cadeia',
+                'Gerenciamento de configuração: Serviços devem concordar sobre versão atual de configuração'
+              ],
+              problem_variants: [
+                'Tolerância a falhas bizantinas: Lidar com nós maliciosos',
+                'Tolerância a falhas de crash: Lidar apenas com falhas de crash',
+                'Eleição de líder: Escolher coordenador único',
+                'Broadcast atômico: Ordenar todas as mensagens',
+                'Replicação de máquina de estado: Manter réplicas sincronizadas'
+              ],
+              famous_algorithms: [
+                'Paxos: Consenso clássico com garantias fortes',
+                'Raft: Alternativa mais simples ao Paxos',
+                'PBFT: Consenso tolerante a falhas bizantinas',
+                'Impossibilidade FLP: Limitações teóricas',
+                'RAFT: Consenso baseado em líder para replicação de log'
+              ],
+              real_world_usage: [
+                'Apache Zookeeper usa protocolo Zab',
+                'etcd e Consul usam Raft',
+                'Google Spanner usa Paxos',
+                'Redes blockchain usam Proof of Work/Stake',
+                'Protocolos de replicação de banco'
+              ],
+              algorithms: 'Algoritmos: Raft, PBFT, Paxos'
+            },
+            state_management: {
+              title: 'Gerenciamento de Estado',
+              description: 'Manter controle do estado do sistema em múltiplos nós ao lidar com atualizações concorrentes.',
+              detailed_explanation: 'Gerenciamento de estado em sistemas distribuídos envolve manter estado consistente entre múltiplos nós enquanto lida com atualizações concorrentes, falhas e partições de rede. Este desafio se torna exponencialmente mais complexo conforme o número de nós e a frequência de atualizações aumentam.',
+              characteristics: [
+                'Estado distribuído entre nós',
+                'Atualizações concorrentes de múltiplas fontes',
+                'Deve lidar com falhas de nó graciosamente',
+                'Trade-offs consistência vs. performance',
+                'Requer mecanismos de coordenação'
+              ],
+              concrete_examples: [
+                'Carrinho de compras: Usuário adiciona itens do app móvel enquanto simultaneamente do web, ambas atualizações devem ser preservadas',
+                'Jogo multiplayer: Atualizações de posição do jogador de múltiplos clientes devem ser reconciliadas em tempo real',
+                'Documento colaborativo: Múltiplos usuários editando mesmo documento simultaneamente',
+                'Sistema de estoque: Múltiplos armazéns atualizando níveis de estoque concorrentemente'
+              ],
+              consistency_challenges: [
+                'Consistência read-after-write',
+                'Consistência de leitura monotônica',
+                'Consistência de sessão',
+                'Garantias de consistência eventual',
+                'Requisitos de consistência forte'
+              ],
+              concurrency_issues: [
+                'Problema de atualizações perdidas',
+                'Leituras sujas de dados não commitados',
+                'Leituras não repetíveis',
+                'Leituras fantasma em consultas de intervalo',
+                'Conflitos write-write'
+              ],
+              architectural_patterns: [
+                'Event sourcing: Armazenar eventos, não estado',
+                'CQRS: Separar modelos de comando e consulta',
+                'Padrão Saga: Gerenciar transações distribuídas',
+                'Two-phase commit: Garantir atomicidade',
+                'Transações baseadas em compensação'
+              ],
+              approaches: 'Abordagens: Event sourcing, CQRS, máquinas de estado distribuídas'
+            },
+            race_conditions: {
+              title: 'Condições de Corrida',
+              description: 'Múltiplos processos acessando recursos compartilhados simultaneamente, levando a resultados imprevisíveis.',
+              detailed_explanation: 'Condições de corrida em sistemas distribuídos ocorrem quando múltiplos processos ou nós tentam acessar e modificar recursos compartilhados simultaneamente, levando a resultados imprevisíveis e frequentemente incorretos. Diferente de condições de corrida em máquina única, condições de corrida distribuídas são mais difíceis de detectar e debugar.',
+              characteristics: [
+                'Ordem de execução não determinística',
+                'Contenção de recursos compartilhados',
+                'Bugs dependentes de timing',
+                'Difícil de reproduzir',
+                'Pode causar corrupção de dados'
+              ],
+              concrete_examples: [
+                'Conta bancária: Dois caixas eletrônicos saque simultaneamente, ambos verificam saldo (R$ 100), ambos permitem saque de R$ 60, conta fica negativa',
+                'Reserva de passagem: Dois clientes reservam último assento simultaneamente, ambos recebem confirmação, avião oversold',
+                'Incremento de contador: Múltiplos serviços incrementam contador global, valor final incorreto devido a atualizações perdidas',
+                'Alocação de recursos: Dois processos alocam mesmos recursos de servidor, causando conflitos de recursos'
+              ],
+              common_scenarios: [
+                'Operações check-then-act',
+                'Ciclos read-modify-write',
+                'Padrões double-checked locking',
+                'Condições de corrida de inicialização',
+                'Condições de corrida de limpeza'
+              ],
+              distributed_complications: [
+                'Atrasos de rede mascaram problemas de timing',
+                'Falhas parciais durante operações',
+                'Problemas de sincronização de relógio',
+                'Efeitos de reordenação de mensagens',
+                'Falhas de lock distribuído'
+              ],
+              prevention_techniques: [
+                'Operações atômicas e Compare-And-Swap',
+                'Mecanismos de locking distribuído',
+                'Garantias de ordenação de mensagens',
+                'Controle de concorrência otimista',
+                'Estratégias de locking pessimista'
+              ],
+              solutions: 'Soluções: Locks, operações atômicas, ordenação de mensagens'
+            },
+            fallacies_title: 'As Falácias da Computação Distribuída',
+            fallacies: {
+              f1: 'A rede é confiável',
+              f2: 'A latência é zero',
+              f3: 'A largura de banda é infinita',
+              f4: 'A rede é segura',
+              f5: 'A topologia não muda',
+              f6: 'Há um administrador',
+              f7: 'O custo de transporte é zero',
+              f8: 'A rede é homogênea'
+            },
+            fallacies_warning: 'Essas suposições falsas levam a muitos problemas em sistemas distribuídos',
+            fallacies_explanation: 'As Oito Falácias da Computação Distribuída, identificadas por Peter Deutsch e outros, representam equívocos comuns que desenvolvedores cometem ao projetar sistemas distribuídos. Compreender essas falácias é crucial para construir aplicações distribuídas robustas.',
+            mitigation_strategies: {
+              title: 'Estratégias Gerais de Mitigação',
+              strategies: [
+                'Projetar para falha: Assumir que componentes vão falhar',
+                'Implementar monitoramento abrangente e alertas',
+                'Usar circuit breakers para prevenir falhas em cascata',
+                'Construir capacidades de degradação graciosa',
+                'Testar cenários de falha regularmente (chaos engineering)',
+                'Implementar logging adequado e rastreamento distribuído',
+                'Usar operações idempotentes quando possível',
+                'Projetar para consistência eventual quando apropriado'
+              ]
+            },
+            characteristics_label: 'Características:',
+            examples_label: 'Exemplos:',
+            causes_label: 'Causas Comuns:',
+            detection_label: 'Estratégias de Detecção:',
+            mitigation_label: 'Abordagens de Mitigação:',
+            problems_label: 'Problemas Causados:',
+            approaches_label: 'Abordagens:',
+            algorithms_label: 'Algoritmos:',
+            usage_label: 'Uso no Mundo Real:',
+            patterns_label: 'Padrões Arquiteturais:',
+            techniques_label: 'Técnicas de Prevenção:',
+            scenarios_label: 'Cenários Comuns:',
+            complications_label: 'Complicações Distribuídas:',
+            sync_approaches_label: 'Abordagens de Sincronização:',
+            logical_alternatives_label: 'Alternativas Lógicas:',
+            failure_types_label: 'Tipos de Falha:',
+            detection_challenges_label: 'Desafios de Detecção:',
+            handling_strategies_label: 'Estratégias de Tratamento:',
+            problem_variants_label: 'Variantes do Problema:',
+            consistency_challenges_label: 'Desafios de Consistência:',
+            concurrency_issues_label: 'Problemas de Concorrência:'
+          },
+          network_partitions: {
+            name: 'Partições de Rede e Falhas',
+            description: 'Lidando com divisões de rede e falhas de nós',
+            title: 'Partições de Rede e Falhas',
+            subtitle: 'Compreendendo e lidando com divisões de rede e falhas de nós em sistemas distribuídos',
+            introduction: 'Partições de rede são um dos problemas mais fundamentais e desafiadores em sistemas distribuídos. Quando falhas de rede impedem a comunicação entre nós, sistemas devem tomar decisões críticas sobre consistência versus disponibilidade. Compreender como detectar, prevenir e lidar com partições é essencial para construir aplicações distribuídas resilientes.',
+            what_is: {
+              title: 'O que é uma Partição de Rede?',
+              description: 'Uma partição de rede ocorre quando a rede entre nós falha, dividindo o sistema em grupos isolados que não conseguem se comunicar.',
+              detailed_explanation: 'Partições de rede representam um modo de falha onde o sistema distribuído se torna dividido em ilhas isoladas de nós que podem se comunicar internamente mas não através da fronteira da partição. Isso é particularmente desafiador porque cada partição pode continuar operando independentemente, potencialmente tomando decisões conflitantes.',
+              note: 'Também conhecido como cenário "split-brain", onde diferentes partes do sistema podem tomar decisões independentes, potencialmente levando à inconsistência.',
+              characteristics: [
+                'Comunicação entre grupos de nós é impossível',
+                'Cada partição pode tomar decisões independentes',
+                'Trade-offs do teorema CAP se tornam imediatamente relevantes',
+                'Estado do sistema pode divergir entre partições',
+                'Recuperação requer estratégias de resolução de conflitos'
+              ]
+            },
+            causes: {
+              title: 'Causas das Partições',
+              description: 'Partições de rede podem surgir de várias questões de infraestrutura e configuração que afetam a conectividade entre nós distribuídos.',
+              items: [
+                'Falhas de roteador ou switch',
+                'Cortes ou danos em cabos', 
+                'Interrupções de ISP ou datacenter',
+                'Bugs de software na pilha de rede',
+                'Firewalls mal configurados'
+              ],
+              detailed_causes: [
+                'Falhas de infraestrutura física: Cortes de cabo, falhas de hardware de roteador, quedas de energia afetando equipamentos de rede',
+                'Bugs de software: Bugs na pilha de rede, problemas de driver, falhas de protocolo de roteamento, problemas de resolução DNS',
+                'Erros de configuração: Configurações incorretas de firewall, erros de tabela de roteamento, conflitos de política de segurança',
+                'Condições de sobrecarga: Congestionamento de rede, ataques DDoS, esgotamento de recursos causando perda de pacotes',
+                'Fatores ambientais: Desastres naturais, acidentes de construção, interferência eletromagnética'
+              ]
+            },
+            failure_types: {
+              title: 'Tipos de Falhas',
+              description: 'Diferentes modos de falha requerem diferentes estratégias de detecção e tratamento em sistemas distribuídos.',
+              fail_stop: {
+                title: 'Fail-Stop',
+                description: 'Nó para completamente e outros nós podem detectar a falha',
+                detailed_explanation: 'Em falhas fail-stop, um nó cessa completamente a operação e para de responder a todas as solicitações. Este é o tipo mais fácil de falha para detectar e lidar porque a falha é limpa e observável por outros nós.',
+                characteristics: [
+                  'Nó para de responder completamente',
+                  'Fácil de detectar com timeouts',
+                  'Sem risco de corrupção parcial de estado',
+                  'Semânticas de falha limpas'
+                ],
+                examples: [
+                  'Falha de energia do servidor causando desligamento imediato',
+                  'Crash de processo devido a condição de falta de memória',
+                  'Falha de interface de rede tornando nó inacessível',
+                  'Terminação de container ou VM'
+                ]
+              },
+              fail_slow: {
+                title: 'Fail-Slow', 
+                description: 'Nó fica muito lento mas não falha completamente',
+                detailed_explanation: 'Falhas fail-slow são particularmente insidiosas porque o nó continua a operar mas com performance severamente degradada. Isso pode causar timeouts, falhas em cascata e tornar difícil distinguir entre latência de rede e problemas do nó.',
+                characteristics: [
+                  'Nó responde mas muito lentamente',
+                  'Difícil de distinguir de latência de rede',
+                  'Pode causar problemas de performance em cascata',
+                  'Pode levar ao esgotamento de recursos em outros nós'
+                ],
+                examples: [
+                  'Sobrecarga de CPU causando atrasos no processamento de requisições',
+                  'Pressão de memória levando a coleta de lixo excessiva',
+                  'Gargalos de I/O de disco retardando operações',
+                  'Congestionamento de rede causando atrasos intermitentes'
+                ]
+              },
+              byzantine: {
+                title: 'Bizantina',
+                description: 'Nó se comporta arbitrariamente ou maliciosamente',
+                detailed_explanation: 'Falhas bizantinas representam o modo de falha mais complexo onde nós podem enviar mensagens conflitantes, corrompidas ou maliciosas. Essas falhas requerem algoritmos de consenso sofisticados e são especialmente importantes em ambientes adversários.',
+                characteristics: [
+                  'Nó envia mensagens incorretas ou conflitantes',
+                  'Pode parecer funcionar corretamente para alguns nós',
+                  'Requer acordo de maioria para lidar',
+                  'Tipo mais difícil de falha para detectar e lidar'
+                ],
+                examples: [
+                  'Corrupção de memória causando computações incorretas',
+                  'Bugs de software levando a respostas inconsistentes',
+                  'Ataques maliciosos tentando comprometer consenso',
+                  'Skew de relógio causando inconsistências de timestamp'
+                ]
+              }
+            },
+            concrete_examples: {
+              title: 'Cenários Reais de Partição',
+              examples: [
+                'Isolamento de região AWS: Falha de rede inter-regional isola US-East de US-West, cada região continua servindo tráfego independentemente',
+                'Divisão de cluster de banco: Replicação master-slave quebra, slaves devem decidir se aceitam escritas ou permanecem somente leitura para prevenir conflitos',
+                'Partição de microserviços: Serviço de pagamento perde conexão com serviço de estoque durante checkout, deve decidir se processa pedidos com dados de estoque obsoletos',
+                'Isolamento de edge CDN: Problemas de roteamento de internet isolam servidores edge da origem, conteúdo em cache fica obsoleto mas usuários continuam sendo servidos',
+                'Partição de cluster Kubernetes: Nós worker perdem conexão com master, pods continuam rodando mas novos deployments falham'
+              ]
+            },
+            partition_scenarios: {
+              title: 'Cenários Comuns de Partição',
+              datacenter_split: {
+                title: 'Partições Multi-Datacenter',
+                description: 'Quando datacenters perdem conectividade, cada um deve decidir como lidar com operações em andamento',
+                strategies: [
+                  'Designar datacenter primário para escritas',
+                  'Mudar para modo somente leitura em datacenters secundários',
+                  'Usar consenso para eleger novo primário',
+                  'Implementar estruturas de dados livres de conflito'
+                ]
+              },
+              service_mesh_partition: {
+                title: 'Partições de Service Mesh',
+                description: 'Quando serviços em uma mesh perdem conectividade com subconjuntos de outros serviços',
+                strategies: [
+                  'Padrão circuit breaker para falhar rapidamente',
+                  'Fallback para respostas em cache',
+                  'Degradação graciosa de funcionalidade',
+                  'Enfileirar requisições para processamento posterior'
+                ]
+              },
+              database_partition: {
+                title: 'Partições de Cluster de Banco',
+                description: 'Quando nós de banco se tornam isolados uns dos outros',
+                strategies: [
+                  'Usar escritas baseadas em quorum para manter consistência',
+                  'Mudar partições minoritárias para modo somente leitura',
+                  'Implementar resolução de conflito last-write-wins',
+                  'Usar vector clocks para rastreamento de causalidade'
+                ]
+              }
+            },
+            handling_title: 'Estratégias de Tratamento',
+            detection: {
+              title: 'Detecção',
+              description: 'Detecção precoce e precisa de partições de rede é crucial para implementar estratégias de resposta apropriadas.',
+              items: [
+                'Mecanismos de heartbeat',
+                'Detecção baseada em timeout',
+                'Protocolos de gossip',
+                'Monitoramento externo'
+              ],
+              detailed_strategies: [
+                'Mecanismos de heartbeat: Mensagens ping/pong regulares entre nós para detectar perda de conectividade',
+                'Detecção baseada em timeout: Definir timeouts razoáveis para distinguir respostas lentas de falhas',
+                'Protocolos de gossip: Detecção de falhas distribuída onde nós compartilham informações sobre outros nós',
+                'Monitoramento externo: Serviços terceirizados para validar conectividade de múltiplas perspectivas',
+                'Sondas no nível da aplicação: Verificações de saúde específicas para funcionalidade de lógica de negócio'
+              ],
+              challenges: [
+                'Distinguir entre atrasos de rede e partições reais',
+                'Falsos positivos devido a congestionamento temporário de rede',
+                'Definir valores de timeout apropriados para diferentes cenários',
+                'Lidar com conectividade parcial (alguns nós alcançáveis, outros não)'
+              ]
+            },
+            prevention: {
+              title: 'Prevenção',
+              description: 'Embora partições não possam ser completamente prevenidas, sua probabilidade e impacto podem ser significativamente reduzidos através de design apropriado de infraestrutura.',
+              items: [
+                'Caminhos de rede redundantes',
+                'Múltiplos datacenters',
+                'Equipamentos de rede de qualidade',
+                'Manutenção regular'
+              ],
+              detailed_strategies: [
+                'Redundância de rede: Múltiplos caminhos de rede independentes, ISPs diversos, roteadores e switches redundantes',
+                'Distribuição geográfica: Deployments multi-região, zonas de disponibilidade, localizações edge',
+                'Qualidade de infraestrutura: Equipamentos de rede enterprise, planejamento adequado de capacidade, refresh regular de hardware',
+                'Excelência operacional: Janelas de manutenção programadas, processos de gerenciamento de mudanças, monitoramento e alertas',
+                'Chaos engineering: Testar regularmente cenários de partição para validar comportamento do sistema'
+              ]
+            },
+            recovery: {
+              title: 'Recuperação',
+              description: 'Quando partições se curam, sistemas devem cuidadosamente reconciliar estado e resolver quaisquer conflitos que ocorreram durante a partição.',
+              items: [
+                'Failover automático',
+                'Reconciliação de dados', 
+                'Resolução de split-brain',
+                'Degradação graceful'
+              ],
+              detailed_strategies: [
+                'Detecção de conflitos: Identificar mudanças de estado divergentes que ocorreram durante a partição',
+                'Estratégias de merge: Implementar lógica específica da aplicação para resolver conflitos automaticamente',
+                'Intervenção manual: Fornecer ferramentas para operadores resolverem conflitos complexos manualmente',
+                'Transações de compensação: Implementar operações de desfazer para mudanças de estado conflitantes',
+                'Vetores de versão: Usar timestamps lógicos para estabelecer causalidade e ordem de resolução de conflitos'
+              ]
+            },
+            design_principles: {
+              title: 'Princípios de Design para Tolerância a Partições',
+              architectural: {
+                title: 'Padrões Arquiteturais',
+                items: [
+                  'Usar algoritmos de consenso (Raft, Paxos)',
+                  'Implementar decisões baseadas em quorum',
+                  'Projetar para consistência eventual',
+                  'Usar circuit breakers e bulkheads'
+                ],
+                detailed_patterns: [
+                  'Algoritmos de consenso: Raft, Paxos, PBFT para manter acordo através de partições',
+                  'Sistemas de quorum: Tomada de decisão baseada em maioria para garantir consistência durante partições',
+                  'Event sourcing: Logs de eventos imutáveis que podem ser mesclados quando partições se curam',
+                  'CQRS: Separar modelos de leitura e escrita para lidar com cenários de partição diferentemente',
+                  'Padrão Saga: Transações de longa duração com compensação para consistência distribuída'
+                ]
+              },
+              operational: {
+                title: 'Práticas Operacionais',
+                items: [
+                  'Testes regulares de recuperação de desastres',
+                  'Sistemas de monitoramento e alertas',
+                  'Implantação e escalonamento automatizados',
+                  'Documentação e runbooks'
+                ],
+                detailed_practices: [
+                  'Chaos engineering: Induzir partições regularmente para testar comportamento do sistema',
+                  'Exercícios de game day: Praticar cenários de partição com equipes inteiras',
+                  'Testes automatizados: Incluir testes de partição em pipelines CI/CD',
+                  'Dashboards de monitoramento: Visibilidade em tempo real sobre detecção e recuperação de partições',
+                  'Procedimentos de runbook: Guias passo-a-passo para lidar com cenários de partição'
+                ]
+              }
+            },
+            cap_theorem_connection: {
+              title: 'Conexão com Teorema CAP',
+              explanation: 'Partições de rede forçam trade-offs imediatos do teorema CAP entre consistência e disponibilidade',
+              trade_offs: [
+                'Escolher Consistência: Rejeitar operações para manter consistência de dados, sacrificando disponibilidade',
+                'Escolher Disponibilidade: Continuar operações com dados potencialmente obsoletos, sacrificando consistência',
+                'Abordagem híbrida: Diferentes serviços podem fazer diferentes trade-offs baseados em requisitos de negócio'
+              ]
+            },
+            best_practices: {
+              title: 'Melhores Práticas',
+              practices: [
+                'Projetar para tolerância a partições desde o início',
+                'Implementar monitoramento e alertas abrangentes',
+                'Testar cenários de partição regularmente através de chaos engineering',
+                'Documentar processos de tomada de decisão para tratamento de partições',
+                'Treinar equipes de operações em procedimentos de resposta a partições',
+                'Usar algoritmos de consenso comprovados ao invés de construir soluções customizadas',
+                'Implementar degradação graciosa ao invés de falha completa do serviço',
+                'Monitorar métricas de negócio durante cenários de partição'
+              ]
+            },
+            characteristics_label: 'Características:',
+            examples_label: 'Exemplos:',
+            causes_label: 'Causas Detalhadas:',
+            strategies_label: 'Estratégias:',
+            challenges_label: 'Desafios:',
+            patterns_label: 'Padrões Detalhados:',
+            practices_label: 'Práticas Detalhadas:'
+          }
+        },
+       
         componentes: {
           name: 'Componentes Básicos',
           description: 'Blocos fundamentais de sistemas distribuídos',
@@ -5481,6 +7257,26 @@ const resources = {
         prerequisites: 'Pré-requisitos:',
         skills: 'Habilidades:',
         completed_percent: '{{percent}}% do conteúdo completado'
+      },
+      theoretical_foundations_main: {
+        subtitle: 'Construindo conhecimento inabalável em sistemas distribuídos',
+        hero: {
+            title: 'Por que a Teoria Importa na Prática',
+            description: 'No mundo acelerado de hoje, pode parecer tentador pular direto para a implementação. No entanto, sem fundamentos teóricos sólidos, até mesmo os engenheiros mais experientes podem cometer erros custosos que poderiam ter sido evitados com o entendimento adequado dos princípios fundamentais.'
+          },
+          paragraph1: 'Compreender os fundamentos teóricos em sistemas distribuídos não é um luxo acadêmico—é uma necessidade prática. Assim como um arranha-céu requer uma base sólida para resistir a terremotos e tempestades, sistemas distribuídos requerem entendimento teórico para lidar com os desafios inevitáveis de falhas de rede, inconsistências de dados e pressões de escalabilidade. Engenheiros que dominam esses conceitos não apenas constroem sistemas; eles constroem sistemas que duram, escalam e se adaptam a requisitos em mudança.',
+          paragraph2: 'Considere as consequências de construir sem teoria: equipes que implementam cache sem entender modelos de consistência frequentemente criam sistemas onde usuários veem suas próprias atualizações desaparecerem intermitentemente. Desenvolvedores que não compreendem o teorema CAP podem arquitetar sistemas que prometem tanto consistência perfeita quanto 100% de disponibilidade, apenas para descobrir durante momentos críticos que tais garantias são matematicamente impossíveis na presença de partições de rede.',
+          paragraph3: 'O teorema CAP, um dos nossos tópicos fundamentais, fornece um framework crucial de tomada de decisão para arquitetos de sistema. Não se trata apenas de saber que você não pode ter consistência, disponibilidade e tolerância a partições simultaneamente—trata-se de entender o que isso significa para seu caso de uso específico. Sua plataforma de e-commerce deve priorizar mostrar preços consistentes (consistência) ou garantir que o site permaneça online durante problemas de rede (disponibilidade)? A resposta depende dos requisitos de negócio, mas o framework para tomar essa decisão vem do entendimento das implicações teóricas.',
+          paragraph4: 'Modelos de consistência formam outro pilar do conhecimento teórico que impacta diretamente a implementação prática. Quando a Netflix decide usar consistência eventual para atualizações de recomendações de usuário, mas consistência forte para informações de cobrança, eles estão aplicando conhecimento teórico para resolver problemas reais de negócio. Entender quando aplicar consistência forte, eventual ou fraca não é intuitivo—requer compreender os trade-offs entre performance, disponibilidade e precisão de dados.',
+          paragraph5: 'O entendimento teórico de trade-offs se estende muito além do interesse acadêmico—traduz-se diretamente em valor de negócio. Engenheiros que entendem esses conceitos podem tomar decisões informadas sobre escolhas de tecnologia, evitando reescritas custosas e problemas de performance. Eles podem estimar o custo real das garantias de consistência, prever como sistemas se comportarão sob carga e projetar arquiteturas que lidam graciosamente com cenários de falha.',
+          paragraph6: 'Fundamentos teóricos também servem como escudo contra armadilhas comuns que afligem sistemas distribuídos. As "8 Falácias da Computação Distribuída" não são apenas curiosidades históricas—são avisos práticos sobre suposições que continuam a derrubar equipes de desenvolvimento modernas. Entender que "a rede é confiável" é falso ajuda engenheiros a projetar sistemas com mecanismos de retry adequados, circuit breakers e estratégias de degradação graciosa.',
+          paragraph7: 'De uma perspectiva de colaboração, conhecimento teórico fornece uma linguagem comum para discussões técnicas. Quando arquitetos discutem se devem implementar réplicas de leitura, conversas se tornam mais produtivas quando todos entendem conceitos como consistência de leitura, tolerância a lag e cenários de split-brain. A teoria fornece o vocabulário para comunicação técnica precisa, reduzindo mal-entendidos que levam a desalinhamentos arquiteturais.',
+          paragraph8: 'Esses fundamentos também fornecem uma abordagem sistemática para resolução de problemas. Quando um sistema de produção exibe comportamento estranho—usuários em diferentes regiões vendo dados diferentes, ou performance degradando sob condições específicas—engenheiros com base teórica podem rapidamente estreitar as causas raiz. Eles entendem a relação entre topologia de rede, garantias de consistência e características de performance, permitindo diagnóstico e resolução mais rápidos.',
+          paragraph9: 'Conforme a tecnologia evolui, fundamentos teóricos permanecem constantes enquanto implementações mudam. Os princípios por trás de algoritmos de consenso se aplicam seja você usando Raft no etcd, Paxos no Spanner, ou tolerância a falhas bizantinas em sistemas blockchain. Engenheiros que entendem a teoria podem se adaptar a novas tecnologias mais rapidamente porque reconhecem padrões familiares e podem prever como novos sistemas se comportarão.',
+          paragraph10: 'Em termos de carreira, engenheiros com fundamentos teóricos fortes se tornam multiplicadores de força em suas organizações. Eles podem mentorar desenvolvedores júnior, participar significativamente de decisões arquiteturais e evitar a armadilha da "programação cargo cult" onde soluções são copiadas sem entendimento. Eles se tornam os engenheiros para quem as empresas se voltam para problemas complexos e decisões de design de sistema.',
+          paragraph11: 'Além disso, conhecimento teórico possibilita inovação e contribuição para o campo. Entender algoritmos existentes e suas limitações é o primeiro passo para desenvolver melhorias ou abordagens inteiramente novas. Muitas das inovações mais bem-sucedidas em sistemas distribuídos hoje vieram de engenheiros que entendiam profundamente a teoria existente e identificaram oportunidades de avanço.',
+          conclusion: 'Em conclusão, fundamentos teóricos em sistemas distribuídos não são apenas pré-requisitos acadêmicos—são ferramentas práticas que possibilitam melhor tomada de decisão, comunicação mais efetiva e design de sistema mais robusto. Eles fornecem o framework intelectual para entender por que certas abordagens funcionam, quando podem falhar e como adaptá-las a requisitos específicos. Para qualquer engenheiro sério sobre construir sistemas distribuídos confiáveis e escaláveis, investir tempo nesses fundamentos teóricos paga dividendos ao longo de toda sua carreira.',
+          explore_topics: 'Explore Tópicos Fundamentais'
       },
       editor: {
         title: 'Simulador de Sistema Distribuído',
@@ -9550,9 +11346,6 @@ const resources = {
         }
       }
     }
-
-
-
   }
 };
 

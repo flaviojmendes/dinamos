@@ -21,9 +21,9 @@ interface MenuItem {
   path: string;
   icon?: React.ReactNode;
   children?: MenuItem[];
-  status?: "recommended" | "new" | "coming-soon";
+  status?: "recommended" | "new" | "coming-soon" | "required";
   prerequisites?: string[];
-  category?: "Básico" | "Intermediário" | "Avançado";
+  category?: "Básico" | "Intermediário" | "Avançado" | "Foundational" | "Building Blocks" | "Application" | "Advanced Concepts" | "Security & Safety";
   skills?: string[];
   badges?: { text: string; color: string }[];
   component?: React.ComponentType;
@@ -89,8 +89,10 @@ export default function Roadmap() {
       return 'text-green-400'; // Free content
     } else if (item.status === 'recommended' || item.status === 'new') {
       return 'text-purple-400'; // Recommended content
+    } else if (item.status === 'required') {
+      return 'text-blue-400'; // Required content
     } else {
-      return 'text-blue-400'; // Required content by default
+      return 'text-blue-400'; // Default content
     }
   };
   const makeMenuKey = (path: string, field: 'name' | 'description') => `menu.${path.replace(/^\//, '').replace(/\//g, '.')}.${field}`;
