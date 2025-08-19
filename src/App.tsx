@@ -43,7 +43,7 @@ import Login from "./components/Auth/Login";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
 import Subscription from "./components/Subscription/Subscription";
 import PaymentSuccess from "./pages/PaymentSuccess";
-import ReactGA from "react-ga4";
+import { trackEvent, trackPageView, initializeAnalytics, handleConsentChange } from './utils/analytics';
 import ServiceOriented from "./components/DesignPrinciples/ServiceOriented";
 import FaultTolerance from "./components/DesignPrinciples/FaultTolerance";
 import Retries from "./components/DesignPrinciples/Retries";
@@ -115,6 +115,9 @@ import PollingWebhooks from "./components/SystemComponents/PollingWebhooks";
 import PollingWebhooksTheory from "./components/SystemComponents/PollingWebhooksTheory";
 import { LanguageSwitcher } from './components/Common';
 import { useTranslation } from 'react-i18next';
+import CookieConsentBanner from './components/Common/CookieConsentBanner';
+import { CookieConsentManager } from './utils/cookieConsent';
+import CookiePreferencesPage from './pages/CookiePreferencesPage';
 import CAPTheorem from "./components/TheoreticalFoundations/CAPTheorem";
 import ConsistencyModels from "./components/TheoreticalFoundations/ConsistencyModels";
 import DistributedChallenges from "./components/TheoreticalFoundations/DistributedChallenges";
@@ -841,11 +844,15 @@ export default function App() {
     window.__APP_DATA__.menuItems = menuItems;
   }, []);
 
-  ReactGA.initialize("G-FB645J9ZQH");
-  ReactGA.send({
-    hitType: "pageview",
-    page: window.location.pathname + window.location.search,
-  });
+  // Initialize analytics only if user has consented
+  useEffect(() => {
+    if (CookieConsentManager.hasAnalyticsConsent()) {
+      initializeAnalytics();
+    }
+    
+    // Track initial page view
+    trackPageView(window.location.pathname + window.location.search);
+  }, []);
 
   const MenuLink = ({ item, onNavigate }: { item: MenuItem; onNavigate?: () => void }) => {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -921,11 +928,7 @@ export default function App() {
               onClick={() => {
                 if (!item.disabled) {
                   onNavigate?.();
-                  ReactGA.event({
-                    category: "User",
-                    action: "Clicked on Menu Item",
-                    label: item.name,
-                  });
+                  trackEvent("User", "Clicked on Menu Item", item.name);
                 }
               }}
             >
@@ -959,11 +962,7 @@ export default function App() {
               onClick={(e) => {
                 e.preventDefault();
                 setIsExpanded(!isExpanded);
-                ReactGA.event({
-                  category: "User",
-                  action: "Clicked on Menu Item",
-                  label: displayName,
-                });
+                trackEvent("User", "Clicked on Menu Item", displayName);
               }}
               className={`p-2 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-transform ${
                 isActive ? "text-white" : ""
@@ -1148,6 +1147,25 @@ export default function App() {
             <Route path="/pagamento" element={<Subscription />} />
             <Route path="/pagamento/sucesso" element={<PaymentSuccess />} />
             <Route path="/editor" element={<SimpleSystemEditorPage />} />
+            
+            {/* Preferences routes */}
+            <Route 
+              path="/preferences" 
+              element={
+                <ProtectedRoute requiresSubscription={false}>
+                  <Preferences />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/preferences/cookies" 
+              element={
+                <ProtectedRoute requiresSubscription={false}>
+                  <CookiePreferencesPage />
+                </ProtectedRoute>
+              } 
+            />
+            
             {/* Protected routes */}
             <Route
               path="/intro"
@@ -2135,6 +2153,7 @@ export default function App() {
         </main>
       </div>
       <LanguageDetectionDialog />
+      <CookieConsentBanner onConsentChange={handleConsentChange} />
     </div>
   );
 }

@@ -37,6 +37,42 @@ const resources = {
         free: 'Free',
         new: 'New'
       },
+      cookies: {
+        banner: {
+          title: 'We use cookies',
+          description: 'We use cookies to enhance your experience, analyze site traffic, and provide personalized content. You can choose which cookies to accept.',
+          accept: 'Accept All',
+          reject: 'Reject All',
+          customize: 'Customize'
+        },
+        preferences: {
+          title: 'Cookie Preferences',
+          save: 'Save Preferences',
+          accept: 'Accept All',
+          reject: 'Reject All'
+        },
+        necessary: {
+          title: 'Necessary Cookies',
+          description: 'Essential for basic website functionality, authentication, and security. Cannot be disabled.'
+        },
+        analytics: {
+          title: 'Analytics Cookies',
+          description: 'Help us understand how visitors interact with our website by collecting and reporting information anonymously.'
+        },
+        functional: {
+          title: 'Functional Cookies',
+          description: 'Enable enhanced functionality like remembering your preferences and providing personalized features.'
+        },
+        marketing: {
+          title: 'Marketing Cookies',
+          description: 'Track visitors across websites to display relevant and engaging advertisements.'
+        },
+        policy: {
+          text: 'For more information, please read our',
+          privacy: 'Privacy Policy',
+          cookies: 'Cookie Policy'
+        }
+      },
       status: {
         recommended: 'Recommended',
         new: 'New',
@@ -5720,6 +5756,42 @@ const resources = {
       badges: {
         free: 'Grátis',
         new: 'Novo'
+      },
+      cookies: {
+        banner: {
+          title: 'Usamos cookies',
+          description: 'Usamos cookies para melhorar sua experiência, analisar o tráfego do site e fornecer conteúdo personalizado. Você pode escolher quais cookies aceitar.',
+          accept: 'Aceitar Todos',
+          reject: 'Rejeitar Todos',
+          customize: 'Personalizar'
+        },
+        preferences: {
+          title: 'Preferências de Cookies',
+          save: 'Salvar Preferências',
+          accept: 'Aceitar Todos',
+          reject: 'Rejeitar Todos'
+        },
+        necessary: {
+          title: 'Cookies Necessários',
+          description: 'Essenciais para funcionalidade básica do site, autenticação e segurança. Não podem ser desabilitados.'
+        },
+        analytics: {
+          title: 'Cookies de Análise',
+          description: 'Nos ajudam a entender como os visitantes interagem com nosso site coletando e relatando informações anonimamente.'
+        },
+        functional: {
+          title: 'Cookies Funcionais',
+          description: 'Habilitam funcionalidades aprimoradas como lembrar suas preferências e fornecer recursos personalizados.'
+        },
+        marketing: {
+          title: 'Cookies de Marketing',
+          description: 'Rastreiam visitantes através de sites para exibir anúncios relevantes e envolventes.'
+        },
+        policy: {
+          text: 'Para mais informações, leia nossa',
+          privacy: 'Política de Privacidade',
+          cookies: 'Política de Cookies'
+        }
       },
       status: {
         recommended: 'Recomendado',

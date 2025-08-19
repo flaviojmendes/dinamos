@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 export default function Preferences() {
   const { user } = useAuth();
@@ -53,6 +54,67 @@ export default function Preferences() {
                 <div className="flex justify-between">
                   <span className="text-zinc-400">{t('preferences.creation_date')}</span>
                   <span>{user?.metadata.creationTime ? new Date(user.metadata.creationTime).toLocaleDateString(locale) : '-'}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Cookie & Privacy Settings */}
+            <div>
+              <h2 className="text-xl font-semibold mb-4 text-green-400">Privacy & Cookies</h2>
+              <div className="bg-zinc-800/50 rounded-lg p-6 space-y-4">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className="font-medium text-white mb-1">Cookie Preferences</h3>
+                    <p className="text-zinc-400 text-sm">
+                      Manage how we collect and use data on our website through cookies.
+                    </p>
+                  </div>
+                  <Link
+                    to="/preferences/cookies"
+                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ml-4"
+                  >
+                    Manage Cookies
+                  </Link>
+                </div>
+                
+                <div className="flex items-start justify-between pt-4 border-t border-zinc-700">
+                  <div>
+                    <h3 className="font-medium text-white mb-1">Privacy Policy</h3>
+                    <p className="text-zinc-400 text-sm">
+                      Learn about how we collect, use, and protect your personal information.
+                    </p>
+                  </div>
+                  <a
+                    href="/privacy-policy.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-zinc-600 hover:bg-zinc-700 text-white px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ml-4 inline-flex items-center gap-2"
+                  >
+                    View Policy
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                </div>
+                
+                <div className="flex items-start justify-between pt-4 border-t border-zinc-700">
+                  <div>
+                    <h3 className="font-medium text-white mb-1">Terms and Conditions</h3>
+                    <p className="text-zinc-400 text-sm">
+                      Review our terms of service and user agreement.
+                    </p>
+                  </div>
+                  <a
+                    href="/terms-and-conditions.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-zinc-600 hover:bg-zinc-700 text-white px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ml-4 inline-flex items-center gap-2"
+                  >
+                    View Terms
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
                 </div>
               </div>
             </div>

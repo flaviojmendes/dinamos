@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import ReactGA from 'react-ga4';
+import { trackEvent } from '../../utils/analytics';
 import Countdown from '../Countdown/Countdown';
 import { Typography } from '../Common';
 import { useTranslation } from 'react-i18next';
@@ -44,10 +44,7 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link
                 to="/intro"
-                onClick={() => ReactGA.event({
-                  category: 'User',
-                  action: 'Clicked on Start Now Button',
-                })}
+                onClick={() => trackEvent('User', 'Clicked on Start Now Button')}
                 className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
               >
                 <span>{t('common.start_now')}</span>
@@ -657,11 +654,8 @@ export default function LandingPage() {
               <p className="text-zinc-400">{t('landing.invest_payment_info')}</p>
             </div>
             <Link
-              to="/intro"
-              onClick={() => ReactGA.event({
-                category: 'User',
-                action: 'Clicked on Payment Button',
-              })}
+              to="/pagamento"
+              onClick={() => trackEvent('User', 'Clicked on Payment Button')}
               className="block text-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
             >
               {t('common.guarantee_spot')}
@@ -762,14 +756,11 @@ export default function LandingPage() {
               {t('landing.cta_subtitle')}
             </p>
             <Link
-              to="/intro"
-              onClick={() => ReactGA.event({
-                category: 'User',
-                action: 'Clicked on Final CTA',
-              })}
+              to="/pagamento"
+              onClick={() => trackEvent('User', 'Clicked on Final CTA')}
               className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg text-lg font-medium hover:bg-zinc-100 transition-colors"
             >
-              {t('landing.guarantee_spot')}
+              {t('common.guarantee_spot')}
             </Link>
           </div>
         </motion.div>
