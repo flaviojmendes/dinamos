@@ -3,20 +3,36 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { trackEvent } from '../../utils/analytics';
 import Countdown from '../Countdown/Countdown';
-import { Typography } from '../Common';
+import { Typography, LanguageSwitcher } from '../Common';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../../contexts/AuthContext';
 import { calculatePricing, formatPrice, detectUserCurrency } from '../../utils/pricing';
 
 export default function LandingPage() {
   const { t, i18n } = useTranslation();
+  const { user } = useAuth();
   
   // Detect user currency based on location/language  
   const userCurrency = detectUserCurrency();
   const pricing = calculatePricing(userCurrency);
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-black text-white">
+      {/* Header - Only show for logged-out users */}
+      {!user && (
+        <header className="fixed top-0 left-0 right-0 z-50 bg-zinc-900/95 backdrop-blur-xl border-b border-zinc-800/50">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div className="flex items-center justify-between">
+              <Link to="/" className="flex items-center">
+                <img src="/logo.png" alt="Logo" className="h-10" />
+              </Link>
+              <LanguageSwitcher />
+            </div>
+          </div>
+        </header>
+      )}
+
       {/* Hero Section */}
-      <div className="relative overflow-hidden">
+      <div className={`relative overflow-hidden ${!user ? 'pt-20' : ''}`}>
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10" />
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">

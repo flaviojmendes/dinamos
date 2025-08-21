@@ -1144,8 +1144,22 @@ export default function App() {
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/pagamento" element={<Subscription />} />
-            <Route path="/pagamento/sucesso" element={<PaymentSuccess />} />
+            <Route 
+              path="/pagamento" 
+              element={
+                <ProtectedRoute requiresSubscription={false}>
+                  <Subscription />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/pagamento/sucesso" 
+              element={
+                <ProtectedRoute requiresSubscription={false}>
+                  <PaymentSuccess />
+                </ProtectedRoute>
+              } 
+            />
             <Route path="/editor" element={<SimpleSystemEditorPage />} />
             
             {/* Preferences routes */}

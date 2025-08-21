@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
 import { loadStripe } from '@stripe/stripe-js';
 import ReactGA from 'react-ga4';
-import Countdown from '../Countdown/Countdown';
 import { useTranslation } from 'react-i18next';
 import { calculatePricing, formatPrice, getAvailableCurrencies, detectUserCurrency } from '../../utils/pricing';
 
@@ -160,7 +159,6 @@ export default function Subscription() {
               <div className="inline-block bg-blue-500/10 text-blue-400 px-4 py-2 rounded-full text-sm mb-4">
                 {t('subscription.limited_offer')}
               </div>
-              <Countdown />
             </div>
             {/* Currency Selector */}
             <div className="text-center mb-6">
