@@ -275,6 +275,20 @@ const resources = {
         manage_subscription: 'Manage Subscription',
         manage_subscription_desc: 'Manage your subscription, payment method, and invoice history through the Stripe portal.'
       },
+      coupon_modal: {
+        welcome_title: 'Welcome! 🎉',
+        welcome_subtitle: 'Get exclusive access with this limited-time offer!',
+        coupon_code: 'Your exclusive coupon code:',
+        discount_amount: '30% OFF - Limited Time!',
+        features_title: 'What you\'ll get:',
+        feature_1: 'Complete systems design course',
+        feature_2: 'Interactive simulators',
+        feature_3: 'Real-world case studies',
+        feature_4: 'Lifetime access',
+        subscribe_now: 'Subscribe Now & Save 30%',
+        maybe_later: 'Maybe later',
+        timer_note: 'This offer expires when you close this window'
+      },
       landing: {
         hero_title: 'Master Distributed Systems in Practice',
         hero_subtitle: 'The most complete platform to learn system architecture with interactive simulators and real cases',
@@ -5994,6 +6008,20 @@ const resources = {
         creation_date: 'Data de Inscrição',
         manage_subscription: 'Gerenciar Assinatura',
         manage_subscription_desc: 'Gerencie sua assinatura, método de pagamento e histórico de faturas através do portal do Stripe.'
+      },
+      coupon_modal: {
+        welcome_title: 'Bem-vindo! 🎉',
+        welcome_subtitle: 'Tenha acesso exclusivo com esta oferta por tempo limitado!',
+        coupon_code: 'Seu código de cupom exclusivo:',
+        discount_amount: '30% OFF - Por Tempo Limitado!',
+        features_title: 'O que você receberá:',
+        feature_1: 'Curso completo de design de sistemas',
+        feature_2: 'Simuladores interativos',
+        feature_3: 'Estudos de caso do mundo real',
+        feature_4: 'Acesso vitalício',
+        subscribe_now: 'Assinar Agora e Economizar 30%',
+        maybe_later: 'Talvez mais tarde',
+        timer_note: 'Esta oferta expira quando você fechar esta janela'
       },
       landing: {
         hero_title: 'Domine Sistemas Distribuídos na Prática',

@@ -113,7 +113,7 @@ import SynchronizationSimulator from "./components/ConsistencyStrategies/Synchro
 import SimpleSystemEditorPage from "./pages/SimpleSystemEditorPage";
 import PollingWebhooks from "./components/SystemComponents/PollingWebhooks";
 import PollingWebhooksTheory from "./components/SystemComponents/PollingWebhooksTheory";
-import { LanguageSwitcher } from './components/Common';
+import { LanguageSwitcher, CouponModal } from './components/Common';
 import { useTranslation } from 'react-i18next';
 import CookieConsentBanner from './components/Common/CookieConsentBanner';
 import { CookieConsentManager } from './utils/cookieConsent';
@@ -829,6 +829,11 @@ export default function App() {
   const { isCompleted, progress, updateTrigger } = useContentProgress();
   const { t } = useTranslation();
   const menuItems = createMenuItems(t);
+  
+  // Coupon modal state
+  const [showCouponModal, setShowCouponModal] = useState(false);
+  const [hasShownCouponModal, setHasShownCouponModal] = useState(false);
+  const [previousUser, setPreviousUser] = useState<any>(null);
 
   // Make menuItems accessible to other components via window object
   // This helps avoid circular dependencies when components need to access menuItems
@@ -853,6 +858,43 @@ export default function App() {
     // Track initial page view
     trackPageView(window.location.pathname + window.location.search);
   }, []);
+
+  // Detect actual login (transition from no user to user) and show coupon modal
+  useEffect(() => {
+    // Detect fresh login: user went from null/undefined to logged in
+    const isNewLogin = !previousUser && user;
+    
+    if (isNewLogin && !hasShownCouponModal) {
+      // Check if modal was already shown in this browser session
+      const modalShownThisSession = sessionStorage.getItem('couponModalShown');
+      
+      if (!modalShownThisSession) {
+        // Mark that we're showing the modal this session
+        sessionStorage.setItem('couponModalShown', 'true');
+        
+        // This is a genuine new login, show the modal
+        const timer = setTimeout(() => {
+          setShowCouponModal(true);
+          setHasShownCouponModal(true);
+        }, 1000); // 1 second delay to let the user see they've logged in
+        
+        return () => clearTimeout(timer);
+      }
+    }
+    
+    // Update previous user state
+    setPreviousUser(user);
+  }, [user, previousUser, hasShownCouponModal]);
+  
+  // Reset modal state when user logs out
+  useEffect(() => {
+    if (!user) {
+      setHasShownCouponModal(false);
+      setShowCouponModal(false);
+      // Clear session storage when user logs out so modal can show for next login
+      sessionStorage.removeItem('couponModalShown');
+    }
+  }, [user]);
 
   const MenuLink = ({ item, onNavigate }: { item: MenuItem; onNavigate?: () => void }) => {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -2166,6 +2208,14 @@ export default function App() {
           </Routes>
         </main>
       </div>
+      
+      {/* Coupon Modal */}
+      <CouponModal 
+        isOpen={showCouponModal}
+        onClose={() => setShowCouponModal(false)}
+        couponCode="DINA30"
+      />
+      
       <LanguageDetectionDialog />
       <CookieConsentBanner onConsentChange={handleConsentChange} />
     </div>

@@ -17,6 +17,17 @@ export default function Subscription() {
   const [couponApplied, setCouponApplied] = useState<boolean>(false);
   const { t, i18n } = useTranslation();
 
+  // Auto-apply coupon from sessionStorage (from coupon modal)
+  useEffect(() => {
+    const applyCoupon = sessionStorage.getItem('applyCoupon');
+    if (applyCoupon) {
+      setCouponCode(applyCoupon);
+      setCouponApplied(true);
+      // Clear the session storage after applying
+      sessionStorage.removeItem('applyCoupon');
+    }
+  }, []);
+
   useEffect(() => {
     ReactGA.set({
       userId: user?.uid,
