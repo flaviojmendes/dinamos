@@ -93,71 +93,7 @@ export default function Disponibilidade() {
           </Link>
         </motion.div>
 
-        {/* Disaster Recovery */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="bg-zinc-900 rounded-lg p-6 hover:bg-zinc-800 transition-colors group"
-        >
-          <Link to="/principios-design/disponibilidade/disaster-recovery" className="space-y-4 block">
-            <div className="text-blue-400 mb-4">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-            </div>
-            <h2 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
-              {t('design_principles.availability.index.cards.dr_title')}
-            </h2>
-            <p className="text-zinc-400">
-              {t('design_principles.availability.index.cards.dr_desc')}
-            </p>
-          </Link>
-        </motion.div>
-
-        {/* Health Monitoring */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="bg-zinc-900 rounded-lg p-6 hover:bg-zinc-800 transition-colors group"
-        >
-          <Link to="/principios-design/disponibilidade/monitoramento" className="space-y-4 block">
-            <div className="text-blue-400 mb-4">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-            </div>
-            <h2 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
-              {t('design_principles.availability.index.cards.monitoring_title')}
-            </h2>
-            <p className="text-zinc-400">
-              {t('design_principles.availability.index.cards.monitoring_desc')}
-            </p>
-          </Link>
-        </motion.div>
-
-        {/* Load Distribution */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.7 }}
-          className="bg-zinc-900 rounded-lg p-6 hover:bg-zinc-800 transition-colors group"
-        >
-          <Link to="/principios-design/disponibilidade/distribuicao-carga" className="space-y-4 block">
-            <div className="text-blue-400 mb-4">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-              </svg>
-            </div>
-            <h2 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
-              {t('design_principles.availability.index.cards.load_dist_title')}
-            </h2>
-            <p className="text-zinc-400">
-              {t('design_principles.availability.index.cards.load_dist_desc')}
-            </p>
-          </Link>
-        </motion.div>
+       
       </div>
 
       {/* Interactive Simulator Link */}

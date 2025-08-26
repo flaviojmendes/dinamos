@@ -1379,6 +1379,22 @@ const resources = {
               name: 'Failover',
               description: 'Automatic failure recovery'
             },
+            zonas: {
+              name: 'Availability Zones',
+              description: 'Geographic distribution for resilience'
+            },
+            'disaster-recovery': {
+              name: 'Disaster Recovery',
+              description: 'Catastrophic failure recovery strategies'
+            },
+            monitoramento: {
+              name: 'Health Monitoring',
+              description: 'Continuous system health tracking'
+            },
+            'distribuicao-carga': {
+              name: 'Load Distribution',
+              description: 'Traffic distribution across servers'
+            },
             simulator: {
               name: 'Simulator',
               description: 'Experiment with availability strategies'
@@ -1886,7 +1902,30 @@ const resources = {
           distributed_cache_desc: 'Shared among multiple servers, improving scalability and consistency across nodes.',
           simulator_title: 'Interactive Simulator',
           simulator_description: 'Try our interactive cache simulation to better understand how caching impacts system performance.',
-          access_simulator: 'Access Simulator'
+          access_simulator: 'Access Simulator',
+          simulation: {
+            client: 'Client',
+            cache: 'Cache',
+            database: 'DB',
+            configuration: 'Configuration',
+            cache_enabled: 'Cache Enabled',
+            cache_ttl: 'Cache Time to Live',
+            network_delay: 'Network Delay',
+            database_delay: 'Database Delay',
+            cache_key_placeholder: 'Cache key',
+            processing: 'Processing...',
+            send: 'Send',
+            clear: 'Clear',
+            cache_status: 'Cache Status',
+            expires_in: 'expires in',
+            cache_empty: 'Cache is empty',
+            logs: 'Logs',
+            request: 'Request',
+            cache_hit: 'Cache Hit',
+            cache_miss: 'Cache Miss',
+            db_query: 'DB Query',
+            no_logs: 'No logs available'
+          }
         },
         load_balancer: {
           simulator_title: 'Interactive Simulator',
@@ -2692,9 +2731,11 @@ const resources = {
             explore_p: 'Try different failover strategies and see how they affect system availability.',
             explore_cta: 'Open Simulator'
           },
+          
 
 
         },
+        
         consistency_strategies: {
           index: {
             title: 'Consistency Strategies',
@@ -3150,184 +3191,277 @@ const resources = {
             token_ring: { pros: 'Low message complexity', cons: 'Single point of failure' },
             ricart: { pros: 'Fault tolerant', cons: 'High latency' }
           }
-        }
-      },
-      availability: {
-        index: {
-          title: 'High Availability',
-          intro: 'High availability is a system\'s ability to remain operational and accessible even under failures, ensuring service continuity through redundancy and automatic recovery.',
-          cards: {
-            replication_title: 'Replication',
-            replication_desc: 'Keep synchronized copies of data/services across servers to ensure redundancy and load distribution.',
-            failover_title: 'Failover',
-            failover_desc: 'Automatic recovery mechanisms that detect failures and redirect traffic to backup systems.',
-            zones_title: 'Availability Zones',
-            zones_desc: 'Deploy across multiple zones to protect against localized infrastructure failures.',
-            dr_title: 'Disaster Recovery',
-            dr_desc: 'Plan and implement strategies to recover the system in catastrophic failures.',
-            monitoring_title: 'Health Monitoring',
-            monitoring_desc: 'Continuously monitor system health to detect and resolve issues early.',
-            load_dist_title: 'Load Distribution',
-            load_dist_desc: 'Distribute traffic across servers to avoid overload and maintain responsiveness.'
+        },
+        availability: {
+        
+          index: {
+            title: 'High Availability',
+            intro: 'High availability is a system\'s ability to remain operational and accessible even under failures, ensuring service continuity through redundancy and automatic recovery.',
+            cards: {
+              replication_title: 'Replication',
+              replication_desc: 'Keep synchronized copies of data/services across servers to ensure redundancy and load distribution.',
+              failover_title: 'Failover',
+              failover_desc: 'Automatic recovery mechanisms that detect failures and redirect traffic to backup systems.',
+              zones_title: 'Availability Zones',
+              zones_desc: 'Deploy across multiple zones to protect against localized infrastructure failures.',
+              dr_title: 'Disaster Recovery',
+              dr_desc: 'Plan and implement strategies to recover the system in catastrophic failures.',
+              monitoring_title: 'Health Monitoring',
+              monitoring_desc: 'Continuously monitor system health to detect and resolve issues early.',
+              load_dist_title: 'Load Distribution',
+              load_dist_desc: 'Distribute traffic across servers to avoid overload and maintain responsiveness.'
+            },
+            sim_cta: 'Explore High Availability Simulator'
           },
-          sim_cta: 'Explore High Availability Simulator'
-        },
-        replication: {
-          title: 'Replication in Distributed Systems',
-          intro: 'Replication is fundamental to ensure high availability and redundancy.',
-          what_title: 'What is Replication?',
-          what_p: 'Replication creates and maintains copies of data or services in multiple locations. This increases availability and redundancy, ensuring access even if a server fails.',
-          types_title: 'Types of Replication',
-          types: [
-            'Synchronous Replication: All copies are updated before confirming the operation (strong consistency, higher latency).',
-            'Asynchronous Replication: Updates propagate with delay (better performance, eventual consistency).',
-            'Semi-synchronous Replication: Hybrid approach where at least one replica confirms before proceeding.'
-          ],
-          benefits_title: 'Benefits',
-          benefits: [
-            'High availability and fault tolerance',
-            'Geographical distribution for lower latency',
-            'Load balancing across replicas',
-            'Backup and disaster recovery',
-            'Read scalability'
-          ],
-          real_world_title: 'Real-World Example',
-          real_world_p: 'A social network stores user photos on multiple servers worldwide. If one server fails, a replicated copy is available, preventing data loss and keeping the service online.',
-          best_title: 'Best Practices',
-          best: [
-            'Choose replication type based on consistency needs',
-            'Monitor replica health and status',
-            'Implement conflict detection and resolution mechanisms',
-            'Keep replication logs for audit and recovery',
-            'Regularly test failover scenarios',
-            'Consider geographic location of replicas'
-          ],
-          explore_title: 'Explore in Practice',
-          explore_p: 'Try different replication strategies and see their impact on consistency and latency.',
-          explore_cta: 'Open Simulator'
-        }
-      },
-      fault_tolerance: {
-        title: 'Fault Tolerance',
-        intro: 'Designing systems that can recover or continue operating in the face of failures is essential to maintain reliability and high availability.',
-        example_label: 'Practical Example',
-        strategy: {
-          retries: {
-            title: 'Retries',
-            description: 'When an operation fails, the system attempts it again, increasing the chance of success in case of transient failures.',
-            example: 'In an online shopping app, if order confirmation fails due to a network issue, the app automatically retries the request.'
+          replication: {
+            title: 'Replication in Distributed Systems',
+            intro: 'Replication is fundamental to ensure high availability and redundancy.',
+            what_title: 'What is Replication?',
+            what_p: 'Replication creates and maintains copies of data or services in multiple locations. This increases availability and redundancy, ensuring access even if a server fails.',
+            types_title: 'Types of Replication',
+            types: [
+              'Synchronous Replication: All copies are updated before confirming the operation (strong consistency, higher latency).',
+              'Asynchronous Replication: Updates propagate with delay (better performance, eventual consistency).',
+              'Semi-synchronous Replication: Hybrid approach where at least one replica confirms before proceeding.'
+            ],
+            benefits_title: 'Benefits',
+            benefits: [
+              'High availability and fault tolerance',
+              'Geographical distribution for lower latency',
+              'Load balancing across replicas',
+              'Backup and disaster recovery',
+              'Read scalability'
+            ],
+            real_world_title: 'Real-World Example',
+            real_world_p: 'A social network stores user photos on multiple servers worldwide. If one server fails, a replicated copy is available, preventing data loss and keeping the service online.',
+            best_title: 'Best Practices',
+            best: [
+              'Choose replication type based on consistency needs',
+              'Monitor replica health and status',
+              'Implement conflict detection and resolution mechanisms',
+              'Keep replication logs for audit and recovery',
+              'Regularly test failover scenarios',
+              'Consider geographic location of replicas'
+            ],
+            explore_title: 'Explore in Practice',
+            explore_p: 'Try different replication strategies and see their impact on consistency and latency.',
+            explore_cta: 'Open Simulator'
           },
-          circuit_breakers: {
-            title: 'Circuit Breakers',
-            description: 'Prevents cascading failures by detecting problems and temporarily stopping calls to a troubled service.',
-            example: 'When an image server is overloaded, the circuit breaker blocks new requests for a while, allowing the server to recover.'
+          availability_zones: {
+            title: 'Availability Zones',
+            intro: 'Availability Zones are isolated data centers within a geographic region, designed to provide redundancy and high availability for critical applications.',
+            how_works_title: 'How It Works',
+            how_works_intro: 'Each availability zone is an independent data center with:',
+            how_works_items: [
+              'Independent and redundant power',
+              'Independent cooling systems',
+              'Dedicated network infrastructure',
+              'High-speed connections between zones'
+            ],
+            how_works_outro: 'The zones are designed to be isolated from failures in other zones, but close enough to ensure low latency communication between them.',
+            benefits_title: 'Benefits',
+            benefits: [
+              {
+                title: 'Fault Isolation',
+                description: 'Problems in one zone do not affect others, ensuring service continuity.'
+              },
+              {
+                title: 'High Availability',
+                description: 'Resource distribution across zones ensures the service remains available even with the failure of an entire zone.'
+              },
+              {
+                title: 'Low Latency',
+                description: 'High-speed connections between zones allow efficient data synchronization and load balancing.'
+              }
+            ],
+            real_world_title: 'Real-World Example',
+            real_world_example_title: 'Large E-commerce Platform',
+            real_world_intro: 'An e-commerce platform distributes its application across three availability zones:',
+            real_world_items: [
+              'Zone A: Main application server',
+              'Zone B: Active replica and primary database',
+              'Zone C: Backup and secondary database'
+            ],
+            real_world_outro: 'If Zone A fails, traffic is automatically redirected to Zone B, while Zone C ensures no data is lost during the transition.',
+            best_practices_title: 'Best Practices',
+            best_practices: [
+              {
+                title: 'Smart Distribution',
+                description: 'Distribute resources and data evenly across zones to maximize resilience.'
+              },
+              {
+                title: 'Constant Monitoring',
+                description: 'Implement real-time monitoring to detect and respond quickly to problems in any zone.'
+              },
+              {
+                title: 'Regular Testing',
+                description: 'Perform failover tests regularly to ensure transition between zones works as expected.'
+              }
+            ],
+            simulator_title: 'Explore the Availability Zones Simulator',
+            simulator_description: 'Experience in practice how availability zones work and how they respond to different failure scenarios.'
           },
-          timeout: {
-            title: 'Timeout',
-            description: 'Defines a maximum time for an operation to complete, avoiding waiting indefinitely for a response.',
-            example: 'When submitting a form, if the server does not respond within 30 seconds, the operation is canceled and an error message is shown.'
+          availability_zones_simulator: {
+            title: 'Availability Zones Simulator',
+            intro: 'Explore how availability zones work together to ensure high availability and fault tolerance.',
+            controls: {
+              request_rate_label: 'Request Rate (per second)',
+              failure_chance_label: 'Failure Chance (%)',
+              auto_failover_label: 'Auto Failover',
+              start_simulation: 'Start Simulation',
+              stop_simulation: 'Stop Simulation'
+            },
+            zone_status: {
+              healthy: 'Healthy',
+              degraded: 'Degraded',
+              failed: 'Failed'
+            },
+            zone_info: {
+              load: 'Load',
+              active_servers: 'Active Servers',
+              latency: 'Latency',
+              simulate_failure: 'Simulate Failure',
+              recover: 'Recover'
+            },
+            statistics: {
+              title: 'Statistics',
+              total_requests: 'Total Requests',
+              success_rate: 'Success Rate'
+            },
+            recent_requests: {
+              title: 'Recent Requests',
+              completed: 'Completed',
+              failed: 'Failed',
+              processing: 'Processing',
+              pending: 'Pending'
+            }
+          }
+        },
+        fault_tolerance: {
+          title: 'Fault Tolerance',
+          intro: 'Designing systems that can recover or continue operating in the face of failures is essential to maintain reliability and high availability.',
+          example_label: 'Practical Example',
+          strategy: {
+            retries: {
+              title: 'Retries',
+              description: 'When an operation fails, the system attempts it again, increasing the chance of success in case of transient failures.',
+              example: 'In an online shopping app, if order confirmation fails due to a network issue, the app automatically retries the request.'
+            },
+            circuit_breakers: {
+              title: 'Circuit Breakers',
+              description: 'Prevents cascading failures by detecting problems and temporarily stopping calls to a troubled service.',
+              example: 'When an image server is overloaded, the circuit breaker blocks new requests for a while, allowing the server to recover.'
+            },
+            timeout: {
+              title: 'Timeout',
+              description: 'Defines a maximum time for an operation to complete, avoiding waiting indefinitely for a response.',
+              example: 'When submitting a form, if the server does not respond within 30 seconds, the operation is canceled and an error message is shown.'
+            },
+            fallback: {
+              title: 'Fallback',
+              description: 'Provides an alternative when the primary operation fails, ensuring the system continues to function in a degraded mode.',
+              example: 'In a maps app, if GPS fails, the system uses Wi‑Fi network location as an alternative to show an approximate position.'
+            }
+          }
+        },
+        retries: {
+          title: 'Retries',
+          intro: 'A fundamental strategy to handle transient failures in distributed systems, allowing failed operations to be retried automatically.',
+          how_it_works: {
+            title: 'How It Works',
+            text: 'Imagine you are sending a message to a friend. Sometimes it does not arrive the first time due to network issues. What do you do? You try again. That is exactly what "Retry" does in computer systems.'
           },
-          fallback: {
-            title: 'Fallback',
-            description: 'Provides an alternative when the primary operation fails, ensuring the system continues to function in a degraded mode.',
-            example: 'In a maps app, if GPS fails, the system uses Wi‑Fi network location as an alternative to show an approximate position.'
-          }
-        }
+          real_world_example: {
+            title: 'Real-World Example',
+            text: 'Think of an online shopping app. When you click "Buy", the app must confirm the order with a server. If the connection briefly fails, the app can retry a few times before showing an error.'
+          },
+          benefits: {
+            title: 'Benefits',
+            items: {
+              resilience: { title: 'Higher Resilience', desc: 'Systems can automatically recover from transient failures.' },
+              ux: { title: 'Better Experience', desc: 'Users do not have to repeat actions manually when failures occur.' },
+              reliability: { title: 'Reliability', desc: 'Increases the success rate of operations over unstable networks.' }
+            }
+          },
+          best_practices: {
+            title: 'Best Practices',
+            items: {
+              backoff: { title: 'Exponential Backoff', desc: 'Gradually increase the interval between attempts to avoid overloading the system (e.g., 1s, 2s, 4s, 8s).' },
+              limit: { title: 'Retry Limit', desc: 'Set a maximum number of attempts to avoid infinite loops and fail fast when necessary.' },
+              idempotency: { title: 'Idempotency', desc: 'Ensure multiple attempts of the same operation do not cause unintended side effects.' }
+            }
+          },
+          considerations: {
+            title: 'Important Considerations',
+            items: {
+              failure_types: { title: 'Types of Failures', desc: 'Not all failures should be retried. Validation or authentication errors, for example, do not benefit from retries.' },
+              impact: { title: 'Impact on the System', desc: 'Many concurrent retries can overload the system. Use circuit breakers together when needed.' }
+            }
+          },
+          cta_simulator: 'Explore Retries Simulator'
+        },
+        circuit_breaker: {
+          title: 'Circuit Breaker',
+          intro: 'An essential strategy to prevent cascading failures in distributed systems, working similarly to an electrical circuit breaker.',
+          how_it_works: {
+            title: 'How It Works',
+            p1: 'Imagine your home internet is having serious issues. You try to send a message several times, but it never goes through. Keeping at it only frustrates you and overloads the network. That is where the Circuit Breaker comes in.',
+            p2: 'It works like the breaker in your house: when the current is too high, it shuts everything off to avoid damage. In software systems, when many calls fail, the Circuit Breaker blocks new attempts for a while.'
+          },
+          benefits: {
+            title: 'Benefits',
+            items: {
+              cascade_prevention: { title: 'Cascading Failure Prevention', desc: 'Prevents failures in one service from affecting the whole system.' },
+              auto_recovery: { title: 'Automatic Recovery', desc: 'Allows the system to naturally recover after failures.' },
+              better_experience: { title: 'Better Experience', desc: 'Fail fast instead of keeping users waiting.' }
+            }
+          },
+          real_world: {
+            title: 'Real-World Example',
+            text: 'A news site receives a traffic spike during a major event. The image server becomes overloaded and slows responses. The Circuit Breaker detects this and blocks image fetches for a few minutes. The site keeps working (without images) while the server recovers.'
+          },
+          states: {
+            title: 'Circuit Breaker States',
+            closed: { title: 'Closed (Normal)', desc: 'Normal operation; requests pass through while failures are monitored.' },
+            open: { title: 'Open (Blocked)', desc: 'Too many failures detected; requests are blocked for a period.' },
+            half_open: { title: 'Half-Open (Test)', desc: 'Allows a few requests to test if the system has recovered.' }
+          },
+          cta_simulator: 'Explore Circuit Breaker Simulator'
+        },
+        timeout: {
+          title: 'Timeout',
+          intro: 'A fundamental strategy to avoid slow or stuck operations from hurting user experience and overall system health.',
+          how_it_works: {
+            title: 'How It Works',
+            p1: 'Imagine you place an order at a restaurant. If it takes too long, you will cancel and leave. Timeout works similarly.',
+            p2: 'It defines a maximum time for an operation to complete. If that time is exceeded, the system assumes something is wrong and aborts the operation.'
+          },
+          benefits: {
+            title: 'Benefits',
+            items: {
+              ux: { title: 'Better User Experience', desc: 'Prevents users from waiting indefinitely.' },
+              freeing_resources: { title: 'Freeing Resources', desc: 'Releases system resources that could otherwise remain stuck.' },
+              failure_prevention: { title: 'Failure Prevention', desc: 'Avoids problems in one service from impacting others.' }
+            }
+          },
+          real_world: {
+            title: 'Real-World Example',
+            text: 'You are submitting a form online. If the server is slow or down, the submission may take too long. A 30s timeout cancels the request and shows an error instead of waiting forever.'
+          },
+          best_practices: {
+            title: 'Best Practices',
+            items: {
+              proper_times: { title: 'Proper Timeouts', desc: 'Set realistic timeouts based on operation type and user expectations.' },
+              clear_messages: { title: 'Clear Messages', desc: 'Tell the user what happened and what to do next.' },
+              retry_combo: { title: 'Retry Strategy', desc: 'Combine timeouts with retries for resilience.' }
+            }
+          },
+          cta_simulator: 'Explore Timeout Simulator'
+        },
       },
-      retries: {
-        title: 'Retries',
-        intro: 'A fundamental strategy to handle transient failures in distributed systems, allowing failed operations to be retried automatically.',
-        how_it_works: {
-          title: 'How It Works',
-          text: 'Imagine you are sending a message to a friend. Sometimes it does not arrive the first time due to network issues. What do you do? You try again. That is exactly what "Retry" does in computer systems.'
-        },
-        real_world_example: {
-          title: 'Real-World Example',
-          text: 'Think of an online shopping app. When you click "Buy", the app must confirm the order with a server. If the connection briefly fails, the app can retry a few times before showing an error.'
-        },
-        benefits: {
-          title: 'Benefits',
-          items: {
-            resilience: { title: 'Higher Resilience', desc: 'Systems can automatically recover from transient failures.' },
-            ux: { title: 'Better Experience', desc: 'Users do not have to repeat actions manually when failures occur.' },
-            reliability: { title: 'Reliability', desc: 'Increases the success rate of operations over unstable networks.' }
-          }
-        },
-        best_practices: {
-          title: 'Best Practices',
-          items: {
-            backoff: { title: 'Exponential Backoff', desc: 'Gradually increase the interval between attempts to avoid overloading the system (e.g., 1s, 2s, 4s, 8s).' },
-            limit: { title: 'Retry Limit', desc: 'Set a maximum number of attempts to avoid infinite loops and fail fast when necessary.' },
-            idempotency: { title: 'Idempotency', desc: 'Ensure multiple attempts of the same operation do not cause unintended side effects.' }
-          }
-        },
-        considerations: {
-          title: 'Important Considerations',
-          items: {
-            failure_types: { title: 'Types of Failures', desc: 'Not all failures should be retried. Validation or authentication errors, for example, do not benefit from retries.' },
-            impact: { title: 'Impact on the System', desc: 'Many concurrent retries can overload the system. Use circuit breakers together when needed.' }
-          }
-        },
-        cta_simulator: 'Explore Retries Simulator'
-      },
-      circuit_breaker: {
-        title: 'Circuit Breaker',
-        intro: 'An essential strategy to prevent cascading failures in distributed systems, working similarly to an electrical circuit breaker.',
-        how_it_works: {
-          title: 'How It Works',
-          p1: 'Imagine your home internet is having serious issues. You try to send a message several times, but it never goes through. Keeping at it only frustrates you and overloads the network. That is where the Circuit Breaker comes in.',
-          p2: 'It works like the breaker in your house: when the current is too high, it shuts everything off to avoid damage. In software systems, when many calls fail, the Circuit Breaker blocks new attempts for a while.'
-        },
-        benefits: {
-          title: 'Benefits',
-          items: {
-            cascade_prevention: { title: 'Cascading Failure Prevention', desc: 'Prevents failures in one service from affecting the whole system.' },
-            auto_recovery: { title: 'Automatic Recovery', desc: 'Allows the system to naturally recover after failures.' },
-            better_experience: { title: 'Better Experience', desc: 'Fail fast instead of keeping users waiting.' }
-          }
-        },
-        real_world: {
-          title: 'Real-World Example',
-          text: 'A news site receives a traffic spike during a major event. The image server becomes overloaded and slows responses. The Circuit Breaker detects this and blocks image fetches for a few minutes. The site keeps working (without images) while the server recovers.'
-        },
-        states: {
-          title: 'Circuit Breaker States',
-          closed: { title: 'Closed (Normal)', desc: 'Normal operation; requests pass through while failures are monitored.' },
-          open: { title: 'Open (Blocked)', desc: 'Too many failures detected; requests are blocked for a period.' },
-          half_open: { title: 'Half-Open (Test)', desc: 'Allows a few requests to test if the system has recovered.' }
-        },
-        cta_simulator: 'Explore Circuit Breaker Simulator'
-      },
-      timeout: {
-        title: 'Timeout',
-        intro: 'A fundamental strategy to avoid slow or stuck operations from hurting user experience and overall system health.',
-        how_it_works: {
-          title: 'How It Works',
-          p1: 'Imagine you place an order at a restaurant. If it takes too long, you will cancel and leave. Timeout works similarly.',
-          p2: 'It defines a maximum time for an operation to complete. If that time is exceeded, the system assumes something is wrong and aborts the operation.'
-        },
-        benefits: {
-          title: 'Benefits',
-          items: {
-            ux: { title: 'Better User Experience', desc: 'Prevents users from waiting indefinitely.' },
-            freeing_resources: { title: 'Freeing Resources', desc: 'Releases system resources that could otherwise remain stuck.' },
-            failure_prevention: { title: 'Failure Prevention', desc: 'Avoids problems in one service from impacting others.' }
-          }
-        },
-        real_world: {
-          title: 'Real-World Example',
-          text: 'You are submitting a form online. If the server is slow or down, the submission may take too long. A 30s timeout cancels the request and shows an error instead of waiting forever.'
-        },
-        best_practices: {
-          title: 'Best Practices',
-          items: {
-            proper_times: { title: 'Proper Timeouts', desc: 'Set realistic timeouts based on operation type and user expectations.' },
-            clear_messages: { title: 'Clear Messages', desc: 'Tell the user what happened and what to do next.' },
-            retry_combo: { title: 'Retry Strategy', desc: 'Combine timeouts with retries for resilience.' }
-          }
-        },
-        cta_simulator: 'Explore Timeout Simulator'
-      },
+      
+     
+     
       service_oriented: {
         title: 'Service-Oriented Design',
         intro: 'Explore different approaches for organizing services and their practical implications. Each architecture has its own trade-offs and ideal use cases.',
@@ -7113,6 +7247,22 @@ const resources = {
               name: 'Failover',
               description: 'Recuperação automática de falhas'
             },
+            zonas: {
+              name: 'Zonas de Disponibilidade',
+              description: 'Distribuição geográfica para resiliência'
+            },
+            'disaster-recovery': {
+              name: 'Recuperação de Desastres',
+              description: 'Estratégias de recuperação de falhas catastróficas'
+            },
+            monitoramento: {
+              name: 'Monitoramento de Saúde',
+              description: 'Acompanhamento contínuo da saúde do sistema'
+            },
+            'distribuicao-carga': {
+              name: 'Distribuição de Carga',
+              description: 'Distribuição de tráfego entre servidores'
+            },
             simulator: {
               name: 'Simulador',
               description: 'Experimente estratégias de disponibilidade'
@@ -7620,7 +7770,30 @@ const resources = {
           distributed_cache_desc: 'Compartilhado entre vários servidores, melhorando escalabilidade e consistência entre nós.',
           simulator_title: 'Simulador Interativo',
           simulator_description: 'Experimente nossa simulação de cache para entender como o cache impacta a performance do sistema.',
-          access_simulator: 'Acessar Simulador'
+          access_simulator: 'Acessar Simulador',
+          simulation: {
+            client: 'Cliente',
+            cache: 'Cache',
+            database: 'BD',
+            configuration: 'Configuração',
+            cache_enabled: 'Cache Ativado',
+            cache_ttl: 'Tempo de Vida do Cache',
+            network_delay: 'Atraso de Rede',
+            database_delay: 'Atraso do Banco',
+            cache_key_placeholder: 'Chave do cache',
+            processing: 'Processando...',
+            send: 'Enviar',
+            clear: 'Limpar',
+            cache_status: 'Status do Cache',
+            expires_in: 'expira em',
+            cache_empty: 'Cache está vazio',
+            logs: 'Registros',
+            request: 'Requisição',
+            cache_hit: 'Cache Encontrado',
+            cache_miss: 'Cache Ausente',
+            db_query: 'Consulta BD',
+            no_logs: 'Nenhum registro disponível'
+          }
         },
         load_balancer: {
           simulator_title: 'Simulador Interativo',
@@ -8473,6 +8646,95 @@ const resources = {
             explore_title: 'Explorar na Prática',
             explore_p: 'Experimente diferentes estratégias de replicação e veja o impacto na consistência e latência.',
             explore_cta: 'Abrir Simulador'
+          },
+          availability_zones: {
+            title: 'Zonas de Disponibilidade',
+            intro: 'Zonas de Disponibilidade são datacenters isolados dentro de uma região geográfica, projetados para fornecer redundância e alta disponibilidade para aplicações críticas.',
+            how_works_title: 'Como Funciona',
+            how_works_intro: 'Cada zona de disponibilidade é um datacenter independente com:',
+            how_works_items: [
+              'Energia própria e redundante',
+              'Refrigeração independente',
+              'Infraestrutura de rede dedicada',
+              'Conexões de alta velocidade entre zonas'
+            ],
+            how_works_outro: 'As zonas são projetadas para serem isoladas de falhas em outras zonas, mas próximas o suficiente para garantir baixa latência na comunicação entre elas.',
+            benefits_title: 'Benefícios',
+            benefits: [
+              {
+                title: 'Isolamento de Falhas',
+                description: 'Problemas em uma zona não afetam as outras, garantindo a continuidade do serviço.'
+              },
+              {
+                title: 'Alta Disponibilidade',
+                description: 'Distribuição de recursos entre zonas garante que o serviço permaneça disponível mesmo com a falha de uma zona inteira.'
+              },
+              {
+                title: 'Baixa Latência',
+                description: 'Conexões de alta velocidade entre zonas permitem sincronização eficiente de dados e balanceamento de carga.'
+              }
+            ],
+            real_world_title: 'Exemplo do Mundo Real',
+            real_world_example_title: 'E-commerce de Grande Porte',
+            real_world_intro: 'Um e-commerce distribui sua aplicação em três zonas de disponibilidade:',
+            real_world_items: [
+              'Zona A: Servidor principal de aplicação',
+              'Zona B: Réplica ativa e banco de dados principal',
+              'Zona C: Backup e banco de dados secundário'
+            ],
+            real_world_outro: 'Se a Zona A falhar, o tráfego é automaticamente redirecionado para a Zona B, enquanto a Zona C garante que nenhum dado seja perdido durante a transição.',
+            best_practices_title: 'Melhores Práticas',
+            best_practices: [
+              {
+                title: 'Distribuição Inteligente',
+                description: 'Distribua recursos e dados de forma equilibrada entre as zonas para maximizar a resiliência.'
+              },
+              {
+                title: 'Monitoramento Constante',
+                description: 'Implemente monitoramento em tempo real para detectar e responder rapidamente a problemas em qualquer zona.'
+              },
+              {
+                title: 'Testes Regulares',
+                description: 'Realize testes de failover regularmente para garantir que a transição entre zonas funcione conforme esperado.'
+              }
+            ],
+            simulator_title: 'Explorar o Simulador de Zonas de Disponibilidade',
+            simulator_description: 'Experimente na prática como as zonas de disponibilidade funcionam e como elas respondem a diferentes cenários de falha.'
+          },
+          availability_zones_simulator: {
+            title: 'Simulador de Zonas de Disponibilidade',
+            intro: 'Explore como as zonas de disponibilidade trabalham em conjunto para garantir alta disponibilidade e tolerância a falhas.',
+            controls: {
+              request_rate_label: 'Taxa de Requisições (por segundo)',
+              failure_chance_label: 'Chance de Falha (%)',
+              auto_failover_label: 'Auto Failover',
+              start_simulation: 'Iniciar Simulação',
+              stop_simulation: 'Parar Simulação'
+            },
+            zone_status: {
+              healthy: 'Saudável',
+              degraded: 'Degradado',
+              failed: 'Falha'
+            },
+            zone_info: {
+              load: 'Carga',
+              active_servers: 'Servidores Ativos',
+              latency: 'Latência',
+              simulate_failure: 'Simular Falha',
+              recover: 'Recuperar'
+            },
+            statistics: {
+              title: 'Estatísticas',
+              total_requests: 'Total de Requisições',
+              success_rate: 'Taxa de Sucesso'
+            },
+            recent_requests: {
+              title: 'Requisições Recentes',
+              completed: 'Concluída',
+              failed: 'Falha',
+              processing: 'Processando',
+              pending: 'Pendente'
+            }
           }
         },
 

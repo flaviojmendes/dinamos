@@ -1,8 +1,33 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function AvailabilityZones() {
+  const { t } = useTranslation();
+
+  const tStr = (key: string): string => {
+    const value = t(key);
+    return value === key ? t(key, { lng: 'en' }) : value;
+  };
+
+  const tArr = (key: string): string[] => {
+    const raw = t(key, { returnObjects: true }) as unknown;
+    if (Array.isArray(raw)) return raw as string[];
+    const rawEn = t(key, { returnObjects: true, lng: 'en' }) as unknown;
+    return Array.isArray(rawEn) ? (rawEn as string[]) : [];
+  };
+
+  const tObj = (key: string): any => {
+    const value = t(key, { returnObjects: true });
+    return Array.isArray(value) || typeof value === 'object' ? value : t(key, { returnObjects: true, lng: 'en' });
+  };
+
+  const howWorksItems = tArr('design_principles.availability.availability_zones.how_works_items');
+  const benefits = tObj('design_principles.availability.availability_zones.benefits');
+  const realWorldItems = tArr('design_principles.availability.availability_zones.real_world_items');
+  const bestPractices = tObj('design_principles.availability.availability_zones.best_practices');
+
   return (
     <div className="min-h-screen bg-zinc-950 text-white p-8">
       <div className="max-w-4xl mx-auto">
@@ -12,10 +37,9 @@ export default function AvailabilityZones() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-12"
         >
-          <h1 className="text-3xl font-bold mb-4">Zonas de Disponibilidade</h1>
+          <h1 className="text-3xl font-bold mb-4">{tStr('design_principles.availability.availability_zones.title')}</h1>
           <p className="text-lg text-zinc-400">
-            Zonas de Disponibilidade são datacenters isolados dentro de uma região geográfica, 
-            projetados para fornecer redundância e alta disponibilidade para aplicações críticas.
+            {tStr('design_principles.availability.availability_zones.intro')}
           </p>
         </motion.div>
 
@@ -29,46 +53,32 @@ export default function AvailabilityZones() {
           >
             {/* How it Works */}
             <div className="bg-zinc-900 rounded-xl p-6 mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-blue-400">Como Funciona</h2>
+              <h2 className="text-xl font-semibold mb-4 text-blue-400">{tStr('design_principles.availability.availability_zones.how_works_title')}</h2>
               <p className="text-zinc-400 mb-4">
-                Cada zona de disponibilidade é um datacenter independente com:
+                {tStr('design_principles.availability.availability_zones.how_works_intro')}
               </p>
               <ul className="list-disc list-inside text-zinc-400 space-y-2 mb-4">
-                <li>Energia própria e redundante</li>
-                <li>Refrigeração independente</li>
-                <li>Infraestrutura de rede dedicada</li>
-                <li>Conexões de alta velocidade entre zonas</li>
+                {howWorksItems.map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
               </ul>
               <p className="text-zinc-400">
-                As zonas são projetadas para serem isoladas de falhas em outras zonas, mas 
-                próximas o suficiente para garantir baixa latência na comunicação entre elas.
+                {tStr('design_principles.availability.availability_zones.how_works_outro')}
               </p>
             </div>
 
             {/* Benefits */}
             <div className="bg-zinc-900 rounded-xl p-6">
-              <h2 className="text-xl font-semibold mb-4 text-blue-400">Benefícios</h2>
+              <h2 className="text-xl font-semibold mb-4 text-blue-400">{tStr('design_principles.availability.availability_zones.benefits_title')}</h2>
               <div className="space-y-4">
-                <div className="bg-zinc-800 rounded-lg p-4">
-                  <h3 className="text-lg font-medium mb-2 text-green-400">Isolamento de Falhas</h3>
-                  <p className="text-sm text-zinc-400">
-                    Problemas em uma zona não afetam as outras, garantindo a continuidade do serviço.
-                  </p>
-                </div>
-                <div className="bg-zinc-800 rounded-lg p-4">
-                  <h3 className="text-lg font-medium mb-2 text-green-400">Alta Disponibilidade</h3>
-                  <p className="text-sm text-zinc-400">
-                    Distribuição de recursos entre zonas garante que o serviço permaneça disponível 
-                    mesmo com a falha de uma zona inteira.
-                  </p>
-                </div>
-                <div className="bg-zinc-800 rounded-lg p-4">
-                  <h3 className="text-lg font-medium mb-2 text-green-400">Baixa Latência</h3>
-                  <p className="text-sm text-zinc-400">
-                    Conexões de alta velocidade entre zonas permitem sincronização eficiente de dados 
-                    e balanceamento de carga.
-                  </p>
-                </div>
+                {benefits.map((benefit: any, idx: number) => (
+                  <div key={idx} className="bg-zinc-800 rounded-lg p-4">
+                    <h3 className="text-lg font-medium mb-2 text-green-400">{benefit.title}</h3>
+                    <p className="text-sm text-zinc-400">
+                      {benefit.description}
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
           </motion.div>
@@ -81,49 +91,35 @@ export default function AvailabilityZones() {
           >
             {/* Real World Example */}
             <div className="bg-zinc-900 rounded-xl p-6 mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-blue-400">Exemplo do Mundo Real</h2>
+              <h2 className="text-xl font-semibold mb-4 text-blue-400">{tStr('design_principles.availability.availability_zones.real_world_title')}</h2>
               <div className="bg-zinc-800 rounded-lg p-4 mb-4">
-                <h3 className="text-lg font-medium mb-2">E-commerce de Grande Porte</h3>
+                <h3 className="text-lg font-medium mb-2">{tStr('design_principles.availability.availability_zones.real_world_example_title')}</h3>
                 <p className="text-zinc-400 mb-4">
-                  Um e-commerce distribui sua aplicação em três zonas de disponibilidade:
+                  {tStr('design_principles.availability.availability_zones.real_world_intro')}
                 </p>
                 <ul className="list-disc list-inside text-zinc-400 space-y-2">
-                  <li>Zona A: Servidor principal de aplicação</li>
-                  <li>Zona B: Réplica ativa e banco de dados principal</li>
-                  <li>Zona C: Backup e banco de dados secundário</li>
+                  {realWorldItems.map((item, idx) => (
+                    <li key={idx}>{item}</li>
+                  ))}
                 </ul>
               </div>
               <p className="text-sm text-zinc-400">
-                Se a Zona A falhar, o tráfego é automaticamente redirecionado para a Zona B, 
-                enquanto a Zona C garante que nenhum dado seja perdido durante a transição.
+                {tStr('design_principles.availability.availability_zones.real_world_outro')}
               </p>
             </div>
 
             {/* Best Practices */}
             <div className="bg-zinc-900 rounded-xl p-6">
-              <h2 className="text-xl font-semibold mb-4 text-blue-400">Melhores Práticas</h2>
+              <h2 className="text-xl font-semibold mb-4 text-blue-400">{tStr('design_principles.availability.availability_zones.best_practices_title')}</h2>
               <ul className="space-y-4">
-                <li className="bg-zinc-800 rounded-lg p-4">
-                  <h3 className="text-lg font-medium mb-2 text-green-400">Distribuição Inteligente</h3>
-                  <p className="text-sm text-zinc-400">
-                    Distribua recursos e dados de forma equilibrada entre as zonas para maximizar 
-                    a resiliência.
-                  </p>
-                </li>
-                <li className="bg-zinc-800 rounded-lg p-4">
-                  <h3 className="text-lg font-medium mb-2 text-green-400">Monitoramento Constante</h3>
-                  <p className="text-sm text-zinc-400">
-                    Implemente monitoramento em tempo real para detectar e responder rapidamente 
-                    a problemas em qualquer zona.
-                  </p>
-                </li>
-                <li className="bg-zinc-800 rounded-lg p-4">
-                  <h3 className="text-lg font-medium mb-2 text-green-400">Testes Regulares</h3>
-                  <p className="text-sm text-zinc-400">
-                    Realize testes de failover regularmente para garantir que a transição entre 
-                    zonas funcione conforme esperado.
-                  </p>
-                </li>
+                {bestPractices.map((practice: any, idx: number) => (
+                  <li key={idx} className="bg-zinc-800 rounded-lg p-4">
+                    <h3 className="text-lg font-medium mb-2 text-green-400">{practice.title}</h3>
+                    <p className="text-sm text-zinc-400">
+                      {practice.description}
+                    </p>
+                  </li>
+                ))}
               </ul>
             </div>
           </motion.div>
@@ -137,15 +133,14 @@ export default function AvailabilityZones() {
           className="mt-12"
         >
           <Link
-            to="/principios-design/alta-disponibilidade/zonas/simulator"
+            to="/principios-design/disponibilidade/simulator"
             className="block bg-blue-600 hover:bg-blue-700 transition-colors rounded-xl p-6 text-center"
           >
             <h2 className="text-xl font-semibold mb-2">
-              Explorar o Simulador de Zonas de Disponibilidade
+              {tStr('design_principles.availability.availability_zones.simulator_title')}
             </h2>
             <p className="text-zinc-200">
-              Experimente na prática como as zonas de disponibilidade funcionam e como elas 
-              respondem a diferentes cenários de falha.
+              {tStr('design_principles.availability.availability_zones.simulator_description')}
             </p>
           </Link>
         </motion.div>

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface CacheEntry {
   key: string;
@@ -22,6 +23,7 @@ interface RequestLog {
 }
 
 export default function CacheSimulation() {
+  const { t } = useTranslation();
   const [position, setPosition] = useState<'client' | 'cache' | 'db' | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentKey, setCurrentKey] = useState('user-1');
@@ -177,7 +179,7 @@ export default function CacheSimulation() {
           <div className={`relative z-10 w-16 h-16 rounded-lg border-2 transition-colors duration-300
             ${position === 'client' ? 'border-blue-500 bg-blue-500/20' : 'border-zinc-600 bg-zinc-900'}
             flex items-center justify-center`}>
-            <span className="text-white text-sm">Cliente</span>
+            <span className="text-white text-sm">{t('cache.simulation.client')}</span>
           </div>
           
           <div className={`relative z-10 w-16 h-16 rounded-lg border-2 transition-colors duration-300
@@ -187,13 +189,13 @@ export default function CacheSimulation() {
               : position === 'cache' ? 'border-red-500 bg-red-500/20' 
               : 'border-zinc-600 bg-zinc-900'}
             flex items-center justify-center`}>
-            <span className="text-white text-sm">Cache</span>
+            <span className="text-white text-sm">{t('cache.simulation.cache')}</span>
           </div>
 
           <div className={`relative z-10 w-16 h-16 rounded-lg border-2 transition-colors duration-300
             ${position === 'db' ? 'border-red-500 bg-red-500/20' : 'border-zinc-600 bg-zinc-900'}
             flex items-center justify-center`}>
-            <span className="text-white text-sm">DB</span>
+            <span className="text-white text-sm">{t('cache.simulation.database')}</span>
           </div>
         </div>
       </div>
@@ -204,7 +206,7 @@ export default function CacheSimulation() {
           onClick={() => setIsConfigOpen(!isConfigOpen)}
           className="w-full flex items-center justify-between text-base md:text-lg font-semibold text-white focus:outline-none"
         >
-          <span>Configuração</span>
+          <span>{t('cache.simulation.configuration')}</span>
           <svg
             className={`w-5 h-5 md:w-6 md:h-6 transform transition-transform duration-200 ${isConfigOpen ? 'rotate-180' : ''}`}
             fill="none"
@@ -231,13 +233,13 @@ export default function CacheSimulation() {
                 onChange={(e) => setConfig(c => ({ ...c, cacheEnabled: e.target.checked }))}
                 className="rounded bg-zinc-700 border-zinc-600 text-blue-500 focus:ring-blue-500"
               />
-              <span>Cache Ativado</span>
+              <span>{t('cache.simulation.cache_enabled')}</span>
             </label>
           </div>
 
           <div>
             <div className="flex justify-between text-white mb-1">
-              <span>Tempo de Vida do Cache</span>
+              <span>{t('cache.simulation.cache_ttl')}</span>
               <span className="text-blue-400">{config.cacheTTL}s</span>
             </div>
             <input
@@ -252,7 +254,7 @@ export default function CacheSimulation() {
 
           <div>
             <div className="flex justify-between text-white mb-1">
-              <span>Atraso de Rede</span>
+              <span>{t('cache.simulation.network_delay')}</span>
               <span className="text-blue-400">{config.requestDelay}ms</span>
             </div>
             <input
@@ -268,7 +270,7 @@ export default function CacheSimulation() {
 
           <div>
             <div className="flex justify-between text-white mb-1">
-              <span>Atraso do Banco</span>
+              <span>{t('cache.simulation.database_delay')}</span>
               <span className="text-blue-400">{config.dbDelay}ms</span>
             </div>
             <input
@@ -291,7 +293,7 @@ export default function CacheSimulation() {
             type="text"
             value={currentKey}
             onChange={(e) => setCurrentKey(e.target.value)}
-            placeholder="Chave do cache"
+            placeholder={t('cache.simulation.cache_key_placeholder')}
             className="w-full md:flex-1 px-4 py-2 bg-zinc-800 text-white rounded border border-zinc-700 focus:outline-none focus:border-blue-500"
           />
           <div className="flex gap-2 md:gap-4">
@@ -304,13 +306,13 @@ export default function CacheSimulation() {
                   : 'bg-blue-500 text-white hover:bg-blue-600'
               }`}
             >
-              {isProcessing ? 'Processando...' : 'Enviar'}
+              {isProcessing ? t('cache.simulation.processing') : t('cache.simulation.send')}
             </button>
             <button
               onClick={clearCache}
               className="flex-1 md:flex-none px-4 md:px-6 py-2 bg-red-500 text-white rounded font-medium hover:bg-red-600 transition-colors"
             >
-              Limpar
+              {t('cache.simulation.clear')}
             </button>
           </div>
         </div>
@@ -318,25 +320,25 @@ export default function CacheSimulation() {
 
       {/* Cache Status */}
       <div className="bg-zinc-900 p-4 md:p-6 rounded-lg">
-        <h3 className="text-base md:text-lg font-semibold text-white mb-4">Status do Cache</h3>
+        <h3 className="text-base md:text-lg font-semibold text-white mb-4">{t('cache.simulation.cache_status')}</h3>
         <div className="space-y-2">
           {Array.from(cache.entries()).map(([key, entry]) => (
             <div key={key} className="flex flex-col md:flex-row md:justify-between md:items-center bg-zinc-800 p-3 rounded gap-2 md:gap-0">
               <div className="text-white break-all">{key}</div>
               <div className="text-zinc-400 text-sm md:text-base">
-                expira em {getRemainingTime(entry.timestamp, config.cacheTTL)}s
+                {t('cache.simulation.expires_in')} {getRemainingTime(entry.timestamp, config.cacheTTL)}s
               </div>
             </div>
           ))}
           {cache.size === 0 && (
-            <div className="text-zinc-500 text-center py-4">Cache está vazio</div>
+            <div className="text-zinc-500 text-center py-4">{t('cache.simulation.cache_empty')}</div>
           )}
         </div>
       </div>
 
       {/* Request Logs */}
       <div className="bg-zinc-900 p-4 md:p-6 rounded-lg">
-        <h3 className="text-base md:text-lg font-semibold text-white mb-4">Registros</h3>
+        <h3 className="text-base md:text-lg font-semibold text-white mb-4">{t('cache.simulation.logs')}</h3>
         <div className="space-y-2">
           {logs.map(log => (
             <div
@@ -350,10 +352,10 @@ export default function CacheSimulation() {
                   log.type === 'cache-miss' ? 'bg-yellow-500 text-white' :
                   'bg-red-500 text-white'
                 }`}>
-                  {log.type === 'request' ? 'Requisição' :
-                   log.type === 'cache-hit' ? 'Cache Encontrado' :
-                   log.type === 'cache-miss' ? 'Cache Ausente' :
-                   'Consulta BD'}
+                  {log.type === 'request' ? t('cache.simulation.request') :
+                   log.type === 'cache-hit' ? t('cache.simulation.cache_hit') :
+                   log.type === 'cache-miss' ? t('cache.simulation.cache_miss') :
+                   t('cache.simulation.db_query')}
                 </span>
                 <span className="text-white break-all">{log.key}</span>
               </div>
@@ -361,7 +363,7 @@ export default function CacheSimulation() {
             </div>
           ))}
           {logs.length === 0 && (
-            <div className="text-zinc-500 text-center py-4">Nenhum registro disponível</div>
+            <div className="text-zinc-500 text-center py-4">{t('cache.simulation.no_logs')}</div>
           )}
         </div>
       </div>

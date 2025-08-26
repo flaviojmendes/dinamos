@@ -123,6 +123,9 @@ import ConsistencyModels from "./components/TheoreticalFoundations/ConsistencyMo
 import DistributedChallenges from "./components/TheoreticalFoundations/DistributedChallenges";
 import NetworkPartitions from "./components/TheoreticalFoundations/NetworkPartitions";
 import TheoreticalFoundations from "./components/TheoreticalFoundations/TheoreticalFoundations";
+import ReplicationSimulator from "./components/DesignPrinciples/ReplicationSimulator";
+import AvailabilityZonesSimulator from "./components/DesignPrinciples/AvailabilityZonesSimulator";
+import AvailabilityZones from "./components/DesignPrinciples/AvailabilityZones";
 
 interface MenuItem {
   name: string;
@@ -409,6 +412,12 @@ const createMenuItems = (t: any): MenuItem[] => [
             name: t('menu.principios_design.disponibilidade.failover.name'),
             description: t('menu.principios_design.disponibilidade.failover.description'),
           },
+          {
+            path: "/principios-design/disponibilidade/zonas",
+            name: t('menu.principios_design.disponibilidade.zonas.name'),
+            description: t('menu.principios_design.disponibilidade.zonas.description'),
+          },
+          
           {
             path: "/principios-design/disponibilidade/simulator",
             name: t('menu.principios_design.disponibilidade.simulator.name'),
@@ -1708,7 +1717,7 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <ContentPage>
-                    <ReplicacaoSimulator />
+                    <AvailabilityZonesSimulator />
                   </ContentPage>
                 </ProtectedRoute>
               }
@@ -2205,6 +2214,58 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/principios-design/disponibilidade/zonas"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <AvailabilityZones />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path="/principios-design/disponibilidade/zonas/simulador"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <AvailabilityZonesSimulator />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/disponibilidade/replicacao"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <Replicacao />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/disponibilidade/replicacao/simulador"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <ReplicationSimulator />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/disponibilidade/failover"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <Failover />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            
           </Routes>
         </main>
       </div>

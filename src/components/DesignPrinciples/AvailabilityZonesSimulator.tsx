@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface Zone {
   id: string;
@@ -25,6 +26,12 @@ interface SimulationConfig {
 }
 
 export default function AvailabilityZonesSimulator() {
+  const { t } = useTranslation();
+
+  const tStr = (key: string): string => {
+    const value = t(key);
+    return value === key ? t(key, { lng: 'en' }) : value;
+  };
   const [zones, setZones] = useState<Zone[]>([
     { id: 'az1', name: 'Zona A', status: 'healthy', load: 0, servers: 3, latency: 20 },
     { id: 'az2', name: 'Zona B', status: 'healthy', load: 0, servers: 3, latency: 25 },
@@ -152,10 +159,9 @@ export default function AvailabilityZonesSimulator() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-3xl font-bold mb-4">Simulador de Zonas de Disponibilidade</h1>
+          <h1 className="text-3xl font-bold mb-4">{tStr('design_principles.availability.availability_zones_simulator.title')}</h1>
           <p className="text-lg text-zinc-400">
-            Explore como as zonas de disponibilidade trabalham em conjunto para garantir 
-            alta disponibilidade e tolerância a falhas.
+            {tStr('design_principles.availability.availability_zones_simulator.intro')}
           </p>
         </motion.div>
 
@@ -168,7 +174,7 @@ export default function AvailabilityZonesSimulator() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div>
               <label className="block text-sm font-medium mb-2">
-                Taxa de Requisições (por segundo)
+                {tStr('design_principles.availability.availability_zones_simulator.controls.request_rate_label')}
               </label>
               <input
                 type="range"
@@ -183,7 +189,7 @@ export default function AvailabilityZonesSimulator() {
             </div>
             <div>
               <label className="block text-sm font-medium mb-2">
-                Chance de Falha (%)
+                {tStr('design_principles.availability.availability_zones_simulator.controls.failure_chance_label')}
               </label>
               <input
                 type="range"
@@ -203,7 +209,7 @@ export default function AvailabilityZonesSimulator() {
                 onChange={e => setConfig(prev => ({ ...prev, autoFailover: e.target.checked }))}
                 className="rounded"
               />
-              <label className="text-sm font-medium">Auto Failover</label>
+              <label className="text-sm font-medium">{tStr('design_principles.availability.availability_zones_simulator.controls.auto_failover_label')}</label>
             </div>
             <div>
               <button
@@ -214,7 +220,10 @@ export default function AvailabilityZonesSimulator() {
                     : 'bg-green-600 hover:bg-green-700'
                 } transition-colors`}
               >
-                {isRunning ? 'Parar Simulação' : 'Iniciar Simulação'}
+                {isRunning 
+                  ? tStr('design_principles.availability.availability_zones_simulator.controls.stop_simulation')
+                  : tStr('design_principles.availability.availability_zones_simulator.controls.start_simulation')
+                }
               </button>
             </div>
           </div>
@@ -241,17 +250,17 @@ export default function AvailabilityZonesSimulator() {
                   }`}
                 >
                   {zone.status === 'healthy' 
-                    ? 'Saudável' 
+                    ? tStr('design_principles.availability.availability_zones_simulator.zone_status.healthy')
                     : zone.status === 'degraded'
-                    ? 'Degradado'
-                    : 'Falha'}
+                    ? tStr('design_principles.availability.availability_zones_simulator.zone_status.degraded')
+                    : tStr('design_principles.availability.availability_zones_simulator.zone_status.failed')}
                 </span>
               </div>
 
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between text-sm mb-1">
-                    <span>Carga</span>
+                    <span>{tStr('design_principles.availability.availability_zones_simulator.zone_info.load')}</span>
                     <span>{Math.round((zone.load / zone.servers) * 100)}%</span>
                   </div>
                   <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
@@ -271,7 +280,7 @@ export default function AvailabilityZonesSimulator() {
 
                 <div>
                   <div className="flex justify-between text-sm mb-1">
-                    <span>Servidores Ativos</span>
+                    <span>{tStr('design_principles.availability.availability_zones_simulator.zone_info.active_servers')}</span>
                     <span>{zone.servers}</span>
                   </div>
                   <div className="flex space-x-1">
@@ -286,7 +295,7 @@ export default function AvailabilityZonesSimulator() {
 
                 {config.showLatency && (
                   <div className="text-sm">
-                    <span className="text-zinc-400">Latência: </span>
+                    <span className="text-zinc-400">{tStr('design_principles.availability.availability_zones_simulator.zone_info.latency')}: </span>
                     <span>{zone.latency}ms</span>
                   </div>
                 )}
@@ -297,14 +306,14 @@ export default function AvailabilityZonesSimulator() {
                       onClick={() => simulateZoneFailure(zone.id)}
                       className="flex-1 py-1 px-3 bg-red-600 hover:bg-red-700 rounded-lg text-sm transition-colors"
                     >
-                      Simular Falha
+                      {tStr('design_principles.availability.availability_zones_simulator.zone_info.simulate_failure')}
                     </button>
                   ) : (
                     <button
                       onClick={() => recoverZone(zone.id)}
                       className="flex-1 py-1 px-3 bg-green-600 hover:bg-green-700 rounded-lg text-sm transition-colors"
                     >
-                      Recuperar
+                      {tStr('design_principles.availability.availability_zones_simulator.zone_info.recover')}
                     </button>
                   )}
                 </div>
@@ -321,11 +330,11 @@ export default function AvailabilityZonesSimulator() {
             animate={{ opacity: 1, y: 0 }}
             className="bg-zinc-900 rounded-xl p-6"
           >
-            <h3 className="text-xl font-semibold mb-4">Estatísticas</h3>
+            <h3 className="text-xl font-semibold mb-4">{tStr('design_principles.availability.availability_zones_simulator.statistics.title')}</h3>
             <div className="space-y-4">
               <div>
                 <div className="flex justify-between text-sm mb-1">
-                  <span>Total de Requisições</span>
+                  <span>{tStr('design_principles.availability.availability_zones_simulator.statistics.total_requests')}</span>
                   <span>{stats.total}</span>
                 </div>
                 <div className="h-2 bg-zinc-800 rounded-full">
@@ -334,7 +343,7 @@ export default function AvailabilityZonesSimulator() {
               </div>
               <div>
                 <div className="flex justify-between text-sm mb-1">
-                  <span>Taxa de Sucesso</span>
+                  <span>{tStr('design_principles.availability.availability_zones_simulator.statistics.success_rate')}</span>
                   <span>
                     {stats.total > 0 
                       ? `${Math.round((stats.successful / stats.total) * 100)}%`
@@ -362,7 +371,7 @@ export default function AvailabilityZonesSimulator() {
             animate={{ opacity: 1, y: 0 }}
             className="bg-zinc-900 rounded-xl p-6"
           >
-            <h3 className="text-xl font-semibold mb-4">Requisições Recentes</h3>
+            <h3 className="text-xl font-semibold mb-4">{tStr('design_principles.availability.availability_zones_simulator.recent_requests.title')}</h3>
             <div className="space-y-2">
               <AnimatePresence>
                 {requests.slice(-5).map((request) => (
@@ -389,12 +398,12 @@ export default function AvailabilityZonesSimulator() {
                     </div>
                     <span className="text-sm text-zinc-400">
                       {request.status === 'completed'
-                        ? 'Concluída'
+                        ? tStr('design_principles.availability.availability_zones_simulator.recent_requests.completed')
                         : request.status === 'failed'
-                        ? 'Falha'
+                        ? tStr('design_principles.availability.availability_zones_simulator.recent_requests.failed')
                         : request.status === 'processing'
-                        ? 'Processando'
-                        : 'Pendente'}
+                        ? tStr('design_principles.availability.availability_zones_simulator.recent_requests.processing')
+                        : tStr('design_principles.availability.availability_zones_simulator.recent_requests.pending')}
                     </span>
                   </motion.div>
                 ))}
