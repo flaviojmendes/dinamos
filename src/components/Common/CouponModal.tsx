@@ -10,7 +10,7 @@ interface CouponModalProps {
   couponCode?: string;
 }
 
-export default function CouponModal({ isOpen, onClose, couponCode = 'DINA30' }: CouponModalProps) {
+export default function CouponModal({ isOpen, onClose, couponCode = 'BLACKNOVEMBER' }: CouponModalProps) {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -77,7 +77,7 @@ export default function CouponModal({ isOpen, onClose, couponCode = 'DINA30' }: 
               {/* Subtitle */}
               <p className="text-zinc-300 mb-6">
                 {t('coupon_modal.welcome_subtitle', { 
-                  defaultValue: 'Get exclusive access with this limited-time offer!' 
+                  defaultValue: 'Get exclusive access with our special Black November offer!' 
                 })}
               </p>
 
@@ -90,7 +90,7 @@ export default function CouponModal({ isOpen, onClose, couponCode = 'DINA30' }: 
                   {couponCode}
                 </div>
                 <div className="text-sm text-green-400 mt-1">
-                  {t('coupon_modal.discount_amount', { defaultValue: '30% OFF - Limited Time!' })}
+                  {t('coupon_modal.discount_amount', { defaultValue: '30% OFF - Valid All November!' })}
                 </div>
               </div>
 
@@ -147,7 +147,7 @@ export default function CouponModal({ isOpen, onClose, couponCode = 'DINA30' }: 
               {/* Timer indication */}
               <div className="text-xs text-zinc-500 mt-4">
                 {t('coupon_modal.timer_note', { 
-                  defaultValue: 'This offer expires when you close this window'
+                  defaultValue: 'This offer is valid throughout the entire month of November!'
                 })}
               </div>
             </div>

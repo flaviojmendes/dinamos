@@ -236,7 +236,7 @@ const resources = {
       subscription: {
         title: 'Lifetime Access',
         subtitle: 'Invest in your knowledge and professional development',
-        limited_offer: 'Limited-time offer',
+        limited_offer: 'Black November Special Offer (50% OFF)',
         one_time_lifetime: 'One-time payment - Lifetime access',
         buy_now: 'Buy Now',
         processing: 'Processing...',
@@ -247,6 +247,8 @@ const resources = {
         clear_coupon: 'Clear coupon',
         coupon_will_apply: 'Coupon "{{code}}" will be applied at checkout',
         coupon_invalid_format: 'Invalid coupon format. Use 3-20 characters (letters, numbers, - or _)',
+        black_november_special: 'Black November Special Price! (50% OFF)',
+        use_coupon_hint: 'Use BLACKNOVEMBER for 50% OFF!',
         features: [
           'Access to all interactive simulators',
           'Complete content on System Design',
@@ -277,17 +279,17 @@ const resources = {
       },
       coupon_modal: {
         welcome_title: 'Welcome! 🎉',
-        welcome_subtitle: 'Get exclusive access with this limited-time offer!',
+        welcome_subtitle: 'Get exclusive access with our special Black November offer! (50% OFF)',
         coupon_code: 'Your exclusive coupon code:',
-        discount_amount: '30% OFF - Limited Time!',
+        discount_amount: '50% OFF - Valid All Black November! (50% OFF)',
         features_title: 'What you\'ll get:',
         feature_1: 'Complete systems design course',
         feature_2: 'Interactive simulators',
         feature_3: 'Real-world case studies',
         feature_4: 'Lifetime access',
-        subscribe_now: 'Subscribe Now & Save 30%',
+        subscribe_now: 'Subscribe Now & Save 50%',
         maybe_later: 'Maybe later',
-        timer_note: 'This offer expires when you close this window'
+        timer_note: 'This offer is valid throughout the entire month of Black November! (50% OFF)'
       },
       landing: {
         hero_title: 'Master Distributed Systems in Practice',
@@ -6104,7 +6106,7 @@ const resources = {
       subscription: {
         title: 'Acesso Vitalício',
         subtitle: 'Invista em seu conhecimento e desenvolvimento profissional',
-        limited_offer: 'Oferta por tempo limitado',
+        limited_offer: 'Oferta Especial de Black November (50% OFF)',
         one_time_lifetime: 'Pagamento único - Acesso para sempre',
         buy_now: 'Comprar Agora',
         processing: 'Processando...',
@@ -6115,6 +6117,8 @@ const resources = {
         clear_coupon: 'Limpar cupom',
         coupon_will_apply: 'Cupom "{{code}}" será aplicado no checkout',
         coupon_invalid_format: 'Formato de cupom inválido. Use 3-20 caracteres (letras, números, - ou _)',
+        black_november_special: 'Preço Especial de Black November! (50% OFF)',
+        use_coupon_hint: 'Use BLACKNOVEMBER para 50% OFF!',
         features: [
           'Acesso a todos os simuladores interativos',
           'Conteúdo completo sobre System Design',
@@ -6145,17 +6149,17 @@ const resources = {
       },
       coupon_modal: {
         welcome_title: 'Bem-vindo! 🎉',
-        welcome_subtitle: 'Tenha acesso exclusivo com esta oferta por tempo limitado!',
+        welcome_subtitle: 'Tenha acesso exclusivo com nossa oferta especial de Black November! (50% OFF)',
         coupon_code: 'Seu código de cupom exclusivo:',
-        discount_amount: '30% OFF - Por Tempo Limitado!',
+        discount_amount: '50% OFF - Válido Todo Black November! (50% OFF)',
         features_title: 'O que você receberá:',
         feature_1: 'Curso completo de design de sistemas',
         feature_2: 'Simuladores interativos',
         feature_3: 'Estudos de caso do mundo real',
         feature_4: 'Acesso vitalício',
-        subscribe_now: 'Assinar Agora e Economizar 30%',
+        subscribe_now: 'Assinar Agora e Economizar 50%',
         maybe_later: 'Talvez mais tarde',
-        timer_note: 'Esta oferta expira quando você fechar esta janela'
+        timer_note: 'Esta oferta é válida durante todo o mês de Black November! (50% OFF)'
       },
       landing: {
         hero_title: 'Domine Sistemas Distribuídos na Prática',

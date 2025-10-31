@@ -13,11 +13,11 @@ export default function Subscription() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedCurrency, setSelectedCurrency] = useState<string>(() => detectUserCurrency());
-  const [couponCode, setCouponCode] = useState<string>('');
+  const [couponCode, setCouponCode] = useState<string>('BLACKNOVEMBER');
   const [couponApplied, setCouponApplied] = useState<boolean>(false);
   const { t, i18n } = useTranslation();
 
-  // Auto-apply coupon from sessionStorage (from coupon modal)
+  // Auto-apply coupon from sessionStorage (from coupon modal) or use default
   useEffect(() => {
     const applyCoupon = sessionStorage.getItem('applyCoupon');
     if (applyCoupon) {
@@ -25,6 +25,9 @@ export default function Subscription() {
       setCouponApplied(true);
       // Clear the session storage after applying
       sessionStorage.removeItem('applyCoupon');
+    } else {
+      // Set default coupon if no coupon from modal
+      setCouponCode('BLACKNOVEMBER');
     }
   }, []);
 
@@ -251,15 +254,28 @@ export default function Subscription() {
 
             <div className="text-center mb-8">
               <div className="mb-2">
-                <span className="text-lg text-zinc-500 line-through">
-                  {formatPrice(pricingData.originalPrice, pricingData)}
-                </span>
-                <div className="text-4xl font-bold text-blue-500">
-                  {formatPrice(pricingData.discountedPrice, pricingData)}
-                </div>
-                <p className="text-sm text-green-400">
-                  {t('common.discount_off', { percent: pricingData.discount })}
-                </p>
+                {couponCode.toUpperCase() === 'BLACKNOVEMBER' && validateCouponFormat(couponCode) ? (
+                  <>
+                    <div className="text-lg text-zinc-500 line-through mb-2">
+                      {formatPrice(pricingData.discountedPrice, pricingData)}
+                    </div>
+                    <div className="text-4xl font-bold text-blue-500">
+                      {formatPrice(Math.round(pricingData.discountedPrice * 0.5), pricingData)}
+                    </div>
+                    <p className="text-sm text-green-400 mt-2">
+                      🎉 {t('subscription.black_november_special', { defaultValue: 'Black November Special Price! (50% OFF)' })}
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-4xl font-bold text-blue-500">
+                      {formatPrice(pricingData.discountedPrice, pricingData)}
+                    </div>
+                    <p className="text-sm text-zinc-400 mt-2">
+                      💡 {t('subscription.use_coupon_hint', { defaultValue: 'Use BLACKNOVEMBER for 50% OFF!' })}
+                    </p>
+                  </>
+                )}
               </div>
               <p className="text-zinc-400">{t('subscription.one_time_lifetime')}</p>
             </div>

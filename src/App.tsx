@@ -2274,7 +2274,7 @@ export default function App() {
       <CouponModal 
         isOpen={showCouponModal}
         onClose={() => setShowCouponModal(false)}
-        couponCode="DINA30"
+        couponCode="BLACKNOVEMBER"
       />
       
       <LanguageDetectionDialog />

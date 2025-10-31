@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { trackEvent } from '../../utils/analytics';
 import Countdown from '../Countdown/Countdown';
-import { Typography, LanguageSwitcher } from '../Common';
+import { Typography, LanguageSwitcher, CouponModal } from '../Common';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { calculatePricing, formatPrice, detectUserCurrency } from '../../utils/pricing';
@@ -11,6 +11,21 @@ import { calculatePricing, formatPrice, detectUserCurrency } from '../../utils/p
 export default function LandingPage() {
   const { t, i18n } = useTranslation();
   const { user } = useAuth();
+  const [showCouponModal, setShowCouponModal] = useState(false);
+  
+  // Show Black November modal after 2 seconds for new visitors
+  useEffect(() => {
+    const hasSeenBlackNovemberModal = sessionStorage.getItem('blackNovemberModalShown');
+    
+    if (!hasSeenBlackNovemberModal && !user) {
+      const timer = setTimeout(() => {
+        setShowCouponModal(true);
+        sessionStorage.setItem('blackNovemberModalShown', 'true');
+      }, 2000); // Show after 2 seconds
+      
+      return () => clearTimeout(timer);
+    }
+  }, [user]);
   
   // Detect user currency based on location/language  
   const userCurrency = detectUserCurrency();
@@ -781,6 +796,13 @@ export default function LandingPage() {
           </div>
         </motion.div>
       </div>
+      
+      {/* Black November Modal */}
+      <CouponModal 
+        isOpen={showCouponModal}
+        onClose={() => setShowCouponModal(false)}
+        couponCode="BLACKNOVEMBER"
+      />
     </div>
   );
 } 
