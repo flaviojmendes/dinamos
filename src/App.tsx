@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Routes,
   Route,
@@ -834,7 +834,7 @@ const createMenuItems = (t: any): MenuItem[] => [
 export default function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-  const { user, signOut } = useAuth();
+  const { user, signOut, isSubscribed } = useAuth();
   const { isCompleted, progress, updateTrigger } = useContentProgress();
   const { t } = useTranslation();
   const menuItems = createMenuItems(t);
@@ -843,6 +843,11 @@ export default function App() {
   const [showCouponModal, setShowCouponModal] = useState(false);
   const [hasShownCouponModal, setHasShownCouponModal] = useState(false);
   const [previousUser, setPreviousUser] = useState<any>(null);
+  const isSubscribedRef = useRef(isSubscribed);
+
+  useEffect(() => {
+    isSubscribedRef.current = isSubscribed;
+  }, [isSubscribed]);
 
   // Make menuItems accessible to other components via window object
   // This helps avoid circular dependencies when components need to access menuItems
@@ -883,8 +888,11 @@ export default function App() {
         
         // This is a genuine new login, show the modal
         const timer = setTimeout(() => {
-          setShowCouponModal(true);
-          setHasShownCouponModal(true);
+          // Only show if user is NOT subscribed
+          if (!isSubscribedRef.current) {
+            setShowCouponModal(true);
+            setHasShownCouponModal(true);
+          }
         }, 1000); // 1 second delay to let the user see they've logged in
         
         return () => clearTimeout(timer);

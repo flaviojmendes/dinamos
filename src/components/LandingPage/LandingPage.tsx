@@ -10,14 +10,14 @@ import { calculatePricing, formatPrice, detectUserCurrency } from '../../utils/p
 
 export default function LandingPage() {
   const { t, i18n } = useTranslation();
-  const { user } = useAuth();
+  const { user, isSubscribed } = useAuth();
   const [showCouponModal, setShowCouponModal] = useState(false);
   
   // Show Black November modal after 2 seconds for new visitors
   useEffect(() => {
     const hasSeenBlackNovemberModal = sessionStorage.getItem('blackNovemberModalShown');
     
-    if (!hasSeenBlackNovemberModal && !user) {
+    if (!hasSeenBlackNovemberModal && !isSubscribed) {
       const timer = setTimeout(() => {
         setShowCouponModal(true);
         sessionStorage.setItem('blackNovemberModalShown', 'true');
@@ -25,7 +25,7 @@ export default function LandingPage() {
       
       return () => clearTimeout(timer);
     }
-  }, [user]);
+  }, [user, isSubscribed]);
   
   // Detect user currency based on location/language  
   const userCurrency = detectUserCurrency();
