@@ -7,7 +7,7 @@ export default function Fallback() {
     <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
       <div className="prose prose-invert prose-lg max-w-none mb-12">
         <motion.h1 
-          className="text-4xl font-bold mb-4 text-blue-400"
+          className="text-4xl font-bold mb-4 text-brand-600 dark:text-brand-400"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -18,7 +18,7 @@ export default function Fallback() {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-xl text-zinc-300"
+          className="text-xl text-slate-600 dark:text-slate-300"
         >
           Uma estratégia essencial para manter a funcionalidade do sistema mesmo quando 
           ocorrem falhas, oferecendo alternativas degradadas mas ainda úteis.
@@ -33,25 +33,25 @@ export default function Fallback() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="space-y-6"
         >
-          <div className="bg-zinc-900 rounded-lg p-6">
-            <h2 className="text-2xl font-bold text-blue-400 mb-4">
+          <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
+            <h2 className="text-2xl font-bold text-brand-600 dark:text-brand-400 mb-4">
               Como Funciona
             </h2>
-            <p className="text-zinc-300 mb-6">
+            <p className="text-slate-600 dark:text-slate-300 mb-6">
               Imagine que você está indo para o trabalho de carro e encontra um 
               congestionamento na sua rota habitual. Em vez de ficar parado, você 
               provavelmente vai optar por uma rota alternativa, mesmo que seja um 
               pouco mais longa.
             </p>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               O Fallback funciona de maneira similar em sistemas distribuídos: quando 
               um serviço ou funcionalidade falha, o sistema automaticamente muda para 
               uma alternativa predefinida, mesmo que ofereça uma experiência reduzida.
             </p>
           </div>
 
-          <div className="bg-zinc-900 rounded-lg p-6">
-            <h2 className="text-2xl font-bold text-blue-400 mb-4">
+          <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
+            <h2 className="text-2xl font-bold text-brand-600 dark:text-brand-400 mb-4">
               Benefícios
             </h2>
             <ul className="space-y-4">
@@ -65,8 +65,8 @@ export default function Fallback() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
-                  <h3 className="font-medium text-zinc-200">Maior Disponibilidade</h3>
-                  <p className="text-zinc-400">Sistema continua funcionando mesmo com falhas parciais</p>
+                  <h3 className="font-medium text-slate-700 dark:text-slate-200">Maior Disponibilidade</h3>
+                  <p className="text-slate-500 dark:text-slate-400">Sistema continua funcionando mesmo com falhas parciais</p>
                 </div>
               </motion.li>
               <motion.li 
@@ -79,8 +79,8 @@ export default function Fallback() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
-                  <h3 className="font-medium text-zinc-200">Melhor Experiência</h3>
-                  <p className="text-zinc-400">Usuários ainda conseguem usar funcionalidades básicas</p>
+                  <h3 className="font-medium text-slate-700 dark:text-slate-200">Melhor Experiência</h3>
+                  <p className="text-slate-500 dark:text-slate-400">Usuários ainda conseguem usar funcionalidades básicas</p>
                 </div>
               </motion.li>
               <motion.li 
@@ -93,8 +93,8 @@ export default function Fallback() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
-                  <h3 className="font-medium text-zinc-200">Resiliência</h3>
-                  <p className="text-zinc-400">Sistema se adapta automaticamente a condições adversas</p>
+                  <h3 className="font-medium text-slate-700 dark:text-slate-200">Resiliência</h3>
+                  <p className="text-slate-500 dark:text-slate-400">Sistema se adapta automaticamente a condições adversas</p>
                 </div>
               </motion.li>
             </ul>
@@ -108,28 +108,28 @@ export default function Fallback() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="space-y-6"
         >
-          <div className="bg-zinc-900 rounded-lg p-6">
-            <h2 className="text-2xl font-bold text-blue-400 mb-4">
+          <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
+            <h2 className="text-2xl font-bold text-brand-600 dark:text-brand-400 mb-4">
               Exemplos do Mundo Real
             </h2>
             <div className="space-y-4">
-              <div className="bg-zinc-800 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-zinc-200 mb-2">Cache Local</h3>
-                <p className="text-zinc-400">
+              <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-2">Cache Local</h3>
+                <p className="text-slate-500 dark:text-slate-400">
                   Quando um serviço de dados está indisponível, o sistema usa dados em cache 
                   local, mesmo que potencialmente desatualizados.
                 </p>
               </div>
-              <div className="bg-zinc-800 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-zinc-200 mb-2">Modo Offline</h3>
-                <p className="text-zinc-400">
+              <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-2">Modo Offline</h3>
+                <p className="text-slate-500 dark:text-slate-400">
                   Aplicativos que permitem continuar trabalhando offline e sincronizam 
                   quando a conexão é restaurada.
                 </p>
               </div>
-              <div className="bg-zinc-800 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-zinc-200 mb-2">Recomendações</h3>
-                <p className="text-zinc-400">
+              <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-2">Recomendações</h3>
+                <p className="text-slate-500 dark:text-slate-400">
                   Sistema de recomendações que usa sugestões genéricas quando o serviço 
                   personalizado falha.
                 </p>
@@ -137,26 +137,26 @@ export default function Fallback() {
             </div>
           </div>
 
-          <div className="bg-zinc-900 rounded-lg p-6">
-            <h2 className="text-2xl font-bold text-blue-400 mb-4">
+          <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
+            <h2 className="text-2xl font-bold text-brand-600 dark:text-brand-400 mb-4">
               Melhores Práticas
             </h2>
             <div className="space-y-4">
-              <div className="bg-zinc-800 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-zinc-200 mb-2">Planejamento</h3>
-                <p className="text-zinc-400">
+              <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-2">Planejamento</h3>
+                <p className="text-slate-500 dark:text-slate-400">
                   Identifique pontos críticos e prepare estratégias de fallback antecipadamente
                 </p>
               </div>
-              <div className="bg-zinc-800 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-zinc-200 mb-2">Comunicação Clara</h3>
-                <p className="text-zinc-400">
+              <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-2">Comunicação Clara</h3>
+                <p className="text-slate-500 dark:text-slate-400">
                   Informe aos usuários quando estão usando uma versão degradada do serviço
                 </p>
               </div>
-              <div className="bg-zinc-800 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-zinc-200 mb-2">Monitoramento</h3>
-                <p className="text-zinc-400">
+              <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-2">Monitoramento</h3>
+                <p className="text-slate-500 dark:text-slate-400">
                   Acompanhe o uso de fallbacks para identificar problemas recorrentes
                 </p>
               </div>

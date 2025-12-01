@@ -27,45 +27,45 @@ const WhatsApp: React.FC = () => {
         <h1 className="text-4xl font-bold bg-gradient-to-r from-green-500 to-teal-500 bg-clip-text text-transparent">
           {t(`${base}.title`)}
         </h1>
-        <p className="text-xl text-zinc-400">
+        <p className="text-xl text-slate-500 dark:text-slate-400">
           {t(`${base}.subtitle`)}
         </p>
       </div>
 
       {/* Key Metrics Section */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-green-500">{t(`${base}.metrics_title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg text-center">
             <div className="text-2xl font-bold text-green-400">{t(`${base}.metrics.users`)}</div>
-            <div className="text-sm text-zinc-400">{t(`${base}.metrics.users_desc`)}</div>
+            <div className="text-sm text-slate-500 dark:text-slate-400">{t(`${base}.metrics.users_desc`)}</div>
           </div>
-          <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg text-center">
             <div className="text-2xl font-bold text-green-400">{t(`${base}.metrics.messages`)}</div>
-            <div className="text-sm text-zinc-400">{t(`${base}.metrics.messages_desc`)}</div>
+            <div className="text-sm text-slate-500 dark:text-slate-400">{t(`${base}.metrics.messages_desc`)}</div>
           </div>
-          <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg text-center">
             <div className="text-2xl font-bold text-green-400">{t(`${base}.metrics.groups`)}</div>
-            <div className="text-sm text-zinc-400">{t(`${base}.metrics.groups_desc`)}</div>
+            <div className="text-sm text-slate-500 dark:text-slate-400">{t(`${base}.metrics.groups_desc`)}</div>
           </div>
         </div>
       </section>
 
       {/* System Requirements */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-green-500">{t(`${base}.requirements_title`)}</h2>
         <div className="space-y-4">
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-green-400 mb-2">{t(`${base}.functional_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {functionalItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
             </ul>
           </div>
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-green-400 mb-2">{t(`${base}.non_functional_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {nonFunctionalItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
@@ -75,11 +75,11 @@ const WhatsApp: React.FC = () => {
       </section>
 
       {/* Architecture Overview */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-green-500">{t(`${base}.architecture_title`)}</h2>
         
         {/* High Level Architecture Diagram */}
-        <div className="bg-zinc-800/50 p-4 rounded-lg space-y-4">
+        <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg space-y-4">
           <h3 className="text-xl font-medium text-green-400">{t(`${base}.high_level_title`)}</h3>
           <div className="relative h-[500px] bg-black/50 rounded-lg border border-green-900/30 overflow-hidden">
             <svg className="w-full h-full" viewBox="0 0 800 500">
@@ -149,13 +149,13 @@ const WhatsApp: React.FC = () => {
               </g>
             </svg>
           </div>
-          <p className="text-zinc-400">
+          <p className="text-slate-500 dark:text-slate-400">
             {t(`${base}.high_level_description`)}
           </p>
         </div>
 
         {/* Message Flow Architecture */}
-        <div className="bg-zinc-800/50 p-4 rounded-lg space-y-4 mt-8">
+        <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg space-y-4 mt-8">
           <h3 className="text-xl font-medium text-green-400">{t(`${base}.message_flow_title`)}</h3>
           <div className="relative h-[400px] bg-black/50 rounded-lg border border-green-900/30 overflow-hidden">
             <svg className="w-full h-full" viewBox="0 0 800 400">
@@ -198,7 +198,7 @@ const WhatsApp: React.FC = () => {
               </g>
             </svg>
           </div>
-          <p className="text-zinc-400">
+          <p className="text-slate-500 dark:text-slate-400">
             {t(`${base}.message_flow_description`)}
           </p>
         </div>
@@ -206,16 +206,16 @@ const WhatsApp: React.FC = () => {
         {/* Core Components */}
         <div className="space-y-4 mt-6">
           <h3 className="text-xl font-medium text-green-400">{t(`${base}.messaging_system_title`)}</h3>
-          <div className="bg-zinc-800/50 p-4 rounded-lg space-y-3">
-            <h4 className="font-medium text-zinc-200">{t(`${base}.message_processing_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg space-y-3">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200">{t(`${base}.message_processing_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {messageProcessingItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
             </ul>
             
-            <h4 className="font-medium text-zinc-200 mt-4">{t(`${base}.message_types_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200 mt-4">{t(`${base}.message_types_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {messageTypesItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
@@ -226,16 +226,16 @@ const WhatsApp: React.FC = () => {
         {/* Storage System */}
         <div className="space-y-4 mt-6">
           <h3 className="text-xl font-medium text-green-400">{t(`${base}.storage_system_title`)}</h3>
-          <div className="bg-zinc-800/50 p-4 rounded-lg space-y-3">
-            <h4 className="font-medium text-zinc-200">{t(`${base}.message_storage_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg space-y-3">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200">{t(`${base}.message_storage_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {messageStorageItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
             </ul>
 
-            <h4 className="font-medium text-zinc-200 mt-4">{t(`${base}.database_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200 mt-4">{t(`${base}.database_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {databaseItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
@@ -246,9 +246,9 @@ const WhatsApp: React.FC = () => {
         {/* Real-time Features */}
         <div className="space-y-4 mt-6">
           <h3 className="text-xl font-medium text-green-400">{t(`${base}.realtime_system_title`)}</h3>
-          <div className="bg-zinc-800/50 p-4 rounded-lg space-y-3">
-            <h4 className="font-medium text-zinc-200">{t(`${base}.realtime_infrastructure_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg space-y-3">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200">{t(`${base}.realtime_infrastructure_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {realtimeInfrastructureItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
@@ -265,33 +265,33 @@ const WhatsApp: React.FC = () => {
       </section>
 
       {/* Technical Decisions and Trade-offs */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-green-500">{t(`${base}.technical_decisions_title`)}</h2>
         <div className="space-y-4">
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-green-400 mb-2">{t(`${base}.decision_1_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.decision_1_text`)}
             </p>
           </div>
           
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-green-400 mb-2">{t(`${base}.decision_2_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.decision_2_text`)}
             </p>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-green-400 mb-2">{t(`${base}.decision_3_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.decision_3_text`)}
             </p>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-green-400 mb-2">{t(`${base}.decision_4_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.decision_4_text`)}
             </p>
           </div>
@@ -299,33 +299,33 @@ const WhatsApp: React.FC = () => {
       </section>
 
       {/* Scaling Challenges */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-green-500">{t(`${base}.scaling_challenges_title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-green-400 mb-2">{t(`${base}.mass_delivery_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.mass_delivery_text`)}
             </p>
           </div>
           
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-green-400 mb-2">{t(`${base}.connection_management_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.connection_management_text`)}
             </p>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-green-400 mb-2">{t(`${base}.synchronization_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.synchronization_text`)}
             </p>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-green-400 mb-2">{t(`${base}.large_groups_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.large_groups_text`)}
             </p>
           </div>
@@ -333,7 +333,7 @@ const WhatsApp: React.FC = () => {
       </section>
 
       {/* Evolution Timeline */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-green-500">{t(`${base}.evolution_title`)}</h2>
         <div className="space-y-6">
           {/* 2009: Initial Version */}
@@ -342,7 +342,7 @@ const WhatsApp: React.FC = () => {
             <div className="mb-2">
               <span className="text-green-400 font-semibold">2009</span>
               <h3 className="text-lg font-medium">{t(`${base}.timeline_2009_title`)}</h3>
-              <p className="text-zinc-300">{t(`${base}.timeline_2009_desc`)}</p>
+              <p className="text-slate-600 dark:text-slate-300">{t(`${base}.timeline_2009_desc`)}</p>
             </div>
           </div>
 
@@ -352,7 +352,7 @@ const WhatsApp: React.FC = () => {
             <div className="mb-2">
               <span className="text-green-400 font-semibold">2011-2012</span>
               <h3 className="text-lg font-medium">{t(`${base}.timeline_2011_title`)}</h3>
-              <p className="text-zinc-300">{t(`${base}.timeline_2011_desc`)}</p>
+              <p className="text-slate-600 dark:text-slate-300">{t(`${base}.timeline_2011_desc`)}</p>
             </div>
           </div>
 
@@ -362,7 +362,7 @@ const WhatsApp: React.FC = () => {
             <div className="mb-2">
               <span className="text-green-400 font-semibold">2014</span>
               <h3 className="text-lg font-medium">{t(`${base}.timeline_2014_title`)}</h3>
-              <p className="text-zinc-300">{t(`${base}.timeline_2014_desc`)}</p>
+              <p className="text-slate-600 dark:text-slate-300">{t(`${base}.timeline_2014_desc`)}</p>
             </div>
           </div>
 
@@ -372,7 +372,7 @@ const WhatsApp: React.FC = () => {
             <div className="mb-2">
               <span className="text-green-400 font-semibold">2016</span>
               <h3 className="text-lg font-medium">{t(`${base}.timeline_2016_title`)}</h3>
-              <p className="text-zinc-300">{t(`${base}.timeline_2016_desc`)}</p>
+              <p className="text-slate-600 dark:text-slate-300">{t(`${base}.timeline_2016_desc`)}</p>
             </div>
           </div>
 
@@ -382,45 +382,45 @@ const WhatsApp: React.FC = () => {
             <div className="mb-2">
               <span className="text-green-400 font-semibold">2019-{t(`${base}.timeline_2019_desc`).includes('Presente') ? 'Presente' : 'Present'}</span>
               <h3 className="text-lg font-medium">{t(`${base}.timeline_2019_title`)}</h3>
-              <p className="text-zinc-300">{t(`${base}.timeline_2019_desc`)}</p>
+              <p className="text-slate-600 dark:text-slate-300">{t(`${base}.timeline_2019_desc`)}</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* References Section */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-emerald-500">{t(`${base}.references_title`)}</h2>
         <div className="space-y-3">
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-emerald-400 mb-2">{t(`${base}.official_docs_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               <li><a href="https://engineering.fb.com/category/whatsapp/" className="text-emerald-400 hover:underline" target="_blank" rel="noopener noreferrer">WhatsApp Engineering Blog</a></li>
               <li><a href="https://www.whatsapp.com/security/" className="text-emerald-400 hover:underline" target="_blank" rel="noopener noreferrer">WhatsApp Security</a></li>
               <li><a href="https://developers.facebook.com/docs/whatsapp/" className="text-emerald-400 hover:underline" target="_blank" rel="noopener noreferrer">WhatsApp Business API</a></li>
             </ul>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-emerald-400 mb-2">{t(`${base}.technical_articles_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               <li><a href="https://www.whatsapp.com/security/WhatsApp-Security-Whitepaper.pdf" className="text-emerald-400 hover:underline" target="_blank" rel="noopener noreferrer">WhatsApp Encryption Overview</a></li>
               <li><a href="https://engineering.fb.com/2014/10/09/production-engineering/scaling-mercurial-at-facebook/" className="text-emerald-400 hover:underline" target="_blank" rel="noopener noreferrer">Scaling WhatsApp Infrastructure</a></li>
               <li><a href="https://signal.org/docs/specifications/doubleratchet/" className="text-emerald-400 hover:underline" target="_blank" rel="noopener noreferrer">Signal Protocol Specification</a></li>
             </ul>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-emerald-400 mb-2">{t(`${base}.conferences_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               <li><a href="https://www.youtube.com/watch?v=vvhC64hQZMk" className="text-emerald-400 hover:underline" target="_blank" rel="noopener noreferrer">F8 - WhatsApp Business Platform</a></li>
               <li><a href="https://www.youtube.com/watch?v=5DgVkKHxKQk" className="text-emerald-400 hover:underline" target="_blank" rel="noopener noreferrer">Real-time Messaging Architecture</a></li>
             </ul>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-emerald-400 mb-2">{t(`${base}.security_privacy_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               <li><a href="https://www.whatsapp.com/privacy" className="text-emerald-400 hover:underline" target="_blank" rel="noopener noreferrer">WhatsApp Privacy Policy</a></li>
               <li><a href="https://scontent.whatsapp.net/v/t39.8562-34/316546300_547692750646518_7299107161331633308_n.pdf?ccb=1-7&_nc_sid=2fbf2a&_nc_ohc=t_1sHkqHzr4AX9QJTP-&_nc_ht=scontent.whatsapp.net&oh=01_AdTz6KJ_MWwjY_lQh6MH1_BPmXiC_1kdpvnNvCXcaHsUxw&oe=65C2F7C1" className="text-emerald-400 hover:underline" target="_blank" rel="noopener noreferrer">End-to-End Encryption Technical Paper</a></li>
             </ul>

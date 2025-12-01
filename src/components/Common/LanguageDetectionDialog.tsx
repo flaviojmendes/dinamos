@@ -57,13 +57,13 @@ const LanguageDetectionDialog: React.FC = () => {
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
-          className="bg-zinc-900 border border-zinc-700 rounded-xl p-8 max-w-lg w-full mx-4"
+          className="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-8 max-w-lg w-full mx-4"
         >
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-white mb-4">
               {isPortugueseDetected ? 'Escolha seu Idioma' : 'Choose Your Language'}
             </h2>
-            <p className="text-zinc-300 leading-relaxed">
+            <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
               {isPortugueseDetected 
                 ? 'Detectamos que seu navegador está em português. Gostaria de continuar em português?'
                 : 'We detected that your browser language is English or another language. Would you like to continue in English?'

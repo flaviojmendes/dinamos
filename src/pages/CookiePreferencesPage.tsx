@@ -18,7 +18,7 @@ export default function CookiePreferencesPage() {
           <div className="flex items-center gap-4 mb-6">
             <Link
               to="/preferences"
-              className="inline-flex items-center gap-2 text-zinc-400 hover:text-white transition-colors"
+              className="inline-flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-white transition-colors"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -30,7 +30,7 @@ export default function CookiePreferencesPage() {
           <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-green-500 to-blue-500 bg-clip-text text-transparent">
             Cookie Preferences
           </h1>
-          <p className="text-zinc-300 text-lg max-w-3xl">
+          <p className="text-slate-600 dark:text-slate-300 text-lg max-w-3xl">
             Control how we use cookies and similar technologies to improve your experience and provide personalized content.
           </p>
         </motion.div>
@@ -41,12 +41,12 @@ export default function CookiePreferencesPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="mt-12 bg-zinc-900/50 backdrop-blur-xl border border-zinc-800/50 rounded-xl p-6"
+          className="mt-12 bg-white dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200 dark:border-slate-800/50 rounded-xl p-6"
         >
           <h2 className="text-xl font-semibold text-white mb-4">
             What are cookies?
           </h2>
-          <div className="text-zinc-300 space-y-3 text-sm leading-relaxed">
+          <div className="text-slate-600 dark:text-slate-300 space-y-3 text-sm leading-relaxed">
             <p>
               Cookies are small text files that are stored on your device when you visit a website. 
               They help websites remember information about your visit, which can both make it easier 
@@ -79,7 +79,7 @@ export default function CookiePreferencesPage() {
               href="/terms-and-conditions.html"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 underline"
+              className="inline-flex items-center gap-2 text-brand-600 dark:text-brand-400 hover:text-brand-600 dark:text-brand-300 underline"
             >
               Terms and Conditions
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -91,7 +91,7 @@ export default function CookiePreferencesPage() {
               href="/privacy-policy.html"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 underline"
+              className="inline-flex items-center gap-2 text-brand-600 dark:text-brand-400 hover:text-brand-600 dark:text-brand-300 underline"
             >
               Privacy Policy
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -103,7 +103,7 @@ export default function CookiePreferencesPage() {
               href="/cookie-policy.html"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 underline"
+              className="inline-flex items-center gap-2 text-brand-600 dark:text-brand-400 hover:text-brand-600 dark:text-brand-300 underline"
             >
               Cookie Policy
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,7 +113,7 @@ export default function CookiePreferencesPage() {
             <span className="text-zinc-500">•</span>
             <Link
               to="/preferences"
-              className="text-blue-400 hover:text-blue-300 underline"
+              className="text-brand-600 dark:text-brand-400 hover:text-brand-600 dark:text-brand-300 underline"
             >
               Back to Preferences
             </Link>

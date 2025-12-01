@@ -27,45 +27,45 @@ const Netflix: React.FC = () => {
         <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 to-red-800 bg-clip-text text-transparent">
           {t(`${base}.title`)}
         </h1>
-        <p className="text-xl text-zinc-400">
+        <p className="text-xl text-slate-500 dark:text-slate-400">
           {t(`${base}.subtitle`)}
         </p>
       </div>
 
       {/* Key Metrics Section */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-red-500">{t(`${base}.metrics_title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg text-center">
             <div className="text-2xl font-bold text-red-400">{t(`${base}.metrics.subscribers`)}</div>
-            <div className="text-sm text-zinc-400">{t(`${base}.metrics.subscribers_desc`)}</div>
+            <div className="text-sm text-slate-500 dark:text-slate-400">{t(`${base}.metrics.subscribers_desc`)}</div>
           </div>
-          <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg text-center">
             <div className="text-2xl font-bold text-red-400">{t(`${base}.metrics.streaming_hours`)}</div>
-            <div className="text-sm text-zinc-400">{t(`${base}.metrics.streaming_hours_desc`)}</div>
+            <div className="text-sm text-slate-500 dark:text-slate-400">{t(`${base}.metrics.streaming_hours_desc`)}</div>
           </div>
-          <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg text-center">
             <div className="text-2xl font-bold text-red-400">{t(`${base}.metrics.internet_traffic`)}</div>
-            <div className="text-sm text-zinc-400">{t(`${base}.metrics.internet_traffic_desc`)}</div>
+            <div className="text-sm text-slate-500 dark:text-slate-400">{t(`${base}.metrics.internet_traffic_desc`)}</div>
           </div>
         </div>
       </section>
 
       {/* System Requirements */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-red-500">{t(`${base}.requirements_title`)}</h2>
         <div className="space-y-4">
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.functional_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {functionalItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
             </ul>
           </div>
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.non_functional_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {nonFunctionalItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
@@ -75,11 +75,11 @@ const Netflix: React.FC = () => {
       </section>
 
       {/* Architecture Overview */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-red-500">{t(`${base}.architecture_title`)}</h2>
         
         {/* High Level Architecture Diagram */}
-        <div className="bg-zinc-800/50 p-4 rounded-lg space-y-4">
+        <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg space-y-4">
           <h3 className="text-xl font-medium text-red-400">{t(`${base}.high_level_title`)}</h3>
           <div className="relative h-[500px] bg-black/50 rounded-lg border border-red-900/30 overflow-hidden">
             <svg className="w-full h-full" viewBox="0 0 800 500">
@@ -136,7 +136,7 @@ const Netflix: React.FC = () => {
               </g>
             </svg>
           </div>
-          <p className="text-zinc-400">
+          <p className="text-slate-500 dark:text-slate-400">
             {t(`${base}.high_level_description`)}
           </p>
         </div>
@@ -144,16 +144,16 @@ const Netflix: React.FC = () => {
         {/* Core Components */}
         <div className="space-y-4 mt-6">
           <h3 className="text-xl font-medium text-red-400">{t(`${base}.streaming_system_title`)}</h3>
-          <div className="bg-zinc-800/50 p-4 rounded-lg space-y-3">
-            <h4 className="font-medium text-zinc-200">{t(`${base}.open_connect_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg space-y-3">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200">{t(`${base}.open_connect_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {openConnectItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
             </ul>
             
-            <h4 className="font-medium text-zinc-200 mt-4">{t(`${base}.video_processing_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200 mt-4">{t(`${base}.video_processing_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {videoProcessingItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
@@ -164,16 +164,16 @@ const Netflix: React.FC = () => {
         {/* Recommendation System */}
         <div className="space-y-4 mt-6">
           <h3 className="text-xl font-medium text-red-400">{t(`${base}.recommendation_system_title`)}</h3>
-          <div className="bg-zinc-800/50 p-4 rounded-lg space-y-3">
-            <h4 className="font-medium text-zinc-200">{t(`${base}.algorithms_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg space-y-3">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200">{t(`${base}.algorithms_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {algorithmsItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
             </ul>
 
-            <h4 className="font-medium text-zinc-200 mt-4">{t(`${base}.features_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200 mt-4">{t(`${base}.features_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {featuresItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
@@ -184,9 +184,9 @@ const Netflix: React.FC = () => {
         {/* Data Processing */}
         <div className="space-y-4 mt-6">
           <h3 className="text-xl font-medium text-red-400">{t(`${base}.data_processing_title`)}</h3>
-          <div className="bg-zinc-800/50 p-4 rounded-lg space-y-3">
-            <h4 className="font-medium text-zinc-200">{t(`${base}.data_pipeline_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg space-y-3">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200">{t(`${base}.data_pipeline_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {dataPipelineItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
@@ -203,33 +203,33 @@ const Netflix: React.FC = () => {
       </section>
 
       {/* Technical Decisions and Trade-offs */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-red-500">{t(`${base}.technical_decisions_title`)}</h2>
         <div className="space-y-4">
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.decision_1_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.decision_1_text`)}
             </p>
           </div>
           
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.decision_2_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.decision_2_text`)}
             </p>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.decision_3_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.decision_3_text`)}
             </p>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.decision_4_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.decision_4_text`)}
             </p>
           </div>
@@ -237,33 +237,33 @@ const Netflix: React.FC = () => {
       </section>
 
       {/* Scaling Challenges */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-red-500">{t(`${base}.scaling_challenges_title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.global_traffic_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.global_traffic_text`)}
             </p>
           </div>
           
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.video_processing_challenge_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.video_processing_challenge_text`)}
             </p>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.machine_learning_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.machine_learning_text`)}
             </p>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.microservices_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.microservices_text`)}
             </p>
           </div>
@@ -271,7 +271,7 @@ const Netflix: React.FC = () => {
       </section>
 
       {/* Evolution Timeline */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-red-500">{t(`${base}.evolution_title`)}</h2>
         <div className="space-y-6">
           <div className="relative pl-8 border-l-2 border-red-500">
@@ -279,7 +279,7 @@ const Netflix: React.FC = () => {
             <div className="mb-2">
               <span className="text-red-400 font-semibold">2007</span>
               <h3 className="text-lg font-medium">{t(`${base}.timeline_2007_title`)}</h3>
-              <p className="text-zinc-300">{t(`${base}.timeline_2007_desc`)}</p>
+              <p className="text-slate-600 dark:text-slate-300">{t(`${base}.timeline_2007_desc`)}</p>
             </div>
           </div>
 
@@ -288,7 +288,7 @@ const Netflix: React.FC = () => {
             <div className="mb-2">
               <span className="text-red-400 font-semibold">2009-2010</span>
               <h3 className="text-lg font-medium">{t(`${base}.timeline_2009_title`)}</h3>
-              <p className="text-zinc-300">{t(`${base}.timeline_2009_desc`)}</p>
+              <p className="text-slate-600 dark:text-slate-300">{t(`${base}.timeline_2009_desc`)}</p>
             </div>
           </div>
 
@@ -297,7 +297,7 @@ const Netflix: React.FC = () => {
             <div className="mb-2">
               <span className="text-red-400 font-semibold">2011-2012</span>
               <h3 className="text-lg font-medium">{t(`${base}.timeline_2011_title`)}</h3>
-              <p className="text-zinc-300">{t(`${base}.timeline_2011_desc`)}</p>
+              <p className="text-slate-600 dark:text-slate-300">{t(`${base}.timeline_2011_desc`)}</p>
             </div>
           </div>
 
@@ -306,7 +306,7 @@ const Netflix: React.FC = () => {
             <div className="mb-2">
               <span className="text-red-400 font-semibold">2012-2016</span>
               <h3 className="text-lg font-medium">{t(`${base}.timeline_2012_title`)}</h3>
-              <p className="text-zinc-300">{t(`${base}.timeline_2012_desc`)}</p>
+              <p className="text-slate-600 dark:text-slate-300">{t(`${base}.timeline_2012_desc`)}</p>
             </div>
           </div>
 
@@ -315,46 +315,46 @@ const Netflix: React.FC = () => {
             <div className="mb-2">
               <span className="text-red-400 font-semibold">2016-{t(`${base}.timeline_2016_desc`).includes('Presente') ? 'Presente' : 'Present'}</span>
               <h3 className="text-lg font-medium">{t(`${base}.timeline_2016_title`)}</h3>
-              <p className="text-zinc-300">{t(`${base}.timeline_2016_desc`)}</p>
+              <p className="text-slate-600 dark:text-slate-300">{t(`${base}.timeline_2016_desc`)}</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* References Section */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-red-500">{t(`${base}.references_title`)}</h2>
         <div className="space-y-3">
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.official_docs_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               <li><a href="https://netflixtechblog.com/" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">Netflix Tech Blog</a></li>
               <li><a href="https://netflix.github.io/" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">Netflix Open Source</a></li>
               <li><a href="https://about.netflix.com/en/news/how-netflix-works-with-isps-around-the-globe-to-deliver-a-great-viewing-experience" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">Netflix ISP Infrastructure</a></li>
             </ul>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.technical_articles_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               <li><a href="https://netflixtechblog.com/netflix-at-velocity-2015-89c1794da400" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">Netflix's Global Infrastructure</a></li>
               <li><a href="https://netflixtechblog.com/how-netflix-works-with-isps-around-the-globe-to-deliver-a-great-viewing-experience-c40c25b3b9fb" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">Content Delivery Network</a></li>
               <li><a href="https://netflixtechblog.com/netflix-recommendations-beyond-the-5-stars-part-1-55838468f429" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">Recommendation System</a></li>
             </ul>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.open_source_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               <li><a href="https://github.com/Netflix/hystrix" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">Hystrix - Latency and Fault Tolerance</a></li>
               <li><a href="https://github.com/Netflix/zuul" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">Zuul - Gateway Service</a></li>
               <li><a href="https://github.com/Netflix/eureka" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">Eureka - Service Discovery</a></li>
             </ul>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.conferences_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               <li><a href="https://www.youtube.com/watch?v=CZ3wIuvmHeM" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">QCon - Netflix Cloud Architecture</a></li>
               <li><a href="https://www.youtube.com/watch?v=uCXv4gl2JT0" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">AWS re:Invent - Netflix on AWS</a></li>
             </ul>

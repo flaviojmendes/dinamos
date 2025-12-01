@@ -22,7 +22,7 @@ export default function LogsPage() {
     <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
       <div className="prose prose-invert prose-lg max-w-none mb-8">
         <div className="flex items-center justify-between">
-          <h1 className="text-4xl font-bold mb-4 text-blue-400">
+          <h1 className="text-4xl font-bold mb-4 text-brand-600 dark:text-brand-400">
             {t(`${base}.title`)}
           </h1>
           <div className="flex gap-4">
@@ -46,38 +46,38 @@ export default function LogsPage() {
             </button>
           </div>
         </div>
-        <p className="text-xl text-zinc-300">
+        <p className="text-xl text-slate-600 dark:text-slate-300">
           {t(`${base}.intro_p1`)}
         </p>
       </div>
 
       {/* Níveis de Log */}
-      <div className="bg-zinc-900 p-6 rounded-lg mb-8">
-        <h2 className="text-2xl font-bold text-zinc-200 mb-4">{t(`${base}.levels_title`)}</h2>
+      <div className="bg-white dark:bg-slate-900 p-6 rounded-lg mb-8">
+        <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200 mb-4">{t(`${base}.levels_title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-black p-4 rounded-lg">
-            <h3 className="text-lg font-semibold text-blue-400 mb-2">DEBUG</h3>
-            <p className="text-zinc-300 text-sm">{t(`${base}.levels.debug_desc`)}</p>
+            <h3 className="text-lg font-semibold text-brand-600 dark:text-brand-400 mb-2">DEBUG</h3>
+            <p className="text-slate-600 dark:text-slate-300 text-sm">{t(`${base}.levels.debug_desc`)}</p>
           </div>
           <div className="bg-black p-4 rounded-lg">
             <h3 className="text-lg font-semibold text-green-400 mb-2">INFO</h3>
-            <p className="text-zinc-300 text-sm">{t(`${base}.levels.info_desc`)}</p>
+            <p className="text-slate-600 dark:text-slate-300 text-sm">{t(`${base}.levels.info_desc`)}</p>
           </div>
           <div className="bg-black p-4 rounded-lg">
             <h3 className="text-lg font-semibold text-yellow-400 mb-2">WARN</h3>
-            <p className="text-zinc-300 text-sm">{t(`${base}.levels.warn_desc`)}</p>
+            <p className="text-slate-600 dark:text-slate-300 text-sm">{t(`${base}.levels.warn_desc`)}</p>
           </div>
           <div className="bg-black p-4 rounded-lg">
             <h3 className="text-lg font-semibold text-red-400 mb-2">ERROR</h3>
-            <p className="text-zinc-300 text-sm">{t(`${base}.levels.error_desc`)}</p>
+            <p className="text-slate-600 dark:text-slate-300 text-sm">{t(`${base}.levels.error_desc`)}</p>
           </div>
         </div>
       </div>
 
       {/* Formatos de Log */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-        <div className="bg-zinc-900 p-6 rounded-lg">
-          <h2 className="text-2xl font-bold text-zinc-200 mb-4">{t(`${base}.formats.text_title`)}</h2>
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-lg">
+          <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200 mb-4">{t(`${base}.formats.text_title`)}</h2>
           <div className="space-y-4">
             <div className="bg-black p-4 rounded-lg font-mono text-sm">
               <pre className="whitespace-pre-wrap">
@@ -86,7 +86,7 @@ export default function LogsPage() {
 [2024-03-20 10:15:40] WARN Cache miss`}
               </pre>
             </div>
-            <div className="space-y-2 text-zinc-300">
+            <div className="space-y-2 text-slate-600 dark:text-slate-300">
               <h3 className="text-lg font-semibold text-yellow-400">{t(`${base}.formats.text_adv_title`)}</h3>
               <ul className="list-disc list-inside space-y-1">
                 {textAdv.map((item, idx) => (
@@ -94,7 +94,7 @@ export default function LogsPage() {
                 ))}
               </ul>
             </div>
-            <div className="space-y-2 text-zinc-300">
+            <div className="space-y-2 text-slate-600 dark:text-slate-300">
               <h3 className="text-lg font-semibold text-red-400">{t(`${base}.formats.text_disadv_title`)}</h3>
               <ul className="list-disc list-inside space-y-1">
                 {textDisadv.map((item, idx) => (
@@ -105,8 +105,8 @@ export default function LogsPage() {
           </div>
         </div>
 
-        <div className="bg-zinc-900 p-6 rounded-lg">
-          <h2 className="text-2xl font-bold text-zinc-200 mb-4">{t(`${base}.formats.json_title`)}</h2>
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-lg">
+          <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200 mb-4">{t(`${base}.formats.json_title`)}</h2>
           <div className="space-y-4">
             <div className="bg-black p-4 rounded-lg font-mono text-sm">
               <pre className="whitespace-pre-wrap">
@@ -126,7 +126,7 @@ export default function LogsPage() {
 }`}
               </pre>
             </div>
-            <div className="space-y-2 text-zinc-300">
+            <div className="space-y-2 text-slate-600 dark:text-slate-300">
               <h3 className="text-lg font-semibold text-green-400">{t(`${base}.formats.json_adv_title`)}</h3>
               <ul className="list-disc list-inside space-y-1">
                 {jsonAdv.map((item, idx) => (
@@ -134,7 +134,7 @@ export default function LogsPage() {
                 ))}
               </ul>
             </div>
-            <div className="space-y-2 text-zinc-300">
+            <div className="space-y-2 text-slate-600 dark:text-slate-300">
               <h3 className="text-lg font-semibold text-yellow-400">{t(`${base}.formats.json_disadv_title`)}</h3>
               <ul className="list-disc list-inside space-y-1">
                 {jsonDisadv.map((item, idx) => (
@@ -147,18 +147,18 @@ export default function LogsPage() {
       </div>
 
       {/* Distributed Tracing */}
-      <div className="bg-zinc-900 p-6 rounded-lg mb-8">
-        <h2 className="text-2xl font-bold text-zinc-200 mb-4">{t(`${base}.tracing_section.title`)}</h2>
+      <div className="bg-white dark:bg-slate-900 p-6 rounded-lg mb-8">
+        <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200 mb-4">{t(`${base}.tracing_section.title`)}</h2>
         <div className="space-y-6">
           <div className="bg-black p-4 rounded-lg">
-            <h3 className="text-lg font-semibold text-blue-400 mb-2">{t(`${base}.tracing_section.what_is_title`)}</h3>
-            <p className="text-zinc-300">{t(`${base}.tracing_section.what_is_p`)}</p>
+            <h3 className="text-lg font-semibold text-brand-600 dark:text-brand-400 mb-2">{t(`${base}.tracing_section.what_is_title`)}</h3>
+            <p className="text-slate-600 dark:text-slate-300">{t(`${base}.tracing_section.what_is_p`)}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-black p-4 rounded-lg">
               <h3 className="text-lg font-semibold text-green-400 mb-2">{t(`${base}.tracing_section.components_title`)}</h3>
-              <ul className="list-disc list-inside space-y-2 text-zinc-300">
+              <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
                 {tracingComponents.map((item, idx) => (
                   <li key={idx}>{item}</li>
                 ))}
@@ -166,7 +166,7 @@ export default function LogsPage() {
             </div>
             <div className="bg-black p-4 rounded-lg">
               <h3 className="text-lg font-semibold text-yellow-400 mb-2">{t(`${base}.tracing_section.benefits_title`)}</h3>
-              <ul className="list-disc list-inside space-y-2 text-zinc-300">
+              <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
                 {tracingBenefits.map((item, idx) => (
                   <li key={idx}>{item}</li>
                 ))}
@@ -177,20 +177,20 @@ export default function LogsPage() {
       </div>
 
       {/* Boas Práticas */}
-      <div className="bg-zinc-900 p-6 rounded-lg mb-8">
-        <h2 className="text-2xl font-bold text-zinc-200 mb-4">{t(`${base}.best_practices.title`)}</h2>
+      <div className="bg-white dark:bg-slate-900 p-6 rounded-lg mb-8">
+        <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200 mb-4">{t(`${base}.best_practices.title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
             <h3 className="text-lg font-semibold text-green-400 mb-2">{t(`${base}.best_practices.logging_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {loggingBest.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
             </ul>
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-blue-400 mb-2">{t(`${base}.best_practices.tracing_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <h3 className="text-lg font-semibold text-brand-600 dark:text-brand-400 mb-2">{t(`${base}.best_practices.tracing_title`)}</h3>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {tracingBest.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
@@ -200,12 +200,12 @@ export default function LogsPage() {
       </div>
 
       {/* Ferramentas */}
-      <div className="bg-zinc-900 p-6 rounded-lg">
-        <h2 className="text-2xl font-bold text-zinc-200 mb-4">{t(`${base}.tools.title`)}</h2>
+      <div className="bg-white dark:bg-slate-900 p-6 rounded-lg">
+        <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200 mb-4">{t(`${base}.tools.title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
             <h3 className="text-lg font-semibold text-yellow-400 mb-2">{t(`${base}.tools.logging_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {loggingTools.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
@@ -213,7 +213,7 @@ export default function LogsPage() {
           </div>
           <div>
             <h3 className="text-lg font-semibold text-purple-400 mb-2">{t(`${base}.tools.tracing_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {tracingTools.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}

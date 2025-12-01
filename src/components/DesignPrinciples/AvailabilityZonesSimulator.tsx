@@ -152,7 +152,7 @@ export default function AvailabilityZonesSimulator() {
   }, [isRunning, config.requestRate, config.failureChance]);
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white p-8">
+    <div className="min-h-screen bg-canvas-paper dark:bg-canvas-dark text-white p-8">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -160,7 +160,7 @@ export default function AvailabilityZonesSimulator() {
           className="mb-8"
         >
           <h1 className="text-3xl font-bold mb-4">{tStr('design_principles.availability.availability_zones_simulator.title')}</h1>
-          <p className="text-lg text-zinc-400">
+          <p className="text-lg text-slate-500 dark:text-slate-400">
             {tStr('design_principles.availability.availability_zones_simulator.intro')}
           </p>
         </motion.div>
@@ -169,7 +169,7 @@ export default function AvailabilityZonesSimulator() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="bg-zinc-900 rounded-xl p-6 mb-8"
+          className="bg-white dark:bg-slate-900 rounded-xl p-6 mb-8"
         >
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div>
@@ -185,7 +185,7 @@ export default function AvailabilityZonesSimulator() {
                 onChange={e => setConfig(prev => ({ ...prev, requestRate: Number(e.target.value) }))}
                 className="w-full"
               />
-              <span className="text-sm text-zinc-400">{config.requestRate}/s</span>
+              <span className="text-sm text-slate-500 dark:text-slate-400">{config.requestRate}/s</span>
             </div>
             <div>
               <label className="block text-sm font-medium mb-2">
@@ -200,7 +200,7 @@ export default function AvailabilityZonesSimulator() {
                 onChange={e => setConfig(prev => ({ ...prev, failureChance: Number(e.target.value) }))}
                 className="w-full"
               />
-              <span className="text-sm text-zinc-400">{config.failureChance}%</span>
+              <span className="text-sm text-slate-500 dark:text-slate-400">{config.failureChance}%</span>
             </div>
             <div className="flex items-center space-x-2">
               <input
@@ -236,7 +236,7 @@ export default function AvailabilityZonesSimulator() {
               key={zone.id}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-zinc-900 rounded-xl p-6"
+              className="bg-white dark:bg-slate-900 rounded-xl p-6"
             >
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-xl font-semibold">{zone.name}</h3>
@@ -263,7 +263,7 @@ export default function AvailabilityZonesSimulator() {
                     <span>{tStr('design_principles.availability.availability_zones_simulator.zone_info.load')}</span>
                     <span>{Math.round((zone.load / zone.servers) * 100)}%</span>
                   </div>
-                  <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                  <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${Math.min(100, (zone.load / zone.servers) * 100)}%` }}
@@ -295,7 +295,7 @@ export default function AvailabilityZonesSimulator() {
 
                 {config.showLatency && (
                   <div className="text-sm">
-                    <span className="text-zinc-400">{tStr('design_principles.availability.availability_zones_simulator.zone_info.latency')}: </span>
+                    <span className="text-slate-500 dark:text-slate-400">{tStr('design_principles.availability.availability_zones_simulator.zone_info.latency')}: </span>
                     <span>{zone.latency}ms</span>
                   </div>
                 )}
@@ -328,7 +328,7 @@ export default function AvailabilityZonesSimulator() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-zinc-900 rounded-xl p-6"
+            className="bg-white dark:bg-slate-900 rounded-xl p-6"
           >
             <h3 className="text-xl font-semibold mb-4">{tStr('design_principles.availability.availability_zones_simulator.statistics.title')}</h3>
             <div className="space-y-4">
@@ -337,7 +337,7 @@ export default function AvailabilityZonesSimulator() {
                   <span>{tStr('design_principles.availability.availability_zones_simulator.statistics.total_requests')}</span>
                   <span>{stats.total}</span>
                 </div>
-                <div className="h-2 bg-zinc-800 rounded-full">
+                <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full">
                   <div className="h-full bg-blue-500 rounded-full" style={{ width: '100%' }} />
                 </div>
               </div>
@@ -350,7 +350,7 @@ export default function AvailabilityZonesSimulator() {
                       : '0%'}
                   </span>
                 </div>
-                <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ 
@@ -369,7 +369,7 @@ export default function AvailabilityZonesSimulator() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-zinc-900 rounded-xl p-6"
+            className="bg-white dark:bg-slate-900 rounded-xl p-6"
           >
             <h3 className="text-xl font-semibold mb-4">{tStr('design_principles.availability.availability_zones_simulator.recent_requests.title')}</h3>
             <div className="space-y-2">
@@ -380,7 +380,7 @@ export default function AvailabilityZonesSimulator() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
-                    className="flex items-center justify-between bg-zinc-800 rounded-lg p-3"
+                    className="flex items-center justify-between bg-slate-100 dark:bg-slate-800 rounded-lg p-3"
                   >
                     <div className="flex items-center space-x-3">
                       <span className={`w-2 h-2 rounded-full ${
@@ -396,7 +396,7 @@ export default function AvailabilityZonesSimulator() {
                         {zones.find(z => z.id === request.zone)?.name}
                       </span>
                     </div>
-                    <span className="text-sm text-zinc-400">
+                    <span className="text-sm text-slate-500 dark:text-slate-400">
                       {request.status === 'completed'
                         ? tStr('design_principles.availability.availability_zones_simulator.recent_requests.completed')
                         : request.status === 'failed'

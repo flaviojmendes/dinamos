@@ -12,7 +12,7 @@ export default function SystemComponents() {
           <h1 className="text-3xl font-bold text-white mb-4">
             {t('components.overview_title')}
           </h1>
-          <p className="text-lg text-zinc-400">
+          <p className="text-lg text-slate-500 dark:text-slate-400">
             {t('components.overview_subtitle')}
           </p>
         </div>
@@ -20,12 +20,12 @@ export default function SystemComponents() {
         {/* Info Banner */}
         <div className="bg-blue-500/20 border border-blue-500 rounded-lg p-4 mb-8">
           <div className="flex gap-3">
-            <div className="text-blue-400 mt-1">
+            <div className="text-brand-600 dark:text-brand-400 mt-1">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <p className="text-blue-300">
+            <p className="text-brand-600 dark:text-brand-300">
               {t('components.banner_text')}
             </p>
           </div>
@@ -36,7 +36,7 @@ export default function SystemComponents() {
           {/* Database */}
           <Link 
             to="/componentes/banco-dados"
-            className="group bg-zinc-900/50 rounded-lg p-6 hover:bg-zinc-800/50 transition-colors"
+            className="group bg-white dark:bg-slate-900/50 rounded-lg p-6 hover:bg-slate-100 dark:bg-slate-800/50 transition-colors"
           >
             <div className="flex items-start gap-4">
               <div className="p-3 bg-green-500/10 rounded-lg group-hover:bg-green-500/20 transition-colors">
@@ -48,14 +48,14 @@ export default function SystemComponents() {
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-green-400 transition-colors">
                   {t('components.cards.databases.title')}
                 </h2>
-                <p className="text-zinc-400 mb-4">
+                <p className="text-slate-500 dark:text-slate-400 mb-4">
                   {t('components.cards.databases.description')}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-green-500/20 text-green-300 rounded">
                     {t('components.cards.databases.badges.persistence')}
                   </span>
-                  <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+                  <span className="px-2 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded">
                     {t('components.cards.databases.badges.data')}
                   </span>
                 </div>
@@ -66,7 +66,7 @@ export default function SystemComponents() {
           {/* Cache */}
           <Link 
             to="/componentes/cache"
-            className="group bg-zinc-900/50 rounded-lg p-6 hover:bg-zinc-800/50 transition-colors"
+            className="group bg-white dark:bg-slate-900/50 rounded-lg p-6 hover:bg-slate-100 dark:bg-slate-800/50 transition-colors"
           >
             <div className="flex items-start gap-4">
               <div className="p-3 bg-yellow-500/10 rounded-lg group-hover:bg-yellow-500/20 transition-colors">
@@ -78,14 +78,14 @@ export default function SystemComponents() {
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-yellow-400 transition-colors">
                   {t('components.cards.cache.title')}
                 </h2>
-                <p className="text-zinc-400 mb-4">
+                <p className="text-slate-500 dark:text-slate-400 mb-4">
                   {t('components.cards.cache.description')}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-yellow-500/20 text-yellow-300 rounded">
                     {t('components.cards.cache.badges.performance')}
                   </span>
-                  <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+                  <span className="px-2 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded">
                     {t('components.cards.cache.badges.speed')}
                   </span>
                 </div>
@@ -96,7 +96,7 @@ export default function SystemComponents() {
           {/* Load Balancer */}
           <Link 
             to="/componentes/load-balancer"
-            className="group bg-zinc-900/50 rounded-lg p-6 hover:bg-zinc-800/50 transition-colors"
+            className="group bg-white dark:bg-slate-900/50 rounded-lg p-6 hover:bg-slate-100 dark:bg-slate-800/50 transition-colors"
           >
             <div className="flex items-start gap-4">
               <div className="p-3 bg-purple-500/10 rounded-lg group-hover:bg-purple-500/20 transition-colors">
@@ -108,14 +108,14 @@ export default function SystemComponents() {
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-purple-400 transition-colors">
                   {t('components.cards.load_balancer.title')}
                 </h2>
-                <p className="text-zinc-400 mb-4">
+                <p className="text-slate-500 dark:text-slate-400 mb-4">
                   {t('components.cards.load_balancer.description')}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-purple-500/20 text-purple-300 rounded">
                     {t('components.cards.load_balancer.badges.distribution')}
                   </span>
-                  <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+                  <span className="px-2 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded">
                     {t('components.cards.load_balancer.badges.scalability')}
                   </span>
                 </div>
@@ -126,23 +126,23 @@ export default function SystemComponents() {
           {/* Message Queue */}
           <Link 
             to="/componentes/message-queue"
-            className="group bg-zinc-900/50 rounded-lg p-6 hover:bg-zinc-800/50 transition-colors"
+            className="group bg-white dark:bg-slate-900/50 rounded-lg p-6 hover:bg-slate-100 dark:bg-slate-800/50 transition-colors"
           >
             <div className="flex items-start gap-4">
               <div className="p-3 bg-blue-500/10 rounded-lg group-hover:bg-blue-500/20 transition-colors">
-                <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                 </svg>
               </div>
               <div className="flex-1">
-                <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-blue-400 transition-colors">
+                <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-brand-600 dark:text-brand-400 transition-colors">
                   {t('components.cards.message_queue.title')}
                 </h2>
-                <p className="text-zinc-400 mb-4">
+                <p className="text-slate-500 dark:text-slate-400 mb-4">
                   {t('components.cards.message_queue.description')}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
-                  <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+                  <span className="px-2 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded">
                     {t('components.cards.message_queue.badges.async')}
                   </span>
                   <span className="px-2 py-1 bg-green-500/20 text-green-300 rounded">
@@ -156,7 +156,7 @@ export default function SystemComponents() {
           {/* CDN */}
           <Link 
             to="/componentes/cdn"
-            className="group bg-zinc-900/50 rounded-lg p-6 hover:bg-zinc-800/50 transition-colors"
+            className="group bg-white dark:bg-slate-900/50 rounded-lg p-6 hover:bg-slate-100 dark:bg-slate-800/50 transition-colors"
           >
             <div className="flex items-start gap-4">
               <div className="p-3 bg-red-500/10 rounded-lg group-hover:bg-red-500/20 transition-colors">
@@ -168,14 +168,14 @@ export default function SystemComponents() {
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-red-400 transition-colors">
                   {t('components.cards.cdn.title')}
                 </h2>
-                <p className="text-zinc-400 mb-4">
+                <p className="text-slate-500 dark:text-slate-400 mb-4">
                   {t('components.cards.cdn.description')}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-red-500/20 text-red-300 rounded">
                     {t('components.cards.cdn.badges.global')}
                   </span>
-                  <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+                  <span className="px-2 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded">
                     {t('components.cards.cdn.badges.content')}
                   </span>
                 </div>
@@ -186,7 +186,7 @@ export default function SystemComponents() {
           {/* API Gateway */}
           <Link 
             to="/componentes/api-gateway"
-            className="group bg-zinc-900/50 rounded-lg p-6 hover:bg-zinc-800/50 transition-colors"
+            className="group bg-white dark:bg-slate-900/50 rounded-lg p-6 hover:bg-slate-100 dark:bg-slate-800/50 transition-colors"
           >
             <div className="flex items-start gap-4">
               <div className="p-3 bg-indigo-500/10 rounded-lg group-hover:bg-indigo-500/20 transition-colors">
@@ -198,14 +198,14 @@ export default function SystemComponents() {
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-indigo-400 transition-colors">
                   {t('components.cards.api_gateway.title')}
                 </h2>
-                <p className="text-zinc-400 mb-4">
+                <p className="text-slate-500 dark:text-slate-400 mb-4">
                   {t('components.cards.api_gateway.description')}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-indigo-500/20 text-indigo-300 rounded">
                     {t('components.cards.api_gateway.badges.routing')}
                   </span>
-                  <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+                  <span className="px-2 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded">
                     {t('components.cards.api_gateway.badges.security')}
                   </span>
                 </div>
@@ -216,7 +216,7 @@ export default function SystemComponents() {
           {/* Firewall */}
           <Link 
             to="/componentes/firewall"
-            className="group bg-zinc-900/50 rounded-lg p-6 hover:bg-zinc-800/50 transition-colors"
+            className="group bg-white dark:bg-slate-900/50 rounded-lg p-6 hover:bg-slate-100 dark:bg-slate-800/50 transition-colors"
           >
             <div className="flex items-start gap-4">
               <div className="p-3 bg-orange-500/10 rounded-lg group-hover:bg-orange-500/20 transition-colors">
@@ -228,14 +228,14 @@ export default function SystemComponents() {
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-orange-400 transition-colors">
                   {t('components.cards.firewall.title')}
                 </h2>
-                <p className="text-zinc-400 mb-4">
+                <p className="text-slate-500 dark:text-slate-400 mb-4">
                   {t('components.cards.firewall.description')}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-orange-500/20 text-orange-300 rounded">
                     {t('components.cards.firewall.badges.security')}
                   </span>
-                  <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+                  <span className="px-2 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded">
                     {t('components.cards.api_gateway.badges.control')}
                   </span>
                 </div>

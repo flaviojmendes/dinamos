@@ -165,14 +165,14 @@ export default function AttackSimulator() {
   }, [isPlaying, attackType, nodes, speed]);
 
   return (
-    <div className="bg-zinc-900 rounded-lg p-6 mt-12">
+    <div className="bg-white dark:bg-slate-900 rounded-lg p-6 mt-12">
       <div className="flex justify-between items-center mb-6">
         <div className="space-x-4">
           <button
             className={`px-4 py-2 rounded-lg font-medium ${
               attackType === 'ddos'
                 ? 'bg-red-500 text-white'
-                : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
+                : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-zinc-700'
             }`}
             onClick={() => setAttackType('ddos')}
           >
@@ -182,7 +182,7 @@ export default function AttackSimulator() {
             className={`px-4 py-2 rounded-lg font-medium ${
               attackType === 'mitm'
                 ? 'bg-red-500 text-white'
-                : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
+                : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-zinc-700'
             }`}
             onClick={() => setAttackType('mitm')}
           >
@@ -192,9 +192,9 @@ export default function AttackSimulator() {
 
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
-            <label className="text-zinc-400">{t(`${base}.speed_label`)}</label>
+            <label className="text-slate-500 dark:text-slate-400">{t(`${base}.speed_label`)}</label>
             <select
-              className="bg-zinc-800 text-zinc-400 rounded px-2 py-1"
+              className="bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded px-2 py-1"
               value={speed}
               onChange={(e) => setSpeed(Number(e.target.value))}
             >
@@ -331,11 +331,11 @@ export default function AttackSimulator() {
       </div>
 
       {/* Description */}
-      <div className="mt-6 p-4 bg-zinc-800 rounded-lg">
+      <div className="mt-6 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg">
         <h3 className="text-lg font-semibold text-white mb-2">
           {attackType === 'ddos' ? t(`${base}.ddos_simulation_title`) : t(`${base}.mitm_simulation_title`)}
         </h3>
-        <p className="text-zinc-400">
+        <p className="text-slate-500 dark:text-slate-400">
           {attackType === 'ddos'
             ? t(`${base}.ddos_simulation_description`)
             : t(`${base}.mitm_simulation_description`)}
@@ -343,11 +343,11 @@ export default function AttackSimulator() {
         <div className="mt-4 flex items-center space-x-6">
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 bg-emerald-500 rounded-full" />
-            <span className="text-zinc-400">{t(`${base}.legitimate_traffic`)}</span>
+            <span className="text-slate-500 dark:text-slate-400">{t(`${base}.legitimate_traffic`)}</span>
           </div>
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 bg-red-500 rounded-full" />
-            <span className="text-zinc-400">{t(`${base}.malicious_traffic`)}</span>
+            <span className="text-slate-500 dark:text-slate-400">{t(`${base}.malicious_traffic`)}</span>
           </div>
         </div>
       </div>

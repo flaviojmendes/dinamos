@@ -149,22 +149,22 @@ export default function Backpressure() {
 
   return (
     <div className="p-4">
-      <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-xl font-semibold">{t('simulators.backpressure.title')}</h1>
           <button
             onClick={() => setIsConfigOpen(!isConfigOpen)}
-            className="px-3 py-1 bg-zinc-800 rounded-md hover:bg-zinc-700"
+            className="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-md hover:bg-zinc-700"
           >
             {t('simulators.backpressure.buttons.settings')}
           </button>
         </div>
 
-        <details className="mb-4 text-zinc-300">
+        <details className="mb-4 text-slate-600 dark:text-slate-300">
           <summary className="cursor-pointer hover:text-white transition-colors">
             O que é Backpressure?
           </summary>
-          <div className="mt-2 p-4 bg-zinc-800 rounded-lg space-y-3">
+          <div className="mt-2 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg space-y-3">
             <p>
               Backpressure é um mecanismo fundamental em sistemas distribuídos que lida com situações onde um componente não consegue processar dados na mesma velocidade em que os recebe. É como uma válvula de pressão que regula o fluxo de dados para evitar sobrecarga.
             </p>
@@ -198,7 +198,7 @@ export default function Backpressure() {
         </details>
 
         {isConfigOpen && (
-          <div className="mb-4 p-4 bg-zinc-800 rounded-lg">
+          <div className="mb-4 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg">
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm mb-1">Taxa de Produção (msg/s)</label>
@@ -249,8 +249,8 @@ export default function Backpressure() {
         </div>
 
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-zinc-800 p-4 rounded-lg">
-            <div className="text-sm text-zinc-400 mb-2">{t('simulators.backpressure.title')}</div>
+          <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
+            <div className="text-sm text-slate-500 dark:text-slate-400 mb-2">{t('simulators.backpressure.title')}</div>
             <div className="h-2 bg-zinc-700 rounded-full overflow-hidden">
               <div
                 className={`h-full transition-all duration-300 ${
@@ -265,8 +265,8 @@ export default function Backpressure() {
               {Math.round(metrics.currentBackpressure)}%
             </div>
           </div>
-          <div className="bg-zinc-800 p-4 rounded-lg">
-            <div className="text-sm text-zinc-400">{t('simulators.backpressure.producer_status.title')}</div>
+          <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
+            <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.backpressure.producer_status.title')}</div>
             <div className="font-medium">
               {producers[0].isThrottled ? (
                 <span className="text-yellow-400">{t('simulators.backpressure.producer_status.throttled')}</span>
@@ -278,21 +278,21 @@ export default function Backpressure() {
         </div>
 
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-zinc-800 p-4 rounded-lg">
-            <div className="text-sm text-zinc-400">{t('simulators.backpressure.labels.produced')}</div>
+          <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
+            <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.backpressure.labels.produced')}</div>
             <div className="font-medium">{metrics.producedTotal}</div>
           </div>
-          <div className="bg-zinc-800 p-4 rounded-lg">
-            <div className="text-sm text-zinc-400">{t('simulators.backpressure.labels.processed')}</div>
+          <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
+            <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.backpressure.labels.processed')}</div>
             <div className="font-medium">{metrics.processedTotal}</div>
           </div>
-          <div className="bg-zinc-800 p-4 rounded-lg">
-            <div className="text-sm text-zinc-400">{t('simulators.backpressure.labels.dropped')}</div>
+          <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
+            <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.backpressure.labels.dropped')}</div>
             <div className="font-medium">{metrics.droppedTotal}</div>
           </div>
         </div>
 
-        <div className="bg-zinc-800 p-4 rounded-lg">
+        <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
           <h2 className="text-lg font-medium mb-3">{t('simulators.backpressure.labels.latest')}</h2>
           <div className="space-y-2">
             {messages.slice(-5).map(message => (

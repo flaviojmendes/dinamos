@@ -38,28 +38,28 @@ export default function Countdown() {
   return (
     <div className="flex items-center justify-center gap-4 text-sm">
       <div className="text-center">
-        <div className="bg-zinc-800 rounded-lg px-3 py-2 font-mono text-lg">
+        <div className="bg-slate-100 dark:bg-slate-800 rounded-lg px-3 py-2 font-mono text-lg">
           {String(days).padStart(2, '0')}
         </div>
-        <div className="text-xs text-zinc-400 mt-1">dias</div>
+        <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">dias</div>
       </div>
       <div className="text-center">
-        <div className="bg-zinc-800 rounded-lg px-3 py-2 font-mono text-lg">
+        <div className="bg-slate-100 dark:bg-slate-800 rounded-lg px-3 py-2 font-mono text-lg">
           {String(hours).padStart(2, '0')}
         </div>
-        <div className="text-xs text-zinc-400 mt-1">horas</div>
+        <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">horas</div>
       </div>
       <div className="text-center">
-        <div className="bg-zinc-800 rounded-lg px-3 py-2 font-mono text-lg">
+        <div className="bg-slate-100 dark:bg-slate-800 rounded-lg px-3 py-2 font-mono text-lg">
           {String(minutes).padStart(2, '0')}
         </div>
-        <div className="text-xs text-zinc-400 mt-1">min</div>
+        <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">min</div>
       </div>
       <div className="text-center">
-        <div className="bg-zinc-800 rounded-lg px-3 py-2 font-mono text-lg">
+        <div className="bg-slate-100 dark:bg-slate-800 rounded-lg px-3 py-2 font-mono text-lg">
           {String(seconds).padStart(2, '0')}
         </div>
-        <div className="text-xs text-zinc-400 mt-1">seg</div>
+        <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">seg</div>
       </div>
     </div>
   );

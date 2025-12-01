@@ -175,10 +175,10 @@ export default function APIGatewaySimulator() {
   return (
     <div className="p-6 md:p-8 lg:p-12 max-w-6xl mx-auto">
       <div className="prose prose-invert prose-lg max-w-none mb-8">
-        <h1 className="text-4xl font-bold mb-4 text-blue-400">
+        <h1 className="text-4xl font-bold mb-4 text-brand-600 dark:text-brand-400">
           {t('simulators.gateway.title')}
         </h1>
-        <p className="text-xl text-zinc-300">
+        <p className="text-xl text-slate-600 dark:text-slate-300">
           {t('simulators.gateway.description')}
         </p>
       </div>
@@ -203,32 +203,32 @@ export default function APIGatewaySimulator() {
         </button>
         <button
           onClick={() => setShowConfig(!showConfig)}
-          className="px-6 py-3 rounded-lg font-medium bg-zinc-800 hover:bg-zinc-700 text-white transition-colors"
+          className="px-6 py-3 rounded-lg font-medium bg-slate-100 dark:bg-slate-800 hover:bg-zinc-700 text-white transition-colors"
         >
           {showConfig ? t('simulators.gateway.buttons.hide_config') : t('simulators.gateway.buttons.show_config')}
         </button>
         <button
           onClick={resetSimulation}
-          className="px-6 py-3 rounded-lg font-medium bg-zinc-800 hover:bg-zinc-700 text-white transition-colors"
+          className="px-6 py-3 rounded-lg font-medium bg-slate-100 dark:bg-slate-800 hover:bg-zinc-700 text-white transition-colors"
         >
           {t('simulators.gateway.buttons.reset')}
         </button>
       </div>
 
       {showConfig && (
-        <div className="bg-zinc-900 p-6 rounded-lg mb-8">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-lg mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-bold text-zinc-200">{t('simulators.gateway.config.title')}</h3>
+            <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200">{t('simulators.gateway.config.title')}</h3>
             <button
               onClick={() => setConfig(defaultConfig)}
-              className="px-4 py-2 text-sm bg-zinc-800 hover:bg-zinc-700 rounded-lg transition-colors"
+              className="px-4 py-2 text-sm bg-slate-100 dark:bg-slate-800 hover:bg-zinc-700 rounded-lg transition-colors"
             >
               {t('simulators.gateway.buttons.restore_defaults')}
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-2">
+              <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
                 {t('simulators.gateway.config.rps', { value: config.requestsPerSecond })}
               </label>
               <input
@@ -242,7 +242,7 @@ export default function APIGatewaySimulator() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-2">
+              <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
                 {t('simulators.gateway.config.routing_delay', { ms: config.routingDelay })}
               </label>
               <input
@@ -256,7 +256,7 @@ export default function APIGatewaySimulator() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-2">
+              <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
                 {t('simulators.gateway.config.extra_error_rate', { percent: (config.errorRate * 100).toFixed(1) })}
               </label>
               <input
@@ -270,7 +270,7 @@ export default function APIGatewaySimulator() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-2">
+              <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
                 {t('simulators.gateway.config.removal_delay', { ms: config.removeDelay })}
               </label>
               <input
@@ -288,24 +288,24 @@ export default function APIGatewaySimulator() {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-zinc-900 p-4 rounded-lg">
-          <div className="text-sm text-zinc-400">{t('simulators.gateway.stats.total')}</div>
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-lg">
+          <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.gateway.stats.total')}</div>
           <div className="text-2xl font-bold text-white">{stats.totalRequests}</div>
         </div>
-        <div className="bg-zinc-900 p-4 rounded-lg">
-          <div className="text-sm text-zinc-400">{t('simulators.gateway.stats.success')}</div>
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-lg">
+          <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.gateway.stats.success')}</div>
           <div className="text-2xl font-bold text-green-500">{stats.successfulRequests}</div>
         </div>
-        <div className="bg-zinc-900 p-4 rounded-lg">
-          <div className="text-sm text-zinc-400">{t('simulators.gateway.stats.error')}</div>
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-lg">
+          <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.gateway.stats.error')}</div>
           <div className="text-2xl font-bold text-red-500">{stats.failedRequests}</div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Clients */}
-        <div className="bg-zinc-900 p-6 rounded-lg">
-          <h3 className="text-xl font-bold mb-4 text-zinc-200">{t('simulators.gateway.columns.clients')}</h3>
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-lg">
+          <h3 className="text-xl font-bold mb-4 text-slate-700 dark:text-slate-200">{t('simulators.gateway.columns.clients')}</h3>
           <div className="space-y-2">
             <AnimatePresence>
               {requests.filter(r => r.status === 'pending').map(request => (
@@ -329,8 +329,8 @@ export default function APIGatewaySimulator() {
         </div>
 
         {/* API Gateway */}
-        <div className="bg-zinc-900 p-6 rounded-lg">
-          <h3 className="text-xl font-bold mb-4 text-zinc-200">{t('simulators.gateway.columns.apigw')}</h3>
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-lg">
+          <h3 className="text-xl font-bold mb-4 text-slate-700 dark:text-slate-200">{t('simulators.gateway.columns.apigw')}</h3>
           <div className="space-y-2">
             <AnimatePresence>
               {requests.filter(r => r.status === 'routing').map(request => (
@@ -354,14 +354,14 @@ export default function APIGatewaySimulator() {
         </div>
 
         {/* Microservices */}
-        <div className="bg-zinc-900 p-6 rounded-lg">
-          <h3 className="text-xl font-bold mb-4 text-zinc-200">{t('simulators.gateway.columns.microservices')}</h3>
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-lg">
+          <h3 className="text-xl font-bold mb-4 text-slate-700 dark:text-slate-200">{t('simulators.gateway.columns.microservices')}</h3>
           <div className="space-y-4">
             {services.map(service => (
               <div key={service.type} className={`p-4 rounded ${service.color} bg-opacity-10`}>
                 <div className="font-medium mb-1">{service.name}</div>
                 <div className="text-sm opacity-75">{service.description}</div>
-                <div className="text-xs text-zinc-400 mt-1">
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                   {t('simulators.gateway.items.processing_time', { ms: service.processingTime })}
                   <br />
                   {t('simulators.gateway.items.base_error_rate', { percent: (service.errorRate * 100).toFixed(1) })}

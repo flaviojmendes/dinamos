@@ -33,45 +33,45 @@ const YouTube: React.FC = () => {
         <h1 className="text-4xl font-bold bg-gradient-to-r from-red-500 to-red-700 bg-clip-text text-transparent">
           {t(`${base}.title`)}
         </h1>
-        <p className="text-xl text-zinc-400">
+        <p className="text-xl text-slate-500 dark:text-slate-400">
           {t(`${base}.subtitle`)}
         </p>
       </div>
 
       {/* Key Metrics Section */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-red-500">{t(`${base}.metrics_title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg text-center">
             <div className="text-2xl font-bold text-red-400">{t(`${base}.metrics.users`)}</div>
-            <div className="text-sm text-zinc-400">{t(`${base}.metrics.users_desc`)}</div>
+            <div className="text-sm text-slate-500 dark:text-slate-400">{t(`${base}.metrics.users_desc`)}</div>
           </div>
-          <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg text-center">
             <div className="text-2xl font-bold text-red-400">{t(`${base}.metrics.uploads`)}</div>
-            <div className="text-sm text-zinc-400">{t(`${base}.metrics.uploads_desc`)}</div>
+            <div className="text-sm text-slate-500 dark:text-slate-400">{t(`${base}.metrics.uploads_desc`)}</div>
           </div>
-          <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg text-center">
             <div className="text-2xl font-bold text-red-400">{t(`${base}.metrics.views`)}</div>
-            <div className="text-sm text-zinc-400">{t(`${base}.metrics.views_desc`)}</div>
+            <div className="text-sm text-slate-500 dark:text-slate-400">{t(`${base}.metrics.views_desc`)}</div>
           </div>
         </div>
       </section>
 
       {/* System Requirements */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-red-500">{t(`${base}.requirements_title`)}</h2>
         <div className="space-y-4">
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.functional_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {functionalItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
             </ul>
           </div>
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.non_functional_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {nonFunctionalItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
@@ -81,22 +81,22 @@ const YouTube: React.FC = () => {
       </section>
 
       {/* Architecture Overview */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-red-500">{t(`${base}.architecture_title`)}</h2>
         
         {/* Video Upload & Processing */}
         <div className="space-y-4">
           <h3 className="text-xl font-medium text-red-400">{t(`${base}.upload_processing_title`)}</h3>
-          <div className="bg-zinc-800/50 p-4 rounded-lg space-y-3">
-            <h4 className="font-medium text-zinc-200">{t(`${base}.upload_pipeline_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg space-y-3">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200">{t(`${base}.upload_pipeline_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {uploadPipelineItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
             </ul>
             
-            <h4 className="font-medium text-zinc-200 mt-4">{t(`${base}.video_processing_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200 mt-4">{t(`${base}.video_processing_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {videoProcessingItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
@@ -107,16 +107,16 @@ const YouTube: React.FC = () => {
         {/* Storage System */}
         <div className="space-y-4 mt-6">
           <h3 className="text-xl font-medium text-red-400">{t(`${base}.storage_title`)}</h3>
-          <div className="bg-zinc-800/50 p-4 rounded-lg space-y-3">
-            <h4 className="font-medium text-zinc-200">{t(`${base}.video_storage_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg space-y-3">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200">{t(`${base}.video_storage_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {videoStorageItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
             </ul>
 
-            <h4 className="font-medium text-zinc-200 mt-4">{t(`${base}.database_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200 mt-4">{t(`${base}.database_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {databaseItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
@@ -127,9 +127,9 @@ const YouTube: React.FC = () => {
         {/* CDN and Video Delivery */}
         <div className="space-y-4 mt-6">
           <h3 className="text-xl font-medium text-red-400">{t(`${base}.cdn_title`)}</h3>
-          <div className="bg-zinc-800/50 p-4 rounded-lg space-y-3">
-            <h4 className="font-medium text-zinc-200">{t(`${base}.cdn_infrastructure_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg space-y-3">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200">{t(`${base}.cdn_infrastructure_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {cdnInfrastructureItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
@@ -147,9 +147,9 @@ const YouTube: React.FC = () => {
         {/* Recommendation System */}
         <div className="space-y-4 mt-6">
           <h3 className="text-xl font-medium text-red-400">{t(`${base}.recommendation_title`)}</h3>
-          <div className="bg-zinc-800/50 p-4 rounded-lg space-y-3">
-            <h4 className="font-medium text-zinc-200">{t(`${base}.ml_architecture_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg space-y-3">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200">{t(`${base}.ml_architecture_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               <li>{t(`${base}.two_phase_desc`)}
                 <ul className="list-disc list-inside ml-6 mt-2">
                   <li>{t(`${base}.candidate_generation`)}</li>
@@ -169,33 +169,33 @@ const YouTube: React.FC = () => {
       </section>
 
       {/* Technical Decisions and Trade-offs */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-red-500">{t(`${base}.technical_decisions_title`)}</h2>
         <div className="space-y-4">
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.decision_1_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.decision_1_text`)}
             </p>
           </div>
           
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.decision_2_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.decision_2_text`)}
             </p>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.decision_3_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.decision_3_text`)}
             </p>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.decision_4_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.decision_4_text`)}
             </p>
           </div>
@@ -203,33 +203,33 @@ const YouTube: React.FC = () => {
       </section>
 
       {/* Scaling Challenges */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-red-500">{t(`${base}.scaling_challenges_title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.storage_challenge_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.storage_challenge_text`)}
             </p>
           </div>
           
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.processing_challenge_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.processing_challenge_text`)}
             </p>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.bandwidth_challenge_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.bandwidth_challenge_text`)}
             </p>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.consistency_challenge_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.consistency_challenge_text`)}
             </p>
           </div>
@@ -237,13 +237,13 @@ const YouTube: React.FC = () => {
       </section>
 
       {/* Architecture Evolution Diagrams */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-6">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-6">
         <h2 className="text-2xl font-semibold text-red-500 mb-4">{t(`${base}.evolution_diagrams_title`)}</h2>
         
         {/* 2005: Monolithic Architecture */}
         <div className="space-y-4">
           <h3 className="text-xl font-medium text-red-400">{t(`${base}.arch_2005_title`)}</h3>
-          <div className="bg-zinc-800/50 p-6 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-6 rounded-lg">
             <svg className="w-full max-w-2xl mx-auto" viewBox="0 0 800 200">
               {/* Users */}
               <g transform="translate(50,80)">
@@ -276,7 +276,7 @@ const YouTube: React.FC = () => {
         {/* 2008: Distributed Architecture */}
         <div className="space-y-4">
           <h3 className="text-xl font-medium text-red-400">{t(`${base}.arch_2008_title`)}</h3>
-          <div className="bg-zinc-800/50 p-6 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-6 rounded-lg">
             <svg className="w-full max-w-2xl mx-auto" viewBox="0 0 800 300">
               {/* Users */}
               <g transform="translate(50,140)">
@@ -329,7 +329,7 @@ const YouTube: React.FC = () => {
         {/* 2020+: Modern Architecture */}
         <div className="space-y-4">
           <h3 className="text-xl font-medium text-red-400">{t(`${base}.arch_2020_title`)}</h3>
-          <div className="bg-zinc-800/50 p-6 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-6 rounded-lg">
             <svg className="w-full max-w-2xl mx-auto" viewBox="0 0 800 400">
               {/* Users */}
               <g transform="translate(50,180)">
@@ -381,13 +381,13 @@ const YouTube: React.FC = () => {
       </section>
 
       {/* Architectural Journey */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-6 mb-8">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-6 mb-8">
         <h2 className="text-2xl font-semibold text-red-500 mb-4">{t(`${base}.architectural_journey_title`)}</h2>
         
         {/* 2005-2006: Early Days */}
         <div className="space-y-4">
           <h3 className="text-xl font-medium text-red-400">{t(`${base}.early_days_title`)}</h3>
-          <div className="bg-zinc-800/50 p-6 rounded-lg space-y-4">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-6 rounded-lg space-y-4">
             <div className="flex items-start gap-4">
               <div className="bg-red-500/10 p-3 rounded-lg">
                 <svg className="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -396,10 +396,10 @@ const YouTube: React.FC = () => {
               </div>
               <div className="flex-1">
                 <h4 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.monolithic_architecture_title`)}</h4>
-                <p className="text-zinc-300">
+                <p className="text-slate-600 dark:text-slate-300">
                   {t(`${base}.early_days_text`)}
                 </p>
-                <ul className="list-disc list-inside mt-2 space-y-2 text-zinc-300">
+                <ul className="list-disc list-inside mt-2 space-y-2 text-slate-600 dark:text-slate-300">
                   {earlyDaysReasons.map((reason, idx) => (
                     <li key={idx}>{reason}</li>
                   ))}
@@ -407,7 +407,7 @@ const YouTube: React.FC = () => {
               </div>
             </div>
             <div className="border-l-4 border-red-500/20 pl-4 mt-4">
-              <p className="text-zinc-400 italic">
+              <p className="text-slate-500 dark:text-slate-400 italic">
                 "{t(`${base}.early_days_quote`)}"
               </p>
             </div>
@@ -417,7 +417,7 @@ const YouTube: React.FC = () => {
         {/* 2006-2008: Google Acquisition and Scale */}
         <div className="space-y-4">
           <h3 className="text-xl font-medium text-red-400">{t(`${base}.google_acquisition_title`)}</h3>
-          <div className="bg-zinc-800/50 p-6 rounded-lg space-y-4">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-6 rounded-lg space-y-4">
             <div className="flex items-start gap-4">
               <div className="bg-red-500/10 p-3 rounded-lg">
                 <svg className="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -426,10 +426,10 @@ const YouTube: React.FC = () => {
               </div>
               <div className="flex-1">
                 <h4 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.distributed_transition_title`)}</h4>
-                <p className="text-zinc-300">
+                <p className="text-slate-600 dark:text-slate-300">
                   {t(`${base}.google_acquisition_text`)}
                 </p>
-                <ul className="list-disc list-inside mt-2 space-y-2 text-zinc-300">
+                <ul className="list-disc list-inside mt-2 space-y-2 text-slate-600 dark:text-slate-300">
                   {googleAcquisitionReasons.map((reason, idx) => (
                     <li key={idx}>{reason}</li>
                   ))}
@@ -437,7 +437,7 @@ const YouTube: React.FC = () => {
               </div>
             </div>
             <div className="border-l-4 border-red-500/20 pl-4 mt-4">
-              <p className="text-zinc-400 italic">
+              <p className="text-slate-500 dark:text-slate-400 italic">
                 "{t(`${base}.google_acquisition_quote`)}"
               </p>
             </div>
@@ -447,7 +447,7 @@ const YouTube: React.FC = () => {
         {/* 2008-2015: Scaling Challenges */}
         <div className="space-y-4">
           <h3 className="text-xl font-medium text-red-400">{t(`${base}.scaling_challenges_period_title`)}</h3>
-          <div className="bg-zinc-800/50 p-6 rounded-lg space-y-4">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-6 rounded-lg space-y-4">
             <div className="flex items-start gap-4">
               <div className="bg-red-500/10 p-3 rounded-lg">
                 <svg className="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -456,10 +456,10 @@ const YouTube: React.FC = () => {
               </div>
               <div className="flex-1">
                 <h4 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.evolution_optimization_title`)}</h4>
-                <p className="text-zinc-300">
+                <p className="text-slate-600 dark:text-slate-300">
                   {t(`${base}.scaling_period_text`)}
                 </p>
-                <ul className="list-disc list-inside mt-2 space-y-2 text-zinc-300">
+                <ul className="list-disc list-inside mt-2 space-y-2 text-slate-600 dark:text-slate-300">
                   {scalingPeriodReasons.map((reason, idx) => (
                     <li key={idx}>{reason}</li>
                   ))}
@@ -467,7 +467,7 @@ const YouTube: React.FC = () => {
               </div>
             </div>
             <div className="border-l-4 border-red-500/20 pl-4 mt-4">
-              <p className="text-zinc-400 italic">
+              <p className="text-slate-500 dark:text-slate-400 italic">
                 "{t(`${base}.scaling_period_quote`)}"
               </p>
             </div>
@@ -477,7 +477,7 @@ const YouTube: React.FC = () => {
         {/* 2015-Present: Modern Era */}
         <div className="space-y-4">
           <h3 className="text-xl font-medium text-red-400">{t(`${base}.modern_era_title`)}</h3>
-          <div className="bg-zinc-800/50 p-6 rounded-lg space-y-4">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-6 rounded-lg space-y-4">
             <div className="flex items-start gap-4">
               <div className="bg-red-500/10 p-3 rounded-lg">
                 <svg className="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -486,10 +486,10 @@ const YouTube: React.FC = () => {
               </div>
               <div className="flex-1">
                 <h4 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.modern_innovations_title`)}</h4>
-                <p className="text-zinc-300">
+                <p className="text-slate-600 dark:text-slate-300">
                   {t(`${base}.modern_era_text`)}
                 </p>
-                <ul className="list-disc list-inside mt-2 space-y-2 text-zinc-300">
+                <ul className="list-disc list-inside mt-2 space-y-2 text-slate-600 dark:text-slate-300">
                   {modernEraReasons.map((reason, idx) => (
                     <li key={idx}>{reason}</li>
                   ))}
@@ -497,7 +497,7 @@ const YouTube: React.FC = () => {
               </div>
             </div>
             <div className="border-l-4 border-red-500/20 pl-4 mt-4">
-              <p className="text-zinc-400 italic">
+              <p className="text-slate-500 dark:text-slate-400 italic">
                 "{t(`${base}.modern_era_quote`)}"
               </p>
             </div>
@@ -513,7 +513,7 @@ const YouTube: React.FC = () => {
                 <svg className="w-5 h-5 text-red-400 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="text-zinc-300">
+                <span className="text-slate-600 dark:text-slate-300">
                   {learning}
                 </span>
               </li>
@@ -528,42 +528,42 @@ const YouTube: React.FC = () => {
         <div className="space-y-6">
           <div className="flex gap-4">
             <div className="w-24 flex-shrink-0 text-red-400">2005</div>
-            <div className="flex-1 bg-zinc-800/50 p-4 rounded-lg text-zinc-300">
+            <div className="flex-1 bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg text-slate-600 dark:text-slate-300">
               {t(`${base}.timeline_2005`)}
             </div>
           </div>
           
           <div className="flex gap-4">
             <div className="w-24 flex-shrink-0 text-red-400">2006</div>
-            <div className="flex-1 bg-zinc-800/50 p-4 rounded-lg text-zinc-300">
+            <div className="flex-1 bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg text-slate-600 dark:text-slate-300">
               {t(`${base}.timeline_2006`)}
             </div>
           </div>
 
           <div className="flex gap-4">
             <div className="w-24 flex-shrink-0 text-red-400">2008</div>
-            <div className="flex-1 bg-zinc-800/50 p-4 rounded-lg text-zinc-300">
+            <div className="flex-1 bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg text-slate-600 dark:text-slate-300">
               {t(`${base}.timeline_2008`)}
             </div>
           </div>
 
           <div className="flex gap-4">
             <div className="w-24 flex-shrink-0 text-red-400">2012</div>
-            <div className="flex-1 bg-zinc-800/50 p-4 rounded-lg text-zinc-300">
+            <div className="flex-1 bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg text-slate-600 dark:text-slate-300">
               {t(`${base}.timeline_2012`)}
             </div>
           </div>
 
           <div className="flex gap-4">
             <div className="w-24 flex-shrink-0 text-red-400">2015</div>
-            <div className="flex-1 bg-zinc-800/50 p-4 rounded-lg text-zinc-300">
+            <div className="flex-1 bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg text-slate-600 dark:text-slate-300">
               {t(`${base}.timeline_2015`)}
             </div>
           </div>
 
           <div className="flex gap-4">
             <div className="w-24 flex-shrink-0 text-red-400">2020+</div>
-            <div className="flex-1 bg-zinc-800/50 p-4 rounded-lg text-zinc-300">
+            <div className="flex-1 bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg text-slate-600 dark:text-slate-300">
               {t(`${base}.timeline_2020`)}
             </div>
           </div>
@@ -571,38 +571,38 @@ const YouTube: React.FC = () => {
       </section>
 
       {/* References Section */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-red-500">{t(`${base}.references_title`)}</h2>
         <div className="space-y-3">
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.official_docs_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               <li><a href="https://www.youtube.com/howyoutubeworks" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">How YouTube Works - Official</a></li>
               <li><a href="https://blog.youtube/inside-youtube/" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">YouTube Engineering Blog</a></li>
               <li><a href="https://research.google/pubs/" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">Google Research Publications</a></li>
             </ul>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.technical_articles_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               <li><a href="https://highscalability.com/youtube-architecture/" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">High Scalability - YouTube Architecture</a></li>
               <li><a href="https://developers.google.com/youtube/v3/getting-started" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">YouTube API Documentation</a></li>
               <li><a href="https://www.youtube.com/creators/how-things-work/" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">YouTube Creator Technical Resources</a></li>
             </ul>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.conferences_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               <li><a href="https://www.youtube.com/watch?v=w5WVu624fY8" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">Google I/O - YouTube Infrastructure</a></li>
               <li><a href="https://www.youtube.com/watch?v=5yDO-tmIoXY" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">QCon - YouTube Scalability</a></li>
             </ul>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-red-400 mb-2">{t(`${base}.statistics_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               <li><a href="https://www.youtube.com/about/press/" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">YouTube Press Statistics</a></li>
               <li><a href="https://www.statista.com/statistics/259477/hours-of-video-uploaded-to-youtube-every-minute/" className="text-red-400 hover:underline" target="_blank" rel="noopener noreferrer">Statista - YouTube Growth Statistics</a></li>
             </ul>

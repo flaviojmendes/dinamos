@@ -161,7 +161,7 @@ export default function CacheSimulation() {
   return (
     <div className="p-4 md:p-8 space-y-4 md:space-y-8">
       {/* Animation */}
-      <div className="bg-zinc-900 p-4 md:p-6 rounded-lg">
+      <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-lg">
         <div className="relative h-20 flex items-center justify-between max-w-3xl mx-auto">
           {/* Connection Line */}
           <div className="absolute h-1 bg-zinc-600 left-0 right-0 top-1/2 -translate-y-1/2" />
@@ -177,7 +177,7 @@ export default function CacheSimulation() {
 
           {/* Nodes */}
           <div className={`relative z-10 w-16 h-16 rounded-lg border-2 transition-colors duration-300
-            ${position === 'client' ? 'border-blue-500 bg-blue-500/20' : 'border-zinc-600 bg-zinc-900'}
+            ${position === 'client' ? 'border-blue-500 bg-blue-500/20' : 'border-zinc-600 bg-white dark:bg-slate-900'}
             flex items-center justify-center`}>
             <span className="text-white text-sm">{t('cache.simulation.client')}</span>
           </div>
@@ -187,13 +187,13 @@ export default function CacheSimulation() {
               (cache.has(currentKey) && Date.now() - cache.get(currentKey)!.timestamp <= config.cacheTTL * 1000) ?
                 'border-green-500 bg-green-500/20' : 'border-yellow-500 bg-yellow-500/20'
               : position === 'cache' ? 'border-red-500 bg-red-500/20' 
-              : 'border-zinc-600 bg-zinc-900'}
+              : 'border-zinc-600 bg-white dark:bg-slate-900'}
             flex items-center justify-center`}>
             <span className="text-white text-sm">{t('cache.simulation.cache')}</span>
           </div>
 
           <div className={`relative z-10 w-16 h-16 rounded-lg border-2 transition-colors duration-300
-            ${position === 'db' ? 'border-red-500 bg-red-500/20' : 'border-zinc-600 bg-zinc-900'}
+            ${position === 'db' ? 'border-red-500 bg-red-500/20' : 'border-zinc-600 bg-white dark:bg-slate-900'}
             flex items-center justify-center`}>
             <span className="text-white text-sm">{t('cache.simulation.database')}</span>
           </div>
@@ -201,7 +201,7 @@ export default function CacheSimulation() {
       </div>
 
       {/* Configuration */}
-      <div className="bg-zinc-900 p-4 md:p-6 rounded-lg">
+      <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-lg">
         <button
           onClick={() => setIsConfigOpen(!isConfigOpen)}
           className="w-full flex items-center justify-between text-base md:text-lg font-semibold text-white focus:outline-none"
@@ -240,7 +240,7 @@ export default function CacheSimulation() {
           <div>
             <div className="flex justify-between text-white mb-1">
               <span>{t('cache.simulation.cache_ttl')}</span>
-              <span className="text-blue-400">{config.cacheTTL}s</span>
+              <span className="text-brand-600 dark:text-brand-400">{config.cacheTTL}s</span>
             </div>
             <input
               type="range"
@@ -255,7 +255,7 @@ export default function CacheSimulation() {
           <div>
             <div className="flex justify-between text-white mb-1">
               <span>{t('cache.simulation.network_delay')}</span>
-              <span className="text-blue-400">{config.requestDelay}ms</span>
+              <span className="text-brand-600 dark:text-brand-400">{config.requestDelay}ms</span>
             </div>
             <input
               type="range"
@@ -271,7 +271,7 @@ export default function CacheSimulation() {
           <div>
             <div className="flex justify-between text-white mb-1">
               <span>{t('cache.simulation.database_delay')}</span>
-              <span className="text-blue-400">{config.dbDelay}ms</span>
+              <span className="text-brand-600 dark:text-brand-400">{config.dbDelay}ms</span>
             </div>
             <input
               type="range"
@@ -287,14 +287,14 @@ export default function CacheSimulation() {
       </div>
 
       {/* Controls */}
-      <div className="bg-zinc-900 p-4 md:p-6 rounded-lg">
+      <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-lg">
         <div className="flex flex-col md:flex-row gap-4">
           <input
             type="text"
             value={currentKey}
             onChange={(e) => setCurrentKey(e.target.value)}
             placeholder={t('cache.simulation.cache_key_placeholder')}
-            className="w-full md:flex-1 px-4 py-2 bg-zinc-800 text-white rounded border border-zinc-700 focus:outline-none focus:border-blue-500"
+            className="w-full md:flex-1 px-4 py-2 bg-slate-100 dark:bg-slate-800 text-white rounded border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-blue-500"
           />
           <div className="flex gap-2 md:gap-4">
             <button
@@ -302,7 +302,7 @@ export default function CacheSimulation() {
               disabled={isProcessing}
               className={`flex-1 md:flex-none px-4 md:px-6 py-2 rounded font-medium transition-colors ${
                 isProcessing
-                  ? 'bg-zinc-700 text-zinc-400 cursor-not-allowed'
+                  ? 'bg-zinc-700 text-slate-500 dark:text-slate-400 cursor-not-allowed'
                   : 'bg-blue-500 text-white hover:bg-blue-600'
               }`}
             >
@@ -319,13 +319,13 @@ export default function CacheSimulation() {
       </div>
 
       {/* Cache Status */}
-      <div className="bg-zinc-900 p-4 md:p-6 rounded-lg">
+      <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-lg">
         <h3 className="text-base md:text-lg font-semibold text-white mb-4">{t('cache.simulation.cache_status')}</h3>
         <div className="space-y-2">
           {Array.from(cache.entries()).map(([key, entry]) => (
-            <div key={key} className="flex flex-col md:flex-row md:justify-between md:items-center bg-zinc-800 p-3 rounded gap-2 md:gap-0">
+            <div key={key} className="flex flex-col md:flex-row md:justify-between md:items-center bg-slate-100 dark:bg-slate-800 p-3 rounded gap-2 md:gap-0">
               <div className="text-white break-all">{key}</div>
-              <div className="text-zinc-400 text-sm md:text-base">
+              <div className="text-slate-500 dark:text-slate-400 text-sm md:text-base">
                 {t('cache.simulation.expires_in')} {getRemainingTime(entry.timestamp, config.cacheTTL)}s
               </div>
             </div>
@@ -337,13 +337,13 @@ export default function CacheSimulation() {
       </div>
 
       {/* Request Logs */}
-      <div className="bg-zinc-900 p-4 md:p-6 rounded-lg">
+      <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-lg">
         <h3 className="text-base md:text-lg font-semibold text-white mb-4">{t('cache.simulation.logs')}</h3>
         <div className="space-y-2">
           {logs.map(log => (
             <div
               key={log.id}
-              className="flex flex-col md:flex-row md:justify-between md:items-center bg-zinc-800 p-3 rounded gap-2 md:gap-0"
+              className="flex flex-col md:flex-row md:justify-between md:items-center bg-slate-100 dark:bg-slate-800 p-3 rounded gap-2 md:gap-0"
             >
               <div className="flex flex-wrap items-center gap-2 md:gap-3">
                 <span className={`px-2 py-1 rounded text-sm ${
@@ -359,7 +359,7 @@ export default function CacheSimulation() {
                 </span>
                 <span className="text-white break-all">{log.key}</span>
               </div>
-              <span className="text-zinc-400 text-sm md:text-base">{log.duration}ms</span>
+              <span className="text-slate-500 dark:text-slate-400 text-sm md:text-base">{log.duration}ms</span>
             </div>
           ))}
           {logs.length === 0 && (

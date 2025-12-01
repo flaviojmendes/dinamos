@@ -9,7 +9,7 @@ export default function Timeout() {
     <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
       <div className="prose prose-invert prose-lg max-w-none mb-12">
         <motion.h1 
-          className="text-4xl font-bold mb-4 text-blue-400"
+          className="text-4xl font-bold mb-4 text-brand-600 dark:text-brand-400"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -20,7 +20,7 @@ export default function Timeout() {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-xl text-zinc-300"
+          className="text-xl text-slate-600 dark:text-slate-300"
         >
           {t('design_principles.timeout.intro')}
         </motion.p>
@@ -34,20 +34,20 @@ export default function Timeout() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="space-y-6"
         >
-          <div className="bg-zinc-900 rounded-lg p-6">
-            <h2 className="text-2xl font-bold text-blue-400 mb-4">
+          <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
+            <h2 className="text-2xl font-bold text-brand-600 dark:text-brand-400 mb-4">
               {t('design_principles.timeout.how_it_works.title')}
             </h2>
-            <p className="text-zinc-300 mb-6">
+            <p className="text-slate-600 dark:text-slate-300 mb-6">
               {t('design_principles.timeout.how_it_works.p1')}
             </p>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t('design_principles.timeout.how_it_works.p2')}
             </p>
           </div>
 
-          <div className="bg-zinc-900 rounded-lg p-6">
-            <h2 className="text-2xl font-bold text-blue-400 mb-4">
+          <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
+            <h2 className="text-2xl font-bold text-brand-600 dark:text-brand-400 mb-4">
               {t('design_principles.timeout.benefits.title')}
             </h2>
             <ul className="space-y-4">
@@ -61,8 +61,8 @@ export default function Timeout() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
-                  <h3 className="font-medium text-zinc-200">{t('design_principles.timeout.benefits.items.ux.title')}</h3>
-                  <p className="text-zinc-400">{t('design_principles.timeout.benefits.items.ux.desc')}</p>
+                  <h3 className="font-medium text-slate-700 dark:text-slate-200">{t('design_principles.timeout.benefits.items.ux.title')}</h3>
+                  <p className="text-slate-500 dark:text-slate-400">{t('design_principles.timeout.benefits.items.ux.desc')}</p>
                 </div>
               </motion.li>
               <motion.li 
@@ -75,8 +75,8 @@ export default function Timeout() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
-                  <h3 className="font-medium text-zinc-200">{t('design_principles.timeout.benefits.items.freeing_resources.title')}</h3>
-                  <p className="text-zinc-400">{t('design_principles.timeout.benefits.items.freeing_resources.desc')}</p>
+                  <h3 className="font-medium text-slate-700 dark:text-slate-200">{t('design_principles.timeout.benefits.items.freeing_resources.title')}</h3>
+                  <p className="text-slate-500 dark:text-slate-400">{t('design_principles.timeout.benefits.items.freeing_resources.desc')}</p>
                 </div>
               </motion.li>
               <motion.li 
@@ -89,8 +89,8 @@ export default function Timeout() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
-                  <h3 className="font-medium text-zinc-200">{t('design_principles.timeout.benefits.items.failure_prevention.title')}</h3>
-                  <p className="text-zinc-400">{t('design_principles.timeout.benefits.items.failure_prevention.desc')}</p>
+                  <h3 className="font-medium text-slate-700 dark:text-slate-200">{t('design_principles.timeout.benefits.items.failure_prevention.title')}</h3>
+                  <p className="text-slate-500 dark:text-slate-400">{t('design_principles.timeout.benefits.items.failure_prevention.desc')}</p>
                 </div>
               </motion.li>
             </ul>
@@ -104,37 +104,37 @@ export default function Timeout() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="space-y-6"
         >
-          <div className="bg-zinc-900 rounded-lg p-6">
-            <h2 className="text-2xl font-bold text-blue-400 mb-4">
+          <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
+            <h2 className="text-2xl font-bold text-brand-600 dark:text-brand-400 mb-4">
               {t('design_principles.timeout.real_world.title')}
             </h2>
-            <div className="bg-zinc-800 rounded-lg p-4 mb-4">
-              <p className="text-zinc-300">
+            <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4 mb-4">
+              <p className="text-slate-600 dark:text-slate-300">
                 {t('design_principles.timeout.real_world.text')}
               </p>
             </div>
           </div>
 
-          <div className="bg-zinc-900 rounded-lg p-6">
-            <h2 className="text-2xl font-bold text-blue-400 mb-4">
+          <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
+            <h2 className="text-2xl font-bold text-brand-600 dark:text-brand-400 mb-4">
               {t('design_principles.timeout.best_practices.title')}
             </h2>
             <div className="space-y-4">
-              <div className="bg-zinc-800 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-zinc-200 mb-2">{t('design_principles.timeout.best_practices.items.proper_times.title')}</h3>
-                <p className="text-zinc-400">
+              <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-2">{t('design_principles.timeout.best_practices.items.proper_times.title')}</h3>
+                <p className="text-slate-500 dark:text-slate-400">
                   {t('design_principles.timeout.best_practices.items.proper_times.desc')}
                 </p>
               </div>
-              <div className="bg-zinc-800 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-zinc-200 mb-2">{t('design_principles.timeout.best_practices.items.clear_messages.title')}</h3>
-                <p className="text-zinc-400">
+              <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-2">{t('design_principles.timeout.best_practices.items.clear_messages.title')}</h3>
+                <p className="text-slate-500 dark:text-slate-400">
                   {t('design_principles.timeout.best_practices.items.clear_messages.desc')}
                 </p>
               </div>
-              <div className="bg-zinc-800 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-zinc-200 mb-2">{t('design_principles.timeout.best_practices.items.retry_combo.title')}</h3>
-                <p className="text-zinc-400">
+              <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-2">{t('design_principles.timeout.best_practices.items.retry_combo.title')}</h3>
+                <p className="text-slate-500 dark:text-slate-400">
                   {t('design_principles.timeout.best_practices.items.retry_combo.desc')}
                 </p>
               </div>

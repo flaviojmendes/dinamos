@@ -75,7 +75,7 @@ interface DistributedSystemDesign {
 const ClientNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
   const { t } = useTranslation();
   return (
-    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-blue-500 bg-zinc-800 min-w-[180px]">
+    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-blue-500 bg-slate-100 dark:bg-slate-800 min-w-[180px]">
       <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
       <div className="flex items-center gap-2 font-bold text-white">
         <Users className="w-4 h-4" />
@@ -83,7 +83,7 @@ const ClientNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
       </div>
       {data.metrics && (
         <div className="text-xs mt-2">
-          <div className="text-blue-300">{t('editor.metrics.requests_per_second')}: {data.metrics.requestsPerSecond}</div>
+          <div className="text-brand-600 dark:text-brand-300">{t('editor.metrics.requests_per_second')}: {data.metrics.requestsPerSecond}</div>
           <div className="text-green-300">{t('editor.metrics.response_time_ms')}: {data.metrics.responseTime.toFixed(0)}ms</div>
           <div className="text-cyan-300">{t('editor.metrics.total_latency_ms')}: {data.metrics.cumulativeLatency?.toFixed(0)}ms</div>
           <div className="text-red-300">{t('editor.metrics.failures_per_s')}: {data.metrics.failedRequests}</div>
@@ -109,7 +109,7 @@ const ClientNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
 const ServerNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
   const { t } = useTranslation();
   return (
-    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-purple-500 bg-zinc-800 min-w-[180px]">
+    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-purple-500 bg-slate-100 dark:bg-slate-800 min-w-[180px]">
       <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
       <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
       <div className="flex items-center gap-2 font-bold text-white">
@@ -144,7 +144,7 @@ const ServerNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
 const DatabaseNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
   const { t } = useTranslation();
   return (
-    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-yellow-500 bg-zinc-800 min-w-[180px]">
+    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-yellow-500 bg-slate-100 dark:bg-slate-800 min-w-[180px]">
       <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
       <div className="flex items-center gap-2 font-bold text-white">
         <DatabaseIcon className="w-4 h-4" />
@@ -178,7 +178,7 @@ const DatabaseNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
 const LoadBalancerNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
   const { t } = useTranslation();
   return (
-    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-green-500 bg-zinc-800 min-w-[180px]">
+    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-green-500 bg-slate-100 dark:bg-slate-800 min-w-[180px]">
       <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
       <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
       <div className="flex items-center gap-2 font-bold text-white">
@@ -219,7 +219,7 @@ const LoadBalancerNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
 const APIGatewayNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
   const { t } = useTranslation();
   return (
-    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-indigo-500 bg-zinc-800 min-w-[220px]">
+    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-indigo-500 bg-slate-100 dark:bg-slate-800 min-w-[220px]">
       <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
       <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
       <div className="flex items-center gap-2 font-bold text-white">
@@ -264,7 +264,7 @@ const APIGatewayNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
 const CacheNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
   const { t } = useTranslation();
   return (
-    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-pink-500 bg-zinc-800 min-w-[200px]">
+    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-pink-500 bg-slate-100 dark:bg-slate-800 min-w-[200px]">
       <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
       <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
       <div className="flex items-center gap-2 font-bold text-white">
@@ -335,7 +335,7 @@ const CacheNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
 const MessageQueueNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
   const { t } = useTranslation();
   return (
-    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-orange-500 bg-zinc-800 min-w-[220px]">
+    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-orange-500 bg-slate-100 dark:bg-slate-800 min-w-[220px]">
       <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
       <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
       <div className="flex items-center gap-2 font-bold text-white">
@@ -1437,7 +1437,7 @@ export default function SimpleSystemEditor() {
   return (
     <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
       <div className="prose prose-invert prose-lg max-w-none mb-8">
-        <h1 className="text-3xl font-bold mb-4 text-blue-400">
+        <h1 className="text-3xl font-bold mb-4 text-brand-600 dark:text-brand-400">
           {t('editor.title')}
         </h1>
         <div className="flex flex-col gap-4 mb-4">
@@ -1451,7 +1451,7 @@ export default function SimpleSystemEditor() {
               {isSimulationRunning ? t('editor.buttons.stop') : t('editor.buttons.start')}
             </button>
             
-            <div className="border-l border-zinc-700 h-8 mx-2"></div>
+            <div className="border-l border-slate-300 dark:border-slate-700 h-8 mx-2"></div>
             
             <button
               onClick={exportSystemDesign}
@@ -1495,7 +1495,7 @@ export default function SimpleSystemEditor() {
             </div>
           )}
 
-          <div className="flex gap-4 text-sm text-zinc-400">
+          <div className="flex gap-4 text-sm text-slate-500 dark:text-slate-400">
             <div>{t('editor.labels.load_status')}</div>
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 rounded-full bg-green-500"></div>
@@ -1512,9 +1512,9 @@ export default function SimpleSystemEditor() {
           </div>
 
           {/* Cost Estimation Panel */}
-          <div className="bg-zinc-800 border border-zinc-700 rounded-lg mt-2 shadow-lg w-full max-w-3xl">
+          <div className="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg mt-2 shadow-lg w-full max-w-3xl">
             <div
-              className={`flex items-center justify-between px-4 py-2 cursor-pointer select-none rounded-t-lg ${!isCostPanelOpen ? 'bg-zinc-900/80' : ''}`}
+              className={`flex items-center justify-between px-4 py-2 cursor-pointer select-none rounded-t-lg ${!isCostPanelOpen ? 'bg-white dark:bg-slate-900/80' : ''}`}
               onClick={() => setIsCostPanelOpen(open => !open)}
               aria-label={isCostPanelOpen ? t('editor.labels.monthly_cost_estimate', { provider: provider === 'aws' ? 'AWS' : 'Google Cloud' }) : t('editor.labels.monthly_cost_estimate', { provider: provider === 'aws' ? 'AWS' : 'Google Cloud' })}
             >
@@ -1543,21 +1543,21 @@ export default function SimpleSystemEditor() {
               <div className="flex flex-col gap-1 text-sm px-4 pt-2">
                 {costBreakdown.map(n => (
                   <div key={n.id} className="flex justify-between items-baseline">
-                    <span className="text-zinc-300 flex flex-col sm:flex-row sm:items-baseline gap-0.5">
+                    <span className="text-slate-600 dark:text-slate-300 flex flex-col sm:flex-row sm:items-baseline gap-0.5">
                       <span>{n.label} <span className="text-zinc-500">({n.type})</span></span>
                       {n.product && (
-                        <span className="text-zinc-400 italic text-xs sm:ml-2">{n.product}</span>
+                        <span className="text-slate-500 dark:text-slate-400 italic text-xs sm:ml-2">{n.product}</span>
                       )}
                     </span>
                     <span className="text-green-400 font-mono">${n.cost.toFixed(2)}</span>
                   </div>
                 ))}
-                <div className="flex justify-between border-t border-zinc-700 mt-2 pt-2 font-bold">
+                <div className="flex justify-between border-t border-slate-300 dark:border-slate-700 mt-2 pt-2 font-bold">
                   <span className="text-white">{t('editor.labels.total')}</span>
                   <span className="text-green-300 font-mono text-lg">${totalCost.toFixed(2)}</span>
                 </div>
               </div>
-              <div className="text-xs text-zinc-400 mt-2 px-4 pb-2">
+              <div className="text-xs text-slate-500 dark:text-slate-400 mt-2 px-4 pb-2">
                 {t('editor.labels.note_prefix', { provider: provider === 'aws' ? 'AWS' : 'Google Cloud' })}
                 <br />
                 <a href="https://aws.amazon.com/pricing/" target="_blank" rel="noopener noreferrer" className="underline">AWS Pricing</a> | <a href="https://cloud.google.com/pricing" target="_blank" rel="noopener noreferrer" className="underline">Google Cloud Pricing</a>
@@ -1567,7 +1567,7 @@ export default function SimpleSystemEditor() {
         </div>
       </div>
       
-      <div style={{ width: '100%', height: '600px' }} className="bg-zinc-900 rounded-lg relative">
+      <div style={{ width: '100%', height: '600px' }} className="bg-white dark:bg-slate-900 rounded-lg relative">
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -1591,7 +1591,7 @@ export default function SimpleSystemEditor() {
           onEdgeContextMenu={onEdgeContextMenu}
           onPaneClick={onPaneClick}
         >
-          <Panel position="top-left" className="bg-zinc-800 p-4 rounded-lg">
+          <Panel position="top-left" className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
             <div className="flex flex-col gap-2">
               <h3 className="text-white font-semibold mb-2">{t('editor.labels.components')}</h3>
               <div className="flex flex-col gap-2">
@@ -1623,7 +1623,7 @@ export default function SimpleSystemEditor() {
         {/* Custom context menu */}
         {contextMenu && (
           <div
-            className="absolute z-50 bg-zinc-800 rounded shadow-lg p-2"
+            className="absolute z-50 bg-slate-100 dark:bg-slate-800 rounded shadow-lg p-2"
             style={{ top: contextMenu.y, left: contextMenu.x }}
             onClick={(e) => e.stopPropagation()}
           >

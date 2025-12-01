@@ -125,7 +125,7 @@ export default function HorizontalScalingSimulator() {
     <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
       <div className="prose prose-invert prose-lg max-w-none mb-12">
         <motion.h1 
-          className="text-4xl font-bold mb-4 text-blue-400"
+          className="text-4xl font-bold mb-4 text-brand-600 dark:text-brand-400"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -136,17 +136,17 @@ export default function HorizontalScalingSimulator() {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-xl text-zinc-300"
+          className="text-xl text-slate-600 dark:text-slate-300"
         >
           {t('simulators.horizontal_scaling.intro')}
         </motion.p>
       </div>
 
       {/* Controls */}
-      <div className="bg-zinc-900 rounded-lg p-6 mb-8">
+      <div className="bg-white dark:bg-slate-900 rounded-lg p-6 mb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="space-y-2">
-            <label className="text-sm text-zinc-400">{t('simulators.horizontal_scaling.controls.request_rate')}</label>
+            <label className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.horizontal_scaling.controls.request_rate')}</label>
             <input
               type="range"
               min="1"
@@ -155,11 +155,11 @@ export default function HorizontalScalingSimulator() {
               onChange={e => setConfig({ ...config, requestRate: Number(e.target.value) })}
               className="w-full"
             />
-            <div className="text-sm text-zinc-400">{config.requestRate} req/s</div>
+            <div className="text-sm text-slate-500 dark:text-slate-400">{config.requestRate} req/s</div>
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm text-zinc-400">{t('simulators.horizontal_scaling.controls.processing_time_ms')}</label>
+            <label className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.horizontal_scaling.controls.processing_time_ms')}</label>
             <input
               type="range"
               min="500"
@@ -169,7 +169,7 @@ export default function HorizontalScalingSimulator() {
               onChange={e => setConfig({ ...config, processingTime: Number(e.target.value) })}
               className="w-full"
             />
-            <div className="text-sm text-zinc-400">{config.processingTime}ms</div>
+            <div className="text-sm text-slate-500 dark:text-slate-400">{config.processingTime}ms</div>
           </div>
 
           <div className="space-y-2">
@@ -179,33 +179,33 @@ export default function HorizontalScalingSimulator() {
                 checked={config.autoScale}
                 onChange={e => setConfig({ ...config, autoScale: e.target.checked })}
               />
-              <span className="text-sm text-zinc-400">{t('simulators.horizontal_scaling.controls.auto_scaling')}</span>
+              <span className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.horizontal_scaling.controls.auto_scaling')}</span>
             </label>
             {config.autoScale && (
               <>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-zinc-400">{t('simulators.horizontal_scaling.controls.scale_up')}</span>
+                  <span className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.horizontal_scaling.controls.scale_up')}</span>
                   <input
                     type="number"
                     min="0"
                     max="100"
                     value={config.scaleUpThreshold}
                     onChange={e => setConfig({ ...config, scaleUpThreshold: Number(e.target.value) })}
-                    className="w-16 bg-zinc-800 rounded px-2 py-1"
+                    className="w-16 bg-slate-100 dark:bg-slate-800 rounded px-2 py-1"
                   />
-                  <span className="text-sm text-zinc-400">{t('simulators.horizontal_scaling.controls.percent')}</span>
+                  <span className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.horizontal_scaling.controls.percent')}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-zinc-400">{t('simulators.horizontal_scaling.controls.scale_down')}</span>
+                  <span className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.horizontal_scaling.controls.scale_down')}</span>
                   <input
                     type="number"
                     min="0"
                     max="100"
                     value={config.scaleDownThreshold}
                     onChange={e => setConfig({ ...config, scaleDownThreshold: Number(e.target.value) })}
-                    className="w-16 bg-zinc-800 rounded px-2 py-1"
+                    className="w-16 bg-slate-100 dark:bg-slate-800 rounded px-2 py-1"
                   />
-                  <span className="text-sm text-zinc-400">{t('simulators.horizontal_scaling.controls.percent')}</span>
+                  <span className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.horizontal_scaling.controls.percent')}</span>
                 </div>
               </>
             )}
@@ -252,7 +252,7 @@ export default function HorizontalScalingSimulator() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            className="bg-zinc-900 rounded-lg p-6"
+            className="bg-white dark:bg-slate-900 rounded-lg p-6"
           >
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-medium">{t('simulators.horizontal_scaling.server_card.server_label', { id: server.id })}</h3>
@@ -264,11 +264,11 @@ export default function HorizontalScalingSimulator() {
             </div>
             <div className="space-y-4">
               <div>
-                <div className="flex justify-between text-sm text-zinc-400 mb-1">
+                <div className="flex justify-between text-sm text-slate-500 dark:text-slate-400 mb-1">
                   <span>{t('simulators.horizontal_scaling.server_card.load')}</span>
                   <span>{server.load}%</span>
                 </div>
-                <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                   <motion.div
                     className="h-full bg-blue-500"
                     initial={{ width: 0 }}
@@ -277,7 +277,7 @@ export default function HorizontalScalingSimulator() {
                   />
                 </div>
               </div>
-              <div className="text-sm text-zinc-400">
+              <div className="text-sm text-slate-500 dark:text-slate-400">
                 {t('simulators.horizontal_scaling.server_card.processed_requests', { count: server.requests })}
               </div>
             </div>
@@ -286,7 +286,7 @@ export default function HorizontalScalingSimulator() {
       </div>
 
       {/* Requests */}
-      <div className="bg-zinc-900 rounded-lg p-6">
+      <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
         <h3 className="text-lg font-medium mb-4">{t('simulators.horizontal_scaling.requests.recent')}</h3>
         <div className="space-y-2">
           {requests.slice().reverse().map(request => (
@@ -296,7 +296,7 @@ export default function HorizontalScalingSimulator() {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center gap-4 text-sm"
             >
-              <span className="text-zinc-400">
+              <span className="text-slate-500 dark:text-slate-400">
                 {new Date(request.timestamp).toLocaleTimeString()}
               </span>
               <span>{t('simulators.horizontal_scaling.requests.server_label', { id: request.server })}</span>

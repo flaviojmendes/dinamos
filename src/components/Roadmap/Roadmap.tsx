@@ -90,9 +90,9 @@ export default function Roadmap() {
     } else if (item.status === 'recommended' || item.status === 'new') {
       return 'text-purple-400'; // Recommended content
     } else if (item.status === 'required') {
-      return 'text-blue-400'; // Required content
+      return 'text-brand-600 dark:text-brand-400'; // Required content
     } else {
-      return 'text-blue-400'; // Default content
+      return 'text-brand-600 dark:text-brand-400'; // Default content
     }
   };
   const makeMenuKey = (path: string, field: 'name' | 'description') => `menu.${path.replace(/^\//, '').replace(/\//g, '.')}.${field}`;
@@ -151,17 +151,17 @@ export default function Roadmap() {
         key={item.path}
         className={`relative ${isChild ? 'ml-8 mt-4' : 'mb-8'}`}
       >
-        <div className="bg-zinc-900 rounded-lg p-6 hover:bg-zinc-800/80 transition-colors">
+        <div className="bg-white dark:bg-slate-900 rounded-lg p-6 hover:bg-slate-100 dark:bg-slate-800/80 transition-colors">
           <div className="flex items-start gap-4">
             <div className={`p-3 rounded-lg bg-blue-500/20 relative group ${
               isCompleted(item.path) ? 'bg-green-500/20' : ''
             }`}>
-              <div className="text-blue-400">
+              <div className="text-brand-600 dark:text-brand-400">
                 {item.icon ? React.cloneElement(item.icon as React.ReactElement, {
-                  className: `w-6 h-6 ${isCompleted(item.path) ? 'text-green-400' : 'text-blue-400'}`
+                  className: `w-6 h-6 ${isCompleted(item.path) ? 'text-green-400' : 'text-brand-600 dark:text-brand-400'}`
                 }) : 
                 React.cloneElement(defaultIcon, {
-                  className: `w-6 h-6 ${isCompleted(item.path) ? 'text-green-400' : 'text-blue-400'}`
+                  className: `w-6 h-6 ${isCompleted(item.path) ? 'text-green-400' : 'text-brand-600 dark:text-brand-400'}`
                 })}
               </div>
               {isCompleted(item.path) && (
@@ -175,7 +175,7 @@ export default function Roadmap() {
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
                 <h3 className="text-xl font-semibold text-white">{displayName}</h3>
-                <span className={`text-xs px-2 py-1 rounded-full bg-zinc-800 ${getStepStatus(item)}`}>
+                <span className={`text-xs px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-800 ${getStepStatus(item)}`}>
                   {statusLabel}
                 </span>
                 {item.badges?.map((badge, i) => (
@@ -184,14 +184,14 @@ export default function Roadmap() {
                   </span>
                 ))}
               </div>
-              <p className="text-zinc-300 mb-4">{displayDescription}</p>
+              <p className="text-slate-600 dark:text-slate-300 mb-4">{displayDescription}</p>
               
               {item.prerequisites && item.prerequisites.length > 0 && (
                 <div className="mb-4">
                   <div className="text-sm font-semibold text-white mb-2">{t('roadmap.prerequisites')}</div>
                   <div className="flex flex-wrap gap-2">
                     {item.prerequisites.map(prereq => (
-                      <span key={prereq} className="text-xs bg-zinc-800 px-2 py-1 rounded text-zinc-300">
+                      <span key={prereq} className="text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-slate-600 dark:text-slate-300">
                         {prereq}
                       </span>
                     ))}
@@ -204,7 +204,7 @@ export default function Roadmap() {
                   <div className="text-sm font-semibold text-white mb-2">{t('roadmap.skills')}</div>
                   <div className="flex flex-wrap gap-2">
                     {item.skills.map(skill => (
-                      <span key={skill} className="text-xs bg-zinc-800 px-2 py-1 rounded text-zinc-300">
+                      <span key={skill} className="text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-slate-600 dark:text-slate-300">
                         {skill}
                       </span>
                     ))}
@@ -215,7 +215,7 @@ export default function Roadmap() {
               <Link
                 to={item.path}
                 state={{ childPaths }}
-                className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors"
+                className="inline-flex items-center gap-2 text-brand-600 dark:text-brand-400 hover:text-brand-600 dark:text-brand-300 transition-colors"
               >
                 {isCompleted(item.path) ? t('roadmap.review_module') : t('roadmap.start_module')}
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -243,7 +243,7 @@ export default function Roadmap() {
           <div className="flex items-center justify-center h-64">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto mb-4"></div>
-              <p className="text-zinc-300">{t('common.loading')}</p>
+              <p className="text-slate-600 dark:text-slate-300">{t('common.loading')}</p>
             </div>
           </div>
         </ContentLayout>
@@ -259,38 +259,38 @@ export default function Roadmap() {
         <div className="space-y-8">
           <div className="mb-8">
             <h1 className="text-4xl font-bold mb-4 text-white">{t('roadmap.title')}</h1>
-            <p className="text-lg text-zinc-300 mb-4">
+            <p className="text-lg text-slate-600 dark:text-slate-300 mb-4">
               {t('roadmap.description_1')}
               {" "}
               {t('roadmap.description_2')}
             </p>
             
-            <div className="bg-zinc-800 rounded-full h-4 overflow-hidden">
+            <div className="bg-slate-100 dark:bg-slate-800 rounded-full h-4 overflow-hidden">
               <div 
                 className="bg-blue-500 h-full transition-all duration-500"
                 style={{ width: `${percent}%` }}
               />
             </div>
-            <p className="text-sm text-zinc-300 mt-2">
+            <p className="text-sm text-slate-600 dark:text-slate-300 mt-2">
               {t('roadmap.completed_percent', { percent })}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div className="bg-zinc-900 p-4 rounded-lg">
+            <div className="bg-white dark:bg-slate-900 p-4 rounded-lg">
               <div className="text-green-400 font-semibold mb-2">{t('roadmap.free')}</div>
               <div className="text-2xl font-bold text-white">
                 {menuItems.filter(item => item.badges?.some(b => b.text === "Grátis" || b.text === "Free")).length} {t('roadmap.modules')}
               </div>
             </div>
-            <div className="bg-zinc-900 p-4 rounded-lg">
+            <div className="bg-white dark:bg-slate-900 p-4 rounded-lg">
               <div className="text-purple-400 font-semibold mb-2">{t('roadmap.premium')}</div>
               <div className="text-2xl font-bold text-white">
                 {menuItems.filter(item => !item.badges?.some(b => b.text === "Grátis" || b.text === "Free") && !item.disabled).length} {t('roadmap.modules')}
               </div>
             </div>
-            <div className="bg-zinc-900 p-4 rounded-lg">
-              <div className="text-blue-400 font-semibold mb-2">{t('roadmap.in_dev')}</div>
+            <div className="bg-white dark:bg-slate-900 p-4 rounded-lg">
+              <div className="text-brand-600 dark:text-brand-400 font-semibold mb-2">{t('roadmap.in_dev')}</div>
               <div className="text-2xl font-bold text-white">
                 {menuItems.filter(item => item.status === 'coming-soon' || item.disabled).length} {t('roadmap.modules')}
               </div>

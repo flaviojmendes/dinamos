@@ -81,10 +81,10 @@ export default function ProtectedRoute({ children, requiresSubscription = true }
   // Show loading while auth is loading OR while verifying access
   if (loading || isVerifying || subscriptionVerified === null) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+      <div className="min-h-screen bg-canvas-paper dark:bg-canvas-dark flex items-center justify-center">
         <div className="flex flex-col items-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-          <p className="text-zinc-400 mt-4">
+          <p className="text-slate-500 dark:text-slate-400 mt-4">
             {loading ? t('protected_route.loading', { defaultValue: 'Carregando...' }) : t('protected_route.verifying_access', { defaultValue: 'Verificando acesso...' })}
           </p>
           {retryCount > 0 && (
@@ -126,12 +126,12 @@ export default function ProtectedRoute({ children, requiresSubscription = true }
   // Final security check: Only render children if explicitly verified
   if (requiresSubscription && subscriptionVerified !== true) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+      <div className="min-h-screen bg-canvas-paper dark:bg-canvas-dark flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-400 text-lg mb-4">
             {t('protected_route.access_denied', { defaultValue: 'Acesso negado' })}
           </p>
-          <p className="text-zinc-400">
+          <p className="text-slate-500 dark:text-slate-400">
             {t('protected_route.redirecting', { defaultValue: 'Redirecionando...' })}
           </p>
         </div>

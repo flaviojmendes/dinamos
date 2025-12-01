@@ -106,39 +106,39 @@ export default function CryptographySimulator() {
           <h1 className="text-4xl font-bold text-white mb-4">
             {t(`${base}.title`)}
           </h1>
-          <p className="text-lg text-zinc-400">
+          <p className="text-lg text-slate-500 dark:text-slate-400">
             {t(`${base}.subtitle`)}
           </p>
         </div>
 
         {/* Simulador */}
-        <div className="bg-zinc-900 rounded-lg p-6">
+        <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
           <div className="space-y-8">
             {/* Controles */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Entrada de Dados */}
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-zinc-400 mb-1">
+                  <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
                     {t(`${base}.text_input_label`)}
                   </label>
                   <textarea
                     value={plainText}
                     onChange={(e) => setPlainText(e.target.value)}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white h-32"
+                    className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-white h-32"
                     placeholder={t(`${base}.text_input_placeholder`)}
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-zinc-400 mb-1">
+                  <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
                     {t(`${base}.key_label`)}
                   </label>
                   <input
                     type="text"
                     value={key}
                     onChange={(e) => setKey(e.target.value)}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
+                    className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-white"
                     placeholder={t(`${base}.key_placeholder`)}
                   />
                 </div>
@@ -147,13 +147,13 @@ export default function CryptographySimulator() {
               {/* Seleção de Operação */}
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-zinc-400 mb-1">
+                  <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
                     {t(`${base}.operation_label`)}
                   </label>
                   <select
                     value={selectedOperation}
                     onChange={(e) => setSelectedOperation(e.target.value)}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
+                    className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-white"
                   >
                     <option value="aes">{operations.aes}</option>
                     <option value="sha256">{operations.sha256}</option>
@@ -189,20 +189,20 @@ export default function CryptographySimulator() {
               ) : (
                 <div className="space-y-4">
                   {results.map((result, index) => (
-                    <div key={index} className="bg-zinc-800 p-4 rounded-lg">
+                    <div key={index} className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
                       <div className="grid gap-2">
                         <div>
-                          <span className="text-sm font-medium text-zinc-400">{resultLabels.input}</span>
-                          <p className="text-zinc-300 font-mono break-all">{result.input}</p>
+                          <span className="text-sm font-medium text-slate-500 dark:text-slate-400">{resultLabels.input}</span>
+                          <p className="text-slate-600 dark:text-slate-300 font-mono break-all">{result.input}</p>
                         </div>
                         <div>
-                          <span className="text-sm font-medium text-zinc-400">{resultLabels.output}</span>
-                          <p className="text-zinc-300 font-mono break-all">{result.output}</p>
+                          <span className="text-sm font-medium text-slate-500 dark:text-slate-400">{resultLabels.output}</span>
+                          <p className="text-slate-600 dark:text-slate-300 font-mono break-all">{result.output}</p>
                         </div>
                         {result.details && (
                           <div>
-                            <span className="text-sm font-medium text-zinc-400">{resultLabels.details}</span>
-                            <p className="text-zinc-300">{result.details}</p>
+                            <span className="text-sm font-medium text-slate-500 dark:text-slate-400">{resultLabels.details}</span>
+                            <p className="text-slate-600 dark:text-slate-300">{result.details}</p>
                           </div>
                         )}
                       </div>
@@ -215,9 +215,9 @@ export default function CryptographySimulator() {
         </div>
 
         {/* Informações Adicionais */}
-        <div className="mt-12 bg-zinc-900 rounded-lg p-6">
+        <div className="mt-12 bg-white dark:bg-slate-900 rounded-lg p-6">
           <h3 className="text-xl font-semibold text-white mb-4">{t(`${base}.instructions_title`)}</h3>
-          <div className="space-y-4 text-zinc-400">
+          <div className="space-y-4 text-slate-500 dark:text-slate-400">
             {instructions.map((instruction, index) => (
               <p key={index}>
                 {index + 1}. {instruction}
@@ -227,7 +227,7 @@ export default function CryptographySimulator() {
 
           <div className="mt-6">
             <h4 className="text-lg font-semibold text-white mb-2">{t(`${base}.important_notes_title`)}</h4>
-            <ul className="list-disc list-inside text-zinc-400 space-y-2">
+            <ul className="list-disc list-inside text-slate-500 dark:text-slate-400 space-y-2">
               {importantNotes.map((note, index) => (
                 <li key={index}>{note}</li>
               ))}

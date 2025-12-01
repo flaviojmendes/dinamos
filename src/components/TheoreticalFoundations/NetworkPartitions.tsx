@@ -23,7 +23,7 @@ const NetworkPartitions: React.FC = () => {
           </Typography>
 
           {/* Introduction */}
-          <div className="bg-zinc-800/30 p-8 rounded-lg border border-zinc-600 mb-12">
+          <div className="bg-slate-100 dark:bg-slate-800/30 p-8 rounded-lg border border-zinc-600 mb-12">
             <Typography variant="p" className="text-lg leading-relaxed text-gray-200">
               {t('menu.theoretical_foundations.network_partitions.introduction')}
             </Typography>
@@ -54,7 +54,7 @@ const NetworkPartitions: React.FC = () => {
                 </ul>
               </div>
 
-              <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+              <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                 <Typography variant="p" className="text-sm text-yellow-300">
                   {t('menu.theoretical_foundations.network_partitions.what_is.note')}
                 </Typography>
@@ -72,7 +72,7 @@ const NetworkPartitions: React.FC = () => {
 
               <div className="grid lg:grid-cols-2 gap-6 mb-6">
                 {/* Common Causes */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-yellow-300">
                     Common Causes:
                   </Typography>
@@ -84,7 +84,7 @@ const NetworkPartitions: React.FC = () => {
                 </div>
 
                 {/* Detailed Causes */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-yellow-300">
                     {t('menu.theoretical_foundations.network_partitions.causes_label')}
                   </Typography>
@@ -99,7 +99,7 @@ const NetworkPartitions: React.FC = () => {
 
             {/* Failure Types Section */}
             <div className="bg-blue-900/20 p-8 rounded-lg border border-blue-700">
-              <Typography variant="h2" className="mb-6 text-blue-400">
+              <Typography variant="h2" className="mb-6 text-brand-600 dark:text-brand-400">
                 {t('menu.theoretical_foundations.network_partitions.failure_types.title')}
               </Typography>
               <Typography variant="p" className="mb-6 text-gray-300">
@@ -108,7 +108,7 @@ const NetworkPartitions: React.FC = () => {
 
               <div className="space-y-8">
                 {/* Fail-Stop */}
-                <div className="bg-zinc-900/50 p-6 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-6 rounded border border-zinc-600">
                   <div className="flex items-center mb-4">
                     <div className="text-2xl mr-3">🔴</div>
                     <Typography variant="h3" className="text-green-400">
@@ -147,7 +147,7 @@ const NetworkPartitions: React.FC = () => {
                 </div>
 
                 {/* Fail-Slow */}
-                <div className="bg-zinc-900/50 p-6 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-6 rounded border border-zinc-600">
                   <div className="flex items-center mb-4">
                     <div className="text-2xl mr-3">🟡</div>
                     <Typography variant="h3" className="text-yellow-400">
@@ -186,7 +186,7 @@ const NetworkPartitions: React.FC = () => {
                 </div>
 
                 {/* Byzantine */}
-                <div className="bg-zinc-900/50 p-6 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-6 rounded border border-zinc-600">
                   <div className="flex items-center mb-4">
                     <div className="text-2xl mr-3">🔥</div>
                     <Typography variant="h3" className="text-red-400">
@@ -250,7 +250,7 @@ const NetworkPartitions: React.FC = () => {
 
               <div className="space-y-6">
                 {/* Multi-Datacenter */}
-                <div className="bg-zinc-900/50 p-6 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-6 rounded border border-zinc-600">
                   <Typography variant="h3" className="mb-3 text-indigo-300">
                     {t('menu.theoretical_foundations.network_partitions.partition_scenarios.datacenter_split.title')}
                   </Typography>
@@ -270,7 +270,7 @@ const NetworkPartitions: React.FC = () => {
                 </div>
 
                 {/* Service Mesh */}
-                <div className="bg-zinc-900/50 p-6 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-6 rounded border border-zinc-600">
                   <Typography variant="h3" className="mb-3 text-indigo-300">
                     {t('menu.theoretical_foundations.network_partitions.partition_scenarios.service_mesh_partition.title')}
                   </Typography>
@@ -290,7 +290,7 @@ const NetworkPartitions: React.FC = () => {
                 </div>
 
                 {/* Database Partition */}
-                <div className="bg-zinc-900/50 p-6 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-6 rounded border border-zinc-600">
                   <Typography variant="h3" className="mb-3 text-indigo-300">
                     {t('menu.theoretical_foundations.network_partitions.partition_scenarios.database_partition.title')}
                   </Typography>
@@ -328,7 +328,7 @@ const NetworkPartitions: React.FC = () => {
 
               <div className="grid lg:grid-cols-2 gap-6 mb-6">
                 {/* Basic Detection */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-green-300">
                     Basic Detection:
                   </Typography>
@@ -340,7 +340,7 @@ const NetworkPartitions: React.FC = () => {
                 </div>
 
                 {/* Detection Challenges */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-green-300">
                     {t('menu.theoretical_foundations.network_partitions.challenges_label')}
                   </Typography>
@@ -367,7 +367,7 @@ const NetworkPartitions: React.FC = () => {
 
             {/* Prevention Section */}
             <div className="bg-blue-900/20 p-8 rounded-lg border border-blue-700">
-              <Typography variant="h2" className="mb-6 text-blue-400">
+              <Typography variant="h2" className="mb-6 text-brand-600 dark:text-brand-400">
                 {t('menu.theoretical_foundations.network_partitions.prevention.title')}
               </Typography>
               <Typography variant="p" className="mb-6 text-gray-300">
@@ -376,8 +376,8 @@ const NetworkPartitions: React.FC = () => {
 
               <div className="grid lg:grid-cols-2 gap-6">
                 {/* Basic Prevention */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
-                  <Typography variant="h4" className="text-sm font-semibold mb-3 text-blue-300">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
+                  <Typography variant="h4" className="text-sm font-semibold mb-3 text-brand-600 dark:text-brand-300">
                     Basic Prevention:
                   </Typography>
                   <ul className="list-disc list-inside space-y-1">
@@ -388,8 +388,8 @@ const NetworkPartitions: React.FC = () => {
                 </div>
 
                 {/* Detailed Strategies */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
-                  <Typography variant="h4" className="text-sm font-semibold mb-3 text-blue-300">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
+                  <Typography variant="h4" className="text-sm font-semibold mb-3 text-brand-600 dark:text-brand-300">
                     Detailed Prevention Strategies:
                   </Typography>
                   <ul className="list-disc list-inside space-y-1">
@@ -412,7 +412,7 @@ const NetworkPartitions: React.FC = () => {
 
               <div className="grid lg:grid-cols-2 gap-6">
                 {/* Basic Recovery */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-purple-300">
                     Basic Recovery:
                   </Typography>
@@ -424,7 +424,7 @@ const NetworkPartitions: React.FC = () => {
                 </div>
 
                 {/* Detailed Strategies */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-purple-300">
                     Detailed Recovery Strategies:
                   </Typography>
@@ -451,7 +451,7 @@ const NetworkPartitions: React.FC = () => {
                   {t('menu.theoretical_foundations.network_partitions.design_principles.architectural.title')}
                 </Typography>
                 <div className="grid lg:grid-cols-2 gap-6">
-                  <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                  <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                     <Typography variant="h4" className="text-sm font-semibold mb-3 text-orange-300">
                       Basic Patterns:
                     </Typography>
@@ -461,7 +461,7 @@ const NetworkPartitions: React.FC = () => {
                       ))}
                     </ul>
                   </div>
-                  <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                  <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                     <Typography variant="h4" className="text-sm font-semibold mb-3 text-orange-300">
                       {t('menu.theoretical_foundations.network_partitions.patterns_label')}
                     </Typography>
@@ -480,7 +480,7 @@ const NetworkPartitions: React.FC = () => {
                   {t('menu.theoretical_foundations.network_partitions.design_principles.operational.title')}
                 </Typography>
                 <div className="grid lg:grid-cols-2 gap-6">
-                  <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                  <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                     <Typography variant="h4" className="text-sm font-semibold mb-3 text-orange-300">
                       Basic Practices:
                     </Typography>
@@ -490,7 +490,7 @@ const NetworkPartitions: React.FC = () => {
                       ))}
                     </ul>
                   </div>
-                  <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                  <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                     <Typography variant="h4" className="text-sm font-semibold mb-3 text-orange-300">
                       {t('menu.theoretical_foundations.network_partitions.practices_label')}
                     </Typography>

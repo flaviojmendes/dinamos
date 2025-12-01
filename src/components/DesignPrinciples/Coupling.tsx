@@ -17,10 +17,10 @@ export default function Coupling() {
         <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
           {t('design_principles.coupling.title')}
         </h1>
-        <p className="text-lg text-zinc-300 mb-6">
+        <p className="text-lg text-slate-600 dark:text-slate-300 mb-6">
           {t('design_principles.coupling.intro')}
         </p>
-        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-blue-300">
+        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-brand-600 dark:text-brand-300">
           <strong className="block mb-2">💡 {t('design_principles.coupling.key_concept_label')}:</strong>
           {t('design_principles.coupling.key_concept_text')}
         </div>
@@ -37,15 +37,15 @@ export default function Coupling() {
         
         {/* Static Coupling */}
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 mb-8">
-          <h3 className="text-2xl font-bold mb-4 text-blue-400">{t('design_principles.coupling.static_title')}</h3>
-          <p className="text-zinc-300 mb-6">
+          <h3 className="text-2xl font-bold mb-4 text-brand-600 dark:text-brand-400">{t('design_principles.coupling.static_title')}</h3>
+          <p className="text-slate-600 dark:text-slate-300 mb-6">
             O acoplamento estático ocorre quando componentes são conectados em tempo de compilação,
             criando dependências rígidas que são difíceis de modificar sem alterar o código.
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-              <h4 className="text-lg font-semibold mb-3 text-blue-300">{t('design_principles.coupling.characteristics_title')}</h4>
+              <h4 className="text-lg font-semibold mb-3 text-brand-600 dark:text-brand-300">{t('design_principles.coupling.characteristics_title')}</h4>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">
                   <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,7 +53,7 @@ export default function Coupling() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Dependências Diretas</span>
-                    <p className="text-zinc-400">Referências explícitas a classes ou módulos específicos</p>
+                    <p className="text-slate-500 dark:text-slate-400">Referências explícitas a classes ou módulos específicos</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -62,7 +62,7 @@ export default function Coupling() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Verificação em Tempo de Compilação</span>
-                    <p className="text-zinc-400">Erros são detectados antes da execução</p>
+                    <p className="text-slate-500 dark:text-slate-400">Erros são detectados antes da execução</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -71,17 +71,17 @@ export default function Coupling() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Menor Flexibilidade</span>
-                    <p className="text-zinc-400">Mudanças requerem recompilação e reimplantação</p>
+                    <p className="text-slate-500 dark:text-slate-400">Mudanças requerem recompilação e reimplantação</p>
                   </div>
                 </li>
               </ul>
             </div>
             <div>
-              <h4 className="text-lg font-semibold mb-3 text-blue-300">{t('design_principles.coupling.advantages_title')}</h4>
+              <h4 className="text-lg font-semibold mb-3 text-brand-600 dark:text-brand-300">{t('design_principles.coupling.advantages_title')}</h4>
               <div className="space-y-4">
                 <div className="bg-green-500/10 p-3 rounded-lg border border-green-500/20">
                   <h5 className="text-green-400 font-medium mb-2">Vantagens</h5>
-                  <ul className="text-zinc-300 space-y-1 text-sm">
+                  <ul className="text-slate-600 dark:text-slate-300 space-y-1 text-sm">
                     <li>• Detecção precoce de erros</li>
                     <li>• Melhor performance em tempo de execução</li>
                     <li>• Mais fácil de entender e rastrear</li>
@@ -89,7 +89,7 @@ export default function Coupling() {
                 </div>
                 <div className="bg-red-500/10 p-3 rounded-lg border border-red-500/20">
                   <h5 className="text-red-400 font-medium mb-2">Desvantagens</h5>
-                  <ul className="text-zinc-300 space-y-1 text-sm">
+                  <ul className="text-slate-600 dark:text-slate-300 space-y-1 text-sm">
                     <li>• Menor flexibilidade para mudanças</li>
                     <li>• Maior dificuldade de manutenção</li>
                     <li>• Menor resiliência a falhas</li>
@@ -99,10 +99,10 @@ export default function Coupling() {
             </div>
           </div>
 
-          <div className="bg-zinc-800/50 rounded-lg p-4 mb-4">
-            <h4 className="text-lg font-semibold mb-2 text-blue-300">{t('design_principles.coupling.example_static_title')}:</h4>
+          <div className="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4 mb-4">
+            <h4 className="text-lg font-semibold mb-2 text-brand-600 dark:text-brand-300">{t('design_principles.coupling.example_static_title')}:</h4>
             <pre className="bg-black/30 p-4 rounded-lg overflow-x-auto">
-              <code className="text-sm text-zinc-300">
+              <code className="text-sm text-slate-600 dark:text-slate-300">
 {`// Acoplamento estático através de importação direta
 import { UserService } from './UserService';
 
@@ -128,7 +128,7 @@ class OrderProcessor {
         {/* Dynamic Coupling */}
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 mb-8">
           <h3 className="text-2xl font-bold mb-4 text-purple-400">{t('design_principles.coupling.dynamic_title')}</h3>
-          <p className="text-zinc-300 mb-6">
+          <p className="text-slate-600 dark:text-slate-300 mb-6">
             O acoplamento dinâmico permite que componentes sejam conectados em tempo de execução,
             oferecendo maior flexibilidade e facilitando mudanças sem necessidade de recompilação.
           </p>
@@ -143,7 +143,7 @@ class OrderProcessor {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Descoberta em Runtime</span>
-                    <p className="text-zinc-400">Serviços são descobertos e conectados dinamicamente</p>
+                    <p className="text-slate-500 dark:text-slate-400">Serviços são descobertos e conectados dinamicamente</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -152,7 +152,7 @@ class OrderProcessor {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Maior Flexibilidade</span>
-                    <p className="text-zinc-400">Facilidade para trocar implementações em runtime</p>
+                    <p className="text-slate-500 dark:text-slate-400">Facilidade para trocar implementações em runtime</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -161,7 +161,7 @@ class OrderProcessor {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Resiliência</span>
-                    <p className="text-zinc-400">Melhor adaptação a falhas e mudanças</p>
+                    <p className="text-slate-500 dark:text-slate-400">Melhor adaptação a falhas e mudanças</p>
                   </div>
                 </li>
               </ul>
@@ -171,7 +171,7 @@ class OrderProcessor {
               <div className="space-y-4">
                 <div className="bg-green-500/10 p-3 rounded-lg border border-green-500/20">
                   <h5 className="text-green-400 font-medium mb-2">Vantagens</h5>
-                  <ul className="text-zinc-300 space-y-1 text-sm">
+                  <ul className="text-slate-600 dark:text-slate-300 space-y-1 text-sm">
                     <li>• Maior flexibilidade e adaptabilidade</li>
                     <li>• Melhor resiliência a falhas</li>
                     <li>• Facilidade de manutenção e evolução</li>
@@ -179,7 +179,7 @@ class OrderProcessor {
                 </div>
                 <div className="bg-red-500/10 p-3 rounded-lg border border-red-500/20">
                   <h5 className="text-red-400 font-medium mb-2">Desvantagens</h5>
-                  <ul className="text-zinc-300 space-y-1 text-sm">
+                  <ul className="text-slate-600 dark:text-slate-300 space-y-1 text-sm">
                     <li>• Maior complexidade de implementação</li>
                     <li>• Possíveis falhas em tempo de execução</li>
                     <li>• Overhead de performance</li>
@@ -189,10 +189,10 @@ class OrderProcessor {
             </div>
           </div>
 
-          <div className="bg-zinc-800/50 rounded-lg p-4 mb-4">
+          <div className="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4 mb-4">
             <h4 className="text-lg font-semibold mb-2 text-purple-300">{t('design_principles.coupling.example_dynamic_title')}:</h4>
             <pre className="bg-black/30 p-4 rounded-lg overflow-x-auto">
-              <code className="text-sm text-zinc-300">
+              <code className="text-sm text-slate-600 dark:text-slate-300">
 {`// Acoplamento dinâmico usando injeção de dependência e service discovery
 interface UserServiceInterface {
   getUser(id: string): Promise<User>;
@@ -227,7 +227,7 @@ class OrderProcessor {
         {/* Service Discovery */}
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 mb-8">
           <h3 className="text-2xl font-bold mb-4 text-green-400">{t('design_principles.coupling.service_discovery_title')}</h3>
-          <p className="text-zinc-300 mb-6">
+          <p className="text-slate-600 dark:text-slate-300 mb-6">
             {t('design_principles.coupling.service_discovery_intro')}
           </p>
 
@@ -241,7 +241,7 @@ class OrderProcessor {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Registro de Serviços</span>
-                    <p className="text-zinc-400">Onde os serviços se registram ao iniciar</p>
+                    <p className="text-slate-500 dark:text-slate-400">Onde os serviços se registram ao iniciar</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -250,7 +250,7 @@ class OrderProcessor {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Health Checking</span>
-                    <p className="text-zinc-400">Monitoramento da saúde dos serviços</p>
+                    <p className="text-slate-500 dark:text-slate-400">Monitoramento da saúde dos serviços</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -259,7 +259,7 @@ class OrderProcessor {
                   </svg>
                   <div>
                     <span className="text-white font-medium">DNS Dinâmico</span>
-                    <p className="text-zinc-400">Resolução dinâmica de endereços</p>
+                    <p className="text-slate-500 dark:text-slate-400">Resolução dinâmica de endereços</p>
                   </div>
                 </li>
               </ul>
@@ -267,17 +267,17 @@ class OrderProcessor {
             <div>
               <h4 className="text-lg font-semibold mb-3 text-green-300">{t('design_principles.coupling.tools_title')}</h4>
               <div className="space-y-3">
-                <div className="bg-zinc-800/50 p-3 rounded-lg">
+                <div className="bg-slate-100 dark:bg-slate-800/50 p-3 rounded-lg">
                   <h5 className="text-white font-medium mb-1">Consul</h5>
-                  <p className="text-zinc-400 text-sm">Solução completa com service discovery, configuração e segmentação</p>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm">Solução completa com service discovery, configuração e segmentação</p>
                 </div>
-                <div className="bg-zinc-800/50 p-3 rounded-lg">
+                <div className="bg-slate-100 dark:bg-slate-800/50 p-3 rounded-lg">
                   <h5 className="text-white font-medium mb-1">Eureka</h5>
-                  <p className="text-zinc-400 text-sm">Service discovery da Netflix para aplicações Java</p>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm">Service discovery da Netflix para aplicações Java</p>
                 </div>
-                <div className="bg-zinc-800/50 p-3 rounded-lg">
+                <div className="bg-slate-100 dark:bg-slate-800/50 p-3 rounded-lg">
                   <h5 className="text-white font-medium mb-1">etcd</h5>
-                  <p className="text-zinc-400 text-sm">Armazenamento distribuído de chave-valor usado no Kubernetes</p>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm">Armazenamento distribuído de chave-valor usado no Kubernetes</p>
                 </div>
               </div>
             </div>
@@ -296,7 +296,7 @@ class OrderProcessor {
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-blue-400">Design e Arquitetura</h3>
+              <h3 className="text-xl font-semibold mb-4 text-brand-600 dark:text-brand-400">Design e Arquitetura</h3>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
                   <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -304,7 +304,7 @@ class OrderProcessor {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Interfaces Bem Definidas</span>
-                    <p className="text-zinc-400 text-sm">Use interfaces para definir contratos claros entre serviços</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">Use interfaces para definir contratos claros entre serviços</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -313,7 +313,7 @@ class OrderProcessor {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Injeção de Dependência</span>
-                    <p className="text-zinc-400 text-sm">Utilize DI para gerenciar dependências de forma flexível</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">Utilize DI para gerenciar dependências de forma flexível</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -322,7 +322,7 @@ class OrderProcessor {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Abstração Adequada</span>
-                    <p className="text-zinc-400 text-sm">Encontre o nível certo de abstração para cada componente</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">Encontre o nível certo de abstração para cada componente</p>
                   </div>
                 </li>
               </ul>
@@ -336,7 +336,7 @@ class OrderProcessor {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Service Discovery</span>
-                    <p className="text-zinc-400 text-sm">Implemente mecanismos robustos de descoberta de serviços</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">Implemente mecanismos robustos de descoberta de serviços</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -345,7 +345,7 @@ class OrderProcessor {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Circuit Breakers</span>
-                    <p className="text-zinc-400 text-sm">Use circuit breakers para lidar com falhas de serviços</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">Use circuit breakers para lidar com falhas de serviços</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -354,7 +354,7 @@ class OrderProcessor {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Fallbacks</span>
-                    <p className="text-zinc-400 text-sm">Implemente estratégias de fallback para maior resiliência</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">Implemente estratégias de fallback para maior resiliência</p>
                   </div>
                 </li>
               </ul>
@@ -374,8 +374,8 @@ class OrderProcessor {
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-blue-500/10 p-4 rounded-lg border border-blue-500/20">
-              <h3 className="text-lg font-semibold mb-3 text-blue-400">Performance</h3>
-              <ul className="text-zinc-300 space-y-2 text-sm">
+              <h3 className="text-lg font-semibold mb-3 text-brand-600 dark:text-brand-400">Performance</h3>
+              <ul className="text-slate-600 dark:text-slate-300 space-y-2 text-sm">
                 <li>• Acoplamento estático geralmente tem melhor performance</li>
                 <li>• Acoplamento dinâmico adiciona overhead de descoberta</li>
                 <li>• Considere o impacto em latência e throughput</li>
@@ -383,7 +383,7 @@ class OrderProcessor {
             </div>
             <div className="bg-purple-500/10 p-4 rounded-lg border border-purple-500/20">
               <h3 className="text-lg font-semibold mb-3 text-purple-400">Complexidade</h3>
-              <ul className="text-zinc-300 space-y-2 text-sm">
+              <ul className="text-slate-600 dark:text-slate-300 space-y-2 text-sm">
                 <li>• Acoplamento dinâmico aumenta a complexidade</li>
                 <li>• Necessidade de gerenciar estados distribuídos</li>
                 <li>• Maior curva de aprendizado para a equipe</li>
@@ -391,7 +391,7 @@ class OrderProcessor {
             </div>
             <div className="bg-green-500/10 p-4 rounded-lg border border-green-500/20">
               <h3 className="text-lg font-semibold mb-3 text-green-400">Manutenibilidade</h3>
-              <ul className="text-zinc-300 space-y-2 text-sm">
+              <ul className="text-slate-600 dark:text-slate-300 space-y-2 text-sm">
                 <li>• Acoplamento baixo facilita mudanças</li>
                 <li>• Maior facilidade de testes isolados</li>
                 <li>• Melhor suporte para desenvolvimento paralelo</li>
@@ -411,13 +411,13 @@ class OrderProcessor {
         <h2 className="text-2xl font-bold mb-6 text-white">{t('design_principles.coupling.real_world_title')}</h2>
         <div className="space-y-6">
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-            <h3 className="text-xl font-semibold mb-4 text-blue-400">Microsserviços na Netflix</h3>
-            <p className="text-zinc-300 mb-4">
+            <h3 className="text-xl font-semibold mb-4 text-brand-600 dark:text-brand-400">Microsserviços na Netflix</h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-4">
               A Netflix utiliza acoplamento dinâmico extensivamente em sua arquitetura de microsserviços,
               com ferramentas como Eureka para service discovery e Hystrix para circuit breaking.
             </p>
-            <div className="bg-zinc-800/50 rounded-lg p-4">
-              <pre className="text-sm text-zinc-300">
+            <div className="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4">
+              <pre className="text-sm text-slate-600 dark:text-slate-300">
 {`@EnableEurekaClient
 public class VideoServiceApplication {
     @Bean
@@ -432,12 +432,12 @@ public class VideoServiceApplication {
 
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
             <h3 className="text-xl font-semibold mb-4 text-purple-400">Kubernetes Service Discovery</h3>
-            <p className="text-zinc-300 mb-4">
+            <p className="text-slate-600 dark:text-slate-300 mb-4">
               O Kubernetes implementa service discovery através de seu sistema de DNS interno e
               serviços, permitindo que pods se comuniquem sem conhecer localizações específicas.
             </p>
-            <div className="bg-zinc-800/50 rounded-lg p-4">
-              <pre className="text-sm text-zinc-300">
+            <div className="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4">
+              <pre className="text-sm text-slate-600 dark:text-slate-300">
 {`apiVersion: v1
 kind: Service
 metadata:

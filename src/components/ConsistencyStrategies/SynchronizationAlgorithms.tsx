@@ -105,10 +105,10 @@ export default function SynchronizationAlgorithms() {
         <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
           {t('design_principles.algorithms.title')}
         </h1>
-        <p className="text-lg text-zinc-300 mb-6">
+        <p className="text-lg text-slate-600 dark:text-slate-300 mb-6">
           {t('design_principles.algorithms.intro')}
         </p>
-        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-blue-300">
+        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-brand-600 dark:text-brand-300">
           <strong className="block mb-2">{t('design_principles.algorithms.key_concept_label')}</strong>
           {t('design_principles.algorithms.key_concept_text')}
         </div>
@@ -125,23 +125,23 @@ export default function SynchronizationAlgorithms() {
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 mb-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-blue-400">{t('design_principles.algorithms.bakery.concept_title')}</h3>
-              <p className="text-zinc-300 mb-4">
+              <h3 className="text-xl font-semibold mb-4 text-brand-600 dark:text-brand-400">{t('design_principles.algorithms.bakery.concept_title')}</h3>
+              <p className="text-slate-600 dark:text-slate-300 mb-4">
                 {t('design_principles.algorithms.bakery.concept_p')}
               </p>
               <div className="flex items-center gap-2 text-sm mb-6">
-                <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+                <span className="px-2 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded">
                   {t('design_principles.algorithms.bakery.badges.total_order')}
                 </span>
-                <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+                <span className="px-2 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded">
                   {t('design_principles.algorithms.bakery.badges.fairness')}
                 </span>
               </div>
 
               {/* Code Example */}
-              <div className="bg-zinc-900/50 rounded-lg p-4 mb-4">
+              <div className="bg-white dark:bg-slate-900/50 rounded-lg p-4 mb-4">
                 <pre className="text-sm overflow-x-auto">
-                  <code className="text-blue-300">
+                  <code className="text-brand-600 dark:text-brand-300">
 {`// Estrutura do processo
 type Process = {
   id: number;
@@ -183,8 +183,8 @@ function enterCriticalSection(process: Process, processes: Process[]) {
             </div>
 
             {/* Interactive Demo */}
-            <div className="bg-zinc-900/50 rounded-lg p-6">
-              <h4 className="text-lg font-semibold mb-4 text-blue-400">{t('design_principles.algorithms.bakery.demo_title')}</h4>
+            <div className="bg-white dark:bg-slate-900/50 rounded-lg p-6">
+              <h4 className="text-lg font-semibold mb-4 text-brand-600 dark:text-brand-400">{t('design_principles.algorithms.bakery.demo_title')}</h4>
               <div className="space-y-4">
                 {bakeryProcesses.map(process => (
                   <div 
@@ -193,7 +193,7 @@ function enterCriticalSection(process: Process, processes: Process[]) {
                   >
                     <motion.div 
                       className={`w-32 h-12 rounded-lg flex items-center justify-center ${
-                        process.state === 'idle' ? 'bg-zinc-800' :
+                        process.state === 'idle' ? 'bg-slate-100 dark:bg-slate-800' :
                         process.state === 'requesting' ? 'bg-yellow-500/20' :
                         'bg-green-500/20'
                       }`}
@@ -210,7 +210,7 @@ function enterCriticalSection(process: Process, processes: Process[]) {
                       <motion.div
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="bg-blue-500/20 px-3 py-1 rounded text-blue-300"
+                        className="bg-blue-500/20 px-3 py-1 rounded text-brand-600 dark:text-brand-300"
                       >
                         {t('design_principles.algorithms.bakery.labels.ticket')}: {process.number}
                       </motion.div>
@@ -218,7 +218,7 @@ function enterCriticalSection(process: Process, processes: Process[]) {
                     {process.state === 'idle' && (
                       <button
                         onClick={() => requestBakeryAccess(process.id)}
-                        className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded hover:bg-blue-500/30"
+                        className="px-3 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded hover:bg-blue-500/30"
                       >
                         {t('design_principles.algorithms.bakery.labels.request_access')}
                       </button>
@@ -243,7 +243,7 @@ function enterCriticalSection(process: Process, processes: Process[]) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
               <h3 className="text-xl font-semibold mb-4 text-green-400">{t('design_principles.algorithms.token_ring.concept_title')}</h3>
-              <p className="text-zinc-300 mb-4">
+              <p className="text-slate-600 dark:text-slate-300 mb-4">
                 {t('design_principles.algorithms.token_ring.concept_p')}
               </p>
               <div className="flex items-center gap-2 text-sm mb-6">
@@ -256,7 +256,7 @@ function enterCriticalSection(process: Process, processes: Process[]) {
               </div>
 
               {/* Code Example */}
-              <div className="bg-zinc-900/50 rounded-lg p-4 mb-4">
+              <div className="bg-white dark:bg-slate-900/50 rounded-lg p-4 mb-4">
                 <pre className="text-sm overflow-x-auto">
                   <code className="text-green-300">
 {`// Estrutura do processo
@@ -302,7 +302,7 @@ class TokenRing {
             </div>
 
             {/* Interactive Demo */}
-            <div className="bg-zinc-900/50 rounded-lg p-6">
+            <div className="bg-white dark:bg-slate-900/50 rounded-lg p-6">
               <h4 className="text-lg font-semibold mb-4 text-green-400">{t('design_principles.algorithms.token_ring.demo_title')}</h4>
               <div className="relative aspect-square">
                 {tokenRingProcesses.map((process, index) => {
@@ -317,7 +317,7 @@ class TokenRing {
                       className={`absolute w-16 h-16 -ml-8 -mt-8 rounded-full flex items-center justify-center ${
                         tokenPosition === process.id 
                           ? 'bg-green-500/20 border-2 border-green-500'
-                          : 'bg-zinc-800'
+                          : 'bg-slate-100 dark:bg-slate-800'
                       }`}
                       style={{
                         left: `${x}%`,
@@ -329,7 +329,7 @@ class TokenRing {
                       }}
                     >
                       <span className={`${
-                        tokenPosition === process.id ? 'text-green-300' : 'text-zinc-300'
+                        tokenPosition === process.id ? 'text-green-300' : 'text-slate-600 dark:text-slate-300'
                       }`}>
                         {t('design_principles.algorithms.token_ring.labels.process_prefix')}{process.id}
                       </span>
@@ -363,7 +363,7 @@ class TokenRing {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
               <h3 className="text-xl font-semibold mb-4 text-yellow-400">{t('design_principles.algorithms.ricart_agrawala.concept_title')}</h3>
-              <p className="text-zinc-300 mb-4">
+              <p className="text-slate-600 dark:text-slate-300 mb-4">
                 {t('design_principles.algorithms.ricart_agrawala.concept_p')}
               </p>
               <div className="flex items-center gap-2 text-sm mb-6">
@@ -376,7 +376,7 @@ class TokenRing {
               </div>
 
               {/* Code Example */}
-              <div className="bg-zinc-900/50 rounded-lg p-4 mb-4">
+              <div className="bg-white dark:bg-slate-900/50 rounded-lg p-4 mb-4">
                 <pre className="text-sm overflow-x-auto">
                   <code className="text-yellow-300">
 {`// Estrutura do processo
@@ -433,7 +433,7 @@ class RicartAgrawala {
             </div>
 
             {/* Interactive Demo */}
-            <div className="bg-zinc-900/50 rounded-lg p-6">
+            <div className="bg-white dark:bg-slate-900/50 rounded-lg p-6">
               <h4 className="text-lg font-semibold mb-4 text-yellow-400">{t('design_principles.algorithms.ricart_agrawala.demo_title')}</h4>
               <div className="space-y-4">
                 {ricartProcesses.map(process => (
@@ -443,7 +443,7 @@ class RicartAgrawala {
                   >
                     <motion.div 
                       className={`w-32 h-12 rounded-lg flex items-center justify-center ${
-                        process.state === 'idle' ? 'bg-zinc-800' :
+                        process.state === 'idle' ? 'bg-slate-100 dark:bg-slate-800' :
                         process.state === 'requesting' ? 'bg-yellow-500/20' :
                         'bg-green-500/20'
                       }`}
@@ -492,7 +492,7 @@ class RicartAgrawala {
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-blue-400">{t('design_principles.algorithms.comparison.bakery_title')}</h3>
+              <h3 className="text-xl font-semibold mb-4 text-brand-600 dark:text-brand-400">{t('design_principles.algorithms.comparison.bakery_title')}</h3>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
                   <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -500,7 +500,7 @@ class RicartAgrawala {
                   </svg>
                   <div>
                     <span className="text-white font-medium">{t('design_principles.algorithms.comparison.advantages')}</span>
-                    <p className="text-zinc-400 text-sm">{t('design_principles.algorithms.comparison.bakery.pros')}</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">{t('design_principles.algorithms.comparison.bakery.pros')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -509,7 +509,7 @@ class RicartAgrawala {
                   </svg>
                   <div>
                     <span className="text-white font-medium">{t('design_principles.algorithms.comparison.disadvantages')}</span>
-                    <p className="text-zinc-400 text-sm">{t('design_principles.algorithms.comparison.bakery.cons')}</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">{t('design_principles.algorithms.comparison.bakery.cons')}</p>
                   </div>
                 </li>
               </ul>
@@ -523,7 +523,7 @@ class RicartAgrawala {
                   </svg>
                   <div>
                     <span className="text-white font-medium">{t('design_principles.algorithms.comparison.advantages')}</span>
-                    <p className="text-zinc-400 text-sm">{t('design_principles.algorithms.comparison.token_ring.pros')}</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">{t('design_principles.algorithms.comparison.token_ring.pros')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -532,7 +532,7 @@ class RicartAgrawala {
                   </svg>
                   <div>
                     <span className="text-white font-medium">{t('design_principles.algorithms.comparison.disadvantages')}</span>
-                    <p className="text-zinc-400 text-sm">{t('design_principles.algorithms.comparison.token_ring.cons')}</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">{t('design_principles.algorithms.comparison.token_ring.cons')}</p>
                   </div>
                 </li>
               </ul>
@@ -546,7 +546,7 @@ class RicartAgrawala {
                   </svg>
                   <div>
                     <span className="text-white font-medium">{t('design_principles.algorithms.comparison.advantages')}</span>
-                    <p className="text-zinc-400 text-sm">{t('design_principles.algorithms.comparison.ricart.pros')}</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">{t('design_principles.algorithms.comparison.ricart.pros')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -555,7 +555,7 @@ class RicartAgrawala {
                   </svg>
                   <div>
                     <span className="text-white font-medium">{t('design_principles.algorithms.comparison.disadvantages')}</span>
-                    <p className="text-zinc-400 text-sm">{t('design_principles.algorithms.comparison.ricart.cons')}</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">{t('design_principles.algorithms.comparison.ricart.cons')}</p>
                   </div>
                 </li>
               </ul>

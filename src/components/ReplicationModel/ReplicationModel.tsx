@@ -383,7 +383,7 @@ export default function ReplicationModel() {
           <div>
             <div className="flex justify-between text-white mb-1">
               <span>Número de Nós</span>
-              <span className="text-blue-400">{config.nodeCount}</span>
+              <span className="text-brand-600 dark:text-brand-400">{config.nodeCount}</span>
             </div>
             <input
               type="range"
@@ -398,7 +398,7 @@ export default function ReplicationModel() {
           <div>
             <div className="flex justify-between text-white mb-1">
               <span>Latência Base (ms)</span>
-              <span className="text-blue-400">{config.baseLatency}ms</span>
+              <span className="text-brand-600 dark:text-brand-400">{config.baseLatency}ms</span>
             </div>
             <input
               type="range"
@@ -414,7 +414,7 @@ export default function ReplicationModel() {
           <div>
             <div className="flex justify-between text-white mb-1">
               <span>Variação de Latência (Jitter)</span>
-              <span className="text-blue-400">{config.networkJitter}ms</span>
+              <span className="text-brand-600 dark:text-brand-400">{config.networkJitter}ms</span>
             </div>
             <input
               type="range"
@@ -430,7 +430,7 @@ export default function ReplicationModel() {
           <div>
             <div className="flex justify-between text-white mb-1">
               <span>Confiabilidade da Rede</span>
-              <span className="text-blue-400">{Math.round(config.networkReliability * 100)}%</span>
+              <span className="text-brand-600 dark:text-brand-400">{Math.round(config.networkReliability * 100)}%</span>
             </div>
             <input
               type="range"
@@ -445,7 +445,7 @@ export default function ReplicationModel() {
           <div>
             <div className="flex justify-between text-white mb-1">
               <span>Atraso de Replicação</span>
-              <span className="text-blue-400">{config.replicationDelay}ms</span>
+              <span className="text-brand-600 dark:text-brand-400">{config.replicationDelay}ms</span>
             </div>
             <input
               type="range"
@@ -461,7 +461,7 @@ export default function ReplicationModel() {
           <div>
             <div className="flex justify-between text-white mb-1">
               <span>Tamanho do Diagrama</span>
-              <span className="text-blue-400">{config.circleRadius * 2}px</span>
+              <span className="text-brand-600 dark:text-brand-400">{config.circleRadius * 2}px</span>
             </div>
             <input
               type="range"

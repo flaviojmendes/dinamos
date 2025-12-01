@@ -121,7 +121,7 @@ export default function TokensSimulator() {
           <h1 className="text-4xl font-bold text-white mb-4">
             {t(`${base}.title`)}
           </h1>
-          <p className="text-lg text-zinc-400">
+          <p className="text-lg text-slate-500 dark:text-slate-400">
             {t(`${base}.subtitle`)}
           </p>
         </div>
@@ -129,43 +129,43 @@ export default function TokensSimulator() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Token Generation Section */}
           <div className="space-y-6">
-            <div className="bg-zinc-900 rounded-lg p-6">
-              <h2 className="text-2xl font-bold text-blue-400 mb-6">{t(`${base}.token_configuration_title`)}</h2>
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
+              <h2 className="text-2xl font-bold text-brand-600 dark:text-brand-400 mb-6">{t(`${base}.token_configuration_title`)}</h2>
               
               {/* User Information */}
               <div className="space-y-4 mb-6">
                 <h3 className="text-xl font-semibold text-white">{t(`${base}.user_information_title`)}</h3>
                 <div className="grid gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-zinc-400 mb-1">
+                    <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
                       {t(`${base}.name_label`)}
                     </label>
                     <input
                       type="text"
                       value={user.name}
                       onChange={e => updateUser('name', e.target.value)}
-                      className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
+                      className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-white"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-zinc-400 mb-1">
+                    <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
                       {t(`${base}.email_label`)}
                     </label>
                     <input
                       type="email"
                       value={user.email}
                       onChange={e => updateUser('email', e.target.value)}
-                      className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
+                      className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-white"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-zinc-400 mb-1">
+                    <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
                       {t(`${base}.role_label`)}
                     </label>
                     <select
                       value={user.role}
                       onChange={e => updateUser('role', e.target.value)}
-                      className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
+                      className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-white"
                     >
                       <option value="user">{roles.user}</option>
                       <option value="admin">{roles.admin}</option>
@@ -180,13 +180,13 @@ export default function TokensSimulator() {
                 <h3 className="text-xl font-semibold text-white">{t(`${base}.token_settings_title`)}</h3>
                 <div className="grid gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-zinc-400 mb-1">
+                    <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
                       {t(`${base}.algorithm_label`)}
                     </label>
                     <select
                       value={selectedAlgorithm}
                       onChange={e => setSelectedAlgorithm(e.target.value)}
-                      className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
+                      className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-white"
                     >
                       <option value="HS256">HS256</option>
                       <option value="HS384">HS384</option>
@@ -195,14 +195,14 @@ export default function TokensSimulator() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-zinc-400 mb-1">
+                    <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
                       {t(`${base}.expiration_label`)}
                     </label>
                     <input
                       type="number"
                       value={expirationTime}
                       onChange={e => setExpirationTime(parseInt(e.target.value))}
-                      className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
+                      className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-white"
                     />
                   </div>
                 </div>
@@ -214,13 +214,13 @@ export default function TokensSimulator() {
                 
                 {/* Display current claims */}
                 {Object.keys(customClaims).length > 0 && (
-                  <div className="bg-zinc-800 rounded p-4 mb-4">
+                  <div className="bg-slate-100 dark:bg-slate-800 rounded p-4 mb-4">
                     <div className="grid gap-2">
                       {Object.entries(customClaims).map(([key, value]) => (
                         <div key={key} className="flex items-center justify-between">
                           <div className="flex-1">
                             <span className="text-purple-400">{key}: </span>
-                            <span className="text-zinc-300">{value}</span>
+                            <span className="text-slate-600 dark:text-slate-300">{value}</span>
                           </div>
                           <button
                             onClick={() => {
@@ -244,13 +244,13 @@ export default function TokensSimulator() {
                   <input
                     type="text"
                     placeholder={t(`${base}.key_placeholder`)}
-                    className="bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
+                    className="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-white"
                     id="customClaimKey"
                   />
                   <input
                     type="text"
                     placeholder={t(`${base}.value_placeholder`)}
-                    className="bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-white"
+                    className="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-white"
                     id="customClaimValue"
                   />
                 </div>
@@ -271,12 +271,12 @@ export default function TokensSimulator() {
           {/* Token Display and Verification Section */}
           <div className="space-y-6">
             {/* Generated Token */}
-            <div className="bg-zinc-900 rounded-lg p-6">
-              <h2 className="text-2xl font-bold text-blue-400 mb-6">{t(`${base}.generated_token_title`)}</h2>
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
+              <h2 className="text-2xl font-bold text-brand-600 dark:text-brand-400 mb-6">{t(`${base}.generated_token_title`)}</h2>
               {token ? (
                 <div className="space-y-4">
-                  <div className="bg-zinc-800 p-4 rounded">
-                    <p className="text-zinc-400 break-all font-mono text-sm">{token}</p>
+                  <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded">
+                    <p className="text-slate-500 dark:text-slate-400 break-all font-mono text-sm">{token}</p>
                   </div>
                   <button
                     onClick={verifyToken}
@@ -294,29 +294,29 @@ export default function TokensSimulator() {
 
             {/* Decoded Token */}
             {decodedToken && (
-              <div className="bg-zinc-900 rounded-lg p-6">
-                <h2 className="text-2xl font-bold text-blue-400 mb-6">{t(`${base}.decoded_token_title`)}</h2>
+              <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
+                <h2 className="text-2xl font-bold text-brand-600 dark:text-brand-400 mb-6">{t(`${base}.decoded_token_title`)}</h2>
                 <div className="space-y-4">
                   <div>
-                    <h3 className="text-lg font-semibold text-blue-300 mb-2">{t(`${base}.header_title`)}</h3>
-                    <div className="bg-zinc-800 p-4 rounded">
-                      <pre className="text-zinc-400 text-sm">
+                    <h3 className="text-lg font-semibold text-brand-600 dark:text-brand-300 mb-2">{t(`${base}.header_title`)}</h3>
+                    <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded">
+                      <pre className="text-slate-500 dark:text-slate-400 text-sm">
                         {JSON.stringify(decodedToken.header, null, 2)}
                       </pre>
                     </div>
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-green-300 mb-2">{t(`${base}.payload_title`)}</h3>
-                    <div className="bg-zinc-800 p-4 rounded">
-                      <pre className="text-zinc-400 text-sm">
+                    <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded">
+                      <pre className="text-slate-500 dark:text-slate-400 text-sm">
                         {JSON.stringify(decodedToken.payload, null, 2)}
                       </pre>
                     </div>
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-purple-300 mb-2">{t(`${base}.signature_title`)}</h3>
-                    <div className="bg-zinc-800 p-4 rounded">
-                      <p className="text-zinc-400 font-mono text-sm break-all">
+                    <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded">
+                      <p className="text-slate-500 dark:text-slate-400 font-mono text-sm break-all">
                         {decodedToken.signature}
                       </p>
                     </div>
@@ -327,7 +327,7 @@ export default function TokensSimulator() {
 
             {/* Verification Result */}
             {verificationResult && (
-              <div className={`bg-zinc-900 rounded-lg p-6 border-l-4 ${
+              <div className={`bg-white dark:bg-slate-900 rounded-lg p-6 border-l-4 ${
                 verificationResult.isValid ? 'border-green-500' : 'border-red-500'
               }`}>
                 <h2 className="text-2xl font-bold mb-4 text-white">
@@ -344,9 +344,9 @@ export default function TokensSimulator() {
         </div>
 
         {/* Help Section */}
-        <div className="mt-12 bg-zinc-900 rounded-lg p-6">
-          <h2 className="text-2xl font-bold text-blue-400 mb-6">{t(`${base}.how_to_use_title`)}</h2>
-          <div className="space-y-4 text-zinc-400">
+        <div className="mt-12 bg-white dark:bg-slate-900 rounded-lg p-6">
+          <h2 className="text-2xl font-bold text-brand-600 dark:text-brand-400 mb-6">{t(`${base}.how_to_use_title`)}</h2>
+          <div className="space-y-4 text-slate-500 dark:text-slate-400">
             {instructions.map((instruction, index) => (
               <p key={index}>
                 {index + 1}. {instruction}

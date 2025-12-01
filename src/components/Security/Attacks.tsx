@@ -10,7 +10,7 @@ export default function Attacks() {
           <h1 className="text-4xl font-bold text-white mb-4">
             Ataques em Sistemas Distribuídos
           </h1>
-          <p className="text-lg text-zinc-400 mb-6">
+          <p className="text-lg text-slate-500 dark:text-slate-400 mb-6">
             Compreenda os principais tipos de ataques, seus impactos e estratégias de mitigação
           </p>
         </div>
@@ -39,9 +39,9 @@ export default function Attacks() {
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">Categorias de Ataques</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="bg-zinc-900 rounded-lg p-6 border-t-4 border-red-500">
+              <div className="bg-white dark:bg-slate-900 rounded-lg p-6 border-t-4 border-red-500">
                 <h3 className="text-xl font-semibold text-red-400 mb-3">Ataques de Rede</h3>
-                <ul className="space-y-2 text-zinc-400">
+                <ul className="space-y-2 text-slate-500 dark:text-slate-400">
                   <li>• DDoS (Distributed Denial of Service)</li>
                   <li>• Man-in-the-Middle (MITM)</li>
                   <li>• DNS Spoofing</li>
@@ -50,9 +50,9 @@ export default function Attacks() {
                 </ul>
               </div>
 
-              <div className="bg-zinc-900 rounded-lg p-6 border-t-4 border-yellow-500">
+              <div className="bg-white dark:bg-slate-900 rounded-lg p-6 border-t-4 border-yellow-500">
                 <h3 className="text-xl font-semibold text-yellow-400 mb-3">Ataques de Aplicação</h3>
-                <ul className="space-y-2 text-zinc-400">
+                <ul className="space-y-2 text-slate-500 dark:text-slate-400">
                   <li>• SQL Injection</li>
                   <li>• Cross-Site Scripting (XSS)</li>
                   <li>• CSRF (Cross-Site Request Forgery)</li>
@@ -61,9 +61,9 @@ export default function Attacks() {
                 </ul>
               </div>
 
-              <div className="bg-zinc-900 rounded-lg p-6 border-t-4 border-blue-500">
-                <h3 className="text-xl font-semibold text-blue-400 mb-3">Ataques de Autenticação</h3>
-                <ul className="space-y-2 text-zinc-400">
+              <div className="bg-white dark:bg-slate-900 rounded-lg p-6 border-t-4 border-blue-500">
+                <h3 className="text-xl font-semibold text-brand-600 dark:text-brand-400 mb-3">Ataques de Autenticação</h3>
+                <ul className="space-y-2 text-slate-500 dark:text-slate-400">
                   <li>• Brute Force</li>
                   <li>• Dictionary Attacks</li>
                   <li>• Session Hijacking</li>
@@ -77,17 +77,17 @@ export default function Attacks() {
           {/* DDoS Attacks */}
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">Ataques DDoS</h2>
-            <div className="bg-zinc-900 rounded-lg p-6">
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
               <div className="space-y-6">
-                <p className="text-zinc-400">
+                <p className="text-slate-500 dark:text-slate-400">
                   Ataques de Negação de Serviço Distribuído (DDoS) visam tornar recursos ou serviços
                   indisponíveis para usuários legítimos sobrecarregando os sistemas com tráfego malicioso.
                 </p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="bg-zinc-800 p-6 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-emerald-400 mb-3">Tipos Comuns</h3>
-                    <ul className="space-y-2 text-zinc-400">
+                    <ul className="space-y-2 text-slate-500 dark:text-slate-400">
                       <li>
                         <span className="text-emerald-400 font-medium">Volumétrico</span>
                         <p className="mt-1">Inunda a rede com grande volume de tráfego</p>
@@ -103,9 +103,9 @@ export default function Attacks() {
                     </ul>
                   </div>
 
-                  <div className="bg-zinc-800 p-6 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-emerald-400 mb-3">Mitigação</h3>
-                    <ul className="space-y-2 text-zinc-400">
+                    <ul className="space-y-2 text-slate-500 dark:text-slate-400">
                       <li>• Firewalls e WAFs</li>
                       <li>• Rate Limiting</li>
                       <li>• Load Balancing</li>
@@ -122,16 +122,16 @@ export default function Attacks() {
           {/* Man-in-the-Middle */}
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">Ataques Man-in-the-Middle</h2>
-            <div className="bg-zinc-900 rounded-lg p-6">
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="bg-zinc-800 p-6 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-emerald-400 mb-3">Como Funciona</h3>
-                    <p className="text-zinc-400 mb-4">
+                    <p className="text-slate-500 dark:text-slate-400 mb-4">
                       O atacante se posiciona entre duas partes que se comunicam, interceptando
                       e potencialmente modificando a comunicação sem que as partes percebam.
                     </p>
-                    <ul className="space-y-2 text-zinc-400">
+                    <ul className="space-y-2 text-slate-500 dark:text-slate-400">
                       <li>• Interceptação de tráfego</li>
                       <li>• Modificação de dados</li>
                       <li>• Roubo de informações</li>
@@ -139,9 +139,9 @@ export default function Attacks() {
                     </ul>
                   </div>
 
-                  <div className="bg-zinc-800 p-6 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-emerald-400 mb-3">Prevenção</h3>
-                    <ul className="space-y-2 text-zinc-400">
+                    <ul className="space-y-2 text-slate-500 dark:text-slate-400">
                       <li>• Uso de TLS/SSL</li>
                       <li>• Certificate Pinning</li>
                       <li>• VPNs</li>
@@ -157,21 +157,21 @@ export default function Attacks() {
           {/* Injection Attacks */}
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">Ataques de Injeção</h2>
-            <div className="bg-zinc-900 rounded-lg p-6">
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
               <div className="grid gap-6">
-                <div className="bg-zinc-800 p-6 rounded-lg">
+                <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                   <h3 className="text-xl font-semibold text-emerald-400 mb-3">SQL Injection</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <h4 className="text-lg font-medium text-white mb-2">Vulnerabilidade</h4>
-                      <p className="text-zinc-400">
+                      <p className="text-slate-500 dark:text-slate-400">
                         Inserção de código SQL malicioso em entradas de dados para manipular
                         ou extrair informações do banco de dados.
                       </p>
                     </div>
                     <div>
                       <h4 className="text-lg font-medium text-white mb-2">Prevenção</h4>
-                      <ul className="space-y-1 text-zinc-400">
+                      <ul className="space-y-1 text-slate-500 dark:text-slate-400">
                         <li>• Prepared Statements</li>
                         <li>• Input Validation</li>
                         <li>• Escaping</li>
@@ -181,19 +181,19 @@ export default function Attacks() {
                   </div>
                 </div>
 
-                <div className="bg-zinc-800 p-6 rounded-lg">
+                <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                   <h3 className="text-xl font-semibold text-emerald-400 mb-3">Cross-Site Scripting (XSS)</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <h4 className="text-lg font-medium text-white mb-2">Vulnerabilidade</h4>
-                      <p className="text-zinc-400">
+                      <p className="text-slate-500 dark:text-slate-400">
                         Injeção de scripts maliciosos em páginas web visualizadas por outros usuários,
                         permitindo roubo de sessões e manipulação do conteúdo.
                       </p>
                     </div>
                     <div>
                       <h4 className="text-lg font-medium text-white mb-2">Prevenção</h4>
-                      <ul className="space-y-1 text-zinc-400">
+                      <ul className="space-y-1 text-slate-500 dark:text-slate-400">
                         <li>• Input Sanitization</li>
                         <li>• Content Security Policy</li>
                         <li>• HttpOnly Cookies</li>
@@ -209,16 +209,16 @@ export default function Attacks() {
           {/* Authentication Attacks */}
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">Ataques de Autenticação</h2>
-            <div className="bg-zinc-900 rounded-lg p-6">
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="bg-zinc-800 p-6 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-emerald-400 mb-3">Brute Force</h3>
-                    <p className="text-zinc-400 mb-4">
+                    <p className="text-slate-500 dark:text-slate-400 mb-4">
                       Tentativas sistemáticas de adivinhar credenciais testando todas as combinações possíveis.
                     </p>
                     <h4 className="text-lg font-medium text-white mb-2">Mitigação</h4>
-                    <ul className="space-y-1 text-zinc-400">
+                    <ul className="space-y-1 text-slate-500 dark:text-slate-400">
                       <li>• Rate Limiting</li>
                       <li>• CAPTCHA</li>
                       <li>• Account Lockout</li>
@@ -226,13 +226,13 @@ export default function Attacks() {
                     </ul>
                   </div>
 
-                  <div className="bg-zinc-800 p-6 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-emerald-400 mb-3">Session Hijacking</h3>
-                    <p className="text-zinc-400 mb-4">
+                    <p className="text-slate-500 dark:text-slate-400 mb-4">
                       Roubo ou falsificação de tokens de sessão para acessar contas de usuários autenticados.
                     </p>
                     <h4 className="text-lg font-medium text-white mb-2">Mitigação</h4>
-                    <ul className="space-y-1 text-zinc-400">
+                    <ul className="space-y-1 text-slate-500 dark:text-slate-400">
                       <li>• Secure Session Management</li>
                       <li>• SSL/TLS</li>
                       <li>• Session Timeout</li>
@@ -240,13 +240,13 @@ export default function Attacks() {
                     </ul>
                   </div>
 
-                  <div className="bg-zinc-800 p-6 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-emerald-400 mb-3">Credential Stuffing</h3>
-                    <p className="text-zinc-400 mb-4">
+                    <p className="text-slate-500 dark:text-slate-400 mb-4">
                       Uso automatizado de pares de usuário/senha vazados para tentar acesso em múltiplos serviços.
                     </p>
                     <h4 className="text-lg font-medium text-white mb-2">Mitigação</h4>
-                    <ul className="space-y-1 text-zinc-400">
+                    <ul className="space-y-1 text-slate-500 dark:text-slate-400">
                       <li>• Multi-factor Authentication</li>
                       <li>• Password Policies</li>
                       <li>• Breach Detection</li>
@@ -262,9 +262,9 @@ export default function Attacks() {
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">Melhores Práticas de Segurança</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-zinc-900 rounded-lg p-6">
+              <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
                 <h3 className="text-xl font-semibold text-emerald-400 mb-4">Prevenção</h3>
-                <ul className="space-y-3 text-zinc-400">
+                <ul className="space-y-3 text-slate-500 dark:text-slate-400">
                   <li className="flex items-start gap-2">
                     <svg className="w-6 h-6 text-emerald-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -298,9 +298,9 @@ export default function Attacks() {
                 </ul>
               </div>
 
-              <div className="bg-zinc-900 rounded-lg p-6">
+              <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
                 <h3 className="text-xl font-semibold text-emerald-400 mb-4">Monitoramento</h3>
-                <ul className="space-y-3 text-zinc-400">
+                <ul className="space-y-3 text-slate-500 dark:text-slate-400">
                   <li className="flex items-start gap-2">
                     <svg className="w-6 h-6 text-emerald-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />

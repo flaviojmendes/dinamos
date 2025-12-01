@@ -34,10 +34,10 @@ export default function Logs() {
         <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
           {t(`${base}.title`)}
         </h1>
-        <p className="text-lg text-zinc-300 mb-6">
+        <p className="text-lg text-slate-600 dark:text-slate-300 mb-6">
           {t(`${base}.intro_p1`)}
         </p>
-        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-blue-300">
+        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-brand-600 dark:text-brand-300">
           <strong className="block mb-2">💡 {t(`${base}.key_concept_label`)}:</strong>
           {t(`${base}.key_concept_text`)}
         </div>
@@ -54,8 +54,8 @@ export default function Logs() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Application Logs */}
           <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 rounded-xl p-6 border border-blue-500/20">
-            <h3 className="text-xl font-bold mb-4 text-blue-400">{t(`${base}.app_logs_title`)}</h3>
-            <ul className="space-y-2 text-zinc-300 text-sm">
+            <h3 className="text-xl font-bold mb-4 text-brand-600 dark:text-brand-400">{t(`${base}.app_logs_title`)}</h3>
+            <ul className="space-y-2 text-slate-600 dark:text-slate-300 text-sm">
               {appLogItems.map((item, idx) => (
                 <li key={idx}>• {item}</li>
               ))}
@@ -65,7 +65,7 @@ export default function Logs() {
           {/* System Logs */}
           <div className="bg-gradient-to-br from-purple-500/10 to-purple-600/10 rounded-xl p-6 border border-purple-500/20">
             <h3 className="text-xl font-bold mb-4 text-purple-400">{t(`${base}.sys_logs_title`)}</h3>
-            <ul className="space-y-2 text-zinc-300 text-sm">
+            <ul className="space-y-2 text-slate-600 dark:text-slate-300 text-sm">
               {sysLogItems.map((item, idx) => (
                 <li key={idx}>• {item}</li>
               ))}
@@ -75,7 +75,7 @@ export default function Logs() {
           {/* Security Logs */}
           <div className="bg-gradient-to-br from-green-500/10 to-green-600/10 rounded-xl p-6 border border-green-500/20">
             <h3 className="text-xl font-bold mb-4 text-green-400">{t(`${base}.sec_logs_title`)}</h3>
-            <ul className="space-y-2 text-zinc-300 text-sm">
+            <ul className="space-y-2 text-slate-600 dark:text-slate-300 text-sm">
               {secLogItems.map((item, idx) => (
                 <li key={idx}>• {item}</li>
               ))}
@@ -93,11 +93,11 @@ export default function Logs() {
       >
         <h2 className="text-2xl font-bold mb-6 text-white">{t(`${base}.structured_title`)}</h2>
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-          <p className="text-zinc-300 mb-6">{t(`${base}.structured_desc`)}</p>
+          <p className="text-slate-600 dark:text-slate-300 mb-6">{t(`${base}.structured_desc`)}</p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-xl font-bold mb-4 text-blue-400">{t(`${base}.benefits_title`)}</h3>
+              <h3 className="text-xl font-bold mb-4 text-brand-600 dark:text-brand-400">{t(`${base}.benefits_title`)}</h3>
               <ul className="space-y-3">
                 {benefits.map((item, idx) => (
                   <li key={idx} className="flex items-start gap-3">
@@ -106,7 +106,7 @@ export default function Logs() {
                     </svg>
                     <div>
                       <span className="text-white font-medium">{item.title}</span>
-                      <p className="text-zinc-400 text-sm">{item.desc}</p>
+                      <p className="text-slate-500 dark:text-slate-400 text-sm">{item.desc}</p>
                     </div>
                   </li>
                 ))}
@@ -116,7 +116,7 @@ export default function Logs() {
             <div>
               <h3 className="text-xl font-bold mb-4 text-purple-400">{t(`${base}.example_title`)}</h3>
               <div className="bg-black/30 p-4 rounded-lg overflow-x-auto">
-                <pre className="text-sm text-zinc-300">
+                <pre className="text-sm text-slate-600 dark:text-slate-300">
 {`{
   "timestamp": "2024-03-20T10:15:30Z",
   "level": "ERROR",
@@ -154,9 +154,9 @@ export default function Logs() {
               <h3 className="text-xl font-bold mb-4 text-green-400">{t(`${base}.components_title`)}</h3>
               <ul className="space-y-4">
                 {components.map((item, idx) => (
-                  <li key={idx} className="bg-zinc-800/50 p-3 rounded-lg">
+                  <li key={idx} className="bg-slate-100 dark:bg-slate-800/50 p-3 rounded-lg">
                     <span className="text-white font-medium">{item.title}</span>
-                    <p className="text-zinc-400 text-sm">{item.desc}</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">{item.desc}</p>
                   </li>
                 ))}
               </ul>
@@ -166,9 +166,9 @@ export default function Logs() {
               <h3 className="text-xl font-bold mb-4 text-yellow-400">{t(`${base}.elk_title`)}</h3>
               <div className="space-y-4">
                 {elkItems.map((item, idx) => (
-                  <div key={idx} className="bg-zinc-800/50 p-4 rounded-lg">
+                  <div key={idx} className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
                     <h4 className="text-white font-medium mb-2">{item.title}</h4>
-                    <p className="text-zinc-400 text-sm">{item.desc}</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">{item.desc}</p>
                   </div>
                 ))}
               </div>
@@ -186,11 +186,11 @@ export default function Logs() {
       >
         <h2 className="text-2xl font-bold mb-6 text-white">{t(`${base}.tracing_title`)}</h2>
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-          <p className="text-zinc-300 mb-6">{t(`${base}.tracing_desc`)}</p>
+          <p className="text-slate-600 dark:text-slate-300 mb-6">{t(`${base}.tracing_desc`)}</p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-xl font-bold mb-4 text-blue-400">{t(`${base}.concepts_title`)}</h3>
+              <h3 className="text-xl font-bold mb-4 text-brand-600 dark:text-brand-400">{t(`${base}.concepts_title`)}</h3>
               <ul className="space-y-3">
                 {concepts.map((item, idx) => (
                   <li key={idx} className="flex items-start gap-3">
@@ -199,7 +199,7 @@ export default function Logs() {
                     </svg>
                     <div>
                       <span className="text-white font-medium">{item.title}</span>
-                      <p className="text-zinc-400 text-sm">{item.desc}</p>
+                      <p className="text-slate-500 dark:text-slate-400 text-sm">{item.desc}</p>
                     </div>
                   </li>
                 ))}
@@ -210,9 +210,9 @@ export default function Logs() {
               <h3 className="text-xl font-bold mb-4 text-purple-400">{t(`${base}.tools_title`)}</h3>
               <div className="space-y-4">
                 {tools.map((item, idx) => (
-                  <div key={idx} className="bg-zinc-800/50 p-4 rounded-lg">
+                  <div key={idx} className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
                     <h4 className="text-white font-medium mb-2">{item.title}</h4>
-                    <p className="text-zinc-400 text-sm">{item.desc}</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">{item.desc}</p>
                   </div>
                 ))}
               </div>
@@ -231,7 +231,7 @@ export default function Logs() {
         <h2 className="text-2xl font-bold mb-6 text-white">{t(`${base}.best_practices_title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-            <h3 className="text-xl font-bold mb-4 text-blue-400">{t(`${base}.logging_title`)}</h3>
+            <h3 className="text-xl font-bold mb-4 text-brand-600 dark:text-brand-400">{t(`${base}.logging_title`)}</h3>
             <ul className="space-y-3">
               {loggingBest.map((item, idx) => (
                 <li key={idx} className="flex items-start gap-3">
@@ -240,7 +240,7 @@ export default function Logs() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">{item.title}</span>
-                    <p className="text-zinc-400 text-sm">{item.desc}</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">{item.desc}</p>
                   </div>
                 </li>
               ))}
@@ -257,7 +257,7 @@ export default function Logs() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">{item.title}</span>
-                    <p className="text-zinc-400 text-sm">{item.desc}</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">{item.desc}</p>
                   </div>
                 </li>
               ))}

@@ -37,7 +37,7 @@ export default function Preferences() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-zinc-900/50 rounded-xl p-8"
+          className="bg-white dark:bg-slate-900/50 rounded-xl p-8"
         >
           <h1 className="text-3xl font-bold mb-8 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
             {t('preferences.title')}
@@ -46,14 +46,14 @@ export default function Preferences() {
           <div className="space-y-8">
             {/* Account Information */}
             <div>
-              <h2 className="text-xl font-semibold mb-4 text-blue-400">{t('preferences.account_info')}</h2>
-              <div className="bg-zinc-800/50 rounded-lg p-4 space-y-2">
+              <h2 className="text-xl font-semibold mb-4 text-brand-600 dark:text-brand-400">{t('preferences.account_info')}</h2>
+              <div className="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4 space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-zinc-400">{t('preferences.email')}</span>
+                  <span className="text-slate-500 dark:text-slate-400">{t('preferences.email')}</span>
                   <span>{user?.email}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-zinc-400">{t('preferences.creation_date')}</span>
+                  <span className="text-slate-500 dark:text-slate-400">{t('preferences.creation_date')}</span>
                   <span>{user?.metadata.creationTime ? new Date(user.metadata.creationTime).toLocaleDateString(locale) : '-'}</span>
                 </div>
               </div>
@@ -62,11 +62,11 @@ export default function Preferences() {
             {/* Cookie & Privacy Settings */}
             <div>
               <h2 className="text-xl font-semibold mb-4 text-green-400">Privacy & Cookies</h2>
-              <div className="bg-zinc-800/50 rounded-lg p-6 space-y-4">
+              <div className="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-6 space-y-4">
                 <div className="flex items-start justify-between">
                   <div>
                     <h3 className="font-medium text-white mb-1">Cookie Preferences</h3>
-                    <p className="text-zinc-400 text-sm">
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">
                       Manage how we collect and use data on our website through cookies.
                     </p>
                   </div>
@@ -78,10 +78,10 @@ export default function Preferences() {
                   </Link>
                 </div>
                 
-                <div className="flex items-start justify-between pt-4 border-t border-zinc-700">
+                <div className="flex items-start justify-between pt-4 border-t border-slate-300 dark:border-slate-700">
                   <div>
                     <h3 className="font-medium text-white mb-1">Privacy Policy</h3>
-                    <p className="text-zinc-400 text-sm">
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">
                       Learn about how we collect, use, and protect your personal information.
                     </p>
                   </div>
@@ -98,10 +98,10 @@ export default function Preferences() {
                   </a>
                 </div>
                 
-                <div className="flex items-start justify-between pt-4 border-t border-zinc-700">
+                <div className="flex items-start justify-between pt-4 border-t border-slate-300 dark:border-slate-700">
                   <div>
                     <h3 className="font-medium text-white mb-1">Terms and Conditions</h3>
-                    <p className="text-zinc-400 text-sm">
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">
                       Review our terms of service and user agreement.
                     </p>
                   </div>
@@ -123,8 +123,8 @@ export default function Preferences() {
             {/* Subscription Management (optional) */}
             {/* <div>
               <h2 className="text-xl font-semibold mb-4 text-purple-400">{t('preferences.manage_subscription')}</h2>
-              <div className="bg-zinc-800/50 rounded-lg p-6">
-                <p className="text-zinc-400 mb-4">
+              <div className="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-6">
+                <p className="text-slate-500 dark:text-slate-400 mb-4">
                   {t('preferences.manage_subscription_desc')}
                 </p>
                 <button

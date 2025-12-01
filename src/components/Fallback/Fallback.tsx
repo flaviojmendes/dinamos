@@ -205,13 +205,13 @@ export default function Fallback() {
 
   return (
     <div className="p-4">
-      <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-xl font-semibold">Mecanismo de Fallback</h1>
           <div className="flex items-center gap-4">
             <button
               onClick={() => setIsConfigOpen(!isConfigOpen)}
-              className="px-4 py-2 bg-zinc-800 rounded-md hover:bg-zinc-700 font-medium transition-colors"
+              className="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-md hover:bg-zinc-700 font-medium transition-colors"
             >
               {isConfigOpen ? 'Fechar Config' : 'Configurar'}
             </button>
@@ -227,7 +227,7 @@ export default function Fallback() {
             </button>
             <button
               onClick={resetSimulation}
-              className="px-4 py-2 bg-zinc-800 rounded-md hover:bg-zinc-700 font-medium transition-colors"
+              className="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-md hover:bg-zinc-700 font-medium transition-colors"
             >
               Resetar
             </button>
@@ -235,10 +235,10 @@ export default function Fallback() {
         </div>
 
         {isConfigOpen && (
-          <div className="mb-6 bg-zinc-800/50 rounded-lg p-4">
+          <div className="mb-6 bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
-                <label className="block text-sm text-zinc-400">
+                <label className="block text-sm text-slate-500 dark:text-slate-400">
                   Requisições por Segundo
                 </label>
                 <div className="flex items-center gap-2">
@@ -256,7 +256,7 @@ export default function Fallback() {
 
               {resources.map(resource => (
                 <div key={resource.id} className="space-y-2">
-                  <label className="block text-sm text-zinc-400">
+                  <label className="block text-sm text-slate-500 dark:text-slate-400">
                     Taxa de Falha - {resource.name}
                   </label>
                   <div className="flex items-center gap-2">
@@ -282,20 +282,20 @@ export default function Fallback() {
         )}
 
         {/* Flow Visualization */}
-        <div className="mb-6 bg-zinc-800/50 rounded-lg p-4">
+        <div className="mb-6 bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4">
           <h2 className="text-lg font-medium mb-4">Fluxo de Requisições</h2>
           <div className="relative h-[400px] flex flex-col items-center">
             {/* Client */}
-            <div className="w-40 h-24 bg-zinc-800 rounded-lg flex items-center justify-center border border-zinc-700">
+            <div className="w-40 h-24 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center border border-slate-300 dark:border-slate-700">
               <div className="text-center">
                 <div className="text-sm font-medium">Cliente</div>
-                <div className="text-xs text-zinc-400 mt-1">{requestsPerSecond} req/s</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{requestsPerSecond} req/s</div>
               </div>
             </div>
 
             {/* Primary Resource */}
             <div className="mt-20">
-              <div className={`w-40 h-24 bg-zinc-800 rounded-lg flex items-center justify-center border transition-colors ${
+              <div className={`w-40 h-24 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center border transition-colors ${
                 resources[0].status === 'healthy' ? 'border-green-500/50' :
                 resources[0].status === 'degraded' ? 'border-yellow-500/50' :
                 'border-red-500/50'
@@ -317,7 +317,7 @@ export default function Fallback() {
 
             {/* Secondary Resource */}
             <div className="mt-20">
-              <div className={`w-40 h-24 bg-zinc-800 rounded-lg flex items-center justify-center border transition-colors ${
+              <div className={`w-40 h-24 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center border transition-colors ${
                 resources[1].status === 'healthy' ? 'border-green-500/50' :
                 resources[1].status === 'degraded' ? 'border-yellow-500/50' :
                 'border-red-500/50'
@@ -383,7 +383,7 @@ export default function Fallback() {
 
         <div className="grid grid-cols-2 gap-6 mb-6">
           {/* Resources Status */}
-          <div className="bg-zinc-800/50 rounded-lg p-4">
+          <div className="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4">
             <h2 className="text-lg font-medium mb-4">Status dos Recursos</h2>
             <div className="space-y-4">
               {resources.map(resource => (
@@ -410,7 +410,7 @@ export default function Fallback() {
                       style={{ width: `${100 - resource.failureRate}%` }}
                     />
                   </div>
-                  <div className="text-sm text-zinc-400">
+                  <div className="text-sm text-slate-500 dark:text-slate-400">
                     Taxa de Falha: {resource.failureRate}% | Latência: {resource.latency}ms
                   </div>
                 </div>
@@ -419,10 +419,10 @@ export default function Fallback() {
           </div>
 
           {/* Recent Requests */}
-          <div className="bg-zinc-800/50 rounded-lg p-4">
+          <div className="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-medium">Últimas Requisições</h2>
-              <div className="text-sm text-zinc-400">
+              <div className="text-sm text-slate-500 dark:text-slate-400">
                 Taxa: {requestsPerSecond} req/s
               </div>
             </div>
@@ -461,37 +461,37 @@ export default function Fallback() {
 
         {/* Metrics */}
         <div className="grid grid-cols-4 gap-4">
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <div className="text-sm text-zinc-400 mb-1">Total de Requisições</div>
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
+            <div className="text-sm text-slate-500 dark:text-slate-400 mb-1">Total de Requisições</div>
             <div className="text-2xl font-medium">{metrics.totalRequests}</div>
           </div>
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <div className="text-sm text-zinc-400 mb-1">Sucesso (Principal)</div>
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
+            <div className="text-sm text-slate-500 dark:text-slate-400 mb-1">Sucesso (Principal)</div>
             <div className="text-2xl font-medium text-green-400">
               {metrics.successfulRequests}
-              <span className="text-sm text-zinc-400 ml-1">
+              <span className="text-sm text-slate-500 dark:text-slate-400 ml-1">
                 ({metrics.totalRequests > 0 
                   ? Math.round((metrics.successfulRequests / metrics.totalRequests) * 100) 
                   : 0}%)
               </span>
             </div>
           </div>
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <div className="text-sm text-zinc-400 mb-1">Fallback (Secundário)</div>
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
+            <div className="text-sm text-slate-500 dark:text-slate-400 mb-1">Fallback (Secundário)</div>
             <div className="text-2xl font-medium text-yellow-400">
               {metrics.fallbackRequests}
-              <span className="text-sm text-zinc-400 ml-1">
+              <span className="text-sm text-slate-500 dark:text-slate-400 ml-1">
                 ({metrics.totalRequests > 0 
                   ? Math.round((metrics.fallbackRequests / metrics.totalRequests) * 100) 
                   : 0}%)
               </span>
             </div>
           </div>
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <div className="text-sm text-zinc-400 mb-1">Falhas Totais</div>
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
+            <div className="text-sm text-slate-500 dark:text-slate-400 mb-1">Falhas Totais</div>
             <div className="text-2xl font-medium text-red-400">
               {metrics.failedRequests}
-              <span className="text-sm text-zinc-400 ml-1">
+              <span className="text-sm text-slate-500 dark:text-slate-400 ml-1">
                 ({metrics.totalRequests > 0 
                   ? Math.round((metrics.failedRequests / metrics.totalRequests) * 100) 
                   : 0}%)

@@ -20,13 +20,13 @@ export default function SynchronizationFundamentals() {
         <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
           {t('design_principles.synchronization_fundamentals.title')}
         </h1>
-        <p className="text-lg text-zinc-300 mb-6">
+        <p className="text-lg text-slate-600 dark:text-slate-300 mb-6">
           {t('design_principles.synchronization_fundamentals.intro_p1')}
         </p>
-        <p className="text-lg text-zinc-300 mb-6">
+        <p className="text-lg text-slate-600 dark:text-slate-300 mb-6">
           {t('design_principles.synchronization_fundamentals.intro_p2')}
         </p>
-        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-blue-300">
+        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-brand-600 dark:text-brand-300">
           <strong className="block mb-2">{t('design_principles.synchronization_fundamentals.key_concept_label')}</strong>
           {t('design_principles.synchronization_fundamentals.key_concept_text')}
         </div>
@@ -34,7 +34,7 @@ export default function SynchronizationFundamentals() {
         {/* Static Illustration */}
         <div className="mt-8 mb-8">
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-            <h3 className="text-xl font-semibold mb-4 text-blue-400">{t('design_principles.synchronization_fundamentals.illustration_title')}</h3>
+            <h3 className="text-xl font-semibold mb-4 text-brand-600 dark:text-brand-400">{t('design_principles.synchronization_fundamentals.illustration_title')}</h3>
             <div className="relative w-full max-w-2xl mx-auto">
               <svg viewBox="0 0 600 450" className="w-full h-auto">
                 {/* Background */}
@@ -286,17 +286,17 @@ export default function SynchronizationFundamentals() {
                 </g>
               </svg>
             </div>
-            <p className="text-zinc-300 text-center mt-4">
+            <p className="text-slate-600 dark:text-slate-300 text-center mt-4">
               {t('design_principles.synchronization_fundamentals.illustration_caption')}
             </p>
           </div>
           
           <div className="mt-6 bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-4">
-            <h3 className="text-lg font-semibold mb-2 text-blue-400">{t('design_principles.synchronization_fundamentals.strategies_title')}</h3>
-            <ul className="text-zinc-300 space-y-2 text-sm">
-              <li><strong className="text-blue-300">{t('design_principles.synchronization_fundamentals.strategies.naive').split(':')[0]}:</strong> {t('design_principles.synchronization_fundamentals.strategies.naive').split(':').slice(1).join(':').trim()}</li>
-              <li><strong className="text-blue-300">{t('design_principles.synchronization_fundamentals.strategies.ordered').split(':')[0]}:</strong> {t('design_principles.synchronization_fundamentals.strategies.ordered').split(':').slice(1).join(':').trim()}</li>
-              <li><strong className="text-blue-300">{t('design_principles.synchronization_fundamentals.strategies.waiter').split(':')[0]}:</strong> {t('design_principles.synchronization_fundamentals.strategies.waiter').split(':').slice(1).join(':').trim()}</li>
+            <h3 className="text-lg font-semibold mb-2 text-brand-600 dark:text-brand-400">{t('design_principles.synchronization_fundamentals.strategies_title')}</h3>
+            <ul className="text-slate-600 dark:text-slate-300 space-y-2 text-sm">
+              <li><strong className="text-brand-600 dark:text-brand-300">{t('design_principles.synchronization_fundamentals.strategies.naive').split(':')[0]}:</strong> {t('design_principles.synchronization_fundamentals.strategies.naive').split(':').slice(1).join(':').trim()}</li>
+              <li><strong className="text-brand-600 dark:text-brand-300">{t('design_principles.synchronization_fundamentals.strategies.ordered').split(':')[0]}:</strong> {t('design_principles.synchronization_fundamentals.strategies.ordered').split(':').slice(1).join(':').trim()}</li>
+              <li><strong className="text-brand-600 dark:text-brand-300">{t('design_principles.synchronization_fundamentals.strategies.waiter').split(':')[0]}:</strong> {t('design_principles.synchronization_fundamentals.strategies.waiter').split(':').slice(1).join(':').trim()}</li>
             </ul>
           </div>
         </div>
@@ -306,24 +306,24 @@ export default function SynchronizationFundamentals() {
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
             <h3 className="text-xl font-semibold mb-4 text-purple-400">{t('design_principles.synchronization_fundamentals.significance_title')}</h3>
             <div className="space-y-4">
-              <p className="text-zinc-300">
+              <p className="text-slate-600 dark:text-slate-300">
                 {t('design_principles.synchronization_fundamentals.significance_p1')}
               </p>
-              <p className="text-zinc-300">
+              <p className="text-slate-600 dark:text-slate-300">
                 {t('design_principles.synchronization_fundamentals.significance_p2')}
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div className="bg-purple-500/10 p-4 rounded-lg">
                   <h4 className="text-purple-300 font-medium mb-2">{t('design_principles.synchronization_fundamentals.analogy_title')}</h4>
-                  <ul className="space-y-2 text-zinc-300">
+                  <ul className="space-y-2 text-slate-600 dark:text-slate-300">
                     {(t('design_principles.synchronization_fundamentals.analogy_points', { returnObjects: true }) as string[]).map((item, idx) => (
                       <li key={idx}>• {item}</li>
                     ))}
                   </ul>
                 </div>
                 <div className="bg-blue-500/10 p-4 rounded-lg">
-                  <h4 className="text-blue-300 font-medium mb-2">{t('design_principles.synchronization_fundamentals.modern_challenges_title')}</h4>
-                  <ul className="space-y-2 text-zinc-300">
+                  <h4 className="text-brand-600 dark:text-brand-300 font-medium mb-2">{t('design_principles.synchronization_fundamentals.modern_challenges_title')}</h4>
+                  <ul className="space-y-2 text-slate-600 dark:text-slate-300">
                     {(t('design_principles.synchronization_fundamentals.modern_challenges', { returnObjects: true }) as string[]).map((item, idx) => (
                       <li key={idx}>• {item}</li>
                     ))}
@@ -346,7 +346,7 @@ export default function SynchronizationFundamentals() {
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-blue-400">{t('design_principles.synchronization_fundamentals.problem_section.scenario_title')}</h3>
+              <h3 className="text-xl font-semibold mb-4 text-brand-600 dark:text-brand-400">{t('design_principles.synchronization_fundamentals.problem_section.scenario_title')}</h3>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">
                   <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -354,7 +354,7 @@ export default function SynchronizationFundamentals() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">{t('design_principles.synchronization_fundamentals.problem_section.items.philosophers')}</span>
-                    <p className="text-zinc-400">{t('design_principles.synchronization_fundamentals.problem_section.items.round_table')}</p>
+                    <p className="text-slate-500 dark:text-slate-400">{t('design_principles.synchronization_fundamentals.problem_section.items.round_table')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -363,7 +363,7 @@ export default function SynchronizationFundamentals() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">{t('design_principles.synchronization_fundamentals.problem_section.items.forks')}</span>
-                    <p className="text-zinc-400">{t('design_principles.synchronization_fundamentals.problem_section.items.forks_desc')}</p>
+                    <p className="text-slate-500 dark:text-slate-400">{t('design_principles.synchronization_fundamentals.problem_section.items.forks_desc')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -372,7 +372,7 @@ export default function SynchronizationFundamentals() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">{t('design_principles.synchronization_fundamentals.problem_section.items.plate')}</span>
-                    <p className="text-zinc-400">{t('design_principles.synchronization_fundamentals.problem_section.items.plate_desc')}</p>
+                    <p className="text-slate-500 dark:text-slate-400">{t('design_principles.synchronization_fundamentals.problem_section.items.plate_desc')}</p>
                   </div>
                 </li>
               </ul>
@@ -386,7 +386,7 @@ export default function SynchronizationFundamentals() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">{t('design_principles.synchronization_fundamentals.problem_section.rules.two_forks')}</span>
-                    <p className="text-zinc-400">{t('design_principles.synchronization_fundamentals.problem_section.rules.two_forks_desc')}</p>
+                    <p className="text-slate-500 dark:text-slate-400">{t('design_principles.synchronization_fundamentals.problem_section.rules.two_forks_desc')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -395,7 +395,7 @@ export default function SynchronizationFundamentals() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">{t('design_principles.synchronization_fundamentals.problem_section.rules.one_fork_time')}</span>
-                    <p className="text-zinc-400">{t('design_principles.synchronization_fundamentals.problem_section.rules.one_fork_time_desc')}</p>
+                    <p className="text-slate-500 dark:text-slate-400">{t('design_principles.synchronization_fundamentals.problem_section.rules.one_fork_time_desc')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -404,7 +404,7 @@ export default function SynchronizationFundamentals() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">{t('design_principles.synchronization_fundamentals.problem_section.rules.finite_time')}</span>
-                    <p className="text-zinc-400">{t('design_principles.synchronization_fundamentals.problem_section.rules.finite_time_desc')}</p>
+                    <p className="text-slate-500 dark:text-slate-400">{t('design_principles.synchronization_fundamentals.problem_section.rules.finite_time_desc')}</p>
                   </div>
                 </li>
               </ul>
@@ -424,7 +424,7 @@ export default function SynchronizationFundamentals() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
             <h3 className="text-xl font-semibold mb-4 text-red-400">{t('design_principles.synchronization_fundamentals.challenges.deadlock_title')}</h3>
-            <p className="text-zinc-300 mb-4">
+            <p className="text-slate-600 dark:text-slate-300 mb-4">
               {t('design_principles.synchronization_fundamentals.challenges.deadlock_p')}
             </p>
             <div className="flex items-center gap-2 text-sm">
@@ -439,7 +439,7 @@ export default function SynchronizationFundamentals() {
 
           <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
             <h3 className="text-xl font-semibold mb-4 text-yellow-400">{t('design_principles.synchronization_fundamentals.challenges.starvation_title')}</h3>
-            <p className="text-zinc-300 mb-4">
+            <p className="text-slate-600 dark:text-slate-300 mb-4">
               {t('design_principles.synchronization_fundamentals.challenges.starvation_p')}
             </p>
             <div className="flex items-center gap-2 text-sm">
@@ -473,7 +473,7 @@ export default function SynchronizationFundamentals() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">{t('design_principles.synchronization_fundamentals.solutions.fork_ordering_label')}</span>
-                    <p className="text-zinc-400 text-sm">{t('design_principles.synchronization_fundamentals.solutions.fork_ordering_desc')}</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">{t('design_principles.synchronization_fundamentals.solutions.fork_ordering_desc')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -482,13 +482,13 @@ export default function SynchronizationFundamentals() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">{t('design_principles.synchronization_fundamentals.solutions.timeout_label')}</span>
-                    <p className="text-zinc-400 text-sm">{t('design_principles.synchronization_fundamentals.solutions.timeout_desc')}</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">{t('design_principles.synchronization_fundamentals.solutions.timeout_desc')}</p>
                   </div>
                 </li>
               </ul>
             </div>
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-blue-400">{t('design_principles.synchronization_fundamentals.solutions.starvation_prevention_title')}</h3>
+              <h3 className="text-xl font-semibold mb-4 text-brand-600 dark:text-brand-400">{t('design_principles.synchronization_fundamentals.solutions.starvation_prevention_title')}</h3>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
                   <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -496,7 +496,7 @@ export default function SynchronizationFundamentals() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">{t('design_principles.synchronization_fundamentals.solutions.priority_label')}</span>
-                    <p className="text-zinc-400 text-sm">{t('design_principles.synchronization_fundamentals.solutions.priority_desc')}</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">{t('design_principles.synchronization_fundamentals.solutions.priority_desc')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -505,7 +505,7 @@ export default function SynchronizationFundamentals() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">{t('design_principles.synchronization_fundamentals.solutions.fairness_label')}</span>
-                    <p className="text-zinc-400 text-sm">{t('design_principles.synchronization_fundamentals.solutions.fairness_desc')}</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">{t('design_principles.synchronization_fundamentals.solutions.fairness_desc')}</p>
                   </div>
                 </li>
               </ul>
@@ -528,7 +528,7 @@ export default function SynchronizationFundamentals() {
             className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 hover:from-zinc-800/50 hover:to-zinc-700/30 transition-all"
           >
             <h3 className="text-xl font-semibold mb-4 text-red-400">Deadlocks</h3>
-            <p className="text-zinc-300 mb-4">
+            <p className="text-slate-600 dark:text-slate-300 mb-4">
               Aprenda mais sobre como identificar, prevenir e resolver deadlocks em sistemas distribuídos.
             </p>
             <div className="flex items-center gap-2 text-sm">
@@ -545,15 +545,15 @@ export default function SynchronizationFundamentals() {
             to="/estrategias-de-consistencia/sincronizacao/algoritmos"
             className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 hover:from-zinc-800/50 hover:to-zinc-700/30 transition-all"
           >
-            <h3 className="text-xl font-semibold mb-4 text-blue-400">Algoritmos</h3>
-            <p className="text-zinc-300 mb-4">
+            <h3 className="text-xl font-semibold mb-4 text-brand-600 dark:text-brand-400">Algoritmos</h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-4">
               Explore diferentes algoritmos de sincronização distribuída e suas aplicações.
             </p>
             <div className="flex items-center gap-2 text-sm">
-              <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+              <span className="px-2 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded">
                 Algoritmo do Padeiro
               </span>
-              <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+              <span className="px-2 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded">
                 Token Ring
               </span>
             </div>

@@ -27,45 +27,45 @@ const Bitly: React.FC = () => {
         <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
           {t(`${base}.title`)}
         </h1>
-        <p className="text-xl text-zinc-400">
+        <p className="text-xl text-slate-500 dark:text-slate-400">
           {t(`${base}.subtitle`)}
         </p>
       </div>
 
       {/* Key Metrics Section */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-blue-500">{t(`${base}.metrics_title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
-            <div className="text-2xl font-bold text-blue-400">{t(`${base}.metrics.links`)}</div>
-            <div className="text-sm text-zinc-400">{t(`${base}.metrics.links_desc`)}</div>
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg text-center">
+            <div className="text-2xl font-bold text-brand-600 dark:text-brand-400">{t(`${base}.metrics.links`)}</div>
+            <div className="text-sm text-slate-500 dark:text-slate-400">{t(`${base}.metrics.links_desc`)}</div>
           </div>
-          <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
-            <div className="text-2xl font-bold text-blue-400">{t(`${base}.metrics.redirects`)}</div>
-            <div className="text-sm text-zinc-400">{t(`${base}.metrics.redirects_desc`)}</div>
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg text-center">
+            <div className="text-2xl font-bold text-brand-600 dark:text-brand-400">{t(`${base}.metrics.redirects`)}</div>
+            <div className="text-sm text-slate-500 dark:text-slate-400">{t(`${base}.metrics.redirects_desc`)}</div>
           </div>
-          <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
-            <div className="text-2xl font-bold text-blue-400">{t(`${base}.metrics.active`)}</div>
-            <div className="text-sm text-zinc-400">{t(`${base}.metrics.active_desc`)}</div>
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg text-center">
+            <div className="text-2xl font-bold text-brand-600 dark:text-brand-400">{t(`${base}.metrics.active`)}</div>
+            <div className="text-sm text-slate-500 dark:text-slate-400">{t(`${base}.metrics.active_desc`)}</div>
           </div>
         </div>
       </section>
 
       {/* System Requirements */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-blue-500">{t(`${base}.requirements_title`)}</h2>
         <div className="space-y-4">
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-blue-400 mb-2">{t(`${base}.functional_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-brand-600 dark:text-brand-400 mb-2">{t(`${base}.functional_title`)}</h3>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {functionalItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
             </ul>
           </div>
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-blue-400 mb-2">{t(`${base}.non_functional_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-brand-600 dark:text-brand-400 mb-2">{t(`${base}.non_functional_title`)}</h3>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {nonFunctionalItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
@@ -75,12 +75,12 @@ const Bitly: React.FC = () => {
       </section>
 
       {/* Architecture Overview */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-blue-500">{t(`${base}.architecture_title`)}</h2>
         
         {/* High Level Architecture Diagram */}
-        <div className="bg-zinc-800/50 p-4 rounded-lg space-y-4">
-          <h3 className="text-xl font-medium text-blue-400">{t(`${base}.high_level_title`)}</h3>
+        <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg space-y-4">
+          <h3 className="text-xl font-medium text-brand-600 dark:text-brand-400">{t(`${base}.high_level_title`)}</h3>
           <div className="relative h-[500px] bg-black/50 rounded-lg border border-blue-900/30 overflow-hidden">
             <svg className="w-full h-full" viewBox="0 0 800 500">
               {/* Client Layer */}
@@ -136,14 +136,14 @@ const Bitly: React.FC = () => {
               </g>
             </svg>
           </div>
-          <p className="text-zinc-400">
+          <p className="text-slate-500 dark:text-slate-400">
             {t(`${base}.high_level_description`)}
           </p>
         </div>
 
         {/* URL Flow Architecture */}
-        <div className="bg-zinc-800/50 p-4 rounded-lg space-y-4 mt-8">
-          <h3 className="text-xl font-medium text-blue-400">{t(`${base}.url_flow_title`)}</h3>
+        <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg space-y-4 mt-8">
+          <h3 className="text-xl font-medium text-brand-600 dark:text-brand-400">{t(`${base}.url_flow_title`)}</h3>
           <div className="relative h-[400px] bg-black/50 rounded-lg border border-blue-900/30 overflow-hidden">
             <svg className="w-full h-full" viewBox="0 0 800 400">
               {/* URL Creation */}
@@ -178,24 +178,24 @@ const Bitly: React.FC = () => {
               </g>
             </svg>
           </div>
-          <p className="text-zinc-400">
+          <p className="text-slate-500 dark:text-slate-400">
             {t(`${base}.url_flow_description`)}
           </p>
         </div>
 
         {/* Core Components */}
         <div className="space-y-4 mt-6">
-          <h3 className="text-xl font-medium text-blue-400">{t(`${base}.shortening_system_title`)}</h3>
-          <div className="bg-zinc-800/50 p-4 rounded-lg space-y-3">
-            <h4 className="font-medium text-zinc-200">{t(`${base}.short_url_generation_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+          <h3 className="text-xl font-medium text-brand-600 dark:text-brand-400">{t(`${base}.shortening_system_title`)}</h3>
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg space-y-3">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200">{t(`${base}.short_url_generation_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {shortUrlGenerationItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
             </ul>
             
-            <h4 className="font-medium text-zinc-200 mt-4">{t(`${base}.url_types_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200 mt-4">{t(`${base}.url_types_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {urlTypesItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
@@ -205,17 +205,17 @@ const Bitly: React.FC = () => {
 
         {/* Storage System */}
         <div className="space-y-4 mt-6">
-          <h3 className="text-xl font-medium text-blue-400">{t(`${base}.storage_system_title`)}</h3>
-          <div className="bg-zinc-800/50 p-4 rounded-lg space-y-3">
-            <h4 className="font-medium text-zinc-200">{t(`${base}.url_storage_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+          <h3 className="text-xl font-medium text-brand-600 dark:text-brand-400">{t(`${base}.storage_system_title`)}</h3>
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg space-y-3">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200">{t(`${base}.url_storage_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {urlStorageItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
             </ul>
 
-            <h4 className="font-medium text-zinc-200 mt-4">{t(`${base}.cache_strategies_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200 mt-4">{t(`${base}.cache_strategies_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {cacheStrategiesItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
@@ -225,17 +225,17 @@ const Bitly: React.FC = () => {
 
         {/* Analytics System */}
         <div className="space-y-4 mt-6">
-          <h3 className="text-xl font-medium text-blue-400">{t(`${base}.analytics_system_title`)}</h3>
-          <div className="bg-zinc-800/50 p-4 rounded-lg space-y-3">
-            <h4 className="font-medium text-zinc-200">{t(`${base}.metrics_collected_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+          <h3 className="text-xl font-medium text-brand-600 dark:text-brand-400">{t(`${base}.analytics_system_title`)}</h3>
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg space-y-3">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200">{t(`${base}.metrics_collected_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {metricsCollectedItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
             </ul>
 
-            <h4 className="font-medium text-zinc-200 mt-4">{t(`${base}.processing_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200 mt-4">{t(`${base}.processing_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {processingItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
@@ -245,33 +245,33 @@ const Bitly: React.FC = () => {
       </section>
 
       {/* Technical Decisions and Trade-offs */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-blue-500">{t(`${base}.technical_decisions_title`)}</h2>
         <div className="space-y-4">
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-blue-400 mb-2">{t(`${base}.decision_1_title`)}</h3>
-            <p className="text-zinc-300">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-brand-600 dark:text-brand-400 mb-2">{t(`${base}.decision_1_title`)}</h3>
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.decision_1_text`)}
             </p>
           </div>
           
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-blue-400 mb-2">{t(`${base}.decision_2_title`)}</h3>
-            <p className="text-zinc-300">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-brand-600 dark:text-brand-400 mb-2">{t(`${base}.decision_2_title`)}</h3>
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.decision_2_text`)}
             </p>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-blue-400 mb-2">{t(`${base}.decision_3_title`)}</h3>
-            <p className="text-zinc-300">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-brand-600 dark:text-brand-400 mb-2">{t(`${base}.decision_3_title`)}</h3>
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.decision_3_text`)}
             </p>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-blue-400 mb-2">{t(`${base}.decision_4_title`)}</h3>
-            <p className="text-zinc-300">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-brand-600 dark:text-brand-400 mb-2">{t(`${base}.decision_4_title`)}</h3>
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.decision_4_text`)}
             </p>
           </div>
@@ -279,33 +279,33 @@ const Bitly: React.FC = () => {
       </section>
 
       {/* Scaling Challenges */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-blue-500">{t(`${base}.scaling_challenges_title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-blue-400 mb-2">{t(`${base}.mass_redirect_title`)}</h3>
-            <p className="text-zinc-300">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-brand-600 dark:text-brand-400 mb-2">{t(`${base}.mass_redirect_title`)}</h3>
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.mass_redirect_text`)}
             </p>
           </div>
           
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-blue-400 mb-2">{t(`${base}.url_generation_title`)}</h3>
-            <p className="text-zinc-300">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-brand-600 dark:text-brand-400 mb-2">{t(`${base}.url_generation_title`)}</h3>
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.url_generation_text`)}
             </p>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-blue-400 mb-2">{t(`${base}.analytics_challenge_title`)}</h3>
-            <p className="text-zinc-300">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-brand-600 dark:text-brand-400 mb-2">{t(`${base}.analytics_challenge_title`)}</h3>
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.analytics_challenge_text`)}
             </p>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-blue-400 mb-2">{t(`${base}.spam_abuse_title`)}</h3>
-            <p className="text-zinc-300">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-brand-600 dark:text-brand-400 mb-2">{t(`${base}.spam_abuse_title`)}</h3>
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.spam_abuse_text`)}
             </p>
           </div>
@@ -313,16 +313,16 @@ const Bitly: React.FC = () => {
       </section>
 
       {/* Evolution Timeline */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-blue-500">{t(`${base}.evolution_title`)}</h2>
         <div className="space-y-6">
           {/* 2008: Initial Version */}
           <div className="relative pl-8 border-l-2 border-blue-500">
             <div className="absolute w-4 h-4 bg-blue-500 rounded-full -left-[9px] top-0" />
             <div className="mb-2">
-              <span className="text-blue-400 font-semibold">2008</span>
+              <span className="text-brand-600 dark:text-brand-400 font-semibold">2008</span>
               <h3 className="text-lg font-medium">{t(`${base}.timeline_2008_title`)}</h3>
-              <p className="text-zinc-300">{t(`${base}.timeline_2008_desc`)}</p>
+              <p className="text-slate-600 dark:text-slate-300">{t(`${base}.timeline_2008_desc`)}</p>
             </div>
           </div>
 
@@ -330,9 +330,9 @@ const Bitly: React.FC = () => {
           <div className="relative pl-8 border-l-2 border-blue-500">
             <div className="absolute w-4 h-4 bg-blue-500 rounded-full -left-[9px] top-0" />
             <div className="mb-2">
-              <span className="text-blue-400 font-semibold">2010-2011</span>
+              <span className="text-brand-600 dark:text-brand-400 font-semibold">2010-2011</span>
               <h3 className="text-lg font-medium">{t(`${base}.timeline_2010_title`)}</h3>
-              <p className="text-zinc-300">{t(`${base}.timeline_2010_desc`)}</p>
+              <p className="text-slate-600 dark:text-slate-300">{t(`${base}.timeline_2010_desc`)}</p>
             </div>
           </div>
 
@@ -340,9 +340,9 @@ const Bitly: React.FC = () => {
           <div className="relative pl-8 border-l-2 border-blue-500">
             <div className="absolute w-4 h-4 bg-blue-500 rounded-full -left-[9px] top-0" />
             <div className="mb-2">
-              <span className="text-blue-400 font-semibold">2012-2013</span>
+              <span className="text-brand-600 dark:text-brand-400 font-semibold">2012-2013</span>
               <h3 className="text-lg font-medium">{t(`${base}.timeline_2012_title`)}</h3>
-              <p className="text-zinc-300">{t(`${base}.timeline_2012_desc`)}</p>
+              <p className="text-slate-600 dark:text-slate-300">{t(`${base}.timeline_2012_desc`)}</p>
             </div>
           </div>
 
@@ -350,9 +350,9 @@ const Bitly: React.FC = () => {
           <div className="relative pl-8 border-l-2 border-blue-500">
             <div className="absolute w-4 h-4 bg-blue-500 rounded-full -left-[9px] top-0" />
             <div className="mb-2">
-              <span className="text-blue-400 font-semibold">2015-2016</span>
+              <span className="text-brand-600 dark:text-brand-400 font-semibold">2015-2016</span>
               <h3 className="text-lg font-medium">{t(`${base}.timeline_2015_title`)}</h3>
-              <p className="text-zinc-300">{t(`${base}.timeline_2015_desc`)}</p>
+              <p className="text-slate-600 dark:text-slate-300">{t(`${base}.timeline_2015_desc`)}</p>
             </div>
           </div>
 
@@ -360,49 +360,49 @@ const Bitly: React.FC = () => {
           <div className="relative pl-8 border-l-2 border-blue-500">
             <div className="absolute w-4 h-4 bg-blue-500 rounded-full -left-[9px] top-0" />
             <div className="mb-2">
-              <span className="text-blue-400 font-semibold">2018-{t(`${base}.timeline_2018_desc`).includes('Presente') ? 'Presente' : 'Present'}</span>
+              <span className="text-brand-600 dark:text-brand-400 font-semibold">2018-{t(`${base}.timeline_2018_desc`).includes('Presente') ? 'Presente' : 'Present'}</span>
               <h3 className="text-lg font-medium">{t(`${base}.timeline_2018_title`)}</h3>
-              <p className="text-zinc-300">{t(`${base}.timeline_2018_desc`)}</p>
+              <p className="text-slate-600 dark:text-slate-300">{t(`${base}.timeline_2018_desc`)}</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* References Section */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-blue-500">{t(`${base}.references_title`)}</h2>
         <div className="space-y-3">
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-blue-400 mb-2">{t(`${base}.official_docs_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
-              <li><a href="https://dev.bitly.com/" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Bitly API Documentation</a></li>
-              <li><a href="https://bitly.com/pages/resources" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Bitly Resources</a></li>
-              <li><a href="https://support.bitly.com/hc/en-us/articles/231247868-Technical-requirements-for-Bitly" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Technical Requirements</a></li>
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-brand-600 dark:text-brand-400 mb-2">{t(`${base}.official_docs_title`)}</h3>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
+              <li><a href="https://dev.bitly.com/" className="text-brand-600 dark:text-brand-400 hover:underline" target="_blank" rel="noopener noreferrer">Bitly API Documentation</a></li>
+              <li><a href="https://bitly.com/pages/resources" className="text-brand-600 dark:text-brand-400 hover:underline" target="_blank" rel="noopener noreferrer">Bitly Resources</a></li>
+              <li><a href="https://support.bitly.com/hc/en-us/articles/231247868-Technical-requirements-for-Bitly" className="text-brand-600 dark:text-brand-400 hover:underline" target="_blank" rel="noopener noreferrer">Technical Requirements</a></li>
             </ul>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-blue-400 mb-2">{t(`${base}.technical_articles_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
-              <li><a href="https://blog.bitly.com/posts/infrastructure-update-improving-redirects" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Infrastructure: Improving Redirects</a></li>
-              <li><a href="https://medium.com/bitly-engineering/building-a-distributed-link-shortening-system-d4c1edc3f13b" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Building a Distributed Link Shortening System</a></li>
-              <li><a href="https://www.highscalability.com/blog/2014/7/14/bitly-lessons-learned-building-a-distributed-system-that-han.html" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">High Scalability - Bitly Architecture</a></li>
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-brand-600 dark:text-brand-400 mb-2">{t(`${base}.technical_articles_title`)}</h3>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
+              <li><a href="https://blog.bitly.com/posts/infrastructure-update-improving-redirects" className="text-brand-600 dark:text-brand-400 hover:underline" target="_blank" rel="noopener noreferrer">Infrastructure: Improving Redirects</a></li>
+              <li><a href="https://medium.com/bitly-engineering/building-a-distributed-link-shortening-system-d4c1edc3f13b" className="text-brand-600 dark:text-brand-400 hover:underline" target="_blank" rel="noopener noreferrer">Building a Distributed Link Shortening System</a></li>
+              <li><a href="https://www.highscalability.com/blog/2014/7/14/bitly-lessons-learned-building-a-distributed-system-that-han.html" className="text-brand-600 dark:text-brand-400 hover:underline" target="_blank" rel="noopener noreferrer">High Scalability - Bitly Architecture</a></li>
             </ul>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-blue-400 mb-2">{t(`${base}.conferences_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
-              <li><a href="https://www.youtube.com/watch?v=JGLx8Jg4K6Y" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">QCon - Scaling Bit.ly</a></li>
-              <li><a href="https://www.youtube.com/watch?v=SagZK5CSF8M" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Tech Talk - URL Shortening at Scale</a></li>
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-brand-600 dark:text-brand-400 mb-2">{t(`${base}.conferences_title`)}</h3>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
+              <li><a href="https://www.youtube.com/watch?v=JGLx8Jg4K6Y" className="text-brand-600 dark:text-brand-400 hover:underline" target="_blank" rel="noopener noreferrer">QCon - Scaling Bit.ly</a></li>
+              <li><a href="https://www.youtube.com/watch?v=SagZK5CSF8M" className="text-brand-600 dark:text-brand-400 hover:underline" target="_blank" rel="noopener noreferrer">Tech Talk - URL Shortening at Scale</a></li>
             </ul>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-blue-400 mb-2">{t(`${base}.tools_sdks_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
-              <li><a href="https://github.com/bitly/api-clients" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Official API Clients</a></li>
-              <li><a href="https://github.com/bitly/go-nsq" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">NSQ - Distributed Messaging Platform</a></li>
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
+            <h3 className="text-lg font-medium text-brand-600 dark:text-brand-400 mb-2">{t(`${base}.tools_sdks_title`)}</h3>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
+              <li><a href="https://github.com/bitly/api-clients" className="text-brand-600 dark:text-brand-400 hover:underline" target="_blank" rel="noopener noreferrer">Official API Clients</a></li>
+              <li><a href="https://github.com/bitly/go-nsq" className="text-brand-600 dark:text-brand-400 hover:underline" target="_blank" rel="noopener noreferrer">NSQ - Distributed Messaging Platform</a></li>
             </ul>
           </div>
         </div>

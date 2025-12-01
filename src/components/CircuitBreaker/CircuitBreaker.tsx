@@ -123,19 +123,19 @@ export default function CircuitBreaker() {
 
   return (
     <div className="p-4">
-      <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
           <h1 className="text-xl font-semibold">{t('simulators.circuit_breaker.title')}</h1>
           <button
             onClick={() => setIsConfigOpen(!isConfigOpen)}
-            className="w-full sm:w-auto px-3 py-1 bg-zinc-800 rounded-md hover:bg-zinc-700"
+            className="w-full sm:w-auto px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-md hover:bg-zinc-700"
           >
             {t('simulators.circuit_breaker.buttons.settings')}
           </button>
         </div>
 
         {isConfigOpen && (
-          <div className="mb-4 p-4 bg-zinc-800 rounded-lg">
+          <div className="mb-4 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm mb-1">Limite de Falhas</label>
@@ -206,25 +206,25 @@ export default function CircuitBreaker() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-          <div className="bg-zinc-800 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
             <div className="flex flex-wrap items-center gap-4 mb-4">
               <div className={`w-4 h-4 rounded-full ${getStateColor()}`} />
               <div>
-                <div className="text-sm text-zinc-400">{t('simulators.circuit_breaker.labels.state')}</div>
+                <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.circuit_breaker.labels.state')}</div>
                 <div className="font-medium">{circuitState}</div>
               </div>
               {circuitState === 'OPEN' && resetCountdown > 0 && (
                 <div>
-                  <div className="text-sm text-zinc-400">{t('simulators.circuit_breaker.labels.reset_in')}</div>
+                  <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.circuit_breaker.labels.reset_in')}</div>
                   <div className="font-medium">{resetCountdown}s</div>
                 </div>
               )}
             </div>
-            <div className="text-sm text-zinc-400">{t('simulators.circuit_breaker.labels.consecutive_failures')}</div>
+            <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.circuit_breaker.labels.consecutive_failures')}</div>
             <div className="font-medium">{consecutiveFailures}</div>
           </div>
-          <div className="bg-zinc-800 p-4 rounded-lg">
-            <div className="text-sm text-zinc-400">{t('simulators.circuit_breaker.labels.error_status')}</div>
+          <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
+            <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.circuit_breaker.labels.error_status')}</div>
             <div className="font-medium">
               {errorsEnabled ? (
                 <span className="text-red-400">{t('simulators.circuit_breaker.labels.active_with_chance', { percent: config.errorRate })}</span>
@@ -235,7 +235,7 @@ export default function CircuitBreaker() {
           </div>
         </div>
 
-        <div className="bg-zinc-800 p-4 rounded-lg">
+        <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
           <h2 className="text-lg font-medium mb-3">{t('simulators.circuit_breaker.labels.latest_requests')}</h2>
           <div className="space-y-2">
             {requests.map(request => (

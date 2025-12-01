@@ -29,7 +29,7 @@ export default function AvailabilityZones() {
   const bestPractices = tObj('design_principles.availability.availability_zones.best_practices');
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white p-8">
+    <div className="min-h-screen bg-canvas-paper dark:bg-canvas-dark text-white p-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <motion.div
@@ -38,7 +38,7 @@ export default function AvailabilityZones() {
           className="mb-12"
         >
           <h1 className="text-3xl font-bold mb-4">{tStr('design_principles.availability.availability_zones.title')}</h1>
-          <p className="text-lg text-zinc-400">
+          <p className="text-lg text-slate-500 dark:text-slate-400">
             {tStr('design_principles.availability.availability_zones.intro')}
           </p>
         </motion.div>
@@ -52,29 +52,29 @@ export default function AvailabilityZones() {
             transition={{ delay: 0.2 }}
           >
             {/* How it Works */}
-            <div className="bg-zinc-900 rounded-xl p-6 mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-blue-400">{tStr('design_principles.availability.availability_zones.how_works_title')}</h2>
-              <p className="text-zinc-400 mb-4">
+            <div className="bg-white dark:bg-slate-900 rounded-xl p-6 mb-8">
+              <h2 className="text-xl font-semibold mb-4 text-brand-600 dark:text-brand-400">{tStr('design_principles.availability.availability_zones.how_works_title')}</h2>
+              <p className="text-slate-500 dark:text-slate-400 mb-4">
                 {tStr('design_principles.availability.availability_zones.how_works_intro')}
               </p>
-              <ul className="list-disc list-inside text-zinc-400 space-y-2 mb-4">
+              <ul className="list-disc list-inside text-slate-500 dark:text-slate-400 space-y-2 mb-4">
                 {howWorksItems.map((item, idx) => (
                   <li key={idx}>{item}</li>
                 ))}
               </ul>
-              <p className="text-zinc-400">
+              <p className="text-slate-500 dark:text-slate-400">
                 {tStr('design_principles.availability.availability_zones.how_works_outro')}
               </p>
             </div>
 
             {/* Benefits */}
-            <div className="bg-zinc-900 rounded-xl p-6">
-              <h2 className="text-xl font-semibold mb-4 text-blue-400">{tStr('design_principles.availability.availability_zones.benefits_title')}</h2>
+            <div className="bg-white dark:bg-slate-900 rounded-xl p-6">
+              <h2 className="text-xl font-semibold mb-4 text-brand-600 dark:text-brand-400">{tStr('design_principles.availability.availability_zones.benefits_title')}</h2>
               <div className="space-y-4">
                 {benefits.map((benefit: any, idx: number) => (
-                  <div key={idx} className="bg-zinc-800 rounded-lg p-4">
+                  <div key={idx} className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4">
                     <h3 className="text-lg font-medium mb-2 text-green-400">{benefit.title}</h3>
-                    <p className="text-sm text-zinc-400">
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
                       {benefit.description}
                     </p>
                   </div>
@@ -90,32 +90,32 @@ export default function AvailabilityZones() {
             transition={{ delay: 0.3 }}
           >
             {/* Real World Example */}
-            <div className="bg-zinc-900 rounded-xl p-6 mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-blue-400">{tStr('design_principles.availability.availability_zones.real_world_title')}</h2>
-              <div className="bg-zinc-800 rounded-lg p-4 mb-4">
+            <div className="bg-white dark:bg-slate-900 rounded-xl p-6 mb-8">
+              <h2 className="text-xl font-semibold mb-4 text-brand-600 dark:text-brand-400">{tStr('design_principles.availability.availability_zones.real_world_title')}</h2>
+              <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4 mb-4">
                 <h3 className="text-lg font-medium mb-2">{tStr('design_principles.availability.availability_zones.real_world_example_title')}</h3>
-                <p className="text-zinc-400 mb-4">
+                <p className="text-slate-500 dark:text-slate-400 mb-4">
                   {tStr('design_principles.availability.availability_zones.real_world_intro')}
                 </p>
-                <ul className="list-disc list-inside text-zinc-400 space-y-2">
+                <ul className="list-disc list-inside text-slate-500 dark:text-slate-400 space-y-2">
                   {realWorldItems.map((item, idx) => (
                     <li key={idx}>{item}</li>
                   ))}
                 </ul>
               </div>
-              <p className="text-sm text-zinc-400">
+              <p className="text-sm text-slate-500 dark:text-slate-400">
                 {tStr('design_principles.availability.availability_zones.real_world_outro')}
               </p>
             </div>
 
             {/* Best Practices */}
-            <div className="bg-zinc-900 rounded-xl p-6">
-              <h2 className="text-xl font-semibold mb-4 text-blue-400">{tStr('design_principles.availability.availability_zones.best_practices_title')}</h2>
+            <div className="bg-white dark:bg-slate-900 rounded-xl p-6">
+              <h2 className="text-xl font-semibold mb-4 text-brand-600 dark:text-brand-400">{tStr('design_principles.availability.availability_zones.best_practices_title')}</h2>
               <ul className="space-y-4">
                 {bestPractices.map((practice: any, idx: number) => (
-                  <li key={idx} className="bg-zinc-800 rounded-lg p-4">
+                  <li key={idx} className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4">
                     <h3 className="text-lg font-medium mb-2 text-green-400">{practice.title}</h3>
-                    <p className="text-sm text-zinc-400">
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
                       {practice.description}
                     </p>
                   </li>
@@ -139,7 +139,7 @@ export default function AvailabilityZones() {
             <h2 className="text-xl font-semibold mb-2">
               {tStr('design_principles.availability.availability_zones.simulator_title')}
             </h2>
-            <p className="text-zinc-200">
+            <p className="text-slate-700 dark:text-slate-200">
               {tStr('design_principles.availability.availability_zones.simulator_description')}
             </p>
           </Link>

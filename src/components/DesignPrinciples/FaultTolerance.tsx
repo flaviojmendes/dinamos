@@ -60,7 +60,7 @@ export default function FaultTolerance() {
     <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
       <div className="prose prose-invert prose-lg max-w-none mb-12">
         <motion.h1 
-          className="text-4xl font-bold mb-4 text-blue-400"
+          className="text-4xl font-bold mb-4 text-brand-600 dark:text-brand-400"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -71,7 +71,7 @@ export default function FaultTolerance() {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-xl text-zinc-300"
+          className="text-xl text-slate-600 dark:text-slate-300"
         >
           {t('design_principles.fault_tolerance.intro')}
         </motion.p>
@@ -84,18 +84,18 @@ export default function FaultTolerance() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
-            className="bg-zinc-900 rounded-lg p-6 hover:bg-zinc-800 transition-colors group"
+            className="bg-white dark:bg-slate-900 rounded-lg p-6 hover:bg-slate-100 dark:bg-slate-800 transition-colors group"
           >
             <div className="flex items-start gap-4">
-              <div className="p-3 bg-blue-500/10 rounded-lg text-blue-400 group-hover:bg-blue-500/20 transition-colors">
+              <div className="p-3 bg-blue-500/10 rounded-lg text-brand-600 dark:text-brand-400 group-hover:bg-blue-500/20 transition-colors">
                 {strategy.icon}
               </div>
               <div>
-                <h2 className="text-xl font-bold text-zinc-200 mb-2">{strategy.title}</h2>
-                <p className="text-zinc-400 mb-4">{strategy.description}</p>
-                <div className="bg-zinc-950/50 rounded-lg p-4">
-                  <h3 className="text-sm font-medium text-zinc-300 mb-2">{t('design_principles.fault_tolerance.example_label')}</h3>
-                  <p className="text-sm text-zinc-400">{strategy.example}</p>
+                <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-2">{strategy.title}</h2>
+                <p className="text-slate-500 dark:text-slate-400 mb-4">{strategy.description}</p>
+                <div className="bg-canvas-paper dark:bg-canvas-dark/50 rounded-lg p-4">
+                  <h3 className="text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">{t('design_principles.fault_tolerance.example_label')}</h3>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">{strategy.example}</p>
                 </div>
               </div>
             </div>

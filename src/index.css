@@ -3,25 +3,39 @@
 @tailwind utilities;
 
 @layer base {
-  h1 {
-    @apply text-h1 font-title;
+  body {
+    background-color: theme('colors.canvas.paper');
+    color: theme('colors.slate.900');
+    min-height: 100vh;
   }
-  h2 {
-    @apply text-h2 font-title;
+
+  :is(.dark body) {
+    background-color: theme('colors.canvas.dark');
+    color: theme('colors.slate.100');
   }
-  h3 {
-    @apply text-h3 font-title;
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-mono tracking-tight;
   }
-  h4 {
-    @apply text-h4 font-title;
+}
+
+@layer utilities {
+  .bg-grid {
+    background-size: 40px 40px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
   }
-  h5 {
-    @apply text-h5 font-title;
+
+  .dark .bg-grid {
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   }
-  h6 {
-    @apply text-h6 font-title;
+
+  .card-shadow {
+    box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.1);
   }
-  p {
-    @apply text-p font-content;
+  
+  .dark .card-shadow {
+    box-shadow: 4px 4px 0px 0px rgba(255, 255, 255, 0.1);
   }
 }

@@ -25,7 +25,7 @@ export default function Cryptography() {
           <h1 className="text-4xl font-bold text-white mb-4">
             {t(`${base}.title`)}
           </h1>
-          <p className="text-lg text-zinc-400 mb-6">
+          <p className="text-lg text-slate-500 dark:text-slate-400 mb-6">
             {t(`${base}.subtitle`)}
           </p>
           <Link
@@ -60,23 +60,23 @@ export default function Cryptography() {
           {/* Fundamentos da Criptografia */}
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.fundamentals_title`)}</h2>
-            <div className="bg-zinc-900 rounded-lg p-6">
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className="bg-zinc-800 p-6 rounded-lg">
-                  <h3 className="text-xl font-semibold text-blue-400 mb-3">{t(`${base}.confidentiality_title`)}</h3>
-                  <p className="text-zinc-400">
+                <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
+                  <h3 className="text-xl font-semibold text-brand-600 dark:text-brand-400 mb-3">{t(`${base}.confidentiality_title`)}</h3>
+                  <p className="text-slate-500 dark:text-slate-400">
                     {t(`${base}.confidentiality_description`)}
                   </p>
                 </div>
-                <div className="bg-zinc-800 p-6 rounded-lg">
-                  <h3 className="text-xl font-semibold text-blue-400 mb-3">{t(`${base}.integrity_title`)}</h3>
-                  <p className="text-zinc-400">
+                <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
+                  <h3 className="text-xl font-semibold text-brand-600 dark:text-brand-400 mb-3">{t(`${base}.integrity_title`)}</h3>
+                  <p className="text-slate-500 dark:text-slate-400">
                     {t(`${base}.integrity_description`)}
                   </p>
                 </div>
-                <div className="bg-zinc-800 p-6 rounded-lg">
-                  <h3 className="text-xl font-semibold text-blue-400 mb-3">{t(`${base}.authenticity_title`)}</h3>
-                  <p className="text-zinc-400">
+                <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
+                  <h3 className="text-xl font-semibold text-brand-600 dark:text-brand-400 mb-3">{t(`${base}.authenticity_title`)}</h3>
+                  <p className="text-slate-500 dark:text-slate-400">
                     {t(`${base}.authenticity_description`)}
                   </p>
                 </div>
@@ -87,16 +87,16 @@ export default function Cryptography() {
           {/* Tipos de Criptografia */}
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.types_title`)}</h2>
-            <div className="bg-zinc-900 rounded-lg p-6">
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
               <div className="grid gap-6">
-                <div className="border-b border-zinc-800 pb-6">
+                <div className="border-b border-slate-200 dark:border-slate-800 pb-6">
                   <h3 className="text-xl font-semibold text-purple-400 mb-3">{t(`${base}.symmetric_title`)}</h3>
-                  <p className="text-zinc-300 mb-4">
+                  <p className="text-slate-600 dark:text-slate-300 mb-4">
                     {t(`${base}.symmetric_description`)}
                   </p>
-                  <div className="bg-zinc-800 p-4 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
                     <h4 className="text-lg font-medium text-purple-300 mb-2">{t(`${base}.symmetric_algorithms_title`)}</h4>
-                    <ul className="list-disc list-inside text-zinc-400 space-y-2">
+                    <ul className="list-disc list-inside text-slate-500 dark:text-slate-400 space-y-2">
                       {symmetricAlgorithms.map((item, idx) => (
                         <li key={idx}>{item}</li>
                       ))}
@@ -104,14 +104,14 @@ export default function Cryptography() {
                   </div>
                 </div>
 
-                <div className="border-b border-zinc-800 pb-6">
+                <div className="border-b border-slate-200 dark:border-slate-800 pb-6">
                   <h3 className="text-xl font-semibold text-purple-400 mb-3">{t(`${base}.asymmetric_title`)}</h3>
-                  <p className="text-zinc-300 mb-4">
+                  <p className="text-slate-600 dark:text-slate-300 mb-4">
                     {t(`${base}.asymmetric_description`)}
                   </p>
-                  <div className="bg-zinc-800 p-4 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
                     <h4 className="text-lg font-medium text-purple-300 mb-2">{t(`${base}.asymmetric_algorithms_title`)}</h4>
-                    <ul className="list-disc list-inside text-zinc-400 space-y-2">
+                    <ul className="list-disc list-inside text-slate-500 dark:text-slate-400 space-y-2">
                       {asymmetricAlgorithms.map((item, idx) => (
                         <li key={idx}>{item}</li>
                       ))}
@@ -121,12 +121,12 @@ export default function Cryptography() {
 
                 <div>
                   <h3 className="text-xl font-semibold text-purple-400 mb-3">{t(`${base}.hash_title`)}</h3>
-                  <p className="text-zinc-300 mb-4">
+                  <p className="text-slate-600 dark:text-slate-300 mb-4">
                     {t(`${base}.hash_description`)}
                   </p>
-                  <div className="bg-zinc-800 p-4 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
                     <h4 className="text-lg font-medium text-purple-300 mb-2">{t(`${base}.hash_algorithms_title`)}</h4>
-                    <ul className="list-disc list-inside text-zinc-400 space-y-2">
+                    <ul className="list-disc list-inside text-slate-500 dark:text-slate-400 space-y-2">
                       {hashAlgorithms.map((item, idx) => (
                         <li key={idx}>{item}</li>
                       ))}
@@ -140,20 +140,20 @@ export default function Cryptography() {
           {/* Gerenciamento de Chaves */}
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.key_management_title`)}</h2>
-            <div className="bg-zinc-900 rounded-lg p-6">
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="bg-zinc-800 p-6 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-yellow-400 mb-3">{t(`${base}.lifecycle_title`)}</h3>
-                    <ul className="text-zinc-400 space-y-2">
+                    <ul className="text-slate-500 dark:text-slate-400 space-y-2">
                       {lifecycleItems.map((item, idx) => (
                         <li key={idx}>• {item}</li>
                       ))}
                     </ul>
                   </div>
-                  <div className="bg-zinc-800 p-6 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-yellow-400 mb-3">{t(`${base}.best_practices_title`)}</h3>
-                    <ul className="text-zinc-400 space-y-2">
+                    <ul className="text-slate-500 dark:text-slate-400 space-y-2">
                       {bestPracticesItems.map((item, idx) => (
                         <li key={idx}>• {item}</li>
                       ))}
@@ -167,15 +167,15 @@ export default function Cryptography() {
           {/* Protocolos de Segurança */}
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.security_protocols_title`)}</h2>
-            <div className="bg-zinc-900 rounded-lg p-6">
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <h3 className="text-xl font-semibold text-green-400 mb-3">{t(`${base}.tls_ssl_title`)}</h3>
-                  <div className="bg-zinc-800 p-6 rounded-lg">
-                    <p className="text-zinc-300 mb-4">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
+                    <p className="text-slate-600 dark:text-slate-300 mb-4">
                       {t(`${base}.tls_ssl_description`)}
                     </p>
-                    <ul className="text-zinc-400 space-y-2">
+                    <ul className="text-slate-500 dark:text-slate-400 space-y-2">
                       {tlsSslItems.map((item, idx) => (
                         <li key={idx}>• {item}</li>
                       ))}
@@ -184,8 +184,8 @@ export default function Cryptography() {
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-green-400 mb-3">{t(`${base}.other_protocols_title`)}</h3>
-                  <div className="bg-zinc-800 p-6 rounded-lg">
-                    <ul className="text-zinc-400 space-y-2">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
+                    <ul className="text-slate-500 dark:text-slate-400 space-y-2">
                       {otherProtocolsItems.map((item, idx) => (
                         <li key={idx}>• {item}</li>
                       ))}
@@ -199,31 +199,31 @@ export default function Cryptography() {
           {/* Implementação Segura */}
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.secure_implementation_title`)}</h2>
-            <div className="bg-zinc-900 rounded-lg p-6">
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
               <div className="space-y-6">
-                <p className="text-zinc-300">
+                <p className="text-slate-600 dark:text-slate-300">
                   {t(`${base}.implementation_intro`)}
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="bg-zinc-800 p-6 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-red-400 mb-3">{t(`${base}.dont_title`)}</h3>
-                    <ul className="text-zinc-400 space-y-2">
+                    <ul className="text-slate-500 dark:text-slate-400 space-y-2">
                       {dontItems.map((item, idx) => (
                         <li key={idx}>• {item}</li>
                       ))}
                     </ul>
                   </div>
-                  <div className="bg-zinc-800 p-6 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-green-400 mb-3">{t(`${base}.do_title`)}</h3>
-                    <ul className="text-zinc-400 space-y-2">
+                    <ul className="text-slate-500 dark:text-slate-400 space-y-2">
                       {doItems.map((item, idx) => (
                         <li key={idx}>• {item}</li>
                       ))}
                     </ul>
                   </div>
-                  <div className="bg-zinc-800 p-6 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-yellow-400 mb-3">{t(`${base}.consider_title`)}</h3>
-                    <ul className="text-zinc-400 space-y-2">
+                    <ul className="text-slate-500 dark:text-slate-400 space-y-2">
                       {considerItems.map((item, idx) => (
                         <li key={idx}>• {item}</li>
                       ))}

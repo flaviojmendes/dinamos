@@ -14,7 +14,7 @@ export default function SecurityOverview() {
           <h1 className="text-3xl font-bold text-white mb-4">
             {t(`${base}.title`)}
           </h1>
-          <p className="text-lg text-zinc-400">
+          <p className="text-lg text-slate-500 dark:text-slate-400">
             {t(`${base}.subtitle`)}
           </p>
         </div>
@@ -22,12 +22,12 @@ export default function SecurityOverview() {
         {/* Info Banner */}
         <div className="bg-blue-500/20 border border-blue-500 rounded-lg p-4 mb-8">
           <div className="flex gap-3">
-            <div className="text-blue-400 mt-1">
+            <div className="text-brand-600 dark:text-brand-400 mt-1">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <p className="text-blue-300">
+            <p className="text-brand-600 dark:text-brand-300">
               {t(`${base}.info_banner`)}
             </p>
           </div>
@@ -38,7 +38,7 @@ export default function SecurityOverview() {
           {/* Authentication */}
           <Link 
             to="/seguranca/autenticacao"
-            className="group bg-zinc-900/50 rounded-lg p-6 hover:bg-zinc-800/50 transition-colors"
+            className="group bg-white dark:bg-slate-900/50 rounded-lg p-6 hover:bg-slate-100 dark:bg-slate-800/50 transition-colors"
           >
             <div className="flex items-start gap-4">
               <div className="p-3 bg-purple-500/10 rounded-lg group-hover:bg-purple-500/20 transition-colors">
@@ -50,14 +50,14 @@ export default function SecurityOverview() {
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-purple-400 transition-colors">
                   {t(`${base}.topics.authentication.title`)}
                 </h2>
-                <p className="text-zinc-400 mb-4">
+                <p className="text-slate-500 dark:text-slate-400 mb-4">
                   {t(`${base}.topics.authentication.description`)}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-purple-500/20 text-purple-300 rounded">
                     {t(`${base}.topics.authentication.tag1`)}
                   </span>
-                  <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+                  <span className="px-2 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded">
                     {t(`${base}.topics.authentication.tag2`)}
                   </span>
                 </div>
@@ -68,7 +68,7 @@ export default function SecurityOverview() {
           {/* Authorization */}
           <Link 
             to="/seguranca/autorizacao"
-            className="group bg-zinc-900/50 rounded-lg p-6 hover:bg-zinc-800/50 transition-colors"
+            className="group bg-white dark:bg-slate-900/50 rounded-lg p-6 hover:bg-slate-100 dark:bg-slate-800/50 transition-colors"
           >
             <div className="flex items-start gap-4">
               <div className="p-3 bg-green-500/10 rounded-lg group-hover:bg-green-500/20 transition-colors">
@@ -80,14 +80,14 @@ export default function SecurityOverview() {
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-green-400 transition-colors">
                   {t(`${base}.topics.authorization.title`)}
                 </h2>
-                <p className="text-zinc-400 mb-4">
+                <p className="text-slate-500 dark:text-slate-400 mb-4">
                   {t(`${base}.topics.authorization.description`)}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-green-500/20 text-green-300 rounded">
                     {t(`${base}.topics.authorization.tag1`)}
                   </span>
-                  <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+                  <span className="px-2 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded">
                     {t(`${base}.topics.authorization.tag2`)}
                   </span>
                 </div>
@@ -98,7 +98,7 @@ export default function SecurityOverview() {
           {/* Cryptography */}
           <Link 
             to="/seguranca/criptografia"
-            className="group bg-zinc-900/50 rounded-lg p-6 hover:bg-zinc-800/50 transition-colors"
+            className="group bg-white dark:bg-slate-900/50 rounded-lg p-6 hover:bg-slate-100 dark:bg-slate-800/50 transition-colors"
           >
             <div className="flex items-start gap-4">
               <div className="p-3 bg-yellow-500/10 rounded-lg group-hover:bg-yellow-500/20 transition-colors">
@@ -110,14 +110,14 @@ export default function SecurityOverview() {
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-yellow-400 transition-colors">
                   {t(`${base}.topics.cryptography.title`)}
                 </h2>
-                <p className="text-zinc-400 mb-4">
+                <p className="text-slate-500 dark:text-slate-400 mb-4">
                   {t(`${base}.topics.cryptography.description`)}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-yellow-500/20 text-yellow-300 rounded">
                     {t(`${base}.topics.cryptography.tag1`)}
                   </span>
-                  <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+                  <span className="px-2 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded">
                     {t(`${base}.topics.cryptography.tag2`)}
                   </span>
                 </div>
@@ -128,23 +128,23 @@ export default function SecurityOverview() {
           {/* Tokens & JWT */}
           <Link 
             to="/seguranca/tokens"
-            className="group bg-zinc-900/50 rounded-lg p-6 hover:bg-zinc-800/50 transition-colors"
+            className="group bg-white dark:bg-slate-900/50 rounded-lg p-6 hover:bg-slate-100 dark:bg-slate-800/50 transition-colors"
           >
             <div className="flex items-start gap-4">
               <div className="p-3 bg-blue-500/10 rounded-lg group-hover:bg-blue-500/20 transition-colors">
-                <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
                 </svg>
               </div>
               <div className="flex-1">
-                <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-blue-400 transition-colors">
+                <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-brand-600 dark:text-brand-400 transition-colors">
                   {t(`${base}.topics.tokens.title`)}
                 </h2>
-                <p className="text-zinc-400 mb-4">
+                <p className="text-slate-500 dark:text-slate-400 mb-4">
                   {t(`${base}.topics.tokens.description`)}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
-                  <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+                  <span className="px-2 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded">
                     {t(`${base}.topics.tokens.tag1`)}
                   </span>
                   <span className="px-2 py-1 bg-purple-500/20 text-purple-300 rounded">
@@ -158,7 +158,7 @@ export default function SecurityOverview() {
           {/* SSL/TLS */}
           <Link 
             to="/seguranca/ssl-tls"
-            className="group bg-zinc-900/50 rounded-lg p-6 hover:bg-zinc-800/50 transition-colors"
+            className="group bg-white dark:bg-slate-900/50 rounded-lg p-6 hover:bg-slate-100 dark:bg-slate-800/50 transition-colors"
           >
             <div className="flex items-start gap-4">
               <div className="p-3 bg-green-500/10 rounded-lg group-hover:bg-green-500/20 transition-colors">
@@ -170,14 +170,14 @@ export default function SecurityOverview() {
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-green-400 transition-colors">
                   {t(`${base}.topics.ssl_tls.title`)}
                 </h2>
-                <p className="text-zinc-400 mb-4">
+                <p className="text-slate-500 dark:text-slate-400 mb-4">
                   {t(`${base}.topics.ssl_tls.description`)}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-green-500/20 text-green-300 rounded">
                     {t(`${base}.topics.ssl_tls.tag1`)}
                   </span>
-                  <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+                  <span className="px-2 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded">
                     {t(`${base}.topics.ssl_tls.tag2`)}
                   </span>
                 </div>
@@ -188,7 +188,7 @@ export default function SecurityOverview() {
           {/* Common Attacks */}
           <Link 
             to="/seguranca/ataques"
-            className="group bg-zinc-900/50 rounded-lg p-6 hover:bg-zinc-800/50 transition-colors"
+            className="group bg-white dark:bg-slate-900/50 rounded-lg p-6 hover:bg-slate-100 dark:bg-slate-800/50 transition-colors"
           >
             <div className="flex items-start gap-4">
               <div className="p-3 bg-red-500/10 rounded-lg group-hover:bg-red-500/20 transition-colors">
@@ -200,14 +200,14 @@ export default function SecurityOverview() {
                 <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-red-400 transition-colors">
                   {t(`${base}.topics.attacks.title`)}
                 </h2>
-                <p className="text-zinc-400 mb-4">
+                <p className="text-slate-500 dark:text-slate-400 mb-4">
                   {t(`${base}.topics.attacks.description`)}
                 </p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="px-2 py-1 bg-red-500/20 text-red-300 rounded">
                     {t(`${base}.topics.attacks.tag1`)}
                   </span>
-                  <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+                  <span className="px-2 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded">
                     {t(`${base}.topics.attacks.tag2`)}
                   </span>
                 </div>

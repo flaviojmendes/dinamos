@@ -36,7 +36,7 @@ export default function PaymentFailure() {
             <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent">
               Pagamento não Concluído
             </h1>
-            <p className="text-xl text-zinc-400 mb-8">
+            <p className="text-xl text-slate-500 dark:text-slate-400 mb-8">
               {getErrorMessage()}
             </p>
           </div>

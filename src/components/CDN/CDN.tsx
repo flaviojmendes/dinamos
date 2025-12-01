@@ -168,12 +168,12 @@ export default function CDN() {
 
   return (
     <div className="space-y-6 text-white">
-      <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-semibold">{t('simulators.cdn.title')}</h2>
           <button
             onClick={() => setIsConfigOpen(!isConfigOpen)}
-            className="px-3 py-1.5 rounded-lg text-sm font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+            className="px-3 py-1.5 rounded-lg text-sm font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-zinc-700"
           >
             {isConfigOpen ? t('simulators.cdn.buttons.close_config') : t('simulators.cdn.buttons.configure')}
           </button>
@@ -181,11 +181,11 @@ export default function CDN() {
 
         {/* Configuration Panel */}
         {isConfigOpen && (
-          <div className="mb-6 p-4 bg-zinc-800/50 rounded-lg">
+          <div className="mb-6 p-4 bg-slate-100 dark:bg-slate-800/50 rounded-lg">
             <h3 className="text-sm font-medium mb-3">{t('simulators.cdn.config.title')}</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm text-zinc-400 mb-1">
+                <label className="block text-sm text-slate-500 dark:text-slate-400 mb-1">
                   {t('simulators.cdn.config.base_latency_multiplier')}
                 </label>
                 <input
@@ -200,13 +200,13 @@ export default function CDN() {
                   }))}
                   className="w-full"
                 />
-                <div className="text-sm text-zinc-400 mt-1">
+                <div className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                   {config.baseLatencyMultiplier}{t('simulators.cdn.labels.x_suffix')}
                 </div>
               </div>
               
               <div>
-                <label className="block text-sm text-zinc-400 mb-1">
+                <label className="block text-sm text-slate-500 dark:text-slate-400 mb-1">
                   {t('simulators.cdn.config.cache_latency_multiplier')}
                 </label>
                 <input
@@ -221,13 +221,13 @@ export default function CDN() {
                   }))}
                   className="w-full"
                 />
-                <div className="text-sm text-zinc-400 mt-1">
+                <div className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                   {config.cacheLatencyMultiplier}{t('simulators.cdn.labels.x_suffix')}
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm text-zinc-400 mb-1">
+                <label className="block text-sm text-slate-500 dark:text-slate-400 mb-1">
                   {t('simulators.cdn.config.max_logs')}
                 </label>
                 <input
@@ -242,7 +242,7 @@ export default function CDN() {
                   }))}
                   className="w-full"
                 />
-                <div className="text-sm text-zinc-400 mt-1">
+                <div className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                   {config.maxLogs} {t('simulators.cdn.labels.logs_suffix')}
                 </div>
               </div>
@@ -262,11 +262,11 @@ export default function CDN() {
                 className={`p-3 rounded-lg border text-left transition-colors ${
                   selectedCountry === country.id
                     ? 'border-blue-500 bg-blue-500/10'
-                    : 'border-zinc-700 bg-zinc-800 hover:bg-zinc-700'
+                    : 'border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 hover:bg-zinc-700'
                 }`}
               >
                 <div className="font-medium">{t(`simulators.cdn.countries.${country.id}.name`, { defaultValue: country.name })}</div>
-                <div className="text-sm text-zinc-400">{t(`simulators.cdn.countries.${country.id}.region`, { defaultValue: country.region })}</div>
+                <div className="text-sm text-slate-500 dark:text-slate-400">{t(`simulators.cdn.countries.${country.id}.region`, { defaultValue: country.region })}</div>
               </button>
             ))}
           </div>
@@ -282,18 +282,18 @@ export default function CDN() {
                 className={`p-3 rounded-lg border ${
                   nearestDatacenter === dc.id
                     ? 'border-blue-500 bg-blue-500/10'
-                    : 'border-zinc-700 bg-zinc-800'
+                    : 'border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800'
                 }`}
               >
                 <div className="font-medium">{t(`simulators.cdn.datacenters.${dc.id}.name`, { defaultValue: dc.name })}</div>
-                <div className="text-sm text-zinc-400">{t(`simulators.cdn.datacenters.${dc.id}.location`, { defaultValue: dc.location })}</div>
+                <div className="text-sm text-slate-500 dark:text-slate-400">{t(`simulators.cdn.datacenters.${dc.id}.location`, { defaultValue: dc.location })}</div>
                 {dc.hasCache && (
                   <div className="mt-2 text-xs px-2 py-1 rounded-full bg-green-500/20 text-green-500 inline-block">
                     {t('simulators.cdn.labels.cache_badge')}
                   </div>
                 )}
                 {selectedCountry && nearestDatacenter === dc.id && (
-                  <div className="mt-2 text-xs text-zinc-400">
+                  <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">
                     {t('simulators.cdn.labels.latency')}: {countries.find(c => c.id === selectedCountry)?.latencyToDatacenters[dc.id]}ms
                   </div>
                 )}
@@ -304,7 +304,7 @@ export default function CDN() {
 
         {/* Request Status */}
         {isRequesting && (
-          <div className="mb-6 p-4 rounded-lg bg-zinc-800 flex items-center justify-center">
+          <div className="mb-6 p-4 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
             <motion.div
               className="flex items-center gap-2"
               initial={{ opacity: 0 }}
@@ -326,17 +326,17 @@ export default function CDN() {
               {requestLogs.map((log) => (
                 <div
                   key={log.id}
-                  className="p-3 rounded-lg bg-zinc-800/50 flex items-center justify-between"
+                  className="p-3 rounded-lg bg-slate-100 dark:bg-slate-800/50 flex items-center justify-between"
                 >
                   <div>
                     <div className="text-sm">
-                      <span className="text-zinc-400">{formatTime(log.timestamp)}</span>
+                      <span className="text-slate-500 dark:text-slate-400">{formatTime(log.timestamp)}</span>
                       <span className="mx-2">•</span>
                       <span className="font-medium">{log.country}</span>
                       <span className="mx-2">→</span>
                       <span className="font-medium">{log.datacenter}</span>
                     </div>
-                    <div className="text-sm text-zinc-400">
+                    <div className="text-sm text-slate-500 dark:text-slate-400">
                       {t('simulators.cdn.labels.latency')}: {log.latency}ms
                       {log.fromCache && (
                         <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-500">
@@ -355,14 +355,14 @@ export default function CDN() {
         <div className="flex justify-end">
           <button
             onClick={resetSimulation}
-            className="px-4 py-2 rounded-lg font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+            className="px-4 py-2 rounded-lg font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-zinc-700"
           >
             {t('simulators.cdn.buttons.reset')}
           </button>
         </div>
 
         {/* Explanation */}
-        <div className="mt-6 p-4 bg-zinc-800/50 rounded-lg text-sm text-zinc-300">
+        <div className="mt-6 p-4 bg-slate-100 dark:bg-slate-800/50 rounded-lg text-sm text-slate-600 dark:text-slate-300">
           <h3 className="font-medium mb-2">{t('simulators.cdn.info.title')}</h3>
           <ul className="space-y-2">
             <li>• {t('simulators.cdn.info.i1')}</li>

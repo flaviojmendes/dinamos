@@ -86,7 +86,7 @@ export const CookiePreferences: React.FC<CookiePreferencesProps> = ({ onSave }) 
   if (!consent) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="text-zinc-400">Loading preferences...</div>
+        <div className="text-slate-500 dark:text-slate-400">Loading preferences...</div>
       </div>
     );
   }
@@ -146,12 +146,12 @@ export const CookiePreferences: React.FC<CookiePreferencesProps> = ({ onSave }) 
       transition={{ duration: 0.3 }}
       className="max-w-4xl mx-auto"
     >
-      <div className="bg-zinc-900/50 backdrop-blur-xl border border-zinc-800/50 rounded-xl p-6">
+      <div className="bg-white dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200 dark:border-slate-800/50 rounded-xl p-6">
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-white mb-2">
             {t('cookies.preferences.title')}
           </h2>
-          <p className="text-zinc-300">
+          <p className="text-slate-600 dark:text-slate-300">
             Manage your cookie preferences and control how we collect and use data on our website.
           </p>
         </div>
@@ -160,9 +160,9 @@ export const CookiePreferences: React.FC<CookiePreferencesProps> = ({ onSave }) 
           {cookieTypes.map((type) => (
             <div 
               key={type.key}
-              className="flex items-start gap-4 p-6 bg-zinc-800/50 rounded-lg border border-zinc-700/50"
+              className="flex items-start gap-4 p-6 bg-slate-100 dark:bg-slate-800/50 rounded-lg border border-slate-300 dark:border-slate-700/50"
             >
-              <div className="flex-shrink-0 p-3 bg-zinc-700/50 rounded-lg text-zinc-300">
+              <div className="flex-shrink-0 p-3 bg-zinc-700/50 rounded-lg text-slate-600 dark:text-slate-300">
                 {type.icon}
               </div>
               
@@ -188,7 +188,7 @@ export const CookiePreferences: React.FC<CookiePreferencesProps> = ({ onSave }) 
                     </button>
                   )}
                 </div>
-                <p className="text-zinc-300 text-sm leading-relaxed">
+                <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
                   {type.description}
                 </p>
               </div>
@@ -196,15 +196,15 @@ export const CookiePreferences: React.FC<CookiePreferencesProps> = ({ onSave }) 
           ))}
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-between items-center pt-6 border-t border-zinc-700/50">
-          <div className="text-sm text-zinc-400">
+        <div className="flex flex-col sm:flex-row gap-4 justify-between items-center pt-6 border-t border-slate-300 dark:border-slate-700/50">
+          <div className="text-sm text-slate-500 dark:text-slate-400">
             Last updated: {new Date(consent.timestamp).toLocaleDateString()}
           </div>
           
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={handleRejectAll}
-              className="px-4 py-2 text-sm text-zinc-300 hover:text-white border border-zinc-600 hover:border-zinc-500 rounded-lg transition-colors"
+              className="px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:text-white border border-zinc-600 hover:border-zinc-500 rounded-lg transition-colors"
             >
               {t('cookies.preferences.reject')}
             </button>
@@ -215,7 +215,7 @@ export const CookiePreferences: React.FC<CookiePreferencesProps> = ({ onSave }) 
               className={`px-6 py-2 text-sm rounded-lg transition-colors ${
                 hasChanges
                   ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                  : 'bg-zinc-700 text-zinc-400 cursor-not-allowed'
+                  : 'bg-zinc-700 text-slate-500 dark:text-slate-400 cursor-not-allowed'
               }`}
             >
               {t('cookies.preferences.save')}
@@ -230,26 +230,26 @@ export const CookiePreferences: React.FC<CookiePreferencesProps> = ({ onSave }) 
           </div>
         </div>
 
-        <div className="mt-6 pt-6 border-t border-zinc-700/50">
-          <p className="text-xs text-zinc-400 text-center">
+        <div className="mt-6 pt-6 border-t border-slate-300 dark:border-slate-700/50">
+          <p className="text-xs text-slate-500 dark:text-slate-400 text-center">
             {t('cookies.policy.text')}{' '}
             <a 
               href="/terms-and-conditions.html" 
-              className="text-blue-400 hover:text-blue-300 underline"
+              className="text-brand-600 dark:text-brand-400 hover:text-brand-600 dark:text-brand-300 underline"
             >
               Terms and Conditions
             </a>
             {', '}
             <a 
               href="/privacy-policy.html" 
-              className="text-blue-400 hover:text-blue-300 underline"
+              className="text-brand-600 dark:text-brand-400 hover:text-brand-600 dark:text-brand-300 underline"
             >
               {t('cookies.policy.privacy')}
             </a>
             {' '}and{' '}
             <a 
               href="/cookie-policy.html" 
-              className="text-blue-400 hover:text-blue-300 underline"
+              className="text-brand-600 dark:text-brand-400 hover:text-brand-600 dark:text-brand-300 underline"
             >
               {t('cookies.policy.cookies')}
             </a>

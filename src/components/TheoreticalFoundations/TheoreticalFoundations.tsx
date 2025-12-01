@@ -34,7 +34,7 @@ const TheoreticalFoundations: React.FC = () => {
           </div>
 
           {/* Main Content */}
-          <div className="bg-zinc-800/20 p-8 rounded-lg border border-zinc-700/50">
+          <div className="bg-slate-100 dark:bg-slate-800/20 p-8 rounded-lg border border-slate-300 dark:border-slate-700/50">
             <article className="prose prose-invert prose-lg max-w-none">
               <Typography variant="p" className="mb-6 leading-relaxed text-gray-200 text-justify">
                 {t('theoretical_foundations_main.paragraph1')}
@@ -97,7 +97,7 @@ const TheoreticalFoundations: React.FC = () => {
             
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Link to="/theoretical-foundations/cap-theorem" className="group">
-                <div className="bg-zinc-800/50 p-6 rounded-lg border border-zinc-700 hover:border-purple-500 transition-all duration-300 group-hover:transform group-hover:scale-105">
+                <div className="bg-slate-100 dark:bg-slate-800/50 p-6 rounded-lg border border-slate-300 dark:border-slate-700 hover:border-purple-500 transition-all duration-300 group-hover:transform group-hover:scale-105">
                   <div className="text-3xl mb-4">🔗</div>
                   <Typography variant="h3" className="mb-3 text-purple-400 group-hover:text-purple-300">
                     {t('menu.theoretical_foundations.cap_theorem.name')}
@@ -109,7 +109,7 @@ const TheoreticalFoundations: React.FC = () => {
               </Link>
 
               <Link to="/theoretical-foundations/consistency-models" className="group">
-                <div className="bg-zinc-800/50 p-6 rounded-lg border border-zinc-700 hover:border-yellow-500 transition-all duration-300 group-hover:transform group-hover:scale-105">
+                <div className="bg-slate-100 dark:bg-slate-800/50 p-6 rounded-lg border border-slate-300 dark:border-slate-700 hover:border-yellow-500 transition-all duration-300 group-hover:transform group-hover:scale-105">
                   <div className="text-3xl mb-4">⚖️</div>
                   <Typography variant="h3" className="mb-3 text-yellow-400 group-hover:text-yellow-300">
                     {t('menu.theoretical_foundations.consistency_models.name')}
@@ -121,7 +121,7 @@ const TheoreticalFoundations: React.FC = () => {
               </Link>
 
               <Link to="/theoretical-foundations/distributed-challenges" className="group">
-                <div className="bg-zinc-800/50 p-6 rounded-lg border border-zinc-700 hover:border-red-500 transition-all duration-300 group-hover:transform group-hover:scale-105">
+                <div className="bg-slate-100 dark:bg-slate-800/50 p-6 rounded-lg border border-slate-300 dark:border-slate-700 hover:border-red-500 transition-all duration-300 group-hover:transform group-hover:scale-105">
                   <div className="text-3xl mb-4">⚠️</div>
                   <Typography variant="h3" className="mb-3 text-red-400 group-hover:text-red-300">
                     {t('menu.theoretical_foundations.distributed_challenges.name')}
@@ -133,9 +133,9 @@ const TheoreticalFoundations: React.FC = () => {
               </Link>
 
               <Link to="/theoretical-foundations/network-partitions" className="group">
-                <div className="bg-zinc-800/50 p-6 rounded-lg border border-zinc-700 hover:border-blue-500 transition-all duration-300 group-hover:transform group-hover:scale-105">
+                <div className="bg-slate-100 dark:bg-slate-800/50 p-6 rounded-lg border border-slate-300 dark:border-slate-700 hover:border-blue-500 transition-all duration-300 group-hover:transform group-hover:scale-105">
                   <div className="text-3xl mb-4">🌐</div>
-                  <Typography variant="h3" className="mb-3 text-blue-400 group-hover:text-blue-300">
+                  <Typography variant="h3" className="mb-3 text-brand-600 dark:text-brand-400 group-hover:text-brand-600 dark:text-brand-300">
                     {t('menu.theoretical_foundations.network_partitions.name')}
                   </Typography>
                   <Typography variant="p" className="text-sm text-gray-400">

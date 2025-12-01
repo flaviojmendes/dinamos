@@ -132,7 +132,7 @@ export default function AsyncSync() {
   return (
     <div className="space-y-6">
       {/* Controls */}
-      <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -141,7 +141,7 @@ export default function AsyncSync() {
                 disabled={communicationType === 'sync' && isButtonDisabled}
                 className={`px-4 py-2 rounded-lg font-medium ${
                   communicationType === 'sync' && isButtonDisabled
-                    ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
+                    ? 'bg-slate-100 dark:bg-slate-800 text-zinc-500 cursor-not-allowed'
                     : 'bg-green-500/10 text-green-500 hover:bg-green-500/20'
                 }`}
               >
@@ -149,7 +149,7 @@ export default function AsyncSync() {
               </button>
               <button
                 onClick={resetSimulation}
-                className="px-4 py-2 rounded-lg font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+                className="px-4 py-2 rounded-lg font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-zinc-700"
               >
                 Reiniciar
               </button>
@@ -163,7 +163,7 @@ export default function AsyncSync() {
                 className={`px-4 py-2 rounded-lg font-medium ${
                   communicationType === 'sync'
                     ? 'bg-blue-500/10 text-blue-500 border border-blue-500/50'
-                    : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-zinc-700'
                 }`}
               >
                 Síncrono
@@ -176,7 +176,7 @@ export default function AsyncSync() {
                 className={`px-4 py-2 rounded-lg font-medium ${
                   communicationType === 'async'
                     ? 'bg-purple-500/10 text-purple-500 border border-purple-500/50'
-                    : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-zinc-700'
                 }`}
               >
                 Assíncrono
@@ -187,23 +187,23 @@ export default function AsyncSync() {
       </div>
 
       {/* Restaurant Visualization */}
-      <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
         <div className="relative h-[300px]">
           {/* Restaurant Sections */}
           <div className="absolute inset-0 flex flex-col">
             {/* Section Headers */}
-            <div className="flex h-8 text-sm text-zinc-400 border-b border-zinc-800">
+            <div className="flex h-8 text-sm text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
               <div className="w-1/3 text-center">Cliente</div>
-              <div className="w-1/3 text-center border-l border-zinc-800">Servidor</div>
-              <div className="w-1/3 text-center border-l border-zinc-800">DB</div>
+              <div className="w-1/3 text-center border-l border-slate-200 dark:border-slate-800">Servidor</div>
+              <div className="w-1/3 text-center border-l border-slate-200 dark:border-slate-800">DB</div>
             </div>
 
             {/* Restaurant Content */}
             <div className="flex-1 relative">
               {/* Background Sections */}
               <div className="absolute inset-0 flex">
-                <div className="w-1/3 border-r border-zinc-800" />
-                <div className="w-1/3 border-r border-zinc-800" />
+                <div className="w-1/3 border-r border-slate-200 dark:border-slate-800" />
+                <div className="w-1/3 border-r border-slate-200 dark:border-slate-800" />
                 <div className="w-1/3" />
               </div>
 
@@ -309,7 +309,7 @@ export default function AsyncSync() {
         </div>
 
         {/* Explanation */}
-        <div className="mt-4 p-4 bg-zinc-800/50 rounded-lg text-xs text-zinc-300">
+        <div className="mt-4 p-4 bg-slate-100 dark:bg-slate-800/50 rounded-lg text-xs text-slate-600 dark:text-slate-300">
           <p><strong>Síncrono:</strong> A mensagem é enviada e o cliente espera a resposta.</p>
           <p><strong>Assíncrono:</strong> A mensagem é enviada e o cliente não espera a resposta.</p>
         </div>

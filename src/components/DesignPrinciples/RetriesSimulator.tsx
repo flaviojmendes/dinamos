@@ -113,7 +113,7 @@ export default function RetriesSimulator() {
       <div className="prose prose-invert prose-lg max-w-none mb-8">
         <div className="flex items-center justify-between">
           <motion.h1 
-            className="text-4xl font-bold mb-4 text-blue-400"
+            className="text-4xl font-bold mb-4 text-brand-600 dark:text-brand-400"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -124,7 +124,7 @@ export default function RetriesSimulator() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             onClick={() => setShowSettings(!showSettings)}
-            className="px-4 py-2 bg-zinc-800 text-white rounded-lg hover:bg-zinc-700 transition-colors flex items-center gap-2"
+            className="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-white rounded-lg hover:bg-zinc-700 transition-colors flex items-center gap-2"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -141,12 +141,12 @@ export default function RetriesSimulator() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="bg-zinc-900 rounded-lg p-6 mb-8 overflow-hidden"
+            className="bg-white dark:bg-slate-900 rounded-lg p-6 mb-8 overflow-hidden"
           >
-            <h2 className="text-xl font-bold text-zinc-200 mb-6">{t('simulators.retries.settings.title')}</h2>
+            <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-6">{t('simulators.retries.settings.title')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">
+                <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
                   {t('simulators.retries.settings.max_retries', { value: config.maxRetries })}
                 </label>
                 <input
@@ -159,7 +159,7 @@ export default function RetriesSimulator() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">
+                <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
                   {t('simulators.retries.settings.base_delay', { ms: config.baseDelay })}
                 </label>
                 <input
@@ -173,7 +173,7 @@ export default function RetriesSimulator() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">
+                <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
                   {t('simulators.retries.settings.success_rate', { percent: config.successRate })}
                 </label>
                 <input
@@ -186,7 +186,7 @@ export default function RetriesSimulator() {
                 />
               </div>
               <div className="space-y-4">
-                <label className="flex items-center gap-2 text-zinc-300">
+                <label className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
                   <input
                     type="checkbox"
                     checked={config.useExponentialBackoff}
@@ -195,7 +195,7 @@ export default function RetriesSimulator() {
                   />
                   {t('simulators.retries.toggles.use_exponential_backoff')}
                 </label>
-                <label className="flex items-center gap-2 text-zinc-300">
+                <label className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
                   <input
                     type="checkbox"
                     checked={config.jitter}
@@ -212,9 +212,9 @@ export default function RetriesSimulator() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left Column - Visualization */}
-        <div className="bg-zinc-900 rounded-lg p-6">
+        <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-zinc-200">{t('simulators.retries.visualization.title')}</h2>
+            <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200">{t('simulators.retries.visualization.title')}</h2>
             <button
               onClick={startSimulation}
               disabled={isSimulating}
@@ -231,14 +231,14 @@ export default function RetriesSimulator() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 className={`p-4 rounded-lg ${
-                  attempt.status === 'pending' ? 'bg-zinc-800' :
+                  attempt.status === 'pending' ? 'bg-slate-100 dark:bg-slate-800' :
                   attempt.status === 'success' ? 'bg-green-900/30 border border-green-700' :
                   'bg-red-900/30 border border-red-700'
                 }`}
               >
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2">
-                    <span className="text-zinc-400">{t('simulators.retries.attempt.label', { id: attempt.id })}</span>
+                    <span className="text-slate-500 dark:text-slate-400">{t('simulators.retries.attempt.label', { id: attempt.id })}</span>
                     {attempt.status === 'pending' && (
                       <motion.div
                         animate={{ rotate: 360 }}
@@ -258,7 +258,7 @@ export default function RetriesSimulator() {
                     )}
                   </div>
                   {index < attempts.length - 1 && attempt.status === 'error' && (
-                    <div className="text-sm text-zinc-400">
+                    <div className="text-sm text-slate-500 dark:text-slate-400">
                       {t('simulators.retries.attempt.next_in', { ms: attempt.delay })}
                     </div>
                   )}
@@ -270,16 +270,16 @@ export default function RetriesSimulator() {
 
         {/* Right Column - Stats and Info */}
         <div className="space-y-6">
-          <div className="bg-zinc-900 rounded-lg p-6">
-            <h2 className="text-xl font-bold text-zinc-200 mb-4">{t('simulators.retries.stats.title')}</h2>
+          <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
+            <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">{t('simulators.retries.stats.title')}</h2>
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-zinc-800 rounded-lg p-4">
-                <div className="text-sm text-zinc-400">{t('simulators.retries.stats.total_attempts')}</div>
-                <div className="text-2xl font-bold text-zinc-200">{attempts.length}</div>
+              <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4">
+                <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.retries.stats.total_attempts')}</div>
+                <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">{attempts.length}</div>
               </div>
-              <div className="bg-zinc-800 rounded-lg p-4">
-                <div className="text-sm text-zinc-400">{t('simulators.retries.stats.final_status')}</div>
-                <div className="text-2xl font-bold text-zinc-200">
+              <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4">
+                <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.retries.stats.final_status')}</div>
+                <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">
                   {attempts.length > 0 ? 
                     (attempts[attempts.length - 1].status === 'success' ? t('simulators.retries.stats.status_success') : t('simulators.retries.stats.status_failure')) :
                     '-'
@@ -289,9 +289,9 @@ export default function RetriesSimulator() {
             </div>
           </div>
 
-          <div className="bg-zinc-900 rounded-lg p-6">
-            <h2 className="text-xl font-bold text-zinc-200 mb-4">{t('simulators.retries.info.title')}</h2>
-            <div className="space-y-4 text-zinc-300">
+          <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
+            <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">{t('simulators.retries.info.title')}</h2>
+            <div className="space-y-4 text-slate-600 dark:text-slate-300">
               <p>
                 {t('simulators.retries.info.p1')}
               </p>

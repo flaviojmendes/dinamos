@@ -45,11 +45,11 @@ export default function Login() {
         transition={{ duration: 0.5 }}
         className="max-w-md w-full mx-4"
       >
-        <div className="bg-zinc-900/50 rounded-xl p-8 backdrop-blur-sm">
+        <div className="bg-white dark:bg-slate-900/50 rounded-xl p-8 backdrop-blur-sm">
           <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
             {t('auth.welcome_title')}
           </h2>
-          <p className="text-zinc-400 text-center mb-8">
+          <p className="text-slate-500 dark:text-slate-400 text-center mb-8">
             {t('auth.welcome_subtitle')}
           </p>
           
@@ -88,7 +88,7 @@ export default function Login() {
             <button
               onClick={handleGithubLogin}
               disabled={isLoading}
-              className="w-full bg-zinc-800 text-white py-3 px-4 rounded-lg font-medium hover:bg-zinc-700 transition-colors flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-slate-100 dark:bg-slate-800 text-white py-3 px-4 rounded-lg font-medium hover:bg-zinc-700 transition-colors flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />

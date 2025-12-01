@@ -187,7 +187,7 @@ export default function VerticalScalingSimulator() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white p-8">
+    <div className="min-h-screen bg-canvas-paper dark:bg-canvas-dark text-white p-8">
       {/* Header */}
       <motion.div 
         className="max-w-4xl mx-auto mb-8"
@@ -195,7 +195,7 @@ export default function VerticalScalingSimulator() {
         animate={{ opacity: 1, y: 0 }}
       >
         <h1 className="text-3xl font-bold mb-4">{t('simulators.vertical_scaling.title')}</h1>
-        <p className="text-zinc-400">
+        <p className="text-slate-500 dark:text-slate-400">
           {t('simulators.vertical_scaling.intro')}
         </p>
       </motion.div>
@@ -204,14 +204,14 @@ export default function VerticalScalingSimulator() {
       <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Server Info */}
         <motion.div 
-          className="lg:col-span-2 bg-zinc-900 rounded-xl p-6 shadow-xl"
+          className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-xl p-6 shadow-xl"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
         >
           <div className="flex justify-between items-center mb-6">
             <div>
               <h2 className="text-xl font-semibold mb-1">{currentServer.name}</h2>
-              <p className="text-zinc-400 text-sm">{t('simulators.vertical_scaling.level_of_total', { current: currentTier + 1, total: SERVER_TIERS.length })}</p>
+              <p className="text-slate-500 dark:text-slate-400 text-sm">{t('simulators.vertical_scaling.level_of_total', { current: currentTier + 1, total: SERVER_TIERS.length })}</p>
             </div>
             <div className="flex gap-2">
               <button
@@ -237,10 +237,10 @@ export default function VerticalScalingSimulator() {
           <div className="space-y-4 mb-6">
             <div>
               <div className="flex justify-between text-sm mb-1">
-                <span className="text-zinc-400">{t('simulators.vertical_scaling.resources.cpu', { cores: currentServer.cpu })}</span>
-                <span className="text-zinc-400">{Math.round(serverLoad)}%</span>
+                <span className="text-slate-500 dark:text-slate-400">{t('simulators.vertical_scaling.resources.cpu', { cores: currentServer.cpu })}</span>
+                <span className="text-slate-500 dark:text-slate-400">{Math.round(serverLoad)}%</span>
               </div>
-              <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+              <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                 <motion.div
                   className="h-full bg-blue-500"
                   initial={{ width: 0 }}
@@ -251,10 +251,10 @@ export default function VerticalScalingSimulator() {
             </div>
             <div>
               <div className="flex justify-between text-sm mb-1">
-                <span className="text-zinc-400">{t('simulators.vertical_scaling.resources.memory', { gb: currentServer.memory })}</span>
-                <span className="text-zinc-400">{Math.round(serverLoad)}%</span>
+                <span className="text-slate-500 dark:text-slate-400">{t('simulators.vertical_scaling.resources.memory', { gb: currentServer.memory })}</span>
+                <span className="text-slate-500 dark:text-slate-400">{Math.round(serverLoad)}%</span>
               </div>
-              <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+              <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                 <motion.div
                   className="h-full bg-blue-500"
                   initial={{ width: 0 }}
@@ -265,10 +265,10 @@ export default function VerticalScalingSimulator() {
             </div>
             <div>
               <div className="flex justify-between text-sm mb-1">
-                <span className="text-zinc-400">{t('simulators.vertical_scaling.resources.storage', { gb: currentServer.storage })}</span>
-                <span className="text-zinc-400">{Math.round(serverLoad)}%</span>
+                <span className="text-slate-500 dark:text-slate-400">{t('simulators.vertical_scaling.resources.storage', { gb: currentServer.storage })}</span>
+                <span className="text-slate-500 dark:text-slate-400">{Math.round(serverLoad)}%</span>
               </div>
-              <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+              <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                 <motion.div
                   className="h-full bg-blue-500"
                   initial={{ width: 0 }}
@@ -280,7 +280,7 @@ export default function VerticalScalingSimulator() {
           </div>
 
           {/* Request Queue Visualization */}
-          <div className="bg-zinc-800 rounded-lg p-4">
+          <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4">
             <h3 className="text-sm font-medium mb-3">{t('simulators.vertical_scaling.queue_title')}</h3>
             <div className="flex gap-2 flex-wrap">
               {requests
@@ -305,7 +305,7 @@ export default function VerticalScalingSimulator() {
 
         {/* Controls & Stats */}
         <motion.div 
-          className="bg-zinc-900 rounded-xl p-6 shadow-xl"
+          className="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-xl"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
         >
@@ -314,7 +314,7 @@ export default function VerticalScalingSimulator() {
             <h3 className="text-lg font-medium mb-4">{t('simulators.vertical_scaling.controls_title')}</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm text-zinc-400 mb-2">
+                <label className="block text-sm text-slate-500 dark:text-slate-400 mb-2">
                   {t('simulators.vertical_scaling.request_rate', { rate: requestRate })}
                 </label>
                 <input
@@ -344,16 +344,16 @@ export default function VerticalScalingSimulator() {
             <h3 className="text-lg font-medium mb-4">{t('simulators.vertical_scaling.stats_title')}</h3>
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-zinc-400">{t('simulators.vertical_scaling.processed')}</span>
+                <span className="text-slate-500 dark:text-slate-400">{t('simulators.vertical_scaling.processed')}</span>
                 <span className="text-green-400">{stats.processed}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-zinc-400">{t('simulators.vertical_scaling.rejected')}</span>
+                <span className="text-slate-500 dark:text-slate-400">{t('simulators.vertical_scaling.rejected')}</span>
                 <span className="text-red-400">{stats.rejected}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-zinc-400">{t('simulators.vertical_scaling.success_rate')}</span>
-                <span className="text-blue-400">
+                <span className="text-slate-500 dark:text-slate-400">{t('simulators.vertical_scaling.success_rate')}</span>
+                <span className="text-brand-600 dark:text-brand-400">
                   {stats.processed + stats.rejected === 0 
                     ? '0' 
                     : Math.round((stats.processed / (stats.processed + stats.rejected)) * 100)
@@ -361,15 +361,15 @@ export default function VerticalScalingSimulator() {
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-zinc-400">{t('simulators.vertical_scaling.uptime')}</span>
+                <span className="text-slate-500 dark:text-slate-400">{t('simulators.vertical_scaling.uptime')}</span>
                 <span>{Math.floor(stats.uptime)}s</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-zinc-400">{t('simulators.vertical_scaling.total_cost')}</span>
+                <span className="text-slate-500 dark:text-slate-400">{t('simulators.vertical_scaling.total_cost')}</span>
                 <span className="text-yellow-400">R${stats.totalCost.toFixed(4)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-zinc-400">{t('simulators.vertical_scaling.current_load')}</span>
+                <span className="text-slate-500 dark:text-slate-400">{t('simulators.vertical_scaling.current_load')}</span>
                 <span className={`${
                   serverLoad > 90 
                     ? 'text-red-400' 
@@ -398,10 +398,10 @@ export default function VerticalScalingSimulator() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-zinc-900 rounded-xl p-6 max-w-md w-full mx-4"
+              className="bg-white dark:bg-slate-900 rounded-xl p-6 max-w-md w-full mx-4"
             >
               <h2 className="text-xl font-semibold mb-4">{t('simulators.vertical_scaling.upgrade_modal.title')}</h2>
-              <p className="text-zinc-400 mb-4">
+              <p className="text-slate-500 dark:text-slate-400 mb-4">
                 {t('simulators.vertical_scaling.upgrade_modal.text', { tier: SERVER_TIERS[currentTier + 1]?.name, cost: SERVER_TIERS[currentTier + 1]?.cost })}
               </p>
               <div className="flex justify-end gap-4">

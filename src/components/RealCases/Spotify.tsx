@@ -29,45 +29,45 @@ const Spotify: React.FC = () => {
         <h1 className="text-4xl font-bold bg-gradient-to-r from-green-500 to-green-700 bg-clip-text text-transparent">
           {t(`${base}.title`)}
         </h1>
-        <p className="text-xl text-zinc-400">
+        <p className="text-xl text-slate-500 dark:text-slate-400">
           {t(`${base}.subtitle`)}
         </p>
       </div>
 
       {/* Key Metrics Section */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-green-500">{t(`${base}.metrics_title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg text-center">
             <div className="text-2xl font-bold text-green-400">{t(`${base}.metrics.users`)}</div>
-            <div className="text-sm text-zinc-400">{t(`${base}.metrics.users_desc`)}</div>
+            <div className="text-sm text-slate-500 dark:text-slate-400">{t(`${base}.metrics.users_desc`)}</div>
           </div>
-          <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg text-center">
             <div className="text-2xl font-bold text-green-400">{t(`${base}.metrics.streams`)}</div>
-            <div className="text-sm text-zinc-400">{t(`${base}.metrics.streams_desc`)}</div>
+            <div className="text-sm text-slate-500 dark:text-slate-400">{t(`${base}.metrics.streams_desc`)}</div>
           </div>
-          <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg text-center">
             <div className="text-2xl font-bold text-green-400">{t(`${base}.metrics.songs`)}</div>
-            <div className="text-sm text-zinc-400">{t(`${base}.metrics.songs_desc`)}</div>
+            <div className="text-sm text-slate-500 dark:text-slate-400">{t(`${base}.metrics.songs_desc`)}</div>
           </div>
         </div>
       </section>
 
       {/* System Requirements */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-green-500">{t(`${base}.requirements_title`)}</h2>
         <div className="space-y-4">
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-green-400 mb-2">{t(`${base}.functional_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {functionalItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
             </ul>
           </div>
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-green-400 mb-2">{t(`${base}.non_functional_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {nonFunctionalItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
@@ -77,11 +77,11 @@ const Spotify: React.FC = () => {
       </section>
 
       {/* Architecture Overview */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-green-500">{t(`${base}.architecture_title`)}</h2>
         
         {/* High Level Architecture Diagram */}
-        <div className="bg-zinc-800/50 p-4 rounded-lg space-y-4">
+        <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg space-y-4">
           <h3 className="text-xl font-medium text-green-400">{t(`${base}.high_level_title`)}</h3>
           <div className="relative h-[500px] bg-black/50 rounded-lg border border-green-900/30 overflow-hidden">
             <svg className="w-full h-full" viewBox="0 0 800 500">
@@ -139,13 +139,13 @@ const Spotify: React.FC = () => {
               </g>
             </svg>
           </div>
-          <p className="text-zinc-400">
+          <p className="text-slate-500 dark:text-slate-400">
             {t(`${base}.high_level_description`)}
           </p>
         </div>
 
         {/* Streaming Architecture Diagram */}
-        <div className="bg-zinc-800/50 p-4 rounded-lg space-y-4 mt-8">
+        <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg space-y-4 mt-8">
           <h3 className="text-xl font-medium text-green-400">{t(`${base}.streaming_architecture_title`)}</h3>
           <div className="relative h-[400px] bg-black/50 rounded-lg border border-green-900/30 overflow-hidden">
             <svg className="w-full h-full" viewBox="0 0 800 400">
@@ -192,7 +192,7 @@ const Spotify: React.FC = () => {
               </g>
             </svg>
           </div>
-          <p className="text-zinc-400">
+          <p className="text-slate-500 dark:text-slate-400">
             {t(`${base}.streaming_description`)}
           </p>
         </div>
@@ -200,16 +200,16 @@ const Spotify: React.FC = () => {
         {/* Audio Streaming */}
         <div className="space-y-4 mt-6">
           <h3 className="text-xl font-medium text-green-400">{t(`${base}.streaming_system_title`)}</h3>
-          <div className="bg-zinc-800/50 p-4 rounded-lg space-y-3">
-            <h4 className="font-medium text-zinc-200">{t(`${base}.streaming_pipeline_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg space-y-3">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200">{t(`${base}.streaming_pipeline_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {streamingPipelineItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
             </ul>
             
-            <h4 className="font-medium text-zinc-200 mt-4">{t(`${base}.audio_processing_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200 mt-4">{t(`${base}.audio_processing_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {audioProcessingItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
@@ -220,16 +220,16 @@ const Spotify: React.FC = () => {
         {/* Storage System */}
         <div className="space-y-4 mt-6">
           <h3 className="text-xl font-medium text-green-400">{t(`${base}.storage_system_title`)}</h3>
-          <div className="bg-zinc-800/50 p-4 rounded-lg space-y-3">
-            <h4 className="font-medium text-zinc-200">{t(`${base}.audio_storage_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg space-y-3">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200">{t(`${base}.audio_storage_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {audioStorageItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
             </ul>
 
-            <h4 className="font-medium text-zinc-200 mt-4">{t(`${base}.database_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200 mt-4">{t(`${base}.database_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {databaseItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
@@ -240,9 +240,9 @@ const Spotify: React.FC = () => {
         {/* Recommendation System */}
         <div className="space-y-4 mt-6">
           <h3 className="text-xl font-medium text-green-400">{t(`${base}.recommendation_system_title`)}</h3>
-          <div className="bg-zinc-800/50 p-4 rounded-lg space-y-3">
-            <h4 className="font-medium text-zinc-200">{t(`${base}.algorithms_features_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg space-y-3">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200">{t(`${base}.algorithms_features_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {algorithmsFeaturesItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
@@ -260,9 +260,9 @@ const Spotify: React.FC = () => {
         {/* Real-time Features */}
         <div className="space-y-4 mt-6">
           <h3 className="text-xl font-medium text-green-400">{t(`${base}.realtime_features_title`)}</h3>
-          <div className="bg-zinc-800/50 p-4 rounded-lg space-y-3">
-            <h4 className="font-medium text-zinc-200">{t(`${base}.realtime_infrastructure_title`)}</h4>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg space-y-3">
+            <h4 className="font-medium text-slate-700 dark:text-slate-200">{t(`${base}.realtime_infrastructure_title`)}</h4>
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               {realtimeInfrastructureItems.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
@@ -279,33 +279,33 @@ const Spotify: React.FC = () => {
       </section>
 
       {/* Technical Decisions and Trade-offs */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-green-500">{t(`${base}.technical_decisions_title`)}</h2>
         <div className="space-y-4">
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-green-400 mb-2">{t(`${base}.decision_1_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.decision_1_text`)}
             </p>
           </div>
           
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-green-400 mb-2">{t(`${base}.decision_2_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.decision_2_text`)}
             </p>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-green-400 mb-2">{t(`${base}.decision_3_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.decision_3_text`)}
             </p>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-green-400 mb-2">{t(`${base}.decision_4_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.decision_4_text`)}
             </p>
           </div>
@@ -313,33 +313,33 @@ const Spotify: React.FC = () => {
       </section>
 
       {/* Scaling Challenges */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-green-500">{t(`${base}.scaling_challenges_title`)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-green-400 mb-2">{t(`${base}.global_latency_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.global_latency_text`)}
             </p>
           </div>
           
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-green-400 mb-2">{t(`${base}.distributed_data_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.distributed_data_text`)}
             </p>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-green-400 mb-2">{t(`${base}.machine_learning_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.machine_learning_text`)}
             </p>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-green-400 mb-2">{t(`${base}.microservices_title`)}</h3>
-            <p className="text-zinc-300">
+            <p className="text-slate-600 dark:text-slate-300">
               {t(`${base}.microservices_text`)}
             </p>
           </div>
@@ -347,7 +347,7 @@ const Spotify: React.FC = () => {
       </section>
 
       {/* Evolution Timeline */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-green-500">{t(`${base}.evolution_title`)}</h2>
         <div className="space-y-6">
           {/* 2006: Initial Architecture */}
@@ -356,7 +356,7 @@ const Spotify: React.FC = () => {
             <div className="mb-2">
               <span className="text-green-400 font-semibold">2006</span>
               <h3 className="text-lg font-medium">{t(`${base}.timeline_2006_title`)}</h3>
-              <p className="text-zinc-300">{t(`${base}.timeline_2006_desc`)}</p>
+              <p className="text-slate-600 dark:text-slate-300">{t(`${base}.timeline_2006_desc`)}</p>
             </div>
           </div>
 
@@ -366,7 +366,7 @@ const Spotify: React.FC = () => {
             <div className="mb-2">
               <span className="text-green-400 font-semibold">2008-2009</span>
               <h3 className="text-lg font-medium">{t(`${base}.timeline_2008_title`)}</h3>
-              <p className="text-zinc-300">{t(`${base}.timeline_2008_desc`)}</p>
+              <p className="text-slate-600 dark:text-slate-300">{t(`${base}.timeline_2008_desc`)}</p>
             </div>
           </div>
 
@@ -376,7 +376,7 @@ const Spotify: React.FC = () => {
             <div className="mb-2">
               <span className="text-green-400 font-semibold">2011-2012</span>
               <h3 className="text-lg font-medium">{t(`${base}.timeline_2011_title`)}</h3>
-              <p className="text-zinc-300">{t(`${base}.timeline_2011_desc`)}</p>
+              <p className="text-slate-600 dark:text-slate-300">{t(`${base}.timeline_2011_desc`)}</p>
             </div>
           </div>
 
@@ -386,7 +386,7 @@ const Spotify: React.FC = () => {
             <div className="mb-2">
               <span className="text-green-400 font-semibold">2014-2015</span>
               <h3 className="text-lg font-medium">{t(`${base}.timeline_2014_title`)}</h3>
-              <p className="text-zinc-300">{t(`${base}.timeline_2014_desc`)}</p>
+              <p className="text-slate-600 dark:text-slate-300">{t(`${base}.timeline_2014_desc`)}</p>
             </div>
           </div>
 
@@ -396,45 +396,45 @@ const Spotify: React.FC = () => {
             <div className="mb-2">
               <span className="text-green-400 font-semibold">2016-{t(`${base}.timeline_2016_desc`).includes('Presente') ? 'Presente' : 'Present'}</span>
               <h3 className="text-lg font-medium">{t(`${base}.timeline_2016_title`)}</h3>
-              <p className="text-zinc-300">{t(`${base}.timeline_2016_desc`)}</p>
+              <p className="text-slate-600 dark:text-slate-300">{t(`${base}.timeline_2016_desc`)}</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* References Section */}
-      <section className="bg-zinc-900/50 rounded-lg p-6 space-y-4">
+      <section className="bg-white dark:bg-slate-900/50 rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-semibold text-green-500">{t(`${base}.references_title`)}</h2>
         <div className="space-y-3">
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-green-400 mb-2">{t(`${base}.official_docs_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               <li><a href="https://engineering.atspotify.com/" className="text-green-400 hover:underline" target="_blank" rel="noopener noreferrer">Spotify Engineering Blog</a></li>
               <li><a href="https://spotify.design/" className="text-green-400 hover:underline" target="_blank" rel="noopener noreferrer">Spotify Design</a></li>
               <li><a href="https://developer.spotify.com/" className="text-green-400 hover:underline" target="_blank" rel="noopener noreferrer">Spotify for Developers</a></li>
             </ul>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-green-400 mb-2">{t(`${base}.technical_articles_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               <li><a href="https://engineering.atspotify.com/2013/03/backend-infrastructure-at-spotify/" className="text-green-400 hover:underline" target="_blank" rel="noopener noreferrer">Backend Infrastructure at Spotify</a></li>
               <li><a href="https://engineering.atspotify.com/2015/01/spotifys-event-delivery-the-road-to-the-cloud-part-i/" className="text-green-400 hover:underline" target="_blank" rel="noopener noreferrer">Event Delivery System</a></li>
               <li><a href="https://engineering.atspotify.com/2016/02/spotifys-big-data-ecosystem/" className="text-green-400 hover:underline" target="_blank" rel="noopener noreferrer">Big Data Ecosystem</a></li>
             </ul>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-green-400 mb-2">{t(`${base}.conferences_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               <li><a href="https://www.youtube.com/watch?v=Xr2soUVHxG8" className="text-green-400 hover:underline" target="_blank" rel="noopener noreferrer">QCon - Spotify's Audio Delivery at Scale</a></li>
               <li><a href="https://www.youtube.com/watch?v=Z2JzVxP4H4w" className="text-green-400 hover:underline" target="_blank" rel="noopener noreferrer">InfoQ - Scaling Spotify</a></li>
             </ul>
           </div>
 
-          <div className="bg-zinc-800/50 p-4 rounded-lg">
+          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-green-400 mb-2">{t(`${base}.open_source_title`)}</h3>
-            <ul className="list-disc list-inside space-y-2 text-zinc-300">
+            <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
               <li><a href="https://backstage.io/" className="text-green-400 hover:underline" target="_blank" rel="noopener noreferrer">Backstage - Developer Portal</a></li>
               <li><a href="https://github.com/spotify/luigi" className="text-green-400 hover:underline" target="_blank" rel="noopener noreferrer">Luigi - Workflow Management</a></li>
             </ul>

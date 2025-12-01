@@ -15,11 +15,11 @@ export default function SynchronizationUseCases() {
         <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
           Casos de Uso de Sincronização
         </h1>
-        <p className="text-lg text-zinc-300 mb-6">
+        <p className="text-lg text-slate-600 dark:text-slate-300 mb-6">
           A sincronização é fundamental em diversos cenários práticos de sistemas distribuídos.
           Vamos explorar alguns casos de uso comuns e suas implementações.
         </p>
-        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-blue-300">
+        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-brand-600 dark:text-brand-300">
           <strong className="block mb-2">💡 Conceito Chave:</strong>
           A escolha da estratégia de sincronização deve considerar os requisitos específicos
           do caso de uso, como consistência, performance e tolerância a falhas.
@@ -37,16 +37,16 @@ export default function SynchronizationUseCases() {
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-blue-400">Cenário</h3>
-              <p className="text-zinc-300 mb-4">
+              <h3 className="text-xl font-semibold mb-4 text-brand-600 dark:text-brand-400">Cenário</h3>
+              <p className="text-slate-600 dark:text-slate-300 mb-4">
                 Transferências entre contas em diferentes servidores bancários,
                 garantindo consistência e atomicidade das operações.
               </p>
               <div className="flex items-center gap-2 text-sm">
-                <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+                <span className="px-2 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded">
                   Transações
                 </span>
-                <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+                <span className="px-2 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded">
                   Consistência
                 </span>
               </div>
@@ -60,7 +60,7 @@ export default function SynchronizationUseCases() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Two-Phase Commit</span>
-                    <p className="text-zinc-400">Garante atomicidade das transações</p>
+                    <p className="text-slate-500 dark:text-slate-400">Garante atomicidade das transações</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -69,7 +69,7 @@ export default function SynchronizationUseCases() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Lock Distribuído</span>
-                    <p className="text-zinc-400">Controle de concorrência</p>
+                    <p className="text-slate-500 dark:text-slate-400">Controle de concorrência</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -78,7 +78,7 @@ export default function SynchronizationUseCases() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Recuperação</span>
-                    <p className="text-zinc-400">Rollback em caso de falhas</p>
+                    <p className="text-slate-500 dark:text-slate-400">Rollback em caso de falhas</p>
                   </div>
                 </li>
               </ul>
@@ -99,7 +99,7 @@ export default function SynchronizationUseCases() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <h3 className="text-xl font-semibold mb-4 text-green-400">Cenário</h3>
-              <p className="text-zinc-300 mb-4">
+              <p className="text-slate-600 dark:text-slate-300 mb-4">
                 Controle de estoque em múltiplos centros de distribuição,
                 evitando overselling e mantendo consistência.
               </p>
@@ -113,7 +113,7 @@ export default function SynchronizationUseCases() {
               </div>
             </div>
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-blue-400">Implementação</h3>
+              <h3 className="text-xl font-semibold mb-4 text-brand-600 dark:text-brand-400">Implementação</h3>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">
                   <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -121,7 +121,7 @@ export default function SynchronizationUseCases() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Quorum</span>
-                    <p className="text-zinc-400">Consenso para atualizações</p>
+                    <p className="text-slate-500 dark:text-slate-400">Consenso para atualizações</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -130,7 +130,7 @@ export default function SynchronizationUseCases() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Cache</span>
-                    <p className="text-zinc-400">Performance e consistência</p>
+                    <p className="text-slate-500 dark:text-slate-400">Performance e consistência</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -139,7 +139,7 @@ export default function SynchronizationUseCases() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Replicação</span>
-                    <p className="text-zinc-400">Sincronização entre centros</p>
+                    <p className="text-slate-500 dark:text-slate-400">Sincronização entre centros</p>
                   </div>
                 </li>
               </ul>
@@ -160,7 +160,7 @@ export default function SynchronizationUseCases() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <h3 className="text-xl font-semibold mb-4 text-yellow-400">Cenário</h3>
-              <p className="text-zinc-300 mb-4">
+              <p className="text-slate-600 dark:text-slate-300 mb-4">
                 Cache distribuído para melhorar performance e reduzir carga
                 no banco de dados principal.
               </p>
@@ -182,7 +182,7 @@ export default function SynchronizationUseCases() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Invalidação</span>
-                    <p className="text-zinc-400">Estratégias de cache</p>
+                    <p className="text-slate-500 dark:text-slate-400">Estratégias de cache</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -191,7 +191,7 @@ export default function SynchronizationUseCases() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Replicação</span>
-                    <p className="text-zinc-400">Sincronização entre nós</p>
+                    <p className="text-slate-500 dark:text-slate-400">Sincronização entre nós</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -200,7 +200,7 @@ export default function SynchronizationUseCases() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Consistência</span>
-                    <p className="text-zinc-400">Modelos e trade-offs</p>
+                    <p className="text-slate-500 dark:text-slate-400">Modelos e trade-offs</p>
                   </div>
                 </li>
               </ul>
@@ -220,7 +220,7 @@ export default function SynchronizationUseCases() {
         <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-blue-400">Design</h3>
+              <h3 className="text-xl font-semibold mb-4 text-brand-600 dark:text-brand-400">Design</h3>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
                   <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -228,7 +228,7 @@ export default function SynchronizationUseCases() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Escolha do Algoritmo</span>
-                    <p className="text-zinc-400 text-sm">Considere requisitos e trade-offs</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">Considere requisitos e trade-offs</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -237,7 +237,7 @@ export default function SynchronizationUseCases() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Falhas</span>
-                    <p className="text-zinc-400 text-sm">Planeje recuperação</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">Planeje recuperação</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -246,7 +246,7 @@ export default function SynchronizationUseCases() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Performance</span>
-                    <p className="text-zinc-400 text-sm">Otimize comunicação</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">Otimize comunicação</p>
                   </div>
                 </li>
               </ul>
@@ -260,7 +260,7 @@ export default function SynchronizationUseCases() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Testes</span>
-                    <p className="text-zinc-400 text-sm">Cenários de falha</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">Cenários de falha</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -269,7 +269,7 @@ export default function SynchronizationUseCases() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Monitoramento</span>
-                    <p className="text-zinc-400 text-sm">Métricas e alertas</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">Métricas e alertas</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -278,7 +278,7 @@ export default function SynchronizationUseCases() {
                   </svg>
                   <div>
                     <span className="text-white font-medium">Documentação</span>
-                    <p className="text-zinc-400 text-sm">Decisões e trade-offs</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">Decisões e trade-offs</p>
                   </div>
                 </li>
               </ul>
@@ -300,15 +300,15 @@ export default function SynchronizationUseCases() {
             to="/estrategias-de-consistencia/sincronizacao/simulador"
             className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 hover:from-zinc-800/50 hover:to-zinc-700/30 transition-all"
           >
-            <h3 className="text-xl font-semibold mb-4 text-blue-400">Simulador</h3>
-            <p className="text-zinc-300 mb-4">
+            <h3 className="text-xl font-semibold mb-4 text-brand-600 dark:text-brand-400">Simulador</h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-4">
               Experimente os diferentes casos de uso em nosso simulador interativo.
             </p>
             <div className="flex items-center gap-2 text-sm">
-              <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+              <span className="px-2 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded">
                 Interativo
               </span>
-              <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+              <span className="px-2 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded">
                 Visualização
               </span>
             </div>
@@ -319,7 +319,7 @@ export default function SynchronizationUseCases() {
             className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 hover:from-zinc-800/50 hover:to-zinc-700/30 transition-all"
           >
             <h3 className="text-xl font-semibold mb-4 text-purple-400">Algoritmos</h3>
-            <p className="text-zinc-300 mb-4">
+            <p className="text-slate-600 dark:text-slate-300 mb-4">
               Explore os algoritmos de sincronização em detalhes.
             </p>
             <div className="flex items-center gap-2 text-sm">

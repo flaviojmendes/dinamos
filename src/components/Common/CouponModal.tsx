@@ -46,13 +46,13 @@ export default function CouponModal({ isOpen, onClose, couponCode = 'BLACKNOVEMB
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", damping: 20, stiffness: 300 }}
-            className="relative max-w-md w-full bg-gradient-to-b from-zinc-900 to-zinc-800 rounded-xl p-6 border border-zinc-700/50 shadow-2xl"
+            className="relative max-w-md w-full bg-gradient-to-b from-zinc-900 to-zinc-800 rounded-xl p-6 border border-slate-300 dark:border-slate-700/50 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close button */}
             <button
               onClick={handleClose}
-              className="absolute top-4 right-4 text-zinc-400 hover:text-white transition-colors"
+              className="absolute top-4 right-4 text-slate-500 dark:text-slate-400 hover:text-white transition-colors"
               aria-label="Close modal"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,7 +75,7 @@ export default function CouponModal({ isOpen, onClose, couponCode = 'BLACKNOVEMB
               </h2>
 
               {/* Subtitle */}
-              <p className="text-zinc-300 mb-6">
+              <p className="text-slate-600 dark:text-slate-300 mb-6">
                 {t('coupon_modal.welcome_subtitle', { 
                   defaultValue: 'Get exclusive access with our special Black November offer!' 
                 })}
@@ -83,10 +83,10 @@ export default function CouponModal({ isOpen, onClose, couponCode = 'BLACKNOVEMB
 
               {/* Coupon code display */}
               <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30 rounded-lg p-4 mb-6">
-                <div className="text-sm text-zinc-400 mb-1">
+                <div className="text-sm text-slate-500 dark:text-slate-400 mb-1">
                   {t('coupon_modal.coupon_code', { defaultValue: 'Your exclusive coupon code:' })}
                 </div>
-                <div className="text-2xl font-mono font-bold text-blue-400 tracking-wider">
+                <div className="text-2xl font-mono font-bold text-brand-600 dark:text-brand-400 tracking-wider">
                   {couponCode}
                 </div>
                 <div className="text-sm text-green-400 mt-1">
@@ -96,29 +96,29 @@ export default function CouponModal({ isOpen, onClose, couponCode = 'BLACKNOVEMB
 
               {/* Features list */}
               <div className="text-left mb-6">
-                <div className="text-sm text-zinc-400 mb-2">
+                <div className="text-sm text-slate-500 dark:text-slate-400 mb-2">
                   {t('coupon_modal.features_title', { defaultValue: 'What you\'ll get:' })}
                 </div>
                 <ul className="space-y-2 text-sm">
-                  <li className="flex items-center gap-2 text-zinc-300">
+                  <li className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
                     <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     {t('coupon_modal.feature_1', { defaultValue: 'Complete systems design course' })}
                   </li>
-                  <li className="flex items-center gap-2 text-zinc-300">
+                  <li className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
                     <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     {t('coupon_modal.feature_2', { defaultValue: 'Interactive simulators' })}
                   </li>
-                  <li className="flex items-center gap-2 text-zinc-300">
+                  <li className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
                     <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     {t('coupon_modal.feature_3', { defaultValue: 'Real-world case studies' })}
                   </li>
-                  <li className="flex items-center gap-2 text-zinc-300">
+                  <li className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
                     <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
@@ -138,7 +138,7 @@ export default function CouponModal({ isOpen, onClose, couponCode = 'BLACKNOVEMB
                 
                 <button
                   onClick={handleClose}
-                  className="w-full text-zinc-400 hover:text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                  className="w-full text-slate-500 dark:text-slate-400 hover:text-white px-6 py-2 rounded-lg font-medium transition-colors"
                 >
                   {t('coupon_modal.maybe_later', { defaultValue: 'Maybe later' })}
                 </button>

@@ -17,7 +17,7 @@ export default function AttackSimulatorPage() {
         <nav className="mb-8">
           <Link
             to="/seguranca/ataques"
-            className="inline-flex items-center text-zinc-400 hover:text-white transition-colors"
+            className="inline-flex items-center text-slate-500 dark:text-slate-400 hover:text-white transition-colors"
           >
             <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -31,7 +31,7 @@ export default function AttackSimulatorPage() {
           <h1 className="text-4xl font-bold text-white mb-4">
             {t(`${base}.title`)}
           </h1>
-          <p className="text-lg text-zinc-400">
+          <p className="text-lg text-slate-500 dark:text-slate-400">
             {t(`${base}.subtitle`)}
           </p>
         </div>
@@ -41,21 +41,21 @@ export default function AttackSimulatorPage() {
 
         {/* Additional Information */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-zinc-900 rounded-lg p-6">
+          <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
             <h2 className="text-xl font-semibold text-white mb-4">{t(`${base}.how_to_use_title`)}</h2>
-            <ul className="space-y-3 text-zinc-400">
+            <ul className="space-y-3 text-slate-500 dark:text-slate-400">
               {howToUseSteps.map((step, index) => (
                 <li key={index} className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-zinc-800 flex items-center justify-center text-white font-medium">{index + 1}</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-white font-medium">{index + 1}</span>
                   <span>{step}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="bg-zinc-900 rounded-lg p-6">
+          <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
             <h2 className="text-xl font-semibold text-white mb-4">{t(`${base}.simulator_elements_title`)}</h2>
-            <ul className="space-y-4 text-zinc-400">
+            <ul className="space-y-4 text-slate-500 dark:text-slate-400">
               <li className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center">
                   <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">

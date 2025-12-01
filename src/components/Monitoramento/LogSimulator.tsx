@@ -144,7 +144,7 @@ export default function LogSimulator() {
   const getLogColor = (nivel: Log['nivel'], isGood: boolean) => {
     switch (nivel) {
       case 'INFO':
-        return isGood ? 'text-blue-400' : 'text-blue-200';
+        return isGood ? 'text-brand-600 dark:text-brand-400' : 'text-brand-600 dark:text-brand-200';
       case 'WARN':
         return isGood ? 'text-yellow-400' : 'text-yellow-200';
       case 'ERROR':
@@ -158,13 +158,13 @@ export default function LogSimulator() {
     <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
       <div className="prose prose-invert prose-lg max-w-none mb-8">
         <div className="flex items-center justify-between">
-          <h1 className="text-4xl font-bold mb-4 text-blue-400">
+          <h1 className="text-4xl font-bold mb-4 text-brand-600 dark:text-brand-400">
             {t(`${base}.title`)}
           </h1>
           <div className="flex gap-4">
             <button
               onClick={() => setMostrarConfiguracoes(!mostrarConfiguracoes)}
-              className="px-4 py-2 bg-zinc-800 text-white rounded-lg hover:bg-zinc-700 transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-white rounded-lg hover:bg-zinc-700 transition-colors flex items-center gap-2"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -183,7 +183,7 @@ export default function LogSimulator() {
             </button>
           </div>
         </div>
-        <p className="text-xl text-zinc-300">
+        <p className="text-xl text-slate-600 dark:text-slate-300">
           {t(`${base}.intro`)}
         </p>
       </div>
@@ -196,12 +196,12 @@ export default function LogSimulator() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
-            className="bg-zinc-900 p-6 rounded-lg mb-8"
+            className="bg-white dark:bg-slate-900 p-6 rounded-lg mb-8"
           >
-            <h2 className="text-xl font-bold text-zinc-200 mb-6">{t(`${base}.settings_title`)}</h2>
+            <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-6">{t(`${base}.settings_title`)}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="flex items-center gap-2 text-zinc-300">
+                <label className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
                   <input
                     type="checkbox"
                     checked={config.autoAvancar}
@@ -212,7 +212,7 @@ export default function LogSimulator() {
                 </label>
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">
+                <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
                   {t(`${base}.settings.delay_label`, { ms: config.delayEventos })}
                 </label>
                 <input
@@ -268,8 +268,8 @@ export default function LogSimulator() {
       </div>
 
       {/* Log Viewer */}
-      <div className="bg-zinc-900 rounded-lg p-6">
-        <h2 className="text-xl font-bold text-zinc-200 mb-4">{t(`${base}.viewer_title`)}</h2>
+      <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
+        <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">{t(`${base}.viewer_title`)}</h2>
         <div className="bg-black p-4 rounded-lg h-[400px] overflow-y-auto font-mono text-sm">
           {logs.map((log, index) => {
             const isGood = Boolean(
@@ -300,17 +300,17 @@ export default function LogSimulator() {
 
       {/* Best/Bad Practices */}
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-zinc-900 p-6 rounded-lg">
-          <h2 className="text-xl font-bold text-zinc-200 mb-4">{t(`${base}.best_practices_title`)}</h2>
-          <ul className="space-y-2 text-zinc-300">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-lg">
+          <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">{t(`${base}.best_practices_title`)}</h2>
+          <ul className="space-y-2 text-slate-600 dark:text-slate-300">
             {(t(`${base}.best_practices_items`, { returnObjects: true }) as string[]).map((item, idx) => (
               <li key={idx}>• {item}</li>
             ))}
           </ul>
         </div>
-        <div className="bg-zinc-900 p-6 rounded-lg">
-          <h2 className="text-xl font-bold text-zinc-200 mb-4">{t(`${base}.bad_practices_title`)}</h2>
-          <ul className="space-y-2 text-zinc-300">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-lg">
+          <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">{t(`${base}.bad_practices_title`)}</h2>
+          <ul className="space-y-2 text-slate-600 dark:text-slate-300">
             {(t(`${base}.bad_practices_items`, { returnObjects: true }) as string[]).map((item, idx) => (
               <li key={idx}>• {item}</li>
             ))}

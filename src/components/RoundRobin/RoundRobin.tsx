@@ -150,7 +150,7 @@ export default function RoundRobin() {
   return (
     <div className="flex-1 min-h-full overflow-auto">
       <div className="p-4 h-full">
-        <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <h1 className="text-xl text-white font-semibold">{t('simulators.round_robin.title')}</h1>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
@@ -168,7 +168,7 @@ export default function RoundRobin() {
           </div>
 
           {/* Configuration */}
-          <div className="mb-6 bg-zinc-800/50 rounded-lg p-4">
+          <div className="mb-6 bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-white mb-2">
@@ -194,7 +194,7 @@ export default function RoundRobin() {
                 <div>
                   <div className="flex justify-between text-white mb-1">
                     <span>{t('simulators.round_robin.config.server_count')}</span>
-                    <span className="text-blue-400">{config.serverCount}</span>
+                    <span className="text-brand-600 dark:text-brand-400">{config.serverCount}</span>
                   </div>
                   <input
                     type="range"
@@ -214,7 +214,7 @@ export default function RoundRobin() {
                 <div>
                   <div className="flex justify-between text-white mb-1">
                     <span>{t('simulators.round_robin.config.server_capacity')}</span>
-                    <span className="text-blue-400">{t('simulators.round_robin.server_card.requests', { current: config.serverCapacity, capacity: '' }).replace('undefined/', '').replace(' requests', '')}</span>
+                    <span className="text-brand-600 dark:text-brand-400">{t('simulators.round_robin.server_card.requests', { current: config.serverCapacity, capacity: '' }).replace('undefined/', '').replace(' requests', '')}</span>
                   </div>
                   <input
                     type="range"
@@ -235,7 +235,7 @@ export default function RoundRobin() {
                 <div>
                   <div className="flex justify-between text-white mb-1">
                     <span>{t('simulators.round_robin.config.rps')}</span>
-                    <span className="text-blue-400">{config.requestsPerSecond} req/s</span>
+                    <span className="text-brand-600 dark:text-brand-400">{config.requestsPerSecond} req/s</span>
                   </div>
                   <input
                     type="range"
@@ -255,7 +255,7 @@ export default function RoundRobin() {
             </div>
 
             {/* Strategy Description */}
-            <div className="mt-4 p-4 bg-zinc-800 rounded-lg text-zinc-300 text-sm">
+            <div className="mt-4 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-300 text-sm">
               {config.strategy === 'roundRobin' && t('simulators.round_robin.strategies.round_robin')}
               {config.strategy === 'leastConnections' && t('simulators.round_robin.strategies.least_conn')}
               {config.strategy === 'random' && t('simulators.round_robin.strategies.random')}
@@ -267,8 +267,8 @@ export default function RoundRobin() {
             {servers.map((server) => (
               <div
                 key={server.id}
-                className={`bg-zinc-800/50 p-4 rounded-lg border ${
-                  currentServerIndex === server.id ? 'border-blue-500' : 'border-zinc-700'
+                className={`bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg border ${
+                  currentServerIndex === server.id ? 'border-blue-500' : 'border-slate-300 dark:border-slate-700'
                 }`}
               >
                 <div className="flex flex-col space-y-3">
@@ -276,12 +276,12 @@ export default function RoundRobin() {
                     <div className="flex items-center gap-4">
                       <span className="text-white font-medium">{t('simulators.round_robin.server_card.server_label', { id: server.id + 1 })}</span>
                       <div className="text-sm">
-                        <span className="text-zinc-400">{t('simulators.round_robin.server_card.requests', { current: server.currentLoad, capacity: server.capacity })}</span>
-                        <span className="text-sm text-blue-400 ml-2">{t('simulators.round_robin.server_card.response_time_ms', { ms: server.responseTime })}</span>
+                        <span className="text-slate-500 dark:text-slate-400">{t('simulators.round_robin.server_card.requests', { current: server.currentLoad, capacity: server.capacity })}</span>
+                        <span className="text-sm text-brand-600 dark:text-brand-400 ml-2">{t('simulators.round_robin.server_card.response_time_ms', { ms: server.responseTime })}</span>
                       </div>
                     </div>
                     <div className="w-full sm:w-1/3 flex items-center gap-2">
-                      <span className="text-zinc-400 text-sm whitespace-nowrap">{t('simulators.round_robin.server_card.response_time_label')}</span>
+                      <span className="text-slate-500 dark:text-slate-400 text-sm whitespace-nowrap">{t('simulators.round_robin.server_card.response_time_label')}</span>
                       <input
                         type="range"
                         min="100"

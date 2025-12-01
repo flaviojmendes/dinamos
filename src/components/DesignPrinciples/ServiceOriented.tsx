@@ -411,11 +411,11 @@ export default function ServiceOriented() {
   return (
     <div className="p-6 md:p-8 lg:p-12 max-w-4xl mx-auto">
       <div className="prose prose-invert prose-lg max-w-none">
-        <h1 className="text-4xl md:text-5xl font-bold mb-8 text-blue-400">
+        <h1 className="text-4xl md:text-5xl font-bold mb-8 text-brand-600 dark:text-brand-400">
           {t('design_principles.service_oriented.title')}
         </h1>
 
-        <p className="text-xl text-zinc-300 mb-12">
+        <p className="text-xl text-slate-600 dark:text-slate-300 mb-12">
           {t('design_principles.service_oriented.intro')}
         </p>
 
@@ -428,7 +428,7 @@ export default function ServiceOriented() {
               className={`px-6 py-3 rounded-lg transition-colors ${
                 selectedArch.type === type
                   ? 'bg-blue-500 text-white'
-                  : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-zinc-700'
               }`}
             >
               {t(`design_principles.service_oriented.architectures.${type}.name`)}
@@ -445,14 +445,14 @@ export default function ServiceOriented() {
           className="space-y-12"
         >
           {/* Description Section */}
-          <div className="bg-zinc-900 rounded-lg p-6">
-            <h2 className="text-3xl font-bold mb-6 text-blue-300">{t(`${i18nArchBase}.name`)}</h2>
-            <p className="text-zinc-200 mb-8">{t(`${i18nArchBase}.description`)}</p>
+          <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
+            <h2 className="text-3xl font-bold mb-6 text-brand-600 dark:text-brand-300">{t(`${i18nArchBase}.name`)}</h2>
+            <p className="text-slate-700 dark:text-slate-200 mb-8">{t(`${i18nArchBase}.description`)}</p>
 
             <div className="grid md:grid-cols-2 gap-8">
               {/* Advantages */}
               <div>
-                <h3 className="text-2xl font-bold text-blue-300 mb-4">{t('design_principles.service_oriented.sections.advantages')}</h3>
+                <h3 className="text-2xl font-bold text-brand-600 dark:text-brand-300 mb-4">{t('design_principles.service_oriented.sections.advantages')}</h3>
                 <ul className="space-y-2">
                   {(t(`${i18nArchBase}.advantages`, { returnObjects: true }) as string[]).map((advantage, index) => (
                     <motion.li
@@ -460,7 +460,7 @@ export default function ServiceOriented() {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      className="flex items-start gap-2 text-zinc-200"
+                      className="flex items-start gap-2 text-slate-700 dark:text-slate-200"
                     >
                       <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -473,7 +473,7 @@ export default function ServiceOriented() {
 
               {/* Disadvantages */}
               <div>
-                <h3 className="text-2xl font-bold text-blue-300 mb-4">{t('design_principles.service_oriented.sections.disadvantages')}</h3>
+                <h3 className="text-2xl font-bold text-brand-600 dark:text-brand-300 mb-4">{t('design_principles.service_oriented.sections.disadvantages')}</h3>
                 <ul className="space-y-2">
                   {(t(`${i18nArchBase}.disadvantages`, { returnObjects: true }) as string[]).map((disadvantage, index) => (
                     <motion.li
@@ -481,7 +481,7 @@ export default function ServiceOriented() {
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      className="flex items-start gap-2 text-zinc-200"
+                      className="flex items-start gap-2 text-slate-700 dark:text-slate-200"
                     >
                       <svg className="w-5 h-5 text-red-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -494,15 +494,15 @@ export default function ServiceOriented() {
             </div>
 
             {/* Example */}
-            <div className="mt-8 p-4 bg-zinc-800 rounded-lg">
-              <h4 className="text-xl font-bold text-blue-200 mb-2">{t('design_principles.service_oriented.sections.example_title')}</h4>
-              <p className="text-zinc-200">{t(`${i18nArchBase}.example`)}</p>
+            <div className="mt-8 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg">
+              <h4 className="text-xl font-bold text-brand-600 dark:text-brand-200 mb-2">{t('design_principles.service_oriented.sections.example_title')}</h4>
+              <p className="text-slate-700 dark:text-slate-200">{t(`${i18nArchBase}.example`)}</p>
             </div>
           </div>
 
           {/* Diagram */}
-          <div className="relative bg-zinc-900 rounded-lg p-8">
-            <h3 className="text-3xl font-bold mb-6 text-blue-300">{t('design_principles.service_oriented.sections.diagram_title')}</h3>
+          <div className="relative bg-white dark:bg-slate-900 rounded-lg p-8">
+            <h3 className="text-3xl font-bold mb-6 text-brand-600 dark:text-brand-300">{t('design_principles.service_oriented.sections.diagram_title')}</h3>
             
             <ResponsiveDiagram
               architecture={{
@@ -523,7 +523,7 @@ export default function ServiceOriented() {
             />
 
             {/* Legend */}
-            <div className="mt-20 flex justify-center gap-8 text-sm text-zinc-400">
+            <div className="mt-20 flex justify-center gap-8 text-sm text-slate-500 dark:text-slate-400">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-[2px] bg-zinc-400"></div>
                 {selectedArch.type === 'monolithic' && t('design_principles.service_oriented.sections.legend.direct_call')}

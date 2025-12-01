@@ -190,13 +190,13 @@ export default function EventSourcingSimulator() {
     <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
       <div className="prose prose-invert prose-lg max-w-none mb-8">
         <div className="flex items-center justify-between">
-          <h1 className="text-4xl font-bold mb-4 text-blue-400">
+          <h1 className="text-4xl font-bold mb-4 text-brand-600 dark:text-brand-400">
             {t('simulators.event_sourcing.title')}
           </h1>
           <div className="flex gap-4">
             <button
               onClick={() => setShowSettings(!showSettings)}
-              className="px-4 py-2 bg-zinc-800 text-white rounded-lg hover:bg-zinc-700 transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-white rounded-lg hover:bg-zinc-700 transition-colors flex items-center gap-2"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -215,7 +215,7 @@ export default function EventSourcingSimulator() {
             </button>
           </div>
         </div>
-        <p className="text-xl text-zinc-300">
+        <p className="text-xl text-slate-600 dark:text-slate-300">
           {t('simulators.event_sourcing.intro')}
         </p>
       </div>
@@ -228,12 +228,12 @@ export default function EventSourcingSimulator() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
-            className="bg-zinc-900 p-6 rounded-lg mb-8"
+            className="bg-white dark:bg-slate-900 p-6 rounded-lg mb-8"
           >
-            <h2 className="text-xl font-bold text-zinc-200 mb-6">{t('simulators.event_sourcing.settings.title')}</h2>
+            <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-6">{t('simulators.event_sourcing.settings.title')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="flex items-center gap-2 text-zinc-300">
+                <label className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
                   <input
                     type="checkbox"
                     checked={config.autoAdvance}
@@ -244,7 +244,7 @@ export default function EventSourcingSimulator() {
                 </label>
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">
+                <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
                   {t('simulators.event_sourcing.settings.event_delay', { ms: config.eventDelay })}
                 </label>
                 <input
@@ -258,7 +258,7 @@ export default function EventSourcingSimulator() {
                 />
               </div>
               <div>
-                <label className="flex items-center gap-2 text-zinc-300">
+                <label className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
                   <input
                     type="checkbox"
                     checked={config.showEventData}
@@ -269,7 +269,7 @@ export default function EventSourcingSimulator() {
                 </label>
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">
+                <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
                   {t('simulators.event_sourcing.settings.animation_duration', { seconds: config.animationDuration })}
                 </label>
                 <input
@@ -295,29 +295,29 @@ export default function EventSourcingSimulator() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: config.animationDuration }}
         >
-          <div className="bg-zinc-900 p-6 rounded-lg">
-            <h2 className="text-xl font-bold text-zinc-200 mb-4">{t('simulators.event_sourcing.create_order.title')}</h2>
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-lg">
+            <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">{t('simulators.event_sourcing.create_order.title')}</h2>
             <div className="grid grid-cols-2 gap-4 mb-4">
               {products.map(product => (
                 <button
                   key={product.name}
                   onClick={() => handleItemSelection(product.name)}
-                  className="p-3 bg-zinc-800 rounded-lg hover:bg-zinc-700 transition-colors"
+                  className="p-3 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-zinc-700 transition-colors"
                 >
-                  <div className="font-medium text-zinc-200">{product.name}</div>
-                  <div className="text-sm text-zinc-400">R$ {product.price}</div>
+                  <div className="font-medium text-slate-700 dark:text-slate-200">{product.name}</div>
+                  <div className="text-sm text-slate-500 dark:text-slate-400">R$ {product.price}</div>
                 </button>
               ))}
             </div>
             {selectedItems.length > 0 && (
-              <div className="mt-4 p-4 bg-zinc-800 rounded-lg">
-                <h3 className="font-medium text-zinc-200 mb-2">{t('simulators.event_sourcing.create_order.selected_items')}</h3>
+              <div className="mt-4 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg">
+                <h3 className="font-medium text-slate-700 dark:text-slate-200 mb-2">{t('simulators.event_sourcing.create_order.selected_items')}</h3>
                 {selectedItems.map(item => (
-                  <div key={item.name} className="text-sm text-zinc-400">
+                  <div key={item.name} className="text-sm text-slate-500 dark:text-slate-400">
                     {item.name} x{item.quantity}
                   </div>
                 ))}
-                <div className="mt-2 text-zinc-200">
+                <div className="mt-2 text-slate-700 dark:text-slate-200">
                   {t('simulators.event_sourcing.create_order.total', { amount: calculateTotal(selectedItems) })}
                 </div>
               </div>
@@ -410,10 +410,10 @@ export default function EventSourcingSimulator() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: config.animationDuration }}
-                className="bg-zinc-900 p-6 rounded-lg"
+                className="bg-white dark:bg-slate-900 p-6 rounded-lg"
               >
-                <h2 className="text-xl font-bold text-zinc-200 mb-4">{t('simulators.event_sourcing.state.title')}</h2>
-                <div className="space-y-2 text-zinc-300">
+                <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">{t('simulators.event_sourcing.state.title')}</h2>
+                <div className="space-y-2 text-slate-600 dark:text-slate-300">
                   <div>{t('simulators.event_sourcing.state.order', { id: currentState.orderId })}</div>
                   <motion.div
                     key={currentState.status}
@@ -436,7 +436,7 @@ export default function EventSourcingSimulator() {
                   <div className="mt-4">
                     <div className="font-medium mb-2">{t('simulators.event_sourcing.state.items')}</div>
                     {currentState.items.map(item => (
-                      <div key={item.name} className="text-sm text-zinc-400">
+                      <div key={item.name} className="text-sm text-slate-500 dark:text-slate-400">
                         {item.name} x{item.quantity}
                       </div>
                     ))}
@@ -447,17 +447,17 @@ export default function EventSourcingSimulator() {
           </AnimatePresence>
 
           {/* Event Log */}
-          <div className="bg-zinc-900 p-6 rounded-lg">
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-lg">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-zinc-200">{t('simulators.event_sourcing.events.title')}</h2>
+              <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200">{t('simulators.event_sourcing.events.title')}</h2>
               {events.length > 0 && (
                 <div className="flex gap-4">
                   <div className="flex items-center gap-2">
-                    <label className="text-sm text-zinc-400">{t('simulators.event_sourcing.events.speed')}</label>
+                    <label className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.event_sourcing.events.speed')}</label>
                     <select
                       value={replaySpeed}
                       onChange={(e) => setReplaySpeed(Number(e.target.value))}
-                      className="bg-zinc-800 text-zinc-200 rounded px-2 py-1"
+                      className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded px-2 py-1"
                     >
                       <option value={500}>{t('simulators.event_sourcing.events.speed_opts.half')}</option>
                       <option value={1000}>{t('simulators.event_sourcing.events.speed_opts.one')}</option>
@@ -490,17 +490,17 @@ export default function EventSourcingSimulator() {
                     className={`p-3 rounded ${
                       isReplayMode && index === replayIndex - 1
                         ? 'bg-blue-900/30 border border-blue-700'
-                        : 'bg-zinc-800'
+                        : 'bg-slate-100 dark:bg-slate-800'
                     }`}
                   >
                     <div className="flex justify-between text-sm">
-                      <span className="text-zinc-200">{event.type}</span>
-                      <span className="text-zinc-400">
+                      <span className="text-slate-700 dark:text-slate-200">{event.type}</span>
+                      <span className="text-slate-500 dark:text-slate-400">
                         {new Date(event.timestamp).toLocaleTimeString()}
                       </span>
                     </div>
                     {config.showEventData && (
-                      <div className="mt-2 text-xs text-zinc-400">
+                      <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">
                         <pre className="whitespace-pre-wrap">{JSON.stringify(event.data, null, 2)}</pre>
                       </div>
                     )}

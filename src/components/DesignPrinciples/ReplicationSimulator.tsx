@@ -223,7 +223,7 @@ export default function ReplicationSimulator() {
   }, [isRunning, config.writeRate, config.readRate, config.replicationMode]);
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white p-8">
+    <div className="min-h-screen bg-canvas-paper dark:bg-canvas-dark text-white p-8">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -231,7 +231,7 @@ export default function ReplicationSimulator() {
           className="mb-8"
         >
           <h1 className="text-3xl font-bold mb-4">Simulador de Replicação e Failover</h1>
-          <p className="text-lg text-zinc-400">
+          <p className="text-lg text-slate-500 dark:text-slate-400">
             Explore como a replicação de dados e o failover automático funcionam em um 
             ambiente distribuído.
           </p>
@@ -241,7 +241,7 @@ export default function ReplicationSimulator() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="bg-zinc-900 rounded-xl p-6 mb-8"
+          className="bg-white dark:bg-slate-900 rounded-xl p-6 mb-8"
         >
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
             <div>
@@ -260,7 +260,7 @@ export default function ReplicationSimulator() {
                 }))}
                 className="w-full"
               />
-              <span className="text-sm text-zinc-400">{config.writeRate}/s</span>
+              <span className="text-sm text-slate-500 dark:text-slate-400">{config.writeRate}/s</span>
             </div>
             <div>
               <label className="block text-sm font-medium mb-2">
@@ -278,7 +278,7 @@ export default function ReplicationSimulator() {
                 }))}
                 className="w-full"
               />
-              <span className="text-sm text-zinc-400">{config.readRate}/s</span>
+              <span className="text-sm text-slate-500 dark:text-slate-400">{config.readRate}/s</span>
             </div>
             <div>
               <label className="block text-sm font-medium mb-2">
@@ -290,7 +290,7 @@ export default function ReplicationSimulator() {
                   ...prev, 
                   replicationMode: e.target.value as 'sync' | 'async' 
                 }))}
-                className="w-full bg-zinc-800 rounded-lg p-2 text-sm"
+                className="w-full bg-slate-100 dark:bg-slate-800 rounded-lg p-2 text-sm"
               >
                 <option value="sync">Síncrona</option>
                 <option value="async">Assíncrona</option>
@@ -330,12 +330,12 @@ export default function ReplicationSimulator() {
               key={server.id}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-zinc-900 rounded-xl p-6"
+              className="bg-white dark:bg-slate-900 rounded-xl p-6"
             >
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <h3 className="text-xl font-semibold">{server.name}</h3>
-                  <p className="text-sm text-zinc-400">{server.region}</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">{server.region}</p>
                 </div>
                 <div className="flex flex-col items-end">
                   <span
@@ -355,8 +355,8 @@ export default function ReplicationSimulator() {
                   </span>
                   <span className={`text-sm mt-1 ${
                     server.role === 'primary' 
-                      ? 'text-blue-400' 
-                      : 'text-zinc-400'
+                      ? 'text-brand-600 dark:text-brand-400' 
+                      : 'text-slate-500 dark:text-slate-400'
                   }`}>
                     {server.role === 'primary' ? 'Primário' : 'Secundário'}
                   </span>
@@ -369,7 +369,7 @@ export default function ReplicationSimulator() {
                     <span>Carga</span>
                     <span>{server.load} transações</span>
                   </div>
-                  <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                  <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${Math.min(100, server.load * 20)}%` }}
@@ -390,7 +390,7 @@ export default function ReplicationSimulator() {
                       <span>Lag de Replicação</span>
                       <span>{Math.round(server.replicationLag)}ms</span>
                     </div>
-                    <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                    <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${Math.min(100, server.replicationLag)}%` }}
@@ -434,7 +434,7 @@ export default function ReplicationSimulator() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-zinc-900 rounded-xl p-6"
+            className="bg-white dark:bg-slate-900 rounded-xl p-6"
           >
             <h3 className="text-xl font-semibold mb-4">Estatísticas</h3>
             <div className="space-y-4">
@@ -443,7 +443,7 @@ export default function ReplicationSimulator() {
                   <span>Total de Transações</span>
                   <span>{stats.total}</span>
                 </div>
-                <div className="h-2 bg-zinc-800 rounded-full">
+                <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full">
                   <div className="h-full bg-blue-500 rounded-full" style={{ width: '100%' }} />
                 </div>
               </div>
@@ -456,7 +456,7 @@ export default function ReplicationSimulator() {
                       : '0%'}
                   </span>
                 </div>
-                <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ 
@@ -473,7 +473,7 @@ export default function ReplicationSimulator() {
                   <span>Lag Médio de Replicação</span>
                   <span>{Math.round(stats.avgReplicationLag)}ms</span>
                 </div>
-                <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${Math.min(100, stats.avgReplicationLag)}%` }}
@@ -494,7 +494,7 @@ export default function ReplicationSimulator() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-zinc-900 rounded-xl p-6"
+            className="bg-white dark:bg-slate-900 rounded-xl p-6"
           >
             <h3 className="text-xl font-semibold mb-4">Transações Recentes</h3>
             <div className="space-y-2">
@@ -505,7 +505,7 @@ export default function ReplicationSimulator() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
-                    className="flex items-center justify-between bg-zinc-800 rounded-lg p-3"
+                    className="flex items-center justify-between bg-slate-100 dark:bg-slate-800 rounded-lg p-3"
                   >
                     <div className="flex items-center space-x-3">
                       <span className={`w-2 h-2 rounded-full ${
@@ -523,14 +523,14 @@ export default function ReplicationSimulator() {
                         </span>
                         <span className={`text-xs ${
                           transaction.type === 'write' 
-                            ? 'text-blue-400' 
+                            ? 'text-brand-600 dark:text-brand-400' 
                             : 'text-green-400'
                         }`}>
                           {transaction.type === 'write' ? 'Escrita' : 'Leitura'}
                         </span>
                       </div>
                     </div>
-                    <span className="text-sm text-zinc-400">
+                    <span className="text-sm text-slate-500 dark:text-slate-400">
                       {transaction.status === 'completed'
                         ? 'Concluída'
                         : transaction.status === 'failed'

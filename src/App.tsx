@@ -114,6 +114,7 @@ import SimpleSystemEditorPage from "./pages/SimpleSystemEditorPage";
 import PollingWebhooks from "./components/SystemComponents/PollingWebhooks";
 import PollingWebhooksTheory from "./components/SystemComponents/PollingWebhooksTheory";
 import { LanguageSwitcher, CouponModal } from './components/Common';
+import ThemeToggle from "./components/Common/ThemeToggle";
 import { useTranslation } from 'react-i18next';
 import CookieConsentBanner from './components/Common/CookieConsentBanner';
 import { CookieConsentManager } from './utils/cookieConsent';
@@ -815,7 +816,7 @@ const createMenuItems = (t: any): MenuItem[] => [
     badges: [{ text: t('badges.new'), color: "bg-blue-500" }],
     icon: (
       <svg
-        className="w-6 h-6 text-blue-400"
+        className="w-6 h-6 text-brand-600 dark:text-brand-400"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -901,11 +902,11 @@ export default function App() {
     };
 
     return (
-      <div className="text-white">
+      <div className="text-slate-900 dark:text-white">
         <div className="flex items-center gap-1">
           {item.disabled ? (
-            <div className="flex-1 flex flex-col p-3 rounded-lg text-zinc-600 relative cursor-not-allowed">
-              <div className="absolute -top-2 right-2 bg-zinc-800 text-white text-xs px-2 py-0.5 rounded-full">
+            <div className="flex-1 flex flex-col p-3 rounded-lg text-slate-400 dark:text-slate-600 relative cursor-not-allowed">
+              <div className="absolute -top-2 right-2 bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs px-2 py-0.5 rounded-full">
                 {t('status.coming_soon')}
               </div>
               <div className="flex items-center">
@@ -926,12 +927,12 @@ export default function App() {
               className={({ isActive }: { isActive: boolean }) =>
                 `flex-1 flex flex-col p-3 rounded-lg transition-colors relative ${
                   isActive
-                    ? "bg-blue-500 text-white"
+                    ? "bg-brand-600 text-white"
                     : item.customStyle
                     ? `${item.customStyle} ${
-                        item.customHoverStyle || "hover:bg-zinc-800"
-                      } text-zinc-400 hover:text-white`
-                    : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
+                        item.customHoverStyle || "hover:bg-slate-100 dark:hover:bg-slate-800"
+                      } text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white`
+                    : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
                 }`
               }
               onClick={() => {
@@ -973,8 +974,8 @@ export default function App() {
                 setIsExpanded(!isExpanded);
                 trackEvent("User", "Clicked on Menu Item", displayName);
               }}
-              className={`p-2 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-transform ${
-                isActive ? "text-white" : ""
+              className={`p-2 text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-transform ${
+                isActive ? "text-slate-900 dark:text-white" : ""
               }`}
             >
               <svg
@@ -996,7 +997,7 @@ export default function App() {
           )}
         </div>
         {item.children && isExpanded && (
-          <div className="ml-4 mt-1 space-y-1 border-l border-zinc-800 pl-3">
+          <div className="ml-4 mt-1 space-y-1 border-l border-slate-200 dark:border-slate-800 pl-3">
             {item.children.map((child) => (
               <MenuLink key={child.path} item={child} onNavigate={onNavigate} />
             ))}
@@ -1024,20 +1025,21 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="min-h-screen bg-canvas-paper dark:bg-canvas-dark text-slate-900 dark:text-slate-100 transition-colors duration-300">
       <div className="flex h-screen overflow-hidden">
         {/* Mobile Header */}
         {isMobile && user && (
-          <div className="fixed top-0 left-0 right-0 z-50 bg-zinc-900/95 backdrop-blur-xl border-b border-zinc-800/50 px-4 py-3">
+          <div className="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 px-4 py-3">
             <div className="flex items-center justify-between">
-              <Link to="/" className="text-xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+              <Link to="/" className="text-xl font-bold bg-gradient-to-r from-brand-500 to-brand-700 bg-clip-text text-transparent">
                 <img src="/logo.png" alt="Logo" className="h-12" />
               </Link>
               <div className="flex items-center gap-2">
+                <ThemeToggle />
                 <LanguageSwitcher />
                 <button
                   onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                  className="p-2 text-zinc-300 hover:text-white rounded-lg hover:bg-zinc-800/80"
+                  className="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
                 >
                   {isSidebarOpen ? (
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1061,19 +1063,20 @@ export default function App() {
               isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
             } ${
               isMobile ? 'fixed inset-y-0 left-0 z-40' : 'relative'
-            } w-80 bg-zinc-900/50 backdrop-blur-xl border-r border-zinc-800/50 transition-transform duration-300 ease-in-out flex flex-col`}
+            } w-80 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 transition-transform duration-300 ease-in-out flex flex-col`}
           >
             {/* Sidebar Content */}
-            <div className={`flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent ${isMobile ? 'pt-16' : ''}`}>
+            <div className={`flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-700 scrollbar-track-transparent ${isMobile ? 'pt-16' : ''}`}>
               <div className="p-6">
                 {!isMobile && (
                   <div className="flex items-center justify-between mb-8 ">
-                    <Link to="/" className="text-xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent mx-auto">
+                    <Link to="/" className="text-xl font-bold bg-gradient-to-r from-brand-500 to-brand-700 bg-clip-text text-transparent mx-auto">
                       <img src="/logo.png" alt="Logo" className="h-14 mx-auto" /> 
                     </Link>
                   </div>
                 )}
-                <div className="flex justify-end mb-4">
+                <div className="flex justify-end mb-4 gap-2">
+                  <ThemeToggle />
                   <LanguageSwitcher />
                 </div>
 
@@ -1091,34 +1094,34 @@ export default function App() {
 
             {/* User profile section */}
             {user && (
-              <div className="p-4 border-t border-zinc-800/50">
-                <div className="flex items-center gap-3 p-3 bg-zinc-800/80 backdrop-blur-xl rounded-lg">
+              <div className="p-4 border-t border-slate-200 dark:border-slate-800">
+                <div className="flex items-center gap-3 p-3 bg-slate-100 dark:bg-slate-800/50 backdrop-blur-xl rounded-lg">
                   {user.photoURL ? (
                     <img
                       src={user.photoURL}
                       alt="Profile"
-                      className="w-10 h-10 rounded-full border-2 border-blue-500"
+                      className="w-10 h-10 rounded-full border-2 border-brand-500"
                     />
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full bg-brand-500 flex items-center justify-center">
                       <span className="text-lg font-bold text-white">
                         {user.email?.charAt(0).toUpperCase()}
                       </span>
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white truncate">
+                    <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
                       {user.displayName || user.email}
                     </p>
                     {user.displayName && (
-                      <p className="text-xs text-zinc-300 truncate">
+                      <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
                         {user.email}
                       </p>
                     )}
                   </div>
                   <button
                     onClick={signOut}
-                    className="text-zinc-300 hover:text-white transition-colors"
+                    className="text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors"
                   >
                     <svg
                       className="w-5 h-5"
@@ -1143,13 +1146,13 @@ export default function App() {
         {/* Overlay for mobile */}
         {isMobile && isSidebarOpen && (
           <div 
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30"
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-30"
             onClick={() => setIsSidebarOpen(false)}
           />
         )}
 
         {/* Main content */}
-        <main className={`flex-1 overflow-y-auto bg-gradient-to-b from-zinc-900 to-black ${isMobile ? 'pt-16' : ''}`}>
+        <main className={`flex-1 overflow-y-auto bg-canvas-paper dark:bg-canvas-dark bg-grid ${isMobile ? 'pt-16' : ''}`}>
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />

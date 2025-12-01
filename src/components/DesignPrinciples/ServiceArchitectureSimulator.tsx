@@ -288,11 +288,11 @@ export default function ServiceArchitectureSimulator() {
   return (
     <div className="p-6 md:p-8 lg:p-12 max-w-4xl mx-auto">
       <div className="prose prose-invert prose-lg max-w-none">
-        <h1 className="text-4xl md:text-5xl font-bold mb-8 text-blue-400">
+        <h1 className="text-4xl md:text-5xl font-bold mb-8 text-brand-600 dark:text-brand-400">
           Simulador de Arquiteturas de Serviços
         </h1>
 
-        <p className="text-xl text-zinc-300 mb-12">
+        <p className="text-xl text-slate-600 dark:text-slate-300 mb-12">
           Compare as diferentes abordagens de organização de código e suas implicações.
         </p>
 
@@ -307,7 +307,7 @@ export default function ServiceArchitectureSimulator() {
               className={`px-6 py-3 rounded-lg transition-colors ${
                 selectedArch.type === arch.type
                   ? 'bg-blue-500 text-white'
-                  : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-zinc-700'
               }`}
             >
               {arch.name}
@@ -321,10 +321,10 @@ export default function ServiceArchitectureSimulator() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
-          className="bg-zinc-900 rounded-lg p-6 mb-12"
+          className="bg-white dark:bg-slate-900 rounded-lg p-6 mb-12"
         >
-          <h2 className="text-3xl font-bold mb-4 text-blue-300">{selectedArch.name}</h2>
-          <p className="text-zinc-200">{selectedArch.description}</p>
+          <h2 className="text-3xl font-bold mb-4 text-brand-600 dark:text-brand-300">{selectedArch.name}</h2>
+          <p className="text-slate-700 dark:text-slate-200">{selectedArch.description}</p>
         </motion.div>
 
         {/* Modules Visualization */}
@@ -350,40 +350,40 @@ export default function ServiceArchitectureSimulator() {
                 onMouseEnter={() => setHoveredModule(module.id)}
                 onMouseLeave={() => setHoveredModule(null)}
               >
-                <h3 className="text-2xl font-bold mb-4 text-blue-300">{module.name}</h3>
+                <h3 className="text-2xl font-bold mb-4 text-brand-600 dark:text-brand-300">{module.name}</h3>
                 
                 {/* Module Details - Always Visible */}
                 {module.details && (
-                  <div className="text-sm text-zinc-200 space-y-2">
+                  <div className="text-sm text-slate-700 dark:text-slate-200 space-y-2">
                     <div className="flex items-start gap-2">
-                      <span className="font-medium min-w-[100px] text-blue-200">Deploy:</span>
+                      <span className="font-medium min-w-[100px] text-brand-600 dark:text-brand-200">Deploy:</span>
                       <span>{module.details.deployment}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="font-medium min-w-[100px] text-blue-200">Comunicação:</span>
+                      <span className="font-medium min-w-[100px] text-brand-600 dark:text-brand-200">Comunicação:</span>
                       <span>{module.details.communication}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="font-medium min-w-[100px] text-blue-200">Banco:</span>
+                      <span className="font-medium min-w-[100px] text-brand-600 dark:text-brand-200">Banco:</span>
                       <span>{module.details.database}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="font-medium min-w-[100px] text-blue-200">Escala:</span>
+                      <span className="font-medium min-w-[100px] text-brand-600 dark:text-brand-200">Escala:</span>
                       <span>{module.details.scaling}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="font-medium min-w-[100px] text-blue-200">Dev:</span>
+                      <span className="font-medium min-w-[100px] text-brand-600 dark:text-brand-200">Dev:</span>
                       <span>{module.details.development}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="font-medium min-w-[100px] text-blue-200">Manutenção:</span>
+                      <span className="font-medium min-w-[100px] text-brand-600 dark:text-brand-200">Manutenção:</span>
                       <span>{module.details.maintenance}</span>
                     </div>
                   </div>
                 )}
 
                 {module.dependencies && (
-                  <div className="text-sm text-zinc-400 mt-4 pt-4 border-t border-zinc-700">
+                  <div className="text-sm text-slate-500 dark:text-slate-400 mt-4 pt-4 border-t border-slate-300 dark:border-slate-700">
                     Depende de: {module.dependencies.map(dep => {
                       const depModule = selectedArch.modules.find(m => m.id === dep);
                       return depModule?.name;
@@ -401,9 +401,9 @@ export default function ServiceArchitectureSimulator() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="mt-8 bg-zinc-900 p-6 rounded-lg text-center"
+          className="mt-8 bg-white dark:bg-slate-900 p-6 rounded-lg text-center"
         >
-          <p className="text-zinc-200">
+          <p className="text-slate-700 dark:text-slate-200">
             Passe o mouse sobre os módulos para visualizar suas dependências.
           </p>
         </motion.div>

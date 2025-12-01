@@ -23,7 +23,7 @@ const ConsistencyModels: React.FC = () => {
           </Typography>
 
           {/* Introduction */}
-          <div className="bg-zinc-800/30 p-8 rounded-lg border border-zinc-600 mb-12">
+          <div className="bg-slate-100 dark:bg-slate-800/30 p-8 rounded-lg border border-zinc-600 mb-12">
             <Typography variant="p" className="text-lg leading-relaxed text-gray-200">
               {t('menu.theoretical_foundations.consistency_models.introduction')}
             </Typography>
@@ -31,7 +31,7 @@ const ConsistencyModels: React.FC = () => {
 
           <div className="space-y-8">
             {/* Strong Consistency Section */}
-            <div className="bg-zinc-800/50 p-8 rounded-lg border border-zinc-700">
+            <div className="bg-slate-100 dark:bg-slate-800/50 p-8 rounded-lg border border-slate-300 dark:border-slate-700">
               <div className="flex items-center mb-6">
                 <div className="text-3xl mr-4">🔒</div>
                 <Typography variant="h2" className="text-green-400">
@@ -47,7 +47,7 @@ const ConsistencyModels: React.FC = () => {
 
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Characteristics */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-green-300">
                     {t('menu.theoretical_foundations.consistency_models.characteristics_label')}
                   </Typography>
@@ -59,7 +59,7 @@ const ConsistencyModels: React.FC = () => {
                 </div>
 
                 {/* Use Cases */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-green-300">
                     {t('menu.theoretical_foundations.consistency_models.use_cases_label')}
                   </Typography>
@@ -101,7 +101,7 @@ const ConsistencyModels: React.FC = () => {
                 </div>
               </div>
 
-              <div className="mt-4 bg-zinc-900/50 p-4 rounded border border-zinc-600">
+              <div className="mt-4 bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                 <Typography variant="p" className="text-sm text-yellow-300">
                   {t('menu.theoretical_foundations.consistency_models.strong_consistency.tradeoffs')}
                 </Typography>
@@ -109,7 +109,7 @@ const ConsistencyModels: React.FC = () => {
             </div>
 
             {/* Eventual Consistency Section */}
-            <div className="bg-zinc-800/50 p-8 rounded-lg border border-zinc-700">
+            <div className="bg-slate-100 dark:bg-slate-800/50 p-8 rounded-lg border border-slate-300 dark:border-slate-700">
               <div className="flex items-center mb-6">
                 <div className="text-3xl mr-4">⏱️</div>
                 <Typography variant="h2" className="text-yellow-400">
@@ -125,7 +125,7 @@ const ConsistencyModels: React.FC = () => {
 
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Characteristics */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-yellow-300">
                     {t('menu.theoretical_foundations.consistency_models.characteristics_label')}
                   </Typography>
@@ -137,7 +137,7 @@ const ConsistencyModels: React.FC = () => {
                 </div>
 
                 {/* Use Cases */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-yellow-300">
                     {t('menu.theoretical_foundations.consistency_models.use_cases_label')}
                   </Typography>
@@ -191,7 +191,7 @@ const ConsistencyModels: React.FC = () => {
                 </ul>
               </div>
 
-              <div className="mt-4 bg-zinc-900/50 p-4 rounded border border-zinc-600">
+              <div className="mt-4 bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                 <Typography variant="p" className="text-sm text-yellow-300">
                   {t('menu.theoretical_foundations.consistency_models.eventual_consistency.tradeoffs')}
                 </Typography>
@@ -199,10 +199,10 @@ const ConsistencyModels: React.FC = () => {
             </div>
 
             {/* Weak Consistency Section */}
-            <div className="bg-zinc-800/50 p-8 rounded-lg border border-zinc-700">
+            <div className="bg-slate-100 dark:bg-slate-800/50 p-8 rounded-lg border border-slate-300 dark:border-slate-700">
               <div className="flex items-center mb-6">
                 <div className="text-3xl mr-4">🏃‍♂️</div>
-                <Typography variant="h2" className="text-blue-400">
+                <Typography variant="h2" className="text-brand-600 dark:text-brand-400">
                   {t('menu.theoretical_foundations.consistency_models.weak_consistency.title')}
                 </Typography>
               </div>
@@ -215,8 +215,8 @@ const ConsistencyModels: React.FC = () => {
 
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Characteristics */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
-                  <Typography variant="h4" className="text-sm font-semibold mb-3 text-blue-300">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
+                  <Typography variant="h4" className="text-sm font-semibold mb-3 text-brand-600 dark:text-brand-300">
                     {t('menu.theoretical_foundations.consistency_models.characteristics_label')}
                   </Typography>
                   <ul className="list-disc list-inside space-y-1">
@@ -227,8 +227,8 @@ const ConsistencyModels: React.FC = () => {
                 </div>
 
                 {/* Use Cases */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
-                  <Typography variant="h4" className="text-sm font-semibold mb-3 text-blue-300">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
+                  <Typography variant="h4" className="text-sm font-semibold mb-3 text-brand-600 dark:text-brand-300">
                     {t('menu.theoretical_foundations.consistency_models.use_cases_label')}
                   </Typography>
                   <ul className="list-disc list-inside space-y-1">
@@ -241,7 +241,7 @@ const ConsistencyModels: React.FC = () => {
 
               {/* Concrete Examples */}
               <div className="mt-6">
-                <Typography variant="h4" className="text-sm font-semibold mb-3 text-blue-300">
+                <Typography variant="h4" className="text-sm font-semibold mb-3 text-brand-600 dark:text-brand-300">
                   {t('menu.theoretical_foundations.consistency_models.examples_label')}
                 </Typography>
                 <div className="grid md:grid-cols-2 gap-4">
@@ -257,12 +257,12 @@ const ConsistencyModels: React.FC = () => {
 
               {/* Implementations */}
               <div className="mt-6">
-                <Typography variant="h4" className="text-sm font-semibold mb-3 text-blue-300">
+                <Typography variant="h4" className="text-sm font-semibold mb-3 text-brand-600 dark:text-brand-300">
                   {t('menu.theoretical_foundations.consistency_models.implementations_label')}
                 </Typography>
                 <div className="flex flex-wrap gap-2">
                   {(t('menu.theoretical_foundations.consistency_models.weak_consistency.implementations', { returnObjects: true }) as string[]).map((impl, index) => (
-                    <span key={index} className="bg-blue-700/20 text-blue-300 px-3 py-1 rounded-full text-xs border border-blue-600">
+                    <span key={index} className="bg-blue-700/20 text-brand-600 dark:text-brand-300 px-3 py-1 rounded-full text-xs border border-blue-600">
                       {impl}
                     </span>
                   ))}
@@ -271,7 +271,7 @@ const ConsistencyModels: React.FC = () => {
 
               {/* Considerations */}
               <div className="mt-6">
-                <Typography variant="h4" className="text-sm font-semibold mb-3 text-blue-300">
+                <Typography variant="h4" className="text-sm font-semibold mb-3 text-brand-600 dark:text-brand-300">
                   {t('menu.theoretical_foundations.consistency_models.considerations_label')}
                 </Typography>
                 <ul className="list-disc list-inside space-y-1">
@@ -281,7 +281,7 @@ const ConsistencyModels: React.FC = () => {
                 </ul>
               </div>
 
-              <div className="mt-4 bg-zinc-900/50 p-4 rounded border border-zinc-600">
+              <div className="mt-4 bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                 <Typography variant="p" className="text-sm text-yellow-300">
                   {t('menu.theoretical_foundations.consistency_models.weak_consistency.tradeoffs')}
                 </Typography>
@@ -318,7 +318,7 @@ const ConsistencyModels: React.FC = () => {
                   </Typography>
                 </div>
                 <div className="text-center">
-                  <Typography variant="h3" className="mb-4 text-blue-400">
+                  <Typography variant="h3" className="mb-4 text-brand-600 dark:text-brand-400">
                     {t('menu.theoretical_foundations.consistency_models.weak_consistency.title')}
                   </Typography>
                   <Typography variant="p" className="text-sm">

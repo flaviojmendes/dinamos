@@ -27,7 +27,7 @@ export default function TokensAndJWT() {
           <h1 className="text-4xl font-bold text-white mb-4">
             {t(`${base}.title`)}
           </h1>
-          <p className="text-lg text-zinc-400 mb-6">
+          <p className="text-lg text-slate-500 dark:text-slate-400 mb-6">
             {t(`${base}.subtitle`)}
           </p>
           <Link
@@ -44,12 +44,12 @@ export default function TokensAndJWT() {
         {/* Info Banner */}
         <div className="bg-blue-500/20 border border-blue-500 rounded-lg p-4 mb-8">
           <div className="flex gap-3">
-            <div className="text-blue-400 mt-1">
+            <div className="text-brand-600 dark:text-brand-400 mt-1">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <p className="text-blue-300">
+            <p className="text-brand-600 dark:text-brand-300">
               {t(`${base}.info_banner`)}
             </p>
           </div>
@@ -58,14 +58,14 @@ export default function TokensAndJWT() {
         <div className="prose prose-invert prose-lg max-w-none">
           {/* Introduction */}
           <section>
-            <h2 className="text-3xl font-bold text-white border-b border-zinc-800 pb-4 mb-6">
+            <h2 className="text-3xl font-bold text-white border-b border-slate-200 dark:border-slate-800 pb-4 mb-6">
               {t(`${base}.fundamentals_title`)}
             </h2>
-            <h3 className="text-2xl font-semibold text-blue-400 mb-4">{t(`${base}.what_are_tokens_title`)}</h3>
+            <h3 className="text-2xl font-semibold text-brand-600 dark:text-brand-400 mb-4">{t(`${base}.what_are_tokens_title`)}</h3>
             <p>
               {t(`${base}.tokens_description`)}
             </p>
-            <ul className="list-disc pl-6 text-zinc-400 space-y-2 mt-4">
+            <ul className="list-disc pl-6 text-slate-500 dark:text-slate-400 space-y-2 mt-4">
               {tokenBenefits.map((benefit, index) => (
                 <li key={index}>{benefit}</li>
               ))}
@@ -74,37 +74,37 @@ export default function TokensAndJWT() {
 
           {/* JWT Section */}
           <section className="mt-12">
-            <h2 className="text-3xl font-bold text-white border-b border-zinc-800 pb-4 mb-6">
+            <h2 className="text-3xl font-bold text-white border-b border-slate-200 dark:border-slate-800 pb-4 mb-6">
               {t(`${base}.jwt_section_title`)}
             </h2>
-            <h3 className="text-2xl font-semibold text-blue-400 mb-4">{t(`${base}.jwt_standard_title`)}</h3>
+            <h3 className="text-2xl font-semibold text-brand-600 dark:text-brand-400 mb-4">{t(`${base}.jwt_standard_title`)}</h3>
             <p>
               {t(`${base}.jwt_description`)}
             </p>
-            <ul className="list-disc pl-6 text-zinc-400 space-y-2 mt-4 mb-8">
+            <ul className="list-disc pl-6 text-slate-500 dark:text-slate-400 space-y-2 mt-4 mb-8">
               {jwtFeatures.map((feature, index) => (
                 <li key={index}>{feature}</li>
               ))}
             </ul>
 
-            <div className="bg-zinc-900 rounded-lg p-6 my-8">
-              <h3 className="text-2xl font-bold text-blue-400 mb-6">{t(`${base}.jwt_anatomy_title`)}</h3>
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-6 my-8">
+              <h3 className="text-2xl font-bold text-brand-600 dark:text-brand-400 mb-6">{t(`${base}.jwt_anatomy_title`)}</h3>
               <div className="space-y-6">
-                <div className="bg-zinc-800 p-6 rounded">
-                  <h4 className="text-xl font-semibold text-blue-300 font-mono mb-4">1. {t(`${base}.header_title`)}</h4>
-                  <p className="text-zinc-400 mb-4">
+                <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded">
+                  <h4 className="text-xl font-semibold text-brand-600 dark:text-brand-300 font-mono mb-4">1. {t(`${base}.header_title`)}</h4>
+                  <p className="text-slate-500 dark:text-slate-400 mb-4">
                     {t(`${base}.header_description`)}
                   </p>
                   <div className="bg-black/30 p-4 rounded">
-                    <code className="text-sm text-blue-200">
+                    <code className="text-sm text-brand-600 dark:text-brand-200">
                       {"{ \"alg\": \"HS256\", \"typ\": \"JWT\" }"}
                     </code>
                   </div>
                 </div>
 
-                <div className="bg-zinc-800 p-6 rounded">
+                <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded">
                   <h4 className="text-xl font-semibold text-green-300 font-mono mb-4">2. {t(`${base}.payload_title`)}</h4>
-                  <p className="text-zinc-400 mb-4">
+                  <p className="text-slate-500 dark:text-slate-400 mb-4">
                     {t(`${base}.payload_description`)}
                   </p>
                   <div className="bg-black/30 p-4 rounded">
@@ -119,9 +119,9 @@ export default function TokensAndJWT() {
                   </div>
                 </div>
 
-                <div className="bg-zinc-800 p-6 rounded">
+                <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded">
                   <h4 className="text-xl font-semibold text-purple-300 font-mono mb-4">3. {t(`${base}.signature_title`)}</h4>
-                  <p className="text-zinc-400 mb-4">
+                  <p className="text-slate-500 dark:text-slate-400 mb-4">
                     {t(`${base}.signature_description`)}
                   </p>
                   <div className="bg-black/30 p-4 rounded">
@@ -140,7 +140,7 @@ export default function TokensAndJWT() {
 
           {/* Claims Section */}
           <section className="mt-12">
-            <h2 className="text-3xl font-bold text-white border-b border-zinc-800 pb-4 mb-6">
+            <h2 className="text-3xl font-bold text-white border-b border-slate-200 dark:border-slate-800 pb-4 mb-6">
               {t(`${base}.claims_title`)}
             </h2>
             <p className="mb-6">
@@ -148,39 +148,39 @@ export default function TokensAndJWT() {
             </p>
             
             <div className="grid gap-6 my-8">
-              <div className="bg-zinc-900 p-6 rounded-lg">
-                <h3 className="text-2xl font-semibold text-blue-300 mb-4">{t(`${base}.registered_claims_title`)}</h3>
-                <p className="text-zinc-400 mb-4">
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-lg">
+                <h3 className="text-2xl font-semibold text-brand-600 dark:text-brand-300 mb-4">{t(`${base}.registered_claims_title`)}</h3>
+                <p className="text-slate-500 dark:text-slate-400 mb-4">
                   {t(`${base}.registered_claims_description`)}
                 </p>
-                <ul className="grid grid-cols-2 gap-4 text-zinc-400">
+                <ul className="grid grid-cols-2 gap-4 text-slate-500 dark:text-slate-400">
                   {registeredClaims.map((claim, index) => (
-                    <li key={index} className="bg-zinc-800 p-4 rounded">
-                      <code className="text-blue-300">{claim.code}</code> ({claim.name})
+                    <li key={index} className="bg-slate-100 dark:bg-slate-800 p-4 rounded">
+                      <code className="text-brand-600 dark:text-brand-300">{claim.code}</code> ({claim.name})
                       <p className="mt-1 text-sm">{claim.description}</p>
                     </li>
                   ))}
                 </ul>
               </div>
               
-              <div className="bg-zinc-900 p-6 rounded-lg">
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-lg">
                 <h3 className="text-2xl font-semibold text-green-300 mb-4">{t(`${base}.public_claims_title`)}</h3>
-                <p className="text-zinc-400">
+                <p className="text-slate-500 dark:text-slate-400">
                   {t(`${base}.public_claims_description`)}
                 </p>
-                <ul className="mt-4 space-y-2 text-zinc-400 list-disc pl-6">
+                <ul className="mt-4 space-y-2 text-slate-500 dark:text-slate-400 list-disc pl-6">
                   {publicClaimsItems.map((item, index) => (
                     <li key={index}>{item}</li>
                   ))}
                 </ul>
               </div>
               
-              <div className="bg-zinc-900 p-6 rounded-lg">
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-lg">
                 <h3 className="text-2xl font-semibold text-purple-300 mb-4">{t(`${base}.private_claims_title`)}</h3>
-                <p className="text-zinc-400">
+                <p className="text-slate-500 dark:text-slate-400">
                   {t(`${base}.private_claims_description`)}
                 </p>
-                <ul className="mt-4 space-y-2 text-zinc-400 list-disc pl-6">
+                <ul className="mt-4 space-y-2 text-slate-500 dark:text-slate-400 list-disc pl-6">
                   {privateClaimsItems.map((item, index) => (
                     <li key={index}>{item}</li>
                   ))}
@@ -191,53 +191,53 @@ export default function TokensAndJWT() {
 
           {/* Best Practices */}
           <section className="mt-12">
-            <h2 className="text-3xl font-bold text-white border-b border-zinc-800 pb-4 mb-6">
+            <h2 className="text-3xl font-bold text-white border-b border-slate-200 dark:border-slate-800 pb-4 mb-6">
               {t(`${base}.best_practices_title`)}
             </h2>
             
             <div className="space-y-6 my-8">
-              <div className="bg-zinc-900 p-6 rounded-lg border-l-4 border-green-500">
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-lg border-l-4 border-green-500">
                 <h3 className="text-2xl font-semibold text-green-300 mb-4">{t(`${base}.payload_optimization_title`)}</h3>
-                <p className="text-zinc-400">
+                <p className="text-slate-500 dark:text-slate-400">
                   {t(`${base}.payload_optimization_description`)}
                 </p>
-                <ul className="mt-4 space-y-2 text-zinc-400 list-disc pl-6">
+                <ul className="mt-4 space-y-2 text-slate-500 dark:text-slate-400 list-disc pl-6">
                   {payloadOptimizationItems.map((item, index) => (
                     <li key={index}>{item}</li>
                   ))}
                 </ul>
               </div>
               
-              <div className="bg-zinc-900 p-6 rounded-lg border-l-4 border-blue-500">
-                <h3 className="text-2xl font-semibold text-blue-300 mb-4">{t(`${base}.transmission_security_title`)}</h3>
-                <p className="text-zinc-400">
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-lg border-l-4 border-blue-500">
+                <h3 className="text-2xl font-semibold text-brand-600 dark:text-brand-300 mb-4">{t(`${base}.transmission_security_title`)}</h3>
+                <p className="text-slate-500 dark:text-slate-400">
                   {t(`${base}.transmission_security_description`)}
                 </p>
-                <ul className="mt-4 space-y-2 text-zinc-400 list-disc pl-6">
+                <ul className="mt-4 space-y-2 text-slate-500 dark:text-slate-400 list-disc pl-6">
                   {transmissionSecurityItems.map((item, index) => (
                     <li key={index}>{item}</li>
                   ))}
                 </ul>
               </div>
               
-              <div className="bg-zinc-900 p-6 rounded-lg border-l-4 border-yellow-500">
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-lg border-l-4 border-yellow-500">
                 <h3 className="text-2xl font-semibold text-yellow-300 mb-4">{t(`${base}.lifecycle_management_title`)}</h3>
-                <p className="text-zinc-400">
+                <p className="text-slate-500 dark:text-slate-400">
                   {t(`${base}.lifecycle_management_description`)}
                 </p>
-                <ul className="mt-4 space-y-2 text-zinc-400 list-disc pl-6">
+                <ul className="mt-4 space-y-2 text-slate-500 dark:text-slate-400 list-disc pl-6">
                   {lifecycleManagementItems.map((item, index) => (
                     <li key={index}>{item}</li>
                   ))}
                 </ul>
               </div>
               
-              <div className="bg-zinc-900 p-6 rounded-lg border-l-4 border-red-500">
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-lg border-l-4 border-red-500">
                 <h3 className="text-2xl font-semibold text-red-300 mb-4">{t(`${base}.data_protection_title`)}</h3>
-                <p className="text-zinc-400">
+                <p className="text-slate-500 dark:text-slate-400">
                   {t(`${base}.data_protection_description`)}
                 </p>
-                <ul className="mt-4 space-y-2 text-zinc-400 list-disc pl-6">
+                <ul className="mt-4 space-y-2 text-slate-500 dark:text-slate-400 list-disc pl-6">
                   {dataProtectionItems.map((item, index) => (
                     <li key={index}>{item}</li>
                   ))}
@@ -248,19 +248,19 @@ export default function TokensAndJWT() {
 
           {/* Implementation Flow */}
           <section className="mt-12">
-            <h2 className="text-3xl font-bold text-white border-b border-zinc-800 pb-4 mb-6">
+            <h2 className="text-3xl font-bold text-white border-b border-slate-200 dark:border-slate-800 pb-4 mb-6">
               {t(`${base}.auth_flow_title`)}
             </h2>
             
-            <div className="bg-zinc-900 rounded-lg p-8 my-8">
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-8 my-8">
               <ol className="space-y-8">
                 <li className="flex items-start gap-6">
-                  <div className="flex-none w-12 h-12 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center text-xl font-bold">
+                  <div className="flex-none w-12 h-12 bg-blue-500/20 text-brand-600 dark:text-brand-400 rounded-full flex items-center justify-center text-xl font-bold">
                     1
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold text-blue-300 mb-2">{t(`${base}.initial_auth_title`)}</h3>
-                    <p className="text-zinc-400">
+                    <h3 className="text-xl font-semibold text-brand-600 dark:text-brand-300 mb-2">{t(`${base}.initial_auth_title`)}</h3>
+                    <p className="text-slate-500 dark:text-slate-400">
                       {t(`${base}.initial_auth_description`)}
                     </p>
                   </div>
@@ -272,7 +272,7 @@ export default function TokensAndJWT() {
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold text-green-300 mb-2">{t(`${base}.jwt_generation_title`)}</h3>
-                    <p className="text-zinc-400">
+                    <p className="text-slate-500 dark:text-slate-400">
                       {t(`${base}.jwt_generation_description`)}
                     </p>
                   </div>
@@ -284,7 +284,7 @@ export default function TokensAndJWT() {
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold text-purple-300 mb-2">{t(`${base}.secure_storage_title`)}</h3>
-                    <p className="text-zinc-400">
+                    <p className="text-slate-500 dark:text-slate-400">
                       {t(`${base}.secure_storage_description`)}
                     </p>
                   </div>
@@ -296,7 +296,7 @@ export default function TokensAndJWT() {
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold text-yellow-300 mb-2">{t(`${base}.authenticated_requests_title`)}</h3>
-                    <p className="text-zinc-400">
+                    <p className="text-slate-500 dark:text-slate-400">
                       {t(`${base}.authenticated_requests_description`)}
                     </p>
                   </div>
@@ -308,7 +308,7 @@ export default function TokensAndJWT() {
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold text-red-300 mb-2">{t(`${base}.validation_authorization_title`)}</h3>
-                    <p className="text-zinc-400">
+                    <p className="text-slate-500 dark:text-slate-400">
                       {t(`${base}.validation_authorization_description`)}
                     </p>
                   </div>
@@ -319,7 +319,7 @@ export default function TokensAndJWT() {
 
           {/* Security Considerations */}
           <section className="mt-12">
-            <h2 className="text-3xl font-bold text-white border-b border-zinc-800 pb-4 mb-6">
+            <h2 className="text-3xl font-bold text-white border-b border-slate-200 dark:border-slate-800 pb-4 mb-6">
               {t(`${base}.security_considerations_title`)}
             </h2>
             
@@ -335,10 +335,10 @@ export default function TokensAndJWT() {
                   </div>
                   <div>
                     <h4 className="text-xl font-semibold text-red-300 mb-2">{t(`${base}.xss_attacks_title`)}</h4>
-                    <p className="text-zinc-400">
+                    <p className="text-slate-500 dark:text-slate-400">
                       {t(`${base}.xss_attacks_description`)}
                     </p>
-                    <ul className="mt-2 space-y-1 text-zinc-400 list-disc pl-6">
+                    <ul className="mt-2 space-y-1 text-slate-500 dark:text-slate-400 list-disc pl-6">
                       {xssProtectionItems.map((item, index) => (
                         <li key={index}>{item}</li>
                       ))}
@@ -354,10 +354,10 @@ export default function TokensAndJWT() {
                   </div>
                   <div>
                     <h4 className="text-xl font-semibold text-red-300 mb-2">{t(`${base}.csrf_title`)}</h4>
-                    <p className="text-zinc-400">
+                    <p className="text-slate-500 dark:text-slate-400">
                       {t(`${base}.csrf_description`)}
                     </p>
-                    <ul className="mt-2 space-y-1 text-zinc-400 list-disc pl-6">
+                    <ul className="mt-2 space-y-1 text-slate-500 dark:text-slate-400 list-disc pl-6">
                       {csrfProtectionItems.map((item, index) => (
                         <li key={index}>{item}</li>
                       ))}
@@ -373,10 +373,10 @@ export default function TokensAndJWT() {
                   </div>
                   <div>
                     <h4 className="text-xl font-semibold text-red-300 mb-2">{t(`${base}.token_theft_title`)}</h4>
-                    <p className="text-zinc-400">
+                    <p className="text-slate-500 dark:text-slate-400">
                       {t(`${base}.token_theft_description`)}
                     </p>
-                    <ul className="mt-2 space-y-1 text-zinc-400 list-disc pl-6">
+                    <ul className="mt-2 space-y-1 text-slate-500 dark:text-slate-400 list-disc pl-6">
                       {tokenTheftProtectionItems.map((item, index) => (
                         <li key={index}>{item}</li>
                       ))}

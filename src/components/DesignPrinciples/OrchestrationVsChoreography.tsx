@@ -7,24 +7,24 @@ export default function OrchestrationVsChoreography() {
   return (
     <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
       <div className="prose prose-invert prose-lg max-w-none mb-8">
-        <h1 className="text-4xl font-bold mb-4 text-blue-400">
+        <h1 className="text-4xl font-bold mb-4 text-brand-600 dark:text-brand-400">
           {t('design_principles.orchestration_vs_choreography.title')}
         </h1>
-        <p className="text-xl text-zinc-300">
+        <p className="text-xl text-slate-600 dark:text-slate-300">
           {t('design_principles.orchestration_vs_choreography.intro')}
         </p>
       </div>
 
       {/* Overview */}
-      <div className="bg-zinc-900 p-6 rounded-lg mb-8">
-        <h2 className="text-2xl font-bold text-zinc-200 mb-4">{t('design_principles.orchestration_vs_choreography.overview_title')}</h2>
+      <div className="bg-white dark:bg-slate-900 p-6 rounded-lg mb-8">
+        <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200 mb-4">{t('design_principles.orchestration_vs_choreography.overview_title')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-black/30 p-4 rounded-lg">
-            <h3 className="text-lg font-semibold text-blue-400 mb-2">{t('design_principles.orchestration_vs_choreography.orchestration_title')}</h3>
-            <p className="text-zinc-300 mb-4">
+            <h3 className="text-lg font-semibold text-brand-600 dark:text-brand-400 mb-2">{t('design_principles.orchestration_vs_choreography.orchestration_title')}</h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-4">
               {t('design_principles.orchestration_vs_choreography.orchestration_p')}
             </p>
-            <div className="mt-4 p-4 bg-zinc-800 rounded-lg">
+            <div className="mt-4 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg">
               <svg viewBox="0 0 400 200" className="w-full h-48">
                 {/* Orchestrator */}
                 <rect x="160" y="20" width="80" height="40" rx="5" fill="#3B82F6" />
@@ -55,10 +55,10 @@ export default function OrchestrationVsChoreography() {
           </div>
           <div className="bg-black/30 p-4 rounded-lg">
             <h3 className="text-lg font-semibold text-purple-400 mb-2">{t('design_principles.orchestration_vs_choreography.choreography_title')}</h3>
-            <p className="text-zinc-300 mb-4">
+            <p className="text-slate-600 dark:text-slate-300 mb-4">
               {t('design_principles.orchestration_vs_choreography.choreography_p')}
             </p>
-            <div className="mt-4 p-4 bg-zinc-800 rounded-lg">
+            <div className="mt-4 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg">
               <svg viewBox="0 0 400 200" className="w-full h-48">
                 {/* Services */}
                 <rect x="40" y="80" width="80" height="40" rx="5" fill="#10B981" />
@@ -91,18 +91,18 @@ export default function OrchestrationVsChoreography() {
       </div>
 
       {/* Detailed Comparison */}
-      <div className="bg-zinc-900 p-6 rounded-lg mb-8">
-        <h2 className="text-2xl font-bold text-zinc-200 mb-4">{t('design_principles.orchestration_vs_choreography.comparison_title')}</h2>
+      <div className="bg-white dark:bg-slate-900 p-6 rounded-lg mb-8">
+        <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200 mb-4">{t('design_principles.orchestration_vs_choreography.comparison_title')}</h2>
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-black/30 p-4 rounded-lg">
-              <h3 className="text-lg font-semibold text-blue-400 mb-2">{t('design_principles.orchestration_vs_choreography.orchestration_title')}</h3>
-              <ul className="list-disc list-inside text-zinc-300 space-y-2 mb-4">
+              <h3 className="text-lg font-semibold text-brand-600 dark:text-brand-400 mb-2">{t('design_principles.orchestration_vs_choreography.orchestration_title')}</h3>
+              <ul className="list-disc list-inside text-slate-600 dark:text-slate-300 space-y-2 mb-4">
                 {(t('design_principles.orchestration_vs_choreography.points_orchestration', { returnObjects: true }) as string[]).map((item, idx) => (
                   <li key={idx}>{item}</li>
                 ))}
               </ul>
-              <div className="mt-4 p-4 bg-zinc-800 rounded-lg">
+              <div className="mt-4 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg">
                 <svg viewBox="0 0 400 80" className="w-full h-20">
                   <rect x="20" y="20" width="80" height="40" rx="5" fill="#3B82F6" />
                   <text x="60" y="45" textAnchor="middle" fill="white" fontSize="14">{t('design_principles.orchestration_vs_choreography.labels.start')}</text>
@@ -122,12 +122,12 @@ export default function OrchestrationVsChoreography() {
             </div>
             <div className="bg-black/30 p-4 rounded-lg">
               <h3 className="text-lg font-semibold text-purple-400 mb-2">{t('design_principles.orchestration_vs_choreography.choreography_title')}</h3>
-              <ul className="list-disc list-inside text-zinc-300 space-y-2 mb-4">
+              <ul className="list-disc list-inside text-slate-600 dark:text-slate-300 space-y-2 mb-4">
                 {(t('design_principles.orchestration_vs_choreography.points_choreography', { returnObjects: true }) as string[]).map((item, idx) => (
                   <li key={idx}>{item}</li>
                 ))}
               </ul>
-              <div className="mt-4 p-4 bg-zinc-800 rounded-lg">
+              <div className="mt-4 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg">
                 <svg viewBox="0 0 400 80" className="w-full h-20">
                   <circle cx="60" cy="40" r="25" fill="#A855F7" />
                   <text x="60" y="45" textAnchor="middle" fill="white" fontSize="14">1</text>
@@ -150,16 +150,16 @@ export default function OrchestrationVsChoreography() {
       </div>
 
       {/* Usage Examples */}
-      <div className="bg-zinc-900 p-6 rounded-lg mb-8">
-        <h2 className="text-2xl font-bold text-zinc-200 mb-4">{t('design_principles.orchestration_vs_choreography.examples_title')}</h2>
+      <div className="bg-white dark:bg-slate-900 p-6 rounded-lg mb-8">
+        <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200 mb-4">{t('design_principles.orchestration_vs_choreography.examples_title')}</h2>
         <div className="space-y-6">
           <div className="bg-black/30 p-4 rounded-lg">
-            <h3 className="text-lg font-semibold text-blue-400 mb-2">{t('design_principles.orchestration_vs_choreography.orchestration_title')}</h3>
-            <div className="text-zinc-300 space-y-4">
+            <h3 className="text-lg font-semibold text-brand-600 dark:text-brand-400 mb-2">{t('design_principles.orchestration_vs_choreography.orchestration_title')}</h3>
+            <div className="text-slate-600 dark:text-slate-300 space-y-4">
               <p>
                 <strong>{t('design_principles.orchestration_vs_choreography.examples.orchestration_order_processing')}:</strong> 
               </p>
-              <div className="mt-4 p-4 bg-zinc-800 rounded-lg">
+              <div className="mt-4 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg">
                 <svg viewBox="0 0 500 160" className="w-full h-40">
                   <rect x="200" y="20" width="100" height="40" rx="5" fill="#3B82F6" />
                   <text x="250" y="45" textAnchor="middle" fill="white" fontSize="14">{t('design_principles.orchestration_vs_choreography.labels.orchestrator')}</text>
@@ -181,11 +181,11 @@ export default function OrchestrationVsChoreography() {
           </div>
           <div className="bg-black/30 p-4 rounded-lg">
             <h3 className="text-lg font-semibold text-purple-400 mb-2">{t('design_principles.orchestration_vs_choreography.choreography_title')}</h3>
-            <div className="text-zinc-300 space-y-4">
+            <div className="text-slate-600 dark:text-slate-300 space-y-4">
               <p>
                 <strong>{t('design_principles.orchestration_vs_choreography.examples.choreography_notification_system')}:</strong> 
               </p>
-              <div className="mt-4 p-4 bg-zinc-800 rounded-lg">
+              <div className="mt-4 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg">
                 <svg viewBox="0 0 500 160" className="w-full h-40">
                   <rect x="200" y="20" width="100" height="40" rx="5" fill="#A855F7" />
                   <text x="250" y="45" textAnchor="middle" fill="white" fontSize="14">{t('design_principles.orchestration_vs_choreography.labels.order_created')}</text>
@@ -209,12 +209,12 @@ export default function OrchestrationVsChoreography() {
       </div>
 
       {/* When to Use */}
-      <div className="bg-zinc-900 p-6 rounded-lg">
-        <h2 className="text-2xl font-bold text-zinc-200 mb-4">{t('design_principles.orchestration_vs_choreography.when_to_use_title')}</h2>
+      <div className="bg-white dark:bg-slate-900 p-6 rounded-lg">
+        <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200 mb-4">{t('design_principles.orchestration_vs_choreography.when_to_use_title')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-black/30 p-4 rounded-lg">
-            <h3 className="text-lg font-semibold text-blue-400 mb-2">{t('design_principles.orchestration_vs_choreography.use_orchestration_when')}</h3>
-            <ul className="list-disc list-inside text-zinc-300 space-y-2">
+            <h3 className="text-lg font-semibold text-brand-600 dark:text-brand-400 mb-2">{t('design_principles.orchestration_vs_choreography.use_orchestration_when')}</h3>
+            <ul className="list-disc list-inside text-slate-600 dark:text-slate-300 space-y-2">
               {(t('design_principles.orchestration_vs_choreography.use_orchestration_when_list', { returnObjects: true }) as string[]).map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
@@ -222,7 +222,7 @@ export default function OrchestrationVsChoreography() {
           </div>
           <div className="bg-black/30 p-4 rounded-lg">
             <h3 className="text-lg font-semibold text-purple-400 mb-2">{t('design_principles.orchestration_vs_choreography.use_choreography_when')}</h3>
-            <ul className="list-disc list-inside text-zinc-300 space-y-2">
+            <ul className="list-disc list-inside text-slate-600 dark:text-slate-300 space-y-2">
               {(t('design_principles.orchestration_vs_choreography.use_choreography_when_list', { returnObjects: true }) as string[]).map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}

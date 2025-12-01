@@ -14,83 +14,85 @@ export default function LandingPage() {
   const [showCouponModal, setShowCouponModal] = useState(false);
   
   // Detect user currency based on location/language  
-  const userCurrency = detectUserCurrency();
-  const pricing = calculatePricing(userCurrency);
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-black text-white">
-      {/* Header - Only show for logged-out users */}
-      {!user && (
-        <header className="fixed top-0 left-0 right-0 z-50 bg-zinc-900/95 backdrop-blur-xl border-b border-zinc-800/50">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-            <div className="flex items-center justify-between">
-              <Link to="/" className="flex items-center">
-                <img src="/logo.png" alt="Logo" className="h-10" />
-              </Link>
-              <LanguageSwitcher />
+    const userCurrency = detectUserCurrency();
+    const pricing = calculatePricing(userCurrency);
+    return (
+      <div className="min-h-screen bg-canvas-paper dark:bg-canvas-dark text-slate-900 dark:text-slate-100">
+        {/* Header - Only show for logged-out users */}
+        {!user && (
+          <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+              <div className="flex items-center justify-between">
+                <Link to="/" className="flex items-center">
+                  <img src="/logo.png" alt="Logo" className="h-10" />
+                </Link>
+                <div className="flex items-center gap-2">
+                    <LanguageSwitcher />
+                </div>
+              </div>
             </div>
+          </header>
+        )}
+  
+        {/* Hero Section */}
+        <div className={`relative overflow-hidden ${!user ? 'pt-20' : ''}`}>
+          <div className="absolute inset-0 bg-gradient-to-br from-brand-500/10 to-brand-700/10" />
+          <div className="absolute inset-0 bg-grid dark:bg-grid-dark [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
+          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="text-center"
+            >
+              <Typography 
+                variant="h1" 
+                className="mb-6 bg-gradient-to-r from-brand-500 to-brand-700 bg-clip-text text-transparent"
+              >
+                {t('landing.hero_title')}
+              </Typography>
+              <Typography 
+                variant="p" 
+                className="text-xl md:text-2xl text-slate-600 dark:text-slate-400 mb-8 max-w-3xl mx-auto"
+              >
+                {t('landing.hero_subtitle')}
+              </Typography>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <Link
+                  to="/intro"
+                  onClick={() => trackEvent('User', 'Clicked on Start Now Button')}
+                  className="inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
+                >
+                  <span>{t('common.start_now')}</span>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </Link>
+                <Link
+                  to="/intro"
+                  className="inline-flex items-center gap-2 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-900 dark:text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
+                >
+                  <span>{t('common.view_content')}</span>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                </Link>
+              </div>
+            </motion.div>
           </div>
-        </header>
-      )}
-
-      {/* Hero Section */}
-      <div className={`relative overflow-hidden ${!user ? 'pt-20' : ''}`}>
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10" />
-        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-center"
-          >
-            <Typography 
-              variant="h1" 
-              className="mb-6 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent"
-            >
-              {t('landing.hero_title')}
-            </Typography>
-            <Typography 
-              variant="p" 
-              className="text-xl md:text-2xl text-zinc-400 mb-8 max-w-3xl mx-auto"
-            >
-              {t('landing.hero_subtitle')}
-            </Typography>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link
-                to="/intro"
-                onClick={() => trackEvent('User', 'Clicked on Start Now Button')}
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
-              >
-                <span>{t('common.start_now')}</span>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </Link>
-              <Link
-                to="/intro"
-                className="inline-flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
-              >
-                <span>{t('common.view_content')}</span>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-              </Link>
-            </div>
-          </motion.div>
         </div>
-      </div>
 
       {/* Free Editor Promo Section */}
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 mb-8">
-        <div className="bg-green-700/10 border border-green-500 rounded-xl p-6 flex flex-col items-center text-center shadow-lg">
+        <div className="bg-green-50 dark:bg-green-900/10 border border-green-500 rounded-xl p-6 flex flex-col items-center text-center shadow-lg">
           <div className="flex items-center gap-2 mb-2">
-            <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2a4 4 0 014-4h3m4 0a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span className="text-green-400 font-bold text-lg">{t('common.free_editor')}</span>
+            <span className="text-green-700 dark:text-green-400 font-bold text-lg">{t('common.free_editor')}</span>
           </div>
-          <div className="text-zinc-200 text-lg mb-3">
+          <div className="text-slate-700 dark:text-slate-200 text-lg mb-3">
             {t('common.access_free_editor')}
           </div>
           <Link
@@ -112,13 +114,13 @@ export default function LandingPage() {
         >
           <Typography 
             variant="h2" 
-            className="mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+            className="mb-6 bg-gradient-to-r from-brand-400 to-brand-600 bg-clip-text text-transparent"
           >
             {t('landing.features_title')}
           </Typography>
           <Typography 
             variant="p" 
-            className="text-xl text-zinc-400"
+            className="text-xl text-slate-600 dark:text-slate-400"
           >
             {t('landing.features_subtitle')}
           </Typography>
@@ -130,37 +132,37 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="group bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30 hover:border-blue-500/50 transition-colors"
+            className="group bg-white dark:bg-slate-800/50 rounded-xl p-6 border border-slate-200 dark:border-slate-700 hover:border-brand-500/50 transition-colors shadow-sm"
           >
-            <div className="bg-blue-500/10 p-3 rounded-lg w-12 h-12 mb-4 group-hover:bg-blue-500/20 transition-colors">
-              <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-brand-100 dark:bg-brand-500/10 p-3 rounded-lg w-12 h-12 mb-4 group-hover:bg-brand-200 dark:group-hover:bg-brand-500/20 transition-colors">
+              <svg className="w-6 h-6 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
               </svg>
             </div>
-            <Typography variant="h3" className="mb-3 text-blue-400">
+            <Typography variant="h3" className="mb-3 text-brand-600 dark:text-brand-400">
               {t('landing.fundamentals_title')}
             </Typography>
-            <ul className="space-y-2 text-zinc-300">
+            <ul className="space-y-2 text-slate-600 dark:text-slate-300">
               <li className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 {t('landing.fundamentals_item1')}
               </li>
               <li className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 {t('landing.fundamentals_item2')}
               </li>
               <li className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 {t('landing.fundamentals_item3')}
               </li>
               <li className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 {t('landing.fundamentals_item4')}
@@ -173,7 +175,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="group bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30 hover:border-purple-500/50 transition-colors"
+            className="group bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-slate-300 dark:border-slate-700/30 hover:border-purple-500/50 transition-colors"
           >
             <div className="bg-purple-500/10 p-3 rounded-lg w-12 h-12 mb-4 group-hover:bg-purple-500/20 transition-colors">
               <svg className="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -183,7 +185,7 @@ export default function LandingPage() {
             <Typography variant="h3" className="mb-3 text-purple-400">
               {t('landing.simulators_title')}
             </Typography>
-            <ul className="space-y-2 text-zinc-300">
+            <ul className="space-y-2 text-slate-600 dark:text-slate-300">
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -216,7 +218,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="group bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30 hover:border-green-500/50 transition-colors"
+            className="group bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-slate-300 dark:border-slate-700/30 hover:border-green-500/50 transition-colors"
           >
             <div className="bg-green-500/10 p-3 rounded-lg w-12 h-12 mb-4 group-hover:bg-green-500/20 transition-colors">
               <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -226,7 +228,7 @@ export default function LandingPage() {
             <Typography variant="h3" className="mb-3 text-green-400">
               {t('landing.real_cases_title')}
             </Typography>
-            <ul className="space-y-2 text-zinc-300">
+            <ul className="space-y-2 text-slate-600 dark:text-slate-300">
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -272,7 +274,7 @@ export default function LandingPage() {
           </Typography>
           <Typography 
             variant="p" 
-            className="text-xl text-zinc-400"
+            className="text-xl text-slate-500 dark:text-slate-400"
           >
             {t('landing.journey_subtitle')}
           </Typography>
@@ -292,18 +294,18 @@ export default function LandingPage() {
               className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 items-center"
             >
               <div className="lg:text-right order-2 lg:order-1">
-                <h3 className="text-2xl font-bold text-blue-400 mb-4">{t('landing.journey_fundamentals_title')}</h3>
+                <h3 className="text-2xl font-bold text-brand-600 dark:text-brand-400 mb-4">{t('landing.journey_fundamentals_title')}</h3>
                 <ul className="space-y-3">
                   <li className="flex items-center gap-2 lg:flex-row-reverse">
-                    <span className="text-zinc-300">{t('landing.journey_fundamentals_item1')}</span>
+                    <span className="text-slate-600 dark:text-slate-300">{t('landing.journey_fundamentals_item1')}</span>
                     <div className="h-2 w-2 rounded-full bg-blue-500" />
                   </li>
                   <li className="flex items-center gap-2 lg:flex-row-reverse">
-                    <span className="text-zinc-300">{t('landing.journey_fundamentals_item2')}</span>
+                    <span className="text-slate-600 dark:text-slate-300">{t('landing.journey_fundamentals_item2')}</span>
                     <div className="h-2 w-2 rounded-full bg-blue-500" />
                   </li>
                   <li className="flex items-center gap-2 lg:flex-row-reverse">
-                    <span className="text-zinc-300">{t('landing.journey_fundamentals_item3')}</span>
+                    <span className="text-slate-600 dark:text-slate-300">{t('landing.journey_fundamentals_item3')}</span>
                     <div className="h-2 w-2 rounded-full bg-blue-500" />
                   </li>
                 </ul>
@@ -316,7 +318,7 @@ export default function LandingPage() {
                     <svg className="w-12 h-12 text-blue-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
-                    <p className="text-zinc-300">{t('landing.journey_fundamentals_description')}</p>
+                    <p className="text-slate-600 dark:text-slate-300">{t('landing.journey_fundamentals_description')}</p>
                   </div>
                 </div>
               </div>
@@ -337,7 +339,7 @@ export default function LandingPage() {
                     <svg className="w-12 h-12 text-purple-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
-                    <p className="text-zinc-300">{t('landing.journey_design_principles_description')}</p>
+                    <p className="text-slate-600 dark:text-slate-300">{t('landing.journey_design_principles_description')}</p>
                   </div>
                 </div>
               </div>
@@ -346,15 +348,15 @@ export default function LandingPage() {
                 <ul className="space-y-3">
                   <li className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-purple-500" />
-                    <span className="text-zinc-300">{t('landing.journey_design_principles_item1')}</span>
+                    <span className="text-slate-600 dark:text-slate-300">{t('landing.journey_design_principles_item1')}</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-purple-500" />
-                    <span className="text-zinc-300">{t('landing.journey_design_principles_item2')}</span>
+                    <span className="text-slate-600 dark:text-slate-300">{t('landing.journey_design_principles_item2')}</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-purple-500" />
-                    <span className="text-zinc-300">{t('landing.journey_design_principles_item3')}</span>
+                    <span className="text-slate-600 dark:text-slate-300">{t('landing.journey_design_principles_item3')}</span>
                   </li>
                 </ul>
               </div>
@@ -371,15 +373,15 @@ export default function LandingPage() {
                 <h3 className="text-2xl font-bold text-green-400 mb-4">{t('landing.journey_advanced_topics_title')}</h3>
                 <ul className="space-y-3">
                   <li className="flex items-center gap-2 lg:flex-row-reverse">
-                    <span className="text-zinc-300">{t('landing.journey_advanced_topics_item1')}</span>
+                    <span className="text-slate-600 dark:text-slate-300">{t('landing.journey_advanced_topics_item1')}</span>
                     <div className="h-2 w-2 rounded-full bg-green-500" />
                   </li>
                   <li className="flex items-center gap-2 lg:flex-row-reverse">
-                    <span className="text-zinc-300">{t('landing.journey_advanced_topics_item2')}</span>
+                    <span className="text-slate-600 dark:text-slate-300">{t('landing.journey_advanced_topics_item2')}</span>
                     <div className="h-2 w-2 rounded-full bg-green-500" />
                   </li>
                   <li className="flex items-center gap-2 lg:flex-row-reverse">
-                    <span className="text-zinc-300">{t('landing.journey_advanced_topics_item3')}</span>
+                    <span className="text-slate-600 dark:text-slate-300">{t('landing.journey_advanced_topics_item3')}</span>
                     <div className="h-2 w-2 rounded-full bg-green-500" />
                   </li>
                 </ul>
@@ -392,7 +394,7 @@ export default function LandingPage() {
                     <svg className="w-12 h-12 text-green-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
-                    <p className="text-zinc-300">{t('landing.journey_advanced_topics_description')}</p>
+                    <p className="text-slate-600 dark:text-slate-300">{t('landing.journey_advanced_topics_description')}</p>
                   </div>
                 </div>
               </div>
@@ -413,7 +415,7 @@ export default function LandingPage() {
                     <svg className="w-12 h-12 text-yellow-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                     </svg>
-                    <p className="text-zinc-300">{t('landing.journey_real_cases_description')}</p>
+                    <p className="text-slate-600 dark:text-slate-300">{t('landing.journey_real_cases_description')}</p>
                   </div>
                 </div>
               </div>
@@ -422,15 +424,15 @@ export default function LandingPage() {
                 <ul className="space-y-3">
                   <li className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-yellow-500" />
-                    <span className="text-zinc-300">{t('landing.journey_real_cases_item1')}</span>
+                    <span className="text-slate-600 dark:text-slate-300">{t('landing.journey_real_cases_item1')}</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-yellow-500" />
-                    <span className="text-zinc-300">{t('landing.journey_real_cases_item2')}</span>
+                    <span className="text-slate-600 dark:text-slate-300">{t('landing.journey_real_cases_item2')}</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-yellow-500" />
-                    <span className="text-zinc-300">{t('landing.journey_real_cases_item3')}</span>
+                    <span className="text-slate-600 dark:text-slate-300">{t('landing.journey_real_cases_item3')}</span>
                   </li>
                 </ul>
               </div>
@@ -455,7 +457,7 @@ export default function LandingPage() {
           </Typography>
           <Typography 
             variant="p" 
-            className="text-xl text-zinc-400"
+            className="text-xl text-slate-500 dark:text-slate-400"
           >
             {t('landing.simulators_subtitle')}
           </Typography>
@@ -466,7 +468,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="group bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30 hover:border-blue-500/50 transition-colors"
+            className="group bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-slate-300 dark:border-slate-700/30 hover:border-blue-500/50 transition-colors"
           >
             <div className="relative aspect-video mb-4 overflow-hidden rounded-lg">
               <img 
@@ -475,10 +477,10 @@ export default function LandingPage() {
                 className="w-full h-full object-cover"
               />
             </div>
-            <Typography variant="h3" className="mb-2 text-blue-400">
+            <Typography variant="h3" className="mb-2 text-brand-600 dark:text-brand-400">
               {t('landing.simulators_item1')}
             </Typography>
-            <Typography variant="p" className="text-zinc-300">
+            <Typography variant="p" className="text-slate-600 dark:text-slate-300">
               {t('landing.simulators_item1_description')}
             </Typography>
           </motion.div>
@@ -487,7 +489,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="group bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30 hover:border-purple-500/50 transition-colors"
+            className="group bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-slate-300 dark:border-slate-700/30 hover:border-purple-500/50 transition-colors"
           >
             <div className="relative aspect-video mb-4 overflow-hidden rounded-lg">
               <img 
@@ -499,7 +501,7 @@ export default function LandingPage() {
             <Typography variant="h3" className="mb-2 text-purple-400">
               {t('landing.simulators_item2')}
             </Typography>
-            <Typography variant="p" className="text-zinc-300">
+            <Typography variant="p" className="text-slate-600 dark:text-slate-300">
               {t('landing.simulators_item2_description')}
             </Typography>
           </motion.div>
@@ -508,7 +510,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="group bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30 hover:border-green-500/50 transition-colors"
+            className="group bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-slate-300 dark:border-slate-700/30 hover:border-green-500/50 transition-colors"
           >
             <div className="relative aspect-video mb-4 overflow-hidden rounded-lg">
               <img 
@@ -520,7 +522,7 @@ export default function LandingPage() {
             <Typography variant="h3" className="mb-2 text-green-400">
               {t('landing.simulators_item3')}
             </Typography>
-            <Typography variant="p" className="text-zinc-300">
+            <Typography variant="p" className="text-slate-600 dark:text-slate-300">
               {t('landing.simulators_item3_description')}
             </Typography>
           </motion.div>
@@ -549,23 +551,23 @@ export default function LandingPage() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30"
+              className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-slate-300 dark:border-slate-700/30"
             >
-              <h3 className="text-xl font-bold mb-4 text-blue-400">{t('landing.teacher_experience_title')}</h3>
+              <h3 className="text-xl font-bold mb-4 text-brand-600 dark:text-brand-400">{t('landing.teacher_experience_title')}</h3>
               <ul className="space-y-3">
-                <li className="flex items-start gap-3 text-zinc-300">
+                <li className="flex items-start gap-3 text-slate-600 dark:text-slate-300">
                   <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                   <span>{t('landing.teacher_experience_item1')}</span>
                 </li>
-                <li className="flex items-start gap-3 text-zinc-300">
+                <li className="flex items-start gap-3 text-slate-600 dark:text-slate-300">
                   <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
                   <span>{t('landing.teacher_experience_item2')}</span>
                 </li>
-                <li className="flex items-start gap-3 text-zinc-300">
+                <li className="flex items-start gap-3 text-slate-600 dark:text-slate-300">
                   <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                   </svg>
@@ -578,23 +580,23 @@ export default function LandingPage() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-zinc-700/30"
+              className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-slate-300 dark:border-slate-700/30"
             >
               <h3 className="text-xl font-bold mb-4 text-purple-400">{t('landing.teacher_specialties_title')}</h3>
               <ul className="space-y-3">
-                <li className="flex items-start gap-3 text-zinc-300">
+                <li className="flex items-start gap-3 text-slate-600 dark:text-slate-300">
                   <svg className="w-5 h-5 text-purple-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
                   <span>{t('landing.teacher_specialties_item1')}</span>
                 </li>
-                <li className="flex items-start gap-3 text-zinc-300">
+                <li className="flex items-start gap-3 text-slate-600 dark:text-slate-300">
                   <svg className="w-5 h-5 text-purple-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                   <span>{t('landing.teacher_specialties_item2')}</span>
                 </li>
-                <li className="flex items-start gap-3 text-zinc-300">
+                <li className="flex items-start gap-3 text-slate-600 dark:text-slate-300">
                   <svg className="w-5 h-5 text-purple-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
@@ -608,16 +610,16 @@ export default function LandingPage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5 }}
-            className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-8 border border-zinc-700/30"
+            className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-8 border border-slate-300 dark:border-slate-700/30"
           >
             <div className="space-y-6">
-              <p className="text-zinc-300 leading-relaxed">
+              <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
                 {t('landing.teacher_about_me_text1')}
               </p>
-              <p className="text-zinc-300 leading-relaxed">
+              <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
                 {t('landing.teacher_about_me_text2')}
               </p>
-              <p className="text-zinc-300 leading-relaxed">
+              <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
                 {t('landing.teacher_about_me_text3')}
               </p>
             </div>
@@ -641,7 +643,7 @@ export default function LandingPage() {
           </Typography>
           <Typography 
             variant="p" 
-            className="text-xl text-zinc-400"
+            className="text-xl text-slate-500 dark:text-slate-400"
           >
             {t('landing.invest_subtitle')}
           </Typography>
@@ -658,10 +660,10 @@ export default function LandingPage() {
               <div className="text-center">
                 <span className="text-4xl font-bold">
                   <span className="text-white">{formatPrice(pricing.price, pricing)}</span>
-                  <span className="text-base font-normal text-zinc-400 ml-2">/ {t('common.month', { defaultValue: 'month' })}</span>
+                  <span className="text-base font-normal text-slate-500 dark:text-slate-400 ml-2">/ {t('common.month', { defaultValue: 'month' })}</span>
                 </span>
               </div>
-              <p className="text-zinc-400 mt-4">{t('landing.invest_payment_info')}</p>
+              <p className="text-slate-500 dark:text-slate-400 mt-4">{t('landing.invest_payment_info')}</p>
             </div>
             <Link
               to="/pagamento"
@@ -679,32 +681,32 @@ export default function LandingPage() {
             className="space-y-6"
           >
             <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
-              <h4 className="text-lg font-semibold mb-4 text-blue-400 flex items-center gap-2">
+              <h4 className="text-lg font-semibold mb-4 text-brand-600 dark:text-brand-400 flex items-center gap-2">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
                 {t('landing.what_you_receive_title')}
               </h4>
               <ul className="space-y-3">
-                <li className="flex items-start gap-3 text-zinc-300">
+                <li className="flex items-start gap-3 text-slate-600 dark:text-slate-300">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <span>{t('landing.what_you_receive_item1')}</span>
                 </li>
-                <li className="flex items-start gap-3 text-zinc-300">
+                <li className="flex items-start gap-3 text-slate-600 dark:text-slate-300">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <span>{t('landing.what_you_receive_item2')}</span>
                 </li>
-                <li className="flex items-start gap-3 text-zinc-300">
+                <li className="flex items-start gap-3 text-slate-600 dark:text-slate-300">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <span>{t('landing.what_you_receive_item3')}</span>
                 </li>
-                <li className="flex items-start gap-3 text-zinc-300">
+                <li className="flex items-start gap-3 text-slate-600 dark:text-slate-300">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
@@ -721,25 +723,25 @@ export default function LandingPage() {
                 {t('landing.differentials_title')}
               </h4>
               <ul className="space-y-3">
-                <li className="flex items-start gap-3 text-zinc-300">
+                <li className="flex items-start gap-3 text-slate-600 dark:text-slate-300">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <span>{t('landing.differentials_item1')}</span>
                 </li>
-                <li className="flex items-start gap-3 text-zinc-300">
+                <li className="flex items-start gap-3 text-slate-600 dark:text-slate-300">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <span>{t('landing.differentials_item2')}</span>
                 </li>
-                <li className="flex items-start gap-3 text-zinc-300">
+                <li className="flex items-start gap-3 text-slate-600 dark:text-slate-300">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <span>{t('landing.differentials_item3')}</span>
                 </li>
-                <li className="flex items-start gap-3 text-zinc-300">
+                <li className="flex items-start gap-3 text-slate-600 dark:text-slate-300">
                   <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
@@ -762,7 +764,7 @@ export default function LandingPage() {
           <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
           <div className="relative">
             <h2 className="text-3xl font-bold mb-4">{t('landing.cta_title')}</h2>
-            <p className="text-xl mb-8 text-zinc-200">
+            <p className="text-xl mb-8 text-slate-700 dark:text-slate-200">
               {t('landing.cta_subtitle')}
             </p>
             <Link

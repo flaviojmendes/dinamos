@@ -68,7 +68,7 @@ export default function PaymentSuccess() {
           </svg>
         </div>
         <h1 className="text-4xl font-bold mb-4">{t('subscription.payment_confirmed')}</h1>
-        <p className="text-xl text-zinc-400 mb-8">
+        <p className="text-xl text-slate-500 dark:text-slate-400 mb-8">
           {t('subscription.access_granted_redirect')}
         </p>
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>

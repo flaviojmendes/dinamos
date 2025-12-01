@@ -300,15 +300,15 @@ export default function ReplicacaoSimulator() {
   }, [isRunning, config]);
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white p-8">
+    <div className="min-h-screen bg-canvas-paper dark:bg-canvas-dark text-white p-8">
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-4">{t('simulators_extra.replication.title')}</h1>
-          <p className="text-zinc-400 mb-6">
+          <p className="text-slate-500 dark:text-slate-400 mb-6">
             {t('simulators_extra.replication.intro')}
           </p>
 
-          <div className="bg-zinc-900/50 rounded-xl p-6 space-y-3 text-sm text-zinc-300">
+          <div className="bg-white dark:bg-slate-900/50 rounded-xl p-6 space-y-3 text-sm text-slate-600 dark:text-slate-300">
             <p className="font-semibold text-white">{t('simulators_extra.replication.how_title')}</p>
             <ol className="list-decimal list-inside space-y-2">
               {(t('simulators_extra.replication.steps', { returnObjects: true }) as string[]).map((s, idx) => (
@@ -319,7 +319,7 @@ export default function ReplicacaoSimulator() {
         </div>
 
         {/* Configuration Panel */}
-        <div className="bg-zinc-900 rounded-xl p-6 mb-8">
+        <div className="bg-white dark:bg-slate-900 rounded-xl p-6 mb-8">
           <h2 className="text-xl font-semibold mb-4">{t('simulators_extra.replication.config_title')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
@@ -327,7 +327,7 @@ export default function ReplicacaoSimulator() {
               <select
                 value={config.replicationType}
                 onChange={(e) => setConfig(prev => ({ ...prev, replicationType: e.target.value as 'sync' | 'async' | 'semi-sync' }))}
-                className="w-full bg-zinc-800 rounded-lg p-2"
+                className="w-full bg-slate-100 dark:bg-slate-800 rounded-lg p-2"
               >
                 <option value="sync">{t('simulators_extra.replication.sync')}</option>
                 <option value="semi-sync">{t('simulators_extra.replication.semi_sync')}</option>
@@ -337,27 +337,27 @@ export default function ReplicacaoSimulator() {
             <div>
               <label className="block text-sm font-medium mb-2">{t('simulators_extra.replication.network_latency_ms')}</label>
               <input type="range" min="0" max="2000" value={config.networkLatency} onChange={(e) => setConfig(prev => ({ ...prev, networkLatency: Number(e.target.value) }))} className="w-full" />
-              <span className="text-sm text-zinc-400">{config.networkLatency}ms</span>
+              <span className="text-sm text-slate-500 dark:text-slate-400">{config.networkLatency}ms</span>
             </div>
             <div>
               <label className="block text-sm font-medium mb-2">{t('simulators_extra.replication.failure_rate')}</label>
               <input type="range" min="0" max="0.5" step="0.05" value={config.failureRate} onChange={(e) => setConfig(prev => ({ ...prev, failureRate: Number(e.target.value) }))} className="w-full" />
-              <span className="text-sm text-zinc-400">{Math.round(config.failureRate * 100)}%</span>
+              <span className="text-sm text-slate-500 dark:text-slate-400">{Math.round(config.failureRate * 100)}%</span>
             </div>
             <div>
               <label className="block text-sm font-medium mb-2">{t('simulators_extra.replication.replica_count')}</label>
               <input type="range" min="1" max="3" value={config.replicaCount} onChange={(e) => setConfig(prev => ({ ...prev, replicaCount: Number(e.target.value) }))} className="w-full" />
-              <span className="text-sm text-zinc-400">{config.replicaCount} {t('simulators_extra.replication.keys_label', { count: config.replicaCount }).split(' ')[1]}</span>
+              <span className="text-sm text-slate-500 dark:text-slate-400">{config.replicaCount} {t('simulators_extra.replication.keys_label', { count: config.replicaCount }).split(' ')[1]}</span>
             </div>
           </div>
         </div>
 
         {/* Manual Operation Panel */}
-        <div className="bg-zinc-900 rounded-xl p-6 mb-8">
+        <div className="bg-white dark:bg-slate-900 rounded-xl p-6 mb-8">
           <h2 className="text-xl font-semibold mb-4">{t('simulators_extra.replication.manual_title')}</h2>
           <div className="flex flex-wrap gap-4">
-            <input type="text" value={dataKey} onChange={(e) => setDataKey(e.target.value)} placeholder={t('simulators_extra.replication.key_placeholder') || 'Key'} className="bg-zinc-800 rounded-lg p-2" />
-            <input type="text" value={dataValue} onChange={(e) => setDataValue(e.target.value)} placeholder={t('simulators_extra.replication.value_placeholder') || 'Value'} className="bg-zinc-800 rounded-lg p-2" />
+            <input type="text" value={dataKey} onChange={(e) => setDataKey(e.target.value)} placeholder={t('simulators_extra.replication.key_placeholder') || 'Key'} className="bg-slate-100 dark:bg-slate-800 rounded-lg p-2" />
+            <input type="text" value={dataValue} onChange={(e) => setDataValue(e.target.value)} placeholder={t('simulators_extra.replication.value_placeholder') || 'Value'} className="bg-slate-100 dark:bg-slate-800 rounded-lg p-2" />
             <button onClick={() => addOperation('write')} className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg">
               {t('simulators_extra.replication.write')}
             </button>
@@ -370,11 +370,11 @@ export default function ReplicacaoSimulator() {
         {/* Regions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {regions.slice(0, config.replicaCount + 1).map((region) => (
-            <motion.div key={region.id} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-zinc-900 rounded-xl p-6">
+            <motion.div key={region.id} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-slate-900 rounded-xl p-6">
               <div className="flex justify-between items-center mb-4">
                 <div>
                   <h3 className="text-lg font-medium">{region.name}</h3>
-                  <p className="text-sm text-zinc-400">{region.location}</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">{region.location}</p>
                 </div>
                 <span className={`px-2 py-1 rounded-full text-sm ${region.status === 'healthy' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
                   {t(`simulators.vertical_scaling.statuses.${region.status}`)}
@@ -385,7 +385,7 @@ export default function ReplicacaoSimulator() {
                 <div>
                   <div className="flex justify-between text-sm mb-1">
                     <span>{t('simulators_extra.replication.statuses.role')}</span>
-                    <span className={region.role === 'primary' ? 'text-blue-400' : 'text-zinc-400'}>
+                    <span className={region.role === 'primary' ? 'text-brand-600 dark:text-brand-400' : 'text-slate-500 dark:text-slate-400'}>
                       {region.role}
                     </span>
                   </div>
@@ -396,7 +396,7 @@ export default function ReplicacaoSimulator() {
                     <span>{t('simulators_extra.replication.statuses.latency')}</span>
                     <span>{region.latency + config.networkLatency}ms</span>
                   </div>
-                  <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                  <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                     <motion.div className="h-full bg-blue-500" initial={{ width: 0 }} animate={{ width: `${((region.latency + config.networkLatency) / 2000) * 100}%` }} />
                   </div>
                 </div>
@@ -406,11 +406,11 @@ export default function ReplicacaoSimulator() {
                     <span>{t('simulators_extra.replication.statuses.data')}</span>
                     <span>{t('simulators_extra.replication.statuses.keys_label', { count: Object.keys(region.data).length })}</span>
                   </div>
-                  <div className="bg-zinc-800 rounded-lg p-2 max-h-24 overflow-auto text-sm">
+                  <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-2 max-h-24 overflow-auto text-sm">
                     {Object.entries(region.data).map(([key, data]) => (
                       <div key={key} className="flex flex-col mb-2">
                         <div className="flex justify-between">
-                          <span className="text-zinc-400">{key}:</span>
+                          <span className="text-slate-500 dark:text-slate-400">{key}:</span>
                           <span>{String(data.value)}</span>
                         </div>
                         {data.replicatedAt && data.replicatedAt !== data.timestamp && (
@@ -432,12 +432,12 @@ export default function ReplicacaoSimulator() {
         </div>
 
         {/* Recent Operations */}
-        <div className="bg-zinc-900 rounded-xl p-6">
+        <div className="bg-white dark:bg-slate-900 rounded-xl p-6">
           <h2 className="text-xl font-semibold mb-4">{t('simulators_extra.replication.recent_ops')}</h2>
           <div className="space-y-2">
             <AnimatePresence>
               {operations.slice(-5).map((operation) => (
-                <motion.div key={operation.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="bg-zinc-800 rounded-lg p-3">
+                <motion.div key={operation.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="bg-slate-100 dark:bg-slate-800 rounded-lg p-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <span className={`w-2 h-2 rounded-full ${operation.status === 'completed' ? 'bg-green-500' : operation.status === 'failed' ? 'bg-red-500' : operation.status === 'processing' ? 'bg-yellow-500' : 'bg-blue-500'}`} />

@@ -55,6 +55,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const token = await userState.getIdToken(forceRefresh);
       
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      // Use the authorization endpoint (user profile) to check subscription status
       const response = await fetch(`${apiUrl}/api/users/me`, {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -62,12 +63,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       if (!response.ok) {
-        console.warn('Failed to fetch user profile', response.status);
+        console.warn('Failed to fetch user profile from authorization endpoint', response.status);
         setIsSubscribed(false);
         return false;
       }
 
       const userData = await response.json();
+      // Check subscription status from DB (single source of truth)
       const hasSubscription = userData.is_subscribed === true;
       
       // Log subscription status for monitoring

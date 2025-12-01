@@ -173,13 +173,13 @@ export default function MessageQueue() {
   return (
     <div className="flex-1 min-h-full overflow-auto text-white">
       <div className="p-4 h-full">
-        <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <h1 className="text-xl font-semibold">{t('simulators.message_queue_sim.title')}</h1>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
               <button
                 onClick={() => setIsConfigOpen(!isConfigOpen)}
-                className="w-full sm:w-auto px-4 py-2 bg-zinc-800 rounded-md hover:bg-zinc-700 font-medium transition-colors"
+                className="w-full sm:w-auto px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-md hover:bg-zinc-700 font-medium transition-colors"
               >
                 {isConfigOpen ? t('simulators.message_queue_sim.buttons.close_config') : t('simulators.message_queue_sim.buttons.configure')}
               </button>
@@ -195,7 +195,7 @@ export default function MessageQueue() {
             </button>
             <button
               onClick={resetSimulation}
-                className="w-full sm:w-auto px-4 py-2 bg-zinc-800 rounded-md hover:bg-zinc-700 font-medium transition-colors"
+                className="w-full sm:w-auto px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-md hover:bg-zinc-700 font-medium transition-colors"
             >
                 {t('simulators.message_queue_sim.buttons.reset')}
             </button>
@@ -208,14 +208,14 @@ export default function MessageQueue() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="mb-6 bg-zinc-800/50 rounded-lg p-4 overflow-hidden"
+              className="mb-6 bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4 overflow-hidden"
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-4">
             <div>
                     <div className="flex justify-between text-white mb-1">
                       <span>{t('simulators.message_queue_sim.config.producers')}</span>
-                      <span className="text-blue-400">{config.producerCount}</span>
+                      <span className="text-brand-600 dark:text-brand-400">{config.producerCount}</span>
               </div>
               <input
                 type="range"
@@ -230,7 +230,7 @@ export default function MessageQueue() {
             <div>
                     <div className="flex justify-between text-white mb-1">
                       <span>{t('simulators.message_queue_sim.config.production_rate')}</span>
-                      <span className="text-blue-400">{config.producerRate}ms</span>
+                      <span className="text-brand-600 dark:text-brand-400">{config.producerRate}ms</span>
               </div>
               <input
                 type="range"
@@ -246,7 +246,7 @@ export default function MessageQueue() {
             <div>
                     <div className="flex justify-between text-white mb-1">
                       <span>{t('simulators.message_queue_sim.config.max_queue_size')}</span>
-                      <span className="text-blue-400">{config.maxQueueSize}</span>
+                      <span className="text-brand-600 dark:text-brand-400">{config.maxQueueSize}</span>
                     </div>
                     <input
                       type="range"
@@ -263,7 +263,7 @@ export default function MessageQueue() {
                   <div>
                     <div className="flex justify-between text-white mb-1">
                       <span>{t('simulators.message_queue_sim.config.consumers')}</span>
-                      <span className="text-blue-400">{config.consumerCount}</span>
+                      <span className="text-brand-600 dark:text-brand-400">{config.consumerCount}</span>
               </div>
               <input
                 type="range"
@@ -278,7 +278,7 @@ export default function MessageQueue() {
                   <div>
                     <div className="flex justify-between text-white mb-1">
                       <span>{t('simulators.message_queue_sim.config.consumption_rate')}</span>
-                      <span className="text-blue-400">{config.consumerRate}ms</span>
+                      <span className="text-brand-600 dark:text-brand-400">{config.consumerRate}ms</span>
                     </div>
                     <input
                       type="range"
@@ -294,7 +294,7 @@ export default function MessageQueue() {
                   <div>
                     <div className="flex justify-between text-white mb-1">
                       <span>{t('simulators.message_queue_sim.config.process_time')}</span>
-                      <span className="text-blue-400">{config.processTime}ms</span>
+                      <span className="text-brand-600 dark:text-brand-400">{config.processTime}ms</span>
                     </div>
                     <input
                       type="range"
@@ -312,7 +312,7 @@ export default function MessageQueue() {
           )}
 
           {/* Visual Flow Diagram */}
-          <div className="mb-6 bg-zinc-800/50 rounded-lg p-4">
+          <div className="mb-6 bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4">
             <h2 className="text-lg font-medium mb-4">{t('simulators.message_queue_sim.flow.title')}</h2>
             <div className="relative h-48 flex items-center justify-between max-w-4xl mx-auto">
               {/* Connection Lines */}
@@ -320,13 +320,13 @@ export default function MessageQueue() {
               
               {/* Producers Section */}
               <div className="relative z-10 w-1/4">
-                <div className="bg-zinc-800 p-4 rounded-lg border border-zinc-700">
-                  <h3 className="text-sm font-medium text-blue-400 mb-2">{t('simulators.message_queue_sim.config.producers')}</h3>
+                <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg border border-slate-300 dark:border-slate-700">
+                  <h3 className="text-sm font-medium text-brand-600 dark:text-brand-400 mb-2">{t('simulators.message_queue_sim.config.producers')}</h3>
                   <div className="space-y-2">
                     {Array.from({ length: config.producerCount }).map((_, i) => (
                       <div
                         key={i}
-                        className={`h-6 bg-blue-500/20 border border-blue-500/50 rounded flex items-center justify-center text-xs text-blue-400`}
+                        className={`h-6 bg-blue-500/20 border border-blue-500/50 rounded flex items-center justify-center text-xs text-brand-600 dark:text-brand-400`}
                       >
                         P{i + 1}
                       </div>
@@ -337,7 +337,7 @@ export default function MessageQueue() {
 
               {/* Queue Section */}
               <div className="relative z-10 w-1/3">
-                <div className="bg-zinc-800 p-4 rounded-lg border border-zinc-700">
+                <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg border border-slate-300 dark:border-slate-700">
                   <h3 className="text-sm font-medium text-yellow-400 mb-2">{t('simulators.message_queue_sim.flow.queue')}</h3>
                   <div className="space-y-2">
                     <div className="relative h-24 bg-zinc-700/50 rounded-lg border border-zinc-600 overflow-hidden">
@@ -359,7 +359,7 @@ export default function MessageQueue() {
                         ))}
                       </AnimatePresence>
                       {queuedMessages.length > 5 && (
-                        <div className="absolute bottom-0 inset-x-0 text-center text-xs text-zinc-400 py-1">
+                        <div className="absolute bottom-0 inset-x-0 text-center text-xs text-slate-500 dark:text-slate-400 py-1">
                           {t('simulators.message_queue_sim.flow.more', { count: queuedMessages.length - 5 })}
                         </div>
                       )}
@@ -370,7 +370,7 @@ export default function MessageQueue() {
 
               {/* Consumers Section */}
               <div className="relative z-10 w-1/4">
-                <div className="bg-zinc-800 p-4 rounded-lg border border-zinc-700">
+                <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg border border-slate-300 dark:border-slate-700">
                   <h3 className="text-sm font-medium text-green-400 mb-2">{t('simulators.message_queue_sim.config.consumers')}</h3>
                   <div className="space-y-2">
                     {Array.from({ length: config.consumerCount }).map((_, i) => {
@@ -405,11 +405,11 @@ export default function MessageQueue() {
 
           {/* Queue Status */}
           <div className="mb-6">
-            <div className="bg-zinc-800/50 rounded-lg p-4">
+            <div className="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4">
               <h2 className="text-lg font-medium mb-4">{t('simulators.message_queue_sim.queue_status.title')}</h2>
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1">
-                  <div className="text-sm text-zinc-400 mb-1">{t('simulators.message_queue_sim.queue_status.size')}</div>
+                  <div className="text-sm text-slate-500 dark:text-slate-400 mb-1">{t('simulators.message_queue_sim.queue_status.size')}</div>
                   <div className="relative h-8 bg-zinc-700 rounded-lg overflow-hidden">
                     <motion.div
                       className="absolute inset-y-0 left-0 bg-blue-500"
@@ -424,7 +424,7 @@ export default function MessageQueue() {
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div>
-                    <div className="text-sm text-zinc-400">{t('simulators.message_queue_sim.queue_status.produced')}</div>
+                    <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.message_queue_sim.queue_status.produced')}</div>
                     <motion.div 
                       className="text-xl font-medium"
                       animate={{ scale: stats.produced > 0 ? [1, 1.1, 1] : 1 }}
@@ -434,7 +434,7 @@ export default function MessageQueue() {
                     </motion.div>
                   </div>
                   <div>
-                    <div className="text-sm text-zinc-400">{t('simulators.message_queue_sim.queue_status.processed')}</div>
+                    <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.message_queue_sim.queue_status.processed')}</div>
                     <motion.div 
                       className="text-xl font-medium text-green-400"
                       animate={{ scale: stats.processed > 0 ? [1, 1.1, 1] : 1 }}
@@ -444,7 +444,7 @@ export default function MessageQueue() {
                     </motion.div>
                   </div>
                   <div>
-                    <div className="text-sm text-zinc-400">{t('simulators.message_queue_sim.queue_status.dropped')}</div>
+                    <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.message_queue_sim.queue_status.dropped')}</div>
                     <motion.div 
                       className="text-xl font-medium text-red-400"
                       animate={{ scale: stats.dropped > 0 ? [1, 1.1, 1] : 1 }}
@@ -454,7 +454,7 @@ export default function MessageQueue() {
                     </motion.div>
                   </div>
                   <div>
-                    <div className="text-sm text-zinc-400">{t('simulators.message_queue_sim.queue_status.avg_time')}</div>
+                    <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.message_queue_sim.queue_status.avg_time')}</div>
                     <div className="text-xl font-medium">
                       {Math.round(stats.avgProcessingTime)}ms
                     </div>
@@ -465,7 +465,7 @@ export default function MessageQueue() {
           </div>
 
           {/* Message Log */}
-          <div className="bg-zinc-800/50 rounded-lg p-4">
+          <div className="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4">
             <h2 className="text-lg font-medium mb-4">{t('simulators.message_queue_sim.messages.title')}</h2>
             <div className="space-y-2">
               <AnimatePresence>
@@ -485,7 +485,7 @@ export default function MessageQueue() {
                     <div>
                       <div className="text-white">{message.content}</div>
                       <div className={`text-sm ${
-                        message.status === 'produced' ? 'text-blue-400' :
+                        message.status === 'produced' ? 'text-brand-600 dark:text-brand-400' :
                         message.status === 'queued' ? 'text-yellow-400' :
                         message.status === 'processing' ? 'text-purple-400' :
                         'text-green-400'
@@ -494,7 +494,7 @@ export default function MessageQueue() {
                       </div>
                     </div>
                     {message.processedAt && (
-                      <div className="text-zinc-400 text-sm">
+                      <div className="text-slate-500 dark:text-slate-400 text-sm">
                         {message.processedAt - message.producedAt}ms
                       </div>
                     )}

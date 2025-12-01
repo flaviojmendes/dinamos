@@ -16,7 +16,7 @@ const LanguageSwitcher: React.FC = () => {
   return (
     <button
       onClick={toggle}
-      className="px-3 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-sm"
+      className="px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-zinc-700 text-slate-700 dark:text-slate-200 text-sm"
       aria-label="Toggle language"
       title={current.startsWith('pt') ? 'Switch to English' : 'Mudar para Português'}
     >

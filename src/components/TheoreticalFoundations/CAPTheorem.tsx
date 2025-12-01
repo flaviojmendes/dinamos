@@ -23,7 +23,7 @@ const CAPTheorem: React.FC = () => {
           </Typography>
 
           {/* Introduction */}
-          <div className="bg-zinc-800/30 p-8 rounded-lg border border-zinc-600 mb-12">
+          <div className="bg-slate-100 dark:bg-slate-800/30 p-8 rounded-lg border border-zinc-600 mb-12">
             <Typography variant="p" className="text-lg leading-relaxed text-gray-200">
               {t('menu.theoretical_foundations.cap_theorem.introduction')}
             </Typography>
@@ -31,9 +31,9 @@ const CAPTheorem: React.FC = () => {
 
           {/* CAP Components Overview */}
           <div className="grid md:grid-cols-3 gap-8 mb-12">
-            <div className="bg-zinc-800/50 p-6 rounded-lg border border-zinc-700">
+            <div className="bg-slate-100 dark:bg-slate-800/50 p-6 rounded-lg border border-slate-300 dark:border-slate-700">
               <div className="text-2xl mb-4">🔗</div>
-              <Typography variant="h3" className="mb-4 text-blue-400">
+              <Typography variant="h3" className="mb-4 text-brand-600 dark:text-brand-400">
                 {t('menu.theoretical_foundations.cap_theorem.consistency.title')}
               </Typography>
               <Typography variant="p" className="mb-4">
@@ -44,7 +44,7 @@ const CAPTheorem: React.FC = () => {
               </Typography>
             </div>
 
-            <div className="bg-zinc-800/50 p-6 rounded-lg border border-zinc-700">
+            <div className="bg-slate-100 dark:bg-slate-800/50 p-6 rounded-lg border border-slate-300 dark:border-slate-700">
               <div className="text-2xl mb-4">⚡</div>
               <Typography variant="h3" className="mb-4 text-green-400">
                 {t('menu.theoretical_foundations.cap_theorem.availability.title')}
@@ -57,7 +57,7 @@ const CAPTheorem: React.FC = () => {
               </Typography>
             </div>
 
-            <div className="bg-zinc-800/50 p-6 rounded-lg border border-zinc-700">
+            <div className="bg-slate-100 dark:bg-slate-800/50 p-6 rounded-lg border border-slate-300 dark:border-slate-700">
               <div className="text-2xl mb-4">🌐</div>
               <Typography variant="h3" className="mb-4 text-purple-400">
                 {t('menu.theoretical_foundations.cap_theorem.partition_tolerance.title')}
@@ -79,12 +79,12 @@ const CAPTheorem: React.FC = () => {
             <div className="grid md:grid-cols-3 gap-8">
               {/* Consistency Examples */}
               <div className="bg-blue-900/20 p-6 rounded-lg border border-blue-700">
-                <Typography variant="h3" className="mb-4 text-blue-400">
+                <Typography variant="h3" className="mb-4 text-brand-600 dark:text-brand-400">
                   {t('menu.theoretical_foundations.cap_theorem.consistency_examples_title')}
                 </Typography>
                 <div className="space-y-3">
                   {(t('menu.theoretical_foundations.cap_theorem.consistency.concrete_examples', { returnObjects: true }) as string[]).map((example, index) => (
-                    <div key={index} className="bg-zinc-800/30 p-3 rounded text-sm">
+                    <div key={index} className="bg-slate-100 dark:bg-slate-800/30 p-3 rounded text-sm">
                       <Typography variant="p" className="text-gray-300">
                         {example}
                       </Typography>
@@ -100,7 +100,7 @@ const CAPTheorem: React.FC = () => {
                 </Typography>
                 <div className="space-y-3">
                   {(t('menu.theoretical_foundations.cap_theorem.availability.concrete_examples', { returnObjects: true }) as string[]).map((example, index) => (
-                    <div key={index} className="bg-zinc-800/30 p-3 rounded text-sm">
+                    <div key={index} className="bg-slate-100 dark:bg-slate-800/30 p-3 rounded text-sm">
                       <Typography variant="p" className="text-gray-300">
                         {example}
                       </Typography>
@@ -116,7 +116,7 @@ const CAPTheorem: React.FC = () => {
                 </Typography>
                 <div className="space-y-3">
                   {(t('menu.theoretical_foundations.cap_theorem.partition_tolerance.concrete_examples', { returnObjects: true }) as string[]).map((example, index) => (
-                    <div key={index} className="bg-zinc-800/30 p-3 rounded text-sm">
+                    <div key={index} className="bg-slate-100 dark:bg-slate-800/30 p-3 rounded text-sm">
                       <Typography variant="p" className="text-gray-300">
                         {example}
                       </Typography>
@@ -127,7 +127,7 @@ const CAPTheorem: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-zinc-800/30 p-8 rounded-lg border border-zinc-600 mb-8">
+          <div className="bg-slate-100 dark:bg-slate-800/30 p-8 rounded-lg border border-zinc-600 mb-8">
             <Typography variant="h2" className="mb-6 text-center">
               {t('menu.theoretical_foundations.cap_theorem.theorem_statement')}
             </Typography>
@@ -214,7 +214,7 @@ const CAPTheorem: React.FC = () => {
             </div>
 
             <div className="bg-blue-900/20 p-6 rounded-lg border border-blue-700">
-              <Typography variant="h3" className="mb-4 text-blue-400">
+              <Typography variant="h3" className="mb-4 text-brand-600 dark:text-brand-400">
                 {t('menu.theoretical_foundations.cap_theorem.ca_systems.title')}
               </Typography>
               <Typography variant="p" className="mb-4">
@@ -222,7 +222,7 @@ const CAPTheorem: React.FC = () => {
               </Typography>
               
               <div className="mb-4">
-                <Typography variant="h4" className="text-sm font-semibold mb-2 text-blue-300">{t('menu.theoretical_foundations.cap_theorem.characteristics_label')}</Typography>
+                <Typography variant="h4" className="text-sm font-semibold mb-2 text-brand-600 dark:text-brand-300">{t('menu.theoretical_foundations.cap_theorem.characteristics_label')}</Typography>
                 <ul className="list-disc list-inside space-y-1">
                   {(t('menu.theoretical_foundations.cap_theorem.ca_systems.characteristics', { returnObjects: true }) as string[]).map((char, index) => (
                     <li key={index} className="text-sm text-gray-300">{char}</li>
@@ -231,7 +231,7 @@ const CAPTheorem: React.FC = () => {
               </div>
 
               <div className="mb-4">
-                <Typography variant="h4" className="text-sm font-semibold mb-2 text-blue-300">{t('menu.theoretical_foundations.cap_theorem.examples_label')}</Typography>
+                <Typography variant="h4" className="text-sm font-semibold mb-2 text-brand-600 dark:text-brand-300">{t('menu.theoretical_foundations.cap_theorem.examples_label')}</Typography>
                 <ul className="list-disc list-inside space-y-1">
                   {(t('menu.theoretical_foundations.cap_theorem.ca_systems.examples', { returnObjects: true }) as string[]).map((example, index) => (
                     <li key={index} className="text-sm text-gray-400">{example}</li>
@@ -240,7 +240,7 @@ const CAPTheorem: React.FC = () => {
               </div>
 
               <div className="mb-4">
-                <Typography variant="h4" className="text-sm font-semibold mb-2 text-blue-300">{t('menu.theoretical_foundations.cap_theorem.limitations_label')}</Typography>
+                <Typography variant="h4" className="text-sm font-semibold mb-2 text-brand-600 dark:text-brand-300">{t('menu.theoretical_foundations.cap_theorem.limitations_label')}</Typography>
                 <ul className="list-disc list-inside space-y-1">
                   {(t('menu.theoretical_foundations.cap_theorem.ca_systems.limitations', { returnObjects: true }) as string[]).map((limitation, index) => (
                     <li key={index} className="text-sm text-gray-400">{limitation}</li>
@@ -258,7 +258,7 @@ const CAPTheorem: React.FC = () => {
 
           {/* Practical Considerations */}
           <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-zinc-800/30 p-6 rounded-lg border border-zinc-600">
+            <div className="bg-slate-100 dark:bg-slate-800/30 p-6 rounded-lg border border-zinc-600">
               <Typography variant="h3" className="mb-4 text-yellow-400">
                 {t('menu.theoretical_foundations.cap_theorem.practical_considerations.title')}
               </Typography>
@@ -274,7 +274,7 @@ const CAPTheorem: React.FC = () => {
               </ul>
             </div>
 
-            <div className="bg-zinc-800/30 p-6 rounded-lg border border-zinc-600">
+            <div className="bg-slate-100 dark:bg-slate-800/30 p-6 rounded-lg border border-zinc-600">
               <Typography variant="h3" className="mb-4 text-purple-400">
                 {t('menu.theoretical_foundations.cap_theorem.decision_framework.title')}
               </Typography>

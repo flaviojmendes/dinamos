@@ -246,13 +246,13 @@ export default function ConsensusSimulator() {
   return (
     <div className="space-y-6">
       {/* Protocol Selection */}
-      <div className="bg-zinc-900 rounded-lg p-4">
+      <div className="bg-white dark:bg-slate-900 rounded-lg p-4">
         <div className="flex items-center gap-4">
-          <label className="text-zinc-300">{t('design_principles.consistency_strategies.consensus_simulator.controls.protocol_label')}</label>
+          <label className="text-slate-600 dark:text-slate-300">{t('design_principles.consistency_strategies.consensus_simulator.controls.protocol_label')}</label>
           <select
             value={protocol}
             onChange={(e) => setProtocol(e.target.value as Protocol)}
-            className="bg-zinc-800 text-white rounded-lg px-3 py-2"
+            className="bg-slate-100 dark:bg-slate-800 text-white rounded-lg px-3 py-2"
           >
             <option value="raft">{t('design_principles.consistency_strategies.consensus_simulator.controls.options.raft')}</option>
             <option value="paxos">{t('design_principles.consistency_strategies.consensus_simulator.controls.options.paxos')}</option>
@@ -262,7 +262,7 @@ export default function ConsensusSimulator() {
       </div>
 
       {/* Controls */}
-      <div className="bg-zinc-900 rounded-lg p-4 flex flex-wrap gap-4">
+      <div className="bg-white dark:bg-slate-900 rounded-lg p-4 flex flex-wrap gap-4">
         <button
           onClick={() => setIsPlaying(!isPlaying)}
           className={`px-4 py-2 rounded-lg font-medium ${isPlaying ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} text-white transition-colors`}
@@ -276,11 +276,11 @@ export default function ConsensusSimulator() {
           {t('design_principles.consistency_strategies.consensus_simulator.controls.restart')}
         </button>
         <div className="flex items-center gap-2">
-          <label className="text-zinc-300">{t('design_principles.consistency_strategies.consensus_simulator.controls.speed_label')}</label>
+          <label className="text-slate-600 dark:text-slate-300">{t('design_principles.consistency_strategies.consensus_simulator.controls.speed_label')}</label>
           <select
             value={speed}
             onChange={(e) => setSpeed(Number(e.target.value))}
-            className="bg-zinc-800 text-white rounded-lg px-2 py-1"
+            className="bg-slate-100 dark:bg-slate-800 text-white rounded-lg px-2 py-1"
           >
             <option value={3000}>{t('design_principles.consistency_strategies.consensus_simulator.controls.speed_opts.slow')}</option>
             <option value={2000}>{t('design_principles.consistency_strategies.consensus_simulator.controls.speed_opts.normal')}</option>
@@ -305,17 +305,17 @@ export default function ConsensusSimulator() {
             exit={{ opacity: 0, y: -20 }}
             className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4"
           >
-            <h3 className="text-lg font-semibold text-blue-400 mb-2">
+            <h3 className="text-lg font-semibold text-brand-600 dark:text-brand-400 mb-2">
               {t('design_principles.consistency_strategies.consensus_simulator.step_prefix')} {step + 1}: {protocolSteps[protocol][step].title}
             </h3>
-            <p className="text-zinc-300">{protocolSteps[protocol][step].description}</p>
+            <p className="text-slate-600 dark:text-slate-300">{protocolSteps[protocol][step].description}</p>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* Nodes Visualization */}
-      <div className="bg-zinc-900 rounded-lg p-6 pb-20">
-        <h2 className="text-xl font-bold text-blue-400 mb-6">{t('design_principles.consistency_strategies.consensus_simulator.cluster_vis_title')}</h2>
+      <div className="bg-white dark:bg-slate-900 rounded-lg p-6 pb-20">
+        <h2 className="text-xl font-bold text-brand-600 dark:text-brand-400 mb-6">{t('design_principles.consistency_strategies.consensus_simulator.cluster_vis_title')}</h2>
         <div ref={containerRef} className="relative aspect-square max-w-3xl mx-auto" style={{ height: '400px' }}>
           {/* Messages */}
           <AnimatePresence>
@@ -405,68 +405,68 @@ export default function ConsensusSimulator() {
       </div>
 
       {/* Progress Bar */}
-      <div className="bg-zinc-900 rounded-lg p-4">
-        <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-lg p-4">
+        <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
           <div className="h-full bg-blue-500 transition-all duration-300" style={{ width: `${(step / (protocolSteps[protocol].length - 1)) * 100}%` }} />
         </div>
-        <div className="mt-2 text-zinc-400 text-sm text-center">
+        <div className="mt-2 text-slate-500 dark:text-slate-400 text-sm text-center">
           {t('design_principles.consistency_strategies.consensus_simulator.progress_label', { percent: Math.round((step / (protocolSteps[protocol].length - 1)) * 100) })}
         </div>
       </div>
 
       {/* Legend */}
-      <div className="bg-zinc-900 rounded-lg p-4">
-        <h3 className="font-medium text-zinc-300 mb-2">{t('design_principles.consistency_strategies.consensus_simulator.legend.legend_title')}</h3>
+      <div className="bg-white dark:bg-slate-900 rounded-lg p-4">
+        <h3 className="font-medium text-slate-600 dark:text-slate-300 mb-2">{t('design_principles.consistency_strategies.consensus_simulator.legend.legend_title')}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <h4 className="text-sm font-medium text-zinc-400 mb-2">{t('design_principles.consistency_strategies.consensus_simulator.legend.node_states_title')}</h4>
+            <h4 className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">{t('design_principles.consistency_strategies.consensus_simulator.legend.node_states_title')}</h4>
             <div className="grid gap-2">
               {protocol === 'raft' && (
                 <>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-blue-500"></div><span className="text-zinc-300">{roles.follower}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-yellow-500"></div><span className="text-zinc-300">{roles.candidate}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-green-500"></div><span className="text-zinc-300">{roles.leader}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-blue-500"></div><span className="text-slate-600 dark:text-slate-300">{roles.follower}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-yellow-500"></div><span className="text-slate-600 dark:text-slate-300">{roles.candidate}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-green-500"></div><span className="text-slate-600 dark:text-slate-300">{roles.leader}</span></div>
                 </>
               )}
               {protocol === 'paxos' && (
                 <>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-purple-500"></div><span className="text-zinc-300">{roles.proposer}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-blue-500"></div><span className="text-zinc-300">{roles.acceptor}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-cyan-500"></div><span className="text-zinc-300">{roles.learner}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-purple-500"></div><span className="text-slate-600 dark:text-slate-300">{roles.proposer}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-blue-500"></div><span className="text-slate-600 dark:text-slate-300">{roles.acceptor}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-cyan-500"></div><span className="text-slate-600 dark:text-slate-300">{roles.learner}</span></div>
                 </>
               )}
               {protocol === 'zookeeper' && (
                 <>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-green-500"></div><span className="text-zinc-300">{roles.leader}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-blue-500"></div><span className="text-zinc-300">{roles.follower}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-orange-500"></div><span className="text-zinc-300">{roles.participant}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-green-500"></div><span className="text-slate-600 dark:text-slate-300">{roles.leader}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-blue-500"></div><span className="text-slate-600 dark:text-slate-300">{roles.follower}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-orange-500"></div><span className="text-slate-600 dark:text-slate-300">{roles.participant}</span></div>
                 </>
               )}
             </div>
           </div>
           <div>
-            <h4 className="text-sm font-medium text-zinc-400 mb-2">{t('design_principles.consistency_strategies.consensus_simulator.legend.message_types_title')}</h4>
+            <h4 className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">{t('design_principles.consistency_strategies.consensus_simulator.legend.message_types_title')}</h4>
             <div className="grid gap-2">
               {protocol === 'raft' && (
                 <>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-yellow-500"></div><span className="text-zinc-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.vote_request')}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-green-500"></div><span className="text-zinc-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.vote_response')}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-purple-500"></div><span className="text-zinc-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.log_replication')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-yellow-500"></div><span className="text-slate-600 dark:text-slate-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.vote_request')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-green-500"></div><span className="text-slate-600 dark:text-slate-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.vote_response')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-purple-500"></div><span className="text-slate-600 dark:text-slate-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.log_replication')}</span></div>
                 </>
               )}
               {protocol === 'paxos' && (
                 <>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-yellow-500"></div><span className="text-zinc-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.prepare')}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-green-500"></div><span className="text-zinc-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.promise')}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-purple-500"></div><span className="text-zinc-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.propose')}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-cyan-500"></div><span className="text-zinc-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.accept')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-yellow-500"></div><span className="text-slate-600 dark:text-slate-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.prepare')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-green-500"></div><span className="text-slate-600 dark:text-slate-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.promise')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-purple-500"></div><span className="text-slate-600 dark:text-slate-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.propose')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-cyan-500"></div><span className="text-slate-600 dark:text-slate-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.accept')}</span></div>
                 </>
               )}
               {protocol === 'zookeeper' && (
                 <>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-orange-500"></div><span className="text-zinc-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.watch')}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-blue-500"></div><span className="text-zinc-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.replication')}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-red-500"></div><span className="text-zinc-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.notification')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-orange-500"></div><span className="text-slate-600 dark:text-slate-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.watch')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-blue-500"></div><span className="text-slate-600 dark:text-slate-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.replication')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-red-500"></div><span className="text-slate-600 dark:text-slate-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.notification')}</span></div>
                 </>
               )}
             </div>

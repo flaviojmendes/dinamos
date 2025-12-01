@@ -114,7 +114,7 @@ export default function Subscription() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-xl text-zinc-400"
+            className="text-xl text-slate-500 dark:text-slate-400"
           >
             {t('subscription.subtitle')}
           </motion.p>
@@ -129,13 +129,13 @@ export default function Subscription() {
           >
             {/* Currency Selector */}
             <div className="text-center mb-6">
-              <label className="block text-sm text-zinc-400 mb-2">
+              <label className="block text-sm text-slate-500 dark:text-slate-400 mb-2">
                 {t('subscription.select_currency', { defaultValue: 'Select your currency' })}
               </label>
               <select
                 value={selectedCurrency}
                 onChange={(e) => setSelectedCurrency(e.target.value)}
-                className="bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 {availableCurrencies.map((curr) => (
                   <option key={curr.key} value={curr.key}>
@@ -149,15 +149,15 @@ export default function Subscription() {
               <div className="mb-2">
                 <div className="text-4xl font-bold text-blue-500">
                   {formatPrice(pricingData.price, pricingData)}
-                  <span className="text-base font-normal text-zinc-400 ml-2">/ {t('common.month', { defaultValue: 'month' })}</span>
+                  <span className="text-base font-normal text-slate-500 dark:text-slate-400 ml-2">/ {t('common.month', { defaultValue: 'month' })}</span>
                 </div>
               </div>
-              <p className="text-zinc-400">{t('subscription.cancel_anytime', { defaultValue: 'Cancel anytime' })}</p>
+              <p className="text-slate-500 dark:text-slate-400">{t('subscription.cancel_anytime', { defaultValue: 'Cancel anytime' })}</p>
             </div>
 
             <ul className="space-y-4 mb-8">
               {features.map((feature) => (
-                <li key={feature} className="flex items-center gap-3 text-zinc-300">
+                <li key={feature} className="flex items-center gap-3 text-slate-600 dark:text-slate-300">
                   <svg className="w-5 h-5 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
@@ -195,27 +195,27 @@ export default function Subscription() {
         >
           <h3 className="text-2xl font-bold mb-4">{t('subscription.why_buy_title')}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left mt-8">
-            <div className="bg-zinc-900/50 p-6 rounded-lg">
-              <h4 className="text-lg font-semibold mb-2 text-blue-400">{t('subscription.why_practical_title')}</h4>
-              <p className="text-zinc-400">
+            <div className="bg-white dark:bg-slate-900/50 p-6 rounded-lg">
+              <h4 className="text-lg font-semibold mb-2 text-brand-600 dark:text-brand-400">{t('subscription.why_practical_title')}</h4>
+              <p className="text-slate-500 dark:text-slate-400">
                 {t('subscription.why_practical_desc')}
               </p>
             </div>
-            <div className="bg-zinc-900/50 p-6 rounded-lg">
+            <div className="bg-white dark:bg-slate-900/50 p-6 rounded-lg">
               <h4 className="text-lg font-semibold mb-2 text-purple-400">{t('subscription.why_updated_title')}</h4>
-              <p className="text-zinc-400">
+              <p className="text-slate-500 dark:text-slate-400">
                 {t('subscription.why_updated_desc')}
               </p>
             </div>
-            <div className="bg-zinc-900/50 p-6 rounded-lg">
+            <div className="bg-white dark:bg-slate-900/50 p-6 rounded-lg">
               <h4 className="text-lg font-semibold mb-2 text-yellow-400">{t('subscription.why_career_title')}</h4>
-              <p className="text-zinc-400">
+              <p className="text-slate-500 dark:text-slate-400">
                 {t('subscription.why_career_desc')}
               </p>
             </div>
-            <div className="bg-zinc-900/50 p-6 rounded-lg">
+            <div className="bg-white dark:bg-slate-900/50 p-6 rounded-lg">
               <h4 className="text-lg font-semibold mb-2 text-orange-400">{t('subscription.why_community_title')}</h4>
-              <p className="text-zinc-400">
+              <p className="text-slate-500 dark:text-slate-400">
                 {t('subscription.why_community_desc')}
               </p>
             </div>

@@ -198,10 +198,10 @@ export default function PhilosophersSimulator() {
 
   const getStateColor = (state: string) => {
     switch (state) {
-      case 'thinking': return 'bg-blue-500/20 text-blue-300 border-blue-500/50';
+      case 'thinking': return 'bg-blue-500/20 text-brand-600 dark:text-brand-300 border-blue-500/50';
       case 'hungry': return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/50';
       case 'eating': return 'bg-green-500/20 text-green-300 border-green-500/50';
-      default: return 'bg-zinc-500/20 text-zinc-300 border-zinc-500/50';
+      default: return 'bg-zinc-500/20 text-slate-600 dark:text-slate-300 border-zinc-500/50';
     }
   };
 
@@ -216,7 +216,7 @@ export default function PhilosophersSimulator() {
         <select
           value={strategy}
           onChange={(e) => setStrategy(e.target.value as any)}
-          className="bg-zinc-800 text-zinc-300 rounded-lg p-2 border border-zinc-700"
+          className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-lg p-2 border border-slate-300 dark:border-slate-700"
         >
           <option value="hierarchical">Hierarquia de Recursos</option>
           <option value="both">Pegar Dois ou Nenhum</option>
@@ -244,9 +244,9 @@ export default function PhilosophersSimulator() {
       </div>
 
       {/* Visualization */}
-      <div className="relative aspect-square max-w-xl mx-auto mb-8 bg-zinc-900/50 rounded-xl p-8">
+      <div className="relative aspect-square max-w-xl mx-auto mb-8 bg-white dark:bg-slate-900/50 rounded-xl p-8">
         {/* Table */}
-        <div className="absolute inset-[15%] rounded-full border-4 border-zinc-700/50" />
+        <div className="absolute inset-[15%] rounded-full border-4 border-slate-300 dark:border-slate-700/50" />
         
         {/* Philosophers */}
         {philosophers.map((philosopher, index) => {
@@ -312,10 +312,10 @@ export default function PhilosophersSimulator() {
       </div>
 
       {/* Logs */}
-      <div className="bg-zinc-900/50 rounded-xl p-4">
+      <div className="bg-white dark:bg-slate-900/50 rounded-xl p-4">
         <div className="h-48 overflow-y-auto space-y-1">
           {logs.map((log, index) => (
-            <div key={index} className="text-sm text-zinc-300">
+            <div key={index} className="text-sm text-slate-600 dark:text-slate-300">
               {log}
             </div>
           ))}

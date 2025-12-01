@@ -41,12 +41,12 @@ interface NodeData {
 const ClientNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
   const { t } = useTranslation();
   return (
-    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-blue-500 bg-zinc-800 min-w-[180px]">
+    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-blue-500 bg-slate-100 dark:bg-slate-800 min-w-[180px]">
       <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
       <div className="font-bold text-white">{data.label}</div>
       {data.metrics && (
         <div className="text-xs mt-2">
-          <div className="text-blue-300">{t('editor.metrics.requests_per_second')}: {data.metrics.requestsPerSecond}</div>
+          <div className="text-brand-600 dark:text-brand-300">{t('editor.metrics.requests_per_second')}: {data.metrics.requestsPerSecond}</div>
           <div className="text-red-300">{t('editor.metrics.error_rate')}: {data.metrics.errorRate.toFixed(1)}%</div>
           <div className="text-green-300">{t('editor.metrics.response_time_ms')}: {data.metrics.responseTime.toFixed(0)}ms</div>
         </div>
@@ -67,13 +67,13 @@ const ClientNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
 const LoadBalancerNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
   const { t } = useTranslation();
   return (
-    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-green-500 bg-zinc-800 min-w-[180px]">
+    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-green-500 bg-slate-100 dark:bg-slate-800 min-w-[180px]">
       <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
       <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
       <div className="font-bold text-white">{data.label}</div>
       {data.metrics && (
         <div className="text-xs mt-2">
-          <div className="text-blue-300 flex justify-between items-center">
+          <div className="text-brand-600 dark:text-brand-300 flex justify-between items-center">
             <span>{t('editor.metrics.active_connections')}:</span>
             <span className="font-bold text-lg">{data.metrics.activeRequests}</span>
           </div>
@@ -104,13 +104,13 @@ const LoadBalancerNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
 const ServerNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
   const { t } = useTranslation();
   return (
-    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-purple-500 bg-zinc-800 min-w-[180px]">
+    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-purple-500 bg-slate-100 dark:bg-slate-800 min-w-[180px]">
       <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
       <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
       <div className="font-bold text-white">{data.label}</div>
       {data.metrics && (
         <div className="text-xs mt-2">
-          <div className="text-blue-300 flex justify-between items-center">
+          <div className="text-brand-600 dark:text-brand-300 flex justify-between items-center">
             <span>{t('editor.metrics.active_connections')}:</span>
             <span className="font-bold text-lg">{data.metrics.activeRequests}</span>
           </div>
@@ -138,12 +138,12 @@ const ServerNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
 const DatabaseNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
   const { t } = useTranslation();
   return (
-    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-yellow-500 bg-zinc-800 min-w-[180px]">
+    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-yellow-500 bg-slate-100 dark:bg-slate-800 min-w-[180px]">
       <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
       <div className="font-bold text-white">{data.label}</div>
       {data.metrics && (
         <div className="text-xs mt-2">
-          <div className="text-blue-300 flex justify-between items-center">
+          <div className="text-brand-600 dark:text-brand-300 flex justify-between items-center">
             <span>{t('editor.metrics.active_connections')}:</span>
             <span className="font-bold text-lg">{data.metrics.activeRequests}</span>
           </div>
@@ -571,7 +571,7 @@ export default function SystemEditor() {
             ? `Servidor ${nodes.filter(n => n.type === 'server').length + 1}`
             : availableComponents.find(c => c.type === type)?.label || type
         },
-        className: 'bg-zinc-800 border-none',
+        className: 'bg-slate-100 dark:bg-slate-800 border-none',
       };
 
       setNodes((nds) => nds.concat(newNode));
@@ -590,17 +590,17 @@ export default function SystemEditor() {
     <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
       <div className="bg-blue-500/20 border border-blue-500 rounded-lg p-4 mb-8">
         <div className="flex items-start gap-3">
-          <div className="text-blue-400 mt-1">
+          <div className="text-brand-600 dark:text-brand-400 mt-1">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
           <div>
-            <h3 className="text-blue-400 font-semibold mb-1">{t('editor.dev_page.title')}</h3>
-            <p className="text-zinc-300 mb-2">
+            <h3 className="text-brand-600 dark:text-brand-400 font-semibold mb-1">{t('editor.dev_page.title')}</h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-2">
               {t('editor.dev_page.description')}
             </p>
-            <p className="text-zinc-400 text-sm">
+            <p className="text-slate-500 dark:text-slate-400 text-sm">
               <span className="text-yellow-400">{t('editor.labels.note_prefix', { provider: '' }).split('* ')[1]?.split(' (')[0]}</span> {t('editor.dev_page.note')}
             </p>
           </div>
@@ -608,7 +608,7 @@ export default function SystemEditor() {
       </div>
 
       <div className="prose prose-invert prose-lg max-w-none mb-8">
-        <h1 className="text-4xl font-bold mb-4 text-blue-400">
+        <h1 className="text-4xl font-bold mb-4 text-brand-600 dark:text-brand-400">
           {t('editor.title')}
         </h1>
         <div className="flex flex-col gap-4 mb-4">
@@ -626,7 +626,7 @@ export default function SystemEditor() {
             </div>
           </div>
 
-          <div className="flex gap-4 text-sm text-zinc-400">
+          <div className="flex gap-4 text-sm text-slate-500 dark:text-slate-400">
             <div>{t('editor.labels.load_status')}</div>
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 rounded-full bg-green-500"></div>
@@ -644,7 +644,7 @@ export default function SystemEditor() {
         </div>
       </div>
       
-      <div style={{ width: '100%', height: '600px' }} className="bg-zinc-900 rounded-lg relative">
+      <div style={{ width: '100%', height: '600px' }} className="bg-white dark:bg-slate-900 rounded-lg relative">
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -663,7 +663,7 @@ export default function SystemEditor() {
           maxZoom={1.5}
           defaultViewport={{ x: 0, y: 0, zoom: 0.7 }}
         >
-          <Panel position="top-left" className="bg-zinc-800 p-4 rounded-lg">
+          <Panel position="top-left" className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
             <div className="flex flex-col gap-2">
               <h3 className="text-white font-semibold mb-2">{t('editor.labels.components')}</h3>
               <div className="flex flex-col gap-2">

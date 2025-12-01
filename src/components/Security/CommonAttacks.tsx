@@ -29,7 +29,7 @@ export default function CommonAttacks() {
           <h1 className="text-4xl font-bold text-white mb-4">
             {t(`${base}.title`)}
           </h1>
-          <p className="text-lg text-zinc-400 mb-6">
+          <p className="text-lg text-slate-500 dark:text-slate-400 mb-6">
             {t(`${base}.subtitle`)}
           </p>
         </div>
@@ -61,7 +61,7 @@ export default function CommonAttacks() {
               </div>
               <div className="flex-1">
                 <h3 className="text-2xl font-bold text-white mb-2">{t(`${base}.simulator_title`)}</h3>
-                <p className="text-lg text-zinc-400 mb-4">
+                <p className="text-lg text-slate-500 dark:text-slate-400 mb-4">
                   {t(`${base}.simulator_description`)}
                 </p>
                 <Link
@@ -84,27 +84,27 @@ export default function CommonAttacks() {
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.categories_title`)}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="bg-zinc-900 rounded-lg p-6 border-t-4 border-red-500">
+              <div className="bg-white dark:bg-slate-900 rounded-lg p-6 border-t-4 border-red-500">
                 <h3 className="text-xl font-semibold text-red-400 mb-3">{t(`${base}.network_attacks_title`)}</h3>
-                <ul className="space-y-2 text-zinc-400">
+                <ul className="space-y-2 text-slate-500 dark:text-slate-400">
                   {networkAttacks.map((attack, index) => (
                     <li key={index}>• {attack}</li>
                   ))}
                 </ul>
               </div>
 
-              <div className="bg-zinc-900 rounded-lg p-6 border-t-4 border-yellow-500">
+              <div className="bg-white dark:bg-slate-900 rounded-lg p-6 border-t-4 border-yellow-500">
                 <h3 className="text-xl font-semibold text-yellow-400 mb-3">{t(`${base}.application_attacks_title`)}</h3>
-                <ul className="space-y-2 text-zinc-400">
+                <ul className="space-y-2 text-slate-500 dark:text-slate-400">
                   {applicationAttacks.map((attack, index) => (
                     <li key={index}>• {attack}</li>
                   ))}
                 </ul>
               </div>
 
-              <div className="bg-zinc-900 rounded-lg p-6 border-t-4 border-blue-500">
-                <h3 className="text-xl font-semibold text-blue-400 mb-3">{t(`${base}.authentication_attacks_title`)}</h3>
-                <ul className="space-y-2 text-zinc-400">
+              <div className="bg-white dark:bg-slate-900 rounded-lg p-6 border-t-4 border-blue-500">
+                <h3 className="text-xl font-semibold text-brand-600 dark:text-brand-400 mb-3">{t(`${base}.authentication_attacks_title`)}</h3>
+                <ul className="space-y-2 text-slate-500 dark:text-slate-400">
                   {authenticationAttacks.map((attack, index) => (
                     <li key={index}>• {attack}</li>
                   ))}
@@ -116,16 +116,16 @@ export default function CommonAttacks() {
           {/* DDoS Attacks */}
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.ddos_title`)}</h2>
-            <div className="bg-zinc-900 rounded-lg p-6">
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
               <div className="space-y-6">
-                <p className="text-zinc-400">
+                <p className="text-slate-500 dark:text-slate-400">
                   {t(`${base}.ddos_description`)}
                 </p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="bg-zinc-800 p-6 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-emerald-400 mb-3">{t(`${base}.ddos_types_title`)}</h3>
-                    <ul className="space-y-2 text-zinc-400">
+                    <ul className="space-y-2 text-slate-500 dark:text-slate-400">
                       {ddosTypes.map((type, index) => (
                         <li key={index}>
                           <span className="text-emerald-400 font-medium">{type.name}</span>
@@ -135,9 +135,9 @@ export default function CommonAttacks() {
                     </ul>
                   </div>
 
-                  <div className="bg-zinc-800 p-6 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-emerald-400 mb-3">{t(`${base}.ddos_mitigation_title`)}</h3>
-                    <ul className="space-y-2 text-zinc-400">
+                    <ul className="space-y-2 text-slate-500 dark:text-slate-400">
                       {ddosMitigation.map((mitigation, index) => (
                         <li key={index}>• {mitigation}</li>
                       ))}
@@ -151,24 +151,24 @@ export default function CommonAttacks() {
           {/* Man-in-the-Middle */}
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.mitm_title`)}</h2>
-            <div className="bg-zinc-900 rounded-lg p-6">
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="bg-zinc-800 p-6 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-emerald-400 mb-3">{t(`${base}.mitm_how_works_title`)}</h3>
-                    <p className="text-zinc-400 mb-4">
+                    <p className="text-slate-500 dark:text-slate-400 mb-4">
                       {t(`${base}.mitm_description`)}
                     </p>
-                    <ul className="space-y-2 text-zinc-400">
+                    <ul className="space-y-2 text-slate-500 dark:text-slate-400">
                       {mitmTechniques.map((technique, index) => (
                         <li key={index}>• {technique}</li>
                       ))}
                     </ul>
                   </div>
 
-                  <div className="bg-zinc-800 p-6 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-emerald-400 mb-3">{t(`${base}.mitm_prevention_title`)}</h3>
-                    <ul className="space-y-2 text-zinc-400">
+                    <ul className="space-y-2 text-slate-500 dark:text-slate-400">
                       {mitmPrevention.map((prevention, index) => (
                         <li key={index}>• {prevention}</li>
                       ))}
@@ -182,20 +182,20 @@ export default function CommonAttacks() {
           {/* Injection Attacks */}
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.injection_title`)}</h2>
-            <div className="bg-zinc-900 rounded-lg p-6">
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
               <div className="grid gap-6">
-                <div className="bg-zinc-800 p-6 rounded-lg">
+                <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                   <h3 className="text-xl font-semibold text-emerald-400 mb-3">{t(`${base}.sql_injection_title`)}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <h4 className="text-lg font-medium text-white mb-2">{t(`${base}.sql_vulnerability_title`)}</h4>
-                      <p className="text-zinc-400">
+                      <p className="text-slate-500 dark:text-slate-400">
                         {t(`${base}.sql_vulnerability_description`)}
                       </p>
                     </div>
                     <div>
                       <h4 className="text-lg font-medium text-white mb-2">{t(`${base}.sql_prevention_title`)}</h4>
-                      <ul className="space-y-1 text-zinc-400">
+                      <ul className="space-y-1 text-slate-500 dark:text-slate-400">
                         {sqlPrevention.map((prevention, index) => (
                           <li key={index}>• {prevention}</li>
                         ))}
@@ -204,18 +204,18 @@ export default function CommonAttacks() {
                   </div>
                 </div>
 
-                <div className="bg-zinc-800 p-6 rounded-lg">
+                <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                   <h3 className="text-xl font-semibold text-emerald-400 mb-3">{t(`${base}.xss_title`)}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <h4 className="text-lg font-medium text-white mb-2">{t(`${base}.xss_vulnerability_title`)}</h4>
-                      <p className="text-zinc-400">
+                      <p className="text-slate-500 dark:text-slate-400">
                         {t(`${base}.xss_vulnerability_description`)}
                       </p>
                     </div>
                     <div>
                       <h4 className="text-lg font-medium text-white mb-2">{t(`${base}.xss_prevention_title`)}</h4>
-                      <ul className="space-y-1 text-zinc-400">
+                      <ul className="space-y-1 text-slate-500 dark:text-slate-400">
                         {xssPrevention.map((prevention, index) => (
                           <li key={index}>• {prevention}</li>
                         ))}
@@ -230,42 +230,42 @@ export default function CommonAttacks() {
           {/* Authentication Attacks */}
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.auth_attacks_title`)}</h2>
-            <div className="bg-zinc-900 rounded-lg p-6">
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="bg-zinc-800 p-6 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-emerald-400 mb-3">{t(`${base}.brute_force_title`)}</h3>
-                    <p className="text-zinc-400 mb-4">
+                    <p className="text-slate-500 dark:text-slate-400 mb-4">
                       {t(`${base}.brute_force_description`)}
                     </p>
                     <h4 className="text-lg font-medium text-white mb-2">{t(`${base}.brute_force_mitigation_title`)}</h4>
-                    <ul className="space-y-1 text-zinc-400">
+                    <ul className="space-y-1 text-slate-500 dark:text-slate-400">
                       {bruteForceMitigation.map((mitigation, index) => (
                         <li key={index}>• {mitigation}</li>
                       ))}
                     </ul>
                   </div>
 
-                  <div className="bg-zinc-800 p-6 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-emerald-400 mb-3">{t(`${base}.session_hijacking_title`)}</h3>
-                    <p className="text-zinc-400 mb-4">
+                    <p className="text-slate-500 dark:text-slate-400 mb-4">
                       {t(`${base}.session_hijacking_description`)}
                     </p>
                     <h4 className="text-lg font-medium text-white mb-2">{t(`${base}.session_hijacking_mitigation_title`)}</h4>
-                    <ul className="space-y-1 text-zinc-400">
+                    <ul className="space-y-1 text-slate-500 dark:text-slate-400">
                       {sessionHijackingMitigation.map((mitigation, index) => (
                         <li key={index}>• {mitigation}</li>
                       ))}
                     </ul>
                   </div>
 
-                  <div className="bg-zinc-800 p-6 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-emerald-400 mb-3">{t(`${base}.credential_stuffing_title`)}</h3>
-                    <p className="text-zinc-400 mb-4">
+                    <p className="text-slate-500 dark:text-slate-400 mb-4">
                       {t(`${base}.credential_stuffing_description`)}
                     </p>
                     <h4 className="text-lg font-medium text-white mb-2">{t(`${base}.credential_stuffing_mitigation_title`)}</h4>
-                    <ul className="space-y-1 text-zinc-400">
+                    <ul className="space-y-1 text-slate-500 dark:text-slate-400">
                       {credentialStuffingMitigation.map((mitigation, index) => (
                         <li key={index}>• {mitigation}</li>
                       ))}
@@ -280,9 +280,9 @@ export default function CommonAttacks() {
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.best_practices_title`)}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-zinc-900 rounded-lg p-6">
+              <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
                 <h3 className="text-xl font-semibold text-emerald-400 mb-4">{t(`${base}.prevention_title`)}</h3>
-                <ul className="space-y-3 text-zinc-400">
+                <ul className="space-y-3 text-slate-500 dark:text-slate-400">
                   {preventionPractices.map((practice, index) => (
                     <li key={index} className="flex items-start gap-2">
                       <svg className="w-6 h-6 text-emerald-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -294,9 +294,9 @@ export default function CommonAttacks() {
                 </ul>
               </div>
 
-              <div className="bg-zinc-900 rounded-lg p-6">
+              <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
                 <h3 className="text-xl font-semibold text-emerald-400 mb-4">{t(`${base}.monitoring_title`)}</h3>
-                <ul className="space-y-3 text-zinc-400">
+                <ul className="space-y-3 text-slate-500 dark:text-slate-400">
                   {monitoringPractices.map((practice, index) => (
                     <li key={index} className="flex items-start gap-2">
                       <svg className="w-6 h-6 text-emerald-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">

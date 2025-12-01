@@ -216,15 +216,15 @@ export default function ScalabilitySimulator() {
   }, [isRunning, config]);
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white p-8">
+    <div className="min-h-screen bg-canvas-paper dark:bg-canvas-dark text-white p-8">
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-4">{t('simulators.scalability.title')}</h1>
-          <p className="text-zinc-400 mb-6">
+          <p className="text-slate-500 dark:text-slate-400 mb-6">
             {t('simulators.scalability.intro')}
           </p>
           
-          <div className="bg-zinc-900/50 rounded-xl p-6 space-y-3 text-sm text-zinc-300">
+          <div className="bg-white dark:bg-slate-900/50 rounded-xl p-6 space-y-3 text-sm text-slate-600 dark:text-slate-300">
             <p className="font-semibold text-white">{t('simulators.scalability.how_title')}</p>
             <ol className="list-decimal list-inside space-y-2">
               {(t('simulators.scalability.how_steps', { returnObjects: true }) as string[]).map((s, idx) => (
@@ -235,7 +235,7 @@ export default function ScalabilitySimulator() {
         </div>
 
         {/* Configuration Panel */}
-        <div className="bg-zinc-900 rounded-xl p-6 mb-8">
+        <div className="bg-white dark:bg-slate-900 rounded-xl p-6 mb-8">
           <h2 className="text-xl font-semibold mb-4">{t('simulators.scalability.config_title')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
@@ -243,7 +243,7 @@ export default function ScalabilitySimulator() {
               <select
                 value={config.consistencyMode}
                 onChange={(e) => setConfig(prev => ({ ...prev, consistencyMode: e.target.value as 'strong' | 'eventual' }))}
-                className="w-full bg-zinc-800 rounded-lg p-2"
+                className="w-full bg-slate-100 dark:bg-slate-800 rounded-lg p-2"
               >
                 <option value="strong">{t('simulators.scalability.strong')}</option>
                 <option value="eventual">{t('simulators.scalability.eventual')}</option>
@@ -259,7 +259,7 @@ export default function ScalabilitySimulator() {
                 onChange={(e) => setConfig(prev => ({ ...prev, networkLatency: Number(e.target.value) }))}
                 className="w-full"
               />
-              <span className="text-sm text-zinc-400">{config.networkLatency}ms</span>
+              <span className="text-sm text-slate-500 dark:text-slate-400">{config.networkLatency}ms</span>
             </div>
             <div>
               <label className="block text-sm font-medium mb-2">{t('simulators.scalability.failure_rate')}</label>
@@ -272,7 +272,7 @@ export default function ScalabilitySimulator() {
                 onChange={(e) => setConfig(prev => ({ ...prev, failureRate: Number(e.target.value) }))}
                 className="w-full"
               />
-              <span className="text-sm text-zinc-400">{Math.round(config.failureRate * 100)}%</span>
+              <span className="text-sm text-slate-500 dark:text-slate-400">{Math.round(config.failureRate * 100)}%</span>
             </div>
             <div className="flex items-center">
               <label className="flex items-center">
@@ -289,13 +289,13 @@ export default function ScalabilitySimulator() {
         </div>
 
         {/* Manual Operation Panel */}
-        <div className="bg-zinc-900 rounded-xl p-6 mb-8">
+        <div className="bg-white dark:bg-slate-900 rounded-xl p-6 mb-8">
           <h2 className="text-xl font-semibold mb-4">{t('simulators.scalability.manual_title')}</h2>
           <div className="flex flex-wrap gap-4">
             <select
               value={selectedOperation}
               onChange={(e) => setSelectedOperation(e.target.value as 'read' | 'write')}
-              className="bg-zinc-800 rounded-lg p-2"
+              className="bg-slate-100 dark:bg-slate-800 rounded-lg p-2"
             >
               <option value="read">{t('simulators.scalability.read')}</option>
               <option value="write">{t('simulators.scalability.write')}</option>
@@ -305,7 +305,7 @@ export default function ScalabilitySimulator() {
               value={dataKey}
               onChange={(e) => setDataKey(e.target.value)}
               placeholder={t('simulators.scalability.key_placeholder') || 'Key'}
-              className="bg-zinc-800 rounded-lg p-2"
+              className="bg-slate-100 dark:bg-slate-800 rounded-lg p-2"
             />
             {selectedOperation === 'write' && (
               <input
@@ -313,7 +313,7 @@ export default function ScalabilitySimulator() {
                 value={dataValue}
                 onChange={(e) => setDataValue(e.target.value)}
                 placeholder={t('simulators.scalability.value_placeholder') || 'Value'}
-                className="bg-zinc-800 rounded-lg p-2"
+                className="bg-slate-100 dark:bg-slate-800 rounded-lg p-2"
               />
             )}
             <button
@@ -342,12 +342,12 @@ export default function ScalabilitySimulator() {
               key={server.id}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-zinc-900 rounded-xl p-6"
+              className="bg-white dark:bg-slate-900 rounded-xl p-6"
             >
               <div className="flex justify-between items-center mb-4">
                 <div>
                   <h3 className="text-lg font-medium">{server.name}</h3>
-                  <p className="text-sm text-zinc-400">{server.region}</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">{server.region}</p>
                 </div>
                 <span
                   className={`px-2 py-1 rounded-full text-sm ${
@@ -366,7 +366,7 @@ export default function ScalabilitySimulator() {
                 <div>
                   <div className="flex justify-between text-sm mb-1">
                     <span>{t('simulators.scalability.role')}</span>
-                    <span className={server.role === 'primary' ? 'text-blue-400' : 'text-zinc-400'}>
+                    <span className={server.role === 'primary' ? 'text-brand-600 dark:text-brand-400' : 'text-slate-500 dark:text-slate-400'}>
                       {server.role}
                     </span>
                   </div>
@@ -377,7 +377,7 @@ export default function ScalabilitySimulator() {
                     <span>{t('simulators.scalability.latency')}</span>
                     <span>{server.latency}ms</span>
                   </div>
-                  <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                  <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                     <motion.div
                       className="h-full bg-blue-500"
                       initial={{ width: 0 }}
@@ -391,11 +391,11 @@ export default function ScalabilitySimulator() {
                     <span>{t('simulators.scalability.data')}</span>
                     <span>{t('simulators.scalability.keys_label', { count: Object.keys(server.data).length })}</span>
                   </div>
-                  <div className="bg-zinc-800 rounded-lg p-2 max-h-24 overflow-auto text-sm">
+                  <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-2 max-h-24 overflow-auto text-sm">
                     {Object.entries(server.data).map(([key, data]) => (
                       <div key={key} className="flex flex-col mb-2">
                         <div className="flex justify-between">
-                          <span className="text-zinc-400">{key}:</span>
+                          <span className="text-slate-500 dark:text-slate-400">{key}:</span>
                           <span>{String(data.value)}</span>
                         </div>
                         {data.replicatedAt && data.replicatedAt !== data.timestamp && (
@@ -424,7 +424,7 @@ export default function ScalabilitySimulator() {
         </div>
 
         {/* Recent Requests */}
-        <div className="bg-zinc-900 rounded-xl p-6">
+        <div className="bg-white dark:bg-slate-900 rounded-xl p-6">
           <h2 className="text-xl font-semibold mb-4">{t('simulators.scalability.recent_requests')}</h2>
           <div className="space-y-2">
             <AnimatePresence>
@@ -434,7 +434,7 @@ export default function ScalabilitySimulator() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
-                  className="flex items-center justify-between bg-zinc-800 rounded-lg p-3"
+                  className="flex items-center justify-between bg-slate-100 dark:bg-slate-800 rounded-lg p-3"
                 >
                   <div className="flex items-center space-x-3">
                     <span className={`w-2 h-2 rounded-full ${
@@ -453,10 +453,10 @@ export default function ScalabilitySimulator() {
                     </span>
                   </div>
                   <div className="flex items-center space-x-4">
-                    <span className="text-sm text-zinc-400">
+                    <span className="text-sm text-slate-500 dark:text-slate-400">
                       {request.latency}ms
                     </span>
-                    <span className="text-sm text-zinc-400">
+                    <span className="text-sm text-slate-500 dark:text-slate-400">
                       {request.status}
                     </span>
                   </div>

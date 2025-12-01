@@ -23,7 +23,7 @@ const DistributedChallenges: React.FC = () => {
           </Typography>
 
           {/* Introduction */}
-          <div className="bg-zinc-800/30 p-8 rounded-lg border border-zinc-600 mb-12">
+          <div className="bg-slate-100 dark:bg-slate-800/30 p-8 rounded-lg border border-zinc-600 mb-12">
             <Typography variant="p" className="text-lg leading-relaxed text-gray-200">
               {t('menu.theoretical_foundations.distributed_challenges.introduction')}
             </Typography>
@@ -47,7 +47,7 @@ const DistributedChallenges: React.FC = () => {
 
               <div className="grid lg:grid-cols-2 gap-6 mb-6">
                 {/* Characteristics */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-red-300">
                     {t('menu.theoretical_foundations.distributed_challenges.characteristics_label')}
                   </Typography>
@@ -59,7 +59,7 @@ const DistributedChallenges: React.FC = () => {
                 </div>
 
                 {/* Common Causes */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-red-300">
                     {t('menu.theoretical_foundations.distributed_challenges.causes_label')}
                   </Typography>
@@ -89,7 +89,7 @@ const DistributedChallenges: React.FC = () => {
 
               <div className="grid lg:grid-cols-2 gap-6">
                 {/* Detection Strategies */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-red-300">
                     {t('menu.theoretical_foundations.distributed_challenges.detection_label')}
                   </Typography>
@@ -101,7 +101,7 @@ const DistributedChallenges: React.FC = () => {
                 </div>
 
                 {/* Mitigation Approaches */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-red-300">
                     {t('menu.theoretical_foundations.distributed_challenges.mitigation_label')}
                   </Typography>
@@ -131,7 +131,7 @@ const DistributedChallenges: React.FC = () => {
 
               <div className="grid lg:grid-cols-2 gap-6 mb-6">
                 {/* Characteristics */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-yellow-300">
                     {t('menu.theoretical_foundations.distributed_challenges.characteristics_label')}
                   </Typography>
@@ -143,7 +143,7 @@ const DistributedChallenges: React.FC = () => {
                 </div>
 
                 {/* Problems Caused */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-yellow-300">
                     {t('menu.theoretical_foundations.distributed_challenges.problems_label')}
                   </Typography>
@@ -173,7 +173,7 @@ const DistributedChallenges: React.FC = () => {
 
               <div className="grid lg:grid-cols-2 gap-6">
                 {/* Sync Approaches */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-yellow-300">
                     {t('menu.theoretical_foundations.distributed_challenges.sync_approaches_label')}
                   </Typography>
@@ -185,7 +185,7 @@ const DistributedChallenges: React.FC = () => {
                 </div>
 
                 {/* Logical Alternatives */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-yellow-300">
                     {t('menu.theoretical_foundations.distributed_challenges.logical_alternatives_label')}
                   </Typography>
@@ -202,7 +202,7 @@ const DistributedChallenges: React.FC = () => {
             <div className="bg-blue-900/20 p-8 rounded-lg border border-blue-700">
               <div className="flex items-center mb-6">
                 <div className="text-3xl mr-4">💥</div>
-                <Typography variant="h2" className="text-blue-400">
+                <Typography variant="h2" className="text-brand-600 dark:text-brand-400">
                   {t('menu.theoretical_foundations.distributed_challenges.partial_failures.title')}
                 </Typography>
               </div>
@@ -215,8 +215,8 @@ const DistributedChallenges: React.FC = () => {
 
               <div className="grid lg:grid-cols-2 gap-6 mb-6">
                 {/* Characteristics */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
-                  <Typography variant="h4" className="text-sm font-semibold mb-3 text-blue-300">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
+                  <Typography variant="h4" className="text-sm font-semibold mb-3 text-brand-600 dark:text-brand-300">
                     {t('menu.theoretical_foundations.distributed_challenges.characteristics_label')}
                   </Typography>
                   <ul className="list-disc list-inside space-y-1">
@@ -227,8 +227,8 @@ const DistributedChallenges: React.FC = () => {
                 </div>
 
                 {/* Failure Types */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
-                  <Typography variant="h4" className="text-sm font-semibold mb-3 text-blue-300">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
+                  <Typography variant="h4" className="text-sm font-semibold mb-3 text-brand-600 dark:text-brand-300">
                     {t('menu.theoretical_foundations.distributed_challenges.failure_types_label')}
                   </Typography>
                   <ul className="list-disc list-inside space-y-1">
@@ -241,7 +241,7 @@ const DistributedChallenges: React.FC = () => {
 
               {/* Concrete Examples */}
               <div className="mb-6">
-                <Typography variant="h4" className="text-sm font-semibold mb-3 text-blue-300">
+                <Typography variant="h4" className="text-sm font-semibold mb-3 text-brand-600 dark:text-brand-300">
                   {t('menu.theoretical_foundations.distributed_challenges.examples_label')}
                 </Typography>
                 <div className="grid md:grid-cols-2 gap-4">
@@ -257,8 +257,8 @@ const DistributedChallenges: React.FC = () => {
 
               <div className="grid lg:grid-cols-2 gap-6">
                 {/* Detection Challenges */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
-                  <Typography variant="h4" className="text-sm font-semibold mb-3 text-blue-300">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
+                  <Typography variant="h4" className="text-sm font-semibold mb-3 text-brand-600 dark:text-brand-300">
                     {t('menu.theoretical_foundations.distributed_challenges.detection_challenges_label')}
                   </Typography>
                   <ul className="list-disc list-inside space-y-1">
@@ -269,8 +269,8 @@ const DistributedChallenges: React.FC = () => {
                 </div>
 
                 {/* Handling Strategies */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
-                  <Typography variant="h4" className="text-sm font-semibold mb-3 text-blue-300">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
+                  <Typography variant="h4" className="text-sm font-semibold mb-3 text-brand-600 dark:text-brand-300">
                     {t('menu.theoretical_foundations.distributed_challenges.handling_strategies_label')}
                   </Typography>
                   <ul className="list-disc list-inside space-y-1">
@@ -299,7 +299,7 @@ const DistributedChallenges: React.FC = () => {
 
               <div className="grid lg:grid-cols-2 gap-6 mb-6">
                 {/* Characteristics */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-purple-300">
                     {t('menu.theoretical_foundations.distributed_challenges.characteristics_label')}
                   </Typography>
@@ -311,7 +311,7 @@ const DistributedChallenges: React.FC = () => {
                 </div>
 
                 {/* Problem Variants */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-purple-300">
                     {t('menu.theoretical_foundations.distributed_challenges.problem_variants_label')}
                   </Typography>
@@ -341,7 +341,7 @@ const DistributedChallenges: React.FC = () => {
 
               <div className="grid lg:grid-cols-2 gap-6">
                 {/* Famous Algorithms */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-purple-300">
                     {t('menu.theoretical_foundations.distributed_challenges.algorithms_label')}
                   </Typography>
@@ -353,7 +353,7 @@ const DistributedChallenges: React.FC = () => {
                 </div>
 
                 {/* Real-World Usage */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-purple-300">
                     {t('menu.theoretical_foundations.distributed_challenges.usage_label')}
                   </Typography>
@@ -383,7 +383,7 @@ const DistributedChallenges: React.FC = () => {
 
               <div className="grid lg:grid-cols-2 gap-6 mb-6">
                 {/* Characteristics */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-green-300">
                     {t('menu.theoretical_foundations.distributed_challenges.characteristics_label')}
                   </Typography>
@@ -395,7 +395,7 @@ const DistributedChallenges: React.FC = () => {
                 </div>
 
                 {/* Consistency Challenges */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-green-300">
                     {t('menu.theoretical_foundations.distributed_challenges.consistency_challenges_label')}
                   </Typography>
@@ -425,7 +425,7 @@ const DistributedChallenges: React.FC = () => {
 
               <div className="grid lg:grid-cols-2 gap-6">
                 {/* Concurrency Issues */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-green-300">
                     {t('menu.theoretical_foundations.distributed_challenges.concurrency_issues_label')}
                   </Typography>
@@ -437,7 +437,7 @@ const DistributedChallenges: React.FC = () => {
                 </div>
 
                 {/* Architectural Patterns */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-green-300">
                     {t('menu.theoretical_foundations.distributed_challenges.patterns_label')}
                   </Typography>
@@ -467,7 +467,7 @@ const DistributedChallenges: React.FC = () => {
 
               <div className="grid lg:grid-cols-2 gap-6 mb-6">
                 {/* Characteristics */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-orange-300">
                     {t('menu.theoretical_foundations.distributed_challenges.characteristics_label')}
                   </Typography>
@@ -479,7 +479,7 @@ const DistributedChallenges: React.FC = () => {
                 </div>
 
                 {/* Common Scenarios */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-orange-300">
                     {t('menu.theoretical_foundations.distributed_challenges.scenarios_label')}
                   </Typography>
@@ -509,7 +509,7 @@ const DistributedChallenges: React.FC = () => {
 
               <div className="grid lg:grid-cols-2 gap-6">
                 {/* Distributed Complications */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-orange-300">
                     {t('menu.theoretical_foundations.distributed_challenges.complications_label')}
                   </Typography>
@@ -521,7 +521,7 @@ const DistributedChallenges: React.FC = () => {
                 </div>
 
                 {/* Prevention Techniques */}
-                <div className="bg-zinc-900/50 p-4 rounded border border-zinc-600">
+                <div className="bg-white dark:bg-slate-900/50 p-4 rounded border border-zinc-600">
                   <Typography variant="h4" className="text-sm font-semibold mb-3 text-orange-300">
                     {t('menu.theoretical_foundations.distributed_challenges.techniques_label')}
                   </Typography>
@@ -536,7 +536,7 @@ const DistributedChallenges: React.FC = () => {
           </div>
 
           {/* Fallacies Section */}
-          <div className="bg-zinc-800/30 p-8 rounded-lg border border-zinc-600 mb-8">
+          <div className="bg-slate-100 dark:bg-slate-800/30 p-8 rounded-lg border border-zinc-600 mb-8">
             <Typography variant="h2" className="mb-4 text-center">
               {t('menu.theoretical_foundations.distributed_challenges.fallacies_title')}
             </Typography>

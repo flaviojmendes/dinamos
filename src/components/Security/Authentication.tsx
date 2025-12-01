@@ -24,7 +24,7 @@ export default function Authentication() {
           <h1 className="text-4xl font-bold text-white mb-4">
             {t(`${base}.title`)}
           </h1>
-          <p className="text-lg text-zinc-400">
+          <p className="text-lg text-slate-500 dark:text-slate-400">
             {t(`${base}.subtitle`)}
           </p>
         </div>
@@ -33,12 +33,12 @@ export default function Authentication() {
         <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-6 mb-12">
           <div className="flex items-start">
             <div className="flex-shrink-0">
-              <svg className="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="h-6 w-6 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             <div className="ml-4">
-              <p className="text-blue-400">
+              <p className="text-brand-600 dark:text-brand-400">
                 {t(`${base}.info_banner`)}
               </p>
             </div>
@@ -50,20 +50,20 @@ export default function Authentication() {
           {/* Conceitos Básicos */}
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.basic_concepts_title`)}</h2>
-            <div className="bg-zinc-900 rounded-lg p-6 space-y-4">
-              <p className="text-zinc-300">
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-6 space-y-4">
+              <p className="text-slate-600 dark:text-slate-300">
                 {t(`${base}.basic_concepts_description`)}
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                <div className="bg-zinc-800 p-6 rounded-lg">
-                  <h3 className="text-xl font-semibold text-blue-400 mb-3">{t(`${base}.identification_title`)}</h3>
-                  <p className="text-zinc-400">
+                <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
+                  <h3 className="text-xl font-semibold text-brand-600 dark:text-brand-400 mb-3">{t(`${base}.identification_title`)}</h3>
+                  <p className="text-slate-500 dark:text-slate-400">
                     {t(`${base}.identification_description`)}
                   </p>
                 </div>
-                <div className="bg-zinc-800 p-6 rounded-lg">
+                <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                   <h3 className="text-xl font-semibold text-green-400 mb-3">{t(`${base}.verification_title`)}</h3>
-                  <p className="text-zinc-400">
+                  <p className="text-slate-500 dark:text-slate-400">
                     {t(`${base}.verification_description`)}
                   </p>
                 </div>
@@ -74,26 +74,26 @@ export default function Authentication() {
           {/* Métodos de Autenticação */}
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.authentication_methods_title`)}</h2>
-            <div className="bg-zinc-900 rounded-lg p-6">
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
               <div className="grid gap-6">
-                <div className="border-b border-zinc-800 pb-6">
+                <div className="border-b border-slate-200 dark:border-slate-800 pb-6">
                   <h3 className="text-xl font-semibold text-purple-400 mb-3">{t(`${base}.password_auth_title`)}</h3>
-                  <p className="text-zinc-300 mb-4">
+                  <p className="text-slate-600 dark:text-slate-300 mb-4">
                     {t(`${base}.password_auth_description`)}
                   </p>
-                  <ul className="list-disc list-inside text-zinc-400 space-y-2">
+                  <ul className="list-disc list-inside text-slate-500 dark:text-slate-400 space-y-2">
                     {passwordAuthItems.map((item, idx) => (
                       <li key={idx}>{item}</li>
                     ))}
                   </ul>
                 </div>
 
-                <div className="border-b border-zinc-800 pb-6">
+                <div className="border-b border-slate-200 dark:border-slate-800 pb-6">
                   <h3 className="text-xl font-semibold text-purple-400 mb-3">{t(`${base}.token_auth_title`)}</h3>
-                  <p className="text-zinc-300 mb-4">
+                  <p className="text-slate-600 dark:text-slate-300 mb-4">
                     {t(`${base}.token_auth_description`)}
                   </p>
-                  <ul className="list-disc list-inside text-zinc-400 space-y-2">
+                  <ul className="list-disc list-inside text-slate-500 dark:text-slate-400 space-y-2">
                     {tokenAuthItems.map((item, idx) => (
                       <li key={idx}>{item}</li>
                     ))}
@@ -101,7 +101,7 @@ export default function Authentication() {
                   <div className="mt-4">
                     <Link 
                       to="/seguranca/tokens"
-                      className="text-blue-400 hover:text-blue-300 flex items-center"
+                      className="text-brand-600 dark:text-brand-400 hover:text-brand-600 dark:text-brand-300 flex items-center"
                     >
                       {t(`${base}.token_auth_link`)}
                       <svg className="w-4 h-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
@@ -111,12 +111,12 @@ export default function Authentication() {
                   </div>
                 </div>
 
-                <div className="border-b border-zinc-800 pb-6">
+                <div className="border-b border-slate-200 dark:border-slate-800 pb-6">
                   <h3 className="text-xl font-semibold text-purple-400 mb-3">{t(`${base}.oauth_title`)}</h3>
-                  <p className="text-zinc-300 mb-4">
+                  <p className="text-slate-600 dark:text-slate-300 mb-4">
                     {t(`${base}.oauth_description`)}
                   </p>
-                  <ul className="list-disc list-inside text-zinc-400 space-y-2">
+                  <ul className="list-disc list-inside text-slate-500 dark:text-slate-400 space-y-2">
                     {oauthItems.map((item, idx) => (
                       <li key={idx}>{item}</li>
                     ))}
@@ -125,10 +125,10 @@ export default function Authentication() {
 
                 <div>
                   <h3 className="text-xl font-semibold text-purple-400 mb-3">{t(`${base}.mfa_title`)}</h3>
-                  <p className="text-zinc-300 mb-4">
+                  <p className="text-slate-600 dark:text-slate-300 mb-4">
                     {t(`${base}.mfa_description`)}
                   </p>
-                  <ul className="list-disc list-inside text-zinc-400 space-y-2">
+                  <ul className="list-disc list-inside text-slate-500 dark:text-slate-400 space-y-2">
                     {mfaItems.map((item, idx) => (
                       <li key={idx}>{item}</li>
                     ))}
@@ -141,19 +141,19 @@ export default function Authentication() {
           {/* Desafios e Boas Práticas */}
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.challenges_best_practices_title`)}</h2>
-            <div className="bg-zinc-900 rounded-lg p-6">
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-zinc-800 p-6 rounded-lg">
+                <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                   <h3 className="text-xl font-semibold text-red-400 mb-3">{t(`${base}.challenges_title`)}</h3>
-                  <ul className="list-disc list-inside text-zinc-400 space-y-2">
+                  <ul className="list-disc list-inside text-slate-500 dark:text-slate-400 space-y-2">
                     {challengesItems.map((item, idx) => (
                       <li key={idx}>{item}</li>
                     ))}
                   </ul>
                 </div>
-                <div className="bg-zinc-800 p-6 rounded-lg">
+                <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                   <h3 className="text-xl font-semibold text-green-400 mb-3">{t(`${base}.best_practices_title`)}</h3>
-                  <ul className="list-disc list-inside text-zinc-400 space-y-2">
+                  <ul className="list-disc list-inside text-slate-500 dark:text-slate-400 space-y-2">
                     {bestPracticesItems.map((item, idx) => (
                       <li key={idx}>{item}</li>
                     ))}
@@ -166,31 +166,31 @@ export default function Authentication() {
           {/* Implementação */}
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.implementation_title`)}</h2>
-            <div className="bg-zinc-900 rounded-lg p-6">
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
               <div className="space-y-6">
-                <p className="text-zinc-300">
+                <p className="text-slate-600 dark:text-slate-300">
                   {t(`${base}.implementation_description`)}
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="bg-zinc-800 p-6 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-yellow-400 mb-3">{t(`${base}.architecture_title`)}</h3>
-                    <ul className="text-zinc-400 space-y-2">
+                    <ul className="text-slate-500 dark:text-slate-400 space-y-2">
                       {architectureItems.map((item, idx) => (
                         <li key={idx}>• {item}</li>
                       ))}
                     </ul>
                   </div>
-                  <div className="bg-zinc-800 p-6 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-yellow-400 mb-3">{t(`${base}.security_title`)}</h3>
-                    <ul className="text-zinc-400 space-y-2">
+                    <ul className="text-slate-500 dark:text-slate-400 space-y-2">
                       {securityItems.map((item, idx) => (
                         <li key={idx}>• {item}</li>
                       ))}
                     </ul>
                   </div>
-                  <div className="bg-zinc-800 p-6 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-yellow-400 mb-3">{t(`${base}.experience_title`)}</h3>
-                    <ul className="text-zinc-400 space-y-2">
+                    <ul className="text-slate-500 dark:text-slate-400 space-y-2">
                       {experienceItems.map((item, idx) => (
                         <li key={idx}>• {item}</li>
                       ))}

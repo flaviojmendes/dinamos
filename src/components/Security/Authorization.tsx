@@ -25,7 +25,7 @@ export default function Authorization() {
           <h1 className="text-4xl font-bold text-white mb-4">
             {t(`${base}.title`)}
           </h1>
-          <p className="text-lg text-zinc-400">
+          <p className="text-lg text-slate-500 dark:text-slate-400">
             {t(`${base}.subtitle`)}
           </p>
         </div>
@@ -51,23 +51,23 @@ export default function Authorization() {
           {/* Conceitos Fundamentais */}
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.fundamental_concepts_title`)}</h2>
-            <div className="bg-zinc-900 rounded-lg p-6">
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className="bg-zinc-800 p-6 rounded-lg">
-                  <h3 className="text-xl font-semibold text-blue-400 mb-3">{t(`${base}.authorization_concept_title`)}</h3>
-                  <p className="text-zinc-400">
+                <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
+                  <h3 className="text-xl font-semibold text-brand-600 dark:text-brand-400 mb-3">{t(`${base}.authorization_concept_title`)}</h3>
+                  <p className="text-slate-500 dark:text-slate-400">
                     {t(`${base}.authorization_concept_description`)}
                   </p>
                 </div>
-                <div className="bg-zinc-800 p-6 rounded-lg">
-                  <h3 className="text-xl font-semibold text-blue-400 mb-3">{t(`${base}.permissions_concept_title`)}</h3>
-                  <p className="text-zinc-400">
+                <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
+                  <h3 className="text-xl font-semibold text-brand-600 dark:text-brand-400 mb-3">{t(`${base}.permissions_concept_title`)}</h3>
+                  <p className="text-slate-500 dark:text-slate-400">
                     {t(`${base}.permissions_concept_description`)}
                   </p>
                 </div>
-                <div className="bg-zinc-800 p-6 rounded-lg">
-                  <h3 className="text-xl font-semibold text-blue-400 mb-3">{t(`${base}.policies_concept_title`)}</h3>
-                  <p className="text-zinc-400">
+                <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
+                  <h3 className="text-xl font-semibold text-brand-600 dark:text-brand-400 mb-3">{t(`${base}.policies_concept_title`)}</h3>
+                  <p className="text-slate-500 dark:text-slate-400">
                     {t(`${base}.policies_concept_description`)}
                   </p>
                 </div>
@@ -78,16 +78,16 @@ export default function Authorization() {
           {/* Modelos de Controle de Acesso */}
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.access_control_models_title`)}</h2>
-            <div className="bg-zinc-900 rounded-lg p-6">
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
               <div className="grid gap-6">
-                <div className="border-b border-zinc-800 pb-6">
+                <div className="border-b border-slate-200 dark:border-slate-800 pb-6">
                   <h3 className="text-xl font-semibold text-purple-400 mb-3">{t(`${base}.rbac_title`)}</h3>
-                  <p className="text-zinc-300 mb-4">
+                  <p className="text-slate-600 dark:text-slate-300 mb-4">
                     {t(`${base}.rbac_description`)}
                   </p>
-                  <div className="bg-zinc-800 p-4 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
                     <h4 className="text-lg font-medium text-purple-300 mb-2">{t(`${base}.rbac_components_title`)}</h4>
-                    <ul className="list-disc list-inside text-zinc-400 space-y-2">
+                    <ul className="list-disc list-inside text-slate-500 dark:text-slate-400 space-y-2">
                       {rbacComponents.map((item, idx) => (
                         <li key={idx}>{item}</li>
                       ))}
@@ -95,14 +95,14 @@ export default function Authorization() {
                   </div>
                 </div>
 
-                <div className="border-b border-zinc-800 pb-6">
+                <div className="border-b border-slate-200 dark:border-slate-800 pb-6">
                   <h3 className="text-xl font-semibold text-purple-400 mb-3">{t(`${base}.abac_title`)}</h3>
-                  <p className="text-zinc-300 mb-4">
+                  <p className="text-slate-600 dark:text-slate-300 mb-4">
                     {t(`${base}.abac_description`)}
                   </p>
-                  <div className="bg-zinc-800 p-4 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
                     <h4 className="text-lg font-medium text-purple-300 mb-2">{t(`${base}.abac_attributes_title`)}</h4>
-                    <ul className="list-disc list-inside text-zinc-400 space-y-2">
+                    <ul className="list-disc list-inside text-slate-500 dark:text-slate-400 space-y-2">
                       {abacAttributes.map((item, idx) => (
                         <li key={idx}>{item}</li>
                       ))}
@@ -112,12 +112,12 @@ export default function Authorization() {
 
                 <div>
                   <h3 className="text-xl font-semibold text-purple-400 mb-3">{t(`${base}.pbac_title`)}</h3>
-                  <p className="text-zinc-300 mb-4">
+                  <p className="text-slate-600 dark:text-slate-300 mb-4">
                     {t(`${base}.pbac_description`)}
                   </p>
-                  <div className="bg-zinc-800 p-4 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
                     <h4 className="text-lg font-medium text-purple-300 mb-2">{t(`${base}.pbac_characteristics_title`)}</h4>
-                    <ul className="list-disc list-inside text-zinc-400 space-y-2">
+                    <ul className="list-disc list-inside text-slate-500 dark:text-slate-400 space-y-2">
                       {pbacCharacteristics.map((item, idx) => (
                         <li key={idx}>{item}</li>
                       ))}
@@ -131,20 +131,20 @@ export default function Authorization() {
           {/* Implementação em Sistemas Distribuídos */}
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.distributed_implementation_title`)}</h2>
-            <div className="bg-zinc-900 rounded-lg p-6">
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="bg-zinc-800 p-6 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-yellow-400 mb-3">{t(`${base}.architecture_title`)}</h3>
-                    <ul className="text-zinc-400 space-y-2">
+                    <ul className="text-slate-500 dark:text-slate-400 space-y-2">
                       {architectureItems.map((item, idx) => (
                         <li key={idx}>• {item}</li>
                       ))}
                     </ul>
                   </div>
-                  <div className="bg-zinc-800 p-6 rounded-lg">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-yellow-400 mb-3">{t(`${base}.challenges_title`)}</h3>
-                    <ul className="text-zinc-400 space-y-2">
+                    <ul className="text-slate-500 dark:text-slate-400 space-y-2">
                       {challengesItems.map((item, idx) => (
                         <li key={idx}>• {item}</li>
                       ))}
@@ -152,12 +152,12 @@ export default function Authorization() {
                   </div>
                 </div>
 
-                <div className="bg-zinc-800 p-6 rounded-lg">
+                <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                   <h3 className="text-xl font-semibold text-yellow-400 mb-3">{t(`${base}.best_practices_title`)}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <h4 className="text-lg font-medium text-yellow-300 mb-2">{t(`${base}.design_title`)}</h4>
-                      <ul className="text-zinc-400 space-y-2">
+                      <ul className="text-slate-500 dark:text-slate-400 space-y-2">
                         {designItems.map((item, idx) => (
                           <li key={idx}>• {item}</li>
                         ))}
@@ -165,7 +165,7 @@ export default function Authorization() {
                     </div>
                     <div>
                       <h4 className="text-lg font-medium text-yellow-300 mb-2">{t(`${base}.implementation_title`)}</h4>
-                      <ul className="text-zinc-400 space-y-2">
+                      <ul className="text-slate-500 dark:text-slate-400 space-y-2">
                         {implementationItems.map((item, idx) => (
                           <li key={idx}>• {item}</li>
                         ))}
@@ -180,27 +180,27 @@ export default function Authorization() {
           {/* Ferramentas e Tecnologias */}
           <section>
             <h2 className="text-3xl font-bold text-white mb-6">{t(`${base}.tools_technologies_title`)}</h2>
-            <div className="bg-zinc-900 rounded-lg p-6">
+            <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className="bg-zinc-800 p-6 rounded-lg">
+                <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                   <h3 className="text-xl font-semibold text-green-400 mb-3">{t(`${base}.frameworks_title`)}</h3>
-                  <ul className="text-zinc-400 space-y-2">
+                  <ul className="text-slate-500 dark:text-slate-400 space-y-2">
                     {frameworksItems.map((item, idx) => (
                       <li key={idx}>• {item}</li>
                     ))}
                   </ul>
                 </div>
-                <div className="bg-zinc-800 p-6 rounded-lg">
+                <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                   <h3 className="text-xl font-semibold text-green-400 mb-3">{t(`${base}.protocols_title`)}</h3>
-                  <ul className="text-zinc-400 space-y-2">
+                  <ul className="text-slate-500 dark:text-slate-400 space-y-2">
                     {protocolsItems.map((item, idx) => (
                       <li key={idx}>• {item}</li>
                     ))}
                   </ul>
                 </div>
-                <div className="bg-zinc-800 p-6 rounded-lg">
+                <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg">
                   <h3 className="text-xl font-semibold text-green-400 mb-3">{t(`${base}.services_title`)}</h3>
-                  <ul className="text-zinc-400 space-y-2">
+                  <ul className="text-slate-500 dark:text-slate-400 space-y-2">
                     {servicesItems.map((item, idx) => (
                       <li key={idx}>• {item}</li>
                     ))}

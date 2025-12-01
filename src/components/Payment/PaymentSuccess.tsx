@@ -59,7 +59,7 @@ export default function PaymentSuccess() {
             <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-green-400 to-green-600 bg-clip-text text-transparent">
               Pagamento Confirmado!
             </h1>
-            <p className="text-xl text-zinc-400 mb-8">
+            <p className="text-xl text-slate-500 dark:text-slate-400 mb-8">
               Seu acesso foi liberado com sucesso. Aproveite todo o conteúdo!
             </p>
           </div>
