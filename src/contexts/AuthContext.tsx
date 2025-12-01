@@ -51,56 +51,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     
     try {
-      // First, try to get cached token if not forcing refresh
-      let idTokenResult;
-      let idToken;
+      // Get the ID token (force refresh if requested)
+      const token = await userState.getIdToken(forceRefresh);
       
-      if (!forceRefresh) {
-        try {
-          // Get cached token first (faster)
-          idTokenResult = await userState.getIdTokenResult(false);
-          idToken = await userState.getIdToken(false);
-          
-          // Check if token is still valid and has subscription claim
-          const now = Date.now() / 1000;
-          const tokenExpiry = new Date(idTokenResult.expirationTime).getTime() / 1000;
-          
-          // If token expires in less than 5 minutes, refresh it
-          if (tokenExpiry - now < 300) {
-            console.log('Token expiring soon, refreshing...');
-            idTokenResult = await userState.getIdTokenResult(true);
-            idToken = await userState.getIdToken(true);
-          }
-        } catch (cacheError) {
-          console.log('Cached token invalid, refreshing...');
-          // Fall back to forced refresh
-          idTokenResult = await userState.getIdTokenResult(true);
-          idToken = await userState.getIdToken(true);
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${apiUrl}/api/users/me`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
         }
-      } else {
-        // Force refresh when explicitly requested
-        idTokenResult = await userState.getIdTokenResult(true);
-        idToken = await userState.getIdToken(true);
-      }
-      
-      // Verify token hasn't been tampered with
-      if (!idToken || !idTokenResult) {
-        console.warn('Invalid token received');
+      });
+
+      if (!response.ok) {
+        console.warn('Failed to fetch user profile', response.status);
         setIsSubscribed(false);
         return false;
       }
-      
-      // Additional security: check token expiry
-      const now = Date.now() / 1000;
-      const tokenExpiry = new Date(idTokenResult.expirationTime).getTime() / 1000;
-      if (tokenExpiry < now) {
-        console.warn('Token expired');
-        setIsSubscribed(false);
-        return false;
-      }
-      
-      // Check subscription claim
-      const hasSubscription = idTokenResult.claims.subscribed === true;
+
+      const userData = await response.json();
+      const hasSubscription = userData.is_subscribed === true;
       
       // Log subscription status for monitoring
       if (hasSubscription) {

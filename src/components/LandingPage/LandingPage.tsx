@@ -13,20 +13,6 @@ export default function LandingPage() {
   const { user, isSubscribed } = useAuth();
   const [showCouponModal, setShowCouponModal] = useState(false);
   
-  // Show Black November modal after 2 seconds for new visitors
-  useEffect(() => {
-    const hasSeenBlackNovemberModal = sessionStorage.getItem('blackNovemberModalShown');
-    
-    if (!hasSeenBlackNovemberModal && !isSubscribed) {
-      const timer = setTimeout(() => {
-        setShowCouponModal(true);
-        sessionStorage.setItem('blackNovemberModalShown', 'true');
-      }, 2000); // Show after 2 seconds
-      
-      return () => clearTimeout(timer);
-    }
-  }, [user, isSubscribed]);
-  
   // Detect user currency based on location/language  
   const userCurrency = detectUserCurrency();
   const pricing = calculatePricing(userCurrency);
@@ -57,9 +43,6 @@ export default function LandingPage() {
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <div className="inline-block bg-blue-500/10 text-blue-400 px-4 py-2 rounded-full text-sm mb-6">
-              {t('common.new_offer')}
-            </div>
             <Typography 
               variant="h1" 
               className="mb-6 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent"
@@ -671,18 +654,14 @@ export default function LandingPage() {
             transition={{ delay: 0.3 }}
             className="bg-gradient-to-b from-blue-600/10 to-purple-600/10 rounded-xl p-8 border border-blue-500/20 hover:border-blue-500/50 transition-colors relative overflow-hidden"
           >
-            <div className="absolute -right-12 top-8 bg-blue-500 text-white px-12 py-1 rotate-45 text-sm font-medium">
-              {t('common.new_offer')}
-            </div>
             <div className="text-center mb-8">
               <div className="text-center">
                 <span className="text-4xl font-bold">
-                  <span className="text-zinc-400 line-through">{formatPrice(pricing.originalPrice, pricing)}</span>{" "}
-                  <span className="text-white">{formatPrice(pricing.discountedPrice, pricing)}</span>
+                  <span className="text-white">{formatPrice(pricing.price, pricing)}</span>
+                  <span className="text-base font-normal text-zinc-400 ml-2">/ {t('common.month', { defaultValue: 'month' })}</span>
                 </span>
-                <span className="text-green-400 text-sm ml-2">{t('common.discount_off', { percent: pricing.discount })}</span>
               </div>
-              <p className="text-zinc-400">{t('landing.invest_payment_info')}</p>
+              <p className="text-zinc-400 mt-4">{t('landing.invest_payment_info')}</p>
             </div>
             <Link
               to="/pagamento"
@@ -796,13 +775,6 @@ export default function LandingPage() {
           </div>
         </motion.div>
       </div>
-      
-      {/* Black November Modal */}
-      <CouponModal 
-        isOpen={showCouponModal}
-        onClose={() => setShowCouponModal(false)}
-        couponCode="BLACKNOVEMBER"
-      />
     </div>
   );
 } 

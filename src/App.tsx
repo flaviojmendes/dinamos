@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Routes,
   Route,
@@ -839,16 +839,6 @@ export default function App() {
   const { t } = useTranslation();
   const menuItems = createMenuItems(t);
   
-  // Coupon modal state
-  const [showCouponModal, setShowCouponModal] = useState(false);
-  const [hasShownCouponModal, setHasShownCouponModal] = useState(false);
-  const [previousUser, setPreviousUser] = useState<any>(null);
-  const isSubscribedRef = useRef(isSubscribed);
-
-  useEffect(() => {
-    isSubscribedRef.current = isSubscribed;
-  }, [isSubscribed]);
-
   // Make menuItems accessible to other components via window object
   // This helps avoid circular dependencies when components need to access menuItems
   useEffect(() => {
@@ -872,46 +862,6 @@ export default function App() {
     // Track initial page view
     trackPageView(window.location.pathname + window.location.search);
   }, []);
-
-  // Detect actual login (transition from no user to user) and show coupon modal
-  useEffect(() => {
-    // Detect fresh login: user went from null/undefined to logged in
-    const isNewLogin = !previousUser && user;
-    
-    if (isNewLogin && !hasShownCouponModal) {
-      // Check if modal was already shown in this browser session
-      const modalShownThisSession = sessionStorage.getItem('couponModalShown');
-      
-      if (!modalShownThisSession) {
-        // Mark that we're showing the modal this session
-        sessionStorage.setItem('couponModalShown', 'true');
-        
-        // This is a genuine new login, show the modal
-        const timer = setTimeout(() => {
-          // Only show if user is NOT subscribed
-          if (!isSubscribedRef.current) {
-            setShowCouponModal(true);
-            setHasShownCouponModal(true);
-          }
-        }, 1000); // 1 second delay to let the user see they've logged in
-        
-        return () => clearTimeout(timer);
-      }
-    }
-    
-    // Update previous user state
-    setPreviousUser(user);
-  }, [user, previousUser, hasShownCouponModal]);
-  
-  // Reset modal state when user logs out
-  useEffect(() => {
-    if (!user) {
-      setHasShownCouponModal(false);
-      setShowCouponModal(false);
-      // Clear session storage when user logs out so modal can show for next login
-      sessionStorage.removeItem('couponModalShown');
-    }
-  }, [user]);
 
   const MenuLink = ({ item, onNavigate }: { item: MenuItem; onNavigate?: () => void }) => {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -2277,13 +2227,6 @@ export default function App() {
           </Routes>
         </main>
       </div>
-      
-      {/* Coupon Modal */}
-      <CouponModal 
-        isOpen={showCouponModal}
-        onClose={() => setShowCouponModal(false)}
-        couponCode="BLACKNOVEMBER"
-      />
       
       <LanguageDetectionDialog />
       <CookieConsentBanner onConsentChange={handleConsentChange} />

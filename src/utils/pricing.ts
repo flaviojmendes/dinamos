@@ -1,15 +1,12 @@
 export interface PricingData {
-  originalPrice: number;
-  discountedPrice: number;
-  discount: number;
+  price: number;
   currency: string;
   currencySymbol: string;
   locale: string;
 }
 
 export interface CurrencyConfig {
-  originalPrice: number;
-  discountedPrice: number;
+  price: number;
   currency: string;
   currencySymbol: string;
   locale: string;
@@ -18,29 +15,25 @@ export interface CurrencyConfig {
 // Currency configurations based on region/language
 const CURRENCY_CONFIGS: Record<string, CurrencyConfig> = {
   'pt-BR': {
-    originalPrice: 499,
-    discountedPrice: 179,
+    price: 29,
     currency: 'BRL',
     currencySymbol: 'R$',
     locale: 'pt-BR'
   },
   'en-US': {
-    originalPrice: 89,
-    discountedPrice: 30,
+    price: 7.99,
     currency: 'USD',
     currencySymbol: '$',
     locale: 'en-US'
   },
   'en-EU': {
-    originalPrice: 89,
-    discountedPrice: 30,
+    price: 6.99,
     currency: 'EUR',
     currencySymbol: '€',
     locale: 'en-EU'
   },
   'en-IN': {
-    originalPrice: 4999,
-    discountedPrice: 1700,
+    price: 599,
     currency: 'INR',
     currencySymbol: '₹',
     locale: 'en-IN'
@@ -140,12 +133,8 @@ export function calculatePricing(currencyKey?: string): PricingData {
   const detectedCurrency = currencyKey || detectUserCurrency();
   const config = getCurrencyConfig(detectedCurrency);
   
-  const discount = Math.round(((config.originalPrice - config.discountedPrice) / config.originalPrice) * 100);
-  
   return {
-    originalPrice: config.originalPrice,
-    discountedPrice: config.discountedPrice,
-    discount,
+    price: config.price,
     currency: config.currency,
     currencySymbol: config.currencySymbol,
     locale: config.locale

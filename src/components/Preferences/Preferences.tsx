@@ -10,7 +10,8 @@ export default function Preferences() {
 
   const handleManageSubscription = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_FIREBASE_FUNCTIONS_BASE_URL}/createPortalSession`, {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${apiUrl}/api/subscription/create-portal-session`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
