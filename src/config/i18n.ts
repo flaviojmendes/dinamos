@@ -234,10 +234,10 @@ const resources = {
         error_github: 'Error logging in with GitHub. Please try again.'
       },
       subscription: {
-        title: 'Lifetime Access',
+        title: 'Full Access',
         subtitle: 'Invest in your knowledge and professional development',
         limited_offer: 'Black November Special Offer (50% OFF)',
-        one_time_lifetime: 'One-time payment - Lifetime access',
+        one_time_lifetime: 'Monthly subscription - Full access',
         buy_now: 'Buy Now',
         processing: 'Processing...',
         error_processing: 'An error occurred while processing the payment. Please try again.',
@@ -255,7 +255,7 @@ const resources = {
           'Regular content updates',
           'Real-world practical examples',
           'Community support',
-          'Lifetime access to content'
+          'Full access to content'
         ],
         why_buy_title: 'Why buy?',
         why_practical_title: 'Hands-on Learning',
@@ -355,8 +355,8 @@ const resources = {
         journey_real_cases_description: 'Apply your knowledge by analyzing real success cases',
 
         invest_title: 'Invest in Your Future',
-        invest_subtitle: 'Lifetime access to all content with a single payment',
-        invest_payment_info: 'One-time payment - Lifetime access',
+        invest_subtitle: 'Full access to all content with a monthly subscription',
+        invest_payment_info: 'Monthly subscription - Full access',
         new_offer_badge: 'New Offer',
         what_you_receive_title: 'What You Get',
         what_you_receive_item1: 'Over 15 interactive simulators for hands-on practice',
@@ -6108,10 +6108,10 @@ const resources = {
         error_github: 'Erro ao fazer login com GitHub. Por favor, tente novamente.'
       },
       subscription: {
-        title: 'Acesso Vitalício',
+        title: 'Acesso Completo',
         subtitle: 'Invista em seu conhecimento e desenvolvimento profissional',
         limited_offer: 'Oferta Especial de Black November (50% OFF)',
-        one_time_lifetime: 'Pagamento único - Acesso para sempre',
+        one_time_lifetime: 'Assinatura mensal - Acesso completo',
         buy_now: 'Comprar Agora',
         processing: 'Processando...',
         error_processing: 'Ocorreu um erro ao processar o pagamento. Por favor, tente novamente.',
@@ -6129,7 +6129,7 @@ const resources = {
           'Atualizações regulares de conteúdo',
           'Exemplos práticos do mundo real',
           'Suporte via comunidade',
-          'Acesso vitalício ao conteúdo'
+          'Acesso completo ao conteúdo'
         ],
         why_buy_title: 'Por que comprar?',
         why_practical_title: 'Aprendizado Prático',
@@ -6160,7 +6160,7 @@ const resources = {
         feature_1: 'Curso completo de design de sistemas',
         feature_2: 'Simuladores interativos',
         feature_3: 'Estudos de caso do mundo real',
-        feature_4: 'Acesso vitalício',
+        feature_4: 'Acesso completo',
         subscribe_now: 'Assinar Agora e Economizar 50%',
         maybe_later: 'Talvez mais tarde',
         timer_note: 'Esta oferta é válida durante todo o mês de Black November! (50% OFF)'
@@ -6229,8 +6229,8 @@ const resources = {
         journey_real_cases_description: 'Aplique seu conhecimento analisando casos reais de sucesso',
 
         invest_title: 'Invista no Seu Futuro',
-        invest_subtitle: 'Acesso vitalício a todo o conteúdo com um único pagamento',
-        invest_payment_info: 'Pagamento único - Acesso vitalício',
+        invest_subtitle: 'Acesso completo a todo o conteúdo com uma assinatura mensal',
+        invest_payment_info: 'Assinatura mensal - Acesso completo',
         new_offer_badge: 'Nova Oferta',
         what_you_receive_title: 'O Que Você Recebe',
         what_you_receive_item1: 'Mais de 15 simuladores interativos para prática hands-on',
