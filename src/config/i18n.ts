@@ -1768,6 +1768,8 @@ const resources = {
         replies: 'Replies',
         reply: 'Reply',
         reply_placeholder: 'Write your reply...',
+        nested_reply_placeholder: 'Write your reply to this message...',
+        replying_to: 'Replying to:',
         delete: 'Delete',
         delete_topic: 'Delete topic',
         confirm_delete_message: 'Are you sure you want to delete this message?',
@@ -1785,7 +1787,8 @@ const resources = {
           active: 'Most active',
           popular: 'Most popular',
           oldest: 'Oldest first',
-          newest: 'Newest first'
+          newest: 'Newest first',
+          top: 'Most voted'
         },
         time: {
           just_now: 'just now',
@@ -7716,6 +7719,8 @@ const resources = {
         replies: 'Respostas',
         reply: 'Responder',
         reply_placeholder: 'Escreva sua resposta...',
+        nested_reply_placeholder: 'Escreva sua resposta a esta mensagem...',
+        replying_to: 'Respondendo a:',
         delete: 'Excluir',
         delete_topic: 'Excluir tópico',
         confirm_delete_message: 'Tem certeza que deseja excluir esta mensagem?',
@@ -7733,7 +7738,8 @@ const resources = {
           active: 'Mais ativos',
           popular: 'Mais populares',
           oldest: 'Mais antigos',
-          newest: 'Mais novos'
+          newest: 'Mais novos',
+          top: 'Mais votados'
         },
         time: {
           just_now: 'agora',

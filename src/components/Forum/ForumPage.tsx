@@ -6,6 +6,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import {
   getTopics,
   getTopic,
+  getCategories,
   createTopic,
   createMessage,
   deleteTopic,
@@ -14,17 +15,10 @@ import {
   getUserVotes,
   ForumTopic,
   ForumMessage,
-  TopicCategory,
+  ForumCategory,
   TopicSortOrder,
   MessageSortOrder,
 } from '../../services/forumService';
-
-// Category badge colors
-const categoryColors: Record<TopicCategory, { bg: string; text: string; border: string }> = {
-  'Dúvida': { bg: 'bg-blue-500/10', text: 'text-blue-400', border: 'border-blue-500/30' },
-  'Brainstorm': { bg: 'bg-purple-500/10', text: 'text-purple-400', border: 'border-purple-500/30' },
-  'Ajuda': { bg: 'bg-amber-500/10', text: 'text-amber-400', border: 'border-amber-500/30' },
-};
 
 // Format relative time
 function formatRelativeTime(dateString: string, t: (key: string) => string): string {
@@ -41,6 +35,21 @@ function formatRelativeTime(dateString: string, t: (key: string) => string): str
   if (diffDays < 7) return t('forum.time.days_ago').replace('{{count}}', diffDays.toString());
   
   return date.toLocaleDateString();
+}
+
+// Helper to convert hex color to Tailwind-style classes
+function getCategoryStyles(color: string) {
+  return {
+    bg: `rgba(${hexToRgb(color)}, 0.1)`,
+    text: color,
+    border: `rgba(${hexToRgb(color)}, 0.3)`,
+  };
+}
+
+function hexToRgb(hex: string): string {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  if (!result) return '128, 128, 128';
+  return `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`;
 }
 
 // Markdown content renderer component
@@ -78,13 +87,15 @@ function MarkdownContent({ content }: { content: string }) {
 }
 
 // Avatar component
-function Avatar({ src, name, roleColor }: { src: string | null; name: string; roleColor: string }) {
+function Avatar({ src, name, roleColor, size = 'md' }: { src: string | null; name: string; roleColor: string; size?: 'sm' | 'md' }) {
+  const sizeClass = size === 'sm' ? 'w-8 h-8 text-sm' : 'w-10 h-10';
+  
   if (src) {
     return (
       <img
         src={src}
         alt={name}
-        className="w-10 h-10 rounded-full object-cover ring-2"
+        className={`${sizeClass} rounded-full object-cover ring-2`}
         style={{ '--tw-ring-color': roleColor } as React.CSSProperties}
       />
     );
@@ -92,11 +103,28 @@ function Avatar({ src, name, roleColor }: { src: string | null; name: string; ro
   
   return (
     <div
-      className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold ring-2"
+      className={`${sizeClass} rounded-full flex items-center justify-center text-white font-semibold ring-2`}
       style={{ backgroundColor: roleColor, '--tw-ring-color': roleColor } as React.CSSProperties}
     >
       {name.charAt(0).toUpperCase()}
     </div>
+  );
+}
+
+// Category Badge Component
+function CategoryBadge({ name, color }: { name: string; color: string }) {
+  const styles = getCategoryStyles(color);
+  return (
+    <span
+      className="px-2 py-0.5 rounded-full text-xs font-medium border"
+      style={{
+        backgroundColor: styles.bg,
+        color: styles.text,
+        borderColor: styles.border,
+      }}
+    >
+      {name}
+    </span>
   );
 }
 
@@ -106,14 +134,17 @@ function TopicCard({
   onClick,
   onVote,
   isVoted,
+  categories,
 }: {
   topic: ForumTopic;
   onClick: () => void;
   onVote: () => void;
   isVoted: boolean;
+  categories: ForumCategory[];
 }) {
   const { t } = useTranslation();
-  const colors = categoryColors[topic.category];
+  const category = categories.find(c => c.name === topic.category);
+  const categoryColor = category?.color || '#6B7280';
 
   return (
     <motion.div
@@ -132,11 +163,7 @@ function TopicCard({
           />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <span
-                className={`px-2 py-0.5 rounded-full text-xs font-medium ${colors.bg} ${colors.text} border ${colors.border}`}
-              >
-                {topic.category}
-              </span>
+              <CategoryBadge name={topic.category} color={categoryColor} />
               <span className="text-slate-500 text-sm">
                 {formatRelativeTime(topic.created_at, t)}
               </span>
@@ -196,22 +223,24 @@ function TopicCard({
 
 // New Topic Form
 function NewTopicForm({
+  categories,
   onSubmit,
   onCancel,
 }: {
-  onSubmit: (data: { title: string; content: string; category: TopicCategory }) => Promise<void>;
+  categories: ForumCategory[];
+  onSubmit: (data: { title: string; content: string; category: string }) => Promise<void>;
   onCancel: () => void;
 }) {
   const { t } = useTranslation();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [category, setCategory] = useState<TopicCategory>('Dúvida');
+  const [category, setCategory] = useState(categories[0]?.name || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !content.trim()) return;
+    if (!title.trim() || !content.trim() || !category) return;
 
     setIsSubmitting(true);
     setError(null);
@@ -223,8 +252,6 @@ function NewTopicForm({
       setIsSubmitting(false);
     }
   };
-
-  const categories: TopicCategory[] = ['Dúvida', 'Brainstorm', 'Ajuda'];
 
   return (
     <motion.div
@@ -239,21 +266,23 @@ function NewTopicForm({
           <label className="block text-sm font-medium text-slate-300 mb-1">
             {t('forum.category')}
           </label>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {categories.map((cat) => {
-              const colors = categoryColors[cat];
+              const styles = getCategoryStyles(cat.color);
+              const isSelected = category === cat.name;
               return (
                 <button
-                  key={cat}
+                  key={cat.id}
                   type="button"
-                  onClick={() => setCategory(cat)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all border ${
-                    category === cat
-                      ? `${colors.bg} ${colors.text} ${colors.border}`
-                      : 'bg-slate-700/50 text-slate-400 border-slate-600 hover:border-slate-500'
-                  }`}
+                  onClick={() => setCategory(cat.name)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all border`}
+                  style={{
+                    backgroundColor: isSelected ? styles.bg : 'rgba(51, 65, 85, 0.5)',
+                    color: isSelected ? styles.text : '#94a3b8',
+                    borderColor: isSelected ? styles.border : '#475569',
+                  }}
                 >
-                  {cat}
+                  {cat.name}
                 </button>
               );
             })}
@@ -305,7 +334,7 @@ function NewTopicForm({
           </button>
           <button
             type="submit"
-            disabled={isSubmitting || !title.trim() || !content.trim()}
+            disabled={isSubmitting || !title.trim() || !content.trim() || !category}
             className="px-6 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? t('forum.posting') : t('forum.post')}
@@ -316,83 +345,130 @@ function NewTopicForm({
   );
 }
 
-// Message Component
+// Message Component with nested reply support
 function MessageCard({
   message,
+  messages,
   onVote,
   onDelete,
+  onReply,
   isVoted,
   canDelete,
+  currentUserId,
+  messageVotes,
+  depth = 0,
 }: {
   message: ForumMessage;
-  onVote: () => void;
-  onDelete: () => void;
+  messages: ForumMessage[];
+  onVote: (messageId: number) => void;
+  onDelete: (messageId: number) => void;
+  onReply: (parentId: number) => void;
   isVoted: boolean;
   canDelete: boolean;
+  currentUserId: string;
+  messageVotes: Set<number>;
+  depth?: number;
 }) {
   const { t } = useTranslation();
+  const childMessages = messages.filter(m => m.parent_id === message.id);
+  const canReply = depth < 2; // Max 2 levels of nesting
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-slate-800/30 rounded-lg border border-slate-700/30 p-4"
-    >
-      <div className="flex gap-3">
-        <Avatar
-          src={message.author.avatar_image}
-          name={message.author.nickname}
-          roleColor={message.author.role_color}
-        />
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="font-medium" style={{ color: message.author.role_color }}>
-              {message.author.nickname}
-            </span>
-            <span
-              className="text-xs px-1.5 py-0.5 rounded"
-              style={{ backgroundColor: `${message.author.role_color}20`, color: message.author.role_color }}
-            >
-              {message.author.role}
-            </span>
-            <span className="text-slate-500 text-sm">
-              {formatRelativeTime(message.created_at, t)}
-            </span>
-          </div>
-          <div className="text-slate-300">
-            <MarkdownContent content={message.content} />
-          </div>
-          <div className="flex items-center gap-4 mt-3">
-            <button
-              onClick={onVote}
-              className={`flex items-center gap-1.5 px-2 py-1 rounded transition-all text-sm ${
-                isVoted
-                  ? 'bg-brand-500/20 text-brand-400'
-                  : 'text-slate-500 hover:text-slate-300 hover:bg-slate-700/50'
-              }`}
-            >
-              <svg
-                className="w-4 h-4"
-                fill={isVoted ? 'currentColor' : 'none'}
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+    <div className={depth > 0 ? 'ml-8 border-l-2 border-slate-700/50 pl-4' : ''}>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-slate-800/30 rounded-lg border border-slate-700/30 p-4"
+      >
+        <div className="flex gap-3">
+          <Avatar
+            src={message.author.avatar_image}
+            name={message.author.nickname}
+            roleColor={message.author.role_color}
+            size={depth > 0 ? 'sm' : 'md'}
+          />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="font-medium" style={{ color: message.author.role_color }}>
+                {message.author.nickname}
+              </span>
+              <span
+                className="text-xs px-1.5 py-0.5 rounded"
+                style={{ backgroundColor: `${message.author.role_color}20`, color: message.author.role_color }}
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-              </svg>
-              <span>{message.upvotes}</span>
-            </button>
-            {canDelete && (
+                {message.author.role}
+              </span>
+              <span className="text-slate-500 text-sm">
+                {formatRelativeTime(message.created_at, t)}
+              </span>
+            </div>
+            <div className="text-slate-300">
+              <MarkdownContent content={message.content} />
+            </div>
+            <div className="flex items-center gap-4 mt-3">
               <button
-                onClick={onDelete}
-                className="text-slate-500 hover:text-red-400 transition-colors text-sm"
+                onClick={() => onVote(message.id)}
+                className={`flex items-center gap-1.5 px-2 py-1 rounded transition-all text-sm ${
+                  isVoted
+                    ? 'bg-brand-500/20 text-brand-400'
+                    : 'text-slate-500 hover:text-slate-300 hover:bg-slate-700/50'
+                }`}
               >
-                {t('forum.delete')}
+                <svg
+                  className="w-4 h-4"
+                  fill={isVoted ? 'currentColor' : 'none'}
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                </svg>
+                <span>{message.upvotes}</span>
               </button>
-            )}
+              {canReply && (
+                <button
+                  onClick={() => onReply(message.id)}
+                  className="text-slate-500 hover:text-slate-300 transition-colors text-sm flex items-center gap-1"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                  </svg>
+                  {t('forum.reply')}
+                </button>
+              )}
+              {canDelete && (
+                <button
+                  onClick={() => onDelete(message.id)}
+                  className="text-slate-500 hover:text-red-400 transition-colors text-sm"
+                >
+                  {t('forum.delete')}
+                </button>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
+      
+      {/* Nested replies */}
+      {childMessages.length > 0 && (
+        <div className="mt-3 space-y-3">
+          {childMessages.map((child) => (
+            <MessageCard
+              key={child.id}
+              message={child}
+              messages={messages}
+              onVote={onVote}
+              onDelete={onDelete}
+              onReply={onReply}
+              isVoted={messageVotes.has(child.id)}
+              canDelete={child.user_id === currentUserId}
+              currentUserId={currentUserId}
+              messageVotes={messageVotes}
+              depth={depth + 1}
+            />
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -401,10 +477,12 @@ function TopicDetail({
   topicId,
   onBack,
   currentUserId,
+  categories,
 }: {
   topicId: number;
   onBack: () => void;
   currentUserId: string;
+  categories: ForumCategory[];
 }) {
   const { t } = useTranslation();
   const [topic, setTopic] = useState<ForumTopic | null>(null);
@@ -412,6 +490,7 @@ function TopicDetail({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [replyContent, setReplyContent] = useState('');
+  const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [isReplying, setIsReplying] = useState(false);
   const [topicVoted, setTopicVoted] = useState(false);
   const [messageVotes, setMessageVotes] = useState<Set<number>>(new Set());
@@ -476,9 +555,13 @@ function TopicDetail({
 
     setIsReplying(true);
     try {
-      const newMessage = await createMessage(topicId, { content: replyContent.trim() });
+      const newMessage = await createMessage(topicId, { 
+        content: replyContent.trim(),
+        parent_id: replyingTo,
+      });
       setMessages([...messages, newMessage]);
       setReplyContent('');
+      setReplyingTo(null);
     } catch (err) {
       console.error('Failed to reply:', err);
     } finally {
@@ -491,7 +574,7 @@ function TopicDetail({
     
     try {
       await deleteMessage(messageId);
-      setMessages(messages.filter((m) => m.id !== messageId));
+      setMessages(messages.filter((m) => m.id !== messageId && m.parent_id !== messageId));
     } catch (err) {
       console.error('Failed to delete message:', err);
     }
@@ -506,6 +589,16 @@ function TopicDetail({
     } catch (err) {
       console.error('Failed to delete topic:', err);
     }
+  };
+
+  const handleReplyToMessage = (parentId: number) => {
+    setReplyingTo(parentId);
+    // Scroll to reply form
+    document.getElementById('reply-form')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const cancelReplyTo = () => {
+    setReplyingTo(null);
   };
 
   if (loading) {
@@ -527,7 +620,12 @@ function TopicDetail({
     );
   }
 
-  const colors = categoryColors[topic.category];
+  const category = categories.find(c => c.name === topic.category);
+  const categoryColor = category?.color || '#6B7280';
+  
+  // Get only top-level messages
+  const topLevelMessages = messages.filter(m => m.parent_id === null);
+  const replyingToMessage = replyingTo ? messages.find(m => m.id === replyingTo) : null;
 
   return (
     <div className="space-y-6 p-10">
@@ -567,11 +665,7 @@ function TopicDetail({
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
-              <span
-                className={`px-2 py-0.5 rounded-full text-xs font-medium ${colors.bg} ${colors.text} border ${colors.border}`}
-              >
-                {topic.category}
-              </span>
+              <CategoryBadge name={topic.category} color={categoryColor} />
               <span className="text-slate-500 text-sm">
                 {formatRelativeTime(topic.created_at, t)}
               </span>
@@ -625,22 +719,26 @@ function TopicDetail({
           >
             <option value="oldest">{t('forum.sort.oldest')}</option>
             <option value="newest">{t('forum.sort.newest')}</option>
-            <option value="popular">{t('forum.sort.popular')}</option>
+            <option value="top">{t('forum.sort.top')}</option>
           </select>
         </div>
 
-        <AnimatePresence>
-          {messages.map((message) => (
+        <div className="space-y-4">
+          {topLevelMessages.map((message) => (
             <MessageCard
               key={message.id}
               message={message}
-              onVote={() => handleVoteMessage(message.id)}
-              onDelete={() => handleDeleteMessage(message.id)}
+              messages={messages}
+              onVote={handleVoteMessage}
+              onDelete={handleDeleteMessage}
+              onReply={handleReplyToMessage}
               isVoted={messageVotes.has(message.id)}
               canDelete={message.user_id === currentUserId}
+              currentUserId={currentUserId}
+              messageVotes={messageVotes}
             />
           ))}
-        </AnimatePresence>
+        </div>
 
         {messages.length === 0 && (
           <div className="text-center py-8 text-slate-500">
@@ -650,11 +748,28 @@ function TopicDetail({
       </div>
 
       {/* Reply Form */}
-      <form onSubmit={handleReply} className="bg-slate-800/30 rounded-xl border border-slate-700/30 p-4">
+      <form id="reply-form" onSubmit={handleReply} className="bg-slate-800/30 rounded-xl border border-slate-700/30 p-4">
+        {replyingToMessage && (
+          <div className="mb-3 p-3 bg-slate-900/50 rounded-lg border-l-4 border-brand-500 flex items-start justify-between">
+            <div>
+              <span className="text-xs text-slate-500">{t('forum.replying_to')}</span>
+              <p className="text-sm text-slate-400 line-clamp-2">{replyingToMessage.content}</p>
+            </div>
+            <button
+              type="button"
+              onClick={cancelReplyTo}
+              className="text-slate-500 hover:text-slate-300 p-1"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        )}
         <textarea
           value={replyContent}
           onChange={(e) => setReplyContent(e.target.value)}
-          placeholder={t('forum.reply_placeholder')}
+          placeholder={replyingTo ? t('forum.nested_reply_placeholder') : t('forum.reply_placeholder')}
           rows={3}
           className="w-full px-4 py-2 bg-slate-900/50 border border-slate-600 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent resize-none"
         />
@@ -678,18 +793,28 @@ export default function ForumPage() {
   const { t } = useTranslation();
   const { user, isSubscribed } = useAuth();
   const [topics, setTopics] = useState<ForumTopic[]>([]);
+  const [categories, setCategories] = useState<ForumCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedTopicId, setSelectedTopicId] = useState<number | null>(null);
   const [showNewTopicForm, setShowNewTopicForm] = useState(false);
-  const [categoryFilter, setCategoryFilter] = useState<TopicCategory | null>(null);
+  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<TopicSortOrder>('recent');
   const [topicVotes, setTopicVotes] = useState<Set<number>>(new Set());
+
+  const loadCategories = useCallback(async () => {
+    try {
+      const data = await getCategories();
+      setCategories(data.categories);
+    } catch (err) {
+      console.error('Failed to load categories:', err);
+    }
+  }, []);
 
   const loadTopics = useCallback(async () => {
     try {
       setLoading(true);
-      const params: { category?: TopicCategory; sort?: TopicSortOrder } = { sort: sortOrder };
+      const params: { category?: string; sort?: TopicSortOrder } = { sort: sortOrder };
       if (categoryFilter) params.category = categoryFilter;
       
       const data = await getTopics(params);
@@ -710,11 +835,12 @@ export default function ForumPage() {
 
   useEffect(() => {
     if (user && isSubscribed) {
+      loadCategories();
       loadTopics();
     }
-  }, [loadTopics, user, isSubscribed]);
+  }, [loadCategories, loadTopics, user, isSubscribed]);
 
-  const handleCreateTopic = async (data: { title: string; content: string; category: TopicCategory }) => {
+  const handleCreateTopic = async (data: { title: string; content: string; category: string }) => {
     const newTopic = await createTopic(data);
     setTopics([newTopic, ...topics]);
     setShowNewTopicForm(false);
@@ -769,11 +895,10 @@ export default function ForumPage() {
           loadTopics();
         }}
         currentUserId={user?.uid || ''}
+        categories={categories}
       />
     );
   }
-
-  const categories: (TopicCategory | null)[] = [null, 'Dúvida', 'Brainstorm', 'Ajuda'];
 
   return (
     <div className="space-y-6 p-10">
@@ -798,8 +923,9 @@ export default function ForumPage() {
 
       {/* New Topic Form */}
       <AnimatePresence>
-        {showNewTopicForm && (
+        {showNewTopicForm && categories.length > 0 && (
           <NewTopicForm
+            categories={categories}
             onSubmit={handleCreateTopic}
             onCancel={() => setShowNewTopicForm(false)}
           />
@@ -808,22 +934,35 @@ export default function ForumPage() {
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-4">
-        <div className="flex items-center gap-2">
-          {categories.map((cat) => (
-            <button
-              key={cat || 'all'}
-              onClick={() => setCategoryFilter(cat)}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all border ${
-                categoryFilter === cat
-                  ? cat
-                    ? `${categoryColors[cat].bg} ${categoryColors[cat].text} ${categoryColors[cat].border}`
-                    : 'bg-brand-500/20 text-brand-400 border-brand-500/30'
-                  : 'bg-slate-800 text-slate-400 border-slate-700 hover:border-slate-600'
-              }`}
-            >
-              {cat || t('forum.all')}
-            </button>
-          ))}
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => setCategoryFilter(null)}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all border ${
+              categoryFilter === null
+                ? 'bg-brand-500/20 text-brand-400 border-brand-500/30'
+                : 'bg-slate-800 text-slate-400 border-slate-700 hover:border-slate-600'
+            }`}
+          >
+            {t('forum.all')}
+          </button>
+          {categories.map((cat) => {
+            const styles = getCategoryStyles(cat.color);
+            const isSelected = categoryFilter === cat.name;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => setCategoryFilter(cat.name)}
+                className="px-3 py-1.5 rounded-lg text-sm font-medium transition-all border"
+                style={{
+                  backgroundColor: isSelected ? styles.bg : 'rgb(30, 41, 59)',
+                  color: isSelected ? styles.text : '#94a3b8',
+                  borderColor: isSelected ? styles.border : '#334155',
+                }}
+              >
+                {cat.name}
+              </button>
+            );
+          })}
         </div>
         <select
           value={sortOrder}
@@ -868,6 +1007,7 @@ export default function ForumPage() {
                 onClick={() => setSelectedTopicId(topic.id)}
                 onVote={() => handleVoteTopic(topic.id)}
                 isVoted={topicVotes.has(topic.id)}
+                categories={categories}
               />
             ))}
           </AnimatePresence>
@@ -876,4 +1016,3 @@ export default function ForumPage() {
     </div>
   );
 }
-

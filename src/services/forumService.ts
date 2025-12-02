@@ -1,6 +1,16 @@
 // Forum API Service
 const API_URL = import.meta.env.VITE_API_URL ?? '';
 
+export interface ForumCategory {
+  id: number;
+  name: string;
+  color: string;
+  description: string;
+  order: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface ForumAuthor {
   nickname: string;
   avatar_image: string | null;
@@ -13,7 +23,7 @@ export interface ForumTopic {
   title: string;
   content: string;
   user_id: string;
-  category: 'Dúvida' | 'Brainstorm' | 'Ajuda';
+  category: string;
   upvotes: number;
   created_at: string;
   updated_at: string;
@@ -23,6 +33,7 @@ export interface ForumTopic {
 export interface ForumMessage {
   id: number;
   topic_id: number;
+  parent_id: number | null;
   user_id: string;
   content: string;
   diagram_data: Record<string, unknown> | null;
@@ -47,9 +58,8 @@ export interface UserVotes {
   message_votes: number[];
 }
 
-export type TopicCategory = 'Dúvida' | 'Brainstorm' | 'Ajuda';
 export type TopicSortOrder = 'recent' | 'active' | 'popular';
-export type MessageSortOrder = 'oldest' | 'newest' | 'popular';
+export type MessageSortOrder = 'oldest' | 'newest' | 'top';
 
 // Get auth token from Firebase
 async function getAuthToken(): Promise<string> {
@@ -61,9 +71,26 @@ async function getAuthToken(): Promise<string> {
   return user.getIdToken();
 }
 
+// Get all forum categories
+export async function getCategories(): Promise<{ categories: ForumCategory[] }> {
+  const token = await getAuthToken();
+  
+  const response = await fetch(`${API_URL}/api/forum/categories`, {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+  
+  if (!response.ok) {
+    throw new Error(`Failed to fetch categories: ${response.status}`);
+  }
+  
+  return response.json();
+}
+
 // Get forum topics
 export async function getTopics(params?: {
-  category?: TopicCategory;
+  category?: string;
   sort?: TopicSortOrder;
   skip?: number;
   limit?: number;
@@ -125,7 +152,7 @@ export async function getTopic(
 export async function createTopic(data: {
   title: string;
   content: string;
-  category: TopicCategory;
+  category: string;
 }): Promise<ForumTopic> {
   const token = await getAuthToken();
   
@@ -154,6 +181,7 @@ export async function createMessage(
   data: {
     content: string;
     diagram?: Record<string, unknown>;
+    parent_id?: number | null;
   }
 ): Promise<ForumMessage> {
   const token = await getAuthToken();
@@ -164,12 +192,20 @@ export async function createMessage(
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify({
+      content: data.content,
+      diagram: data.diagram,
+      parent_id: data.parent_id ?? null,
+    }),
   });
   
   if (!response.ok) {
     if (response.status === 404) {
       throw new Error('Topic not found');
+    }
+    if (response.status === 400) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || 'Failed to create message');
     }
     throw new Error(`Failed to create message: ${response.status}`);
   }
@@ -277,4 +313,3 @@ export async function getUserVotes(params?: {
   
   return response.json();
 }
-
