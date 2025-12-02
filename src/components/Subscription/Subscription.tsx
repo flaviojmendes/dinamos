@@ -65,19 +65,27 @@ export default function Subscription() {
       });
 
       const session = await response.json();
+      
+      console.log('Checkout session response:', session);
 
       if (session.error) {
         console.log(session.error);
         throw new Error(session.error);
       }
 
-      // Redirect to Stripe Checkout
-      const { error } = await stripe.redirectToCheckout({
-        sessionId: session.id,
-      });
-
-      if (error) {
-        throw error;
+      // Redirect to Stripe Checkout using the URL directly (more reliable)
+      if (session.url) {
+        window.location.href = session.url;
+      } else if (session.id) {
+        // Fallback to redirectToCheckout if only id is provided
+        const { error } = await stripe.redirectToCheckout({
+          sessionId: session.id,
+        });
+        if (error) {
+          throw error;
+        }
+      } else {
+        throw new Error('No checkout URL or session ID received from server');
       }
     } catch (error) {
       console.error('Error creating checkout session:', error);
