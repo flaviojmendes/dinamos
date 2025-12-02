@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -20,6 +20,9 @@ import {
   TopicSortOrder,
   MessageSortOrder,
 } from '../../services/forumService';
+
+// Lazy load Excalidraw viewer for better performance
+const ExcalidrawViewer = lazy(() => import('./ExcalidrawViewer'));
 
 // Format relative time
 function formatRelativeTime(dateString: string, t: (key: string) => string): string {
@@ -403,9 +406,22 @@ function MessageCard({
                 {formatRelativeTime(message.created_at, t)}
               </span>
             </div>
-            <div className="text-slate-300">
-              <MarkdownContent content={message.content} />
-            </div>
+            {message.content && (
+              <div className="text-slate-300">
+                <MarkdownContent content={message.content} />
+              </div>
+            )}
+            {message.diagram_data && (
+              <div className="mt-3">
+                <Suspense fallback={
+                  <div className="bg-slate-900/50 border border-slate-700 rounded-lg p-4 flex items-center justify-center min-h-[200px]">
+                    <div className="animate-spin w-6 h-6 border-2 border-brand-500 border-t-transparent rounded-full" />
+                  </div>
+                }>
+                  <ExcalidrawViewer diagramData={message.diagram_data as { elements?: unknown[]; appState?: unknown; files?: Record<string, unknown> }} />
+                </Suspense>
+              </div>
+            )}
             <div className="flex items-center gap-4 mt-3">
               <button
                 onClick={() => onVote(message.id)}
