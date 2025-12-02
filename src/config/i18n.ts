@@ -370,7 +370,13 @@ const resources = {
         differentials_item4: 'Structured learning roadmap',
         cta_title: 'Ready to become an expert?',
         cta_subtitle: 'Join hundreds of developers mastering distributed systems in practice',
-        guarantee_spot: 'Guarantee My Spot'
+        guarantee_spot: 'Guarantee My Spot',
+        forum_section: {
+          title: 'Community Forum',
+          subtitle: 'Latest discussions from the community',
+          view_all: 'View all',
+          see_more: '+{{count}} more topics'
+        }
       },
       menu: {
         roadmap: {
@@ -1595,6 +1601,10 @@ const resources = {
           name: 'System Editor',
           description: 'Create and simulate distributed systems'
         },
+        forum: {
+          name: 'Community Forum',
+          description: 'Discuss and learn with the community'
+        },
         design_lab: {
           name: 'Design Lab',
           description: 'Access our design lab'
@@ -1738,6 +1748,50 @@ const resources = {
           title: 'Page in Development',
           description: 'This is a preview of the Systems Editor under development. Soon, you will be able to create and simulate complete distributed architectures with more components, metrics, and features. Stay tuned for updates!',
           note: 'Note: The calculations and metrics shown in this version are approximations and may not accurately reflect the behavior of a real system. We are working to improve the accuracy of the simulations.'
+        }
+      },
+      forum: {
+        title: 'Community Forum',
+        subtitle: 'Discuss, ask questions, and learn with the community',
+        new_topic: 'New Topic',
+        category: 'Category',
+        title_field: 'Title',
+        title_placeholder: 'What do you want to discuss?',
+        content: 'Content',
+        content_placeholder: 'Describe your question or topic in detail...',
+        markdown_supported: 'Markdown is supported',
+        cancel: 'Cancel',
+        post: 'Post',
+        posting: 'Posting...',
+        by: 'by',
+        all: 'All',
+        replies: 'Replies',
+        reply: 'Reply',
+        reply_placeholder: 'Write your reply...',
+        delete: 'Delete',
+        delete_topic: 'Delete topic',
+        confirm_delete_message: 'Are you sure you want to delete this message?',
+        confirm_delete_topic: 'Are you sure you want to delete this topic? This action cannot be undone.',
+        back_to_topics: 'Back to topics',
+        no_topics: 'No topics yet',
+        be_first: 'Be the first to start a discussion!',
+        no_replies: 'No replies yet. Be the first to respond!',
+        try_again: 'Try again',
+        subscription_required: 'Subscription Required',
+        subscription_message: 'The community forum is available exclusively for subscribers. Join now to participate in discussions and learn with the community!',
+        subscribe_now: 'Subscribe Now',
+        sort: {
+          recent: 'Most recent',
+          active: 'Most active',
+          popular: 'Most popular',
+          oldest: 'Oldest first',
+          newest: 'Newest first'
+        },
+        time: {
+          just_now: 'just now',
+          minutes_ago: '{{count}}m ago',
+          hours_ago: '{{count}}h ago',
+          days_ago: '{{count}}d ago'
         }
       },
       theoretical_foundations_main: {
@@ -6244,7 +6298,13 @@ const resources = {
         differentials_item4: 'Roadmap estruturado de aprendizado',
         cta_title: 'Pronto para se tornar um especialista?',
         cta_subtitle: 'Junte-se a centenas de desenvolvedores que já estão dominando sistemas distribuídos na prática',
-        guarantee_spot: 'Garantir Minha Vaga'
+        guarantee_spot: 'Garantir Minha Vaga',
+        forum_section: {
+          title: 'Fórum da Comunidade',
+          subtitle: 'Últimas discussões da comunidade',
+          view_all: 'Ver todos',
+          see_more: '+{{count}} tópicos a mais'
+        }
       },
       menu: {
         roadmap: {
@@ -7469,6 +7529,10 @@ const resources = {
           name: 'Editor de Sistemas',
           description: 'Crie e simule sistemas distribuídos'
         },
+        forum: {
+          name: 'Fórum da Comunidade',
+          description: 'Discuta e aprenda com a comunidade'
+        },
         design_lab: {
           name: 'Design Lab',
           description: 'Acesse nosso design lab'
@@ -7632,6 +7696,50 @@ const resources = {
           title: 'Página em Desenvolvimento',
           description: 'Esta é uma prévia do Editor de Sistemas que está em desenvolvimento. Em breve, você poderá criar e simular arquiteturas distribuídas completas, com mais componentes, métricas e funcionalidades. Fique ligado nas próximas atualizações!',
           note: 'Nota: Os cálculos e métricas apresentados nesta versão são aproximados e podem não refletir com precisão o comportamento de um sistema real. Estamos trabalhando para melhorar a precisão das simulações.'
+        }
+      },
+      forum: {
+        title: 'Fórum da Comunidade',
+        subtitle: 'Discuta, tire dúvidas e aprenda com a comunidade',
+        new_topic: 'Novo Tópico',
+        category: 'Categoria',
+        title_field: 'Título',
+        title_placeholder: 'O que você quer discutir?',
+        content: 'Conteúdo',
+        content_placeholder: 'Descreva sua dúvida ou tópico em detalhes...',
+        markdown_supported: 'Markdown é suportado',
+        cancel: 'Cancelar',
+        post: 'Publicar',
+        posting: 'Publicando...',
+        by: 'por',
+        all: 'Todos',
+        replies: 'Respostas',
+        reply: 'Responder',
+        reply_placeholder: 'Escreva sua resposta...',
+        delete: 'Excluir',
+        delete_topic: 'Excluir tópico',
+        confirm_delete_message: 'Tem certeza que deseja excluir esta mensagem?',
+        confirm_delete_topic: 'Tem certeza que deseja excluir este tópico? Esta ação não pode ser desfeita.',
+        back_to_topics: 'Voltar para os tópicos',
+        no_topics: 'Nenhum tópico ainda',
+        be_first: 'Seja o primeiro a iniciar uma discussão!',
+        no_replies: 'Nenhuma resposta ainda. Seja o primeiro a responder!',
+        try_again: 'Tentar novamente',
+        subscription_required: 'Assinatura Necessária',
+        subscription_message: 'O fórum da comunidade está disponível exclusivamente para assinantes. Assine agora para participar das discussões e aprender com a comunidade!',
+        subscribe_now: 'Assinar Agora',
+        sort: {
+          recent: 'Mais recentes',
+          active: 'Mais ativos',
+          popular: 'Mais populares',
+          oldest: 'Mais antigos',
+          newest: 'Mais novos'
+        },
+        time: {
+          just_now: 'agora',
+          minutes_ago: 'há {{count}}m',
+          hours_ago: 'há {{count}}h',
+          days_ago: 'há {{count}}d'
         }
       },
       components: {

@@ -18,6 +18,7 @@ export default function ContentLayout({ children, hideCompletion = false, childP
   const isSimulator = currentPath.includes('simulator') || 
                        currentPath.includes('simulador') ||
                        currentPath.includes('/editor');
+  const isForumPage = currentPath === '/forum' || currentPath.startsWith('/forum/');
 
   return (
     <div className="relative">
@@ -26,11 +27,11 @@ export default function ContentLayout({ children, hideCompletion = false, childP
       </div>
       
       <div className="fixed bottom-8 right-8 flex flex-col items-end gap-3">
-        {!isRoadmapPage && !isSimulator && (
+        {!isRoadmapPage && !isSimulator && !isForumPage && (
           <ReadingTime contentRef={contentRef} />
         )}
         
-        {!hideCompletion && !isRoadmapPage && (
+        {!hideCompletion && !isRoadmapPage && !isForumPage && (
           <CompletionButton path={currentPath} childPaths={childPaths} />
         )}
       </div>

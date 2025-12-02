@@ -127,6 +127,7 @@ import TheoreticalFoundations from "./components/TheoreticalFoundations/Theoreti
 import ReplicationSimulator from "./components/DesignPrinciples/ReplicationSimulator";
 import AvailabilityZonesSimulator from "./components/DesignPrinciples/AvailabilityZonesSimulator";
 import AvailabilityZones from "./components/DesignPrinciples/AvailabilityZones";
+import { ForumPage } from "./components/Forum";
 
 interface MenuItem {
   name: string;
@@ -827,6 +828,28 @@ const createMenuItems = (t: any): MenuItem[] => [
           strokeLinejoin="round"
           strokeWidth={2}
           d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+        />
+      </svg>
+    ),
+  },
+  {
+    path: "/forum",
+    name: t('menu.forum.name'),
+    description: t('menu.forum.description'),
+    status: "new",
+    badges: [{ text: t('badges.new'), color: "bg-blue-500" }],
+    icon: (
+      <svg
+        className="w-6 h-6 text-emerald-500"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"
         />
       </svg>
     ),
@@ -2285,6 +2308,16 @@ export default function App() {
                 <ProtectedRoute>
                   <ContentPage>
                     <Failover />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/forum"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <ForumPage />
                   </ContentPage>
                 </ProtectedRoute>
               }

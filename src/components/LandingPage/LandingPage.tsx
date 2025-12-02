@@ -7,11 +7,57 @@ import { Typography, LanguageSwitcher, CouponModal } from '../Common';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { calculatePricing, formatPrice, detectUserCurrency } from '../../utils/pricing';
+import { getTopics, ForumTopic } from '../../services/forumService';
+
+// Category badge colors for forum topics
+const categoryColors: Record<string, { bg: string; text: string }> = {
+  'Dúvida': { bg: 'bg-blue-500/10', text: 'text-blue-400' },
+  'Brainstorm': { bg: 'bg-purple-500/10', text: 'text-purple-400' },
+  'Ajuda': { bg: 'bg-amber-500/10', text: 'text-amber-400' },
+};
+
+// Format relative time for forum topics
+function formatRelativeTime(dateString: string): string {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+
+  if (diffMins < 1) return 'agora';
+  if (diffMins < 60) return `${diffMins}m`;
+  if (diffHours < 24) return `${diffHours}h`;
+  if (diffDays < 7) return `${diffDays}d`;
+  
+  return date.toLocaleDateString();
+}
 
 export default function LandingPage() {
   const { t, i18n } = useTranslation();
   const { user, isSubscribed } = useAuth();
   const [showCouponModal, setShowCouponModal] = useState(false);
+  const [latestTopics, setLatestTopics] = useState<ForumTopic[]>([]);
+  const [loadingTopics, setLoadingTopics] = useState(false);
+
+  // Fetch latest forum topics for subscribed users
+  useEffect(() => {
+    async function fetchLatestTopics() {
+      if (!user || !isSubscribed) return;
+      
+      setLoadingTopics(true);
+      try {
+        const data = await getTopics({ sort: 'recent', limit: 5 });
+        setLatestTopics(data.topics);
+      } catch (err) {
+        console.error('Failed to fetch forum topics:', err);
+      } finally {
+        setLoadingTopics(false);
+      }
+    }
+    
+    fetchLatestTopics();
+  }, [user, isSubscribed]);
   
   // Detect user currency based on location/language  
     const userCurrency = detectUserCurrency();
@@ -103,6 +149,116 @@ export default function LandingPage() {
           </Link>
         </div>
       </div>
+
+      {/* Latest Forum Topics - Only for subscribed users */}
+      {isSubscribed && latestTopics.length > 0 && (
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                  <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+                  </svg>
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">{t('landing.forum_section.title')}</h2>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">{t('landing.forum_section.subtitle')}</p>
+                </div>
+              </div>
+              <Link
+                to="/forum"
+                className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 font-medium text-sm transition-colors"
+              >
+                {t('landing.forum_section.view_all')}
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {latestTopics.slice(0, 3).map((topic, index) => {
+                const colors = categoryColors[topic.category] || { bg: 'bg-slate-500/10', text: 'text-slate-400' };
+                return (
+                  <motion.div
+                    key={topic.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <Link
+                      to="/forum"
+                      className="block bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 p-4 hover:border-emerald-500/50 hover:shadow-lg hover:shadow-emerald-500/5 transition-all group"
+                    >
+                      <div className="flex items-start gap-3">
+                        {topic.author.avatar_image ? (
+                          <img
+                            src={topic.author.avatar_image}
+                            alt={topic.author.nickname}
+                            className="w-8 h-8 rounded-full object-cover ring-2"
+                            style={{ borderColor: topic.author.role_color }}
+                          />
+                        ) : (
+                          <div
+                            className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-semibold"
+                            style={{ backgroundColor: topic.author.role_color }}
+                          >
+                            {topic.author.nickname.charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${colors.bg} ${colors.text}`}>
+                              {topic.category}
+                            </span>
+                            <span className="text-slate-400 dark:text-slate-500 text-xs">
+                              {formatRelativeTime(topic.created_at)}
+                            </span>
+                          </div>
+                          <h3 className="font-medium text-slate-900 dark:text-slate-100 truncate group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                            {topic.title}
+                          </h3>
+                          <div className="flex items-center gap-2 mt-2 text-xs">
+                            <span className="text-slate-500 dark:text-slate-400">
+                              {topic.author.nickname}
+                            </span>
+                            <span className="text-slate-300 dark:text-slate-600">•</span>
+                            <span className="flex items-center gap-1 text-slate-400 dark:text-slate-500">
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                              </svg>
+                              {topic.upvotes}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </div>
+            
+            {latestTopics.length > 3 && (
+              <div className="mt-4 text-center">
+                <Link
+                  to="/forum"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-lg font-medium text-sm transition-colors"
+                >
+                  {t('landing.forum_section.see_more').replace('{{count}}', (latestTopics.length - 3).toString())}
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </Link>
+              </div>
+            )}
+          </motion.div>
+        </div>
+      )}
 
       {/* Key Features Grid */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
