@@ -1594,6 +1594,10 @@ const resources = {
         editor: {
           name: 'System Editor',
           description: 'Create and simulate distributed systems'
+        },
+        design_lab: {
+          name: 'Design Lab',
+          description: 'Access our design lab'
         }
       },
       skills: {
@@ -7464,6 +7468,10 @@ const resources = {
         editor: {
           name: 'Editor de Sistemas',
           description: 'Crie e simule sistemas distribuídos'
+        },
+        design_lab: {
+          name: 'Design Lab',
+          description: 'Acesse nosso design lab'
         }
       },
       skills: {

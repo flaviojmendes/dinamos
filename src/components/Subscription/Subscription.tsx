@@ -55,7 +55,7 @@ export default function Subscription() {
       
       console.log('Creating checkout session with:', requestBody);
 
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const apiUrl = import.meta.env.VITE_API_URL ?? '';
       const response = await fetch(`${apiUrl}/api/subscription/create-monthly-subscription`, {
         method: 'POST',
         headers: {

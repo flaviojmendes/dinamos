@@ -76,8 +76,10 @@ export default function Roadmap() {
 
   // Transform menuItems to the roadmap structure
   const roadmapItems = menuItems.filter(item => 
-    // Filter out special items like "Comece Aqui" and the roadmap itself
-    item.path !== "/roadmap" && !item.path.includes("editor")
+    // Filter out special items like "Comece Aqui", the roadmap itself, and external tools
+    item.path !== "/roadmap" && 
+    !item.path.includes("editor") && 
+    !item.path.startsWith("http")
   );
 
   const getStepStatus = (item: MenuItem) => {

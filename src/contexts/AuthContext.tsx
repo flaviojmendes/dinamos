@@ -54,7 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Get the ID token (force refresh if requested)
       const token = await userState.getIdToken(forceRefresh);
       
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const apiUrl = import.meta.env.VITE_API_URL ?? '';
       // Use the authorization endpoint (user profile) to check subscription status
       const response = await fetch(`${apiUrl}/api/users/me`, {
         headers: {

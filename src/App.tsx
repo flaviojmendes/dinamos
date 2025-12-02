@@ -143,6 +143,7 @@ interface MenuItem {
   disabled?: boolean;
   customStyle?: string;
   customHoverStyle?: string;
+  external?: boolean;
 }
 
 const createMenuItems = (t: any): MenuItem[] => [
@@ -830,6 +831,29 @@ const createMenuItems = (t: any): MenuItem[] => [
       </svg>
     ),
   },
+  {
+    path: "https://lab.dinamos.net",
+    name: t('menu.design_lab.name'),
+    description: t('menu.design_lab.description'),
+    external: true,
+    status: "new",
+    badges: [{ text: t('badges.new'), color: "bg-blue-500" }],
+    icon: (
+      <svg
+        className="w-6 h-6 text-pink-500"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
+        />
+      </svg>
+    ),
+  },
 ];
 
 export default function App() {
@@ -921,6 +945,45 @@ export default function App() {
               </div>
               <span className="text-sm opacity-75">{item.description}</span>
             </div>
+          ) : item.external ? (
+            <a
+              href={item.path}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`flex-1 flex flex-col p-3 rounded-lg transition-colors relative ${
+                item.customStyle
+                  ? `${item.customStyle} ${
+                      item.customHoverStyle || "hover:bg-slate-100 dark:hover:bg-slate-800"
+                    } text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white`
+                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
+              }`}
+              onClick={() => {
+                if (!item.disabled) {
+                  onNavigate?.();
+                  trackEvent("User", "Clicked on External Menu Item", item.name);
+                }
+              }}
+            >
+              <div className="flex items-center">
+                <span className="font-medium mr-2">{displayName}</span>
+                <svg className="w-4 h-4 ml-auto opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </div>
+              <span className="text-sm opacity-75">{displayDescription}</span>
+              {item.badges && (
+                <div className="absolute -top-2 right-2 flex gap-1">
+                  {item.badges.map((badge, index) => (
+                    <span
+                      key={index}
+                      className={`text-xs px-2 py-0.5 rounded-full text-white ${badge.color}`}
+                    >
+                      {translatedBadge(badge.text)}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </a>
           ) : (
             <NavLink
               to={item.path}
