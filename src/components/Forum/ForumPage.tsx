@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import ReactMarkdown from 'react-markdown';
@@ -628,7 +629,7 @@ function TopicDetail({
   const replyingToMessage = replyingTo ? messages.find(m => m.id === replyingTo) : null;
 
   return (
-    <div className="space-y-6 p-10">
+    <div className="space-y-6 lg:p-10 p-4">
       {/* Back button */}
       <button
         onClick={onBack}
@@ -792,15 +793,19 @@ function TopicDetail({
 export default function ForumPage() {
   const { t } = useTranslation();
   const { user, isSubscribed } = useAuth();
+  const { topicId: topicIdParam } = useParams<{ topicId?: string }>();
+  const navigate = useNavigate();
   const [topics, setTopics] = useState<ForumTopic[]>([]);
   const [categories, setCategories] = useState<ForumCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedTopicId, setSelectedTopicId] = useState<number | null>(null);
   const [showNewTopicForm, setShowNewTopicForm] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<TopicSortOrder>('recent');
   const [topicVotes, setTopicVotes] = useState<Set<number>>(new Set());
+  
+  // Parse topic ID from URL params
+  const selectedTopicId = topicIdParam ? parseInt(topicIdParam, 10) : null;
 
   const loadCategories = useCallback(async () => {
     try {
@@ -886,12 +891,12 @@ export default function ForumPage() {
   }
 
   // Topic Detail View
-  if (selectedTopicId !== null) {
+  if (selectedTopicId !== null && !isNaN(selectedTopicId)) {
     return (
       <TopicDetail
         topicId={selectedTopicId}
         onBack={() => {
-          setSelectedTopicId(null);
+          navigate('/forum');
           loadTopics();
         }}
         currentUserId={user?.uid || ''}
@@ -901,7 +906,7 @@ export default function ForumPage() {
   }
 
   return (
-    <div className="space-y-6 p-10">
+    <div className="space-y-6 lg:p-10 p-4">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -1004,7 +1009,7 @@ export default function ForumPage() {
               <TopicCard
                 key={topic.id}
                 topic={topic}
-                onClick={() => setSelectedTopicId(topic.id)}
+                onClick={() => navigate(`/forum/${topic.id}`)}
                 onVote={() => handleVoteTopic(topic.id)}
                 isVoted={topicVotes.has(topic.id)}
                 categories={categories}

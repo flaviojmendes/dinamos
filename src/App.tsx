@@ -2322,6 +2322,16 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/forum/:topicId"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <ForumPage />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
             
           </Routes>
         </main>
