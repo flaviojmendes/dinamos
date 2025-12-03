@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react';
 import { Excalidraw, exportToSvg } from '@excalidraw/excalidraw';
-import type { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
-import type { AppState } from '@excalidraw/excalidraw/types/types';
+import type { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
+import type { AppState, BinaryFiles } from '@excalidraw/excalidraw/types';
 
 interface ExcalidrawViewerProps {
   diagramData: {
     elements?: ExcalidrawElement[];
     appState?: Partial<AppState>;
-    files?: Record<string, unknown>;
+    files?: BinaryFiles;
   };
 }
 
@@ -32,7 +32,7 @@ function ExcalidrawSvgViewer({ diagramData }: ExcalidrawViewerProps) {
             exportBackground: false,
             ...diagramData.appState,
           },
-          files: diagramData.files || null,
+          files: diagramData.files ?? null,
         });
 
         setSvgContent(svg.outerHTML);
@@ -81,7 +81,7 @@ function ExcalidrawInteractiveViewer({ diagramData }: ExcalidrawViewerProps) {
       theme: 'dark' as const,
       ...diagramData.appState,
     },
-    files: diagramData.files || undefined,
+    files: diagramData.files ?? undefined,
   }), [diagramData]);
 
   return (
