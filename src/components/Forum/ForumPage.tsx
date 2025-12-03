@@ -20,6 +20,15 @@ import {
   TopicSortOrder,
   MessageSortOrder,
 } from '../../services/forumService';
+import type { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
+import type { AppState, BinaryFiles } from '@excalidraw/excalidraw/types';
+
+// Type for Excalidraw diagram data
+type DiagramData = {
+  elements?: ExcalidrawElement[];
+  appState?: Partial<AppState>;
+  files?: BinaryFiles;
+};
 
 // Lazy load Excalidraw viewer for better performance
 const ExcalidrawViewer = lazy(() => import('./ExcalidrawViewer'));
@@ -418,7 +427,7 @@ function MessageCard({
                     <div className="animate-spin w-6 h-6 border-2 border-brand-500 border-t-transparent rounded-full" />
                   </div>
                 }>
-                  <ExcalidrawViewer diagramData={message.diagram_data as { elements?: unknown[]; appState?: unknown; files?: Record<string, unknown> }} />
+                  <ExcalidrawViewer diagramData={message.diagram_data as DiagramData} />
                 </Suspense>
               </div>
             )}
