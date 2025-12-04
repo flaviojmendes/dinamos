@@ -15,7 +15,7 @@ export interface CurrencyConfig {
 // Currency configurations based on region/language
 const CURRENCY_CONFIGS: Record<string, CurrencyConfig> = {
   'pt-BR': {
-    price: 29,
+    price: 29.90,
     currency: 'BRL',
     currencySymbol: 'R$',
     locale: 'pt-BR'
@@ -149,8 +149,8 @@ export function formatPrice(amount: number, currencyData: PricingData): string {
     return new Intl.NumberFormat(currencyData.locale, {
       style: 'currency',
       currency: currencyData.currency,
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
     }).format(amount);
   } catch (error) {
     // Fallback to simple formatting

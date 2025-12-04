@@ -369,6 +369,7 @@ function MessageCard({
   canDelete,
   currentUserId,
   messageVotes,
+  isSubscribed,
   depth = 0,
 }: {
   message: ForumMessage;
@@ -380,11 +381,12 @@ function MessageCard({
   canDelete: boolean;
   currentUserId: string;
   messageVotes: Set<number>;
+  isSubscribed: boolean;
   depth?: number;
 }) {
   const { t } = useTranslation();
   const childMessages = messages.filter(m => m.parent_id === message.id);
-  const canReply = depth < 2; // Max 2 levels of nesting
+  const canReply = depth < 2 && isSubscribed; // Max 2 levels of nesting, only for subscribed users
 
   return (
     <div className={depth > 0 ? 'ml-8 border-l-2 border-slate-700/50 pl-4' : ''}>
@@ -489,6 +491,7 @@ function MessageCard({
               canDelete={child.user_id === currentUserId}
               currentUserId={currentUserId}
               messageVotes={messageVotes}
+              isSubscribed={isSubscribed}
               depth={depth + 1}
             />
           ))}
@@ -504,11 +507,13 @@ function TopicDetail({
   onBack,
   currentUserId,
   categories,
+  isSubscribed,
 }: {
   topicId: number;
   onBack: () => void;
   currentUserId: string;
   categories: ForumCategory[];
+  isSubscribed: boolean;
 }) {
   const { t } = useTranslation();
   const [topic, setTopic] = useState<ForumTopic | null>(null);
@@ -762,6 +767,7 @@ function TopicDetail({
               canDelete={message.user_id === currentUserId}
               currentUserId={currentUserId}
               messageVotes={messageVotes}
+              isSubscribed={isSubscribed}
             />
           ))}
         </div>
@@ -773,43 +779,60 @@ function TopicDetail({
         )}
       </div>
 
-      {/* Reply Form */}
-      <form id="reply-form" onSubmit={handleReply} className="bg-slate-800/30 rounded-xl border border-slate-700/30 p-4">
-        {replyingToMessage && (
-          <div className="mb-3 p-3 bg-slate-900/50 rounded-lg border-l-4 border-brand-500 flex items-start justify-between">
-            <div>
-              <span className="text-xs text-slate-500">{t('forum.replying_to')}</span>
-              <p className="text-sm text-slate-400 line-clamp-2">{replyingToMessage.content}</p>
+      {/* Reply Form - Only for subscribed users */}
+      {isSubscribed ? (
+        <form id="reply-form" onSubmit={handleReply} className="bg-slate-800/30 rounded-xl border border-slate-700/30 p-4">
+          {replyingToMessage && (
+            <div className="mb-3 p-3 bg-slate-900/50 rounded-lg border-l-4 border-brand-500 flex items-start justify-between">
+              <div>
+                <span className="text-xs text-slate-500">{t('forum.replying_to')}</span>
+                <p className="text-sm text-slate-400 line-clamp-2">{replyingToMessage.content}</p>
+              </div>
+              <button
+                type="button"
+                onClick={cancelReplyTo}
+                className="text-slate-500 hover:text-slate-300 p-1"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
+          )}
+          <textarea
+            value={replyContent}
+            onChange={(e) => setReplyContent(e.target.value)}
+            placeholder={replyingTo ? t('forum.nested_reply_placeholder') : t('forum.reply_placeholder')}
+            rows={3}
+            className="w-full px-4 py-2 bg-slate-900/50 border border-slate-600 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent resize-none"
+          />
+          <div className="flex justify-between items-center mt-3">
+            <p className="text-xs text-slate-500">{t('forum.markdown_supported')}</p>
             <button
-              type="button"
-              onClick={cancelReplyTo}
-              className="text-slate-500 hover:text-slate-300 p-1"
+              type="submit"
+              disabled={isReplying || !replyContent.trim()}
+              className="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              {isReplying ? t('forum.posting') : t('forum.reply')}
             </button>
           </div>
-        )}
-        <textarea
-          value={replyContent}
-          onChange={(e) => setReplyContent(e.target.value)}
-          placeholder={replyingTo ? t('forum.nested_reply_placeholder') : t('forum.reply_placeholder')}
-          rows={3}
-          className="w-full px-4 py-2 bg-slate-900/50 border border-slate-600 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent resize-none"
-        />
-        <div className="flex justify-between items-center mt-3">
-          <p className="text-xs text-slate-500">{t('forum.markdown_supported')}</p>
-          <button
-            type="submit"
-            disabled={isReplying || !replyContent.trim()}
-            className="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isReplying ? t('forum.posting') : t('forum.reply')}
-          </button>
+        </form>
+      ) : (
+        <div id="reply-form" className="bg-slate-800/30 rounded-xl border border-slate-700/30 p-4">
+          <div className="flex items-center justify-between">
+            <p className="text-slate-400">{t('forum.subscribe_to_reply')}</p>
+            <a
+              href="/pagamento"
+              className="flex items-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg font-medium transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              {t('forum.subscribe_now')}
+            </a>
+          </div>
         </div>
-      </form>
+      )}
     </div>
   );
 }
@@ -864,11 +887,11 @@ export default function ForumPage() {
   }, [categoryFilter, sortOrder]);
 
   useEffect(() => {
-    if (user && isSubscribed) {
+    if (user) {
       loadCategories();
       loadTopics();
     }
-  }, [loadCategories, loadTopics, user, isSubscribed]);
+  }, [loadCategories, loadTopics, user]);
 
   const handleCreateTopic = async (data: { title: string; content: string; category: string }) => {
     const newTopic = await createTopic(data);
@@ -892,8 +915,8 @@ export default function ForumPage() {
     }
   };
 
-  // Require subscription
-  if (!isSubscribed) {
+  // Require login (not subscription) to view forum
+  if (!user) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
         <div className="bg-slate-800/50 rounded-2xl border border-slate-700/50 p-8 max-w-md">
@@ -902,14 +925,8 @@ export default function ForumPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-slate-100 mb-2">{t('forum.subscription_required')}</h2>
-          <p className="text-slate-400 mb-6">{t('forum.subscription_message')}</p>
-          <a
-            href="/pagamento"
-            className="inline-block px-6 py-3 bg-brand-600 hover:bg-brand-500 text-white rounded-lg font-medium transition-colors"
-          >
-            {t('forum.subscribe_now')}
-          </a>
+          <h2 className="text-2xl font-bold text-slate-100 mb-2">{t('forum.login_required')}</h2>
+          <p className="text-slate-400 mb-6">{t('forum.login_message')}</p>
         </div>
       </div>
     );
@@ -926,6 +943,7 @@ export default function ForumPage() {
         }}
         currentUserId={user?.uid || ''}
         categories={categories}
+        isSubscribed={isSubscribed}
       />
     );
   }
@@ -940,15 +958,28 @@ export default function ForumPage() {
           </h1>
           <p className="text-slate-400 mt-1">{t('forum.subtitle')}</p>
         </div>
-        <button
-          onClick={() => setShowNewTopicForm(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg font-medium transition-colors"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          {t('forum.new_topic')}
-        </button>
+        {isSubscribed ? (
+          <button
+            onClick={() => setShowNewTopicForm(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg font-medium transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            {t('forum.new_topic')}
+          </button>
+        ) : (
+          <a
+            href="/pagamento"
+            className="flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg font-medium transition-colors"
+            title={t('forum.subscribe_to_post')}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            {t('forum.subscribe_to_post')}
+          </a>
+        )}
       </div>
 
       {/* New Topic Form */}

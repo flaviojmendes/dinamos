@@ -2315,7 +2315,7 @@ export default function App() {
             <Route
               path="/forum"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requiresSubscription={false}>
                   <ContentPage>
                     <ForumPage />
                   </ContentPage>
@@ -2325,7 +2325,7 @@ export default function App() {
             <Route
               path="/forum/:topicId"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requiresSubscription={false}>
                   <ContentPage>
                     <ForumPage />
                   </ContentPage>

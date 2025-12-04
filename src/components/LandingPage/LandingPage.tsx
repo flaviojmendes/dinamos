@@ -40,10 +40,10 @@ export default function LandingPage() {
   const [latestTopics, setLatestTopics] = useState<ForumTopic[]>([]);
   const [loadingTopics, setLoadingTopics] = useState(false);
 
-  // Fetch latest forum topics for subscribed users
+  // Fetch latest forum topics for logged-in users (subscribed or not)
   useEffect(() => {
     async function fetchLatestTopics() {
-      if (!user || !isSubscribed) return;
+      if (!user) return;
       
       setLoadingTopics(true);
       try {
@@ -57,7 +57,7 @@ export default function LandingPage() {
     }
     
     fetchLatestTopics();
-  }, [user, isSubscribed]);
+  }, [user]);
   
   // Detect user currency based on location/language  
     const userCurrency = detectUserCurrency();
@@ -150,8 +150,8 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Latest Forum Topics - Only for subscribed users */}
-      {isSubscribed && latestTopics.length > 0 && (
+      {/* Latest Forum Topics - For all logged-in users */}
+      {user && latestTopics.length > 0 && (
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

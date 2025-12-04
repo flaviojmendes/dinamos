@@ -1782,6 +1782,10 @@ const resources = {
         subscription_required: 'Subscription Required',
         subscription_message: 'The community forum is available exclusively for subscribers. Join now to participate in discussions and learn with the community!',
         subscribe_now: 'Subscribe Now',
+        login_required: 'Login Required',
+        login_message: 'Please sign in to access the community forum.',
+        subscribe_to_post: 'Subscribe to post',
+        subscribe_to_reply: 'Subscribe to join the discussion and reply to topics.',
         sort: {
           recent: 'Most recent',
           active: 'Most active',
@@ -7733,6 +7737,10 @@ const resources = {
         subscription_required: 'Assinatura Necessária',
         subscription_message: 'O fórum da comunidade está disponível exclusivamente para assinantes. Assine agora para participar das discussões e aprender com a comunidade!',
         subscribe_now: 'Assinar Agora',
+        login_required: 'Login Necessário',
+        login_message: 'Por favor, faça login para acessar o fórum da comunidade.',
+        subscribe_to_post: 'Assine para publicar',
+        subscribe_to_reply: 'Assine para participar da discussão e responder aos tópicos.',
         sort: {
           recent: 'Mais recentes',
           active: 'Mais ativos',
