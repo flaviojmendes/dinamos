@@ -158,7 +158,7 @@ export default function ChallengesSection() {
 
   const handleChallengeClick = (challenge: Challenge) => {
     // Redirect to the lab with the challenge ID
-    window.open(`https://lab.dinamos.dev`, '_blank');
+    window.open(`https://lab.dinamos.net`, '_blank');
   };
 
   if (loading) {
@@ -204,7 +204,7 @@ export default function ChallengesSection() {
         </div>
         
         <a
-          href="https://lab.dinamos.dev"
+          href="https://lab.dinamos.net"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm font-medium transition-colors border border-slate-700 hover:border-slate-600"
@@ -253,7 +253,7 @@ export default function ChallengesSection() {
             </div>
           </div>
           <a
-            href="https://lab.dinamos.dev"
+            href="https://lab.dinamos.net"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-lg font-medium transition-colors whitespace-nowrap"
