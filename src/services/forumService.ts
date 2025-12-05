@@ -25,6 +25,7 @@ export interface ForumTopic {
   user_id: string;
   category: string;
   upvotes: number;
+  comment_count?: number;
   created_at: string;
   updated_at: string;
   author: ForumAuthor;
