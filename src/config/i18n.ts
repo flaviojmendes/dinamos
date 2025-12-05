@@ -1804,6 +1804,18 @@ const resources = {
           days_ago: '{{count}}d ago'
         }
       },
+      challenges: {
+        title: 'System Design Challenges',
+        subtitle: 'Practice your skills with real-world distributed systems problems',
+        view_all: 'View All',
+        start_challenge: 'Start Challenge',
+        attempt: 'attempt',
+        attempts: 'attempts',
+        has_video: 'Has video solution',
+        cta_title: 'Ready to test your knowledge?',
+        cta_description: 'Access the Design Lab to practice system design with AI feedback.',
+        go_to_lab: 'Go to Design Lab'
+      },
       theoretical_foundations_main: {
         subtitle: 'Building unshakeable knowledge for distributed systems',
         hero: {
@@ -7761,6 +7773,18 @@ const resources = {
           hours_ago: 'há {{count}}h',
           days_ago: 'há {{count}}d'
         }
+      },
+      challenges: {
+        title: 'Desafios de System Design',
+        subtitle: 'Pratique suas habilidades com problemas reais de sistemas distribuídos',
+        view_all: 'Ver Todos',
+        start_challenge: 'Iniciar Desafio',
+        attempt: 'tentativa',
+        attempts: 'tentativas',
+        has_video: 'Tem vídeo de solução',
+        cta_title: 'Pronto para testar seus conhecimentos?',
+        cta_description: 'Acesse o Design Lab para praticar system design com feedback de IA.',
+        go_to_lab: 'Ir para o Design Lab'
       },
       components: {
         overview_title: 'Componentes Básicos',

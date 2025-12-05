@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { calculatePricing, formatPrice, detectUserCurrency } from '../../utils/pricing';
 import { getTopics, ForumTopic } from '../../services/forumService';
+import ChallengesSection from '../Forum/ChallengesSection';
 
 // Category badge colors for forum topics
 const categoryColors: Record<string, { bg: string; text: string }> = {
@@ -257,6 +258,13 @@ export default function LandingPage() {
               </div>
             )}
           </motion.div>
+        </div>
+      )}
+
+      {/* Challenges Section - For logged-in users */}
+      {user && (
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <ChallengesSection />
         </div>
       )}
 

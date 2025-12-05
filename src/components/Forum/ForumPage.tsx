@@ -1086,6 +1086,7 @@ export default function ForumPage() {
           </AnimatePresence>
         </div>
       )}
+
     </div>
   );
 }
