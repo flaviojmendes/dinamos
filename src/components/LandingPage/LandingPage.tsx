@@ -6,7 +6,7 @@ import Countdown from '../Countdown/Countdown';
 import { Typography, LanguageSwitcher, CouponModal } from '../Common';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
-import { calculatePricing, formatPrice, detectUserCurrency } from '../../utils/pricing';
+import { calculatePricing, formatPrice, detectUserCurrency, calculateYearlySavings } from '../../utils/pricing';
 import { getTopics, ForumTopic } from '../../services/forumService';
 import ChallengesSection from '../Forum/ChallengesSection';
 
@@ -63,6 +63,7 @@ export default function LandingPage() {
   // Detect user currency based on location/language  
     const userCurrency = detectUserCurrency();
     const pricing = calculatePricing(userCurrency);
+    const yearlySavings = calculateYearlySavings(pricing);
     return (
       <div className="min-h-screen bg-canvas-paper dark:bg-canvas-dark text-slate-900 dark:text-slate-100">
         {/* Header - Only show for logged-out users */}
@@ -814,29 +815,76 @@ export default function LandingPage() {
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="bg-gradient-to-b from-blue-600/10 to-purple-600/10 rounded-xl p-8 border border-blue-500/20 hover:border-blue-500/50 transition-colors relative overflow-hidden"
-          >
-            <div className="text-center mb-8">
-              <div className="text-center">
-                <span className="text-4xl font-bold">
-                  <span className="text-white">{formatPrice(pricing.monthlyPrice, pricing)}</span>
-                  <span className="text-base font-normal text-slate-500 dark:text-slate-400 ml-2">/ {t('common.month')}</span>
+          {/* Pricing Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Monthly Plan */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="bg-gradient-to-b from-slate-800/50 to-slate-900/50 rounded-xl p-6 border border-slate-700/50 hover:border-slate-600/50 transition-colors"
+            >
+              <h3 className="text-lg font-semibold text-white mb-4">
+                {t('subscription.monthly_plan')}
+              </h3>
+              <div className="mb-4">
+                <span className="text-3xl font-bold text-white">
+                  {formatPrice(pricing.monthlyPrice, pricing)}
+                </span>
+                <span className="text-slate-400 ml-1">/ {t('common.month')}</span>
+              </div>
+              <p className="text-sm text-slate-400 mb-6">
+                {t('subscription.billed_monthly')}
+              </p>
+              <Link
+                to="/pagamento"
+                onClick={() => trackEvent('User', 'Clicked on Payment Button - Monthly')}
+                className="block text-center bg-slate-700 hover:bg-slate-600 text-white px-4 py-2.5 rounded-lg font-medium transition-colors text-sm"
+              >
+                {t('subscription.subscribe_now')}
+              </Link>
+            </motion.div>
+
+            {/* Yearly Plan - Best Value */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35 }}
+              className="bg-gradient-to-b from-blue-600/10 to-purple-600/10 rounded-xl p-6 border-2 border-blue-500/30 hover:border-blue-500/50 transition-colors relative overflow-hidden"
+            >
+              {/* Best Value Badge */}
+              <div className="absolute -top-0 -right-0">
+                <span className="bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-xl shadow-lg">
+                  {t('subscription.best_value')}
                 </span>
               </div>
-              <p className="text-slate-500 dark:text-slate-400 mt-4">{t('landing.invest_payment_info')}</p>
-            </div>
-            <Link
-              to="/pagamento"
-              onClick={() => trackEvent('User', 'Clicked on Payment Button')}
-              className="block text-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
-            >
-              {t('common.guarantee_spot')}
-            </Link>
-          </motion.div>
+
+              <h3 className="text-lg font-semibold text-white mb-4">
+                {t('subscription.yearly_plan')}
+              </h3>
+              <div className="mb-2">
+                <span className="text-3xl font-bold text-white">
+                  {formatPrice(pricing.yearlyPrice, pricing)}
+                </span>
+                <span className="text-slate-400 ml-1">/ {t('common.year')}</span>
+              </div>
+              <div className="flex items-center gap-2 mb-6">
+                <span className="text-sm text-slate-500 line-through">
+                  {formatPrice(pricing.monthlyPrice * 12, pricing)}
+                </span>
+                <span className="bg-green-500/20 text-green-400 text-xs px-2 py-0.5 rounded-full font-semibold">
+                  {t('subscription.save')} {yearlySavings}%
+                </span>
+              </div>
+              <Link
+                to="/pagamento"
+                onClick={() => trackEvent('User', 'Clicked on Payment Button - Yearly')}
+                className="block text-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2.5 rounded-lg font-medium transition-colors text-sm"
+              >
+                {t('subscription.subscribe_now')}
+              </Link>
+            </motion.div>
+          </div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
