@@ -1,39 +1,46 @@
 export interface PricingData {
-  price: number;
+  monthlyPrice: number;
+  yearlyPrice: number;
   currency: string;
   currencySymbol: string;
   locale: string;
 }
 
 export interface CurrencyConfig {
-  price: number;
+  monthlyPrice: number;
+  yearlyPrice: number;
   currency: string;
   currencySymbol: string;
   locale: string;
 }
 
 // Currency configurations based on region/language
+// Yearly pricing provides ~17% discount (10 months for the price of 12)
 const CURRENCY_CONFIGS: Record<string, CurrencyConfig> = {
   'pt-BR': {
-    price: 29.90,
+    monthlyPrice: 29.90,
+    yearlyPrice: 299.00,
     currency: 'BRL',
     currencySymbol: 'R$',
     locale: 'pt-BR'
   },
   'en-US': {
-    price: 7.99,
+    monthlyPrice: 7.99,
+    yearlyPrice: 79.90,
     currency: 'USD',
     currencySymbol: '$',
     locale: 'en-US'
   },
   'en-EU': {
-    price: 6.99,
+    monthlyPrice: 6.99,
+    yearlyPrice: 69.90,
     currency: 'EUR',
     currencySymbol: '€',
     locale: 'en-EU'
   },
   'en-IN': {
-    price: 599,
+    monthlyPrice: 599,
+    yearlyPrice: 5990,
     currency: 'INR',
     currencySymbol: '₹',
     locale: 'en-IN'
@@ -134,11 +141,21 @@ export function calculatePricing(currencyKey?: string): PricingData {
   const config = getCurrencyConfig(detectedCurrency);
   
   return {
-    price: config.price,
+    monthlyPrice: config.monthlyPrice,
+    yearlyPrice: config.yearlyPrice,
     currency: config.currency,
     currencySymbol: config.currencySymbol,
     locale: config.locale
   };
+}
+
+/**
+ * Calculates savings percentage when choosing yearly over monthly
+ */
+export function calculateYearlySavings(pricingData: PricingData): number {
+  const monthlyAnnual = pricingData.monthlyPrice * 12;
+  const savings = ((monthlyAnnual - pricingData.yearlyPrice) / monthlyAnnual) * 100;
+  return Math.round(savings);
 }
 
 /**

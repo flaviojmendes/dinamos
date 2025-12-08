@@ -823,8 +823,8 @@ export default function LandingPage() {
             <div className="text-center mb-8">
               <div className="text-center">
                 <span className="text-4xl font-bold">
-                  <span className="text-white">{formatPrice(pricing.price, pricing)}</span>
-                  <span className="text-base font-normal text-slate-500 dark:text-slate-400 ml-2">/ {t('common.month', { defaultValue: 'month' })}</span>
+                  <span className="text-white">{formatPrice(pricing.monthlyPrice, pricing)}</span>
+                  <span className="text-base font-normal text-slate-500 dark:text-slate-400 ml-2">/ {t('common.month')}</span>
                 </span>
               </div>
               <p className="text-slate-500 dark:text-slate-400 mt-4">{t('landing.invest_payment_info')}</p>

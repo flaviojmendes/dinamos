@@ -15,7 +15,9 @@ const resources = {
         final_cta_subtitle: 'Join hundreds of developers mastering distributed systems in practice',
         guarantee_spot: 'Guarantee My Spot',
         loading: 'Loading roadmap...',
-        discount_off: '{{percent}}% OFF'
+        discount_off: '{{percent}}% OFF',
+        month: 'month',
+        year: 'year'
       },
       protected_route: {
         loading: 'Loading...',
@@ -267,7 +269,16 @@ const resources = {
         why_community_title: 'Community',
         why_community_desc: 'Join a community of developers, share experiences, and learn with other professionals.',
         payment_confirmed: 'Payment Confirmed!',
-        access_granted_redirect: 'Your access has been granted successfully. Redirecting to the content...'
+        access_granted_redirect: 'Your access has been granted successfully. Redirecting to the content...',
+        monthly: 'Monthly',
+        yearly: 'Yearly',
+        monthly_plan: 'Monthly',
+        yearly_plan: 'Yearly',
+        billed_monthly: 'Billed monthly',
+        best_value: 'BEST VALUE',
+        save: 'Save',
+        subscribe_now: 'Subscribe Now',
+        cancel_anytime: 'Cancel anytime'
       },
       preferences: {
         title: 'Preferences',
@@ -5965,7 +5976,9 @@ const resources = {
         final_cta_subtitle: 'Junte-se a centenas de desenvolvedores que já estão dominando sistemas distribuídos na prática',
         guarantee_spot: 'Garantir Minha Vaga',
         loading: 'Carregando o roadmap...',
-        discount_off: '{{percent}}% OFF'
+        discount_off: '{{percent}}% OFF',
+        month: 'mês',
+        year: 'ano'
       },
       protected_route: {
         loading: 'Carregando...',
@@ -6217,7 +6230,16 @@ const resources = {
         why_community_title: 'Comunidade',
         why_community_desc: 'Faça parte de uma comunidade de desenvolvedores, compartilhe experiências e aprenda com outros profissionais.',
         payment_confirmed: 'Pagamento Confirmado!',
-        access_granted_redirect: 'Seu acesso foi liberado com sucesso. Redirecionando para o conteúdo...'
+        access_granted_redirect: 'Seu acesso foi liberado com sucesso. Redirecionando para o conteúdo...',
+        monthly: 'Mensal',
+        yearly: 'Anual',
+        monthly_plan: 'Mensal',
+        yearly_plan: 'Anual',
+        billed_monthly: 'Cobrado mensalmente',
+        best_value: 'MELHOR VALOR',
+        save: 'Economize',
+        subscribe_now: 'Assinar Agora',
+        cancel_anytime: 'Cancele quando quiser'
       },
       preferences: {
         title: 'Preferências',
