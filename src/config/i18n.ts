@@ -19,6 +19,11 @@ const resources = {
         month: 'month',
         year: 'year'
       },
+      footer: {
+        all_rights_reserved: 'All rights reserved.',
+        privacy_policy: 'Privacy Policy',
+        terms: 'Terms of Service'
+      },
       protected_route: {
         loading: 'Loading...',
         verifying_access: 'Verifying access...',
@@ -286,7 +291,261 @@ const resources = {
         email: 'Email',
         creation_date: 'Sign-up Date',
         manage_subscription: 'Manage Subscription',
-        manage_subscription_desc: 'Manage your subscription, payment method, and invoice history through the Stripe portal.'
+        manage_subscription_desc: 'Manage your subscription, payment method, and invoice history through the Stripe portal.',
+        privacy_cookies_title: 'Privacy & Cookies',
+        cookie_preferences_title: 'Cookie Preferences',
+        cookie_preferences_desc: 'Manage how we collect and use data on our website through cookies.',
+        manage_cookies_btn: 'Manage Cookies',
+        privacy_policy_title: 'Privacy Policy',
+        privacy_policy_desc: 'Learn about how we collect, use, and protect your personal information.',
+        view_policy_btn: 'View Policy',
+        terms_title: 'Terms and Conditions',
+        terms_desc: 'Review our terms of service and user agreement.',
+        view_terms_btn: 'View Terms'
+      },
+      privacy_policy: {
+        title: 'Privacy Policy',
+        last_updated_label: 'Last updated:',
+        last_updated_date: 'December 2024',
+        sections: {
+          info_collection: {
+            title: '1. Information We Collect',
+            description: 'We collect information you provide directly to us, such as when you:',
+            items: [
+              'Create an account or log in',
+              'Subscribe to our services',
+              'Contact us for support',
+              'Participate in surveys or feedback'
+            ]
+          },
+          use_info: {
+            title: '2. How We Use Your Information',
+            description: 'We use the information we collect to:',
+            items: [
+              'Provide, maintain, and improve our services',
+              'Process transactions and send related information',
+              'Send technical notices and support messages',
+              'Respond to your comments and questions',
+              'Analyze usage patterns to improve user experience'
+            ]
+          },
+          sharing: {
+            title: '3. Information Sharing',
+            description: 'We do not sell, trade, or otherwise transfer your personal information to third parties without your consent, except as described in this policy.',
+            items_title: 'We may share your information in the following situations:',
+            items: [
+              'With service providers who help us operate our services',
+              'To comply with legal obligations',
+              'To protect our rights and safety',
+              'In connection with a business transfer'
+            ]
+          },
+          security: {
+            title: '4. Data Security',
+            description: 'We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.'
+          },
+          rights: {
+            title: '5. Your Rights',
+            description: 'Depending on your location, you may have certain rights regarding your personal information, including:',
+            items: [
+              'The right to access your personal information',
+              'The right to correct or update your information',
+              'The right to delete your information',
+              'The right to restrict processing',
+              'The right to data portability'
+            ]
+          },
+          cookies: {
+            title: '6. Cookies and Tracking',
+            description: 'We use cookies and similar tracking technologies to enhance your experience. For detailed information about our use of cookies, please see our'
+          },
+          contact: {
+            title: '7. Contact Us',
+            description: 'If you have any questions about this Privacy Policy, please contact us:',
+            items: [
+              'Email: flavio@trilha.info',
+              'Through our website contact form'
+            ]
+          }
+        },
+        links: {
+          terms: 'Terms and Conditions',
+          cookies: 'Cookie Policy',
+          back_home: 'Back to Dinamos'
+        }
+      },
+      terms: {
+        title: 'Terms and Conditions',
+        last_updated_label: 'Last updated:',
+        last_updated_date: 'December 2024',
+        sections: {
+          acceptance: {
+            title: '1. Acceptance of Terms',
+            paragraphs: [
+              'By accessing and using Dinamos ("the Service"), you accept and agree to be bound by these Terms. If you do not agree, please do not use the Service.',
+              'We may change these Terms at any time. Continued use of the Service after changes means you accept the updated Terms.'
+            ]
+          },
+          description: {
+            title: '2. Description of Service',
+            intro: 'Dinamos is an educational platform focused on distributed systems learning. Our service includes:',
+            items: [
+              'Interactive learning content and tutorials',
+              'System design simulators and tools',
+              'Educational materials and documentation',
+              'Community features and progress tracking',
+              'Premium subscription services'
+            ]
+          },
+          accounts: {
+            title: '3. User Accounts',
+            intro: 'To access certain features, you must register for an account. You agree to:',
+            items: [
+              'Provide accurate and current information',
+              'Keep your information up to date',
+              'Maintain the security of your password and account',
+              'Notify us of unauthorized use',
+              'Accept responsibility for all activities under your account'
+            ]
+          },
+          subscription: {
+            title: '4. Subscription Services',
+            intro: 'Some features require a paid subscription. By subscribing, you agree to:',
+            items: [
+              'Pay all applicable fees for your plan',
+              'Automatic renewal unless cancelled before renewal',
+              'Our refund policy as outlined in Section 5',
+              'Fees are non-refundable except as required by law'
+            ],
+            note: 'We may change subscription pricing with reasonable notice to existing subscribers.'
+          },
+          cancellation: {
+            title: '5. Cancellation and Refunds',
+            intro: 'You may cancel anytime. After cancellation:',
+            items: [
+              'You keep access until the end of the billing period',
+              'No partial refunds for unused time',
+              'Your account reverts to the free tier after expiration'
+            ],
+            note: 'Refunds may be provided at our discretion in cases of unavailability or exceptional circumstances.'
+          },
+          ip_rights: {
+            title: '6. Intellectual Property Rights',
+            intro: 'The Service and its original content are owned by Dinamos and protected by intellectual property laws. You may not:',
+            items: [
+              'Copy, modify, or distribute our content without permission',
+              'Use our content for commercial purposes without authorization',
+              'Remove or alter copyright, trademark, or proprietary notices',
+              'Reverse engineer or attempt to extract source code'
+            ]
+          },
+          conduct: {
+            title: '7. User Conduct',
+            intro: 'You agree not to use the Service to:',
+            items: [
+              'Violate any laws or regulations',
+              'Transmit harmful, threatening, or offensive content',
+              'Interfere with or disrupt the Service or servers',
+              'Attempt unauthorized access to other accounts',
+              'Share your account credentials with others',
+              'Use automated systems to access the Service'
+            ]
+          },
+          availability: {
+            title: '8. Service Availability',
+            intro: 'We strive for reliability but cannot guarantee uninterrupted availability. The Service may be unavailable due to:',
+            items: [
+              'Scheduled maintenance',
+              'Technical difficulties',
+              'Force majeure events',
+              'Third-party service disruptions'
+            ],
+            note: 'We may modify, suspend, or discontinue the Service with reasonable notice.'
+          },
+          privacy: {
+            title: '9. Privacy and Data Protection',
+            paragraphs: [
+              'Your privacy is important to us. Our collection and use of personal information is governed by our Privacy Policy, which is incorporated by reference.',
+              'By using the Service, you consent to our data practices as described in the Privacy Policy.'
+            ]
+          },
+          disclaimer: {
+            title: '10. Disclaimer of Warranties',
+            intro: 'The Service is provided "as is" and "as available" without warranties of any kind, including:',
+            items: [
+              'Merchantability or fitness for a particular purpose',
+              'Non-infringement of third-party rights',
+              'Accuracy, completeness, or reliability of content',
+              'Uninterrupted or error-free operation'
+            ]
+          },
+          liability: {
+            title: '11. Limitation of Liability',
+            intro: 'To the maximum extent permitted by law, Dinamos is not liable for indirect, incidental, special, consequential, or punitive damages, including:',
+            items: [
+              'Loss of profits, data, or other intangible losses',
+              'Damages from use or inability to use the Service',
+              'Damages from unauthorized access to your data'
+            ],
+            note: 'Total liability is limited to the amount you paid for the Service in the 12 months preceding the claim.'
+          },
+          indemnification: {
+            title: '12. Indemnification',
+            intro: 'You agree to indemnify and hold harmless Dinamos from claims, damages, losses, or expenses arising from:',
+            items: [
+              'Your use of the Service',
+              'Your violation of these Terms',
+              'Your violation of third-party rights',
+              'Content you submit or share through the Service'
+            ]
+          },
+          termination: {
+            title: '13. Termination',
+            intro: 'We may terminate or suspend your account and access immediately without notice for reasons including:',
+            items: [
+              'Breach of these Terms',
+              'Fraudulent or illegal activity',
+              'Extended inactivity'
+            ],
+            note: 'Upon termination, your right to use the Service ceases immediately; provisions on IP, disclaimers, and limitations survive.'
+          },
+          governing_law: {
+            title: '14. Governing Law',
+            paragraphs: [
+              'These Terms are governed by the laws of Brazil, without regard to conflict of law provisions.',
+              'Disputes are subject to the exclusive jurisdiction of the courts of Brazil.'
+            ]
+          },
+          changes: {
+            title: '15. Changes to Terms',
+            intro: 'We may modify these Terms at any time. If we make material changes, we will notify you by:',
+            items: [
+              'Posting the updated Terms on this page',
+              'Updating the "Last updated" date',
+              'Sending notice via email or through the Service'
+            ],
+            note: 'Continued use after changes constitutes acceptance of the new Terms.'
+          },
+          contact: {
+            title: '16. Contact Information',
+            intro: 'If you have questions about these Terms, contact us:',
+            items: [
+              'Email: flavio@trilha.info',
+              'Through our website contact form'
+            ]
+          },
+          severability: {
+            title: '17. Severability',
+            paragraphs: [
+              'If any provision is unenforceable or invalid, it will be limited or eliminated to the minimum extent necessary so the remaining Terms remain in full force and effect.'
+            ]
+          }
+        },
+        links: {
+          privacy: 'Privacy Policy',
+          cookies: 'Cookie Policy',
+          back_home: 'Back to Dinamos'
+        }
       },
       coupon_modal: {
         welcome_title: 'Welcome! 🎉',
@@ -5980,6 +6239,11 @@ const resources = {
         month: 'mês',
         year: 'ano'
       },
+      footer: {
+        all_rights_reserved: 'Todos os direitos reservados.',
+        privacy_policy: 'Política de Privacidade',
+        terms: 'Termos de Serviço'
+      },
       protected_route: {
         loading: 'Carregando...',
         verifying_access: 'Verificando acesso...',
@@ -6247,7 +6511,261 @@ const resources = {
         email: 'Email',
         creation_date: 'Data de Inscrição',
         manage_subscription: 'Gerenciar Assinatura',
-        manage_subscription_desc: 'Gerencie sua assinatura, método de pagamento e histórico de faturas através do portal do Stripe.'
+        manage_subscription_desc: 'Gerencie sua assinatura, método de pagamento e histórico de faturas através do portal do Stripe.',
+        privacy_cookies_title: 'Privacidade e Cookies',
+        cookie_preferences_title: 'Preferências de Cookies',
+        cookie_preferences_desc: 'Gerencie como coletamos e usamos dados em nosso site através de cookies.',
+        manage_cookies_btn: 'Gerenciar Cookies',
+        privacy_policy_title: 'Política de Privacidade',
+        privacy_policy_desc: 'Saiba como coletamos, usamos e protegemos suas informações pessoais.',
+        view_policy_btn: 'Ver Política',
+        terms_title: 'Termos e Condições',
+        terms_desc: 'Revise nossos termos de serviço e contrato de usuário.',
+        view_terms_btn: 'Ver Termos'
+      },
+      privacy_policy: {
+        title: 'Política de Privacidade',
+        last_updated_label: 'Última atualização:',
+        last_updated_date: 'Dezembro de 2024',
+        sections: {
+          info_collection: {
+            title: '1. Informações que Coletamos',
+            description: 'Coletamos informações que você fornece diretamente para nós, como quando você:',
+            items: [
+              'Cria uma conta ou faz login',
+              'Assina nossos serviços',
+              'Entra em contato para suporte',
+              'Participa de pesquisas ou feedback'
+            ]
+          },
+          use_info: {
+            title: '2. Como Usamos Suas Informações',
+            description: 'Usamos as informações que coletamos para:',
+            items: [
+              'Fornecer, manter e melhorar nossos serviços',
+              'Processar transações e enviar informações relacionadas',
+              'Enviar avisos técnicos e mensagens de suporte',
+              'Responder aos seus comentários e perguntas',
+              'Analisar padrões de uso para melhorar a experiência do usuário'
+            ]
+          },
+          sharing: {
+            title: '3. Compartilhamento de Informações',
+            description: 'Não vendemos, trocamos ou transferimos suas informações pessoais para terceiros sem seu consentimento, exceto conforme descrito nesta política.',
+            items_title: 'Podemos compartilhar suas informações nas seguintes situações:',
+            items: [
+              'Com provedores de serviço que nos ajudam a operar nossos serviços',
+              'Para cumprir obrigações legais',
+              'Para proteger nossos direitos e segurança',
+              'Em conexão com uma transferência de negócio'
+            ]
+          },
+          security: {
+            title: '4. Segurança dos Dados',
+            description: 'Implementamos medidas de segurança apropriadas para proteger suas informações pessoais contra acesso, alteração, divulgação ou destruição não autorizada.'
+          },
+          rights: {
+            title: '5. Seus Direitos',
+            description: 'Dependendo da sua localização, você pode ter certos direitos em relação às suas informações pessoais, incluindo:',
+            items: [
+              'O direito de acessar suas informações pessoais',
+              'O direito de corrigir ou atualizar suas informações',
+              'O direito de excluir suas informações',
+              'O direito de restringir o processamento',
+              'O direito à portabilidade de dados'
+            ]
+          },
+          cookies: {
+            title: '6. Cookies e Rastreamento',
+            description: 'Utilizamos cookies e tecnologias de rastreamento similares para melhorar sua experiência. Para informações detalhadas sobre o uso de cookies, consulte nossa'
+          },
+          contact: {
+            title: '7. Fale Conosco',
+            description: 'Se você tiver dúvidas sobre esta Política de Privacidade, entre em contato:',
+            items: [
+              'Email: flavio@trilha.info',
+              'Através do formulário de contato no site'
+            ]
+          }
+        },
+        links: {
+          terms: 'Termos e Condições',
+          cookies: 'Política de Cookies',
+          back_home: 'Voltar para o Dinamos'
+        }
+      },
+      terms: {
+        title: 'Termos e Condições',
+        last_updated_label: 'Última atualização:',
+        last_updated_date: 'Dezembro de 2024',
+        sections: {
+          acceptance: {
+            title: '1. Aceitação dos Termos',
+            paragraphs: [
+              'Ao acessar e usar o Dinamos ("o Serviço"), você aceita e concorda em estar vinculado a estes Termos. Se não concordar, não utilize o Serviço.',
+              'Podemos alterar estes Termos a qualquer momento. O uso contínuo do Serviço após alterações significa que você aceita os Termos atualizados.'
+            ]
+          },
+          description: {
+            title: '2. Descrição do Serviço',
+            intro: 'O Dinamos é uma plataforma educacional focada em aprendizado de sistemas distribuídos. Nosso serviço inclui:',
+            items: [
+              'Conteúdo interativo e tutoriais',
+              'Simuladores e ferramentas de system design',
+              'Materiais educacionais e documentação',
+              'Recursos de comunidade e acompanhamento de progresso',
+              'Serviços de assinatura premium'
+            ]
+          },
+          accounts: {
+            title: '3. Contas de Usuário',
+            intro: 'Para acessar certos recursos, é necessário registrar uma conta. Você concorda em:',
+            items: [
+              'Fornecer informações precisas e atualizadas',
+              'Manter suas informações atualizadas',
+              'Manter a segurança da sua senha e conta',
+              'Nos notificar sobre uso não autorizado',
+              'Assumir responsabilidade por todas as atividades em sua conta'
+            ]
+          },
+          subscription: {
+            title: '4. Serviços de Assinatura',
+            intro: 'Alguns recursos exigem assinatura paga. Ao assinar, você concorda em:',
+            items: [
+              'Pagar todas as taxas aplicáveis ao seu plano',
+              'Renovação automática salvo cancelamento antes da renovação',
+              'Nossa política de reembolso conforme Seção 5',
+              'Taxas não são reembolsáveis salvo exigência legal'
+            ],
+            note: 'Podemos alterar preços de assinatura com aviso razoável aos assinantes existentes.'
+          },
+          cancellation: {
+            title: '5. Cancelamento e Reembolsos',
+            intro: 'Você pode cancelar a qualquer momento. Após o cancelamento:',
+            items: [
+              'Você mantém acesso até o fim do período de faturamento',
+              'Não há reembolsos proporcionais pelo tempo não utilizado',
+              'Sua conta volta ao plano gratuito após a expiração'
+            ],
+            note: 'Reembolsos podem ser concedidos a nosso critério em casos de indisponibilidade ou circunstâncias excepcionais.'
+          },
+          ip_rights: {
+            title: '6. Direitos de Propriedade Intelectual',
+            intro: 'O Serviço e seu conteúdo original são de propriedade do Dinamos e protegidos por leis de propriedade intelectual. Você não pode:',
+            items: [
+              'Copiar, modificar ou distribuir nosso conteúdo sem permissão',
+              'Usar nosso conteúdo para fins comerciais sem autorização',
+              'Remover ou alterar avisos de direitos autorais ou propriedade',
+              'Fazer engenharia reversa ou tentar extrair código-fonte'
+            ]
+          },
+          conduct: {
+            title: '7. Conduta do Usuário',
+            intro: 'Você concorda em não usar o Serviço para:',
+            items: [
+              'Violar leis ou regulamentos',
+              'Transmitir conteúdo nocivo, ameaçador ou ofensivo',
+              'Interferir ou interromper o Serviço ou servidores',
+              'Tentar acesso não autorizado a outras contas',
+              'Compartilhar credenciais da sua conta com terceiros',
+              'Usar sistemas automatizados para acessar o Serviço'
+            ]
+          },
+          availability: {
+            title: '8. Disponibilidade do Serviço',
+            intro: 'Buscamos confiabilidade, mas não garantimos disponibilidade ininterrupta. O Serviço pode ficar indisponível devido a:',
+            items: [
+              'Manutenções programadas',
+              'Dificuldades técnicas',
+              'Eventos de força maior',
+              'Interrupções de serviços de terceiros'
+            ],
+            note: 'Podemos modificar, suspender ou descontinuar o Serviço com aviso razoável.'
+          },
+          privacy: {
+            title: '9. Privacidade e Proteção de Dados',
+            paragraphs: [
+              'Sua privacidade é importante. A coleta e uso de informações pessoais são regidos por nossa Política de Privacidade, incorporada por referência.',
+              'Ao usar o Serviço, você consente com nossas práticas de dados conforme descritas na Política de Privacidade.'
+            ]
+          },
+          disclaimer: {
+            title: '10. Isenção de Garantias',
+            intro: 'O Serviço é fornecido "como está" e "conforme disponível", sem garantias de qualquer tipo, incluindo:',
+            items: [
+              'Comercialização ou adequação a um propósito específico',
+              'Não violação de direitos de terceiros',
+              'Precisão, completude ou confiabilidade do conteúdo',
+              'Operação ininterrupta ou livre de erros'
+            ]
+          },
+          liability: {
+            title: '11. Limitação de Responsabilidade',
+            intro: 'Na máxima extensão permitida por lei, o Dinamos não é responsável por danos indiretos, incidentais, especiais, consequenciais ou punitivos, incluindo:',
+            items: [
+              'Perda de lucros, dados ou outros prejuízos intangíveis',
+              'Danos decorrentes do uso ou impossibilidade de uso do Serviço',
+              'Danos decorrentes de acesso não autorizado aos seus dados'
+            ],
+            note: 'A responsabilidade total é limitada ao valor pago pelo Serviço nos 12 meses anteriores à reclamação.'
+          },
+          indemnification: {
+            title: '12. Indenização',
+            intro: 'Você concorda em indenizar e isentar o Dinamos de reivindicações, danos, perdas ou despesas decorrentes de:',
+            items: [
+              'Seu uso do Serviço',
+              'Sua violação destes Termos',
+              'Sua violação de direitos de terceiros',
+              'Conteúdo que você enviar ou compartilhar pelo Serviço'
+            ]
+          },
+          termination: {
+            title: '13. Rescisão',
+            intro: 'Podemos encerrar ou suspender sua conta e acesso imediatamente, sem aviso, por motivos como:',
+            items: [
+              'Violação destes Termos',
+              'Atividade fraudulenta ou ilegal',
+              'Períodos prolongados de inatividade'
+            ],
+            note: 'Com a rescisão, seu direito de usar o Serviço cessa imediatamente; disposições sobre propriedade intelectual, isenções e limitações permanecem vigentes.'
+          },
+          governing_law: {
+            title: '14. Legislação Aplicável',
+            paragraphs: [
+              'Estes Termos são regidos pelas leis do Brasil, sem considerar conflitos de leis.',
+              'Disputas estão sujeitas à jurisdição exclusiva dos tribunais do Brasil.'
+            ]
+          },
+          changes: {
+            title: '15. Alterações nos Termos',
+            intro: 'Podemos modificar estes Termos a qualquer momento. Em caso de mudanças materiais, notificaremos você por:',
+            items: [
+              'Publicação dos Termos atualizados nesta página',
+              'Atualização da data de "Última atualização"',
+              'Envio de aviso por e-mail ou pelo Serviço'
+            ],
+            note: 'O uso contínuo após as alterações constitui aceitação dos novos Termos.'
+          },
+          contact: {
+            title: '16. Informações de Contato',
+            intro: 'Se tiver dúvidas sobre estes Termos, entre em contato:',
+            items: [
+              'Email: flavio@trilha.info',
+              'Através do formulário de contato no site'
+            ]
+          },
+          severability: {
+            title: '17. Divisibilidade',
+            paragraphs: [
+              'Se qualquer disposição for inexequível ou inválida, ela será limitada ou eliminada na extensão mínima necessária para que o restante dos Termos permaneça em pleno vigor.'
+            ]
+          }
+        },
+        links: {
+          privacy: 'Política de Privacidade',
+          cookies: 'Política de Cookies',
+          back_home: 'Voltar para o Dinamos'
+        }
       },
       coupon_modal: {
         welcome_title: 'Bem-vindo! 🎉',

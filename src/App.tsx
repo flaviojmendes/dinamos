@@ -119,6 +119,8 @@ import { useTranslation } from 'react-i18next';
 import CookieConsentBanner from './components/Common/CookieConsentBanner';
 import { CookieConsentManager } from './utils/cookieConsent';
 import CookiePreferencesPage from './pages/CookiePreferencesPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import TermsAndConditionsPage from './pages/TermsAndConditionsPage';
 import CAPTheorem from "./components/TheoreticalFoundations/CAPTheorem";
 import ConsistencyModels from "./components/TheoreticalFoundations/ConsistencyModels";
 import DistributedChallenges from "./components/TheoreticalFoundations/DistributedChallenges";
@@ -1242,6 +1244,8 @@ export default function App() {
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+            <Route path="/terms-and-conditions" element={<TermsAndConditionsPage />} />
             <Route 
               path="/pagamento" 
               element={

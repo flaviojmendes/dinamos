@@ -249,14 +249,14 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({ onCons
                 <p className="text-xs text-slate-500 dark:text-slate-400 text-center">
                   {t('cookies.policy.text', 'For more information, please read our')}{' '}
                   <a 
-                    href="/terms-and-conditions.html" 
+                    href="/terms-and-conditions" 
                     className="text-brand-600 dark:text-brand-400 hover:text-brand-600 dark:text-brand-300 underline"
                   >
                     Terms and Conditions
                   </a>
                   {', '}
                   <a 
-                    href="/privacy-policy.html" 
+                    href="/privacy-policy" 
                     className="text-brand-600 dark:text-brand-400 hover:text-brand-600 dark:text-brand-300 underline"
                   >
                     {t('cookies.policy.privacy', 'Privacy Policy')}

@@ -61,37 +61,37 @@ export default function Preferences() {
 
             {/* Cookie & Privacy Settings */}
             <div>
-              <h2 className="text-xl font-semibold mb-4 text-green-400">Privacy & Cookies</h2>
+              <h2 className="text-xl font-semibold mb-4 text-green-400">{t('preferences.privacy_cookies_title')}</h2>
               <div className="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-6 space-y-4">
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="font-medium text-white mb-1">Cookie Preferences</h3>
+                    <h3 className="font-medium text-white mb-1">{t('preferences.cookie_preferences_title')}</h3>
                     <p className="text-slate-500 dark:text-slate-400 text-sm">
-                      Manage how we collect and use data on our website through cookies.
+                      {t('preferences.cookie_preferences_desc')}
                     </p>
                   </div>
                   <Link
                     to="/preferences/cookies"
                     className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ml-4"
                   >
-                    Manage Cookies
+                    {t('preferences.manage_cookies_btn')}
                   </Link>
                 </div>
                 
                 <div className="flex items-start justify-between pt-4 border-t border-slate-300 dark:border-slate-700">
                   <div>
-                    <h3 className="font-medium text-white mb-1">Privacy Policy</h3>
+                    <h3 className="font-medium text-white mb-1">{t('preferences.privacy_policy_title')}</h3>
                     <p className="text-slate-500 dark:text-slate-400 text-sm">
-                      Learn about how we collect, use, and protect your personal information.
+                      {t('preferences.privacy_policy_desc')}
                     </p>
                   </div>
                   <a
-                    href="/privacy-policy.html"
+                    href="/privacy-policy"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="bg-zinc-600 hover:bg-zinc-700 text-white px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ml-4 inline-flex items-center gap-2"
                   >
-                    View Policy
+                    {t('preferences.view_policy_btn')}
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
@@ -100,18 +100,18 @@ export default function Preferences() {
                 
                 <div className="flex items-start justify-between pt-4 border-t border-slate-300 dark:border-slate-700">
                   <div>
-                    <h3 className="font-medium text-white mb-1">Terms and Conditions</h3>
+                    <h3 className="font-medium text-white mb-1">{t('preferences.terms_title')}</h3>
                     <p className="text-slate-500 dark:text-slate-400 text-sm">
-                      Review our terms of service and user agreement.
+                      {t('preferences.terms_desc')}
                     </p>
                   </div>
                   <a
-                    href="/terms-and-conditions.html"
+                    href="/terms-and-conditions"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="bg-zinc-600 hover:bg-zinc-700 text-white px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ml-4 inline-flex items-center gap-2"
                   >
-                    View Terms
+                    {t('preferences.view_terms_btn')}
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>

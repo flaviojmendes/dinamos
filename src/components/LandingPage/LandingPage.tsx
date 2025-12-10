@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { trackEvent } from '../../utils/analytics';
 import Countdown from '../Countdown/Countdown';
-import { Typography, LanguageSwitcher, CouponModal } from '../Common';
+import { Typography, LanguageSwitcher, CouponModal, Footer } from '../Common';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { calculatePricing, formatPrice, detectUserCurrency, calculateYearlySavings } from '../../utils/pricing';
@@ -989,6 +989,8 @@ export default function LandingPage() {
           </div>
         </motion.div>
       </div>
+
+      <Footer />
     </div>
   );
 } 

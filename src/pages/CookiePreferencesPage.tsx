@@ -76,7 +76,7 @@ export default function CookiePreferencesPage() {
         >
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center flex-wrap">
             <a
-              href="/terms-and-conditions.html"
+              href="/terms-and-conditions"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-brand-600 dark:text-brand-400 hover:text-brand-600 dark:text-brand-300 underline"
@@ -88,12 +88,12 @@ export default function CookiePreferencesPage() {
             </a>
             <span className="text-zinc-500">•</span>
             <a
-              href="/privacy-policy.html"
+              href="/privacy-policy"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-brand-600 dark:text-brand-400 hover:text-brand-600 dark:text-brand-300 underline"
             >
-              Privacy Policy
+              {t('footer.privacy_policy', 'Privacy Policy')}
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
