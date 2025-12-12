@@ -8,7 +8,7 @@ import { calculatePricing, formatPrice, getAvailableCurrencies, detectUserCurren
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
-type PlanType = 'monthly' | 'yearly';
+type PlanType = 'monthly' | 'yearly' | 'lifetime';
 
 export default function Subscription() {
   const { user } = useAuth();
@@ -34,6 +34,13 @@ export default function Subscription() {
   const pricingData = calculatePricing(selectedCurrency);
   const availableCurrencies = getAvailableCurrencies();
   const yearlySavings = calculateYearlySavings(pricingData);
+  const hasLifetimePrice = typeof pricingData.lifetimePrice === 'number';
+
+  useEffect(() => {
+    if (selectedPlan === 'lifetime' && !hasLifetimePrice) {
+      setSelectedPlan('yearly');
+    }
+  }, [selectedPlan, hasLifetimePrice]);
 
   const handlePayment = async () => {
     try {
@@ -46,25 +53,44 @@ export default function Subscription() {
       });
       
       setError(null);
+      if (selectedPlan === 'lifetime' && !pricingData.lifetimePrice) {
+        setError(t('subscription.lifetime_unavailable'));
+        setIsLoading(false);
+        return;
+      }
 
       // Get Stripe instance
       const stripe = await stripePromise;
       if (!stripe) throw new Error('Stripe failed to load');
 
       // Create checkout session
-      const requestBody = {
+      const apiUrl = import.meta.env.VITE_API_URL ?? '';
+      const basePayload = {
         userId: user?.uid,
         userEmail: user?.email,
       };
-      
+
+      const isLifetime = selectedPlan === 'lifetime';
+      const endpoint = isLifetime
+        ? '/api/subscription/create-checkout-session'
+        : `/api/subscription/${selectedPlan === 'yearly' ? 'create-yearly-subscription' : 'create-monthly-subscription'}`;
+
+      const requestBody = isLifetime
+        ? { ...basePayload, priceId: 'one-time' }
+        : {
+            ...basePayload,
+            planType: selectedPlan,
+            currency: pricingData.currency,
+            currencyKey: selectedCurrency,
+            price:
+              selectedPlan === 'yearly'
+                ? pricingData.yearlyPrice
+                : pricingData.monthlyPrice,
+          };
+
       console.log('Creating checkout session with:', requestBody, 'Plan:', selectedPlan);
 
-      const apiUrl = import.meta.env.VITE_API_URL ?? '';
-      const endpoint = selectedPlan === 'yearly' 
-        ? 'create-yearly-subscription' 
-        : 'create-monthly-subscription';
-      
-      const response = await fetch(`${apiUrl}/api/subscription/${endpoint}`, {
+      const response = await fetch(`${apiUrl}${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -167,7 +193,7 @@ export default function Subscription() {
             transition={{ delay: 0.2 }}
             className="flex justify-center mb-8"
           >
-            <div className="bg-slate-800/50 p-1 rounded-xl inline-flex">
+            <div className="bg-slate-800/50 p-1 rounded-xl inline-flex flex-wrap justify-center gap-1">
               <button
                 onClick={() => setSelectedPlan('monthly')}
                 className={`px-6 py-2 rounded-lg text-sm font-medium transition-all ${
@@ -191,11 +217,26 @@ export default function Subscription() {
                   -{yearlySavings}%
                 </span>
               </button>
+              {hasLifetimePrice && (
+                <button
+                  onClick={() => setSelectedPlan('lifetime')}
+                  className={`px-6 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
+                    selectedPlan === 'lifetime'
+                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  {t('subscription.one_time')}
+                  <span className="bg-amber-500/20 text-amber-300 text-xs px-2 py-0.5 rounded-full font-semibold whitespace-nowrap">
+                    {t('subscription.lifetime_access_label')}
+                  </span>
+                </button>
+              )}
             </div>
           </motion.div>
 
           {/* Plan Cards */}
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className={`grid gap-6 ${hasLifetimePrice ? 'md:grid-cols-3' : 'md:grid-cols-2'}`}>
             {/* Monthly Plan */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -247,7 +288,7 @@ export default function Subscription() {
             >
               {/* Best Value Badge */}
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                <span className="bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                <span className="bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg whitespace-nowrap">
                   {t('subscription.best_value')}
                 </span>
               </div>
@@ -281,6 +322,56 @@ export default function Subscription() {
                 </span>
               </div>
             </motion.div>
+            {hasLifetimePrice && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.35 }}
+                onClick={() => setSelectedPlan('lifetime')}
+                className={`relative bg-gradient-to-b from-amber-500/10 to-orange-500/10 rounded-xl p-6 border-2 cursor-pointer transition-all ${
+                  selectedPlan === 'lifetime'
+                    ? 'border-amber-400/50 shadow-lg shadow-amber-400/20'
+                    : 'border-slate-700/50 hover:border-slate-600/50'
+                }`}
+              >
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <span className="bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg whitespace-nowrap">
+                    {t('subscription.one_time')}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between mb-4 mt-2">
+                  <h3 className="text-lg font-semibold text-white">
+                    {t('subscription.lifetime_plan')}
+                  </h3>
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                    selectedPlan === 'lifetime' ? 'border-amber-400 bg-amber-400' : 'border-slate-500'
+                  }`}>
+                    {selectedPlan === 'lifetime' && (
+                      <svg className="w-3 h-3 text-slate-900" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+                <div className="mb-2">
+                  <span className="text-3xl font-bold text-white">
+                    {pricingData.lifetimePrice ? formatPrice(pricingData.lifetimePrice, pricingData) : '--'}
+                  </span>
+                </div>
+                <p className="text-sm text-slate-300">
+                  {t('subscription.lifetime_description')}
+                </p>
+                <div className="mt-4 flex flex-col items-center gap-2">
+                  <span className="bg-emerald-500/20 text-emerald-300 text-xs px-2 py-0.5 rounded-full font-semibold whitespace-nowrap">
+                    {t('subscription.lifetime_access_label')}
+                  </span>
+                  <span className="text-emerald-200 text-xs whitespace-nowrap">
+                    {t('subscription.pay_once')}
+                  </span>
+                </div>
+              </motion.div>
+            )}
           </div>
 
           {/* Features & CTA */}
@@ -316,17 +407,20 @@ export default function Subscription() {
                 </div>
               ) : (
                 <>
-                  {t('subscription.subscribe_now')} - {' '}
-                  {selectedPlan === 'yearly' 
-                    ? formatPrice(pricingData.yearlyPrice, pricingData) + `/${t('common.year')}`
-                    : formatPrice(pricingData.monthlyPrice, pricingData) + `/${t('common.month')}`
+                  {selectedPlan === 'lifetime'
+                    ? `${t('subscription.get_lifetime_access')} - ${pricingData.lifetimePrice ? formatPrice(pricingData.lifetimePrice, pricingData) : ''}`
+                    : `${t('subscription.subscribe_now')} - ${
+                        selectedPlan === 'yearly' 
+                          ? `${formatPrice(pricingData.yearlyPrice, pricingData)}/${t('common.year')}`
+                          : `${formatPrice(pricingData.monthlyPrice, pricingData)}/${t('common.month')}`
+                      }`
                   }
                 </>
               )}
             </button>
             
             <p className="text-center text-sm text-slate-500 mt-4">
-              {t('subscription.cancel_anytime')}
+              {selectedPlan === 'lifetime' ? t('subscription.lifetime_note') : t('subscription.cancel_anytime')}
             </p>
           </motion.div>
         </div>

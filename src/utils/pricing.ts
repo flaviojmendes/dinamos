@@ -1,6 +1,7 @@
 export interface PricingData {
   monthlyPrice: number;
   yearlyPrice: number;
+  lifetimePrice?: number;
   currency: string;
   currencySymbol: string;
   locale: string;
@@ -9,6 +10,7 @@ export interface PricingData {
 export interface CurrencyConfig {
   monthlyPrice: number;
   yearlyPrice: number;
+  lifetimePrice?: number;
   currency: string;
   currencySymbol: string;
   locale: string;
@@ -20,6 +22,7 @@ const CURRENCY_CONFIGS: Record<string, CurrencyConfig> = {
   'pt-BR': {
     monthlyPrice: 29.90,
     yearlyPrice: 299.00,
+    lifetimePrice: 399.00,
     currency: 'BRL',
     currencySymbol: 'R$',
     locale: 'pt-BR'
@@ -27,6 +30,7 @@ const CURRENCY_CONFIGS: Record<string, CurrencyConfig> = {
   'en-US': {
     monthlyPrice: 7.99,
     yearlyPrice: 79.90,
+    lifetimePrice: 69.00,
     currency: 'USD',
     currencySymbol: '$',
     locale: 'en-US'
@@ -34,6 +38,7 @@ const CURRENCY_CONFIGS: Record<string, CurrencyConfig> = {
   'en-EU': {
     monthlyPrice: 6.99,
     yearlyPrice: 69.90,
+    lifetimePrice: 59.00,
     currency: 'EUR',
     currencySymbol: '€',
     locale: 'en-EU'
@@ -143,6 +148,7 @@ export function calculatePricing(currencyKey?: string): PricingData {
   return {
     monthlyPrice: config.monthlyPrice,
     yearlyPrice: config.yearlyPrice,
+    lifetimePrice: config.lifetimePrice,
     currency: config.currency,
     currencySymbol: config.currencySymbol,
     locale: config.locale
