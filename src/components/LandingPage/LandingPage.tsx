@@ -6,7 +6,6 @@ import Countdown from '../Countdown/Countdown';
 import { Typography, LanguageSwitcher, CouponModal, Footer } from '../Common';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
-import { calculatePricing, formatPrice, detectUserCurrency, calculateYearlySavings } from '../../utils/pricing';
 import { getTopics, ForumTopic } from '../../services/forumService';
 import ChallengesSection from '../Forum/ChallengesSection';
 
@@ -60,10 +59,6 @@ export default function LandingPage() {
     fetchLatestTopics();
   }, [user]);
   
-  // Detect user currency based on location/language  
-    const userCurrency = detectUserCurrency();
-    const pricing = calculatePricing(userCurrency);
-    const yearlySavings = calculateYearlySavings(pricing);
     return (
       <div className="min-h-screen bg-canvas-paper dark:bg-canvas-dark text-slate-900 dark:text-slate-100">
         {/* Header - Only show for logged-out users */}
@@ -792,7 +787,7 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Pricing Section */}
+      {/* Free Access Section */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -800,91 +795,56 @@ export default function LandingPage() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-center mb-12"
         >
+          <div className="inline-flex items-center gap-2 bg-green-500/20 text-green-400 px-4 py-2 rounded-full mb-6">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span className="font-bold text-lg">{t('landing.free_badge')}</span>
+          </div>
           <Typography 
             variant="h2" 
-            className="mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+            className="mb-6 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent"
           >
-            {t('landing.invest_title')}
+            {t('landing.free_title')}
           </Typography>
           <Typography 
             variant="p" 
             className="text-xl text-slate-500 dark:text-slate-400"
           >
-            {t('landing.invest_subtitle')}
+            {t('landing.free_subtitle')}
           </Typography>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-          {/* Pricing Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Monthly Plan */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="bg-gradient-to-b from-slate-800/50 to-slate-900/50 rounded-xl p-6 border border-slate-700/50 hover:border-slate-600/50 transition-colors"
-            >
-              <h3 className="text-lg font-semibold text-white mb-4">
-                {t('subscription.monthly_plan')}
-              </h3>
-              <div className="mb-4">
-                <span className="text-3xl font-bold text-white">
-                  {formatPrice(pricing.monthlyPrice, pricing)}
-                </span>
-                <span className="text-slate-400 ml-1">/ {t('common.month')}</span>
+          {/* Free Access Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-gradient-to-b from-green-600/10 to-emerald-600/10 rounded-xl p-8 border-2 border-green-500/30 hover:border-green-500/50 transition-colors relative overflow-hidden"
+          >
+            <div className="absolute -top-0 -right-0">
+              <span className="bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs font-bold px-4 py-2 rounded-bl-lg rounded-tr-xl shadow-lg">
+                100% {t('landing.free_badge')}
+              </span>
+            </div>
+
+            <div className="text-center py-8">
+              <div className="text-6xl font-bold text-white mb-4">
+                {t('landing.free_price')}
               </div>
-              <p className="text-sm text-slate-400 mb-6">
-                {t('subscription.billed_monthly')}
+              <p className="text-lg text-slate-300 mb-8">
+                {t('landing.free_description')}
               </p>
               <Link
-                to="/pagamento"
-                onClick={() => trackEvent('User', 'Clicked on Payment Button - Monthly')}
-                className="block text-center bg-slate-700 hover:bg-slate-600 text-white px-4 py-2.5 rounded-lg font-medium transition-colors text-sm"
+                to="/intro"
+                onClick={() => trackEvent('User', 'Clicked on Free Access Button')}
+                className="inline-block bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-8 py-3 rounded-lg font-medium transition-colors text-lg"
               >
-                {t('subscription.subscribe_now')}
+                {t('common.start_now')}
               </Link>
-            </motion.div>
-
-            {/* Yearly Plan - Best Value */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35 }}
-              className="bg-gradient-to-b from-blue-600/10 to-purple-600/10 rounded-xl p-6 border-2 border-blue-500/30 hover:border-blue-500/50 transition-colors relative overflow-hidden"
-            >
-              {/* Best Value Badge */}
-              <div className="absolute -top-0 -right-0">
-                <span className="bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-xl shadow-lg">
-                  {t('subscription.best_value')}
-                </span>
-              </div>
-
-              <h3 className="text-lg font-semibold text-white mb-4">
-                {t('subscription.yearly_plan')}
-              </h3>
-              <div className="mb-2">
-                <span className="text-3xl font-bold text-white">
-                  {formatPrice(pricing.yearlyPrice, pricing)}
-                </span>
-                <span className="text-slate-400 ml-1">/ {t('common.year')}</span>
-              </div>
-              <div className="flex items-center gap-2 mb-6">
-                <span className="text-sm text-slate-500 line-through">
-                  {formatPrice(pricing.monthlyPrice * 12, pricing)}
-                </span>
-                <span className="bg-green-500/20 text-green-400 text-xs px-2 py-0.5 rounded-full font-semibold">
-                  {t('subscription.save')} {yearlySavings}%
-                </span>
-              </div>
-              <Link
-                to="/pagamento"
-                onClick={() => trackEvent('User', 'Clicked on Payment Button - Yearly')}
-                className="block text-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2.5 rounded-lg font-medium transition-colors text-sm"
-              >
-                {t('subscription.subscribe_now')}
-              </Link>
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -971,20 +931,26 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.6 }}
-          className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-8 text-center relative overflow-hidden"
+          className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl p-8 text-center relative overflow-hidden"
         >
           <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
           <div className="relative">
-            <h2 className="text-3xl font-bold mb-4">{t('landing.cta_title')}</h2>
-            <p className="text-xl mb-8 text-slate-700 dark:text-slate-200">
-              {t('landing.cta_subtitle')}
+            <div className="inline-flex items-center gap-2 bg-white/20 text-white px-4 py-2 rounded-full mb-4">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <span className="font-bold">100% {t('landing.free_badge')}</span>
+            </div>
+            <h2 className="text-3xl font-bold mb-4">{t('landing.cta_free_title')}</h2>
+            <p className="text-xl mb-8 text-white/90">
+              {t('landing.cta_free_subtitle')}
             </p>
             <Link
-              to="/pagamento"
-              onClick={() => trackEvent('User', 'Clicked on Final CTA')}
-              className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg text-lg font-medium hover:bg-zinc-100 transition-colors"
+              to="/intro"
+              onClick={() => trackEvent('User', 'Clicked on Final CTA - Free')}
+              className="inline-block bg-white text-green-600 px-8 py-3 rounded-lg text-lg font-medium hover:bg-zinc-100 transition-colors"
             >
-              {t('common.guarantee_spot')}
+              {t('common.start_now')}
             </Link>
           </div>
         </motion.div>
