@@ -1,0 +1,39 @@
+# Desenvolvimento Orientado a Eventos
+
+O desenvolvimento orientado a eventos é uma abordagem em que as ações e mudanças no sistema são desencadeadas e gerenciadas por eventos. Um evento é qualquer ação significativa que ocorra no sistema, como uma transação de compra ou a atualização de um banco de dados.
+
+## Event Sourcing
+
+O event sourcing é um padrão de design em que o estado de um sistema é derivado de uma sequência de eventos, em vez de um estado atual armazenado. Cada mudança de estado é capturada como um evento imutável, e o sistema pode ser reconstruído a qualquer momento ao reproduzir esses eventos.
+
+### Vantagens
+
+- Histórico completo de mudanças no sistema
+- Fácil de auditar e rastrear ações
+- Suporte para reverter ou "replays" de eventos
+
+### Exemplo
+
+Um sistema de e-commerce em que cada atualização do estado de um pedido (pedido realizado, processado, enviado) é registrado como um evento. O estado final do pedido é determinado pela sequência de eventos.
+
+## Sistemas de Eventos Distribuídos
+
+Sistemas de eventos distribuídos permitem que diferentes partes de um sistema (frequentemente em diferentes servidores) se comuniquem e sincronizem com base em eventos. Eles são fundamentais para sistemas assíncronos, onde diferentes componentes podem reagir a eventos de maneira descentralizada.
+
+### Ferramentas Populares
+
+- Apache Kafka
+- RabbitMQ
+- Amazon SNS
+
+### Exemplo
+
+Uma aplicação de pagamento que publica eventos de confirmação de pagamento, os quais são consumidos por diferentes serviços para atualizar inventário, notificar o usuário e gerar faturas.
+
+<Callout type="info" title="Simulador Interativo">
+
+Experimente nossa simulação interativa de Event Sourcing para entender melhor como os eventos são registrados e processados em um sistema distribuído.
+
+[Acessar Simulador](/principios-design/eventos/simulator)
+
+</Callout>

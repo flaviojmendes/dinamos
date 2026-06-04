@@ -1,0 +1,201 @@
+# WhatsApp System Design
+
+Como o WhatsApp gerencia bilhões de mensagens em tempo real com criptografia ponta a ponta
+
+## Números Impressionantes
+
+<Metrics cols={3}>
+
+<Metric value="2B+" label="Usuários ativos" accent="green" />
+
+<Metric value="100B+" label="Mensagens por dia" accent="green" />
+
+<Metric value="1B+" label="Grupos ativos" accent="green" />
+
+</Metrics>
+
+## Requisitos do Sistema
+
+<Card title="Requisitos Funcionais" accent="green">
+
+- Mensagens em tempo real (texto, áudio, vídeo)
+- Criptografia ponta a ponta
+- Grupos e broadcasts
+- Chamadas de voz e vídeo
+- Status e stories
+- Sincronização multi-dispositivo
+
+</Card>
+
+<Card title="Requisitos Não-Funcionais" accent="green">
+
+- Latência ultra baixa (menor que 100ms)
+- Alta disponibilidade (99.999%)
+- Consistência eventual
+- Segurança e privacidade
+- Escalabilidade massiva
+- Confiabilidade na entrega
+
+</Card>
+
+## Arquitetura do Sistema
+
+### Arquitetura de Alto Nível
+
+Visão geral da arquitetura distribuída do WhatsApp, mostrando os principais componentes e suas interações.
+
+Clientes (Mobile, Web, Desktop) → Load Balancer → Servidores de Chat / Servidores de Presença / Servidores de Mídia / Autenticação / Gerenciamento de Chaves → Cassandra (Mensagens) / Redis (Cache) / S3 (Mídia)
+
+### Fluxo de Mensagens
+
+Fluxo de mensagens criptografadas, demonstrando o processo desde o envio até a entrega.
+
+Remetente → Servidor de Chat → Fila de Mensagens → Destinatário (1. Encrypt → 2. Queue → 3. Deliver)
+
+### 1. Sistema de Mensagens
+
+#### Processamento de Mensagens
+
+- Protocolo MQTT modificado para mensagens
+- Criptografia Signal para E2EE
+- Compressão de mensagens
+- Sistema de confirmação de entrega
+
+#### Tipos de Mensagens
+
+- Texto e emojis
+- Mídia (imagens, áudio, vídeo)
+- Documentos e arquivos
+- Localização e contatos
+- Mensagens temporárias
+
+### 2. Sistema de Armazenamento
+
+#### Armazenamento de Mensagens
+
+- Cassandra para mensagens criptografadas
+- Redis para cache e sessões
+- S3 para mídia e backups
+- Retenção seletiva de mensagens
+
+#### Banco de Dados
+
+- MySQL para dados de usuário
+- RocksDB para armazenamento local
+- Kafka para eventos e logs
+- ElasticSearch para busca
+
+### 3. Sistema de Tempo Real
+
+#### Infraestrutura Real-time
+
+- WebSocket para conexões persistentes
+- MQTT para mensagens em tempo real
+- Sistema de presença distribuído
+- Features em tempo real:
+  - Status online/offline
+  - Digitando...
+  - Confirmação de leitura
+  - Sincronização multi-dispositivo
+
+## Decisões Técnicas e Trade-offs
+
+<Card title="1. Privacidade vs Funcionalidade" accent="green">
+
+Criptografia E2EE garante privacidade mas limita features como busca global e backup em nuvem. WhatsApp prioriza privacidade sobre funcionalidades avançadas.
+
+</Card>
+
+<Card title="2. Latência vs Consistência" accent="green">
+
+Uso de consistência eventual permite entrega rápida de mensagens, mas pode resultar em mensagens fora de ordem em casos raros.
+
+</Card>
+
+<Card title="3. Storage vs Retenção" accent="green">
+
+Mensagens são armazenadas temporariamente nos servidores até a entrega, reduzindo custos de storage mas limitando funcionalidades offline.
+
+</Card>
+
+<Card title="4. Simplicidade vs Recursos" accent="green">
+
+Interface e funcionalidades mantidas simples para garantir performance e usabilidade, mesmo que isso signifique menos recursos que concorrentes.
+
+</Card>
+
+## Desafios de Escala
+
+<Cards cols={2}>
+
+<Card title="Entrega em Massa" accent="green">
+
+Entrega de mensagens para bilhões de usuários. Solução: Sistema de filas distribuído e otimização de rotas.
+
+</Card>
+
+<Card title="Gerenciamento de Conexões" accent="green">
+
+Manutenção de milhões de conexões simultâneas. Solução: MQTT otimizado e load balancing inteligente.
+
+</Card>
+
+<Card title="Sincronização" accent="green">
+
+Sincronização entre múltiplos dispositivos. Solução: Sistema de versionamento e merge de estados.
+
+</Card>
+
+<Card title="Grupos Grandes" accent="green">
+
+Gerenciamento de grupos com milhares de membros. Solução: Otimização de broadcasts e cache de mensagens.
+
+</Card>
+
+</Cards>
+
+## Evolução da Arquitetura
+
+### 2009 — Versão Inicial
+
+App iOS simples, focado em status.
+
+### 2011-2012 — Mensagens Básicas
+
+Implementação de chat, XMPP modificado.
+
+### 2014 — Aquisição Facebook
+
+Escala massiva, migração infraestrutura.
+
+### 2016 — Criptografia E2E
+
+Implementação do protocolo Signal.
+
+### 2019-Presente — Multi-Dispositivo
+
+Suporte nativo multi-device, nova arquitetura de sync.
+
+## Referências
+
+### Documentação e Artigos Oficiais
+
+- [WhatsApp Engineering Blog](https://engineering.fb.com/category/whatsapp/)
+- [WhatsApp Security](https://www.whatsapp.com/security/)
+- [WhatsApp Business API](https://developers.facebook.com/docs/whatsapp/)
+
+### Artigos Técnicos e Análises
+
+- [WhatsApp Encryption Overview](https://www.whatsapp.com/security/WhatsApp-Security-Whitepaper.pdf)
+- [Scaling WhatsApp Infrastructure](https://engineering.fb.com/2014/10/09/production-engineering/scaling-mercurial-at-facebook/)
+- [Signal Protocol Specification](https://signal.org/docs/specifications/doubleratchet/)
+
+### Conferências e Apresentações
+
+- [F8 - WhatsApp Business Platform](https://www.youtube.com/watch?v=vvhC64hQZMk)
+- [Real-time Messaging Architecture](https://www.youtube.com/watch?v=5DgVkKHxKQk)
+
+### Segurança e Privacidade
+
+- [WhatsApp Privacy Policy](https://www.whatsapp.com/privacy)
+- [End-to-End Encryption Technical Paper](https://scontent.whatsapp.net/v/t39.8562-34/316546300_547692750646518_7299107161331633308_n.pdf?ccb=1-7&_nc_sid=2fbf2a&_nc_ohc=t_1sHkqHzr4AX9QJTP-&_nc_ht=scontent.whatsapp.net&oh=01_AdTz6KJ_MWwjY_lQh6MH1_BPmXiC_1kdpvnNvCXcaHsUxw&oe=65C2F7C1)

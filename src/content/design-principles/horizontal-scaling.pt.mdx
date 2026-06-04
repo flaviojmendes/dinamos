@@ -1,0 +1,33 @@
+# Escalabilidade Horizontal (Scale-Out)
+
+Método que adiciona mais servidores para trabalhar em conjunto, dividindo a carga entre eles.
+
+## Como Funciona
+
+É como usar vários carros para transportar passageiros em vez de depender de um único carro maior. Essa abordagem é comum em sistemas modernos, especialmente na nuvem.
+
+<Callout type="neutral" title="Exemplo Prático">
+
+Uma rede de streaming de vídeos que começou com um único servidor percebe crescimento global. Para atender à demanda, adiciona servidores em várias regiões, compartilhando a carga e entregando conteúdo mais rapidamente.
+
+</Callout>
+
+## Vantagens
+
+- **Escalabilidade Ilimitada**: Adicione mais servidores conforme necessário
+- **Alta Disponibilidade**: Se um servidor falha, outros continuam
+- **Custo-Benefício**: Pode usar hardware simples/commodity
+
+## Considerações Importantes
+
+- **Distribuição de Dados**: Planeje como distribuir e sincronizar os dados
+- **Complexidade**: Exige mecanismos de coordenação e balanceamento de carga
+- **Consistência**: Manter dados consistentes entre servidores é desafiador
+
+## Melhores Práticas
+
+- **Automação**: Automatize a adição/remoção de servidores do cluster
+- **Monitoramento**: Monitore para identificar gargalos e problemas
+- **Redundância**: Mantenha redundância adequada para alta disponibilidade
+
+[Explorar Simulador de Escalabilidade](/principios-design/escalabilidade/simulator)

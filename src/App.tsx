@@ -9,32 +9,17 @@ import {
 } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import CacheSimulation from "./components/CacheSimulation/CacheSimulation";
-import HorizontalScaling from "./components/DesignPrinciples/HorizontalScaling";
 import CircuitBreaker from "./components/CircuitBreaker/CircuitBreaker";
 import Backpressure from "./components/Backpressure/Backpressure";
 import RateLimiter from "./components/RateLimiter/RateLimiter";
-import Fallback from "./components/DesignPrinciples/Fallback";
 import AsyncSync from "./components/AsyncSync/AsyncSync";
 import CDN from "./components/CDN/CDN";
 import RoundRobin from "./components/RoundRobin/RoundRobin";
-import MessageQueueComponent from "./components/SystemComponents/MessageQueue";
 import MessageQueueSimulator from "./components/MessageQueue/MessageQueue";
-import Introduction from "./components/Introduction/Introduction";
-import DistributedSystems101 from "./components/DistributedSystems101/DistributedSystems101";
-import SystemDesign101 from "./components/SystemDesign101/SystemDesign101";
-import SystemComponents from "./components/SystemComponents/SystemComponents";
-import Database from "./components/SystemComponents/Database";
-import CacheComponent from "./components/SystemComponents/Cache";
-import LoadBalancer from "./components/SystemComponents/LoadBalancer";
-import CDNComponent from "./components/SystemComponents/CDN";
 import CDNSimulator from "./components/CDN/CDN";
-import APIGateway from "./components/SystemComponents/APIGateway";
 import APIGatewaySimulator from "./components/APIGateway/APIGatewaySimulator";
-import DesignPrinciples from "./components/DesignPrinciples/DesignPrinciples";
-import EventDriven from "./components/DesignPrinciples/EventDriven";
 import EventSourcingSimulator from "./components/DesignPrinciples/EventSourcingSimulator";
 import LogSimulator from "./components/Monitoramento/LogSimulator";
-import LogsPage from './components/Monitoramento/LogsPage';
 import TracingSimulator from './components/Monitoramento/TracingSimulator';
 
 import LandingPage from "./components/LandingPage/LandingPage";
@@ -45,40 +30,18 @@ import Subscription from "./components/Subscription/Subscription";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import { trackEvent, trackPageView, initializeAnalytics, handleConsentChange } from './utils/analytics';
 import ServiceOriented from "./components/DesignPrinciples/ServiceOriented";
-import FaultTolerance from "./components/DesignPrinciples/FaultTolerance";
-import Retries from "./components/DesignPrinciples/Retries";
 import RetriesSimulator from "./components/DesignPrinciples/RetriesSimulator";
-import CircuitBreakerContent from "./components/DesignPrinciples/CircuitBreaker";
-import Timeout from "./components/DesignPrinciples/Timeout";
 import TimeoutSimulator from "./components/DesignPrinciples/TimeoutSimulator";
-import Escalabilidade from "./components/DesignPrinciples/Escalabilidade";
-import VerticalScaling from "./components/DesignPrinciples/VerticalScaling";
-import DataConsistency from "./components/DesignPrinciples/DataConsistency";
-import Latency from "./components/DesignPrinciples/Latency";
-import Failover from "./components/DesignPrinciples/Failover";
 import HorizontalScalingSimulator from "./components/HorizontalScaling/HorizontalScalingSimulator";
 import VerticalScalingSimulator from "./components/DesignPrinciples/VerticalScalingSimulator";
 import ScalabilitySimulator from "./components/DesignPrinciples/ScalabilitySimulator";
-import Replicacao from "./components/DesignPrinciples/Replicacao";
 import ReplicacaoSimulator from "./components/DesignPrinciples/ReplicacaoSimulator";
 import ServiceArchitectureSimulator from "./components/DesignPrinciples/ServiceArchitectureSimulator";
-import Disponibilidade from "./components/DesignPrinciples/Disponibilidade";
 import Preferences from "./components/Preferences/Preferences";
-import ConsistencyStrategies from "./components/ConsistencyStrategies/ConsistencyStrategies";
-import ConsensusStrategy from "./components/ConsistencyStrategies/ConsensusStrategy";
 import ConsensusSimulator from "./components/ConsistencyStrategies/ConsensusSimulator";
-import Firewall from "./components/SystemComponents/Firewall";
 import FirewallSimulator from "./components/SystemComponents/FirewallSimulator";
-import LamportTimestamps from "./components/ConsistencyStrategies/LamportTimestamps";
 import LamportTimestampsSimulator from "./components/ConsistencyStrategies/LamportTimestampsSimulator";
 import SystemEditor from "./components/SystemEditor/SystemEditor";
-import SecurityOverview from "./components/Security/SecurityOverview";
-import Authentication from "./components/Security/Authentication";
-import Authorization from "./components/Security/Authorization";
-import Cryptography from "./components/Security/Cryptography";
-import TokensAndJWT from "./components/Security/TokensAndJWT";
-import SSLTLS from "./components/Security/SSLTLS";
-import CommonAttacks from "./components/Security/CommonAttacks";
 import TokensSimulator from "./components/Security/TokensSimulator";
 import CryptographySimulator from "./components/Security/CryptographySimulator";
 import AttackSimulatorPage from "./components/Security/AttackSimulatorPage";
@@ -87,32 +50,16 @@ import ContentLayout from "./components/Common/ContentLayout";
 import LanguageDetectionDialog from "./components/Common/LanguageDetectionDialog";
 import { useContentProgress, PROGRESS_UPDATED_EVENT } from "./hooks/useContentProgress";
 import ContentPage from "./components/Common/ContentPage";
-import TwoPhaseCommit from "./components/ConsistencyStrategies/TwoPhaseCommit";
+import MdxPage, { availableSlugs } from "./components/Common/MdxPage";
+import { contentManifest } from "./config/contentManifest";
+import CanaryDeploymentSimulator from "./components/CanaryDeployment/CanaryDeploymentSimulator";
 import TwoPhaseCommitSimulator from "./components/ConsistencyStrategies/TwoPhaseCommitSimulator";
-import Coupling from "./components/DesignPrinciples/Coupling";
-import MonitoringMaintenance from "./components/MonitoringMaintenance/MonitoringMaintenance";
-import Metrics from "./components/MonitoringMaintenance/Metrics";
 import Logs from "./components/MonitoringMaintenance/Logs";
-import Alerts from "./components/MonitoringMaintenance/Alerts";
-import Performance from "./components/MonitoringMaintenance/Performance";
-import HealthChecks from "./components/MonitoringMaintenance/HealthChecks";
-import RealCases from "./components/RealCases/RealCases";
-import YouTube from "./components/RealCases/YouTube";
-import Spotify from "./components/RealCases/Spotify";
-import WhatsApp from "./components/RealCases/WhatsApp";
-import Bitly from "./components/RealCases/Bitly";
-import Netflix from "./components/RealCases/Netflix";
-import Uber from "./components/RealCases/Uber";
 
-import OrchestrationVsChoreography from './components/DesignPrinciples/OrchestrationVsChoreography';
-import Synchronization from './components/ConsistencyStrategies/Synchronization';
-import SynchronizationFundamentals from './components/ConsistencyStrategies/SynchronizationFundamentals';
-import SynchronizationDeadlocks from './components/ConsistencyStrategies/SynchronizationDeadlocks';
 import SynchronizationAlgorithms from './components/ConsistencyStrategies/SynchronizationAlgorithms';
 import SynchronizationSimulator from "./components/ConsistencyStrategies/SynchronizationSimulator";
 import SimpleSystemEditorPage from "./pages/SimpleSystemEditorPage";
 import PollingWebhooks from "./components/SystemComponents/PollingWebhooks";
-import PollingWebhooksTheory from "./components/SystemComponents/PollingWebhooksTheory";
 import { LanguageSwitcher, CouponModal } from './components/Common';
 import ThemeToggle from "./components/Common/ThemeToggle";
 import { useTranslation } from 'react-i18next';
@@ -121,14 +68,8 @@ import { CookieConsentManager } from './utils/cookieConsent';
 import CookiePreferencesPage from './pages/CookiePreferencesPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsAndConditionsPage from './pages/TermsAndConditionsPage';
-import CAPTheorem from "./components/TheoreticalFoundations/CAPTheorem";
-import ConsistencyModels from "./components/TheoreticalFoundations/ConsistencyModels";
-import DistributedChallenges from "./components/TheoreticalFoundations/DistributedChallenges";
-import NetworkPartitions from "./components/TheoreticalFoundations/NetworkPartitions";
-import TheoreticalFoundations from "./components/TheoreticalFoundations/TheoreticalFoundations";
 import ReplicationSimulator from "./components/DesignPrinciples/ReplicationSimulator";
 import AvailabilityZonesSimulator from "./components/DesignPrinciples/AvailabilityZonesSimulator";
-import AvailabilityZones from "./components/DesignPrinciples/AvailabilityZones";
 import { ForumPage } from "./components/Forum";
 
 interface MenuItem {
@@ -500,8 +441,21 @@ const createMenuItems = (t: any): MenuItem[] => [
         path: "/principios-design/orquestracao-vs-coreografia",
         name: t('menu.principios_design.orquestracao_vs_coreografia.name'),
         description: t('menu.principios_design.orquestracao_vs_coreografia.description'),
-        component: OrchestrationVsChoreography,
         status: "new"
+      },
+      {
+        path: "/principios-design/canary-deployment",
+        name: t('menu.principios_design.canary_deployment.name'),
+        description: t('menu.principios_design.canary_deployment.description'),
+        status: "new",
+        badges: [{ text: t('badges.new'), color: "bg-blue-500" }],
+        children: [
+          {
+            path: "/principios-design/canary-deployment/simulator",
+            name: t('menu.principios_design.canary_deployment.simulator.name'),
+            description: t('menu.principios_design.canary_deployment.simulator.description'),
+          },
+        ],
       }
     ],
   },
@@ -1242,6 +1196,34 @@ export default function App() {
         {/* Main content */}
         <main className={`flex-1 overflow-y-auto bg-canvas-paper dark:bg-canvas-dark bg-grid ${isMobile ? 'pt-16' : ''}`}>
           <Routes>
+            {/* Content-only pages rendered from MDX (src/content/**). One route per
+                manifest entry replaces the ~60 former per-page component routes.
+                Interactive simulators remain as explicit routes below. */}
+            {contentManifest
+              .filter((entry) => availableSlugs.has(entry.slug))
+              .map(({ path, slug, requiresSubscription = true }) => (
+                <Route
+                  key={path}
+                  path={path}
+                  element={
+                    <ProtectedRoute requiresSubscription={requiresSubscription}>
+                      <ContentPage>
+                        <MdxPage slug={slug} />
+                      </ContentPage>
+                    </ProtectedRoute>
+                  }
+                />
+              ))}
+            <Route
+              path="/principios-design/canary-deployment/simulator"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <CanaryDeploymentSimulator />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
@@ -1284,121 +1266,11 @@ export default function App() {
             
             {/* Protected routes */}
             <Route
-              path="/intro"
-              element={
-                <ProtectedRoute requiresSubscription={false}>
-                  <ContentPage>
-                    <Introduction />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/sistemas-distribuidos-101"
-              element={
-                <ProtectedRoute requiresSubscription={false}>
-                  <ContentPage>
-                    <DistributedSystems101 />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/theoretical-foundations"
-              element={
-                <ProtectedRoute requiresSubscription={false}>
-                  <ContentPage>
-                    <TheoreticalFoundations />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/theoretical-foundations/cap-theorem"
-              element={
-                <ProtectedRoute requiresSubscription={false}>
-                  <ContentPage>
-                    <CAPTheorem />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/theoretical-foundations/consistency-models"
-              element={
-                <ProtectedRoute requiresSubscription={false}>
-                  <ContentPage>
-                    <ConsistencyModels />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/theoretical-foundations/distributed-challenges"
-              element={
-                <ProtectedRoute requiresSubscription={false}>
-                  <ContentPage>
-                    <DistributedChallenges />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/theoretical-foundations/network-partitions"
-              element={
-                <ProtectedRoute requiresSubscription={false}>
-                  <ContentPage>
-                    <NetworkPartitions />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/componentes"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <SystemComponents />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/componentes/banco-dados"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Database />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/componentes/cache"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <CacheComponent />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="/componentes/cache/simulator"
               element={
                 <ProtectedRoute>
                   <ContentPage>
                     <CacheSimulation />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/componentes/load-balancer"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <LoadBalancer />
                   </ContentPage>
                 </ProtectedRoute>
               }
@@ -1414,31 +1286,11 @@ export default function App() {
               }
             />
             <Route
-              path="/componentes/message-queue"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <MessageQueueComponent />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="/componentes/message-queue/simulator"
               element={
                 <ProtectedRoute>
                   <ContentPage>
                     <MessageQueueSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/componentes/cdn"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <CDNComponent />
                   </ContentPage>
                 </ProtectedRoute>
               }
@@ -1454,31 +1306,11 @@ export default function App() {
               }
             />
             <Route
-              path="/componentes/api-gateway"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <APIGateway />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="/componentes/api-gateway/simulator"
               element={
                 <ProtectedRoute>
                   <ContentPage>
                     <APIGatewaySimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/horizontal-scaling"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <HorizontalScaling />
                   </ContentPage>
                 </ProtectedRoute>
               }
@@ -1514,16 +1346,6 @@ export default function App() {
               }
             />
             <Route
-              path="/fallback"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Fallback />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="/async-sync"
               element={
                 <ProtectedRoute>
@@ -1539,26 +1361,6 @@ export default function App() {
                 <ProtectedRoute>
                   <ContentPage>
                     <CDN />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <DesignPrinciples />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design/eventos"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <EventDriven />
                   </ContentPage>
                 </ProtectedRoute>
               }
@@ -1594,41 +1396,11 @@ export default function App() {
               }
             />
             <Route
-              path="/principios-design/tolerancia-falhas"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <FaultTolerance />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design/tolerancia-falhas/retries"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Retries />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="/principios-design/tolerancia-falhas/retries/simulator"
               element={
                 <ProtectedRoute>
                   <ContentPage>
                     <RetriesSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design/tolerancia-falhas/circuit-breaker"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <CircuitBreakerContent />
                   </ContentPage>
                 </ProtectedRoute>
               }
@@ -1644,51 +1416,11 @@ export default function App() {
               }
             />
             <Route
-              path="/principios-design/tolerancia-falhas/timeout"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Timeout />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="/principios-design/tolerancia-falhas/timeout/simulator"
               element={
                 <ProtectedRoute>
                   <ContentPage>
                     <TimeoutSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design/tolerancia-falhas/fallback"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Fallback />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design/escalabilidade"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Escalabilidade />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design/escalabilidade/horizontal"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <HorizontalScaling />
                   </ContentPage>
                 </ProtectedRoute>
               }
@@ -1704,51 +1436,11 @@ export default function App() {
               }
             />
             <Route
-              path="/principios-design/escalabilidade/vertical"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <VerticalScaling />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="/principios-design/escalabilidade/vertical/simulator"
               element={
                 <ProtectedRoute>
                   <ContentPage>
                     <VerticalScalingSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design/escalabilidade/consistencia"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <DataConsistency />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design/escalabilidade/latencia"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Latency />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design/escalabilidade/failover"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Failover />
                   </ContentPage>
                 </ProtectedRoute>
               }
@@ -1774,71 +1466,11 @@ export default function App() {
               }
             />
             <Route
-              path="/principios-design/disponibilidade/replicacao"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Replicacao />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design/disponibilidade/failover"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Failover />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design/disponibilidade"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Disponibilidade />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/estrategias-de-consistencia"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <ConsistencyStrategies />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/estrategias-de-consistencia/consenso"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <ConsensusStrategy />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="/estrategias-de-consistencia/consenso/simulador"
               element={
                 <ProtectedRoute>
                   <ContentPage>
                     <ConsensusSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/estrategias-de-consistencia/lamport-timestamps"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <LamportTimestamps />
                   </ContentPage>
                 </ProtectedRoute>
               }
@@ -1854,31 +1486,11 @@ export default function App() {
               }
             />
             <Route
-              path="/componentes/firewall"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Firewall />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="/componentes/firewall/simulator"
               element={
                 <ProtectedRoute>
                   <ContentPage>
                     <FirewallSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/componentes/polling-webhooks"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <PollingWebhooksTheory />
                   </ContentPage>
                 </ProtectedRoute>
               }
@@ -1894,66 +1506,6 @@ export default function App() {
               }
             />
             <Route
-              path="/system-design-101"
-              element={
-                <ProtectedRoute requiresSubscription={false}>
-                  <ContentPage>
-                    <SystemDesign101 />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/seguranca"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <SecurityOverview />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/seguranca/autenticacao"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Authentication />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/seguranca/autorizacao"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Authorization />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/seguranca/criptografia"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Cryptography />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/seguranca/tokens"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <TokensAndJWT />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="/seguranca/tokens/simulador"
               element={
                 <ProtectedRoute>
@@ -1963,27 +1515,7 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/seguranca/ssl-tls"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <SSLTLS />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
 
-            <Route
-              path="/seguranca/ataques"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <CommonAttacks />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
             <Route
               path="/seguranca/ataques/simulador"
               element={
@@ -2015,51 +1547,11 @@ export default function App() {
               }
             />
             <Route
-              path="/estrategias-de-consistencia/two-phase-commit"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <TwoPhaseCommit />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="/estrategias-de-consistencia/two-phase-commit/simulador"
               element={
                 <ProtectedRoute>
                   <ContentPage>
                     <TwoPhaseCommitSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/estrategias-de-consistencia/sincronizacao"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Synchronization />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/estrategias-de-consistencia/sincronizacao/fundamentos"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <SynchronizationFundamentals />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/estrategias-de-consistencia/sincronizacao/deadlocks"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <SynchronizationDeadlocks />
                   </ContentPage>
                 </ProtectedRoute>
               }
@@ -2084,166 +1576,16 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/principios-design/acoplamento"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Coupling />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design/orquestracao-vs-coreografia"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <OrchestrationVsChoreography />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/monitoramento-e-manutencao"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <MonitoringMaintenance />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/monitoramento-e-manutencao/metricas"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Metrics />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/monitoramento-e-manutencao/logs"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <LogsPage />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
 
-            <Route
-              path="/monitoramento-e-manutencao/alertas"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Alerts />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
 
-            <Route
-              path="/monitoramento-e-manutencao/performance"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Performance />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
 
-            <Route
-              path="/monitoramento-e-manutencao/health-checks"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <HealthChecks />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
 
-            <Route
-              path="/casos-reais"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <RealCases />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
 
-            <Route
-              path="/casos-reais/youtube"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <YouTube />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
 
-            <Route
-              path="/casos-reais/spotify"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Spotify />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
 
-            <Route
-              path="/casos-reais/whatsapp"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <WhatsApp />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
 
-            <Route
-              path="/casos-reais/bitly"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Bitly />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
 
-            <Route
-              path="/casos-reais/netflix"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Netflix />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
 
-            <Route
-              path="/casos-reais/uber"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Uber />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
 
             <Route
               path="/monitoramento-e-manutencao/logs/simulador"
@@ -2265,16 +1607,6 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/principios-design/disponibilidade/zonas"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <AvailabilityZones />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
             
             <Route
               path="/principios-design/disponibilidade/zonas/simulador"
@@ -2287,31 +1619,11 @@ export default function App() {
               }
             />
             <Route
-              path="/principios-design/disponibilidade/replicacao"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Replicacao />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="/principios-design/disponibilidade/replicacao/simulador"
               element={
                 <ProtectedRoute>
                   <ContentPage>
                     <ReplicationSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design/disponibilidade/failover"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <Failover />
                   </ContentPage>
                 </ProtectedRoute>
               }

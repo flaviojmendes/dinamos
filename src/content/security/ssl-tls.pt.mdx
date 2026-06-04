@@ -1,0 +1,180 @@
+# SSL/TLS em Sistemas Distribuídos
+
+Protocolos de segurança para comunicação segura em redes e sistemas distribuídos
+
+<Callout type="success">
+
+SSL/TLS são protocolos fundamentais que garantem a segurança das comunicações na internet, protegendo dados sensíveis e garantindo a autenticidade dos serviços.
+
+</Callout>
+
+## Visão Geral
+
+<Cards cols={2}>
+
+<Card title="O que é SSL/TLS?" accent="green">
+
+SSL (Secure Sockets Layer) e seu sucessor TLS (Transport Layer Security) são protocolos criptográficos que fornecem comunicação segura através da internet. Eles operam na camada de transporte, garantindo:
+
+- Confidencialidade dos dados
+- Integridade das mensagens
+- Autenticação do servidor
+- Autenticação opcional do cliente
+
+</Card>
+
+<Card title="Evolução" accent="green">
+
+- **SSL 2.0/3.0** — Obsoleto e inseguro
+- **TLS 1.0/1.1** — Descontinuado
+- **TLS 1.2** — Amplamente suportado
+- **TLS 1.3** — Versão mais recente e segura
+
+</Card>
+
+</Cards>
+
+## Como Funciona
+
+### O Handshake TLS
+
+1. **Client Hello** — O cliente inicia a conexão enviando:
+   - Versão TLS suportada
+   - Lista de cipher suites
+   - Número aleatório
+   - Extensões suportadas
+2. **Server Hello** — O servidor responde com:
+   - Certificado digital
+   - Cipher suite escolhida
+   - Número aleatório do servidor
+   - Extensões negociadas
+3. **Key Exchange** — Troca de chaves e estabelecimento de segredos:
+   - Cliente verifica o certificado
+   - Geração do pre-master secret
+   - Derivação das chaves de sessão
+4. **Finished** — Finalização do handshake:
+   - Verificação de integridade
+   - Confirmação dos parâmetros
+   - Início da comunicação segura
+
+## Certificados Digitais
+
+<Cards cols={2}>
+
+<Card title="Estrutura" accent="green">
+
+- Informações do titular
+- Chave pública
+- Período de validade
+- Emissor (CA)
+- Assinatura digital da CA
+- Número de série
+
+</Card>
+
+<Card title="Tipos" accent="green">
+
+- **DV (Domain Validation)**: Validação básica do domínio
+- **OV (Organization Validation)**: Validação da organização
+- **EV (Extended Validation)**: Validação extendida e rigorosa
+
+</Card>
+
+</Cards>
+
+## Cipher Suites
+
+Cipher suites são conjuntos de algoritmos que definem como a comunicação será protegida. Uma cipher suite típica inclui:
+
+<Cards cols={4}>
+
+<Card title="Key Exchange" accent="brand">
+
+- ECDHE
+- DHE
+- RSA
+
+</Card>
+
+<Card title="Authentication" accent="green">
+
+- RSA
+- ECDSA
+- PSK
+
+</Card>
+
+<Card title="Encryption" accent="purple">
+
+- AES-GCM
+- ChaCha20
+- AES-CBC
+
+</Card>
+
+<Card title="MAC" accent="yellow">
+
+- AEAD
+- SHA-384
+- POLY1305
+
+</Card>
+
+</Cards>
+
+## Melhores Práticas
+
+<Cards cols={3}>
+
+<Card title="Configuração" accent="green">
+
+- Use apenas TLS 1.2 e 1.3
+- Desative cipher suites inseguras
+- Configure HSTS
+- Implemente OCSP Stapling
+
+</Card>
+
+<Card title="Certificados" accent="brand">
+
+- Mantenha certificados atualizados
+- Use chaves fortes (RSA 2048+ ou ECC)
+- Implemente renovação automática
+- Proteja chaves privadas
+
+</Card>
+
+<Card title="Monitoramento" accent="red">
+
+- Monitore expiração de certificados
+- Verifique vulnerabilidades conhecidas
+- Realize testes de segurança regulares
+- Mantenha logs de acesso
+
+</Card>
+
+</Cards>
+
+## Considerações de Segurança
+
+<Cards cols={2}>
+
+<Card title="Ameaças Comuns" accent="red">
+
+- MITM (Man-in-the-Middle)
+- Downgrade Attacks
+- Protocol Vulnerabilities
+- Certificate Spoofing
+
+</Card>
+
+<Card title="Mitigações" accent="red">
+
+- Certificate Pinning
+- Perfect Forward Secrecy
+- Strong Cipher Preferences
+- Regular Security Updates
+
+</Card>
+
+</Cards>

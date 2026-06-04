@@ -1,0 +1,42 @@
+# Replication in Distributed Systems
+
+Replication is fundamental to ensure high availability and redundancy.
+
+## What is Replication?
+
+Replication creates and maintains copies of data or services in multiple locations. This increases availability and redundancy, ensuring access even if a server fails.
+
+## Types of Replication
+
+- **Synchronous Replication**: All copies are updated before confirming the operation (strong consistency, higher latency).
+- **Asynchronous Replication**: Updates propagate with delay (better performance, eventual consistency).
+- **Semi-synchronous Replication**: Hybrid approach where at least one replica confirms before proceeding.
+
+## Benefits
+
+- High availability and fault tolerance
+- Geographical distribution for lower latency
+- Load balancing across replicas
+- Backup and disaster recovery
+- Read scalability
+
+## Real-World Example
+
+A social network stores user photos on multiple servers worldwide. If one server fails, a replicated copy is available, preventing data loss and keeping the service online.
+
+## Best Practices
+
+1. Choose replication type based on consistency needs
+2. Monitor replica health and status
+3. Implement conflict detection and resolution mechanisms
+4. Keep replication logs for audit and recovery
+5. Regularly test failover scenarios
+6. Consider geographic location of replicas
+
+<Callout type="info" title="Explore in Practice">
+
+Try different replication strategies and see their impact on consistency and latency.
+
+[Open Simulator](/principios-design/disponibilidade/simulator)
+
+</Callout>

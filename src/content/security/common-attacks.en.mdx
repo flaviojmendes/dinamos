@@ -1,0 +1,206 @@
+# Attacks on Distributed Systems
+
+Understand the main types of attacks, their impacts and mitigation strategies
+
+<Callout type="danger">
+
+Attacks on distributed systems can cause serious damage to infrastructure, compromise sensitive data and result in significant financial losses. It is crucial to understand and implement adequate protection measures.
+
+</Callout>
+
+<Callout type="danger" title="Interactive Attack Simulator">
+
+Experience our interactive tool that visually demonstrates how DDoS and Man-in-the-Middle attacks work. Visualize the impact of attacks in real time and better understand protection strategies.
+
+[Access Simulator](/seguranca/ataques/simulador)
+
+</Callout>
+
+## Attack Categories
+
+<Cards cols={3}>
+
+<Card title="Network Attacks" accent="red">
+
+- DDoS (Distributed Denial of Service)
+- Man-in-the-Middle (MITM)
+- DNS Spoofing
+- ARP Poisoning
+- TCP/IP Hijacking
+
+</Card>
+
+<Card title="Application Attacks" accent="yellow">
+
+- SQL Injection
+- Cross-Site Scripting (XSS)
+- CSRF (Cross-Site Request Forgery)
+- Command Injection
+- File Inclusion
+
+</Card>
+
+<Card title="Authentication Attacks" accent="brand">
+
+- Brute Force
+- Dictionary Attacks
+- Session Hijacking
+- Credential Stuffing
+- Password Spraying
+
+</Card>
+
+</Cards>
+
+## DDoS Attacks
+
+Distributed Denial of Service (DDoS) attacks aim to make resources or services unavailable to legitimate users by overwhelming systems with malicious traffic.
+
+<Cards cols={2}>
+
+<Card title="Common Types" accent="green">
+
+- **Volumetric**: Floods the network with high volume traffic
+- **Protocol**: Exploits vulnerabilities in network protocols
+- **Application**: Attacks application layer with malicious requests
+
+</Card>
+
+<Card title="Mitigation" accent="green">
+
+- Firewalls and WAFs
+- Rate Limiting
+- Load Balancing
+- Traffic Analysis
+- CDN Protection
+- Blackholing
+
+</Card>
+
+</Cards>
+
+## Man-in-the-Middle Attacks
+
+<Cards cols={2}>
+
+<Card title="How It Works" accent="green">
+
+The attacker positions themselves between two communicating parties, intercepting and potentially modifying communication without the parties noticing.
+
+- Traffic interception
+- Data modification
+- Information theft
+- Identity falsification
+
+</Card>
+
+<Card title="Prevention" accent="green">
+
+- Use of TLS/SSL
+- Certificate Pinning
+- VPNs
+- Mutual Authentication
+- HSTS
+
+</Card>
+
+</Cards>
+
+## Injection Attacks
+
+### SQL Injection
+
+**Vulnerability**
+
+Insertion of malicious SQL code into data inputs to manipulate or extract information from the database.
+
+**Prevention**
+
+- Prepared Statements
+- Input Validation
+- Escaping
+- Least Privilege
+
+### Cross-Site Scripting (XSS)
+
+**Vulnerability**
+
+Injection of malicious scripts into web pages viewed by other users, allowing session theft and content manipulation.
+
+**Prevention**
+
+- Input Sanitization
+- Content Security Policy
+- HttpOnly Cookies
+- Output Encoding
+
+## Authentication Attacks
+
+<Cards cols={3}>
+
+<Card title="Brute Force" accent="green">
+
+Systematic attempts to guess credentials by testing all possible combinations.
+
+**Mitigation**
+
+- Rate Limiting
+- CAPTCHA
+- Account Lockout
+- Strong Passwords
+
+</Card>
+
+<Card title="Session Hijacking" accent="green">
+
+Theft or forgery of session tokens to access authenticated user accounts.
+
+**Mitigation**
+
+- Secure Session Management
+- SSL/TLS
+- Session Timeout
+- Regenerate IDs
+
+</Card>
+
+<Card title="Credential Stuffing" accent="green">
+
+Automated use of leaked username/password pairs to attempt access across multiple services.
+
+**Mitigation**
+
+- Multi-factor Authentication
+- Password Policies
+- Breach Detection
+- IP-based Rate Limiting
+
+</Card>
+
+</Cards>
+
+## Security Best Practices
+
+<Cards cols={2}>
+
+<Card title="Prevention" accent="green">
+
+- Keep all systems and dependencies updated
+- Implement strong and multi-factor authentication
+- Use HTTPS in all communications
+- Validate and sanitize all user inputs
+- Implement adequate logging and monitoring
+
+</Card>
+
+<Card title="Monitoring" accent="green">
+
+- Configure alerts for suspicious behavior
+- Perform regular security audits
+- Maintain access and activity logs
+- Implement intrusion detection
+- Monitor performance and availability metrics
+
+</Card>
+
+</Cards>

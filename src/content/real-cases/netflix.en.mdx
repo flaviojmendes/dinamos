@@ -1,0 +1,195 @@
+# Netflix System Design
+
+How Netflix delivers high-quality video streaming to millions of users globally
+
+## Impressive Numbers
+
+<Metrics cols={3}>
+
+<Metric value="230M+" label="Global subscribers" accent="red" />
+
+<Metric value="1B+" label="Streaming hours per day" accent="red" />
+
+<Metric value="15%" label="Of global internet traffic" accent="red" />
+
+</Metrics>
+
+## System Requirements
+
+<Card title="Functional Requirements" accent="red">
+
+- Adaptive video streaming
+- Personalized recommendation system
+- Global content catalog
+- Multiple profiles per account
+- Continue watching cross-device
+- Offline downloads
+
+</Card>
+
+<Card title="Non-Functional Requirements" accent="red">
+
+- Low video start latency (less than 500ms)
+- High availability (99.99%)
+- Adaptive video quality
+- Global scalability
+- Content security (DRM)
+- CDN cost efficiency
+
+</Card>
+
+## System Architecture
+
+### High-Level Architecture
+
+Overview of Netflix's distributed architecture, showing the main components and their interactions.
+
+Clients (TV, Mobile, Web) → Open Connect (CDN) → API Gateway → Streaming Service / Recommendation Service / Metadata Service → S3 (Videos) / Cassandra (Metadata) / EVCache (Cache)
+
+### 1. Streaming System
+
+#### Open Connect (CDN)
+
+- Own CDN optimized for video
+- Appliances in partner ISPs
+- Hierarchical cache
+- Route optimization
+
+#### Video Processing
+
+- Parallel transcoding
+- Multiple qualities (SD to 4K)
+- Adaptive segmentation
+- DRM and content protection
+
+### 2. Recommendation System
+
+#### Algorithms
+
+- Collaborative Filtering
+- Content-based Filtering
+- Per-profile personalization
+- Continuous A/B Testing
+
+#### Features
+
+- Viewing history
+- Genre preferences
+- Navigation behavior
+- Context (device, time)
+
+### 3. Data Processing
+
+#### Data Pipeline
+
+- Kafka for event streaming
+- Spark for batch processing
+- Flink for real-time processing
+- Features:
+  - Quality telemetry
+  - Viewing analytics
+  - Engagement metrics
+  - Anomaly detection
+
+## Technical Decisions and Trade-offs
+
+<Card title="1. Own CDN vs. Third-party" accent="red">
+
+Open Connect offers greater control and optimization, but requires significant investment in infrastructure and maintenance.
+
+</Card>
+
+<Card title="2. Quality vs. Bandwidth" accent="red">
+
+Adaptive streaming balances video quality with network conditions, prioritizing playback continuity.
+
+</Card>
+
+<Card title="3. Personalization vs. Performance" accent="red">
+
+Highly personalized recommendations require intensive processing. Use of cache and pre-computation reduces latency.
+
+</Card>
+
+<Card title="4. Consistency vs. Availability" accent="red">
+
+Preference for availability over strong consistency for non-critical metadata, allowing better offline experience.
+
+</Card>
+
+## Scaling Challenges
+
+<Cards cols={2}>
+
+<Card title="Global Traffic" accent="red">
+
+Content delivery optimization globally. Solution: Open Connect and distributed cache.
+
+</Card>
+
+<Card title="Video Processing" accent="red">
+
+Transcoding thousands of hours of content. Solution: Parallel and distributed pipeline.
+
+</Card>
+
+<Card title="Machine Learning" accent="red">
+
+Personalized recommendations at scale. Solution: Distributed models and intelligent cache.
+
+</Card>
+
+<Card title="Microservices" accent="red">
+
+Managing hundreds of services. Solution: Chaos Engineering and resilience.
+
+</Card>
+
+</Cards>
+
+## Architecture Evolution
+
+### 2007 — Streaming Launch
+
+Streaming launch, basic infrastructure.
+
+### 2009-2010 — AWS Migration
+
+Move to cloud, beginning of global scale.
+
+### 2011-2012 — Microservices
+
+Monolith decomposition, Chaos Monkey introduction.
+
+### 2012-2016 — Open Connect
+
+Own CDN development, global expansion.
+
+### 2016-Present — Adaptive Streaming and ML
+
+Focus on quality and personalization with advanced ML.
+
+## References
+
+### Official Documentation and Articles
+
+- [Netflix Tech Blog](https://netflixtechblog.com/)
+- [Netflix Open Source](https://netflix.github.io/)
+- [Netflix ISP Infrastructure](https://about.netflix.com/en/news/how-netflix-works-with-isps-around-the-globe-to-deliver-a-great-viewing-experience)
+
+### Technical Articles and Analysis
+
+- [Netflix's Global Infrastructure](https://netflixtechblog.com/netflix-at-velocity-2015-89c1794da400)
+- [Content Delivery Network](https://netflixtechblog.com/how-netflix-works-with-isps-around-the-globe-to-deliver-a-great-viewing-experience-c40c25b3b9fb)
+- [Recommendation System](https://netflixtechblog.com/netflix-recommendations-beyond-the-5-stars-part-1-55838468f429)
+
+### Open Source Tools
+
+- [Hystrix - Latency and Fault Tolerance](https://github.com/Netflix/hystrix)
+- [Zuul - Gateway Service](https://github.com/Netflix/zuul)
+- [Eureka - Service Discovery](https://github.com/Netflix/eureka)
+
+### Conferences and Presentations
+
+- [QCon - Netflix Cloud Architecture](https://www.youtube.com/watch?v=CZ3wIuvmHeM)
+- [AWS re:Invent - Netflix on AWS](https://www.youtube.com/watch?v=uCXv4gl2JT0)

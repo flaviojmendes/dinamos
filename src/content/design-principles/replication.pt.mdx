@@ -1,0 +1,42 @@
+# Replicação em Sistemas Distribuídos
+
+A replicação é fundamental para garantir alta disponibilidade e redundância.
+
+## O que é Replicação?
+
+Replicação consiste em criar e manter cópias de dados ou serviços em vários locais. Isso aumenta a disponibilidade e a redundância, garantindo acesso mesmo se um servidor falhar.
+
+## Tipos de Replicação
+
+- **Replicação Síncrona**: Todas as cópias são atualizadas antes de confirmar (consistência forte, maior latência).
+- **Replicação Assíncrona**: Atualizações propagam com atraso (melhor performance, consistência eventual).
+- **Replicação Semi-síncrona**: Híbrido em que ao menos uma réplica confirma antes de prosseguir.
+
+## Benefícios
+
+- Alta disponibilidade e tolerância a falhas
+- Distribuição geográfica para menor latência
+- Balanceamento de carga entre réplicas
+- Backup e recuperação de desastres
+- Escalabilidade de leitura
+
+## Exemplo do Mundo Real
+
+Uma rede social armazena fotos em múltiplos servidores pelo mundo. Se um falhar, outra cópia evita perda e mantém o serviço online.
+
+## Melhores Práticas
+
+1. Escolha o tipo de replicação conforme a necessidade de consistência
+2. Monitore a saúde e o estado das réplicas
+3. Implemente mecanismos de detecção e resolução de conflitos
+4. Mantenha logs de replicação para auditoria e recuperação
+5. Teste regularmente os cenários de failover
+6. Considere a localização geográfica das réplicas
+
+<Callout type="info" title="Explorar na Prática">
+
+Experimente diferentes estratégias de replicação e veja o impacto na consistência e latência.
+
+[Abrir Simulador](/principios-design/disponibilidade/simulator)
+
+</Callout>

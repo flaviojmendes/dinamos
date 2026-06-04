@@ -1,0 +1,45 @@
+# Load Balancers
+
+Load balancers evenly distribute network traffic or requests across multiple servers, preventing any single server from becoming overloaded. For example, an e-commerce system can use a load balancer to distribute requests.
+
+In load balancing, multiple server instances process requests simultaneously. This is essential in scalable systems, allowing you to add more servers as demand increases.
+
+## Load Balancing Algorithms
+
+### Round Robin
+
+Requests are distributed sequentially among available servers, ensuring an even distribution.
+
+<Callout type="neutral" title="How it works:">
+
+If you have 3 servers (A, B, C), the first request goes to A, the second to B, the third to C, the fourth returns to A, and so on.
+
+</Callout>
+
+### Hashing
+
+Uses a hash (based on IP or another identifier) to ensure requests from a specific client are directed to the same server.
+
+<Callout type="neutral" title="Use case:">
+
+Important for maintaining user sessions, ensuring a client always accesses the same server where their session is stored.
+
+</Callout>
+
+### Least Connections
+
+Directs new requests to the server with the fewest active connections, helping to better balance the load.
+
+<Callout type="neutral" title="Advantage:">
+
+More efficient when servers have different capacities or when requests have very variable durations.
+
+</Callout>
+
+<Callout type="info" title="Interactive Simulator">
+
+Try our interactive load-balancing simulation to see how different algorithms behave in practice.
+
+[Access Simulator](/componentes/load-balancer/simulator)
+
+</Callout>

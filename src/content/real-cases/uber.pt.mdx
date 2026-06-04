@@ -1,0 +1,202 @@
+# Uber System Design
+
+Como o Uber conecta milhões de motoristas e passageiros em tempo real globalmente
+
+## Números Impressionantes
+
+<Metrics cols={3}>
+
+<Metric value="130M+" label="Usuários ativos mensais" accent="slate" />
+
+<Metric value="5M+" label="Motoristas ativos" accent="slate" />
+
+<Metric value="20M+" label="Viagens por dia" accent="slate" />
+
+</Metrics>
+
+## Requisitos do Sistema
+
+<Card title="Requisitos Funcionais" accent="slate">
+
+- Matching em tempo real de motoristas e passageiros
+- Geolocalização precisa
+- Estimativa de preço e tempo
+- Processamento de pagamentos
+- Sistema de avaliação
+- Múltiplos tipos de serviço (UberX, Black, etc.)
+
+</Card>
+
+<Card title="Requisitos Não-Funcionais" accent="slate">
+
+- Latência ultra baixa (menor que 100ms)
+- Alta disponibilidade (99.99%)
+- Consistência eventual
+- Escalabilidade global
+- Tolerância a falhas
+- Segurança e privacidade
+
+</Card>
+
+## Arquitetura do Sistema
+
+### Arquitetura de Alto Nível
+
+Visão geral da arquitetura distribuída do Uber, mostrando os principais componentes e suas interações.
+
+Apps (Passageiro, Motorista) → API Gateway → Serviço de Matching / Serviço de Localização / Serviço de Viagens / Serviço de Pagamentos / Analytics → PostgreSQL (Dados) / Redis (Cache) / Kafka (Eventos)
+
+### Fluxo de Matching
+
+Fluxo de matching entre passageiros e motoristas, demonstrando o processo desde a solicitação até o match.
+
+Solicitação → Processamento → Seleção Motorista → Match
+
+### 1. Sistema de Matching
+
+#### Algoritmo de Matching
+
+- Geohash para busca espacial
+- Quadtrees para indexação
+- Batching de requisições
+- Otimização multi-objetivo
+
+#### Fatores Considerados
+
+- Distância e tempo estimado
+- Rating do motorista
+- Tipo de veículo
+- Histórico de cancelamentos
+- Demanda e oferta local
+
+### 2. Sistema de Localização
+
+#### Processamento de Localização
+
+- Atualização em tempo real
+- Filtro de Kalman
+- Map matching
+- Predição de rotas
+
+#### Otimizações
+
+- Cache espacial distribuído
+- Compressão de coordenadas
+- Batching de atualizações
+- Sharding geográfico
+
+### 3. Sistema em Tempo Real
+
+#### Infraestrutura Real-time
+
+- WebSocket para conexões persistentes
+- Kafka para eventos
+- Redis para estado em tempo real
+- Features:
+  - Localização em tempo real
+  - ETA dinâmico
+  - Surge pricing
+  - Status da viagem
+
+## Decisões Técnicas e Trade-offs
+
+<Card title="1. Precisão vs Latência" accent="slate">
+
+Balance entre precisão do matching e tempo de resposta. Uso de batching e aproximações para reduzir latência.
+
+</Card>
+
+<Card title="2. Consistência vs Disponibilidade" accent="slate">
+
+Preferência por disponibilidade em dados não críticos. Consistência forte apenas em transações financeiras.
+
+</Card>
+
+<Card title="3. Custo vs Qualidade" accent="slate">
+
+Otimização de recursos computacionais vs qualidade do matching. Uso de algoritmos adaptativos baseados na demanda.
+
+</Card>
+
+<Card title="4. Cache vs Freshness" accent="slate">
+
+Caching agressivo para performance vs dados atualizados. Invalidação seletiva baseada em relevância.
+
+</Card>
+
+## Desafios de Escala
+
+<Cards cols={2}>
+
+<Card title="Matching em Massa" accent="slate">
+
+Processamento de milhões de matches por dia. Solução: Sharding geográfico e batching.
+
+</Card>
+
+<Card title="Dados em Tempo Real" accent="slate">
+
+Atualizações de localização em massa. Solução: Pipeline distribuído e filtros.
+
+</Card>
+
+<Card title="Consistência Global" accent="slate">
+
+Sincronização entre regiões. Solução: Replicação multi-região e cache.
+
+</Card>
+
+<Card title="Picos de Demanda" accent="slate">
+
+Handling de eventos e horários de pico. Solução: Auto-scaling e surge pricing.
+
+</Card>
+
+</Cards>
+
+## Evolução da Arquitetura
+
+### 2009 — MVP Inicial
+
+Monolito Ruby on Rails, matching manual.
+
+### 2011-2012 — Primeira Escala
+
+Matching automático, Redis para dispatch.
+
+### 2014-2015 — Microsserviços
+
+Decomposição em serviços, Kafka para eventos.
+
+### 2016-2018 — Escala Global
+
+Multi-região, otimização geográfica.
+
+### 2019-Presente — ML e Otimização
+
+Machine learning para matching, predição de demanda.
+
+## Referências
+
+### Documentação e Artigos Oficiais
+
+- [Uber Engineering Blog](https://eng.uber.com/)
+- [Uber Open Source](https://uber.github.io/)
+- [Uber Developer Platform](https://developer.uber.com/)
+
+### Artigos Técnicos e Análises
+
+- [H3: Uber's Hexagonal Hierarchical Spatial Index](https://eng.uber.com/h3/)
+- [Marketplace Real-time Pricing](https://eng.uber.com/marketplace-real-time-pricing/)
+- [Engineering Efficient Route Planning](https://eng.uber.com/engineering-an-efficient-route/)
+
+### Ferramentas Open Source
+
+- [H3 - Geospatial Indexing System](https://github.com/uber/h3)
+- [Cadence - Workflow Engine](https://github.com/uber/cadence)
+- [Zap - Logging Framework](https://github.com/uber-go/zap)
+
+### Conferências e Apresentações
+
+- [QCon - Uber's Marketplace Platform](https://www.youtube.com/watch?v=nuiLcWE8sPA)
+- [StrangeLoop - Uber's Real-time Tech Stack](https://www.youtube.com/watch?v=kb-m2fasdDY)

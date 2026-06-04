@@ -1,0 +1,65 @@
+# Circuit Breaker (Disjuntor)
+
+An essential strategy to prevent cascading failures in distributed systems, working similarly to an electrical circuit breaker.
+
+## How It Works
+
+Imagine your home internet is having serious issues. You try to send a message several times, but it never goes through. Keeping at it only frustrates you and overloads the network. That is where the Circuit Breaker comes in.
+
+It works like the breaker in your house: when the current is too high, it shuts everything off to avoid damage. In software systems, when many calls fail, the Circuit Breaker blocks new attempts for a while.
+
+## Benefits
+
+<Cards cols={3}>
+
+<Card title="Cascading Failure Prevention" accent="green">
+
+Prevents failures in one service from affecting the whole system.
+
+</Card>
+
+<Card title="Automatic Recovery" accent="green">
+
+Allows the system to naturally recover after failures.
+
+</Card>
+
+<Card title="Better Experience" accent="green">
+
+Fail fast instead of keeping users waiting.
+
+</Card>
+
+</Cards>
+
+<Callout type="neutral" title="Real-World Example">
+
+A news site receives a traffic spike during a major event. The image server becomes overloaded and slows responses. The Circuit Breaker detects this and blocks image fetches for a few minutes. The site keeps working (without images) while the server recovers.
+
+</Callout>
+
+## Circuit Breaker States
+
+<Cards cols={3}>
+
+<Card title="Closed (Normal)" accent="green">
+
+Normal operation; requests pass through while failures are monitored.
+
+</Card>
+
+<Card title="Open (Blocked)" accent="red">
+
+Too many failures detected; requests are blocked for a period.
+
+</Card>
+
+<Card title="Half-Open (Test)" accent="yellow">
+
+Allows a few requests to test if the system has recovered.
+
+</Card>
+
+</Cards>
+
+[Explore Circuit Breaker Simulator](/principios-design/tolerancia-falhas/circuit-breaker/simulator)

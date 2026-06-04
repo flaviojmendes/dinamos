@@ -1,0 +1,130 @@
+# Autenticação em Sistemas Distribuídos
+
+Entenda os conceitos, desafios e soluções para autenticação em sistemas distribuídos modernos
+
+<Callout type="info">
+
+A autenticação é um dos pilares fundamentais da segurança em sistemas distribuídos. Em um ambiente onde múltiplos serviços precisam se comunicar e verificar a identidade dos usuários, implementar uma estratégia robusta de autenticação é crucial.
+
+</Callout>
+
+## Conceitos Básicos
+
+A autenticação é o processo de verificar se alguém ou algo é quem ou o que diz ser. Em sistemas distribuídos, este processo envolve vários componentes e desafios únicos.
+
+<Cards cols={2}>
+
+<Card title="Identificação" accent="brand">
+
+O processo de um usuário declarar sua identidade ao sistema, geralmente através de um identificador único como nome de usuário ou email.
+
+</Card>
+
+<Card title="Verificação" accent="green">
+
+O processo de validar a identidade declarada, geralmente através de credenciais como senha, token ou certificado digital.
+
+</Card>
+
+</Cards>
+
+## Métodos de Autenticação
+
+### Autenticação Baseada em Senha
+
+O método mais comum de autenticação, onde o usuário fornece uma combinação de identificador e senha.
+
+- Armazenamento seguro com hashing e salt
+- Políticas de complexidade de senha
+- Proteção contra ataques de força bruta
+- Recuperação e reset de senha
+
+### Autenticação Baseada em Token
+
+Método stateless que utiliza tokens para manter o estado de autenticação.
+
+- JSON Web Tokens (JWT)
+- Tokens de acesso e refresh
+- Gerenciamento de sessão
+- Revogação de tokens
+
+[Saiba mais sobre Tokens e JWT](/seguranca/tokens)
+
+### OAuth 2.0 e OpenID Connect
+
+Protocolos padrão para autorização e autenticação em sistemas distribuídos.
+
+- Fluxos de autorização
+- Single Sign-On (SSO)
+- Delegação de acesso
+- Identity Providers
+
+### Multi-Factor Authentication (MFA)
+
+Adiciona camadas extras de segurança além da senha.
+
+- Códigos de verificação por SMS ou email
+- Aplicativos autenticadores (TOTP)
+- Chaves de segurança física (FIDO2/WebAuthn)
+- Biometria
+
+## Desafios e Boas Práticas
+
+<Cards cols={2}>
+
+<Card title="Desafios" accent="red">
+
+- Escalabilidade do sistema de autenticação
+- Gerenciamento de sessões distribuídas
+- Proteção contra ataques comuns
+- Latência em verificações distribuídas
+- Consistência entre múltiplos serviços
+
+</Card>
+
+<Card title="Boas Práticas" accent="green">
+
+- Usar HTTPS para todas as comunicações
+- Implementar rate limiting
+- Logging e monitoramento de tentativas
+- Rotação regular de chaves e tokens
+- Validação e sanitização de inputs
+
+</Card>
+
+</Cards>
+
+## Implementação
+
+A implementação de um sistema de autenticação em um ambiente distribuído requer cuidadoso planejamento e consideração de vários aspectos:
+
+<Cards cols={3}>
+
+<Card title="Arquitetura" accent="yellow">
+
+- Serviço centralizado de autenticação
+- API Gateway para validação
+- Cache distribuído
+- Banco de dados de usuários
+
+</Card>
+
+<Card title="Segurança" accent="yellow">
+
+- Criptografia em trânsito
+- Proteção contra CSRF
+- Headers de segurança
+- Auditoria de acessos
+
+</Card>
+
+<Card title="Experiência" accent="yellow">
+
+- UX de autenticação
+- Feedback de erros
+- Recuperação de acesso
+- Perfil e preferências
+
+</Card>
+
+</Cards>

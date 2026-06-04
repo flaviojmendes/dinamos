@@ -1,0 +1,93 @@
+# Orchestration vs Choreography
+
+Understand the differences between Orchestration and Choreography patterns in distributed systems.
+
+## Overview
+
+<Cards cols={2}>
+
+<Card title="Orchestration" accent="brand">
+
+A central orchestrator controls the workflow, coordinating interactions between services. Like a conductor, it dictates what each service should do and when.
+
+</Card>
+
+<Card title="Choreography" accent="purple">
+
+Services interact independently by reacting to events without a central controller. Like a dance, each participant knows their steps and reacts to others.
+
+</Card>
+
+</Cards>
+
+## Detailed Comparison
+
+<Cards cols={2}>
+
+<Card title="Orchestration" accent="brand">
+
+- Central controller (orchestrator)
+- Explicit workflow
+- Easier to understand and debug
+- Less flexible to change
+- Single point of failure
+- More coupling
+
+</Card>
+
+<Card title="Choreography" accent="purple">
+
+- No central controller
+- Implicit workflow
+- Harder to understand
+- More flexible to change
+- No single point of failure
+- Less coupling
+
+</Card>
+
+</Cards>
+
+## Usage Examples
+
+<Cards cols={2}>
+
+<Card title="Orchestration" accent="brand">
+
+**Order Processing**
+
+</Card>
+
+<Card title="Choreography" accent="purple">
+
+**Notification System**
+
+</Card>
+
+</Cards>
+
+## When to Use Each Pattern
+
+<Cards cols={2}>
+
+<Card title="Use Orchestration When:" accent="brand">
+
+- The workflow is complex and needs central coordination
+- You need clear visibility of the process
+- The process is stable and rarely changes
+- You need full control over the flow
+- The process is sequential and dependent
+
+</Card>
+
+<Card title="Use Choreography When:" accent="purple">
+
+- Services are independent and can evolve separately
+- You need high scalability
+- The process is dynamic and changes frequently
+- You want to reduce coupling between services
+- Events can be processed in parallel
+
+</Card>
+
+</Cards>

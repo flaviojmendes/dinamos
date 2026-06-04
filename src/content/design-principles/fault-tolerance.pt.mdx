@@ -1,0 +1,47 @@
+# Tolerância a Falhas
+
+Projetar sistemas que possam se recuperar ou continuar operando diante de falhas é essencial para manter a confiabilidade e a alta disponibilidade.
+
+<Cards cols={2}>
+
+<Card title="Retries" accent="brand">
+
+Quando uma operação falha, o sistema tenta executá-la novamente, aumentando a chance de sucesso em caso de falhas temporárias.
+
+**Exemplo Prático**
+
+Em um aplicativo de compras online, se a confirmação do pedido falhar devido a problemas de rede, o app tenta enviar a requisição novamente automaticamente.
+
+</Card>
+
+<Card title="Circuit Breakers" accent="brand">
+
+Previne falhas em cascata ao detectar problemas e interromper temporariamente as chamadas a um serviço com problemas.
+
+**Exemplo Prático**
+
+Quando um servidor de imagens está sobrecarregado, o circuit breaker impede novas requisições por um tempo, permitindo que o servidor se recupere.
+
+</Card>
+
+<Card title="Timeout" accent="brand">
+
+Define um tempo máximo para a conclusão de uma operação, evitando que o sistema fique esperando indefinidamente por uma resposta.
+
+**Exemplo Prático**
+
+Ao preencher um formulário online, se o servidor não responder em 30 segundos, a operação é cancelada e uma mensagem de erro é exibida.
+
+</Card>
+
+<Card title="Fallback" accent="brand">
+
+Fornece uma alternativa quando a operação principal falha, garantindo que o sistema continue funcionando mesmo que de forma degradada.
+
+**Exemplo Prático**
+
+Em um aplicativo de mapas, se o GPS falhar, o sistema usa a localização da rede Wi‑Fi como alternativa para mostrar a posição aproximada.
+
+</Card>
+
+</Cards>

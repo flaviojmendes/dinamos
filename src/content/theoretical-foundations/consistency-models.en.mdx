@@ -1,0 +1,186 @@
+# Consistency Models
+
+Different approaches to managing data consistency in distributed systems
+
+<Callout type="neutral">
+
+Consistency models define the rules about when and how data updates become visible across a distributed system. Understanding these models is crucial for designing systems that balance data accuracy, performance, and availability according to your specific requirements.
+
+</Callout>
+
+<Card emoji="🔒" title="Strong Consistency" accent="green">
+
+All nodes see the same data at the same time. After a write operation, all subsequent reads will return the updated value.
+
+Strong consistency guarantees that once a write operation completes successfully, all subsequent read operations will return the updated value from any node in the system. This provides the strongest guarantees but comes with performance and availability trade-offs.
+
+**Characteristics:**
+
+- Immediate consistency across all nodes
+- No stale data ever returned to clients
+- ACID transaction guarantees
+- Synchronous replication required
+- Higher latency due to coordination overhead
+
+**Use Cases:**
+
+- Financial transactions and banking systems
+- Inventory and stock management
+- User authentication and authorization
+- Regulatory compliance systems
+- Mission-critical enterprise applications
+
+**Examples:**
+
+- Bank account transfer: When you transfer money, both accounts must show correct balances immediately across all ATMs and branches
+- Inventory management: When the last item is sold, no other customer should be able to purchase it from any location
+- User authentication: Password changes must be effective immediately across all login servers
+- Stock trading: Order execution must reflect immediately across all trading systems to prevent arbitrage
+
+**Implementations:**
+
+- PostgreSQL with synchronous replication
+- MongoDB with majority write concern
+- Apache Zookeeper consensus protocol
+- Google Spanner with TrueTime
+- Traditional RDBMS with distributed transactions
+
+*Trade-offs: High consistency but may impact availability and performance*
+
+</Card>
+
+<Card emoji="⏱️" title="Eventual Consistency" accent="yellow">
+
+The system will become consistent over time, given that the system doesn't receive new updates. Reads may return stale data temporarily.
+
+Eventual consistency guarantees that if no new updates are made to a data item, eventually all accesses to that item will return the updated value. This model allows temporary inconsistencies but ensures high availability and partition tolerance.
+
+**Characteristics:**
+
+- Temporary inconsistencies allowed
+- High availability and partition tolerance
+- Asynchronous replication
+- Lower latency for write operations
+- Conflict resolution mechanisms needed
+
+**Use Cases:**
+
+- Social media feeds and interactions
+- Content management systems
+- User preference storage
+- Shopping cart systems
+- Analytics and logging data
+
+**Examples:**
+
+- Social media timeline: Your post appears immediately for you but may take time to show up in friends' feeds
+- DNS propagation: Domain changes take time to propagate globally, different DNS servers may return different IPs temporarily
+- Amazon product reviews: Reviews appear eventually on all servers, but immediate consistency isn't critical
+- Email systems: Emails replicate to backup servers over time, temporary delays don't break functionality
+
+**Implementations:**
+
+- Amazon DynamoDB with eventual consistency reads
+- Apache Cassandra default consistency level
+- Amazon S3 object storage
+- DNS (Domain Name System)
+- NoSQL databases with async replication
+
+**Convergence Strategies:**
+
+- Last-write-wins (timestamp-based)
+- Vector clocks for causality tracking
+- Conflict-free replicated data types (CRDTs)
+- Application-level conflict resolution
+- Multi-version concurrency control
+
+*Trade-offs: High availability and partition tolerance, but temporary inconsistency*
+
+</Card>
+
+<Card emoji="🏃‍♂️" title="Weak Consistency" accent="brand">
+
+After a write, reads may or may not see the updated value. The system makes no guarantees about when data will be consistent.
+
+Weak consistency makes no guarantees about when data will become consistent across nodes. This model prioritizes maximum performance and availability, accepting that data may be inconsistent for extended periods or even permanently in some cases.
+
+**Characteristics:**
+
+- No consistency guarantees
+- Maximum performance and throughput
+- Best effort data propagation
+- Minimal coordination overhead
+- Application must handle inconsistencies
+
+**Use Cases:**
+
+- Real-time gaming and simulations
+- Live video/audio streaming
+- High-frequency sensor data collection
+- Real-time collaboration tools
+- Performance monitoring and metrics
+
+**Examples:**
+
+- Live video streaming: Frame drops or quality changes are acceptable for real-time performance
+- Online gaming: Player positions may be slightly out of sync for better responsiveness
+- Real-time collaboration: Cursor positions in shared documents don't need perfect consistency
+- IoT sensor data: Occasional data loss is acceptable for high-frequency sensor readings
+
+**Implementations:**
+
+- Memcached distributed caching
+- Redis with no persistence
+- UDP-based real-time systems
+- Best-effort message queues
+- Real-time streaming platforms
+
+**Considerations:**
+
+- Application must be designed for inconsistency
+- Data loss may be permanent
+- Client-side conflict resolution often needed
+- Suitable only for non-critical data
+- Monitoring becomes crucial
+
+*Trade-offs: Maximum performance and availability, minimal consistency guarantees*
+
+</Card>
+
+## Decision Matrix
+
+- Data criticality: How important is data accuracy?
+- Performance requirements: What latency is acceptable?
+- Availability needs: Can the system tolerate downtime?
+- Scale requirements: How many concurrent users?
+- Geographic distribution: Multiple regions or data centers?
+
+<Cards cols={3}>
+
+<Card title="Strong Consistency" accent="green">
+
+Financial transactions, inventory systems, user authentication
+
+</Card>
+
+<Card title="Eventual Consistency" accent="yellow">
+
+Social media feeds, comments, user profiles, shopping carts
+
+</Card>
+
+<Card title="Weak Consistency" accent="brand">
+
+Live video streaming, online gaming, real-time collaboration
+
+</Card>
+
+</Cards>
+
+## Practical Implementation Guidelines
+
+- Different parts of your system can use different consistency models
+- Start with strong consistency and relax only where necessary
+- Monitor consistency metrics in production
+- Design conflict resolution strategies upfront
+- Consider hybrid approaches for complex applications

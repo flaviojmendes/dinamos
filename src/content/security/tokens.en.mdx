@@ -1,0 +1,182 @@
+# Tokens and JWT in Distributed Systems
+
+Understand how tokens and JSON Web Tokens (JWT) work in distributed systems
+
+[Try the JWT Simulator](/seguranca/tokens/simulador)
+
+<Callout type="info">
+
+Tokens are the foundation of modern authentication in distributed systems, enabling secure and stateless communication between different services and applications.
+
+</Callout>
+
+## Token Fundamentals
+
+### What are Tokens?
+
+Tokens are digital credentials that represent authorizations and identities in distributed systems. They function as a "digital pass" that allows:
+
+- Authentication without the need to store sessions on the server
+- Secure information sharing between services
+- Identity validation without constant database queries
+- Efficient permission and access management
+
+## JSON Web Tokens (JWT)
+
+### The JWT Standard
+
+JWT is an open standard (RFC 7519) that defines a compact and secure format for transmitting information between parties as a JSON object. Each token is:
+
+- Digitally signed to ensure authenticity
+- Encoded in Base64URL for easy transmission
+- Self-contained, carrying all necessary information
+- Verifiable independently of the issuer
+
+### Anatomy of a JWT
+
+#### 1. Header
+
+Token metadata, including type and signature algorithm
+
+```json
+{ "alg": "HS256", "typ": "JWT" }
+```
+
+#### 2. Payload
+
+Token data (claims) that carry the main information
+
+```json
+{
+  "sub": "1234567890",
+  "name": "John Doe",
+  "admin": true,
+  "exp": 1516239022
+}
+```
+
+#### 3. Signature
+
+Signature that ensures the integrity and authenticity of the token
+
+```
+HMACSHA256(
+  base64UrlEncode(header) + "." +
+  base64UrlEncode(payload),
+  secret
+)
+```
+
+## Claims: The Heart of JWT
+
+Claims are the declarations that make up the JWT payload, carrying information about the entity (usually the user) and token metadata.
+
+### Registered Claims
+
+Standardized claims by JWT, with specific purposes:
+
+- `iss` (issuer): Identifies who issued the token
+- `sub` (subject): Identifies the subject of the token
+- `exp` (expiration): Expiration timestamp
+- `iat` (issued at): Issuance timestamp
+
+### Public Claims
+
+Claims defined freely, but registered in the IANA JWT Registry to avoid collisions. Useful for standardized information such as:
+
+- User name and information
+- Roles and permissions
+- Organizational information
+
+### Private Claims
+
+Custom claims for specific use between the involved parties. Ideal for:
+
+- Application-specific metadata
+- Custom configurations
+- Internal control information
+
+## Implementation Best Practices
+
+<Cards cols={2}>
+
+<Card title="Payload Optimization" accent="green">
+
+Keep tokens compact for better performance:
+
+- Include only essential data
+- Use short names for claims
+- Avoid information duplication
+
+</Card>
+
+<Card title="Transmission Security" accent="brand">
+
+Protect token transmission:
+
+- Always use HTTPS for transmission
+- Implement rate limiting
+- Monitor suspicious access attempts
+
+</Card>
+
+<Card title="Lifecycle Management" accent="yellow">
+
+Properly manage token lifespan:
+
+- Define appropriate expiration times
+- Implement automatic renewal
+- Maintain a list of revoked tokens
+
+</Card>
+
+<Card title="Data Protection" accent="red">
+
+Protect sensitive information:
+
+- Never include credentials in the payload
+- Avoid sensitive personal data
+- Use private claims for internal data
+
+</Card>
+
+</Cards>
+
+## JWT Authentication Flow
+
+1. **Initial Authentication** — The user provides their credentials (email/password) through a secure login form. The server validates these credentials against the database.
+2. **JWT Generation** — After successful validation, the server generates a JWT containing relevant user information, such as ID, roles, and permissions. The token is signed with a secret key.
+3. **Secure Storage** — The client receives and stores the token securely, either in an HTTP-only cookie for web applications or in secure storage for mobile apps.
+4. **Authenticated Requests** — In each subsequent request, the client includes the JWT in the Authorization header using the Bearer scheme: `Authorization: Bearer <token>`
+5. **Validation and Authorization** — The server validates the token signature, checks expiration, and uses the claims to authorize access to the requested resources.
+
+## Security Considerations
+
+<Callout type="danger" title="Risks and Mitigations">
+
+**XSS Attacks**
+
+Protect against Cross-Site Scripting:
+
+- Use HTTP-only cookies for tokens
+- Implement CSP (Content Security Policy)
+- Sanitize all user inputs
+
+**CSRF**
+
+Prevent Cross-Site Request Forgery:
+
+- Use CSRF tokens for important operations
+- Check Origin/Referer header
+- Implement SameSite cookies
+
+**Token Theft**
+
+Minimize the impact of compromised tokens:
+
+- Implement refresh tokens with rotation
+- Keep short expiration for access tokens
+- Monitor suspicious usage patterns
+- Maintain a blacklist of revoked tokens
+
+</Callout>

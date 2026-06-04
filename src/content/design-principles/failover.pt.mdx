@@ -1,0 +1,42 @@
+# Failover em Sistemas Distribuídos
+
+Failover é uma estratégia crítica para garantir a continuidade do serviço em caso de falhas, permitindo recuperação automática e minimizando indisponibilidade.
+
+## O que é Failover?
+
+Mecanismo de recuperação automática que transfere operações de um sistema falho para um backup ou sistema secundário, mantendo o serviço disponível.
+
+## Tipos de Failover
+
+- **Ativo-Passivo**: Sistema primário processa requisições e o secundário fica em standby; se o primário falhar, o secundário assume.
+- **Ativo-Ativo**: Múltiplos sistemas processam simultaneamente; falhas são absorvidas pelos demais.
+- **Failover em Cascata**: Vários níveis de backup, cada um assume em ordem predefinida.
+
+## Componentes Essenciais
+
+- Monitoramento de saúde (Health Check)
+- Detecção de falhas
+- Mecanismo de transição
+- Sincronização de estado
+- Recuperação automática
+
+## Exemplo do Mundo Real
+
+Um serviço de streaming com failover em múltiplas regiões. Se um datacenter na Ásia falhar, o tráfego é redirecionado para Europa/América, mantendo disponibilidade.
+
+## Melhores Práticas
+
+1. Teste regularmente os mecanismos de failover
+2. Automatize detecção e transição
+3. Mantenha logs detalhados
+4. Configure timeouts e thresholds
+5. Implemente monitoramento em tempo real
+6. Documente procedimentos de failover e recuperação
+
+<Callout type="info" title="Explorar na Prática">
+
+Experimente diferentes estratégias de failover e veja o impacto na disponibilidade.
+
+[Abrir Simulador](/principios-design/escalabilidade/simulator)
+
+</Callout>

@@ -1,0 +1,144 @@
+# Métricas e KPIs em Sistemas Distribuídos
+
+Métricas e KPIs (Key Performance Indicators) são fundamentais para entender o comportamento, performance e saúde de sistemas distribuídos. Elas fornecem insights quantitativos que permitem tomar decisões baseadas em dados.
+
+<Callout type="info" title="💡 Conceito Chave">
+
+Métricas efetivas devem ser SMART: Específicas, Mensuráveis, Atingíveis, Relevantes e Temporais.
+
+</Callout>
+
+## Categorias de Métricas Essenciais
+
+<Cards cols={2}>
+
+<Card title="Métricas de Sistema" accent="brand">
+
+- **Utilização de CPU**: Percentual de uso do processador por serviço
+- **Uso de Memória**: Consumo de RAM e memória virtual
+- **I/O de Disco**: Taxa de leitura/escrita e latência de disco
+
+</Card>
+
+<Card title="Métricas de Aplicação" accent="purple">
+
+- **Throughput**: Requisições processadas por segundo
+- **Latência**: Tempo de resposta das requisições
+- **Taxa de Erros**: Percentual de requisições com falha
+
+</Card>
+
+</Cards>
+
+## Métricas de Performance
+
+<Cards cols={2}>
+
+<Card title="Latência" accent="green">
+
+**Percentis**
+
+- P50 (Mediana): < 100ms
+- P90: < 200ms
+- P99: < 500ms
+
+**Componentes**
+
+- Network Time
+- Processing Time
+- Queue Time
+
+</Card>
+
+<Card title="Throughput" accent="yellow">
+
+**Medidas**
+
+- RPS (Requests per Second)
+- TPS (Transactions per Second)
+- QPS (Queries per Second)
+
+**Capacidade**
+
+- Peak Load
+- Sustained Load
+- Burst Capacity
+
+</Card>
+
+</Cards>
+
+## KPIs de Negócio
+
+<Cards cols={3}>
+
+<Card title="Disponibilidade" accent="brand">
+
+- Uptime
+- MTBF (Mean Time Between Failures)
+- MTTR (Mean Time To Recovery)
+- Error Budget
+
+</Card>
+
+<Card title="Qualidade" accent="purple">
+
+- Success Rate
+- Error Rate
+- Data Quality
+- User Satisfaction
+
+</Card>
+
+<Card title="Custo" accent="green">
+
+- Infrastructure Cost
+- Cost per Request
+- Resource Utilization
+- ROI
+
+</Card>
+
+</Cards>
+
+## Implementação com Prometheus
+
+Exemplo de configuração de métricas usando Prometheus e sua linguagem de consulta PromQL:
+
+```
+# Exemplo de configuração de métricas usando Prometheus e sua linguagem de consulta PromQL
+http_request_duration_seconds_bucket{path="/api/users", method="GET"}
+
+# Métricas errors
+rate(http_requests_total{status=~"5.."}[5m])
+
+# CPU usage
+rate(process_cpu_seconds_total[1m])
+
+# Memory usage
+process_resident_memory_bytes
+```
+
+Estas métricas podem ser visualizadas em dashboards do Grafana para monitoramento em tempo real.
+
+## Melhores Práticas
+
+<Cards cols={2}>
+
+<Card title="Coleta de Métricas" accent="brand">
+
+- **Padronização**: Use convenções de nomenclatura consistentes
+- **Granularidade**: Equilibre detalhamento e overhead
+- **Agregação**: Defina períodos adequados de agregação
+
+</Card>
+
+<Card title="Visualização" accent="purple">
+
+- **Dashboards**: Organize métricas relacionadas
+- **Alertas**: Configure thresholds significativos
+- **Correlação**: Relacione métricas para análise
+
+</Card>
+
+</Cards>

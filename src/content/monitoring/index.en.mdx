@@ -1,0 +1,159 @@
+# Monitoring and Maintenance of Distributed Systems
+
+Monitoring and maintenance are critical to ensure the health, performance, and reliability of distributed systems. An effective strategy combines observability with proactive maintenance practices.
+
+<Callout type="info" title="💡 Key Concept">
+
+Observability in distributed systems is built on three pillars: metrics, logs, and traces. Together, they provide a complete view of the system's state and behavior.
+
+</Callout>
+
+## The Three Pillars of Observability
+
+<Cards cols={3}>
+
+<Card title="Metrics" accent="brand">
+
+- Numerical data over time
+- CPU, memory, latency, throughput
+- Aggregations and trends
+- Basis for alerts and dashboards
+
+</Card>
+
+<Card title="Logs" accent="purple">
+
+- Event records
+- Debugging and audit
+- Detailed context
+- Action history
+
+</Card>
+
+<Card title="Traces" accent="green">
+
+- Request flow
+- Service dependencies
+- End-to-end performance
+- Problem diagnosis
+
+</Card>
+
+</Cards>
+
+## Essential Metrics (Golden Signals)
+
+<Cards cols={2}>
+
+<Card title="USE Method" accent="brand">
+
+Utilization, Saturation, and Errors — a method for resource performance analysis.
+
+- **Utilization**: Percentage of time the resource is busy
+- **Saturation**: Degree of resource overload
+- **Errors**: Failure rate of the resource
+
+</Card>
+
+<Card title="RED Method" accent="purple">
+
+Rate, Errors, and Duration — focused on request and service metrics.
+
+- **Rate**: Requests per second
+- **Errors**: Failure rate of requests
+- **Duration**: Request response time
+
+</Card>
+
+</Cards>
+
+## Monitoring Tools
+
+<Cards cols={3}>
+
+<Card title="Metrics" accent="brand">
+
+- **Prometheus**: Metrics collection and storage
+- **Grafana**: Visualization and dashboards
+- **Datadog**: Monitoring as a service
+
+</Card>
+
+<Card title="Logs" accent="purple">
+
+- **ELK Stack**: Elasticsearch, Logstash, Kibana
+- **Graylog**: Centralized log management
+- **Splunk**: Advanced log analytics
+
+</Card>
+
+<Card title="Tracing" accent="green">
+
+- **Jaeger**: Open-source distributed tracing
+- **Zipkin**: Latency tracking
+- **New Relic**: APM and tracing as a service
+
+</Card>
+
+</Cards>
+
+## Best Practices
+
+<Cards cols={2}>
+
+<Card title="Monitoring" accent="brand">
+
+- **Proactive Monitoring**: Identify issues before they impact users
+- **Meaningful Alerts**: Configure alerts that truly importam
+- **Automation**: Automate responses to common issues
+
+</Card>
+
+<Card title="Maintenance" accent="purple">
+
+- **Preventive Maintenance**: Schedule regular maintenance
+- **Documentation**: Keep documentation up to date
+- **Backup and Recovery**: Implement and test recovery plans
+
+</Card>
+
+</Cards>
+
+## Service Level Objectives
+
+<Cards cols={3}>
+
+<Card title="SLI" accent="brand">
+
+Service Level Indicator
+
+- Specific metrics
+- Latency
+- Availability
+- Error rate
+
+</Card>
+
+<Card title="SLO" accent="purple">
+
+Service Level Objective
+
+- Targets for SLIs
+- 99.9% uptime
+- Latency < 200ms
+- Error rate < 0.1%
+
+</Card>
+
+<Card title="SLA" accent="green">
+
+Service Level Agreement
+
+- Formal contract
+- Consequences
+- Compensations
+- Guarantees
+
+</Card>
+
+</Cards>

@@ -1,0 +1,266 @@
+# YouTube System Design
+
+How YouTube processes, stores and distributes billions of videos globally
+
+## Impressive Numbers
+
+<Metrics cols={3}>
+
+<Metric value="2.7B+" label="Active monthly users" accent="red" />
+
+<Metric value="500h+" label="Videos uploaded per minute" accent="red" />
+
+<Metric value="1B+" label="Hours watched per day" accent="red" />
+
+</Metrics>
+
+## System Requirements
+
+<Card title="Functional Requirements" accent="red">
+
+- Upload of videos in multiple formats
+- Video processing and transcoding
+- Video streaming with multiple qualities
+- Custom recommendation system
+- Social features (likes, comments, subscriptions)
+
+</Card>
+
+<Card title="Non-Functional Requirements" accent="red">
+
+- High availability (99.99%)
+- Global low latency
+- Eventual consistency
+- Massive horizontal scalability
+- Data durability
+
+</Card>
+
+## System Architecture
+
+### 1. Upload and Video Processing
+
+#### Upload Pipeline
+
+- Uploads are divided into chunks and sent in parallel via DASH protocol
+- Each chunk is verified for integrity and malware
+- Metadata is stored in BigTable
+- Videos are temporarily stored in Google Cloud Storage
+
+#### Video Processing
+
+- Distributed processing system using Kubernetes
+- Transcoding to multiple formats (MP4, WebM) and resolutions (144p to 8K)
+- Automatic thumbnail generation
+- Metadata extraction (duration, resolution, codecs)
+- Content analysis via ML for classification and moderation
+
+### 2. Video Storage
+
+#### Video Storage
+
+- Colossus: Google distributed file system
+- Geographic replication for durability
+- 64MB chunks for optimized streaming
+- Metadata stored in Bigtable for fast access
+
+#### Database
+
+- Vitess (distributed MySQL) for relational data
+- BigTable for frequently accessed metadata and data
+- Spanner for globally consistent data
+
+### 3. Content Distribution
+
+#### CDN Infrastructure
+
+- Google Global Cache (GGC) in thousands of locations
+- Edge locations near end users
+- QUIC protocol for optimized streaming
+- Load balancing inteligente baseado em:
+  - User location
+  - Server load
+  - Network capacity
+  - Cache hit ratio
+
+### 4. Recommendation System
+
+#### ML Architecture
+
+- Two-phase processing:
+  - Candidate Generation: Selects thousands of potential videos
+  - Ranking: Orders candidates using deep learning
+- Features considered:
+  - View history
+  - Demographic data
+  - Current trends
+  - Video engagement
+
+## Technical Decisions and Trade-offs
+
+<Card title="1. Eventual vs Strong Consistency" accent="red">
+
+YouTube opted for eventual consistency for counters (views, likes) prioritizing availability and performance. This allows asynchronous updates and better scalability, although it means the numbers may not be accurate in real time.
+
+</Card>
+
+<Card title="2. Asynchronous Processing" accent="red">
+
+Video processing is done asynchronously, allowing uploads to be confirmed quickly. This improves the user experience but means the videos are not immediately available after upload.
+
+</Card>
+
+<Card title="3. Aggressive Caching" accent="red">
+
+Popular videos are cached in multiple edge locations, reducing latency and bandwidth costs. The trade-off is the highest use of storage and complexity in cache invalidation.
+
+</Card>
+
+<Card title="4. Adaptive Quality" accent="red">
+
+Adaptive bitrate streaming (ABR) adjusts the video quality based on the user's connection. This ensures a better experience but requires more storage for multiple versions of the same video.
+
+</Card>
+
+## Scaling Challenges
+
+<Cards cols={2}>
+
+<Card title="Storage" accent="red">
+
+Management of exabytes of data with geographic replication and need for fast access. Solution: Distributed file system Colossus with intelligent retention policies.
+
+</Card>
+
+<Card title="Processing" accent="red">
+
+Transcoding of thousands of hours of video per minute. Solution: Distributed pipeline with auto-scaling and job prioritization.
+
+</Card>
+
+<Card title="Bandwidth" accent="red">
+
+Distribution of petabytes of data daily. Solution: Global CDN network and optimized QUIC protocol.
+
+</Card>
+
+<Card title="Consistency" accent="red">
+
+Maintain global data consistency. Solution: Use Spanner for critical data and eventual consistency for counters.
+
+</Card>
+
+</Cards>
+
+## Evolution Diagrams
+
+### 2005: Monolithic Architecture
+
+Users → Web Server → MySQL → Storage
+
+### 2008: Distributed Architecture
+
+Users → Load Balancer → Web Server → BigTable / GFS
+
+### 2020+: Modern Architecture
+
+Users → Global CDN → Load Balancer → Upload Service / Transcode / ML Service / Analytics / Search
+
+## Architectural Journey: Context and Decisions
+
+### 2005-2006: Early Days
+
+#### Monolithic Architecture
+
+YouTube started with a simple and monolithic architecture for several reasons:
+
+- Fast development and iteration
+- Smaller initial user base and easier management
+- Simple deployment and maintenance
+- Limited resources of the startup
+
+> At the beginning, YouTube processed only 2-3 videos per minute. The monolithic architecture was enough to handle this load and allowed the team to focus on product-market fit.
+
+### 2006-2008: Google Acquisition and Scale
+
+#### Transition to Distributed Systems
+
+The acquisition by Google brought unprecedented challenges and opportunities for scale:
+
+- Migration to Google infrastructure (GFS and BigTable)
+- Introduction of load balancing to distribute load
+- Separation of concerns into distinct services
+- Implementation of distributed caching
+
+> The migration to BigTable was crucial because MySQL could no longer handle the volume of metadata. The system needed to manage billions of videos and their relationships.
+
+### 2008-2015: Scaling Challenges
+
+#### Evolution and Optimization
+
+This period was marked by significant technical challenges and innovations:
+
+- Development of the recommendation system based on ML
+- Implementation of adaptive streaming for different qualities
+- Creation of the global CDN network (Google Global Cache)
+- Optimization of the streaming protocol (QUIC)
+
+> The introduction of QUIC reduced streaming latency by 30% and significantly improved the experience on unstable mobile networks.
+
+### 2015-Present: Modern Era
+
+#### Modern Architecture and Innovations
+
+The current architecture reflects years of evolution and learning:
+
+- Specialized microservices for each functionality
+- Advanced ML system for personalized recommendations
+- Real-time analytics processing
+- Support for modern formats (8K, HDR)
+- Continuous optimization of bandwidth and storage
+
+> The modern YouTube architecture processes more than 500 hours of video per minute, serving personalized content to more than 2 billion monthly users.
+
+<Card title="Key Learnings" accent="red">
+
+- Start simple and evolve based on real needs, not speculation
+- Invest in distributed infrastructure when the monolith starts showing limitations
+- Optimize for the most common use cases and accept trade-offs for edge cases
+- User experience should guide architectural decisions, not just technical efficiency
+
+</Card>
+
+## Architecture Evolution
+
+| Year | Milestone |
+|------|-----------|
+| 2005 | Initial release with monolithic architecture and MySQL |
+| 2006 | Acquisition by Google and migration to Google infrastructure |
+| 2008 | Introduction of BigTable and distributed processing system |
+| 2012 | Migration to HTML5 and introduction of ML recommendation system |
+| 2015 | Adoption of QUIC and improvements in adaptive streaming |
+| 2020+ | Support for 8K, HDR and ML optimizations at scale |
+
+## References
+
+### Official Documentation and Articles
+
+- [How YouTube Works - Official](https://www.youtube.com/howyoutubeworks)
+- [YouTube Engineering Blog](https://blog.youtube/inside-youtube/)
+- [Google Research Publications](https://research.google/pubs/)
+
+### Technical Articles and Analyses
+
+- [High Scalability - YouTube Architecture](https://highscalability.com/youtube-architecture/)
+- [YouTube API Documentation](https://developers.google.com/youtube/v3/getting-started)
+- [YouTube Creator Technical Resources](https://www.youtube.com/creators/how-things-work/)
+
+### Conferences and Presentations
+
+- [Google I/O - YouTube Infrastructure](https://www.youtube.com/watch?v=w5WVu624fY8)
+- [QCon - YouTube Scalability](https://www.youtube.com/watch?v=5yDO-tmIoXY)
+
+### Statistics and Metrics
+
+- [YouTube Press Statistics](https://www.youtube.com/about/press/)
+- [Statista - YouTube Growth Statistics](https://www.statista.com/statistics/259477/hours-of-video-uploaded-to-youtube-every-minute/)

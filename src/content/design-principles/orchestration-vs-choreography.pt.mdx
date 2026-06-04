@@ -1,0 +1,93 @@
+# Orquestração vs Coreografia
+
+Entenda as diferenças entre os padrões de Orquestração e Coreografia em sistemas distribuídos.
+
+## Visão Geral
+
+<Cards cols={2}>
+
+<Card title="Orquestração" accent="brand">
+
+A central orchestrator controls the workflow, coordinating interactions between services. Like a conductor, it dictates what each service should do and when.
+
+</Card>
+
+<Card title="Coreografia" accent="purple">
+
+Services interact independently by reacting to events without a central controller. Like a dance, each participant knows their steps and reacts to others.
+
+</Card>
+
+</Cards>
+
+## Comparação Detalhada
+
+<Cards cols={2}>
+
+<Card title="Orquestração" accent="brand">
+
+- Controlador central (orquestrador)
+- Fluxo de trabalho explícito
+- Mais fácil de entender e depurar
+- Menos flexível para mudanças
+- Ponto único de falha
+- Maior acoplamento
+
+</Card>
+
+<Card title="Coreografia" accent="purple">
+
+- Sem controlador central
+- Fluxo de trabalho implícito
+- Mais difícil de entender
+- Mais flexível para mudanças
+- Sem ponto único de falha
+- Menor acoplamento
+
+</Card>
+
+</Cards>
+
+## Exemplos de Uso
+
+<Cards cols={2}>
+
+<Card title="Orquestração" accent="brand">
+
+**Processamento de Pedidos**
+
+</Card>
+
+<Card title="Coreografia" accent="purple">
+
+**Sistema de Notificações**
+
+</Card>
+
+</Cards>
+
+## Quando Usar Cada Padrão
+
+<Cards cols={2}>
+
+<Card title="Use Orquestração Quando:" accent="brand">
+
+- O fluxo de trabalho é complexo e precisa de coordenação central
+- Você precisa de visibilidade clara do processo
+- O processo é estável e raramente muda
+- Você precisa de controle total sobre o fluxo
+- O processo é sequencial e dependente
+
+</Card>
+
+<Card title="Use Coreografia Quando:" accent="purple">
+
+- Os serviços são independentes e podem evoluir separadamente
+- Você precisa de alta escalabilidade
+- O processo é dinâmico e muda frequentemente
+- Você quer reduzir o acoplamento entre serviços
+- Os eventos podem ser processados em paralelo
+
+</Card>
+
+</Cards>

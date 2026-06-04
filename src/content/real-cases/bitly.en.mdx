@@ -1,0 +1,204 @@
+# Bit.ly System Design
+
+How Bit.ly manages billions of redirects and URL shortening at global scale
+
+## Impressive Numbers
+
+<Metrics cols={3}>
+
+<Metric value="20B+" label="Shortened links" accent="brand" />
+
+<Metric value="400M+" label="Redirects per day" accent="brand" />
+
+<Metric value="800M+" label="Active links" accent="brand" />
+
+</Metrics>
+
+## System Requirements
+
+<Card title="Functional Requirements" accent="brand">
+
+- Long URL shortening
+- Fast redirection
+- Custom links
+- Real-time analytics
+- Public API
+- Link management and dashboards
+
+</Card>
+
+<Card title="Non-Functional Requirements" accent="brand">
+
+- Ultra low latency (less than 50ms)
+- High availability (99.99%)
+- Data durability
+- Horizontal scalability
+- Security against abuse
+- Strong consistency for URLs
+
+</Card>
+
+## System Architecture
+
+### High-Level Architecture
+
+Overview of Bit.ly's distributed architecture, showing the main components and their interactions.
+
+Clients (Web, Mobile, API) → CDN and Edge Cache → Load Balancer → Shortening Service / Redirect Service / Analytics Service → MySQL (Metadata) / Redis (Cache) / Cassandra (Analytics)
+
+### URL Flow
+
+URL processing flow, from submission to short URL generation.
+
+Original URL → Hash Generation → Storage → Short URL
+
+### 1. Shortening System
+
+#### Short URL Generation
+
+- Base62 hash algorithm
+- Collision verification
+- Popular URL caching
+- URL validation and sanitization
+
+#### URL Types
+
+- Standard URLs (7 characters)
+- Custom URLs
+- Expiring URLs
+- Tracked URLs
+
+### 2. Storage System
+
+#### URL Storage
+
+- MySQL for URL mapping
+- Redis for redirect cache
+- Cassandra for analytics
+- Multi-region replication
+
+#### Cache Strategies
+
+- In-memory cache (Redis)
+- CDN for popular URLs
+- Local cache on servers
+- Invalidation policies
+
+### 3. Analytics System
+
+#### Collected Metrics
+
+- Clicks and redirects
+- Geolocation
+- Devices and browsers
+- Referrers and campaigns
+- Access times
+
+#### Processing
+
+- Stream processing with Kafka
+- Real-time aggregations
+- Daily batch processing
+- Machine learning for spam detection
+
+## Technical Decisions and Trade-offs
+
+<Card title="1. Hash Size vs Collisions" accent="brand">
+
+7-character URLs allow trillions of combinations, balancing URL length with collision probability.
+
+</Card>
+
+<Card title="2. Cache vs Consistency" accent="brand">
+
+Extensive cache use improves performance but may cause temporary inconsistencies after URL updates.
+
+</Card>
+
+<Card title="3. Analytics vs Performance" accent="brand">
+
+Detailed metrics collection slightly impacts redirect latency. Asynchronous processing minimizes impact.
+
+</Card>
+
+<Card title="4. Security vs Usability" accent="brand">
+
+Security checks add latency but are necessary to prevent abuse and phishing.
+
+</Card>
+
+## Scaling Challenges
+
+<Cards cols={2}>
+
+<Card title="Mass Redirects" accent="brand">
+
+Billions of daily redirects. Solution: Global CDN and distributed cache.
+
+</Card>
+
+<Card title="URL Generation" accent="brand">
+
+Unique and fast hash generation. Solution: Distributed ID algorithm.
+
+</Card>
+
+<Card title="Analytics" accent="brand">
+
+Real-time event processing. Solution: Distributed pipeline with Kafka.
+
+</Card>
+
+<Card title="Spam and Abuse" accent="brand">
+
+Detection and prevention of malicious URLs. Solution: ML and distributed rate limiting.
+
+</Card>
+
+</Cards>
+
+## Architecture Evolution
+
+### 2008 — Launch
+
+Python monolith with MySQL.
+
+### 2010-2011 — First Scale
+
+Introduction of cache and CDN.
+
+### 2012-2013 — Enterprise Focus
+
+Advanced analytics, enterprise APIs.
+
+### 2015-2016 — Microservices
+
+Decomposition into smaller services.
+
+### 2018-Present — Modern Stack
+
+Kubernetes, ML for security, modern APIs.
+
+## References
+
+### Official Documentation and Articles
+
+- [Bitly API Documentation](https://dev.bitly.com/)
+- [Bitly Resources](https://bitly.com/pages/resources)
+- [Technical Requirements](https://support.bitly.com/hc/en-us/articles/231247868-Technical-requirements-for-Bitly)
+
+### Technical Articles and Analysis
+
+- [Infrastructure: Improving Redirects](https://blog.bitly.com/posts/infrastructure-update-improving-redirects)
+- [Building a Distributed Link Shortening System](https://medium.com/bitly-engineering/building-a-distributed-link-shortening-system-d4c1edc3f13b)
+- [High Scalability - Bitly Architecture](https://www.highscalability.com/blog/2014/7/14/bitly-lessons-learned-building-a-distributed-system-that-han.html)
+
+### Conferences and Presentations
+
+- [QCon - Scaling Bit.ly](https://www.youtube.com/watch?v=JGLx8Jg4K6Y)
+- [Tech Talk - URL Shortening at Scale](https://www.youtube.com/watch?v=SagZK5CSF8M)
+
+### Tools and SDKs
+
+- [Official API Clients](https://github.com/bitly/api-clients)
+- [NSQ - Distributed Messaging Platform](https://github.com/bitly/go-nsq)

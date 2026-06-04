@@ -1,0 +1,84 @@
+# Canary Deployment
+
+Uma estratégia de deployment progressivo que reduz riscos expondo gradualmente uma nova versão a uma pequena porcentagem de usuários antes de liberar para todos.
+
+## Como Funciona
+
+O canary deployment funciona roteando uma pequena porcentagem do tráfego de produção para a nova versão enquanto a maioria continua usando a versão estável. Isso permite que as equipes monitorem o comportamento real e detectem problemas antes que afetem todos os usuários.
+
+<Callout type="neutral" title="Origem do Nome">
+
+O nome vem da prática de mineradores de carvão que levavam canários para as minas. Se gases perigosos estivessem presentes, o canário seria afetado primeiro, alertando os mineradores. Da mesma forma, canary deployments detectam problemas cedo com impacto mínimo.
+
+</Callout>
+
+## Fases do Deployment
+
+1. **Deploy do Canary** — Faça deploy da nova versão junto com a versão estável existente, sem rotear tráfego para ela ainda.
+2. **Rotear Tráfego** — Comece a rotear uma pequena porcentagem (ex: 5-10%) do tráfego para a versão canary.
+3. **Monitorar e Analisar** — Monitore métricas chave como taxas de erro, latência e KPIs de negócio. Compare o desempenho canary vs estável.
+4. **Expandir ou Rollback** — Se as métricas estiverem saudáveis, aumente gradualmente o tráfego canary. Se problemas forem detectados, faça rollback imediatamente.
+
+## Benefícios
+
+<Cards cols={2}>
+
+<Card title="Risco Reduzido" accent="green">
+
+Problemas afetam apenas uma pequena porcentagem de usuários, minimizando o raio de explosão.
+
+</Card>
+
+<Card title="Rollback Rápido" accent="green">
+
+Problemas podem ser detectados e revertidos antes de impactar todos os usuários.
+
+</Card>
+
+<Card title="Teste no Mundo Real" accent="green">
+
+Teste com tráfego de produção real e comportamento de usuários, não apenas testes sintéticos.
+
+</Card>
+
+<Card title="Confiança Gradual" accent="green">
+
+Construa confiança no release aumentando progressivamente a exposição.
+
+</Card>
+
+</Cards>
+
+## Desafios
+
+<Cards cols={3}>
+
+<Card title="Complexidade de Infraestrutura" accent="yellow">
+
+Requer roteamento de tráfego sofisticado, balanceamento de carga e automação de deployment.
+
+</Card>
+
+<Card title="Requisitos de Monitoramento" accent="yellow">
+
+Necessita de observabilidade robusta para comparar versões canary e estável efetivamente.
+
+</Card>
+
+<Card title="Compatibilidade de Banco de Dados" accent="yellow">
+
+Mudanças de schema devem ser retrocompatíveis já que ambas versões rodam simultaneamente.
+
+</Card>
+
+</Cards>
+
+## Canary vs Blue-Green
+
+| Aspecto | Canary | Blue-Green |
+|---------|--------|------------|
+| Tráfego | Gradual | Tudo de uma vez |
+| Risco | Menor | Maior |
+| Rollback | Instantâneo | Instantâneo |
+
+[Explorar Simulador Canary](/principios-design/canary-deployment/simulator)

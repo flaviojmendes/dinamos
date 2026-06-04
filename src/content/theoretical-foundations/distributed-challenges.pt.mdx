@@ -1,0 +1,321 @@
+# Desafios de Sistemas Distribuídos
+
+Problemas e complexidades comuns na computação distribuída
+
+<Callout type="neutral">
+
+Sistemas distribuídos enfrentam desafios únicos que não existem em sistemas de uma única máquina. Compreender esses problemas fundamentais é crucial para projetar aplicações distribuídas resilientes, escaláveis e confiáveis. Cada desafio requer consideração cuidadosa e soluções específicas.
+
+</Callout>
+
+<Card emoji="🌐" title="Partições de Rede" accent="red">
+
+Falhas de rede que dividem o sistema em grupos isolados, forçando trade-offs entre consistência e disponibilidade.
+
+Partições de rede ocorrem quando falhas de rede impedem que alguns nós se comuniquem com outros, efetivamente dividindo o sistema em grupos isolados. Este é um dos problemas mais desafiadores em sistemas distribuídos porque força decisões imediatas sobre consistência vs. disponibilidade.
+
+**Características:**
+
+- Falha de comunicação entre nós
+- Sistema se divide em ilhas isoladas
+- Trade-offs imediatos do teorema CAP necessários
+- Pode ser temporário ou permanente
+- Afeta garantias de consistência de dados
+
+**Causas Comuns:**
+
+- Falhas físicas de rede (corte de cabos, falhas de roteador)
+- Bugs de software na pilha de rede
+- Infraestrutura de rede sobrecarregada
+- Incidentes de segurança (ataques DDoS)
+- Erros de configuração no roteamento
+
+**Exemplos:**
+
+- Conectividade de data center: Cabo cortado entre regiões AWS causa partição de 6 horas, cada região deve decidir se permanece online
+- Microserviços: Serviço de pagamento não consegue alcançar serviço de estoque, deve decidir se processa pedidos com dados de estoque obsoletos
+- Cluster de banco: Replicação master-slave quebra, slaves devem decidir se aceitam escritas ou permanecem somente leitura
+- Rede CDN: Problemas de roteamento isolam servidores edge da origem, conteúdo em cache fica obsoleto mas usuários ainda são servidos
+
+**Estratégias de Detecção:**
+
+- Mecanismos de heartbeat entre nós
+- Detecção de falhas baseada em timeout
+- Protocolos de gossip para associação
+- Sistemas de monitoramento externos
+- Verificações de saúde no nível da rede
+
+**Abordagens de Mitigação:**
+
+- Múltiplos caminhos de rede e redundância
+- Estratégias de degradação graciosa
+- Circuit breakers para serviços com falha
+- Modo somente leitura durante partições
+- Resolução de conflitos para cura de partições
+
+</Card>
+
+<Card emoji="⏰" title="Sincronização de Relógio" accent="yellow">
+
+Diferentes nós têm relógios diferentes, dificultando ordenar eventos e manter consistência.
+
+Sincronização de relógio é fundamental para sistemas distribuídos porque os nós têm relógios independentes que derivam em taxas diferentes. Sem tempo sincronizado, torna-se quase impossível ordenar eventos, manter causalidade ou implementar algoritmos baseados em tempo corretamente.
+
+**Características:**
+
+- Relógios derivam em taxas diferentes
+- Não há noção global de "agora"
+- Ordenação de eventos se torna ambígua
+- Impacta timestamps e logs
+- Crítico para algoritmos distribuídos
+
+**Problemas Causados:**
+
+- Ordenação incorreta de eventos em logs
+- Condições de corrida em lógica baseada em tempo
+- Expiração inconsistente de cache
+- Falhas de lock distribuído
+- Corrupção de trilha de auditoria
+
+**Exemplos:**
+
+- Transações bancárias: Transferência parece completar antes de começar devido ao skew de relógio, causando falhas de auditoria
+- Log distribuído: Logs de erro aparecem fora de ordem entre serviços, tornando debug impossível
+- Invalidação de cache: TTL expira em tempos diferentes em nós diferentes, causando dados obsoletos
+- Gerenciamento de lease: Locks distribuídos expiram em tempos diferentes, levando a cenários split-brain
+
+**Abordagens de Sincronização:**
+
+- Network Time Protocol (NTP)
+- Precision Time Protocol (PTP)
+- Sincronização baseada em GPS
+- Referências de relógio atômico
+- API Google TrueTime
+
+**Alternativas Lógicas:**
+
+- Timestamps Lamport para causalidade
+- Vector clocks para ordenação parcial
+- Hybrid logical clocks (HLC)
+- Ordenação baseada em eventos em vez de tempo
+- Números de sequência baseados em consenso
+
+</Card>
+
+<Card emoji="💥" title="Falhas Parciais" accent="brand">
+
+Algumas partes do sistema falham enquanto outras continuam funcionando, criando estados inconsistentes.
+
+Falhas parciais são talvez o desafio mais insidioso em sistemas distribuídos. Diferente de falhas completas do sistema que são óbvias, falhas parciais criam cenários onde alguns componentes funcionam enquanto outros falham, levando a estados inconsistentes difíceis de detectar e lidar.
+
+**Características:**
+
+- Apenas subconjunto de componentes do sistema falha
+- Difícil de detectar e diagnosticar
+- Pode causar falhas em cascata
+- Sistema parece parcialmente funcional
+- Cria estado global inconsistente
+
+**Tipos de Falha:**
+
+- Fail-stop: Componente para completamente
+- Fail-slow: Componente responde muito lentamente
+- Byzantine: Componente se comporta arbitrariamente
+- Omissão: Componente descarta algumas mensagens
+- Comissão: Componente envia dados errados
+
+**Exemplos:**
+
+- Checkout e-commerce: Pagamento processado mas estoque não atualizado devido a falha do banco, ocorre overselling
+- Sistema de email: Mensagem entregue para alguns destinatários mas não outros devido a falhas de servidor
+- Redes sociais: Post visível para alguns usuários mas não outros devido a lag de replicação
+- Armazenamento de arquivo: Dados escritos no primário mas replicação para backups falha, risco de perda de dados aumenta
+
+**Desafios de Detecção:**
+
+- Nenhum sinal claro de falha
+- Timeouts são ambíguos
+- Falhas de rede vs. nó não claras
+- Corrupção silenciosa de dados possível
+- Atualizações parciais de estado
+
+**Estratégias de Tratamento:**
+
+- Verificações de saúde abrangentes
+- Padrão circuit breaker
+- Degradação graciosa
+- Transações de compensação
+- Operações idempotentes
+
+</Card>
+
+<Card emoji="🔄" title="Consenso" accent="purple">
+
+Fazer nós distribuídos concordarem com um único valor ou decisão na presença de falhas.
+
+Consenso é o problema de fazer múltiplos nós distribuídos concordarem com um único valor, mesmo quando alguns nós podem falhar ou se comportar maliciosamente. Isso é fundamental para muitas operações de sistemas distribuídos como eleição de líder, gerenciamento de configuração e garantia de consistência.
+
+**Características:**
+
+- Todos os nós corretos devem concordar
+- Deve lidar com falhas de nó
+- Deve terminar em tempo finito
+- Garantias de segurança e vivacidade
+- Base para muitos protocolos distribuídos
+
+**Variantes do Problema:**
+
+- Tolerância a falhas bizantinas: Lidar com nós maliciosos
+- Tolerância a falhas de crash: Lidar apenas com falhas de crash
+- Eleição de líder: Escolher coordenador único
+- Broadcast atômico: Ordenar todas as mensagens
+- Replicação de máquina de estado: Manter réplicas sincronizadas
+
+**Exemplos:**
+
+- Cluster de banco: Nós devem concordar sobre quais transações commitar em que ordem
+- Cluster Kubernetes: Nós devem concordar sobre quais pods estão rodando onde
+- Blockchain: Mineradores devem concordar sobre o próximo bloco na cadeia
+- Gerenciamento de configuração: Serviços devem concordar sobre versão atual de configuração
+
+**Algoritmos:**
+
+- Paxos: Consenso clássico com garantias fortes
+- Raft: Alternativa mais simples ao Paxos
+- PBFT: Consenso tolerante a falhas bizantinas
+- Impossibilidade FLP: Limitações teóricas
+- RAFT: Consenso baseado em líder para replicação de log
+
+**Uso no Mundo Real:**
+
+- Apache Zookeeper usa protocolo Zab
+- etcd e Consul usam Raft
+- Google Spanner usa Paxos
+- Redes blockchain usam Proof of Work/Stake
+- Protocolos de replicação de banco
+
+</Card>
+
+<Card emoji="📊" title="Gerenciamento de Estado" accent="green">
+
+Manter controle do estado do sistema em múltiplos nós ao lidar com atualizações concorrentes.
+
+Gerenciamento de estado em sistemas distribuídos envolve manter estado consistente entre múltiplos nós enquanto lida com atualizações concorrentes, falhas e partições de rede. Este desafio se torna exponencialmente mais complexo conforme o número de nós e a frequência de atualizações aumentam.
+
+**Características:**
+
+- Estado distribuído entre nós
+- Atualizações concorrentes de múltiplas fontes
+- Deve lidar com falhas de nó graciosamente
+- Trade-offs consistência vs. performance
+- Requer mecanismos de coordenação
+
+**Desafios de Consistência:**
+
+- Consistência read-after-write
+- Consistência de leitura monotônica
+- Consistência de sessão
+- Garantias de consistência eventual
+- Requisitos de consistência forte
+
+**Exemplos:**
+
+- Carrinho de compras: Usuário adiciona itens do app móvel enquanto simultaneamente do web, ambas atualizações devem ser preservadas
+- Jogo multiplayer: Atualizações de posição do jogador de múltiplos clientes devem ser reconciliadas em tempo real
+- Documento colaborativo: Múltiplos usuários editando mesmo documento simultaneamente
+- Sistema de estoque: Múltiplos armazéns atualizando níveis de estoque concorrentemente
+
+**Problemas de Concorrência:**
+
+- Problema de atualizações perdidas
+- Leituras sujas de dados não commitados
+- Leituras não repetíveis
+- Leituras fantasma em consultas de intervalo
+- Conflitos write-write
+
+**Padrões Arquiteturais:**
+
+- Event sourcing: Armazenar eventos, não estado
+- CQRS: Separar modelos de comando e consulta
+- Padrão Saga: Gerenciar transações distribuídas
+- Two-phase commit: Garantir atomicidade
+- Transações baseadas em compensação
+
+</Card>
+
+<Card emoji="🚦" title="Condições de Corrida" accent="slate">
+
+Múltiplos processos acessando recursos compartilhados simultaneamente, levando a resultados imprevisíveis.
+
+Condições de corrida em sistemas distribuídos ocorrem quando múltiplos processos ou nós tentam acessar e modificar recursos compartilhados simultaneamente, levando a resultados imprevisíveis e frequentemente incorretos. Diferente de condições de corrida em máquina única, condições de corrida distribuídas são mais difíceis de detectar e debugar.
+
+**Características:**
+
+- Ordem de execução não determinística
+- Contenção de recursos compartilhados
+- Bugs dependentes de timing
+- Difícil de reproduzir
+- Pode causar corrupção de dados
+
+**Cenários Comuns:**
+
+- Operações check-then-act
+- Ciclos read-modify-write
+- Padrões double-checked locking
+- Condições de corrida de inicialização
+- Condições de corrida de limpeza
+
+**Exemplos:**
+
+- Conta bancária: Dois caixas eletrônicos saque simultaneamente, ambos verificam saldo (R$ 100), ambos permitem saque de R$ 60, conta fica negativa
+- Reserva de passagem: Dois clientes reservam último assento simultaneamente, ambos recebem confirmação, avião oversold
+- Incremento de contador: Múltiplos serviços incrementam contador global, valor final incorreto devido a atualizações perdidas
+- Alocação de recursos: Dois processos alocam mesmos recursos de servidor, causando conflitos de recursos
+
+**Complicações Distribuídas:**
+
+- Atrasos de rede mascaram problemas de timing
+- Falhas parciais durante operações
+- Problemas de sincronização de relógio
+- Efeitos de reordenação de mensagens
+- Falhas de lock distribuído
+
+**Técnicas de Prevenção:**
+
+- Operações atômicas e Compare-And-Swap
+- Mecanismos de locking distribuído
+- Garantias de ordenação de mensagens
+- Controle de concorrência otimista
+- Estratégias de locking pessimista
+
+</Card>
+
+## As Falácias da Computação Distribuída
+
+As Oito Falácias da Computação Distribuída, identificadas por Peter Deutsch e outros, representam equívocos comuns que desenvolvedores cometem ao projetar sistemas distribuídos. Compreender essas falácias é crucial para construir aplicações distribuídas robustas.
+
+1. A rede é confiável
+2. A latência é zero
+3. A largura de banda é infinita
+4. A rede é segura
+5. A topologia não muda
+6. Há um administrador
+7. O custo de transporte é zero
+8. A rede é homogênea
+
+<Callout type="warning">
+
+Essas suposições falsas levam a muitos problemas em sistemas distribuídos
+
+</Callout>
+
+## Estratégias Gerais de Mitigação
+
+- Projetar para falha: Assumir que componentes vão falhar
+- Implementar monitoramento abrangente e alertas
+- Usar circuit breakers para prevenir falhas em cascata
+- Construir capacidades de degradação graciosa
+- Testar cenários de falha regularmente (chaos engineering)
+- Implementar logging adequado e rastreamento distribuído
+- Usar operações idempotentes quando possível
+- Projetar para consistência eventual quando apropriado

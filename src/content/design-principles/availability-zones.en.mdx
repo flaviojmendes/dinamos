@@ -1,0 +1,84 @@
+# Availability Zones
+
+Availability Zones are isolated data centers within a geographic region, designed to provide redundancy and high availability for critical applications.
+
+## How It Works
+
+Each availability zone is an independent data center with:
+
+- Independent and redundant power
+- Independent cooling systems
+- Dedicated network infrastructure
+- High-speed connections between zones
+
+The zones are designed to be isolated from failures in other zones, but close enough to ensure low latency communication between them.
+
+## Benefits
+
+<Cards cols={3}>
+
+<Card title="Fault Isolation" accent="green">
+
+Problems in one zone do not affect others, ensuring service continuity.
+
+</Card>
+
+<Card title="High Availability" accent="green">
+
+Resource distribution across zones ensures the service remains available even with the failure of an entire zone.
+
+</Card>
+
+<Card title="Low Latency" accent="green">
+
+High-speed connections between zones allow efficient data synchronization and load balancing.
+
+</Card>
+
+</Cards>
+
+## Real-World Example
+
+<Callout type="neutral" title="Large E-commerce Platform">
+
+An e-commerce platform distributes its application across three availability zones:
+
+- Zone A: Main application server
+- Zone B: Active replica and primary database
+- Zone C: Backup and secondary database
+
+</Callout>
+
+If Zone A fails, traffic is automatically redirected to Zone B, while Zone C ensures no data is lost during the transition.
+
+## Best Practices
+
+<Cards cols={3}>
+
+<Card title="Smart Distribution" accent="green">
+
+Distribute resources and data evenly across zones to maximize resilience.
+
+</Card>
+
+<Card title="Constant Monitoring" accent="green">
+
+Implement real-time monitoring to detect and respond quickly to problems in any zone.
+
+</Card>
+
+<Card title="Regular Testing" accent="green">
+
+Perform failover tests regularly to ensure transition between zones works as expected.
+
+</Card>
+
+</Cards>
+
+<Callout type="info" title="Explore the Availability Zones Simulator">
+
+Experience in practice how availability zones work and how they respond to different failure scenarios.
+
+[Explore the Availability Zones Simulator](/principios-design/disponibilidade/simulator)
+
+</Callout>

@@ -1,0 +1,133 @@
+# Fundamentos da Sincronização
+
+O problema do Jantar dos Filósofos é um exemplo clássico que ilustra os desafios fundamentais da sincronização em sistemas distribuídos.
+
+Vamos explorar como ele nos ajuda a entender conceitos importantes como exclusão mútua, deadlocks e starvation.
+
+<Callout type="info" title="Conceito Chave">
+
+O Jantar dos Filósofos foi proposto por Edsger Dijkstra em 1965 e continua sendo uma excelente ferramenta para entender os desafios de sincronização em sistemas distribuídos modernos.
+
+</Callout>
+
+## Ilustração do Problema
+
+### O Jantar dos Filósofos
+
+Cinco filósofos sentados em uma mesa redonda, cada um com um prato de macarrão e um garfo entre cada par de filósofos. Para comer, um filósofo precisa pegar dois garfos adjacentes, mas há apenas cinco garfos no total.
+
+### Estratégias de Sincronização
+
+- **Naive:** Filósofos simplesmente tentam pegar o garfo da esquerda e depois o da direita. Facilmente gera deadlock.
+- **Ordenada:** Filósofos sempre pegam o garfo de menor número primeiro, prevenindo deadlocks.
+- **Garçom:** Um "garçom" garante que apenas um filósofo por vez possa tentar pegar ambos os garfos.
+
+## Significado e Aplicações
+
+O problema do Jantar dos Filósofos é mais do que um exercício acadêmico - é um modelo que representa desafios reais em sistemas distribuídos modernos. Cada filósofo representa um processo ou thread que precisa acessar recursos compartilhados (os garfos) de forma segura e eficiente.
+
+Em sistemas reais, este problema se manifesta em diversos cenários: bancos de dados distribuídos gerenciando transações concorrentes, sistemas de arquivos distribuídos controlando acesso a recursos compartilhados, ou redes de sensores coordenando a coleta de dados. A solução deste problema é fundamental para garantir a confiabilidade e eficiência de sistemas distribuídos.
+
+<Cards cols={2}>
+
+<Card title="Analogia com Sistemas Reais" accent="purple">
+
+- Filósofos = Processos/Threads
+- Garfos = Recursos Compartilhados
+- Comer = Execução de Operações Críticas
+- Pensar = Processamento Independente
+
+</Card>
+
+<Card title="Desafios Modernos" accent="brand">
+
+- Escalabilidade em Sistemas Distribuídos
+- Tolerância a Falhas
+- Balanceamento de Carga
+- Garantia de Justiça no Acesso
+
+</Card>
+
+</Cards>
+
+## O Problema
+
+<Cards cols={2}>
+
+<Card title="Cenário" accent="brand">
+
+- **5 Filósofos** — Sentados em uma mesa redonda
+- **5 Garfos** — Um entre cada par de filósofos
+- **1 Prato** — De macarrão para cada filósofo
+
+</Card>
+
+<Card title="Regras" accent="purple">
+
+- **2 Garfos** — Necessários para comer
+- **1 Garfo por vez** — Por filósofo por vez
+- **Tempo Finito** — Para comer e pensar
+
+</Card>
+
+</Cards>
+
+## Desafios
+
+<Cards cols={2}>
+
+<Card title="Deadlock" accent="red">
+
+Se todos os filósofos pegarem o garfo da esquerda e esperarem pelo da direita, nenhum deles conseguirá comer.
+
+</Card>
+
+<Card title="Starvation" accent="yellow">
+
+Alguns filósofos podem nunca conseguir comer se a distribuição dos garfos não for justa.
+
+</Card>
+
+</Cards>
+
+## Soluções
+
+<Cards cols={2}>
+
+<Card title="Prevenção de Deadlock" accent="green">
+
+- **Ordem dos Garfos** — Sempre pegar o garfo com menor número primeiro
+- **Timeout** — Liberar garfos se não conseguir o segundo em tempo
+
+</Card>
+
+<Card title="Prevenção de Starvation" accent="brand">
+
+- **Prioridade** — Dar prioridade a filósofos que não comeram há mais tempo
+- **Garantia de Acesso** — Implementar mecanismos de justiça na distribuição
+
+</Card>
+
+</Cards>
+
+## Próximos Passos
+
+<Cards cols={2}>
+
+<Card title="Deadlocks" accent="red">
+
+Aprenda mais sobre como identificar, prevenir e resolver deadlocks em sistemas distribuídos.
+
+[Deadlocks](/estrategias-de-consistencia/sincronizacao/deadlocks)
+
+</Card>
+
+<Card title="Algoritmos" accent="brand">
+
+Explore diferentes algoritmos de sincronização distribuída e suas aplicações.
+
+[Algoritmos](/estrategias-de-consistencia/sincronizacao/algoritmos)
+
+</Card>
+
+</Cards>
