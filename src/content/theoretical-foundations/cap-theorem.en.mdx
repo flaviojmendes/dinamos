@@ -1,0 +1,189 @@
+# CAP Theorem
+
+Understanding the fundamental trade-offs in distributed systems.
+
+<Callout type="neutral">
+
+Proposed by Eric Brewer in 2000, the CAP theorem is one of the most important concepts in distributed systems. It states that any distributed system can only guarantee two out of three properties: Consistency, Availability, and Partition tolerance. This theorem helps architects make informed decisions about system design trade-offs.
+
+</Callout>
+
+<Cards cols={3}>
+
+<Card emoji="🔗" title="Consistency" accent="brand">
+
+All nodes see the same data at the same time. Every read receives the most recent write or an error.
+
+Consistency means that all nodes in the distributed system have the same view of the data at any given time. When a write operation completes successfully, all subsequent read operations will return the updated value until the data is changed again.
+
+</Card>
+
+<Card emoji="⚡" title="Availability" accent="green">
+
+The system remains operational 100% of the time. Every request receives a response.
+
+Availability means that the system continues to function and respond to requests even when some components fail. Every request receives a response (either success or failure) without guaranteeing that it contains the most recent version of the information.
+
+</Card>
+
+<Card emoji="🌐" title="Partition Tolerance" accent="purple">
+
+The system continues to operate despite network failures between nodes.
+
+Partition tolerance means the system continues to function even when network failures prevent some nodes from communicating with others. This is not optional in distributed systems — network failures are inevitable.
+
+</Card>
+
+</Cards>
+
+## Concrete Examples
+
+<Cards cols={3}>
+
+<Card title="Consistency Examples" accent="brand">
+
+- Banking system: When you transfer $100 from Account A to Account B, all ATMs must show the correct balances immediately
+- Social media: When you update your profile picture, all your friends must see the new picture, not a mix of old and new
+- E-commerce: When an item goes out of stock, no customer should be able to purchase it from any server
+- Gaming leaderboard: When a player achieves a high score, all players must see the updated rankings consistently
+
+</Card>
+
+<Card title="Availability Examples" accent="green">
+
+- Netflix: Must keep streaming videos even if some servers are down, even if recommendations might be stale
+- Amazon shopping: Website must stay accessible during peak shopping times, even if product details take time to sync
+- WhatsApp: Messages must be deliverable even during network issues, messages can be delivered out of order
+- Google Search: Must return results even if some data centers are unreachable, results might be slightly outdated
+
+</Card>
+
+<Card title="Partition Tolerance Examples" accent="purple">
+
+- Multi-region cloud: AWS East and West coast data centers lose connection but both continue serving users
+- Mobile app: Your phone loses internet but cached data still works, syncs when connection returns
+- Microservices: Payment service can't reach inventory service but can still process payments with cached data
+- CDN: Local edge servers serve content even when disconnected from origin servers
+
+</Card>
+
+</Cards>
+
+<Callout type="neutral" title="The CAP Theorem States:">
+
+**In the presence of a network partition, you must choose between consistency and availability.**
+
+*In practice, you don't choose between CAP properties for your entire system. Different parts of your application can make different trade-offs based on business requirements.*
+
+</Callout>
+
+<Cards cols={3}>
+
+<Card title="CP Systems (Consistency + Partition Tolerance)" accent="red">
+
+Prioritize data consistency over availability during network partitions.
+
+**Characteristics:**
+
+- System becomes unavailable during partitions
+- When available, data is always consistent
+- Better for financial/critical data
+
+**Examples:**
+
+- Traditional ACID databases (PostgreSQL, MySQL) with synchronous replication
+- Apache HBase — ensures strong consistency
+- MongoDB with strong consistency settings
+- Zookeeper — coordination service requiring consensus
+- Banking systems where accuracy > availability
+
+**Use Cases:**
+
+- Financial transactions and banking
+- Inventory management systems
+- Configuration management
+- Authentication and authorization systems
+
+</Card>
+
+<Card title="AP Systems (Availability + Partition Tolerance)" accent="green">
+
+Prioritize system availability over immediate consistency during partitions.
+
+**Characteristics:**
+
+- System remains available during partitions
+- Data may be temporarily inconsistent
+- Eventually becomes consistent when partition heals
+
+**Examples:**
+
+- Amazon DynamoDB — highly available NoSQL database
+- Apache Cassandra — distributed database prioritizing availability
+- DNS system — must always resolve names, eventual consistency is OK
+- Amazon S3 — object storage with eventual consistency
+- Social media feeds — better to show slightly stale content than be unavailable
+
+**Use Cases:**
+
+- Social media platforms
+- Content delivery networks
+- Shopping cart systems
+- User preference storage
+- Analytics and logging systems
+
+</Card>
+
+<Card title="CA Systems (Consistency + Availability)" accent="brand">
+
+Traditional systems that sacrifice partition tolerance.
+
+**Characteristics:**
+
+- Perfect consistency and availability
+- Only works in single location/no network partitions
+- Not truly distributed systems
+
+**Examples:**
+
+- Single-node databases (PostgreSQL, MySQL on one server)
+- In-memory databases (Redis) on single machine
+- Traditional RDBMS in single data center
+- Legacy monolithic applications
+
+**Limitations:**
+
+- Cannot handle network partitions
+- Single point of failure
+- Not suitable for geographically distributed systems
+- Limited scalability
+
+*In practice, CA systems don't exist in truly distributed environments because network partitions are inevitable.*
+
+</Card>
+
+</Cards>
+
+<Cards cols={2}>
+
+<Card title="Practical Considerations" accent="yellow">
+
+- Most modern systems are either CP or AP
+- You can choose different trade-offs for different parts of your system
+- Business requirements should drive your CAP decisions
+- Monitor and measure actual consistency and availability
+- Design for graceful degradation during partitions
+
+</Card>
+
+<Card title="How to Choose?" accent="purple">
+
+- Can your business tolerate temporary inconsistency?
+- Is system availability more important than data accuracy?
+- Are you operating across multiple geographic regions?
+- What are the costs of downtime vs. inconsistent data?
+- Can you implement conflict resolution mechanisms?
+
+</Card>
+
+</Cards>

@@ -1,0 +1,162 @@
+# Alerts and Notifications in Distributed Systems
+
+An effective alert and notification system is crucial to maintain the health and availability of distributed systems. It enables identifying and responding quickly to problems before they significantly affect users.
+
+<Callout type="info" title="💡 Key Concept">
+
+Alerts should be actionable, relevant and avoid alert fatigue. A good alert system differentiates between critical situations requiring immediate action and conditions that can be handled during normal business hours.
+
+</Callout>
+
+## Alert Types
+
+<Cards cols={3}>
+
+<Card title="Critical" accent="red">
+
+- Service unavailability
+- Security failures
+- Data loss
+- SLA violations
+
+</Card>
+
+<Card title="Warnings" accent="yellow">
+
+- High resource utilization
+- Performance degradation
+- Anomalous trends
+- Non-critical errors
+
+</Card>
+
+<Card title="Informational" accent="green">
+
+- Deployments performed
+- Scheduled maintenance
+- Configuration changes
+- Routine events
+
+</Card>
+
+</Cards>
+
+## Alert Configuration
+
+<Cards cols={2}>
+
+<Card title="Thresholds" accent="brand">
+
+**Static**
+
+- CPU > 80%
+- Memory > 90%
+- Latency > 500ms
+- Error rate > 1%
+
+**Dynamic**
+
+- Based on history
+- Machine learning
+- Trend analysis
+- Seasonality
+
+</Card>
+
+<Card title="Configuration Example" accent="purple">
+
+```json
+{
+  "alert": "high_error_rate",
+  "condition": {
+    "metric": "http_errors_total",
+    "threshold": {
+      "type": "static",
+      "value": 0.01,
+      "duration": "5m"
+    },
+    "severity": "critical",
+    "notifications": [
+      {
+        "type": "pagerduty",
+        "team": "platform"
+      },
+      {
+        "type": "slack",
+        "channel": "#alerts"
+      }
+    ]
+  }
+}
+```
+
+</Card>
+
+</Cards>
+
+## Notification Channels
+
+<Cards cols={2}>
+
+<Card title="Synchronous" accent="brand">
+
+- **SMS**: For critical alerts requiring immediate action
+- **Calls**: For critical incident escalation
+- **PagerDuty**: On-call management and escalation
+
+</Card>
+
+<Card title="Asynchronous" accent="purple">
+
+- **Email**: For non-urgent notifications and reports
+- **Slack**: For team communication and discussions
+- **Dashboards**: For alert visualization and history
+
+</Card>
+
+</Cards>
+
+## Incident Management
+
+<Cards cols={2}>
+
+<Card title="Process" accent="green">
+
+1. **Detection**: Problem identification through alerts
+2. **Response**: Triggering the responsible team
+3. **Mitigation**: Actions to resolve the problem
+4. **Resolution**: Definitive fix and documentation
+
+</Card>
+
+<Card title="Tools" accent="yellow">
+
+- **PagerDuty**: On-call management and incident escalation
+- **OpsGenie**: Alerts and incident response coordination
+- **ServiceNow**: ITSM and incident lifecycle management
+
+</Card>
+
+</Cards>
+
+## Best Practices
+
+<Cards cols={2}>
+
+<Card title="Alert Configuration" accent="brand">
+
+- **Actionable Alerts**: Configure only alerts that require action
+- **Noise Reduction**: Avoid duplicate or unnecessary alerts
+- **Context**: Provide sufficient information for diagnosis
+
+</Card>
+
+<Card title="Incident Response" accent="purple">
+
+- **Playbooks**: Maintain documented procedures
+- **Escalation**: Define clear escalation levels
+- **Postmortem**: Perform analysis after incidents
+
+</Card>
+
+</Cards>

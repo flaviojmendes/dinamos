@@ -1,0 +1,80 @@
+# Relógios Lógicos de Lamport
+
+Entenda como os timestamps de Lamport estabelecem ordem em eventos distribuídos.
+
+## Visão Geral
+
+<Cards cols={2}>
+
+<Card title="O Problema" accent="brand">
+
+Em sistemas distribuídos, não existe um relógio global que todos os processos possam consultar. Cada processo tem seu próprio relógio local, que pode divergir dos demais.
+
+</Card>
+
+<Card title="A Solução" accent="green">
+
+Os relógios lógicos de Lamport estabelecem uma ordem parcial de eventos baseada na relação "aconteceu antes", permitindo determinar a causalidade entre eventos distribuídos.
+
+</Card>
+
+</Cards>
+
+## Como Funciona
+
+<Card title="Regras Básicas" accent="brand">
+
+- Cada processo mantém um contador que é incrementado em eventos locais
+- Ao enviar uma mensagem, o processo inclui seu timestamp atual
+- Ao receber uma mensagem, o processo atualiza seu contador para o máximo entre seu valor local e o timestamp recebido + 1
+
+</Card>
+
+<Card title="Propriedades" accent="purple">
+
+- Se evento A causou evento B, então timestamp(A) < timestamp(B)
+- Se timestamp(A) < timestamp(B), então A pode ter causado B
+- Se timestamp(A) = timestamp(B), então A e B são concorrentes
+
+</Card>
+
+## Aplicações
+
+<Cards cols={2}>
+
+<Card title="Casos de Uso" accent="brand">
+
+- Ordenação de mensagens em sistemas de mensageria distribuídos
+- Detecção de condições de corrida em sistemas concorrentes
+- Manutenção de consistência em bancos de dados distribuídos
+- Sincronização de estados em jogos multiplayer
+
+</Card>
+
+<Card title="Limitações" accent="red">
+
+- Não capturam relações de concorrência (eventos que aconteceram em paralelo)
+- Não fornecem um tempo global absoluto
+- Podem gerar ordenações diferentes em diferentes execuções do sistema
+
+</Card>
+
+</Cards>
+
+## Exemplo Prático
+
+<Card title="Sistema de Chat Distribuído" accent="brand">
+
+Em um sistema de chat distribuído, os timestamps de Lamport podem ser usados para:
+
+- Ordenar mensagens de diferentes usuários
+- Garantir que respostas apareçam depois das mensagens originais
+- Detectar e resolver conflitos de edição
+
+</Card>
+
+## Experimente na Prática
+
+Use nosso simulador interativo para entender melhor como os relógios lógicos de Lamport funcionam em diferentes cenários.
+
+[Acessar Simulador](/estrategias-de-consistencia/lamport-timestamps/simulador)

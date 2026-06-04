@@ -1,0 +1,135 @@
+# Health Checks in Distributed Systems
+
+Health checks are fundamental for monitoring the health and availability of services in distributed systems. They enable proactive problem detection, facilitate load balancing and assist in recovery strategies.
+
+<Callout type="info" title="💡 Key Concept">
+
+A good health check system should be comprehensive, verifying not only if the service is responding, but also its ability to perform its essential functions and access necessary resources.
+
+</Callout>
+
+## Types of Health Checks
+
+<Cards cols={3}>
+
+<Card title="Liveness" accent="brand">
+
+- Checks if service is alive
+- Detects deadlocks
+- Monitors processes
+- Restarts on failure
+
+</Card>
+
+<Card title="Readiness" accent="purple">
+
+- Checks availability
+- Connections to dependencies
+- Resource status
+- Traffic control
+
+</Card>
+
+<Card title="Startup" accent="green">
+
+- Service initialization
+- Resource loading
+- Initial configuration
+- Warm-up period
+
+</Card>
+
+</Cards>
+
+## Implementation Patterns
+
+<Cards cols={2}>
+
+<Card title="HTTP Endpoints" accent="brand">
+
+```json
+// Endpoint de Health Check
+GET /health
+{
+  "status": "UP",
+  "components": {
+    "db": "UP",
+    "cache": "UP",
+    "messaging": "UP"
+  },
+  "details": {
+    "db.responseTime": "45ms",
+    "cache.size": "2.3GB"
+  }
+}
+```
+
+</Card>
+
+<Card title="Verifications" accent="purple">
+
+- **Connections**: Database, cache, messaging
+- **Resources**: CPU, memory, disk, network
+- **Features**: Critical business operations
+
+</Card>
+
+</Cards>
+
+## Infrastructure Integration
+
+<Cards cols={2}>
+
+<Card title="Container Orchestration" accent="brand">
+
+**Kubernetes**
+
+```yaml
+livenessProbe:
+  httpGet:
+    path: /health/live
+    port: 8080
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /health/ready
+    port: 8080
+  initialDelaySeconds: 15
+  periodSeconds: 5
+```
+
+</Card>
+
+<Card title="Load Balancers" accent="purple">
+
+- **Routing**: Directs traffic to healthy instances
+- **Circuit Breaking**: Isolates failed services
+- **Auto Scaling**: Adjusts capacity based on health
+
+</Card>
+
+</Cards>
+
+## Best Practices
+
+<Cards cols={2}>
+
+<Card title="Implementation" accent="brand">
+
+- **Lightweight**: Checks should be light and fast
+- **Isolation**: Separate checks by responsibility
+- **Cache**: Avoid overhead from frequent checks
+
+</Card>
+
+<Card title="Monitoring" accent="purple">
+
+- **Logging**: Record results and trends
+- **Metrics**: Collect health metrics
+- **Alerts**: Configure alerts for failures
+
+</Card>
+
+</Cards>

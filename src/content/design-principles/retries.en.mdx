@@ -1,0 +1,81 @@
+# Retries
+
+A fundamental strategy to handle transient failures in distributed systems, allowing failed operations to be retried automatically.
+
+## How It Works
+
+Imagine you are sending a message to a friend. Sometimes it does not arrive the first time due to network issues. What do you do? You try again. That is exactly what "Retry" does in computer systems.
+
+<Callout type="neutral" title="Real-World Example">
+
+Think of an online shopping app. When you click "Buy", the app must confirm the order with a server. If the connection briefly fails, the app can retry a few times before showing an error.
+
+</Callout>
+
+## Benefits
+
+<Cards cols={3}>
+
+<Card title="Higher Resilience" accent="green">
+
+Systems can automatically recover from transient failures.
+
+</Card>
+
+<Card title="Better Experience" accent="green">
+
+Users do not have to repeat actions manually when failures occur.
+
+</Card>
+
+<Card title="Reliability" accent="green">
+
+Increases the success rate of operations over unstable networks.
+
+</Card>
+
+</Cards>
+
+## Best Practices
+
+<Cards cols={3}>
+
+<Card title="Exponential Backoff" accent="slate">
+
+Gradually increase the interval between attempts to avoid overloading the system (e.g., 1s, 2s, 4s, 8s).
+
+</Card>
+
+<Card title="Retry Limit" accent="slate">
+
+Set a maximum number of attempts to avoid infinite loops and fail fast when necessary.
+
+</Card>
+
+<Card title="Idempotency" accent="slate">
+
+Ensure multiple attempts of the same operation do not cause unintended side effects.
+
+</Card>
+
+</Cards>
+
+## Important Considerations
+
+<Cards cols={2}>
+
+<Card title="Types of Failures" accent="yellow">
+
+Not all failures should be retried. Validation or authentication errors, for example, do not benefit from retries.
+
+</Card>
+
+<Card title="Impact on the System" accent="yellow">
+
+Many concurrent retries can overload the system. Use circuit breakers together when needed.
+
+</Card>
+
+</Cards>
+
+[Explore Retries Simulator](/principios-design/tolerancia-falhas/retries/simulator)

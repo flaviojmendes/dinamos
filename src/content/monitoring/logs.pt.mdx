@@ -1,0 +1,178 @@
+# Logs e Tracing em Sistemas Distribuídos
+
+Em sistemas distribuídos, logs e tracing são fundamentais para monitoramento, debugging e análise de performance. Esta seção explora as melhores práticas e ferramentas para implementar um sistema robusto de observabilidade.
+
+## Níveis de Log
+
+<Cards cols={4}>
+
+<Card title="DEBUG" accent="brand">
+
+Informações detalhadas para debugging
+
+</Card>
+
+<Card title="INFO" accent="green">
+
+Eventos normais do sistema
+
+</Card>
+
+<Card title="WARN" accent="yellow">
+
+Avisos sobre situações inesperadas
+
+</Card>
+
+<Card title="ERROR" accent="red">
+
+Erros que precisam de atenção
+
+</Card>
+
+</Cards>
+
+## Logs em Texto Puro
+
+```
+[2024-03-20 10:15:30] INFO Usuario fez login
+[2024-03-20 10:15:35] ERROR Falha no processamento
+[2024-03-20 10:15:40] WARN Cache miss
+```
+
+### Vantagens
+
+- Fácil de ler para humanos
+- Menor overhead de processamento
+- Compatível com ferramentas legadas
+- Menor tamanho de arquivo
+
+### Desvantagens
+
+- Difícil de parsear programaticamente
+- Falta de estrutura clara
+- Difícil de adicionar metadados
+- Propenso a erros de formatação
+
+## Logs em JSON
+
+```json
+{
+  "timestamp": "2024-03-20T10:15:30Z",
+  "nivel": "INFO",
+  "servico": "auth-service",
+  "traceId": "trace-123",
+  "usuarioId": "user-456",
+  "acao": "login_usuario",
+  "mensagem": "Usuário logado com sucesso",
+  "metadados": {
+    "ip": "192.168.1.1",
+    "userAgent": "Mozilla/5.0...",
+    "duracao": "150ms"
+  }
+}
+```
+
+### Vantagens
+
+- Estrutura clara e consistente
+- Fácil de parsear e processar
+- Suporte a metadados complexos
+- Melhor para análise automatizada
+
+### Desvantagens
+
+- Maior overhead de processamento
+- Arquivos de log maiores
+- Menos legível para humanos
+- Pode ser excessivo para logs simples
+
+## Distributed Tracing
+
+### O que é Tracing?
+
+Tracing é uma técnica que permite rastrear o fluxo de uma requisição através de múltiplos serviços em um sistema distribuído. Cada requisição recebe um ID único (traceId) que é propagado entre os serviços.
+
+<Cards cols={2}>
+
+<Card title="Componentes Principais" accent="green">
+
+- TraceId: Identificador único da requisição
+- SpanId: Identificador de cada operação
+- ParentSpanId: Relacionamento entre operações
+- Tags: Metadados adicionais
+- Timestamps: Duração das operações
+
+</Card>
+
+<Card title="Benefícios" accent="yellow">
+
+- Visualização do fluxo de requisições
+- Identificação de gargalos
+- Debugging em sistemas distribuídos
+- Análise de performance
+- Correlação de eventos
+
+</Card>
+
+</Cards>
+
+## Boas Práticas
+
+<Cards cols={2}>
+
+<Card title="Logging" accent="green">
+
+- Use níveis de log apropriados
+- Inclua contexto relevante
+- Mantenha formato consistente
+- Evite logs sensíveis
+- Use IDs de correlação
+- Inclua timestamps
+- Estruture os metadados
+- Implemente rotação de logs
+
+</Card>
+
+<Card title="Tracing" accent="brand">
+
+- Propague traceId entre serviços
+- Use spans para operações importantes
+- Adicione tags relevantes
+- Mantenha spans concisos
+- Implemente sampling
+- Configure retenção adequada
+- Integre com ferramentas de análise
+- Monitore overhead de tracing
+
+</Card>
+
+</Cards>
+
+## Ferramentas Populares
+
+<Cards cols={2}>
+
+<Card title="Logging" accent="yellow">
+
+- ELK Stack (Elasticsearch, Logstash, Kibana)
+- Graylog
+- Loki
+- Datadog
+- New Relic
+- Splunk
+
+</Card>
+
+<Card title="Tracing" accent="purple">
+
+- Jaeger
+- Zipkin
+- OpenTelemetry
+- Datadog APM
+- New Relic APM
+- Lightstep
+
+</Card>
+
+</Cards>

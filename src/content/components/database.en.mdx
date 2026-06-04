@@ -1,0 +1,101 @@
+# Databases
+
+Databases are among the most important components of any system, responsible for storing, querying, and managing large volumes of data.
+
+## Relational Databases (SQL)
+
+Relational databases store data in tables with rows and columns. They use SQL for querying and data manipulation.
+
+#### Advantages
+
+- Strong consistency
+- ACID transactions support (Atomicity, Consistency, Isolation, Durability)
+- Broad community familiarity
+- Well-defined data structure
+
+#### Limitations
+
+- Less flexible for unstructured data
+- May be harder to scale horizontally due to rigid structure
+
+<Callout type="neutral" title="Examples:">
+
+MySQL, PostgreSQL, Oracle
+
+</Callout>
+
+## NoSQL Databases
+
+Non-relational databases offering flexibility to store data as documents, key-value, graphs, or columns.
+
+#### Advantages
+
+- High scalability
+- Data flexibility
+- Support for large volumes of unstructured data
+
+#### Limitations
+
+- May trade consistency (eventual consistency) for availability and scalability
+
+<Callout type="neutral">
+
+**MongoDB (document database):**
+
+Stores data in JSON/BSON format
+
+**Cassandra (column store):**
+
+Designed for horizontal scaling, ensuring high availability
+
+**Redis (key-value):**
+
+An in-memory database, extremely fast, used for cache and other purposes
+
+</Callout>
+
+## Sharding, Partitioning, and Replication
+
+### Sharding
+
+Sharding is like splitting a huge library into several rooms, each with a specific type of book, making it easier to find things.
+
+<Callout type="neutral" title="Example:">
+
+An e-commerce site with millions of users can shard data by region, storing each region's users on separate servers.
+
+</Callout>
+
+### Partitioning
+
+Similar to sharding but with different criteria. Think of organizing a toolbox by size, type, or usage frequency.
+
+<Callout type="neutral" title="Example:">
+
+In a school database, students can be partitioned by school year so each year sits in its own partition.
+
+</Callout>
+
+### Replication
+
+Replication is creating copies of data and storing them on multiple servers to improve availability and durability.
+
+#### Synchronous Replication:
+
+Copies are written at the same time, keeping versions identical at all times.
+
+<Callout type="neutral" title="Example:">
+
+A banking system where each transaction must be recorded in real time across all servers.
+
+</Callout>
+
+#### Asynchronous Replication:
+
+Copies are updated with delay; small differences may exist, but there is backup.
+
+<Callout type="neutral" title="Example:">
+
+A news site where updates can be replicated with a small delay to secondary servers.
+
+</Callout>

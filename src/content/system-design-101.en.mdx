@@ -1,0 +1,45 @@
+# System Design 101
+
+## 1.1 What is System Design?
+
+System Design is the process of designing the architecture of a software system so that it is scalable, efficient, resilient, and meets business and technical requirements. This involves defining software components, infrastructure, communication protocols, and data management to ensure the system works correctly under different workloads and environments.
+
+In practice, System Design is frequently discussed in technical interviews, especially for engineering roles. The ability to design large-scale systems such as social networks, instant messaging systems, or e-commerce platforms is tested. System design focuses on solving real problems while considering time, resource, and complexity constraints.
+
+## 1.2 Why is System Design important?
+
+Its importance is directly related to the need to build systems that can handle large volumes of data, many concurrent users, and unpredictable failure scenarios. With growing system complexity and data volume, engineers must think not only about immediate functionality but also long-term scalability, maintainability, and reliability.
+
+Here are some reasons why System Design is crucial:
+
+- **Scalability:** Systems must grow in capacity as users and data increase. A good design enables scaling without compromising performance.
+- **Resilience:** Systems should continue operating even when individual components fail. System Design addresses how to handle such scenarios.
+- **Efficiency:** Optimizing resource usage is essential to ensure low operating cost and fast responses for users.
+- **Maintainability:** A well-designed system makes future maintenance, changes, and expansions easier.
+- **User Experience:** Poorly designed systems can directly impact users, resulting in slowness, downtime, or even data loss.
+
+## 1.3 Key concepts and terminology
+
+System Design commonly uses several technical terms. Below are foundational concepts covered throughout this material:
+
+- **Scalability:** The ability of a system to grow to meet increasing workload. Can be horizontal (adding machines) or vertical (improving hardware).
+- **Consistency:** Ensuring all nodes in a distributed system have the same data at a given moment. Strong consistency means data is the same everywhere; eventual consistency means it converges over time.
+- **Availability:** The ability for a system to be available to users even under partial failures. High availability keeps the service operating under adverse conditions.
+- **Latency:** The time it takes for data to travel across the system. Low latency is essential for good user experiences, especially in real-time systems.
+- **Throughput:** The amount of data a system can process over a given period.
+- **Fault tolerance:** The ability of a system to continue operating correctly even when a part of it fails.
+- **Load balancing:** Distributing tasks or client requests across multiple servers to optimize resource usage and avoid overload.
+- **Sharding:** Splitting a database or storage system into smaller parts (shards) to increase scalability and performance.
+- **Replication:** Copying data across servers or nodes to ensure redundancy and increase availability.
+
+## 1.4 Topics covered
+
+This System Design material will cover, in detail, the following topics:
+
+- **Distributed systems fundamentals:** Explore distributed systems concepts such as scalability, consistency, and availability, and how to balance them.
+- **Components of a modern system:** Cache, databases, load balancers, message queues, and other critical components of large-scale distributed architectures.
+- **Design principles:** How to approach system design to maximize scalability, efficiency, and resilience.
+- **Consistency strategies:** Explore different consistency models (eventual and strong) and how to apply them in distributed systems.
+- **Designing complex systems:** Step-by-step design of systems like instant messaging, e-commerce platforms, or social networks.
+- **Monitoring and maintenance:** Best practices to monitor production systems, detect problems, and act quickly to resolve them.
+- **System Design technical interviews:** How to prepare for system design interview questions, with examples and detailed answers.

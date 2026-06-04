@@ -1,0 +1,147 @@
+# Autorização em Sistemas Distribuídos
+
+Controle de acesso, permissões e políticas de segurança em ambientes distribuídos
+
+<Callout type="success">
+
+A autorização é o processo que determina o que um usuário autenticado pode fazer no sistema. Em sistemas distribuídos, implementar uma estratégia eficaz de autorização é essencial para garantir a segurança e o controle granular de acesso aos recursos.
+
+</Callout>
+
+## Conceitos Fundamentais
+
+<Cards cols={3}>
+
+<Card title="Autorização" accent="brand">
+
+Processo de verificar se um usuário tem permissão para acessar um recurso ou realizar uma ação específica no sistema.
+
+</Card>
+
+<Card title="Permissões" accent="brand">
+
+Direitos específicos concedidos a usuários ou grupos para realizar operações em recursos do sistema.
+
+</Card>
+
+<Card title="Políticas" accent="brand">
+
+Regras e condições que definem como as decisões de autorização são tomadas no sistema.
+
+</Card>
+
+</Cards>
+
+## Modelos de Controle de Acesso
+
+### Role-Based Access Control (RBAC)
+
+Controle de acesso baseado em papéis, onde as permissões são associadas a funções e os usuários são atribuídos a essas funções.
+
+#### Componentes do RBAC
+
+- Usuários: Entidades que precisam acessar recursos
+- Papéis: Conjuntos de permissões agrupadas
+- Permissões: Direitos de acesso a recursos
+- Sessões: Ativação de papéis para usuários
+
+### Attribute-Based Access Control (ABAC)
+
+Modelo que utiliza atributos de usuários, recursos e ambiente para tomar decisões de autorização dinâmicas.
+
+#### Atributos Considerados
+
+- Atributos do usuário (cargo, departamento, nível)
+- Atributos do recurso (tipo, sensibilidade, proprietário)
+- Atributos do ambiente (hora, localização, dispositivo)
+- Atributos da ação (leitura, escrita, exclusão)
+
+### Policy-Based Access Control (PBAC)
+
+Controle de acesso baseado em políticas que combinam diferentes aspectos de RBAC e ABAC com regras de negócio complexas.
+
+#### Características
+
+- Políticas centralizadas e reutilizáveis
+- Regras baseadas em condições
+- Suporte a hierarquias complexas
+- Auditoria e compliance
+
+## Implementação em Sistemas Distribuídos
+
+<Cards cols={2}>
+
+<Card title="Arquitetura" accent="yellow">
+
+- Serviço centralizado de autorização
+- Cache distribuído de políticas
+- Propagação de atualizações
+- Validação em múltiplas camadas
+
+</Card>
+
+<Card title="Desafios" accent="yellow">
+
+- Latência nas decisões de autorização
+- Consistência entre serviços
+- Escalabilidade do sistema
+- Manutenção de políticas
+
+</Card>
+
+</Cards>
+
+<Cards cols={2}>
+
+<Card title="Design" accent="yellow">
+
+- Princípio do menor privilégio
+- Separação de responsabilidades
+- Granularidade adequada
+- Auditoria completa
+
+</Card>
+
+<Card title="Implementação" accent="yellow">
+
+- Cache inteligente
+- Decisões em camadas
+- Monitoramento contínuo
+- Atualizações atômicas
+
+</Card>
+
+</Cards>
+
+## Ferramentas e Tecnologias
+
+<Cards cols={3}>
+
+<Card title="Frameworks" accent="green">
+
+- OAuth 2.0 e OpenID Connect
+- Keycloak
+- Spring Security
+- IdentityServer
+
+</Card>
+
+<Card title="Protocolos" accent="green">
+
+- XACML
+- SAML
+- UMA 2.0
+- SCIM
+
+</Card>
+
+<Card title="Serviços" accent="green">
+
+- AWS IAM
+- Azure AD
+- Google Cloud IAM
+- Auth0
+
+</Card>
+
+</Cards>

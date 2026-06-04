@@ -90,146 +90,6 @@ const resources = {
         mark_complete: 'Mark as completed',
         completed_label: 'Completed',
         reading_time: '{{minutes}} min read',
-        ds101: {
-          title: 'Distributed Systems 101',
-          intro_lead: 'When discussing distributed systems concepts, people often ask:',
-          intro_q1: '"But after all, what characterizes a distributed system?"',
-          intro_q2: '"How do I know if I work with distributed systems?"',
-          video_title: 'What are Distributed Systems?',
-          definition_intro: 'By definition, we can say that a distributed system is:',
-          definition_quote: 'A collection of computer programs that use computing resources across multiple distinct points of computation to achieve a common, shared goal.',
-          metaphor_intro: 'Let\'s illustrate what a distributed system is using a burger restaurant as a metaphor.',
-          section1_title: '1. Simple Burger Joint (Monolithic)',
-          section1_intro: 'Imagine you just opened a burger joint and hired a single employee. This person does everything:',
-          section1_items_1: 'Greets the customer and writes down the order',
-          section1_items_2: 'Prepares the burger',
-          section1_items_3: 'Takes the payment',
-          section1_items_4: 'Delivers the order',
-          section1_conclusion: 'In this scenario, the burger joint behaves like a monolithic system:',
-          section1_points_1: 'Everything happens in a single "node" (the employee)',
-          section1_points_2: 'They do all tasks, which can cause delays if there are many orders or a sudden spike in demand',
-          section1_points_3: 'If the employee stops, the burger joint stops (single point of failure)',
-          section2_title: '2. Division of Tasks (The Beginning of Distribution)',
-          section2_intro: 'The burger joint starts to grow, and you realize one person can\'t do everything efficiently. So, you hire one more person:',
-          section2_items_1: 'One employee takes orders and payments',
-          section2_items_2: 'The other prepares the burger',
-          section2_desc: 'Here we start to see a basic distributed system:',
-          section2_points_1: 'Tasks are divided among different "nodes" (employees)',
-          section2_points_2: 'While one handles orders and payments, the other can already be preparing the burger, increasing efficiency',
-          section2_points_3: 'However, there\'s still dependency: if one fails, operations may be impacted',
-          section3_title: '3. Expansion and Optimization (Partially Independent Distributed System)',
-          section3_intro: 'With success, your burger joint attracts more customers, so the structure needs to expand. Now we have:',
-          section3_items_1: 'Multiple order takers',
-          section3_items_2: 'A kitchen with more cooks, each specialized in a type of preparation (grilling, assembling, fries)',
-          section3_items_3: 'Multiple griddles, grills, stations',
-          section3_items_4: 'A ticket system to organize the flow of orders',
-          section3_desc: 'At this point, the burger joint is closer to a classic distributed system:',
-          section3_points_1: 'Decentralization of responsibilities: Each employee has a specific function (order takers, cooks, cashier)',
-          section3_points_2: 'Parallelism: Multiple orders can be processed at the same time, both at the counter and in the kitchen',
-          section3_points_3: 'Resilience: If one cook fails or is overloaded, another can take part of the work or help',
-          section4_title: '4. Large Burger Chain (Network of Distributed Systems)',
-          section4_intro: 'Now the burger joint has become a chain with multiple stores, and each store is a distributed system itself. There are:',
-          section4_items_1: 'Connected stores: Each can operate independently but share a central online ordering system',
-          section4_items_2: 'Central coordination: A central system (like a delivery app) can distribute orders among stores',
-          section4_items_3: 'Load balancing: If one store is overloaded, the system can route new orders to another store',
-          section4_desc: 'Here, the burger chain illustrates a complex distributed system well:',
-          section4_points_1: 'Scalability: The network can grow as more stores are added',
-          section4_points_2: 'Fault tolerance: If a store is offline, others keep operating',
-          section4_points_3: 'Optimized latency: Orders are routed to the closest or least loaded store',
-          conclusion_title: 'Conclusion: Distributed Systems and Burger Joints',
-          conclusion_point_1: 'In the beginning, the burger joint was a centralized monolithic system with a single point of failure',
-          conclusion_point_2: 'As it grows, it distributes tasks among employees, optimizing processes and increasing resilience and efficiency',
-          conclusion_point_3: 'In a complex distributed system (a network of burger joints), there is independence, parallelism, load balancing, and redundancy',
-          conclusion_para: 'This model helps visualize how, by dividing responsibilities and distributing work among different "nodes", we can increase the efficiency and resilience of a system—be it a burger joint or a computing system.'
-        },
-        sd101: {
-          title: 'System Design 101',
-          sec1: {
-            title: '1.1 What is System Design?',
-            p1: 'System Design is the process of designing the architecture of a software system so that it is scalable, efficient, resilient, and meets business and technical requirements. This involves defining software components, infrastructure, communication protocols, and data management to ensure the system works correctly under different workloads and environments.',
-            p2: 'In practice, System Design is frequently discussed in technical interviews, especially for engineering roles. The ability to design large-scale systems such as social networks, instant messaging systems, or e-commerce platforms is tested. System design focuses on solving real problems while considering time, resource, and complexity constraints.'
-          },
-          sec2: {
-            title: '1.2 Why is System Design important?',
-            p1: 'Its importance is directly related to the need to build systems that can handle large volumes of data, many concurrent users, and unpredictable failure scenarios. With growing system complexity and data volume, engineers must think not only about immediate functionality but also long-term scalability, maintainability, and reliability.',
-            lead: 'Here are some reasons why System Design is crucial:',
-            bullets: {
-              scalability_title: 'Scalability:',
-              scalability_desc: 'Systems must grow in capacity as users and data increase. A good design enables scaling without compromising performance.',
-              resilience_title: 'Resilience:',
-              resilience_desc: 'Systems should continue operating even when individual components fail. System Design addresses how to handle such scenarios.',
-              efficiency_title: 'Efficiency:',
-              efficiency_desc: 'Optimizing resource usage is essential to ensure low operating cost and fast responses for users.',
-              maintainability_title: 'Maintainability:',
-              maintainability_desc: 'A well-designed system makes future maintenance, changes, and expansions easier.',
-              ux_title: 'User Experience:',
-              ux_desc: 'Poorly designed systems can directly impact users, resulting in slowness, downtime, or even data loss.'
-            }
-          },
-          sec3: {
-            title: '1.3 Key concepts and terminology',
-            intro: 'System Design commonly uses several technical terms. Below are foundational concepts covered throughout this material:',
-            terms: {
-              scalability_label: 'Scalability',
-              scalability_desc: 'The ability of a system to grow to meet increasing workload. Can be horizontal (adding machines) or vertical (improving hardware).',
-              consistency_label: 'Consistency',
-              consistency_desc: 'Ensuring all nodes in a distributed system have the same data at a given moment. Strong consistency means data is the same everywhere; eventual consistency means it converges over time.',
-              availability_label: 'Availability',
-              availability_desc: 'The ability for a system to be available to users even under partial failures. High availability keeps the service operating under adverse conditions.',
-              latency_label: 'Latency',
-              latency_desc: 'The time it takes for data to travel across the system. Low latency is essential for good user experiences, especially in real-time systems.',
-              throughput_label: 'Throughput',
-              throughput_desc: 'The amount of data a system can process over a given period.',
-              fault_tolerance_label: 'Fault tolerance',
-              fault_tolerance_desc: 'The ability of a system to continue operating correctly even when a part of it fails.',
-              load_balancing_label: 'Load balancing',
-              load_balancing_desc: 'Distributing tasks or client requests across multiple servers to optimize resource usage and avoid overload.',
-              sharding_label: 'Sharding',
-              sharding_desc: 'Splitting a database or storage system into smaller parts (shards) to increase scalability and performance.',
-              replication_label: 'Replication',
-              replication_desc: 'Copying data across servers or nodes to ensure redundancy and increase availability.'
-            }
-          },
-          sec4: {
-            title: '1.4 Topics covered',
-            intro: 'This System Design material will cover, in detail, the following topics:',
-            topics: {
-              fundamentals_label: 'Distributed systems fundamentals',
-              fundamentals_desc: 'Explore distributed systems concepts such as scalability, consistency, and availability, and how to balance them.',
-              components_label: 'Components of a modern system',
-              components_desc: 'Cache, databases, load balancers, message queues, and other critical components of large-scale distributed architectures.',
-              principles_label: 'Design principles',
-              principles_desc: 'How to approach system design to maximize scalability, efficiency, and resilience.',
-              consistency_strategies_label: 'Consistency strategies',
-              consistency_strategies_desc: 'Explore different consistency models (eventual and strong) and how to apply them in distributed systems.',
-              complex_design_label: 'Designing complex systems',
-              complex_design_desc: 'Step-by-step design of systems like instant messaging, e-commerce platforms, or social networks.',
-              monitoring_label: 'Monitoring and maintenance',
-              monitoring_desc: 'Best practices to monitor production systems, detect problems, and act quickly to resolve them.',
-              interviews_label: 'System Design technical interviews',
-              interviews_desc: 'How to prepare for system design interview questions, with examples and detailed answers.'
-            }
-          },
-          intro: {
-            title: 'Introduction',
-            lead: 'Before diving into the topic, I will briefly introduce my career, the motivation for producing this content, and the goal to be achieved by the end.',
-            about_title: 'About Me',
-            p1: 'My journey in programming began around 2001, when I was 12 and took a course in HTML, JavaScript, Photoshop, and Macromedia Flash.',
-            p2: 'After that course, I already knew what I wanted to do with my life: Program! From then until college, I built dozens of websites for friends and family, using every opportunity to offer a site and improve my skills.',
-            p3: 'In 2007 I entered university to study Computer Science and encountered more theoretical subjects, such as Data Structures (in which I failed twice). I realized that, besides liking it, discipline, willpower, and a lot of study are needed—like any profession.',
-            p4: 'In 2008 I entered the job market at a small company called Miziara Software. There were the two owners and four interns, including me. The promise was: "If we sell this product to the first client, the four interns will be hired." Today it would be called a startup, but at the time it was just a company.',
-            p5: 'The idea was interesting: a person with business knowledge would map use cases and screens in an Excel spreadsheet, which would be interpreted by software to generate the application. I can say I started my professional experience head-on, being not only a developer but also QA, infrastructure, product, and any other role needed.',
-            p6: 'After a year and a half on this project as an intern, the software was sold and we were all made full-time. Soon the company was acquired by a large Brazilian telecom company, and I entered the corporate world.',
-            p7: 'After that, my career spanned large financial institutions, public agencies, and research institutes, until an opportunity arose to work abroad—in Ireland, where I have lived since 2017.',
-            p8: 'There I transitioned to an Engineering Manager role in 2020.',
-            p9: 'Throughout my career, I have had the opportunity to work with a wide variety of programming languages and tools.',
-            motivation_title: 'Motivation and Goal',
-            m1: 'In this material, my intention is to put more than 16 years of experience into practice so that you leave with the mindset that, beyond technical repertoire, you need to get hands-on, experiment, and validate your solutions.',
-            m2: 'Although there is much material on distributed systems and system design, this content aims to objectively cover various components and techniques used in critical systems.',
-            m3: 'With a market perspective—having participated in projects at different stages of maturity and architecture—I want to share some of my experience so you do not need to learn the hard way.',
-            m4: 'You will not leave here with a one-size-fits-all solution, but with a repertoire that will help you make better decisions and design resilient, scalable, performant systems with observability.'
-          }
-        }
       },
       auth: {
         welcome_title: 'Welcome to System Design',
@@ -2819,6 +2679,76 @@ const resources = {
             speed: 'Speed:',
             speed_opts: { half: '0.5s', one: '1s', two: '2s' }
           }
+        },
+        canary: {
+          title: 'Canary Deployment Simulator',
+          buttons: {
+            settings: 'Settings',
+            deploy_canary: 'Deploy Canary',
+            pause: 'Pause',
+            resume: 'Resume',
+            increase_traffic: '+10% Traffic',
+            promote: 'Promote to 100%',
+            rollback: 'Rollback',
+            inject_errors: 'Inject Errors',
+            stop_errors: 'Stop Errors',
+            reset: 'Reset'
+          },
+          settings: {
+            title: 'Simulation Settings',
+            canary_traffic: 'Canary Traffic: {{percent}}%',
+            canary_error_rate: 'Canary Error Rate: {{percent}}%',
+            rps: 'Requests/sec: {{value}}',
+            rollback_threshold: 'Auto-Rollback Threshold: {{percent}}%'
+          },
+          labels: {
+            phase: 'Phase',
+            stable_servers: 'Stable Servers',
+            canary_server: 'Canary Server',
+            traffic: 'traffic',
+            requests: 'Requests',
+            errors: 'Errors',
+            metrics: 'Metrics',
+            total_requests: 'Total Requests',
+            canary_requests: 'Canary Requests',
+            canary_error_rate: 'Canary Error Rate',
+            stable_error_rate: 'Stable Error Rate',
+            live_requests: 'Live Requests',
+            no_requests: 'No requests yet. Deploy a canary to start.',
+            event_log: 'Event Log',
+            waiting_logs: 'Waiting for events...'
+          },
+          logs: {
+            deploying_canary: '🚀 Deploying canary version...',
+            canary_deployed: '✅ Canary deployed successfully',
+            promoting_canary: '📈 Promoting canary to 100%...',
+            promotion_complete: '✅ Promotion complete - canary is now stable',
+            rolling_back: '⚠️ Rolling back to stable version...',
+            rollback_complete: '✅ Rollback complete',
+            simulation_reset: '🔄 Simulation reset',
+            traffic_increased: '📈 Traffic increased to {{percent}}%',
+            auto_rollback_triggered: '🚨 Auto-rollback triggered! Error rate: {{rate}}%'
+          },
+          info: {
+            title: 'ℹ️ How to Use',
+            try_this: {
+              title: 'Try This:',
+              item1: 'Deploy a canary and watch traffic distribution',
+              item2: 'Gradually increase traffic to the canary',
+              item3: 'Inject errors to see auto-rollback in action',
+              item4: 'Promote the canary when confident'
+            },
+            observe: {
+              title: 'Observe:',
+              item1: 'Error rates for stable vs canary',
+              item2: 'Request distribution across servers',
+              item3: 'Auto-rollback when threshold is exceeded'
+            },
+            real_world: {
+              title: 'Real World:',
+              text: 'In production, you would monitor latency, error rates, and business metrics before promoting a canary.'
+            }
+          }
         }
       },
       pages: {
@@ -3915,6 +3845,95 @@ const resources = {
           }
         }
       },
+      canary_deployment: {
+        title: 'Canary Deployment',
+        intro: 'A progressive deployment strategy that reduces risk by gradually exposing a new version to a small percentage of users before rolling out to everyone.',
+        how_it_works: {
+          title: 'How It Works',
+          text: 'Canary deployment works by routing a small percentage of production traffic to the new version while the majority continues using the stable version. This allows teams to monitor real-world behavior and catch issues before they affect all users.'
+        },
+        origin: {
+          title: 'Origin of the Name',
+          text: 'The name comes from the practice of coal miners bringing canaries into mines. If dangerous gases were present, the canary would be affected first, alerting miners to danger. Similarly, canary deployments detect problems early with minimal user impact.'
+        },
+        diagram: {
+          users: 'Users',
+          router: 'Router'
+        },
+        phases: {
+          title: 'Deployment Phases',
+          deploy: {
+            title: 'Deploy Canary',
+            desc: 'Deploy the new version alongside the existing stable version without routing any traffic to it yet.'
+          },
+          route: {
+            title: 'Route Traffic',
+            desc: 'Begin routing a small percentage (e.g., 5-10%) of traffic to the canary version.'
+          },
+          monitor: {
+            title: 'Monitor & Analyze',
+            desc: 'Monitor key metrics like error rates, latency, and business KPIs. Compare canary vs stable performance.'
+          },
+          expand: {
+            title: 'Expand or Rollback',
+            desc: 'If metrics are healthy, gradually increase canary traffic. If problems are detected, immediately rollback.'
+          }
+        },
+        benefits: {
+          title: 'Benefits',
+          items: {
+            risk_reduction: {
+              title: 'Reduced Risk',
+              desc: 'Issues affect only a small percentage of users, minimizing blast radius.'
+            },
+            quick_rollback: {
+              title: 'Quick Rollback',
+              desc: 'Problems can be detected and rolled back before they impact all users.'
+            },
+            real_testing: {
+              title: 'Real-World Testing',
+              desc: 'Test with actual production traffic and user behavior, not just synthetic tests.'
+            },
+            gradual_rollout: {
+              title: 'Gradual Confidence',
+              desc: 'Build confidence in the release by progressively increasing exposure.'
+            }
+          }
+        },
+        challenges: {
+          title: 'Challenges',
+          items: {
+            complexity: {
+              title: 'Infrastructure Complexity',
+              desc: 'Requires sophisticated traffic routing, load balancing, and deployment automation.'
+            },
+            monitoring: {
+              title: 'Monitoring Requirements',
+              desc: 'Needs robust observability to compare canary and stable versions effectively.'
+            },
+            db_compat: {
+              title: 'Database Compatibility',
+              desc: 'Schema changes must be backward compatible since both versions run simultaneously.'
+            }
+          }
+        },
+        vs_blue_green: {
+          title: 'Canary vs Blue-Green',
+          aspect: 'Aspect',
+          canary: 'Canary',
+          blue_green: 'Blue-Green',
+          traffic: 'Traffic',
+          traffic_canary: 'Gradual',
+          traffic_bg: 'All-at-once',
+          risk: 'Risk',
+          risk_canary: 'Lower',
+          risk_bg: 'Higher',
+          rollback: 'Rollback',
+          rollback_canary: 'Instant',
+          rollback_bg: 'Instant'
+        },
+        cta_simulator: 'Explore Canary Simulator'
+      },
       coupling: {
         title: 'Coupling in Distributed Systems',
         intro: 'Coupling measures how tightly components in a system are connected or dependent. In distributed systems, its type and level have a strong impact on flexibility, maintainability, and resilience.',
@@ -4476,851 +4495,11 @@ const resources = {
           }
         }
       },
-      youtube: {
-        title: 'YouTube System Design',
-        subtitle: 'How YouTube processes, stores and distributes billions of videos globally',
-        metrics_title: 'Impressive Numbers',
-        metrics: {
-          users: '2.7B+',
-          users_desc: 'Active monthly users',
-          uploads: '500h+',
-          uploads_desc: 'Videos uploaded per minute',
-          views: '1B+',
-          views_desc: 'Hours watched per day'
-        },
-        requirements_title: 'System Requirements',
-        functional_title: 'Functional Requirements',
-        functional_items: [
-          'Upload of videos in multiple formats',
-          'Video processing and transcoding',
-          'Video streaming with multiple qualities',
-          'Custom recommendation system',
-          'Social features (likes, comments, subscriptions)'
-        ],
-        non_functional_title: 'Non-Functional Requirements',
-        non_functional_items: [
-          'High availability (99.99%)',
-          'Global low latency',
-          'Eventual consistency',
-          'Massive horizontal scalability',
-          'Data durability'
-        ],
-        architecture_title: 'System Architecture',
-        upload_processing_title: '1. Upload and Video Processing',
-        upload_pipeline_title: 'Upload Pipeline',
-        upload_pipeline_items: [
-          'Uploads are divided into chunks and sent in parallel via DASH protocol',
-          'Each chunk is verified for integrity and malware',
-          'Metadata is stored in BigTable',
-          'Videos are temporarily stored in Google Cloud Storage'
-        ],
-        video_processing_title: 'Video Processing',
-        video_processing_items: [
-          'Distributed processing system using Kubernetes',
-          'Transcoding to multiple formats (MP4, WebM) and resolutions (144p to 8K)',
-          'Automatic thumbnail generation',
-          'Metadata extraction (duration, resolution, codecs)',
-          'Content analysis via ML for classification and moderation'
-        ],
-        storage_title: '2. Video Storage',
-        video_storage_title: 'Video Storage',
-        video_storage_items: [
-          'Colossus: Google distributed file system',
-          'Geographic replication for durability',
-          '64MB chunks for optimized streaming',
-          'Metadata stored in Bigtable for fast access'
-        ],
-        database_title: 'Database',
-        database_items: [
-          'Vitess (distributed MySQL) for relational data',
-          'BigTable for frequently accessed metadata and data',
-          'Spanner for globally consistent data'
-        ],
-        cdn_title: '3. Content Distribution',
-        cdn_infrastructure_title: 'CDN Infrastructure',
-        cdn_infrastructure_items: [
-          'Google Global Cache (GGC) in thousands of locations',
-          'Edge locations near end users',
-          'QUIC protocol for optimized streaming',
-          'Load balancing inteligente baseado em:'
-        ],
-        load_balancing_factors: [
-          'User location',
-          'Server load',
-          'Network capacity',
-          'Cache hit ratio'
-        ],
-        recommendation_title: '4. Recommendation System',
-        ml_architecture_title: 'ML Architecture',
-        two_phase_desc: 'Two-phase processing:',
-        candidate_generation: 'Candidate Generation: Selects thousands of potential videos',
-        ranking: 'Ranking: Orders candidates using deep learning',
-        features_considered: 'Features considered:',
-        features_list: [
-          'View history',
-          'Demographic data',
-          'Current trends',
-          'Video engagement'
-        ],
-        technical_decisions_title: 'Technical Decisions and Trade-offs',
-        decision_1_title: '1. Eventual vs Strong Consistency',
-        decision_1_text: 'YouTube opted for eventual consistency for counters (views, likes) prioritizing availability and performance. This allows asynchronous updates and better scalability, although it means the numbers may not be accurate in real time.',
-        decision_2_title: '2. Asynchronous Processing',
-        decision_2_text: 'Video processing is done asynchronously, allowing uploads to be confirmed quickly. This improves the user experience but means the videos are not immediately available after upload.',
-        decision_3_title: '3. Aggressive Caching',
-        decision_3_text: 'Popular videos are cached in multiple edge locations, reducing latency and bandwidth costs. The trade-off is the highest use of storage and complexity in cache invalidation.',
-        decision_4_title: '4. Adaptive Quality',
-        decision_4_text: 'Adaptive bitrate streaming (ABR) adjusts the video quality based on the user\'s connection. This ensures a better experience but requires more storage for multiple versions of the same video.',
-        scaling_challenges_title: 'Scaling Challenges',
-        storage_challenge_title: 'Storage',
-        storage_challenge_text: 'Management of exabytes of data with geographic replication and need for fast access. Solution: Distributed file system Colossus with intelligent retention policies.',
-        processing_challenge_title: 'Processing',
-        processing_challenge_text: 'Transcoding of thousands of hours of video per minute. Solution: Distributed pipeline with auto-scaling and job prioritization.',
-        bandwidth_challenge_title: 'Bandwidth',
-        bandwidth_challenge_text: 'Distribution of petabytes of data daily. Solution: Global CDN network and optimized QUIC protocol.',
-        consistency_challenge_title: 'Consistency',
-        consistency_challenge_text: 'Maintain global data consistency. Solution: Use Spanner for critical data and eventual consistency for counters.',
-        evolution_diagrams_title: 'Evolution Diagrams',
-        arch_2005_title: '2005: Monolithic Architecture',
-        users_label: 'Users',
-        web_server_label: 'Web Server',
-        mysql_label: 'MySQL',
-        storage_label: 'Storage',
-        arch_2008_title: '2008: Distributed Architecture',
-        load_balancer_label: 'Load Balancer',
-        bigtable_label: 'BigTable',
-        gfs_label: 'GFS',
-        arch_2020_title: '2020+: Modern Architecture',
-        global_cdn_label: 'Global CDN',
-        upload_service_label: 'Upload Service',
-        transcode_label: 'Transcode',
-        ml_service_label: 'ML Service',
-        analytics_label: 'Analytics',
-        search_label: 'Search',
-        architectural_journey_title: 'Architectural Journey: Context and Decisions',
-        early_days_title: '2005-2006: Early Days',
-        monolithic_architecture_title: 'Monolithic Architecture',
-        early_days_text: 'YouTube started with a simple and monolithic architecture for several reasons:',
-        early_days_reasons: [
-          'Fast development and iteration',
-          'Smaller initial user base and easier management',
-          'Simple deployment and maintenance',
-          'Limited resources of the startup'
-        ],
-        early_days_quote: 'At the beginning, YouTube processed only 2-3 videos per minute. The monolithic architecture was enough to handle this load and allowed the team to focus on product-market fit.',
-        google_acquisition_title: '2006-2008: Google Acquisition and Scale',
-        distributed_transition_title: 'Transition to Distributed Systems',
-        google_acquisition_text: 'The acquisition by Google brought unprecedented challenges and opportunities for scale:',
-        google_acquisition_reasons: [
-          'Migration to Google infrastructure (GFS and BigTable)',
-          'Introduction of load balancing to distribute load',
-          'Separation of concerns into distinct services',
-          'Implementation of distributed caching'
-        ],
-        google_acquisition_quote: 'The migration to BigTable was crucial because MySQL could no longer handle the volume of metadata. The system needed to manage billions of videos and their relationships.',
-        scaling_challenges_period_title: '2008-2015: Scaling Challenges',
-        evolution_optimization_title: 'Evolution and Optimization',
-        scaling_period_text: 'This period was marked by significant technical challenges and innovations:',
-        scaling_period_reasons: [
-          'Development of the recommendation system based on ML',
-          'Implementation of adaptive streaming for different qualities',
-          'Creation of the global CDN network (Google Global Cache)',
-          'Optimization of the streaming protocol (QUIC)'
-        ],
-        scaling_period_quote: 'The introduction of QUIC reduced streaming latency by 30% and significantly improved the experience on unstable mobile networks.',
-        modern_era_title: '2015-Present: Modern Era',
-        modern_innovations_title: 'Modern Architecture and Innovations',
-        modern_era_text: 'The current architecture reflects years of evolution and learning:',
-        modern_era_reasons: [
-          'Specialized microservices for each functionality',
-          'Advanced ML system for personalized recommendations',
-          'Real-time analytics processing',
-          'Support for modern formats (8K, HDR)',
-          'Continuous optimization of bandwidth and storage'
-        ],
-        modern_era_quote: 'The modern YouTube architecture processes more than 500 hours of video per minute, serving personalized content to more than 2 billion monthly users.',
-        key_learnings_title: 'Key Learnings',
-        key_learnings_items: [
-          'Start simple and evolve based on real needs, not speculation',
-          'Invest in distributed infrastructure when the monolith starts showing limitations',
-          'Optimize for the most common use cases and accept trade-offs for edge cases',
-          'User experience should guide architectural decisions, not just technical efficiency'
-        ],
-        evolution_timeline_title: 'Architecture Evolution',
-        timeline_2005: 'Initial release with monolithic architecture and MySQL',
-        timeline_2006: 'Acquisition by Google and migration to Google infrastructure',
-        timeline_2008: 'Introduction of BigTable and distributed processing system',
-        timeline_2012: 'Migration to HTML5 and introduction of ML recommendation system',
-        timeline_2015: 'Adoption of QUIC and improvements in adaptive streaming',
-        timeline_2020: 'Support for 8K, HDR and ML optimizations at scale',
-        references_title: 'References',
-        official_docs_title: 'Official Documentation and Articles',
-        technical_articles_title: 'Technical Articles and Analyses',
-        conferences_title: 'Conferences and Presentations',
-        statistics_title: 'Statistics and Metrics'
-             },
 
-       spotify: {
-         title: 'Spotify System Design',
-         subtitle: 'How Spotify manages, processes and distributes millions of songs in real-time globally',
-         metrics_title: 'Impressive Numbers',
-         metrics: {
-           users: '450M+',
-           users_desc: 'Monthly active users',
-           streams: '100B+',
-           streams_desc: 'Streams per day',
-           songs: '80M+',
-           songs_desc: 'Songs in catalog'
-         },
-         requirements_title: 'System Requirements',
-         functional_title: 'Functional Requirements',
-         functional_items: [
-           'Real-time audio streaming',
-           'Cross-device synchronization',
-           'Personalized recommendation system',
-           'Playlist and library management',
-           'Social features (follow, share)'
-         ],
-         non_functional_title: 'Non-Functional Requirements',
-         non_functional_items: [
-           'Low latency (less than 100ms for song start)',
-           'High availability (99.99%)',
-           'Eventual consistency for social data',
-           'Horizontal scalability',
-           'Fault tolerance'
-         ],
-         architecture_title: 'System Architecture',
-         high_level_title: 'High-Level Architecture',
-         high_level_description: 'Overview of Spotify\'s distributed architecture, showing the main components and their interactions.',
-         streaming_architecture_title: 'Streaming Architecture',
-         streaming_description: 'Audio streaming flow, demonstrating how content is delivered to users through edge caching and adaptive transcoding.',
-         clients_label: 'Clients (Web, Mobile, Desktop)',
-         cdn_cache_label: 'CDN and Edge Cache',
-         load_balancer_label: 'Load Balancer',
-         streaming_service_label: 'Streaming Service',
-         recommendation_service_label: 'Recommendation Service',
-         metadata_service_label: 'Metadata Service',
-         s3_audio_label: 'S3 (Audio)',
-         cassandra_metadata_label: 'Cassandra (Metadata)',
-         redis_cache_label: 'Redis (Cache)',
-         spotify_client_label: 'Spotify Client',
-         edge_cache_label: 'Edge Cache',
-         storage_s3_label: 'Storage (S3)',
-         transcoding_label: 'Transcoding',
-         processing_label: 'Processing',
-         streaming_system_title: '1. Streaming System',
-         streaming_pipeline_title: 'Streaming Pipeline',
-         streaming_pipeline_items: [
-           'HLS (HTTP Live Streaming) protocol for audio delivery',
-           'Audio chunks of 2-10 seconds',
-           'Multiple audio qualities (16-320kbps)',
-           'Adaptive buffering based on connection'
-         ],
-         audio_processing_title: 'Audio Processing',
-         audio_processing_items: [
-           'Transcoding to multiple formats (AAC, Ogg Vorbis)',
-           'Volume normalization (ReplayGain)',
-           'Audio analysis for musical features',
-           'Waveform and preview generation',
-           'DRM and content protection'
-         ],
-         storage_system_title: '2. Storage System',
-         audio_storage_title: 'Audio Storage',
-         audio_storage_items: [
-           'Amazon S3 for music storage',
-           'CDN for global caching of popular content',
-           'Own distributed file system',
-           'Metadata in Cassandra for high availability'
-         ],
-         database_title: 'Database',
-         database_items: [
-           'PostgreSQL for transactional data',
-           'Cassandra for distributed data',
-           'Redis for caching and sessions',
-           'Kafka for event streaming'
-         ],
-         recommendation_system_title: '3. Recommendation System',
-         algorithms_features_title: 'Algorithms and Features',
-         algorithms_features_items: [
-           'Large-scale Collaborative Filtering',
-           'Audio analysis for musical similarity',
-           'Natural Language Processing for lyrics analysis'
-         ],
-         features_considered: 'Features considered:',
-         features_list: [
-           'Playback history',
-           'Followed playlists',
-           'Preferred genres',
-           'Context (time of day, device)'
-         ],
-         realtime_features_title: '4. Real-Time Features',
-         realtime_infrastructure_title: 'Real-Time Infrastructure',
-         realtime_infrastructure_items: [
-           'WebSocket for cross-device synchronization',
-           'Pub/Sub with Kafka for real-time events',
-           'Distributed playback state'
-         ],
-         realtime_features_list: 'Real-time features:',
-         realtime_features_items: [
-           'Remote control between devices',
-           'Collaborative sessions',
-           'Friends activity status',
-           'Instant notifications'
-         ],
-         technical_decisions_title: 'Technical Decisions and Trade-offs',
-         decision_1_title: '1. Buffering vs Latency',
-         decision_1_text: 'Spotify uses adaptive buffering that balances initial latency with streaming quality. More buffer means fewer interruptions but higher latency at the start of playback.',
-         decision_2_title: '2. Caching vs Storage',
-         decision_2_text: 'Popular songs are cached at edge locations, reducing latency but increasing storage costs. The system uses predictive analysis to determine what to cache.',
-         decision_3_title: '3. Consistency vs Availability',
-         decision_3_text: 'Using eventual consistency for playlists and library allows better availability, but may result in temporary inconsistencies between devices.',
-         decision_4_title: '4. Quality vs Bandwidth',
-         decision_4_text: 'Multiple audio qualities allow adaptation to user connection, but require more storage and complexity in transcoding.',
-         scaling_challenges_title: 'Scaling Challenges',
-         global_latency_title: 'Global Latency',
-         global_latency_text: 'Low-latency audio delivery globally. Solution: CDN network and strategic edge caching.',
-         distributed_data_title: 'Distributed Data',
-         distributed_data_text: 'Data synchronization between regions and devices. Solution: Cassandra for distributed data and Kafka for events.',
-         machine_learning_title: 'Machine Learning',
-         machine_learning_text: 'Real-time ML processing for millions of users. Solution: Distributed ML pipeline with pre-computation.',
-         microservices_title: 'Microservices',
-         microservices_text: 'Managing hundreds of microservices. Solution: Backstage for developer portal and service management.',
-         evolution_title: 'Architecture Evolution',
-         timeline_2006_title: 'Initial Architecture',
-         timeline_2006_desc: 'PHP monolith with PostgreSQL, focused on Swedish market.',
-         timeline_2008_title: 'First Scaling',
-         timeline_2008_desc: 'Migration to Python/C++, introduction of distributed cache.',
-         timeline_2011_title: 'Microservices Era',
-         timeline_2011_desc: 'Adoption of microservices, migration to AWS.',
-         timeline_2014_title: 'Event-Driven Architecture',
-         timeline_2014_desc: 'Kafka implementation, asynchronous processing.',
-         timeline_2016_title: 'Cloud Native and ML',
-         timeline_2016_desc: 'Kubernetes, large-scale ML, Backstage.',
-         references_title: 'References',
-         official_docs_title: 'Official Documentation and Articles',
-         technical_articles_title: 'Technical Articles and Analysis',
-         conferences_title: 'Conferences and Presentations',
-         open_source_title: 'Open Source Tools'
-       },
 
-       bitly: {
-         title: 'Bit.ly System Design',
-         subtitle: 'How Bit.ly manages billions of redirects and URL shortening at global scale',
-         metrics_title: 'Impressive Numbers',
-         metrics: {
-           links: '20B+',
-           links_desc: 'Shortened links',
-           redirects: '400M+',
-           redirects_desc: 'Redirects per day',
-           active: '800M+',
-           active_desc: 'Active links'
-         },
-         requirements_title: 'System Requirements',
-         functional_title: 'Functional Requirements',
-         functional_items: [
-           'Long URL shortening',
-           'Fast redirection',
-           'Custom links',
-           'Real-time analytics',
-           'Public API',
-           'Link management and dashboards'
-         ],
-         non_functional_title: 'Non-Functional Requirements',
-         non_functional_items: [
-           'Ultra low latency (less than 50ms)',
-           'High availability (99.99%)',
-           'Data durability',
-           'Horizontal scalability',
-           'Security against abuse',
-           'Strong consistency for URLs'
-         ],
-         architecture_title: 'System Architecture',
-         high_level_title: 'High-Level Architecture',
-         high_level_description: 'Overview of Bit.ly\'s distributed architecture, showing the main components and their interactions.',
-         url_flow_title: 'URL Flow',
-         url_flow_description: 'URL processing flow, from submission to short URL generation.',
-         clients_label: 'Clients (Web, Mobile, API)',
-         cdn_cache_label: 'CDN and Edge Cache',
-         load_balancer_label: 'Load Balancer',
-         shortening_service_label: 'Shortening Service',
-         redirect_service_label: 'Redirect Service',
-         analytics_service_label: 'Analytics Service',
-         mysql_metadata_label: 'MySQL (Metadata)',
-         redis_cache_label: 'Redis (Cache)',
-         cassandra_analytics_label: 'Cassandra (Analytics)',
-         original_url_label: 'Original URL',
-         hash_generation_label: 'Hash Generation',
-         storage_label: 'Storage',
-         short_url_label: 'Short URL',
-         shortening_system_title: '1. Shortening System',
-         short_url_generation_title: 'Short URL Generation',
-         short_url_generation_items: [
-           'Base62 hash algorithm',
-           'Collision verification',
-           'Popular URL caching',
-           'URL validation and sanitization'
-         ],
-         url_types_title: 'URL Types',
-         url_types_items: [
-           'Standard URLs (7 characters)',
-           'Custom URLs',
-           'Expiring URLs',
-           'Tracked URLs'
-         ],
-         storage_system_title: '2. Storage System',
-         url_storage_title: 'URL Storage',
-         url_storage_items: [
-           'MySQL for URL mapping',
-           'Redis for redirect cache',
-           'Cassandra for analytics',
-           'Multi-region replication'
-         ],
-         cache_strategies_title: 'Cache Strategies',
-         cache_strategies_items: [
-           'In-memory cache (Redis)',
-           'CDN for popular URLs',
-           'Local cache on servers',
-           'Invalidation policies'
-         ],
-         analytics_system_title: '3. Analytics System',
-         metrics_collected_title: 'Collected Metrics',
-         metrics_collected_items: [
-           'Clicks and redirects',
-           'Geolocation',
-           'Devices and browsers',
-           'Referrers and campaigns',
-           'Access times'
-         ],
-         processing_title: 'Processing',
-         processing_items: [
-           'Stream processing with Kafka',
-           'Real-time aggregations',
-           'Daily batch processing',
-           'Machine learning for spam detection'
-         ],
-         technical_decisions_title: 'Technical Decisions and Trade-offs',
-         decision_1_title: '1. Hash Size vs Collisions',
-         decision_1_text: '7-character URLs allow trillions of combinations, balancing URL length with collision probability.',
-         decision_2_title: '2. Cache vs Consistency',
-         decision_2_text: 'Extensive cache use improves performance but may cause temporary inconsistencies after URL updates.',
-         decision_3_title: '3. Analytics vs Performance',
-         decision_3_text: 'Detailed metrics collection slightly impacts redirect latency. Asynchronous processing minimizes impact.',
-         decision_4_title: '4. Security vs Usability',
-         decision_4_text: 'Security checks add latency but are necessary to prevent abuse and phishing.',
-         scaling_challenges_title: 'Scaling Challenges',
-         mass_redirect_title: 'Mass Redirects',
-         mass_redirect_text: 'Billions of daily redirects. Solution: Global CDN and distributed cache.',
-         url_generation_title: 'URL Generation',
-         url_generation_text: 'Unique and fast hash generation. Solution: Distributed ID algorithm.',
-         analytics_challenge_title: 'Analytics',
-         analytics_challenge_text: 'Real-time event processing. Solution: Distributed pipeline with Kafka.',
-         spam_abuse_title: 'Spam and Abuse',
-         spam_abuse_text: 'Detection and prevention of malicious URLs. Solution: ML and distributed rate limiting.',
-         evolution_title: 'Architecture Evolution',
-         timeline_2008_title: 'Launch',
-         timeline_2008_desc: 'Python monolith with MySQL.',
-         timeline_2010_title: 'First Scale',
-         timeline_2010_desc: 'Introduction of cache and CDN.',
-         timeline_2012_title: 'Enterprise Focus',
-         timeline_2012_desc: 'Advanced analytics, enterprise APIs.',
-         timeline_2015_title: 'Microservices',
-         timeline_2015_desc: 'Decomposition into smaller services.',
-         timeline_2018_title: 'Modern Stack',
-         timeline_2018_desc: 'Kubernetes, ML for security, modern APIs.',
-         references_title: 'References',
-         official_docs_title: 'Official Documentation and Articles',
-         technical_articles_title: 'Technical Articles and Analysis',
-         conferences_title: 'Conferences and Presentations',
-         tools_sdks_title: 'Tools and SDKs'
-       },
 
-       whatsapp: {
-         title: 'WhatsApp System Design',
-         subtitle: 'How WhatsApp manages billions of real-time messages with end-to-end encryption',
-         metrics_title: 'Impressive Numbers',
-         metrics: {
-           users: '2B+',
-           users_desc: 'Active users',
-           messages: '100B+',
-           messages_desc: 'Messages per day',
-           groups: '1B+',
-           groups_desc: 'Active groups'
-         },
-         requirements_title: 'System Requirements',
-         functional_title: 'Functional Requirements',
-         functional_items: [
-           'Real-time messages (text, audio, video)',
-           'End-to-end encryption',
-           'Groups and broadcasts',
-           'Voice and video calls',
-           'Status and stories',
-           'Multi-device synchronization'
-         ],
-         non_functional_title: 'Non-Functional Requirements',
-         non_functional_items: [
-           'Ultra low latency (less than 100ms)',
-           'High availability (99.999%)',
-           'Eventual consistency',
-           'Security and privacy',
-           'Massive scalability',
-           'Delivery reliability'
-         ],
-         architecture_title: 'System Architecture',
-         high_level_title: 'High-Level Architecture',
-         high_level_description: 'Overview of WhatsApp\'s distributed architecture, showing the main components and their interactions.',
-         message_flow_title: 'Message Flow',
-         message_flow_description: 'Encrypted message flow, demonstrating the process from sending to delivery.',
-         clients_label: 'Clients (Mobile, Web, Desktop)',
-         load_balancer_label: 'Load Balancer',
-         chat_servers_label: 'Chat Servers',
-         presence_servers_label: 'Presence Servers',
-         media_servers_label: 'Media Servers',
-         authentication_label: 'Authentication',
-         key_management_label: 'Key Management',
-         cassandra_messages_label: 'Cassandra (Messages)',
-         redis_cache_label: 'Redis (Cache)',
-         s3_media_label: 'S3 (Media)',
-         sender_label: 'Sender',
-         chat_server_label: 'Chat Server',
-         message_queue_label: 'Message Queue',
-         receiver_label: 'Receiver',
-         encrypt_step: '1. Encrypt',
-         queue_step: '2. Queue',
-         deliver_step: '3. Deliver',
-         messaging_system_title: '1. Messaging System',
-         message_processing_title: 'Message Processing',
-         message_processing_items: [
-           'Modified MQTT protocol for messages',
-           'Signal encryption for E2EE',
-           'Message compression',
-           'Delivery confirmation system'
-         ],
-         message_types_title: 'Message Types',
-         message_types_items: [
-           'Text and emojis',
-           'Media (images, audio, video)',
-           'Documents and files',
-           'Location and contacts',
-           'Temporary messages'
-         ],
-         storage_system_title: '2. Storage System',
-         message_storage_title: 'Message Storage',
-         message_storage_items: [
-           'Cassandra for encrypted messages',
-           'Redis for cache and sessions',
-           'S3 for media and backups',
-           'Selective message retention'
-         ],
-         database_title: 'Database',
-         database_items: [
-           'MySQL for user data',
-           'RocksDB for local storage',
-           'Kafka for events and logs',
-           'ElasticSearch for search'
-         ],
-         realtime_system_title: '3. Real-Time System',
-         realtime_infrastructure_title: 'Real-Time Infrastructure',
-         realtime_infrastructure_items: [
-           'WebSocket for persistent connections',
-           'MQTT for real-time messages',
-           'Distributed presence system'
-         ],
-         realtime_features_list: 'Real-time features:',
-         realtime_features_items: [
-           'Online/offline status',
-           'Typing...',
-           'Read confirmation',
-           'Multi-device synchronization'
-         ],
-         technical_decisions_title: 'Technical Decisions and Trade-offs',
-         decision_1_title: '1. Privacy vs Functionality',
-         decision_1_text: 'E2EE encryption ensures privacy but limits features like global search and cloud backup. WhatsApp prioritizes privacy over advanced functionalities.',
-         decision_2_title: '2. Latency vs Consistency',
-         decision_2_text: 'Using eventual consistency allows fast message delivery, but may result in out-of-order messages in rare cases.',
-         decision_3_title: '3. Storage vs Retention',
-         decision_3_text: 'Messages are stored temporarily on servers until delivery, reducing storage costs but limiting offline functionalities.',
-         decision_4_title: '4. Simplicity vs Features',
-         decision_4_text: 'Interface and features kept simple to ensure performance and usability, even if this means fewer features than competitors.',
-         scaling_challenges_title: 'Scaling Challenges',
-         mass_delivery_title: 'Mass Delivery',
-         mass_delivery_text: 'Message delivery to billions of users. Solution: Distributed queue system and route optimization.',
-         connection_management_title: 'Connection Management',
-         connection_management_text: 'Maintaining millions of simultaneous connections. Solution: Optimized MQTT and intelligent load balancing.',
-         synchronization_title: 'Synchronization',
-         synchronization_text: 'Synchronization between multiple devices. Solution: Versioning system and state merging.',
-         large_groups_title: 'Large Groups',
-         large_groups_text: 'Managing groups with thousands of members. Solution: Broadcast optimization and message caching.',
-         evolution_title: 'Architecture Evolution',
-         timeline_2009_title: 'Initial Version',
-         timeline_2009_desc: 'Simple iOS app, focused on status.',
-         timeline_2011_title: 'Basic Messaging',
-         timeline_2011_desc: 'Chat implementation, modified XMPP.',
-         timeline_2014_title: 'Facebook Acquisition',
-         timeline_2014_desc: 'Massive scale, infrastructure migration.',
-         timeline_2016_title: 'E2E Encryption',
-         timeline_2016_desc: 'Signal protocol implementation.',
-         timeline_2019_title: 'Multi-Device',
-         timeline_2019_desc: 'Native multi-device support, new sync architecture.',
-         references_title: 'References',
-         official_docs_title: 'Official Documentation and Articles',
-         technical_articles_title: 'Technical Articles and Analysis',
-         conferences_title: 'Conferences and Presentations',
-         security_privacy_title: 'Security and Privacy'
-       },
 
-       netflix: {
-         title: 'Netflix System Design',
-         subtitle: 'How Netflix delivers high-quality video streaming to millions of users globally',
-         metrics_title: 'Impressive Numbers',
-         metrics: {
-           subscribers: '230M+',
-           subscribers_desc: 'Global subscribers',
-           streaming_hours: '1B+',
-           streaming_hours_desc: 'Streaming hours per day',
-           internet_traffic: '15%',
-           internet_traffic_desc: 'Of global internet traffic'
-         },
-         requirements_title: 'System Requirements',
-         functional_title: 'Functional Requirements',
-         functional_items: [
-           'Adaptive video streaming',
-           'Personalized recommendation system',
-           'Global content catalog',
-           'Multiple profiles per account',
-           'Continue watching cross-device',
-           'Offline downloads'
-         ],
-         non_functional_title: 'Non-Functional Requirements',
-         non_functional_items: [
-           'Low video start latency (less than 500ms)',
-           'High availability (99.99%)',
-           'Adaptive video quality',
-           'Global scalability',
-           'Content security (DRM)',
-           'CDN cost efficiency'
-         ],
-         architecture_title: 'System Architecture',
-         high_level_title: 'High-Level Architecture',
-         high_level_description: 'Overview of Netflix\'s distributed architecture, showing the main components and their interactions.',
-         clients_label: 'Clients (TV, Mobile, Web)',
-         open_connect_label: 'Open Connect (CDN)',
-         api_gateway_label: 'API Gateway',
-         streaming_service_label: 'Streaming Service',
-         recommendation_service_label: 'Recommendation Service',
-         metadata_service_label: 'Metadata Service',
-         s3_videos_label: 'S3 (Videos)',
-         cassandra_metadata_label: 'Cassandra (Metadata)',
-         evcache_label: 'EVCache (Cache)',
-         streaming_system_title: '1. Streaming System',
-         open_connect_title: 'Open Connect (CDN)',
-         open_connect_items: [
-           'Own CDN optimized for video',
-           'Appliances in partner ISPs',
-           'Hierarchical cache',
-           'Route optimization'
-         ],
-         video_processing_title: 'Video Processing',
-         video_processing_items: [
-           'Parallel transcoding',
-           'Multiple qualities (SD to 4K)',
-           'Adaptive segmentation',
-           'DRM and content protection'
-         ],
-         recommendation_system_title: '2. Recommendation System',
-         algorithms_title: 'Algorithms',
-         algorithms_items: [
-           'Collaborative Filtering',
-           'Content-based Filtering',
-           'Per-profile personalization',
-           'Continuous A/B Testing'
-         ],
-         features_title: 'Features',
-         features_items: [
-           'Viewing history',
-           'Genre preferences',
-           'Navigation behavior',
-           'Context (device, time)'
-         ],
-         data_processing_title: '3. Data Processing',
-         data_pipeline_title: 'Data Pipeline',
-         data_pipeline_items: [
-           'Kafka for event streaming',
-           'Spark for batch processing',
-           'Flink for real-time processing'
-         ],
-         features_list: 'Features:',
-         features_list_items: [
-           'Quality telemetry',
-           'Viewing analytics',
-           'Engagement metrics',
-           'Anomaly detection'
-         ],
-         technical_decisions_title: 'Technical Decisions and Trade-offs',
-         decision_1_title: '1. Own CDN vs. Third-party',
-         decision_1_text: 'Open Connect offers greater control and optimization, but requires significant investment in infrastructure and maintenance.',
-         decision_2_title: '2. Quality vs. Bandwidth',
-         decision_2_text: 'Adaptive streaming balances video quality with network conditions, prioritizing playback continuity.',
-         decision_3_title: '3. Personalization vs. Performance',
-         decision_3_text: 'Highly personalized recommendations require intensive processing. Use of cache and pre-computation reduces latency.',
-         decision_4_title: '4. Consistency vs. Availability',
-         decision_4_text: 'Preference for availability over strong consistency for non-critical metadata, allowing better offline experience.',
-         scaling_challenges_title: 'Scaling Challenges',
-         global_traffic_title: 'Global Traffic',
-         global_traffic_text: 'Content delivery optimization globally. Solution: Open Connect and distributed cache.',
-         video_processing_challenge_title: 'Video Processing',
-         video_processing_challenge_text: 'Transcoding thousands of hours of content. Solution: Parallel and distributed pipeline.',
-         machine_learning_title: 'Machine Learning',
-         machine_learning_text: 'Personalized recommendations at scale. Solution: Distributed models and intelligent cache.',
-         microservices_title: 'Microservices',
-         microservices_text: 'Managing hundreds of services. Solution: Chaos Engineering and resilience.',
-         evolution_title: 'Architecture Evolution',
-         timeline_2007_title: 'Streaming Launch',
-         timeline_2007_desc: 'Streaming launch, basic infrastructure.',
-         timeline_2009_title: 'AWS Migration',
-         timeline_2009_desc: 'Move to cloud, beginning of global scale.',
-         timeline_2011_title: 'Microservices',
-         timeline_2011_desc: 'Monolith decomposition, Chaos Monkey introduction.',
-         timeline_2012_title: 'Open Connect',
-         timeline_2012_desc: 'Own CDN development, global expansion.',
-         timeline_2016_title: 'Adaptive Streaming and ML',
-         timeline_2016_desc: 'Focus on quality and personalization with advanced ML.',
-         references_title: 'References',
-         official_docs_title: 'Official Documentation and Articles',
-         technical_articles_title: 'Technical Articles and Analysis',
-         open_source_title: 'Open Source Tools',
-         conferences_title: 'Conferences and Presentations'
-       },
 
-       uber: {
-         title: 'Uber System Design',
-         subtitle: 'How Uber connects millions of drivers and passengers in real-time globally',
-         metrics_title: 'Impressive Numbers',
-         metrics: {
-           monthly_users: '130M+',
-           monthly_users_desc: 'Monthly active users',
-           active_drivers: '5M+',
-           active_drivers_desc: 'Active drivers',
-           trips_per_day: '20M+',
-           trips_per_day_desc: 'Trips per day'
-         },
-         requirements_title: 'System Requirements',
-         functional_title: 'Functional Requirements',
-         functional_items: [
-           'Real-time matching of drivers and passengers',
-           'Precise geolocation',
-           'Price and time estimation',
-           'Payment processing',
-           'Rating system',
-           'Multiple service types (UberX, Black, etc.)'
-         ],
-         non_functional_title: 'Non-Functional Requirements',
-         non_functional_items: [
-           'Ultra-low latency (less than 100ms)',
-           'High availability (99.99%)',
-           'Eventual consistency',
-           'Global scalability',
-           'Fault tolerance',
-           'Security and privacy'
-         ],
-         architecture_title: 'System Architecture',
-         high_level_title: 'High-Level Architecture',
-         high_level_description: 'Overview of Uber\'s distributed architecture, showing the main components and their interactions.',
-         apps_label: 'Apps (Passenger, Driver)',
-         api_gateway_label: 'API Gateway',
-         matching_service_label: 'Matching Service',
-         location_service_label: 'Location Service',
-         trip_service_label: 'Trip Service',
-         payment_service_label: 'Payment Service',
-         analytics_label: 'Analytics',
-         postgresql_data_label: 'PostgreSQL (Data)',
-         redis_cache_label: 'Redis (Cache)',
-         kafka_events_label: 'Kafka (Events)',
-         matching_flow_title: 'Matching Flow',
-         matching_flow_description: 'Matching flow between passengers and drivers, demonstrating the process from request to match.',
-         request_label: 'Request',
-         processing_label: 'Processing',
-         driver_selection_label: 'Driver Selection',
-         match_label: 'Match',
-         matching_system_title: '1. Matching System',
-         matching_algorithm_title: 'Matching Algorithm',
-         matching_algorithm_items: [
-           'Geohash for spatial search',
-           'Quadtrees for indexing',
-           'Request batching',
-           'Multi-objective optimization'
-         ],
-         factors_considered_title: 'Factors Considered',
-         factors_considered_items: [
-           'Distance and estimated time',
-           'Driver rating',
-           'Vehicle type',
-           'Cancellation history',
-           'Local supply and demand'
-         ],
-         location_system_title: '2. Location System',
-         location_processing_title: 'Location Processing',
-         location_processing_items: [
-           'Real-time updates',
-           'Kalman filter',
-           'Map matching',
-           'Route prediction'
-         ],
-         optimizations_title: 'Optimizations',
-         optimizations_items: [
-           'Distributed spatial cache',
-           'Coordinate compression',
-           'Update batching',
-           'Geographic sharding'
-         ],
-         realtime_system_title: '3. Real-time System',
-         realtime_infrastructure_title: 'Real-time Infrastructure',
-         realtime_infrastructure_items: [
-           'WebSocket for persistent connections',
-           'Kafka for events',
-           'Redis for real-time state'
-         ],
-         features_label: 'Features:',
-         features_list_items: [
-           'Real-time location',
-           'Dynamic ETA',
-           'Surge pricing',
-           'Trip status'
-         ],
-         technical_decisions_title: 'Technical Decisions and Trade-offs',
-         decision_1_title: '1. Precision vs Latency',
-         decision_1_text: 'Balance between matching precision and response time. Use of batching and approximations to reduce latency.',
-         decision_2_title: '2. Consistency vs Availability',
-         decision_2_text: 'Preference for availability in non-critical data. Strong consistency only in financial transactions.',
-         decision_3_title: '3. Cost vs Quality',
-         decision_3_text: 'Optimization of computational resources vs matching quality. Use of adaptive algorithms based on demand.',
-         decision_4_title: '4. Cache vs Freshness',
-         decision_4_text: 'Aggressive caching for performance vs up-to-date data. Selective invalidation based on relevance.',
-         scaling_challenges_title: 'Scaling Challenges',
-         mass_matching_title: 'Mass Matching',
-         mass_matching_text: 'Processing millions of matches per day. Solution: Geographic sharding and batching.',
-         realtime_data_title: 'Real-time Data',
-         realtime_data_text: 'Mass location updates. Solution: Distributed pipeline and filters.',
-         global_consistency_title: 'Global Consistency',
-         global_consistency_text: 'Synchronization between regions. Solution: Multi-region replication and cache.',
-         demand_peaks_title: 'Demand Peaks',
-         demand_peaks_text: 'Handling events and peak hours. Solution: Auto-scaling and surge pricing.',
-         evolution_title: 'Architecture Evolution',
-         timeline_2009_title: 'Initial MVP',
-         timeline_2009_desc: 'Ruby on Rails monolith, manual matching.',
-         timeline_2011_title: 'First Scale',
-         timeline_2011_desc: 'Automatic matching, Redis for dispatch.',
-         timeline_2014_title: 'Microservices',
-         timeline_2014_desc: 'Decomposition into services, Kafka for events.',
-         timeline_2016_title: 'Global Scale',
-         timeline_2016_desc: 'Multi-region, geographic optimization.',
-         timeline_2019_title: 'ML and Optimization',
-         timeline_2019_desc: 'Machine learning for matching, demand prediction.',
-         references_title: 'References',
-         official_docs_title: 'Official Documentation and Articles',
-         technical_articles_title: 'Technical Articles and Analysis',
-         open_source_title: 'Open Source Tools',
-         conferences_title: 'Conferences and Presentations'
-       },
 
        security: {
          title: 'Security in Distributed Systems',
@@ -6161,54 +5340,6 @@ const resources = {
          ]
        },
 
-       real_cases: {
-         title: 'Learn from the Giants',
-        subtitle: 'Dive into the architectures and technical decisions of companies that define the future of technology',
-        why_study_title: 'Why study real cases?',
-        benefits: {
-          practical_learning: {
-            title: 'Practical Learning',
-            desc: 'See how real problems are solved at global scale, with practical decisions and trade-offs.'
-          },
-          technical_evolution: {
-            title: 'Technical Evolution',
-            desc: 'Understand how systems evolve from MVPs to architectures that serve billions of users.'
-          },
-          valuable_insights: {
-            title: 'Valuable Insights',
-            desc: 'Discover patterns and practices that can be applied to projects of any scale.'
-          }
-        },
-        featured_title: 'Featured Case Studies',
-        cases: {
-          netflix: {
-            title: 'Netflix',
-            desc: 'How to deliver video streaming to millions of users with low latency and high quality.'
-          },
-          uber: {
-            title: 'Uber',
-            desc: 'Real-time matching system and geolocation at global scale.'
-          },
-          whatsapp: {
-            title: 'WhatsApp',
-            desc: 'Real-time messaging architecture with end-to-end encryption.'
-          },
-          spotify: {
-            title: 'Spotify',
-            desc: 'Audio streaming and music recommendation at massive scale.'
-          }
-        },
-        explore_button: 'Explore →',
-        tech_decisions_title: 'Technical Decisions that Changed the Game',
-        decisions: {
-          netflix_open_connect: 'Why did Netflix decide to build its own CDN instead of using third-party solutions? A decision that revolutionized content delivery and saved millions in bandwidth costs.',
-          whatsapp_erlang: 'The choice of Erlang for WhatsApp\'s backend allowed just 50 engineers to support 1 billion users. A lesson on choosing the right technology for the right problem.',
-          uber_geolocation: 'The development of H3, a hierarchical geospatial indexing system, solved complex problems of route optimization and real-time matching.',
-          spotify_microservices: 'The migration to a microservices architecture allowed Spotify to scale its teams and infrastructure independently, accelerating innovation.',
-          youtube_vitess: 'The development of Vitess to scale MySQL horizontally became an essential solution for many other companies facing similar data challenges.',
-          bitly_consistency: 'The choice of strong consistency for short URLs while maintaining eventual consistency for analytics demonstrates how to balance different requirements in the same system.'
-        }
-      },
     },
 
 
@@ -6325,146 +5456,6 @@ const resources = {
         mark_complete: 'Marcar como concluído',
         completed_label: 'Concluído',
         reading_time: '{{minutes}} min de leitura',
-        ds101: {
-          title: 'Sistemas Distribuídos 101',
-          intro_lead: 'Ao abordar conceitos de sistemas distribuídos muitas vezes as pessoas me perguntam:',
-          intro_q1: '"Mas afinal o que caracteriza um sistema distribuído?"',
-          intro_q2: '"Como eu sei se trabalho com sistemas distribuídos?"',
-          video_title: 'O que são Sistemas Distribuídos?',
-          definition_intro: 'Por definição, podemos dizer que um sistema distribuído é:',
-          definition_quote: 'Uma coleção de programas de computador que utilizam recursos computacionais em vários pontos centrais de computação diferentes para atingir um objetivo comum e compartilhado.',
-          metaphor_intro: 'Vamos exemplificar aqui o que é um sistema distribuído utilizando uma hamburgueria como metáfora.',
-          section1_title: '1. Hamburgueria Simples (Monolítica)',
-          section1_intro: 'Imagine que você acabou de abrir uma hamburgueria, e contratou um único funcionário. Essa pessoa faz tudo:',
-          section1_items_1: 'Atende o cliente, anota o pedido',
-          section1_items_2: 'Prepara o hambúrguer',
-          section1_items_3: 'Recebe o pagamento',
-          section1_items_4: 'Entrega o pedido',
-          section1_conclusion: 'Nesse cenário, a hamburgueria funciona como um sistema monolítico:',
-          section1_points_1: 'Tudo acontece em um único "nó" (o funcionário)',
-          section1_points_2: 'Ele faz todas as tarefas, o que pode causar atrasos se houver muitos pedidos, se houver uma demanda inesperada',
-          section1_points_3: 'Se o funcionário parar, a hamburgueria para (ponto único de falha)',
-          section2_title: '2. Divisão de Tarefas (O Início da Distribuição)',
-          section2_intro: 'A hamburgueria começa a crescer, e você percebe que uma única pessoa não consegue fazer tudo de maneira eficiente. Então, você contrata mais uma pessoa:',
-          section2_items_1: 'Um funcionário anota o pedido e recebe o pagamento',
-          section2_items_2: 'O outro prepara o hambúrguer',
-          section2_desc: 'Aqui, já começamos a ver um sistema distribuído básico:',
-          section2_points_1: 'As tarefas são divididas entre diferentes "nós" (funcionários)',
-          section2_points_2: 'Enquanto um recebe o pedido e o pagamento, o outro já pode estar preparando o hambúrguer, aumentando a eficiência',
-          section2_points_3: 'No entanto, ainda há dependência entre os dois: se um falhar, a operação pode ser impactada',
-          section3_title: '3. Expansão e Otimização (Sistema Distribuído Parcialmente Independente)',
-          section3_intro: 'Com o sucesso, a sua hamburgueria começa a atrair muitos clientes, então a estrutura precisa se expandir. Agora, temos:',
-          section3_items_1: 'Vários atendentes',
-          section3_items_2: 'Uma cozinha com mais cozinheiros, cada um especializado em um tipo de preparo (carnes, montagem, frituras)',
-          section3_items_3: 'Múltiplas chapas, grelhas, estações de trabalho',
-          section3_items_4: 'Um sistema de senhas para organizar o fluxo de pedidos',
-          section3_desc: 'Nesse ponto, a hamburgueria está mais próxima de um sistema distribuído clássico:',
-          section3_points_1: 'Descentralização das responsabilidades: Cada funcionário tem uma função específica (atendentes, cozinheiros, caixa)',
-          section3_points_2: 'Paralelismo: Vários pedidos podem ser processados ao mesmo tempo, tanto no atendimento quanto na cozinha',
-          section3_points_3: 'Resiliência: Se um cozinheiro falhar ou está sobrecarregado, outro pode assumir parte da tarefa ou ajudar',
-          section4_title: '4. Hamburgueria Grande (Rede de Sistemas Distribuídos)',
-          section4_intro: 'Agora, a hamburgueria se tornou uma rede com várias filiais, e cada filial é um sistema distribuído por si só. Há:',
-          section4_items_1: 'Filiais conectadas: Cada uma pode operar de forma independente, mas compartilham um sistema central de pedidos online',
-          section4_items_2: 'Coordenação central: Um sistema central (como um aplicativo de delivery) pode distribuir pedidos entre as diferentes filiais',
-          section4_items_3: 'Balanceamento de carga: Se uma filial está sobrecarregada, o sistema pode direcionar novos pedidos para outra filial',
-          section4_desc: 'Aqui, a hamburgueria exemplifica bem um sistema distribuído complexo:',
-          section4_points_1: 'Escalabilidade: A rede pode crescer conforme mais filiais são adicionadas',
-          section4_points_2: 'Tolerância a falhas: Se uma filial estiver offline, as outras continuam funcionando',
-          section4_points_3: 'Latência otimizada: Os pedidos são distribuídos para a filial mais próxima ou com menor carga',
-          conclusion_title: 'Conclusão: Sistemas Distribuídos e Hamburguerias',
-          conclusion_point_1: 'No início, a hamburgueria era um sistema centralizado e monolítico, com um único ponto de falha',
-          conclusion_point_2: 'Conforme cresce, ela distribui as tarefas entre funcionários, otimizando processos e aumentando a resiliência e eficiência',
-          conclusion_point_3: 'Em um sistema distribuído complexo (uma rede de hamburguerias), há independência, paralelismo, balanceamento de carga e redundância',
-          conclusion_para: 'Esse modelo ajuda a visualizar como, ao dividir as responsabilidades e distribuir o trabalho entre diferentes "nós", podemos aumentar a eficiência e resiliência de um sistema, seja ele uma hamburgueria ou um sistema computacional.'
-        },
-        sd101: {
-          title: 'System Design 101',
-          sec1: {
-            title: '1.1 O que é System Design?',
-            p1: 'System Design é o processo de projetar a arquitetura de um sistema de software de maneira que ele seja escalável, eficiente, resiliente e atenda aos requisitos de negócio e técnicos. Envolve a definição de componentes de software, infraestrutura, protocolos de comunicação e o gerenciamento de dados para garantir que o sistema funcione corretamente sob diferentes cargas e ambientes.',
-            p2: 'Na prática, System Design é frequentemente discutido em entrevistas técnicas, especialmente para vagas de engenharia. A habilidade de projetar sistemas em grande escala, como redes sociais, instant messaging systems, ou plataformas de e-commerce, é testada. O foco é resolver problemas reais considerando restrições de tempo, recursos e complexidade.'
-          },
-          sec2: {
-            title: '1.2 Por que System Design é importante?',
-            p1: 'A importância está ligada à necessidade de construir sistemas que lidem com grandes volumes de dados, muitos usuários simultâneos e cenários imprevisíveis de falhas. Com a complexidade crescente e o aumento de dados, é crucial pensar não apenas na funcionalidade imediata, mas também na escalabilidade, manutenibilidade e confiabilidade de longo prazo.',
-            lead: 'Motivos pelos quais System Design é crucial:',
-            bullets: {
-              scalability_title: 'Escalabilidade:',
-              scalability_desc: 'Sistemas precisam crescer conforme usuários e dados aumentam. Um bom design permite escalar sem comprometer o desempenho.',
-              resilience_title: 'Resiliência:',
-              resilience_desc: 'Sistemas devem continuar operando mesmo diante de falhas de componentes. System Design trata como lidar com esses cenários.',
-              efficiency_title: 'Eficiência:',
-              efficiency_desc: 'Otimizar uso de recursos é essencial para baixo custo de operação e respostas rápidas.',
-              maintainability_title: 'Manutenibilidade:',
-              maintainability_desc: 'A well-designed system makes future maintenance, changes, and expansions easier.',
-              ux_title: 'Experiência do Usuário:',
-              ux_desc: 'Sistemas mal projetados impactam diretamente usuários, causando lentidão, indisponibilidade ou perda de dados.'
-            }
-          },
-          sec3: {
-            title: '1.3 Principais conceitos e terminologias',
-            intro: 'No processo de System Design, é comum o uso de várias terminologias. A seguir, conceitos fundamentais abordados neste material:',
-            terms: {
-              scalability_label: 'Escalabilidade',
-              scalability_desc: 'Capacidade de um sistema crescer para atender carga crescente. Pode ser horizontal (adicionando máquinas) ou vertical (melhorando hardware).',
-              consistency_label: 'Consistência',
-              consistency_desc: 'Garantir que todos os nós tenham os mesmos dados em um momento. Forte: dados iguais em todos os lugares; eventual: converge ao longo do tempo.',
-              availability_label: 'Disponibilidade',
-              availability_desc: 'Capacidade de estar disponível mesmo sob falhas parciais. Alta disponibilidade mantém o serviço sob condições adversas.',
-              latency_label: 'Latência',
-              latency_desc: 'Tempo para dados atravessarem o sistema. Baixa latência é essencial para boa experiência, especialmente em tempo real.',
-              throughput_label: 'Throughput',
-              throughput_desc: 'Quantidade de dados processada em um período.',
-              fault_tolerance_label: 'Tolerância a falhas',
-              fault_tolerance_desc: 'Habilidade de continuar funcionando corretamente mesmo quando parte falha.',
-              load_balancing_label: 'Balanceamento de carga',
-              load_balancing_desc: 'Distribuição de tarefas/requisições entre servidores para otimizar recursos e evitar sobrecarga.',
-              sharding_label: 'Sharding',
-              sharding_desc: 'Dividir um banco de dados/armazenamento em partes menores (shards) para aumentar escalabilidade e desempenho.',
-              replication_label: 'Replicação',
-              replication_desc: 'Cópia de dados entre servidores/nós para garantir redundância e aumentar disponibilidade.'
-            }
-          },
-          sec4: {
-            title: '1.4 Tópicos abordados',
-            intro: 'Este material abordará, em detalhes, os seguintes tópicos:',
-            topics: {
-              fundamentals_label: 'Fundamentos de sistemas distribuídos',
-              fundamentals_desc: 'Explorar conceitos como escalabilidade, consistência e disponibilidade, e como balanceá-los.',
-              components_label: 'Componentes de um sistema moderno',
-              components_desc: 'Cache, bancos de dados, balanceadores de carga, filas de mensagens e componentes críticos de arquiteturas de larga escala.',
-              principles_label: 'Princípios de design',
-              principles_desc: 'Como abordar o design para maximizar escalabilidade, eficiência e resiliência.',
-              consistency_strategies_label: 'Estratégias de consistência',
-              consistency_strategies_desc: 'Explore different consistency models (eventual and strong) and how to apply them in distributed systems.',
-              complex_design_label: 'Design de sistemas complexos',
-              complex_design_desc: 'Passo a passo de como projetar sistemas como mensagens instantâneas, e-commerce ou redes sociais.',
-              monitoring_label: 'Monitoramento e manutenção',
-              monitoring_desc: 'Boas práticas para monitorar produção, detectar problemas e agir rapidamente.',
-              interviews_label: 'Entrevistas técnicas de System Design',
-              interviews_desc: 'Como se preparar para perguntas de design, com exemplos e respostas detalhadas.'
-            }
-          },
-          intro: {
-            title: 'Introdução',
-            lead: 'Antes de entrarmos no assunto a ser abordado, vou fazer uma breve introdução sobre a minha carreira, a motivação de produzir esse conteúdo e o objetivo a ser alcançado ao fim da leitura.',
-            about_title: 'Sobre Mim',
-            p1: 'Minha jornada no mundo da programação começou em meados de 2001, quando tinha 12 anos e entrei em um curso de HTML, Javascript, Photoshop e Macromedia Flash.',
-            p2: 'Após fazer esse curso, já sabia o que queria fazer da minha vida: Programar! Desde então até entrar na faculdade fiz dezenas de sites para amigos, família, etc. Usava toda oportunidade que tinha para oferecer um site e aprimorar meus conhecimentos.',
-            p3: 'Em 2007 entrei na universidade para cursar Ciências da Computação e me deparei com matérias mais teóricas, como Estrutura de Dados (na qual reprovei 2 vezes). Vi que era preciso, além de gostar, disciplina, força de vontade e muito estudo, como qualquer profissão.',
-            p4: 'Em 2008 entrei no mercado de trabalho, em uma pequena empresa chamada Miziara Software. Eram os 2 donos e 4 estagiários, contando comigo. A promessa era: "Se vendermos esse produto pro primeiro cliente os 4 estagiários serão contratados." Hoje em dia se usaria o termo startup, mas na época era só empresa mesmo.',
-            p5: 'A ideia era interessante, uma pessoa que tivesse o conhecimento do negócio fazia o mapeamento dos casos de uso e telas em uma planilha Excel, que seria interpretada por um software e então a aplicação gerada. Posso dizer que já comecei minha experiência profissional entrando de cabeça sendo, além de desenvolvedor, também QA, infra, produto e qualquer outro cargo.',
-            p6: 'Após 1 ano e meio nesse projeto como estagiário, o software foi vendido e fomos todos efetivados. Logo a empresa foi comprada por uma grande empresa de Telecom brasileira e entrei no mundo "corporativo".',
-            p7: 'Após isso, minha vida profissional navegou em grandes instituições financeiras, órgãos públicos e institutos de pesquisa, até aparecer uma oportunidade de trabalhar no exterior, mais precisamente na Irlanda onde moro desde 2017.',
-            p8: 'Aqui foi onde fiz minha transição de carreira para atuar como Engineering Manager em 2020.',
-            p9: 'Em toda minha carreira, tive a oportunidade de trabalhar com uma infinidade de linguagens de programação e ferramentas.',
-            motivation_title: 'Motivação e Objetivo',
-            m1: 'Nesse material a minha intenção é poder colocar todos esses mais de 16 anos de experiência em prática, de forma que você saia daqui com uma mentalidade de que é necessário, além de ter um repertório técnico, colocar a mão na massa, experimentar e validar suas soluções.',
-            m2: 'Apesar de haverem muitos materiais sobre sistemas distribuídos, system design, etc, esse material vem para tentar de forma objetiva passar por diversos tipos de componentes e técnicas utilizados em sistemas críticos.',
-            m3: 'Com uma visão de mercado, tendo participado de projetos em diferentes estágios de maturidade e arquitetura, quero aqui passar um pouco da minha experiência para que você não precise sentir na pele.',
-            m4: 'Você não sairá daqui com uma solução "one size fits all", mas sim com um repertório que te ajudará a tomar melhores decisões e projetar sistemas resilientes, escaláveis, performáticos e com observabilidade.'
-          }
-        }
       },
       auth: {
         welcome_title: 'Bem-vindo ao System Design',
@@ -9057,6 +8048,76 @@ const resources = {
             speed_opts: { half: '0.5s', one: '1s', two: '2s' }
           }
         },
+        canary: {
+          title: 'Simulador de Canary Deployment',
+          buttons: {
+            settings: 'Configurações',
+            deploy_canary: 'Deploy Canary',
+            pause: 'Pausar',
+            resume: 'Retomar',
+            increase_traffic: '+10% Tráfego',
+            promote: 'Promover para 100%',
+            rollback: 'Rollback',
+            inject_errors: 'Injetar Erros',
+            stop_errors: 'Parar Erros',
+            reset: 'Resetar'
+          },
+          settings: {
+            title: 'Configurações da Simulação',
+            canary_traffic: 'Tráfego Canary: {{percent}}%',
+            canary_error_rate: 'Taxa de Erro Canary: {{percent}}%',
+            rps: 'Requisições/seg: {{value}}',
+            rollback_threshold: 'Limite para Auto-Rollback: {{percent}}%'
+          },
+          labels: {
+            phase: 'Fase',
+            stable_servers: 'Servidores Estáveis',
+            canary_server: 'Servidor Canary',
+            traffic: 'tráfego',
+            requests: 'Requisições',
+            errors: 'Erros',
+            metrics: 'Métricas',
+            total_requests: 'Total de Requisições',
+            canary_requests: 'Requisições Canary',
+            canary_error_rate: 'Taxa de Erro Canary',
+            stable_error_rate: 'Taxa de Erro Estável',
+            live_requests: 'Requisições em Tempo Real',
+            no_requests: 'Nenhuma requisição ainda. Faça deploy de um canary para começar.',
+            event_log: 'Log de Eventos',
+            waiting_logs: 'Aguardando eventos...'
+          },
+          logs: {
+            deploying_canary: '🚀 Fazendo deploy da versão canary...',
+            canary_deployed: '✅ Canary implantado com sucesso',
+            promoting_canary: '📈 Promovendo canary para 100%...',
+            promotion_complete: '✅ Promoção completa - canary agora é estável',
+            rolling_back: '⚠️ Revertendo para versão estável...',
+            rollback_complete: '✅ Rollback completo',
+            simulation_reset: '🔄 Simulação reiniciada',
+            traffic_increased: '📈 Tráfego aumentado para {{percent}}%',
+            auto_rollback_triggered: '🚨 Auto-rollback ativado! Taxa de erro: {{rate}}%'
+          },
+          info: {
+            title: 'ℹ️ Como Usar',
+            try_this: {
+              title: 'Experimente:',
+              item1: 'Faça deploy de um canary e observe a distribuição de tráfego',
+              item2: 'Aumente gradualmente o tráfego para o canary',
+              item3: 'Injete erros para ver o auto-rollback em ação',
+              item4: 'Promova o canary quando estiver confiante'
+            },
+            observe: {
+              title: 'Observe:',
+              item1: 'Taxas de erro entre estável e canary',
+              item2: 'Distribuição de requisições entre servidores',
+              item3: 'Auto-rollback quando o limite é excedido'
+            },
+            real_world: {
+              title: 'Mundo Real:',
+              text: 'Em produção, você monitoraria latência, taxas de erro e métricas de negócio antes de promover um canary.'
+            }
+          }
+        },
 
         coupling: {
           title: 'Acoplamento em Sistemas Distribuídos',
@@ -10225,6 +9286,95 @@ const resources = {
         },
 
       },
+      canary_deployment: {
+        title: 'Canary Deployment',
+        intro: 'Uma estratégia de deployment progressivo que reduz riscos expondo gradualmente uma nova versão a uma pequena porcentagem de usuários antes de liberar para todos.',
+        how_it_works: {
+          title: 'Como Funciona',
+          text: 'O canary deployment funciona roteando uma pequena porcentagem do tráfego de produção para a nova versão enquanto a maioria continua usando a versão estável. Isso permite que as equipes monitorem o comportamento real e detectem problemas antes que afetem todos os usuários.'
+        },
+        origin: {
+          title: 'Origem do Nome',
+          text: 'O nome vem da prática de mineradores de carvão que levavam canários para as minas. Se gases perigosos estivessem presentes, o canário seria afetado primeiro, alertando os mineradores. Da mesma forma, canary deployments detectam problemas cedo com impacto mínimo.'
+        },
+        diagram: {
+          users: 'Usuários',
+          router: 'Roteador'
+        },
+        phases: {
+          title: 'Fases do Deployment',
+          deploy: {
+            title: 'Deploy do Canary',
+            desc: 'Faça deploy da nova versão junto com a versão estável existente, sem rotear tráfego para ela ainda.'
+          },
+          route: {
+            title: 'Rotear Tráfego',
+            desc: 'Comece a rotear uma pequena porcentagem (ex: 5-10%) do tráfego para a versão canary.'
+          },
+          monitor: {
+            title: 'Monitorar e Analisar',
+            desc: 'Monitore métricas chave como taxas de erro, latência e KPIs de negócio. Compare o desempenho canary vs estável.'
+          },
+          expand: {
+            title: 'Expandir ou Rollback',
+            desc: 'Se as métricas estiverem saudáveis, aumente gradualmente o tráfego canary. Se problemas forem detectados, faça rollback imediatamente.'
+          }
+        },
+        benefits: {
+          title: 'Benefícios',
+          items: {
+            risk_reduction: {
+              title: 'Risco Reduzido',
+              desc: 'Problemas afetam apenas uma pequena porcentagem de usuários, minimizando o raio de explosão.'
+            },
+            quick_rollback: {
+              title: 'Rollback Rápido',
+              desc: 'Problemas podem ser detectados e revertidos antes de impactar todos os usuários.'
+            },
+            real_testing: {
+              title: 'Teste no Mundo Real',
+              desc: 'Teste com tráfego de produção real e comportamento de usuários, não apenas testes sintéticos.'
+            },
+            gradual_rollout: {
+              title: 'Confiança Gradual',
+              desc: 'Construa confiança no release aumentando progressivamente a exposição.'
+            }
+          }
+        },
+        challenges: {
+          title: 'Desafios',
+          items: {
+            complexity: {
+              title: 'Complexidade de Infraestrutura',
+              desc: 'Requer roteamento de tráfego sofisticado, balanceamento de carga e automação de deployment.'
+            },
+            monitoring: {
+              title: 'Requisitos de Monitoramento',
+              desc: 'Necessita de observabilidade robusta para comparar versões canary e estável efetivamente.'
+            },
+            db_compat: {
+              title: 'Compatibilidade de Banco de Dados',
+              desc: 'Mudanças de schema devem ser retrocompatíveis já que ambas versões rodam simultaneamente.'
+            }
+          }
+        },
+        vs_blue_green: {
+          title: 'Canary vs Blue-Green',
+          aspect: 'Aspecto',
+          canary: 'Canary',
+          blue_green: 'Blue-Green',
+          traffic: 'Tráfego',
+          traffic_canary: 'Gradual',
+          traffic_bg: 'Tudo de uma vez',
+          risk: 'Risco',
+          risk_canary: 'Menor',
+          risk_bg: 'Maior',
+          rollback: 'Rollback',
+          rollback_canary: 'Instantâneo',
+          rollback_bg: 'Instantâneo'
+        },
+        cta_simulator: 'Explorar Simulador Canary'
+      },
       monitoring_maintenance: {
         main: {
           title: 'Monitoramento e Manutenção de Sistemas Distribuídos',
@@ -10683,900 +9833,12 @@ const resources = {
         }
       },
 
-      real_cases: {
-        title: 'Aprenda com os Gigantes',
-        subtitle: 'Mergulhe nas arquiteturas e decisões técnicas das empresas que definem o futuro da tecnologia',
-        why_study_title: 'Por que estudar casos reais?',
-        benefits: {
-          practical_learning: {
-            title: 'Aprendizado Prático',
-            desc: 'Veja como problemas reais são resolvidos em escala global, com decisões e trade-offs práticos.'
-          },
-          technical_evolution: {
-            title: 'Evolução Técnica',
-            desc: 'Entenda como sistemas evoluem de MVPs para arquiteturas que atendem bilhões de usuários.'
-          },
-          valuable_insights: {
-            title: 'Insights Valiosos',
-            desc: 'Descubra padrões e práticas que podem ser aplicados em projetos de qualquer escala.'
-          }
-        },
-        featured_title: 'Casos de Estudo em Destaque',
-        cases: {
-          netflix: {
-            title: 'Netflix',
-            desc: 'Como entregar streaming de vídeo para milhões de usuários com baixa latência e alta qualidade.'
-          },
-          uber: {
-            title: 'Uber',
-            desc: 'Sistema de matching em tempo real e geolocalização em escala global.'
-          },
-          whatsapp: {
-            title: 'WhatsApp',
-            desc: 'Arquitetura de mensagens em tempo real com criptografia ponta a ponta.'
-          },
-          spotify: {
-            title: 'Spotify',
-            desc: 'Streaming de áudio e recomendação de música em escala massiva.'
-          }
-        },
-        explore_button: 'Explorar →',
-        tech_decisions_title: 'Decisões Técnicas que Mudaram o Jogo',
-        decisions: {
-          netflix_open_connect: 'Por que a Netflix decidiu construir sua própria CDN em vez de usar soluções de terceiros? Uma decisão que revolucionou a entrega de conteúdo e economizou milhões em custos de banda.',
-          whatsapp_erlang: 'A escolha do Erlang para o backend do WhatsApp permitiu que apenas 50 engenheiros suportassem 1 bilhão de usuários. Uma lição sobre escolher a tecnologia certa para o problema certo.',
-          uber_geolocation: 'O desenvolvimento do H3, um sistema de indexação geoespacial hierárquico, resolveu problemas complexos de otimização de rotas e matching em tempo real.',
-          spotify_microservices: 'A migração para uma arquitetura de microsserviços permitiu ao Spotify escalar seus times e sua infraestrutura de forma independente, acelerando a inovação.',
-          youtube_vitess: 'O desenvolvimento do Vitess para escalar MySQL horizontalmente se tornou uma solução essencial para muitas outras empresas enfrentando desafios similares de dados.',
-          bitly_consistency: 'A escolha de consistência forte para URLs curtas enquanto mantém consistência eventual para analytics demonstra como balancear requisitos diferentes no mesmo sistema.'
-        }
-      },
 
-      youtube: {
-        title: 'YouTube System Design',
-        subtitle: 'Como o YouTube processa, armazena e distribui bilhões de vídeos globalmente',
-        metrics_title: 'Números Impressionantes',
-        metrics: {
-          users: '2.7B+',
-          users_desc: 'Usuários ativos mensais',
-          uploads: '500h+',
-          uploads_desc: 'De vídeo enviados por minuto',
-          views: '1B+',
-          views_desc: 'Horas assistidas por dia'
-        },
-        requirements_title: 'Requisitos do Sistema',
-        functional_title: 'Requisitos Funcionais',
-        functional_items: [
-          'Upload de vídeos em múltiplos formatos',
-          'Processamento e transcodificação de vídeos',
-          'Streaming de vídeo com múltiplas qualidades',
-          'Sistema de recomendação personalizado',
-          'Funcionalidades sociais (likes, comentários, inscrições)'
-        ],
-        non_functional_title: 'Requisitos Não-Funcionais',
-        non_functional_items: [
-          'Alta disponibilidade (99.99%)',
-          'Baixa latência global',
-          'Consistência eventual',
-          'Escalabilidade horizontal massiva',
-          'Durabilidade dos dados'
-        ],
-        architecture_title: 'Arquitetura do Sistema',
-        upload_processing_title: '1. Upload e Processamento de Vídeos',
-        upload_pipeline_title: 'Pipeline de Upload',
-        upload_pipeline_items: [
-          'Uploads são divididos em chunks e enviados paralelamente via protocolo DASH',
-          'Cada chunk é verificado para integridade e malware',
-          'Metadata é armazenada no BigTable',
-          'Vídeos são temporariamente armazenados no Google Cloud Storage'
-        ],
-        video_processing_title: 'Processamento de Vídeo',
-        video_processing_items: [
-          'Sistema distribuído de processamento usando Kubernetes',
-          'Transcodificação para múltiplos formatos (MP4, WebM) e resoluções (144p até 8K)',
-          'Geração de thumbnails automática',
-          'Extração de metadados (duração, resolução, codecs)',
-          'Análise de conteúdo via ML para classificação e moderação'
-        ],
-        storage_title: '2. Sistema de Armazenamento',
-        video_storage_title: 'Armazenamento de Vídeos',
-        video_storage_items: [
-          'Colossus: Sistema de arquivos distribuído do Google',
-          'Replicação geográfica para durabilidade',
-          'Chunks de 64MB para otimização de streaming',
-          'Metadata armazenada em Bigtable para acesso rápido'
-        ],
-        database_title: 'Banco de Dados',
-        database_items: [
-          'Vitess (MySQL distribuído) para dados relacionais',
-          'BigTable para metadados e dados de acesso frequente',
-          'Spanner para dados globalmente consistentes'
-        ],
-        cdn_title: '3. Distribuição de Conteúdo',
-        cdn_infrastructure_title: 'Infraestrutura de CDN',
-        cdn_infrastructure_items: [
-          'Google Global Cache (GGC) em milhares de localizações',
-          'Edge locations próximas aos usuários finais',
-          'Protocolo QUIC para streaming otimizado',
-          'Load balancing inteligente baseado em:'
-        ],
-        load_balancing_factors: [
-          'Localização do usuário',
-          'Carga do servidor',
-          'Capacidade de rede',
-          'Cache hit ratio'
-        ],
-        recommendation_title: '4. Sistema de Recomendação',
-        ml_architecture_title: 'Arquitetura de ML',
-        two_phase_desc: 'Processamento em duas fases:',
-        candidate_generation: 'Candidate Generation: Seleciona milhares de vídeos potenciais',
-        ranking: 'Ranking: Ordena os candidatos usando deep learning',
-        features_considered: 'Features consideradas:',
-        features_list: [
-          'Histórico de visualização',
-          'Dados demográficos',
-          'Tendências atuais',
-          'Engajamento do vídeo'
-        ],
-        technical_decisions_title: 'Decisões Técnicas e Trade-offs',
-        decision_1_title: '1. Consistência Eventual vs Forte',
-        decision_1_text: 'YouTube optou por consistência eventual para contadores (views, likes) priorizando disponibilidade e performance. Isso permite atualizações assíncronas e melhor escalabilidade, embora signifique que os números podem não ser precisos em tempo real.',
-        decision_2_title: '2. Processamento Assíncrono',
-        decision_2_text: 'O processamento de vídeos é feito de forma assíncrona, permitindo que uploads sejam confirmados rapidamente. Isso melhora a experiência do usuário mas significa que os vídeos não estão disponíveis imediatamente após o upload.',
-        decision_3_title: '3. Caching Agressivo',
-        decision_3_text: 'Videos populares são cacheados em múltiplas edge locations, reduzindo latência e custos de bandwidth. O trade-off é o maior uso de storage e complexidade na invalidação de cache.',
-        decision_4_title: '4. Qualidade Adaptativa',
-        decision_4_text: 'O streaming adaptativo (ABR) ajusta a qualidade do vídeo baseado na conexão do usuário. Isso garante melhor experiência mas requer mais storage para múltiplas versões do mesmo vídeo.',
-        scaling_challenges_title: 'Desafios de Escala',
-        storage_challenge_title: 'Storage',
-        storage_challenge_text: 'Gerenciamento de exabytes de dados com replicação geográfica e necessidade de acesso rápido. Solução: Sistema de arquivos distribuído Colossus com políticas de retenção inteligentes.',
-        processing_challenge_title: 'Processamento',
-        processing_challenge_text: 'Transcodificação de milhares de horas de vídeo por minuto. Solução: Pipeline distribuído com auto-scaling e priorização de jobs.',
-        bandwidth_challenge_title: 'Bandwidth',
-        bandwidth_challenge_text: 'Distribuição de petabytes de dados diariamente. Solução: Rede global de CDNs e protocolo QUIC otimizado.',
-        consistency_challenge_title: 'Consistência',
-        consistency_challenge_text: 'Manter dados consistentes globalmente. Solução: Uso de Spanner para dados críticos e consistência eventual para contadores.',
-        evolution_diagrams_title: 'Diagramas de Evolução',
-        arch_2005_title: '2005: Arquitetura Monolítica',
-        users_label: 'Usuários',
-        web_server_label: 'Web Server',
-        mysql_label: 'MySQL',
-        storage_label: 'Storage',
-        arch_2008_title: '2008: Arquitetura Distribuída',
-        load_balancer_label: 'Load Balancer',
-        bigtable_label: 'BigTable',
-        gfs_label: 'GFS',
-        arch_2020_title: '2020+: Arquitetura Moderna',
-        global_cdn_label: 'Global CDN',
-        upload_service_label: 'Upload Service',
-        transcode_label: 'Transcode',
-        ml_service_label: 'ML Service',
-        analytics_label: 'Analytics',
-        search_label: 'Search',
-        architectural_journey_title: 'Jornada Arquitetural: Contexto e Decisões',
-        early_days_title: '2005-2006: Os Primeiros Dias',
-        monolithic_architecture_title: 'Arquitetura Monolítica',
-        early_days_text: 'O YouTube começou com uma arquitetura simples e monolítica por várias razões:',
-        early_days_reasons: [
-          'Velocidade de desenvolvimento e iteração rápida',
-          'Base de usuários inicial menor e mais gerenciável',
-          'Simplicidade de deploy e manutenção',
-          'Recursos limitados da startup'
-        ],
-        early_days_quote: 'No início, o YouTube processava apenas 2-3 vídeos por minuto. A arquitetura monolítica era suficiente para lidar com essa carga e permitia que a equipe se concentrasse em product-market fit.',
-        google_acquisition_title: '2006-2008: Aquisição Google e Escala',
-        distributed_transition_title: 'Transição para Sistemas Distribuídos',
-        google_acquisition_text: 'A aquisição pelo Google trouxe desafios e oportunidades de escala sem precedentes:',
-        google_acquisition_reasons: [
-          'Migração para infraestrutura Google (GFS e BigTable)',
-          'Introdução de load balancing para distribuir carga',
-          'Separação de concerns em serviços distintos',
-          'Implementação de caching distribuído'
-        ],
-        google_acquisition_quote: 'A mudança para BigTable foi crucial pois o MySQL não conseguia mais lidar com o volume de metadados. O sistema precisava gerenciar bilhões de vídeos e suas relações.',
-        scaling_challenges_period_title: '2008-2015: Desafios de Escala',
-        evolution_optimization_title: 'Evolução e Otimização',
-        scaling_period_text: 'Este período foi marcado por grandes desafios técnicos e inovações:',
-        scaling_period_reasons: [
-          'Desenvolvimento do sistema de recomendação baseado em ML',
-          'Implementação de streaming adaptativo para diferentes qualidades',
-          'Criação da rede global de CDNs (Google Global Cache)',
-          'Otimização do protocolo de streaming (QUIC)'
-        ],
-        scaling_period_quote: 'A introdução do QUIC reduziu a latência de streaming em 30% e melhorou significativamente a experiência em redes móveis instáveis.',
-        modern_era_title: '2015-Presente: Era Moderna',
-        modern_innovations_title: 'Arquitetura Moderna e Inovações',
-        modern_era_text: 'A arquitetura atual reflete anos de evolução e aprendizado:',
-        modern_era_reasons: [
-          'Microserviços especializados para cada funcionalidade',
-          'Sistema de ML avançado para recomendações personalizadas',
-          'Processamento em tempo real de analytics',
-          'Suporte a formatos modernos (8K, HDR)',
-          'Otimização contínua de bandwidth e storage'
-        ],
-        modern_era_quote: 'A arquitetura moderna do YouTube processa mais de 500 horas de vídeo por minuto, servindo conteúdo personalizado para mais de 2 bilhões de usuários mensais.',
-        key_learnings_title: 'Principais Aprendizados',
-        key_learnings_items: [
-          'Comece simples e evolua baseado em necessidades reais, não em especulações',
-          'Invista em infraestrutura distribuída quando o monolito começar a mostrar limitações',
-          'Otimize para os casos de uso mais comuns e aceite trade-offs para casos edge',
-          'A experiência do usuário deve guiar decisões arquiteturais, não apenas eficiência técnica'
-        ],
-        evolution_timeline_title: 'Evolução da Arquitetura',
-        timeline_2005: 'Lançamento inicial com arquitetura monolítica e MySQL',
-        timeline_2006: 'Aquisição pelo Google e migração para infraestrutura Google',
-        timeline_2008: 'Introdução do BigTable e sistema de processamento distribuído',
-        timeline_2012: 'Migração para HTML5 e introdução do sistema de recomendação ML',
-        timeline_2015: 'Adoção do QUIC e melhorias no streaming adaptativo',
-        timeline_2020: 'Suporte a 8K, HDR e otimizações de ML em larga escala',
-        references_title: 'Referências',
-        official_docs_title: 'Documentação e Artigos Oficiais',
-        technical_articles_title: 'Artigos Técnicos e Análises',
-        conferences_title: 'Conferências e Apresentações',
-        statistics_title: 'Estatísticas e Métricas'
-      },
 
-      spotify: {
-        title: 'Spotify System Design',
-        subtitle: 'Como o Spotify gerencia, processa e distribui milhões de músicas em tempo real globalmente',
-        metrics_title: 'Números Impressionantes',
-        metrics: {
-          users: '450M+',
-          users_desc: 'Usuários ativos mensais',
-          streams: '100B+',
-          streams_desc: 'Streams por dia',
-          songs: '80M+',
-          songs_desc: 'Músicas no catálogo'
-        },
-        requirements_title: 'Requisitos do Sistema',
-        functional_title: 'Requisitos Funcionais',
-        functional_items: [
-          'Streaming de áudio em tempo real',
-          'Sincronização entre dispositivos',
-          'Sistema de recomendação personalizado',
-          'Gerenciamento de playlists e biblioteca',
-          'Funcionalidades sociais (seguir, compartilhar)'
-        ],
-        non_functional_title: 'Requisitos Não-Funcionais',
-        non_functional_items: [
-          'Baixa latência (menor que 100ms para início da música)',
-          'Alta disponibilidade (99.99%)',
-          'Consistência eventual para dados sociais',
-          'Escalabilidade horizontal',
-          'Tolerância a falhas'
-        ],
-        architecture_title: 'Arquitetura do Sistema',
-        high_level_title: 'Arquitetura de Alto Nível',
-        high_level_description: 'Visão geral da arquitetura distribuída do Spotify, mostrando os principais componentes e suas interações.',
-        streaming_architecture_title: 'Arquitetura de Streaming',
-        streaming_description: 'Fluxo de streaming de áudio, demonstrando como o conteúdo é entregue aos usuários através de edge caching e transcodificação adaptativa.',
-        clients_label: 'Clientes (Web, Mobile, Desktop)',
-        cdn_cache_label: 'CDN e Edge Cache',
-        load_balancer_label: 'Load Balancer',
-        streaming_service_label: 'Serviço de Streaming',
-        recommendation_service_label: 'Serviço de Recomendação',
-        metadata_service_label: 'Serviço de Metadados',
-        s3_audio_label: 'S3 (Áudio)',
-        cassandra_metadata_label: 'Cassandra (Metadados)',
-        redis_cache_label: 'Redis (Cache)',
-        spotify_client_label: 'Cliente Spotify',
-        edge_cache_label: 'Edge Cache',
-        storage_s3_label: 'Storage (S3)',
-        transcoding_label: 'Transcodificação',
-        processing_label: 'Processamento',
-        streaming_system_title: '1. Sistema de Streaming',
-        streaming_pipeline_title: 'Pipeline de Streaming',
-        streaming_pipeline_items: [
-          'Protocolo HLS (HTTP Live Streaming) para entrega de áudio',
-          'Chunks de áudio de 2-10 segundos',
-          'Múltiplas qualidades de áudio (16-320kbps)',
-          'Buffering adaptativo baseado na conexão'
-        ],
-        audio_processing_title: 'Processamento de Áudio',
-        audio_processing_items: [
-          'Transcodificação para múltiplos formatos (AAC, Ogg Vorbis)',
-          'Normalização de volume (ReplayGain)',
-          'Análise de áudio para features musicais',
-          'Geração de waveforms e previews',
-          'DRM e proteção de conteúdo'
-        ],
-        storage_system_title: '2. Sistema de Armazenamento',
-        audio_storage_title: 'Armazenamento de Áudio',
-        audio_storage_items: [
-          'Amazon S3 para armazenamento de músicas',
-          'CDN para cache global de conteúdo popular',
-          'Sistema de arquivos distribuído próprio',
-          'Metadata em Cassandra para alta disponibilidade'
-        ],
-        database_title: 'Banco de Dados',
-        database_items: [
-          'PostgreSQL para dados transacionais',
-          'Cassandra para dados distribuídos',
-          'Redis para caching e sessões',
-          'Kafka para streaming de eventos'
-        ],
-        recommendation_system_title: '3. Sistema de Recomendação',
-        algorithms_features_title: 'Algoritmos e Features',
-        algorithms_features_items: [
-          'Collaborative Filtering em larga escala',
-          'Análise de áudio para similaridade musical',
-          'Natural Language Processing para análise de letras'
-        ],
-        features_considered: 'Features consideradas:',
-        features_list: [
-          'Histórico de reprodução',
-          'Playlists seguidas',
-          'Gêneros preferidos',
-          'Contexto (hora do dia, dispositivo)'
-        ],
-        realtime_features_title: '4. Funcionalidades em Tempo Real',
-        realtime_infrastructure_title: 'Infraestrutura Real-time',
-        realtime_infrastructure_items: [
-          'WebSocket para sincronização entre dispositivos',
-          'Pub/Sub com Kafka para eventos em tempo real',
-          'Estado de reprodução distribuído'
-        ],
-        realtime_features_list: 'Features em tempo real:',
-        realtime_features_items: [
-          'Controle remoto entre dispositivos',
-          'Sessões colaborativas',
-          'Status de atividade de amigos',
-          'Notificações instantâneas'
-        ],
-        technical_decisions_title: 'Decisões Técnicas e Trade-offs',
-        decision_1_title: '1. Buffering vs Latência',
-        decision_1_text: 'Spotify utiliza buffering adaptativo que equilibra a latência inicial com a qualidade do streaming. Mais buffer significa menos interrupções mas maior latência no início da reprodução.',
-        decision_2_title: '2. Caching vs Storage',
-        decision_2_text: 'Músicas populares são cacheadas em edge locations, reduzindo latência mas aumentando custos de storage. O sistema usa análise preditiva para determinar o que cachear.',
-        decision_3_title: '3. Consistência vs Disponibilidade',
-        decision_3_text: 'Uso de consistência eventual para playlists e biblioteca permite melhor disponibilidade, mas pode resultar em inconsistências temporárias entre dispositivos.',
-        decision_4_title: '4. Qualidade vs Bandwidth',
-        decision_4_text: 'Múltiplas qualidades de áudio permitem adaptação à conexão do usuário, mas requerem mais storage e complexidade na transcodificação.',
-        scaling_challenges_title: 'Desafios de Escala',
-        global_latency_title: 'Latência Global',
-        global_latency_text: 'Entrega de áudio com baixa latência globalmente. Solução: Rede de CDNs e edge caching estratégico.',
-        distributed_data_title: 'Dados Distribuídos',
-        distributed_data_text: 'Sincronização de dados entre regiões e dispositivos. Solução: Cassandra para dados distribuídos e Kafka para eventos.',
-        machine_learning_title: 'Machine Learning',
-        machine_learning_text: 'Processamento de ML em tempo real para milhões de usuários. Solução: Pipeline distribuído de ML com pré-computação.',
-        microservices_title: 'Microserviços',
-        microservices_text: 'Gerenciamento de centenas de microserviços. Solução: Backstage para developer portal e gestão de serviços.',
-        evolution_title: 'Evolução da Arquitetura',
-        timeline_2006_title: 'Arquitetura Inicial',
-        timeline_2006_desc: 'Monolito PHP com PostgreSQL, focado no mercado sueco.',
-        timeline_2008_title: 'Primeira Escala',
-        timeline_2008_desc: 'Migração para Python/C++, introdução de cache distribuído.',
-        timeline_2011_title: 'Era dos Microserviços',
-        timeline_2011_desc: 'Adoção de microserviços, migração para AWS.',
-        timeline_2014_title: 'Arquitetura Event-Driven',
-        timeline_2014_desc: 'Implementação do Kafka, processamento assíncrono.',
-        timeline_2016_title: 'Cloud Native e ML',
-        timeline_2016_desc: 'Kubernetes, ML em larga escala, Backstage.',
-        references_title: 'Referências',
-        official_docs_title: 'Documentação e Artigos Oficiais',
-        technical_articles_title: 'Artigos Técnicos e Análises',
-        conferences_title: 'Conferências e Apresentações',
-        open_source_title: 'Ferramentas Open Source'
-      },
 
-      bitly: {
-        title: 'Bit.ly System Design',
-        subtitle: 'Como o Bit.ly gerencia bilhões de redirecionamentos e encurtamentos de URLs em escala global',
-        metrics_title: 'Números Impressionantes',
-        metrics: {
-          links: '20B+',
-          links_desc: 'Links encurtados',
-          redirects: '400M+',
-          redirects_desc: 'Redirecionamentos por dia',
-          active: '800M+',
-          active_desc: 'Links ativos'
-        },
-        requirements_title: 'Requisitos do Sistema',
-        functional_title: 'Requisitos Funcionais',
-        functional_items: [
-          'Encurtamento de URLs longas',
-          'Redirecionamento rápido',
-          'Links personalizados',
-          'Analytics em tempo real',
-          'API pública',
-          'Gestão de links e dashboards'
-        ],
-        non_functional_title: 'Requisitos Não-Funcionais',
-        non_functional_items: [
-          'Latência ultra baixa (menor que 50ms)',
-          'Alta disponibilidade (99.99%)',
-          'Durabilidade dos dados',
-          'Escalabilidade horizontal',
-          'Segurança contra abusos',
-          'Consistência forte para URLs'
-        ],
-        architecture_title: 'Arquitetura do Sistema',
-        high_level_title: 'Arquitetura de Alto Nível',
-        high_level_description: 'Visão geral da arquitetura distribuída do Bit.ly, mostrando os principais componentes e suas interações.',
-        url_flow_title: 'Fluxo de URLs',
-        url_flow_description: 'Fluxo de processamento de URLs, desde a submissão até a geração da URL curta.',
-        clients_label: 'Clientes (Web, Mobile, API)',
-        cdn_cache_label: 'CDN e Edge Cache',
-        load_balancer_label: 'Load Balancer',
-        shortening_service_label: 'Serviço de Encurtamento',
-        redirect_service_label: 'Serviço de Redirecionamento',
-        analytics_service_label: 'Serviço de Analytics',
-        mysql_metadata_label: 'MySQL (Metadados)',
-        redis_cache_label: 'Redis (Cache)',
-        cassandra_analytics_label: 'Cassandra (Analytics)',
-        original_url_label: 'URL Original',
-        hash_generation_label: 'Geração de Hash',
-        storage_label: 'Armazenamento',
-        short_url_label: 'URL Curta',
-        shortening_system_title: '1. Sistema de Encurtamento',
-        short_url_generation_title: 'Geração de URLs Curtas',
-        short_url_generation_items: [
-          'Algoritmo de hash base62',
-          'Verificação de colisões',
-          'Cache de URLs populares',
-          'Validação e sanitização de URLs'
-        ],
-        url_types_title: 'Tipos de URLs',
-        url_types_items: [
-          'URLs padrão (7 caracteres)',
-          'URLs personalizadas',
-          'URLs com expiração',
-          'URLs com tracking'
-        ],
-        storage_system_title: '2. Sistema de Armazenamento',
-        url_storage_title: 'Armazenamento de URLs',
-        url_storage_items: [
-          'MySQL para mapeamento de URLs',
-          'Redis para cache de redirecionamento',
-          'Cassandra para analytics',
-          'Replicação multi-região'
-        ],
-        cache_strategies_title: 'Estratégias de Cache',
-        cache_strategies_items: [
-          'Cache em memória (Redis)',
-          'CDN para URLs populares',
-          'Cache local nos servidores',
-          'Políticas de invalidação'
-        ],
-        analytics_system_title: '3. Sistema de Analytics',
-        metrics_collected_title: 'Métricas Coletadas',
-        metrics_collected_items: [
-          'Cliques e redirecionamentos',
-          'Geolocalização',
-          'Dispositivos e browsers',
-          'Referrers e campanhas',
-          'Horários de acesso'
-        ],
-        processing_title: 'Processamento',
-        processing_items: [
-          'Stream processing com Kafka',
-          'Agregações em tempo real',
-          'Batch processing diário',
-          'Machine learning para detecção de spam'
-        ],
-        technical_decisions_title: 'Decisões Técnicas e Trade-offs',
-        decision_1_title: '1. Tamanho do Hash vs Colisões',
-        decision_1_text: 'URLs de 7 caracteres permitem trilhões de combinações, balanceando comprimento da URL com probabilidade de colisões.',
-        decision_2_title: '2. Cache vs Consistência',
-        decision_2_text: 'Uso extensivo de cache melhora performance mas pode causar inconsistências temporárias após atualizações de URLs.',
-        decision_3_title: '3. Analytics vs Performance',
-        decision_3_text: 'Coleta de métricas detalhadas impacta levemente a latência de redirecionamento. Processamento assíncrono minimiza o impacto.',
-        decision_4_title: '4. Segurança vs Usabilidade',
-        decision_4_text: 'Verificações de segurança adicionam latência mas são necessárias para prevenir abusos e phishing.',
-        scaling_challenges_title: 'Desafios de Escala',
-        mass_redirect_title: 'Redirecionamento em Massa',
-        mass_redirect_text: 'Bilhões de redirecionamentos diários. Solução: CDN global e cache distribuído.',
-        url_generation_title: 'Geração de URLs',
-        url_generation_text: 'Geração única e rápida de hashes. Solução: Algoritmo distribuído de IDs.',
-        analytics_challenge_title: 'Analytics',
-        analytics_challenge_text: 'Processamento de eventos em tempo real. Solução: Pipeline distribuído com Kafka.',
-        spam_abuse_title: 'Spam e Abuso',
-        spam_abuse_text: 'Detecção e prevenção de URLs maliciosas. Solução: ML e rate limiting distribuído.',
-        evolution_title: 'Evolução da Arquitetura',
-        timeline_2008_title: 'Lançamento',
-        timeline_2008_desc: 'Monolito Python com MySQL.',
-        timeline_2010_title: 'Primeira Escala',
-        timeline_2010_desc: 'Introdução de cache e CDN.',
-        timeline_2012_title: 'Foco Enterprise',
-        timeline_2012_desc: 'Analytics avançado, APIs empresariais.',
-        timeline_2015_title: 'Microsserviços',
-        timeline_2015_desc: 'Decomposição em serviços menores.',
-        timeline_2018_title: 'Stack Moderna',
-        timeline_2018_desc: 'Kubernetes, ML para segurança, APIs modernas.',
-        references_title: 'Referências',
-        official_docs_title: 'Documentação e Artigos Oficiais',
-        technical_articles_title: 'Artigos Técnicos e Análises',
-        conferences_title: 'Conferências e Apresentações',
-        tools_sdks_title: 'Ferramentas e SDKs'
-      },
 
-      whatsapp: {
-        title: 'WhatsApp System Design',
-        subtitle: 'Como o WhatsApp gerencia bilhões de mensagens em tempo real com criptografia ponta a ponta',
-        metrics_title: 'Números Impressionantes',
-        metrics: {
-          users: '2B+',
-          users_desc: 'Usuários ativos',
-          messages: '100B+',
-          messages_desc: 'Mensagens por dia',
-          groups: '1B+',
-          groups_desc: 'Grupos ativos'
-        },
-        requirements_title: 'Requisitos do Sistema',
-        functional_title: 'Requisitos Funcionais',
-        functional_items: [
-          'Mensagens em tempo real (texto, áudio, vídeo)',
-          'Criptografia ponta a ponta',
-          'Grupos e broadcasts',
-          'Chamadas de voz e vídeo',
-          'Status e stories',
-          'Sincronização multi-dispositivo'
-        ],
-        non_functional_title: 'Requisitos Não-Funcionais',
-        non_functional_items: [
-          'Latência ultra baixa (menor que 100ms)',
-          'Alta disponibilidade (99.999%)',
-          'Consistência eventual',
-          'Segurança e privacidade',
-          'Escalabilidade massiva',
-          'Confiabilidade na entrega'
-        ],
-        architecture_title: 'Arquitetura do Sistema',
-        high_level_title: 'Arquitetura de Alto Nível',
-        high_level_description: 'Visão geral da arquitetura distribuída do WhatsApp, mostrando os principais componentes e suas interações.',
-        message_flow_title: 'Fluxo de Mensagens',
-        message_flow_description: 'Fluxo de mensagens criptografadas, demonstrando o processo desde o envio até a entrega.',
-        clients_label: 'Clientes (Mobile, Web, Desktop)',
-        load_balancer_label: 'Load Balancer',
-        chat_servers_label: 'Servidores de Chat',
-        presence_servers_label: 'Servidores de Presença',
-        media_servers_label: 'Servidores de Mídia',
-        authentication_label: 'Autenticação',
-        key_management_label: 'Gerenciamento de Chaves',
-        cassandra_messages_label: 'Cassandra (Mensagens)',
-        redis_cache_label: 'Redis (Cache)',
-        s3_media_label: 'S3 (Mídia)',
-        sender_label: 'Remetente',
-        chat_server_label: 'Servidor de Chat',
-        message_queue_label: 'Fila de Mensagens',
-        receiver_label: 'Destinatário',
-        encrypt_step: '1. Encrypt',
-        queue_step: '2. Queue',
-        deliver_step: '3. Deliver',
-        messaging_system_title: '1. Sistema de Mensagens',
-        message_processing_title: 'Processamento de Mensagens',
-        message_processing_items: [
-          'Protocolo MQTT modificado para mensagens',
-          'Criptografia Signal para E2EE',
-          'Compressão de mensagens',
-          'Sistema de confirmação de entrega'
-        ],
-        message_types_title: 'Tipos de Mensagens',
-        message_types_items: [
-          'Texto e emojis',
-          'Mídia (imagens, áudio, vídeo)',
-          'Documentos e arquivos',
-          'Localização e contatos',
-          'Mensagens temporárias'
-        ],
-        storage_system_title: '2. Sistema de Armazenamento',
-        message_storage_title: 'Armazenamento de Mensagens',
-        message_storage_items: [
-          'Cassandra para mensagens criptografadas',
-          'Redis para cache e sessões',
-          'S3 para mídia e backups',
-          'Retenção seletiva de mensagens'
-        ],
-        database_title: 'Banco de Dados',
-        database_items: [
-          'MySQL para dados de usuário',
-          'RocksDB para armazenamento local',
-          'Kafka para eventos e logs',
-          'ElasticSearch para busca'
-        ],
-        realtime_system_title: '3. Sistema de Tempo Real',
-        realtime_infrastructure_title: 'Infraestrutura Real-time',
-        realtime_infrastructure_items: [
-          'WebSocket para conexões persistentes',
-          'MQTT para mensagens em tempo real',
-          'Sistema de presença distribuído'
-        ],
-        realtime_features_list: 'Features em tempo real:',
-        realtime_features_items: [
-          'Status online/offline',
-          'Digitando...',
-          'Confirmação de leitura',
-          'Sincronização multi-dispositivo'
-        ],
-        technical_decisions_title: 'Decisões Técnicas e Trade-offs',
-        decision_1_title: '1. Privacidade vs Funcionalidade',
-        decision_1_text: 'Criptografia E2EE garante privacidade mas limita features como busca global e backup em nuvem. WhatsApp prioriza privacidade sobre funcionalidades avançadas.',
-        decision_2_title: '2. Latência vs Consistência',
-        decision_2_text: 'Uso de consistência eventual permite entrega rápida de mensagens, mas pode resultar em mensagens fora de ordem em casos raros.',
-        decision_3_title: '3. Storage vs Retenção',
-        decision_3_text: 'Mensagens são armazenadas temporariamente nos servidores até a entrega, reduzindo custos de storage mas limitando funcionalidades offline.',
-        decision_4_title: '4. Simplicidade vs Recursos',
-        decision_4_text: 'Interface e funcionalidades mantidas simples para garantir performance e usabilidade, mesmo que isso signifique menos recursos que concorrentes.',
-        scaling_challenges_title: 'Desafios de Escala',
-        mass_delivery_title: 'Entrega em Massa',
-        mass_delivery_text: 'Entrega de mensagens para bilhões de usuários. Solução: Sistema de filas distribuído e otimização de rotas.',
-        connection_management_title: 'Gerenciamento de Conexões',
-        connection_management_text: 'Manutenção de milhões de conexões simultâneas. Solução: MQTT otimizado e load balancing inteligente.',
-        synchronization_title: 'Sincronização',
-        synchronization_text: 'Sincronização entre múltiplos dispositivos. Solução: Sistema de versionamento e merge de estados.',
-        large_groups_title: 'Grupos Grandes',
-        large_groups_text: 'Gerenciamento de grupos com milhares de membros. Solução: Otimização de broadcasts e cache de mensagens.',
-        evolution_title: 'Evolução da Arquitetura',
-        timeline_2009_title: 'Versão Inicial',
-        timeline_2009_desc: 'App iOS simples, focado em status.',
-        timeline_2011_title: 'Mensagens Básicas',
-        timeline_2011_desc: 'Implementação de chat, XMPP modificado.',
-        timeline_2014_title: 'Aquisição Facebook',
-        timeline_2014_desc: 'Escala massiva, migração infraestrutura.',
-        timeline_2016_title: 'Criptografia E2E',
-        timeline_2016_desc: 'Implementação do protocolo Signal.',
-        timeline_2019_title: 'Multi-Dispositivo',
-        timeline_2019_desc: 'Suporte nativo multi-device, nova arquitetura de sync.',
-        references_title: 'Referências',
-        official_docs_title: 'Documentação e Artigos Oficiais',
-        technical_articles_title: 'Artigos Técnicos e Análises',
-        conferences_title: 'Conferências e Apresentações',
-        security_privacy_title: 'Segurança e Privacidade'
-      },
 
-      netflix: {
-        title: 'Netflix System Design',
-        subtitle: 'Como a Netflix entrega streaming de vídeo em alta qualidade para milhões de usuários globalmente',
-        metrics_title: 'Números Impressionantes',
-        metrics: {
-          subscribers: '230M+',
-          subscribers_desc: 'Assinantes globais',
-          streaming_hours: '1B+',
-          streaming_hours_desc: 'Horas de streaming por dia',
-          internet_traffic: '15%',
-          internet_traffic_desc: 'Do tráfego global de internet'
-        },
-        requirements_title: 'Requisitos do Sistema',
-        functional_title: 'Requisitos Funcionais',
-        functional_items: [
-          'Streaming de vídeo adaptativo',
-          'Sistema de recomendação personalizado',
-          'Catálogo de conteúdo global',
-          'Múltiplos perfis por conta',
-          'Continue assistindo cross-device',
-          'Downloads offline'
-        ],
-        non_functional_title: 'Requisitos Não-Funcionais',
-        non_functional_items: [
-          'Baixa latência no início do vídeo (menor que 500ms)',
-          'Alta disponibilidade (99.99%)',
-          'Qualidade adaptativa de vídeo',
-          'Escalabilidade global',
-          'Segurança de conteúdo (DRM)',
-          'Eficiência em custos de CDN'
-        ],
-        architecture_title: 'Arquitetura do Sistema',
-        high_level_title: 'Arquitetura de Alto Nível',
-        high_level_description: 'Visão geral da arquitetura distribuída da Netflix, mostrando os principais componentes e suas interações.',
-        clients_label: 'Clientes (TV, Mobile, Web)',
-        open_connect_label: 'Open Connect (CDN)',
-        api_gateway_label: 'API Gateway',
-        streaming_service_label: 'Serviço de Streaming',
-        recommendation_service_label: 'Serviço de Recomendação',
-        metadata_service_label: 'Serviço de Metadados',
-        s3_videos_label: 'S3 (Vídeos)',
-        cassandra_metadata_label: 'Cassandra (Metadados)',
-        evcache_label: 'EVCache (Cache)',
-        streaming_system_title: '1. Sistema de Streaming',
-        open_connect_title: 'Open Connect (CDN)',
-        open_connect_items: [
-          'CDN própria otimizada para vídeo',
-          'Appliances em ISPs parceiros',
-          'Cache hierárquico',
-          'Otimização de rota'
-        ],
-        video_processing_title: 'Processamento de Vídeo',
-        video_processing_items: [
-          'Transcodificação paralela',
-          'Múltiplas qualidades (SD até 4K)',
-          'Segmentação adaptativa',
-          'DRM e proteção de conteúdo'
-        ],
-        recommendation_system_title: '2. Sistema de Recomendação',
-        algorithms_title: 'Algoritmos',
-        algorithms_items: [
-          'Collaborative Filtering',
-          'Content-based Filtering',
-          'Personalização por perfil',
-          'A/B Testing contínuo'
-        ],
-        features_title: 'Features',
-        features_items: [
-          'Histórico de visualização',
-          'Preferências de gênero',
-          'Comportamento de navegação',
-          'Contexto (dispositivo, horário)'
-        ],
-        data_processing_title: '3. Processamento de Dados',
-        data_pipeline_title: 'Pipeline de Dados',
-        data_pipeline_items: [
-          'Kafka para streaming de eventos',
-          'Spark para processamento batch',
-          'Flink para processamento real-time'
-        ],
-        features_list: 'Features:',
-        features_list_items: [
-          'Telemetria de qualidade',
-          'Analytics de visualização',
-          'Métricas de engajamento',
-          'Detecção de anomalias'
-        ],
-        technical_decisions_title: 'Decisões Técnicas e Trade-offs',
-        decision_1_title: '1. CDN Própria vs. Terceiros',
-        decision_1_text: 'Open Connect oferece maior controle e otimização, mas requer investimento significativo em infraestrutura e manutenção.',
-        decision_2_title: '2. Qualidade vs. Largura de Banda',
-        decision_2_text: 'Streaming adaptativo equilibra qualidade de vídeo com condições de rede, priorizando continuidade da reprodução.',
-        decision_3_title: '3. Personalização vs. Performance',
-        decision_3_text: 'Recomendações altamente personalizadas requerem processamento intensivo. Uso de cache e pré-computação reduz latência.',
-        decision_4_title: '4. Consistência vs. Disponibilidade',
-        decision_4_text: 'Preferência por disponibilidade sobre consistência forte para metadados não críticos, permitindo melhor experiência offline.',
-        scaling_challenges_title: 'Desafios de Escala',
-        global_traffic_title: 'Tráfego Global',
-        global_traffic_text: 'Otimização de entrega de conteúdo globalmente. Solução: Open Connect e cache distribuído.',
-        video_processing_challenge_title: 'Processamento de Vídeo',
-        video_processing_challenge_text: 'Transcodificação de milhares de horas de conteúdo. Solução: Pipeline paralelo e distribuído.',
-        machine_learning_title: 'Machine Learning',
-        machine_learning_text: 'Recomendações personalizadas em escala. Solução: Modelos distribuídos e cache inteligente.',
-        microservices_title: 'Microserviços',
-        microservices_text: 'Gerenciamento de centenas de serviços. Solução: Chaos Engineering e resiliência.',
-        evolution_title: 'Evolução da Arquitetura',
-        timeline_2007_title: 'Início do Streaming',
-        timeline_2007_desc: 'Lançamento do streaming, infraestrutura básica.',
-        timeline_2009_title: 'Migração para AWS',
-        timeline_2009_desc: 'Mudança para cloud, início da escala global.',
-        timeline_2011_title: 'Microsserviços',
-        timeline_2011_desc: 'Decomposição do monolito, introdução do Chaos Monkey.',
-        timeline_2012_title: 'Open Connect',
-        timeline_2012_desc: 'Desenvolvimento da CDN própria, expansão global.',
-        timeline_2016_title: 'Streaming Adaptativo e ML',
-        timeline_2016_desc: 'Foco em qualidade e personalização com ML avançado.',
-        references_title: 'Referências',
-        official_docs_title: 'Documentação e Artigos Oficiais',
-        technical_articles_title: 'Artigos Técnicos e Análises',
-        open_source_title: 'Ferramentas Open Source',
-        conferences_title: 'Conferências e Apresentações'
-      },
 
-      uber: {
-        title: 'Uber System Design',
-        subtitle: 'Como o Uber conecta milhões de motoristas e passageiros em tempo real globalmente',
-        metrics_title: 'Números Impressionantes',
-        metrics: {
-          monthly_users: '130M+',
-          monthly_users_desc: 'Usuários ativos mensais',
-          active_drivers: '5M+',
-          active_drivers_desc: 'Motoristas ativos',
-          trips_per_day: '20M+',
-          trips_per_day_desc: 'Viagens por dia'
-        },
-        requirements_title: 'Requisitos do Sistema',
-        functional_title: 'Requisitos Funcionais',
-        functional_items: [
-          'Matching em tempo real de motoristas e passageiros',
-          'Geolocalização precisa',
-          'Estimativa de preço e tempo',
-          'Processamento de pagamentos',
-          'Sistema de avaliação',
-          'Múltiplos tipos de serviço (UberX, Black, etc.)'
-        ],
-        non_functional_title: 'Requisitos Não-Funcionais',
-        non_functional_items: [
-          'Latência ultra baixa (menor que 100ms)',
-          'Alta disponibilidade (99.99%)',
-          'Consistência eventual',
-          'Escalabilidade global',
-          'Tolerância a falhas',
-          'Segurança e privacidade'
-        ],
-        architecture_title: 'Arquitetura do Sistema',
-        high_level_title: 'Arquitetura de Alto Nível',
-        high_level_description: 'Visão geral da arquitetura distribuída do Uber, mostrando os principais componentes e suas interações.',
-        apps_label: 'Apps (Passageiro, Motorista)',
-        api_gateway_label: 'API Gateway',
-        matching_service_label: 'Serviço de Matching',
-        location_service_label: 'Serviço de Localização',
-        trip_service_label: 'Serviço de Viagens',
-        payment_service_label: 'Serviço de Pagamentos',
-        analytics_label: 'Analytics',
-        postgresql_data_label: 'PostgreSQL (Dados)',
-        redis_cache_label: 'Redis (Cache)',
-        kafka_events_label: 'Kafka (Eventos)',
-        matching_flow_title: 'Fluxo de Matching',
-        matching_flow_description: 'Fluxo de matching entre passageiros e motoristas, demonstrando o processo desde a solicitação até o match.',
-        request_label: 'Solicitação',
-        processing_label: 'Processamento',
-        driver_selection_label: 'Seleção Motorista',
-        match_label: 'Match',
-        matching_system_title: '1. Sistema de Matching',
-        matching_algorithm_title: 'Algoritmo de Matching',
-        matching_algorithm_items: [
-          'Geohash para busca espacial',
-          'Quadtrees para indexação',
-          'Batching de requisições',
-          'Otimização multi-objetivo'
-        ],
-        factors_considered_title: 'Fatores Considerados',
-        factors_considered_items: [
-          'Distância e tempo estimado',
-          'Rating do motorista',
-          'Tipo de veículo',
-          'Histórico de cancelamentos',
-          'Demanda e oferta local'
-        ],
-        location_system_title: '2. Sistema de Localização',
-        location_processing_title: 'Processamento de Localização',
-        location_processing_items: [
-          'Atualização em tempo real',
-          'Filtro de Kalman',
-          'Map matching',
-          'Predição de rotas'
-        ],
-        optimizations_title: 'Otimizações',
-        optimizations_items: [
-          'Cache espacial distribuído',
-          'Compressão de coordenadas',
-          'Batching de atualizações',
-          'Sharding geográfico'
-        ],
-        realtime_system_title: '3. Sistema em Tempo Real',
-        realtime_infrastructure_title: 'Infraestrutura Real-time',
-        realtime_infrastructure_items: [
-          'WebSocket para conexões persistentes',
-          'Kafka para eventos',
-          'Redis para estado em tempo real'
-        ],
-        features_label: 'Features:',
-        features_list_items: [
-          'Localização em tempo real',
-          'ETA dinâmico',
-          'Surge pricing',
-          'Status da viagem'
-        ],
-        technical_decisions_title: 'Decisões Técnicas e Trade-offs',
-        decision_1_title: '1. Precisão vs Latência',
-        decision_1_text: 'Balance entre precisão do matching e tempo de resposta. Uso de batching e aproximações para reduzir latência.',
-        decision_2_title: '2. Consistência vs Disponibilidade',
-        decision_2_text: 'Preferência por disponibilidade em dados não críticos. Consistência forte apenas em transações financeiras.',
-        decision_3_title: '3. Custo vs Qualidade',
-        decision_3_text: 'Otimização de recursos computacionais vs qualidade do matching. Uso de algoritmos adaptativos baseados na demanda.',
-        decision_4_title: '4. Cache vs Freshness',
-        decision_4_text: 'Caching agressivo para performance vs dados atualizados. Invalidação seletiva baseada em relevância.',
-        scaling_challenges_title: 'Desafios de Escala',
-        mass_matching_title: 'Matching em Massa',
-        mass_matching_text: 'Processamento de milhões de matches por dia. Solução: Sharding geográfico e batching.',
-        realtime_data_title: 'Dados em Tempo Real',
-        realtime_data_text: 'Atualizações de localização em massa. Solução: Pipeline distribuído e filtros.',
-        global_consistency_title: 'Consistência Global',
-        global_consistency_text: 'Sincronização entre regiões. Solução: Replicação multi-região e cache.',
-        demand_peaks_title: 'Picos de Demanda',
-        demand_peaks_text: 'Handling de eventos e horários de pico. Solução: Auto-scaling e surge pricing.',
-        evolution_title: 'Evolução da Arquitetura',
-        timeline_2009_title: 'MVP Inicial',
-        timeline_2009_desc: 'Monolito Ruby on Rails, matching manual.',
-        timeline_2011_title: 'Primeira Escala',
-        timeline_2011_desc: 'Matching automático, Redis para dispatch.',
-        timeline_2014_title: 'Microsserviços',
-        timeline_2014_desc: 'Decomposição em serviços, Kafka para eventos.',
-        timeline_2016_title: 'Escala Global',
-        timeline_2016_desc: 'Multi-região, otimização geográfica.',
-        timeline_2019_title: 'ML e Otimização',
-        timeline_2019_desc: 'Machine learning para matching, predição de demanda.',
-        references_title: 'Referências',
-        official_docs_title: 'Documentação e Artigos Oficiais',
-        technical_articles_title: 'Artigos Técnicos e Análises',
-        open_source_title: 'Ferramentas Open Source',
-        conferences_title: 'Conferências e Apresentações'
-      },
 
       security: {
         title: 'Segurança em Sistemas Distribuídos',

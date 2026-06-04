@@ -1,0 +1,102 @@
+# Deadlocks em Sistemas Distribuídos
+
+Entenda o que são deadlocks, como eles ocorrem em sistemas distribuídos e as diferentes estratégias para prevenção e detecção.
+
+<Callout type="info" title="Conceito Chave">
+
+Deadlocks ocorrem quando dois ou mais processos ficam permanentemente bloqueados, cada um esperando por um recurso que está sendo mantido por outro processo.
+
+</Callout>
+
+## Condições para Deadlock
+
+<Cards cols={2}>
+
+<Card title="Exclusão Mútua" accent="brand">
+
+Recursos não podem ser compartilhados simultaneamente entre processos.
+
+</Card>
+
+<Card title="Posse e Espera" accent="purple">
+
+Processos mantêm recursos enquanto esperam por outros.
+
+</Card>
+
+<Card title="Não Preempção" accent="brand">
+
+Recursos não podem ser forçadamente liberados de um processo.
+
+</Card>
+
+<Card title="Espera Circular" accent="purple">
+
+Existe uma cadeia circular de processos esperando por recursos.
+
+</Card>
+
+</Cards>
+
+## Prevenção de Deadlocks
+
+<Card title="Prevenção por Negação" accent="brand">
+
+Negar uma das quatro condições necessárias para deadlock.
+
+- Exclusão Mútua: Permitir compartilhamento de recursos
+- Posse e Espera: Requerer alocação de todos os recursos de uma vez
+- Não Preempção: Permitir preempção de recursos
+- Espera Circular: Impor uma ordem total nos recursos
+
+</Card>
+
+<Card title="Prevenção por Evitação" accent="purple">
+
+Usar informações sobre o estado do sistema para evitar deadlocks.
+
+- Algoritmo do Banqueiro
+- Grafo de Alocação de Recursos
+- Análise de Estado Seguro
+
+</Card>
+
+## Detecção de Deadlocks
+
+<Cards cols={2}>
+
+<Card title="Detecção Centralizada" accent="brand">
+
+Um coordenador central monitora o estado do sistema e detecta deadlocks.
+
+</Card>
+
+<Card title="Detecção Distribuída" accent="purple">
+
+Cada processo participa da detecção através de troca de mensagens.
+
+</Card>
+
+</Cards>
+
+## Próximos Passos
+
+<Cards cols={2}>
+
+<Card title="Algoritmos de Sincronização" accent="brand">
+
+Explore algoritmos específicos para prevenção de deadlocks.
+
+[Algoritmos de Sincronização](/estrategias-de-consistencia/sincronizacao/algoritmos)
+
+</Card>
+
+<Card title="Simulador de Filósofos" accent="purple">
+
+Experimente diferentes estratégias de prevenção de deadlocks.
+
+[Simulador de Filósofos](/estrategias-de-consistencia/sincronizacao/simulador)
+
+</Card>
+
+</Cards>

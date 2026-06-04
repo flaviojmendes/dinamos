@@ -1,0 +1,77 @@
+# Two-Phase Commit (2PC)
+
+Understand how the Two-Phase Commit protocol ensures consistency in distributed transactions.
+
+## Overview
+
+<Cards cols={2}>
+
+<Card title="Phase 1: Prepare" accent="brand">
+
+The coordinator asks all participants to prepare for the transaction. Each participant checks whether it can perform the operation and replies to the coordinator.
+
+</Card>
+
+<Card title="Phase 2: Commit" accent="green">
+
+Based on participant responses, the coordinator decides whether the transaction should be committed or aborted.
+
+</Card>
+
+</Cards>
+
+## Characteristics
+
+<Cards cols={2}>
+
+<Card title="Advantages" accent="brand">
+
+- Ensures strong data consistency
+- Prevents partial transactions
+- Transparent decision-making process
+- Guaranteed atomicity
+- Transaction isolation
+
+</Card>
+
+<Card title="Limitations" accent="red">
+
+- Blocking (participants wait for decision)
+- Sensitive to coordinator failures
+- Higher latency due to two phases
+- Communication overhead
+- Possibility of deadlocks
+
+</Card>
+
+</Cards>
+
+## Use Cases
+
+<Cards cols={3}>
+
+<Card title="Banking Systems" accent="brand">
+
+Transfers across accounts involving multiple banks or systems. Ensures money is not lost or duplicated.
+
+</Card>
+
+<Card title="E-commerce" accent="purple">
+
+Order processing that involves inventory, payment, and logistics. Ensures all steps complete successfully.
+
+</Card>
+
+<Card title="Reservations" accent="green">
+
+Hotel, flight, or event reservation systems that must coordinate multiple resources simultaneously.
+
+</Card>
+
+</Cards>
+
+## Try It in Practice
+
+Use our interactive simulator to better understand how Two-Phase Commit works in different scenarios.
+
+[Open Simulator](/estrategias-de-consistencia/two-phase-commit/simulador)

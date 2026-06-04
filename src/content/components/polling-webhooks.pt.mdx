@@ -1,0 +1,145 @@
+# Polling vs Webhooks
+
+Entenda as diferenças fundamentais entre essas duas estratégias de comunicação
+
+## O Problema da Comunicação
+
+<Callout type="neutral">
+
+Entenda as diferenças fundamentais entre essas duas estratégias de comunicação
+
+In distributed systems, keeping components synchronized is one of the biggest challenges. How can one service know when something has changed in another? There are two main approaches to solve this problem.
+
+</Callout>
+
+<Cards cols={2}>
+
+<Card title="📤 Polling (Consulta)" accent="brand">
+
+"Vou perguntar de tempos em tempos se há algo novo"
+
+</Card>
+
+<Card title="🔔 Webhooks (Notificação)" accent="purple">
+
+"Me avise imediatamente quando houver algo novo"
+
+</Card>
+
+</Cards>
+
+## 📤 Polling (Consulta Periódica)
+
+### Como Funciona
+
+Polling involves regularly checking for updates by making requests at specific intervals. It's like asking "Is there anything new?" every few seconds.
+
+<Callout type="neutral" title="Fluxo Típico:">
+
+1. Cliente envia GET /api/messages?after=timestamp
+2. Servidor verifica se há mensagens novas
+3. Servidor responde com dados ou "nada novo"
+4. Cliente aguarda X segundos e repete
+
+</Callout>
+
+#### Vantagens
+
+#### Desvantagens
+
+<Callout type="info" title="💡 Quando Usar Polling">
+
+</Callout>
+
+## 🔔 Webhooks (Notificações Push)
+
+### Como Funciona
+
+Webhooks use a push-based approach where the server notifies clients immediately when events occur. It's like having someone call you the moment something happens.
+
+#### Fluxo Típico:
+
+#### Vantagens
+
+#### Desvantagens
+
+<Callout type="neutral" title="💡 Quando Usar Webhooks">
+
+</Callout>
+
+## ⚖️ Comparação Detalhada
+
+| Aspecto | 📤 Polling | 🔔 Webhooks |
+|---------|-----------|------------|
+| Latência | Até o intervalo de polling (ex: 0-30s) | Quase instantânea (&lt; 1s) |
+| Uso de Banda | Alto (requisições constantes) | Baixo (só quando há dados) |
+| Complexidade | Baixa | Média/Alta |
+| Escalabilidade | Limitada (O(n) requisições) | Excelente (O(1) por evento) |
+| Requisitos de Rede | Cliente pode ser privado | Cliente precisa ser acessível |
+| Controle | Total pelo cliente | Iniciado pelo servidor |
+| Debugging | Fácil (fluxo previsível) | Mais complexo |
+| Reliability | Alta (retry automático) | Precisa implementar retry |
+
+## 🌍 Exemplos do Mundo Real
+
+<Cards cols={2}>
+
+<Card title="📤 Casos de Uso - Polling" accent="brand">
+
+</Card>
+
+<Card title="🔔 Casos de Uso - Webhooks" accent="purple">
+
+</Card>
+
+</Cards>
+
+## 🛠️ Considerações de Implementação
+
+<Cards cols={2}>
+
+<Card title="Implementando Polling" accent="brand">
+
+#### 🔧 Estratégias Comuns
+
+#### ⚠️ Cuidados Importantes
+
+</Card>
+
+<Card title="Implementando Webhooks" accent="purple">
+
+#### 🔒 Segurança Essencial
+
+#### 🔄 Reliability Patterns
+
+</Card>
+
+</Cards>
+
+## 🔄 Abordagens Híbridas
+
+<Cards cols={3}>
+
+<Card title="🔄 Fallback Strategy" accent="green">
+
+</Card>
+
+<Card title="⚡ Real-time + Batch" accent="yellow">
+
+</Card>
+
+<Card title="🎯 Context-Aware" accent="slate">
+
+</Card>
+
+</Cards>
+
+<Callout type="info" title="🚀 Pronto para Ver na Prática?">
+
+Agora que você entende os conceitos, experimente nosso simulador interativo para ver a diferença em ação!
+
+[Acessar Simulador](/componentes/polling-webhooks/simulator)
+
+</Callout>
+
+[Componentes Básicos](/componentes)

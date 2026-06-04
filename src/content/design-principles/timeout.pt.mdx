@@ -1,0 +1,65 @@
+# Timeout (Tempo Limite)
+
+Estratégia fundamental para evitar que operações lentas ou travadas prejudiquem a experiência do usuário e a saúde do sistema.
+
+## Como Funciona
+
+Imagine que você está em um restaurante: se o pedido demora, você cancela e vai embora. O Timeout funciona de forma similar.
+
+Define um tempo máximo para concluir uma operação. Se exceder, o sistema assume problema e interrompe.
+
+## Benefícios
+
+<Cards cols={3}>
+
+<Card title="Melhor Experiência do Usuário" accent="green">
+
+Evita que usuários fiquem esperando indefinidamente.
+
+</Card>
+
+<Card title="Liberação de Recursos" accent="green">
+
+Libera recursos que poderiam ficar presos.
+
+</Card>
+
+<Card title="Prevenção de Falhas" accent="green">
+
+Evita que problemas em um serviço afetem outros.
+
+</Card>
+
+</Cards>
+
+<Callout type="neutral" title="Exemplo do Mundo Real">
+
+Ao enviar um formulário, se o servidor estiver lento/indisponível, um timeout de 30s cancela o envio e exibe erro em vez de esperar indefinidamente.
+
+</Callout>
+
+## Melhores Práticas
+
+<Cards cols={3}>
+
+<Card title="Tempos Apropriados" accent="slate">
+
+Defina timeouts realistas conforme operação e expectativa.
+
+</Card>
+
+<Card title="Mensagens Claras" accent="slate">
+
+Informe o que ocorreu e o que fazer a seguir.
+
+</Card>
+
+<Card title="Retry Strategy" accent="slate">
+
+Combine timeouts com retries para maior resiliência.
+
+</Card>
+
+</Cards>
+
+[Explorar Simulador de Timeout](/principios-design/tolerancia-falhas/timeout/simulator)

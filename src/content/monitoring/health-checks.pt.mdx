@@ -1,0 +1,135 @@
+# Health Checks em Sistemas Distribuídos
+
+Health checks são fundamentais para monitorar a saúde e disponibilidade de serviços em sistemas distribuídos. Eles permitem detecção proativa de problemas, facilitam o balanceamento de carga e auxiliam em estratégias de recuperação.
+
+<Callout type="info" title="💡 Conceito Chave">
+
+Um bom sistema de health check deve ser abrangente, verificando não apenas se o serviço está respondendo, mas também sua capacidade de realizar suas funções essenciais e acessar recursos necessários.
+
+</Callout>
+
+## Tipos de Health Checks
+
+<Cards cols={3}>
+
+<Card title="Liveness" accent="brand">
+
+- Verifica se o serviço está vivo
+- Detecta deadlocks
+- Monitora processos
+- Reinicia em caso de falha
+
+</Card>
+
+<Card title="Readiness" accent="purple">
+
+- Verifica disponibilidade
+- Conexões com dependências
+- Estado de recursos
+- Controle de tráfego
+
+</Card>
+
+<Card title="Startup" accent="green">
+
+- Inicialização do serviço
+- Carregamento de recursos
+- Configuração inicial
+- Warm-up period
+
+</Card>
+
+</Cards>
+
+## Padrões de Implementação
+
+<Cards cols={2}>
+
+<Card title="Endpoints HTTP" accent="brand">
+
+```json
+// Endpoint de Health Check
+GET /health
+{
+  "status": "UP",
+  "components": {
+    "db": "UP",
+    "cache": "UP",
+    "messaging": "UP"
+  },
+  "details": {
+    "db.responseTime": "45ms",
+    "cache.size": "2.3GB"
+  }
+}
+```
+
+</Card>
+
+<Card title="Verificações" accent="purple">
+
+- **Conexões**: Banco de dados, cache, mensageria
+- **Recursos**: CPU, memória, disco, rede
+- **Funcionalidades**: Operações críticas do negócio
+
+</Card>
+
+</Cards>
+
+## Integração com Infraestrutura
+
+<Cards cols={2}>
+
+<Card title="Orquestração de Containers" accent="brand">
+
+**Kubernetes**
+
+```yaml
+livenessProbe:
+  httpGet:
+    path: /health/live
+    port: 8080
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /health/ready
+    port: 8080
+  initialDelaySeconds: 15
+  periodSeconds: 5
+```
+
+</Card>
+
+<Card title="Load Balancers" accent="purple">
+
+- **Roteamento**: Direciona tráfego para instâncias saudáveis
+- **Circuit Breaking**: Isola serviços com falha
+- **Auto Scaling**: Ajusta capacidade baseado em saúde
+
+</Card>
+
+</Cards>
+
+## Melhores Práticas
+
+<Cards cols={2}>
+
+<Card title="Implementação" accent="brand">
+
+- **Lightweight**: Checks devem ser leves e rápidos
+- **Isolamento**: Separe checks por responsabilidade
+- **Cache**: Evite sobrecarga de checks frequentes
+
+</Card>
+
+<Card title="Monitoramento" accent="purple">
+
+- **Logging**: Registre resultados e tendências
+- **Métricas**: Colete métricas de saúde
+- **Alertas**: Configure alertas para falhas
+
+</Card>
+
+</Cards>

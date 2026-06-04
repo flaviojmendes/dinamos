@@ -1,0 +1,47 @@
+# Fault Tolerance
+
+Designing systems that can recover or continue operating in the face of failures is essential to maintain reliability and high availability.
+
+<Cards cols={2}>
+
+<Card title="Retries" accent="brand">
+
+When an operation fails, the system attempts it again, increasing the chance of success in case of transient failures.
+
+**Practical Example**
+
+In an online shopping app, if order confirmation fails due to a network issue, the app automatically retries the request.
+
+</Card>
+
+<Card title="Circuit Breakers" accent="brand">
+
+Prevents cascading failures by detecting problems and temporarily stopping calls to a troubled service.
+
+**Practical Example**
+
+When an image server is overloaded, the circuit breaker blocks new requests for a while, allowing the server to recover.
+
+</Card>
+
+<Card title="Timeout" accent="brand">
+
+Defines a maximum time for an operation to complete, avoiding waiting indefinitely for a response.
+
+**Practical Example**
+
+When submitting a form, if the server does not respond within 30 seconds, the operation is canceled and an error message is shown.
+
+</Card>
+
+<Card title="Fallback" accent="brand">
+
+Provides an alternative when the primary operation fails, ensuring the system continues to function in a degraded mode.
+
+**Practical Example**
+
+In a maps app, if GPS fails, the system uses Wi‑Fi network location as an alternative to show an approximate position.
+
+</Card>
+
+</Cards>

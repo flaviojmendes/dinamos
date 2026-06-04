@@ -1,0 +1,61 @@
+# Cache
+
+Cache é uma camada de armazenamento temporário para dados frequentemente acessados, reduzindo latência e melhorando performance.
+
+## Memcached
+
+Pense no Memcached como um quadro branco na cozinha: rápido para escrever e ler, mas se apagar, o conteúdo some para sempre.
+
+<Callout type="neutral" title="Exemplo:">
+
+A news site can cache latest headlines in Memcached to speed up page loads.
+
+</Callout>
+
+## Redis
+
+Redis é como um armário com gavetas e prateleiras. Além de acesso rápido, permite estruturas complexas e persistência opcional.
+
+<Callout type="neutral" title="Exemplo:">
+
+A group chat app can use Redis lists to keep recent messages while optionally persisting to disk.
+
+</Callout>
+
+### Comparando os dois:
+
+#### Simplicidade:
+
+Memcached é mais simples (quadro branco). Redis é mais versátil (armário), porém exige mais organização.
+
+#### Tipos de dados:
+
+Memcached armazena valores simples; Redis suporta listas, conjuntos e outras estruturas complexas.
+
+#### Persistência:
+
+Memcached não persiste dados; Redis oferece persistência em disco para evitar data loss.
+
+## Cache Distribuído vs. Local
+
+#### Cache Local:
+
+Armazena dados no mesmo servidor do processamento. Rápido, porém pouco escalável; cada servidor mantém sua própria versão.
+
+#### Cache Distribuído:
+
+Compartilhado entre vários servidores, melhorando escalabilidade e consistência entre nós.
+
+<Callout type="neutral" title="Exemplo:">
+
+Using Redis as a distributed cache across multiple app servers to ensure all read the same cached data.
+
+</Callout>
+
+<Callout type="info" title="Simulador Interativo">
+
+Experimente nossa simulação de cache para entender como o cache impacta a performance do sistema.
+
+[Acessar Simulador](/componentes/cache/simulator)
+
+</Callout>

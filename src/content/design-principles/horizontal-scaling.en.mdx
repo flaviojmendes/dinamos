@@ -1,0 +1,33 @@
+# Horizontal Scalability (Scale-Out)
+
+A method that adds more servers to work together, dividing the workload among them.
+
+## How It Works
+
+It is like using multiple cars to transport passengers instead of relying on a single larger car. This approach is common in modern systems, especially in cloud environments.
+
+<Callout type="neutral" title="Practical Example">
+
+A video streaming network that started with a single server sees global audience growth. To meet demand, it adds servers in various regions, sharing the load and delivering content faster, even to distant users.
+
+</Callout>
+
+## Advantages
+
+- **Unlimited Scalability**: You can add more servers as needed
+- **High Availability**: If one server fails, others continue operating
+- **Cost-Effective**: Can use simpler, commodity hardware
+
+## Important Considerations
+
+- **Data Distribution**: Plan how data will be distributed and synchronized
+- **Complexity**: Requires coordination and load balancing mechanisms
+- **Consistency**: Keeping data consistent across servers is challenging
+
+## Best Practices
+
+- **Automation**: Automate adding/removing servers from the cluster
+- **Monitoring**: Implement robust monitoring to identify bottlenecks and issues
+- **Redundancy**: Maintain appropriate redundancy to ensure high availability
+
+[Explore Scalability Simulator](/principios-design/escalabilidade/simulator)

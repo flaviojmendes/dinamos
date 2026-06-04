@@ -1,0 +1,71 @@
+# Estratégias de Consenso
+
+Entenda como os sistemas distribuídos alcançam acordo em decisões críticas usando protocolos de consenso.
+
+## O que é Consenso?
+
+Consenso é um dos problemas fundamentais em sistemas distribuídos. É o processo pelo qual um grupo de nós concorda em um valor ou decisão comum, mesmo na presença de falhas.
+
+## Protocolo Raft
+
+Raft é um protocolo de consenso projetado para ser mais compreensível que o Paxos. Ele divide o problema em três subproblemas independentes:
+
+- Eleição de líder
+- Replicação de log
+- Garantia de segurança
+
+### Exemplo Prático
+
+Em um cluster de 5 nós executando Raft, quando o líder falha, os seguidores iniciam uma nova eleição após um timeout. O nó que receber a maioria dos votos se torna o novo líder.
+
+## Protocolo Paxos
+
+Paxos é um protocolo de consenso que garante consistência em um sistema distribuído, mesmo quando nós podem falhar ou mensagens podem ser perdidas.
+
+### Como Funciona
+
+O protocolo opera em duas fases principais:
+
+- Fase 1: Prepare/Promise
+- Fase 2: Propose/Accept
+
+## ZooKeeper
+
+ZooKeeper é um serviço de coordenação para sistemas distribuídos que implementa seu próprio protocolo de consenso (ZAB - ZooKeeper Atomic Broadcast).
+
+### Características
+
+- Ordenação total de atualizações
+- Atomicidade
+- Consistência sequencial
+- Durabilidade
+
+## Vantagens e Desvantagens
+
+<Cards cols={2}>
+
+<Card title="Vantagens" accent="green">
+
+- Forte consistência
+- Tolerância a falhas
+- Recuperação automática
+- Garantia de ordem
+
+</Card>
+
+<Card title="Desvantagens" accent="red">
+
+- Maior latência
+- Complexidade de implementação
+- Overhead de comunicação
+- Necessidade de quórum
+
+</Card>
+
+</Cards>
+
+## Experimente na Prática
+
+Use nosso simulador interativo para entender melhor como os protocolos de consenso funcionam em diferentes cenários.
+
+[Acessar Simulador](/estrategias-de-consistencia/consenso/simulador)

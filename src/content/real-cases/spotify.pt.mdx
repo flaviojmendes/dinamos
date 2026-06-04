@@ -1,0 +1,212 @@
+# Spotify System Design
+
+Como o Spotify gerencia, processa e distribui milhões de músicas em tempo real globalmente
+
+## Números Impressionantes
+
+<Metrics cols={3}>
+
+<Metric value="450M+" label="Usuários ativos mensais" accent="green" />
+
+<Metric value="100B+" label="Streams por dia" accent="green" />
+
+<Metric value="80M+" label="Músicas no catálogo" accent="green" />
+
+</Metrics>
+
+## Requisitos do Sistema
+
+<Card title="Requisitos Funcionais" accent="green">
+
+- Streaming de áudio em tempo real
+- Sincronização entre dispositivos
+- Sistema de recomendação personalizado
+- Gerenciamento de playlists e biblioteca
+- Funcionalidades sociais (seguir, compartilhar)
+
+</Card>
+
+<Card title="Requisitos Não-Funcionais" accent="green">
+
+- Baixa latência (menor que 100ms para início da música)
+- Alta disponibilidade (99.99%)
+- Consistência eventual para dados sociais
+- Escalabilidade horizontal
+- Tolerância a falhas
+
+</Card>
+
+## Arquitetura do Sistema
+
+### Arquitetura de Alto Nível
+
+Visão geral da arquitetura distribuída do Spotify, mostrando os principais componentes e suas interações.
+
+Clientes (Web, Mobile, Desktop) → CDN e Edge Cache → Load Balancer → Serviço de Streaming / Serviço de Recomendação / Serviço de Metadados → S3 (Áudio) / Cassandra (Metadados) / Redis (Cache)
+
+### Arquitetura de Streaming
+
+Fluxo de streaming de áudio, demonstrando como o conteúdo é entregue aos usuários através de edge caching e transcodificação adaptativa.
+
+Cliente Spotify → Edge Cache → Serviço de Streaming → Storage (S3), com componentes de Transcodificação e Processamento.
+
+### 1. Sistema de Streaming
+
+#### Pipeline de Streaming
+
+- Protocolo HLS (HTTP Live Streaming) para entrega de áudio
+- Chunks de áudio de 2-10 segundos
+- Múltiplas qualidades de áudio (16-320kbps)
+- Buffering adaptativo baseado na conexão
+
+#### Processamento de Áudio
+
+- Transcodificação para múltiplos formatos (AAC, Ogg Vorbis)
+- Normalização de volume (ReplayGain)
+- Análise de áudio para features musicais
+- Geração de waveforms e previews
+- DRM e proteção de conteúdo
+
+### 2. Sistema de Armazenamento
+
+#### Armazenamento de Áudio
+
+- Amazon S3 para armazenamento de músicas
+- CDN para cache global de conteúdo popular
+- Sistema de arquivos distribuído próprio
+- Metadata em Cassandra para alta disponibilidade
+
+#### Banco de Dados
+
+- PostgreSQL para dados transacionais
+- Cassandra para dados distribuídos
+- Redis para caching e sessões
+- Kafka para streaming de eventos
+
+### 3. Sistema de Recomendação
+
+#### Algoritmos e Features
+
+- Collaborative Filtering em larga escala
+- Análise de áudio para similaridade musical
+- Natural Language Processing para análise de letras
+- Features consideradas:
+  - Histórico de reprodução
+  - Playlists seguidas
+  - Gêneros preferidos
+  - Contexto (hora do dia, dispositivo)
+
+### 4. Funcionalidades em Tempo Real
+
+#### Infraestrutura Real-time
+
+- WebSocket para sincronização entre dispositivos
+- Pub/Sub com Kafka para eventos em tempo real
+- Estado de reprodução distribuído
+- Features em tempo real:
+  - Controle remoto entre dispositivos
+  - Sessões colaborativas
+  - Status de atividade de amigos
+  - Notificações instantâneas
+
+## Decisões Técnicas e Trade-offs
+
+<Card title="1. Buffering vs Latência" accent="green">
+
+Spotify utiliza buffering adaptativo que equilibra a latência inicial com a qualidade do streaming. Mais buffer significa menos interrupções mas maior latência no início da reprodução.
+
+</Card>
+
+<Card title="2. Caching vs Storage" accent="green">
+
+Músicas populares são cacheadas em edge locations, reduzindo latência mas aumentando custos de storage. O sistema usa análise preditiva para determinar o que cachear.
+
+</Card>
+
+<Card title="3. Consistência vs Disponibilidade" accent="green">
+
+Uso de consistência eventual para playlists e biblioteca permite melhor disponibilidade, mas pode resultar em inconsistências temporárias entre dispositivos.
+
+</Card>
+
+<Card title="4. Qualidade vs Bandwidth" accent="green">
+
+Múltiplas qualidades de áudio permitem adaptação à conexão do usuário, mas requerem mais storage e complexidade na transcodificação.
+
+</Card>
+
+## Desafios de Escala
+
+<Cards cols={2}>
+
+<Card title="Latência Global" accent="green">
+
+Entrega de áudio com baixa latência globalmente. Solução: Rede de CDNs e edge caching estratégico.
+
+</Card>
+
+<Card title="Dados Distribuídos" accent="green">
+
+Sincronização de dados entre regiões e dispositivos. Solução: Cassandra para dados distribuídos e Kafka para eventos.
+
+</Card>
+
+<Card title="Machine Learning" accent="green">
+
+Processamento de ML em tempo real para milhões de usuários. Solução: Pipeline distribuído de ML com pré-computação.
+
+</Card>
+
+<Card title="Microserviços" accent="green">
+
+Gerenciamento de centenas de microserviços. Solução: Backstage para developer portal e gestão de serviços.
+
+</Card>
+
+</Cards>
+
+## Evolução da Arquitetura
+
+### 2006 — Arquitetura Inicial
+
+Monolito PHP com PostgreSQL, focado no mercado sueco.
+
+### 2008-2009 — Primeira Escala
+
+Migração para Python/C++, introdução de cache distribuído.
+
+### 2011-2012 — Era dos Microserviços
+
+Adoção de microserviços, migração para AWS.
+
+### 2014-2015 — Arquitetura Event-Driven
+
+Implementação do Kafka, processamento assíncrono.
+
+### 2016-Presente — Cloud Native e ML
+
+Kubernetes, ML em larga escala, Backstage.
+
+## Referências
+
+### Documentação e Artigos Oficiais
+
+- [Spotify Engineering Blog](https://engineering.atspotify.com/)
+- [Spotify Design](https://spotify.design/)
+- [Spotify for Developers](https://developer.spotify.com/)
+
+### Artigos Técnicos e Análises
+
+- [Backend Infrastructure at Spotify](https://engineering.atspotify.com/2013/03/backend-infrastructure-at-spotify/)
+- [Event Delivery System](https://engineering.atspotify.com/2015/01/spotifys-event-delivery-the-road-to-the-cloud-part-i/)
+- [Big Data Ecosystem](https://engineering.atspotify.com/2016/02/spotifys-big-data-ecosystem/)
+
+### Conferências e Apresentações
+
+- [QCon - Spotify's Audio Delivery at Scale](https://www.youtube.com/watch?v=Xr2soUVHxG8)
+- [InfoQ - Scaling Spotify](https://www.youtube.com/watch?v=Z2JzVxP4H4w)
+
+### Ferramentas Open Source
+
+- [Backstage - Developer Portal](https://backstage.io/)
+- [Luigi - Workflow Management](https://github.com/spotify/luigi)

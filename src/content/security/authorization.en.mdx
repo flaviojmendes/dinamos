@@ -1,0 +1,147 @@
+# Authorization in Distributed Systems
+
+Access control, permissions and security policies in distributed environments
+
+<Callout type="success">
+
+Authorization is the process that determines what an authenticated user can do in the system. In distributed systems, implementing an effective authorization strategy is essential to ensure security and granular access control to resources.
+
+</Callout>
+
+## Fundamental Concepts
+
+<Cards cols={3}>
+
+<Card title="Authorization" accent="brand">
+
+Process of verifying if a user has permission to access a resource or perform a specific action in the system.
+
+</Card>
+
+<Card title="Permissions" accent="brand">
+
+Specific rights granted to users or groups to perform operations on system resources.
+
+</Card>
+
+<Card title="Policies" accent="brand">
+
+Rules and conditions that define how authorization decisions are made in the system.
+
+</Card>
+
+</Cards>
+
+## Access Control Models
+
+### Role-Based Access Control (RBAC)
+
+Role-based access control, where permissions are associated with roles and users are assigned to these roles.
+
+#### RBAC Components
+
+- Users: Entities that need to access resources
+- Roles: Sets of grouped permissions
+- Permissions: Rights to access resources
+- Sessions: Role activation for users
+
+### Attribute-Based Access Control (ABAC)
+
+Model that uses attributes of users, resources and environment to make dynamic authorization decisions.
+
+#### Considered Attributes
+
+- User attributes (position, department, level)
+- Resource attributes (type, sensitivity, owner)
+- Environment attributes (time, location, device)
+- Action attributes (read, write, delete)
+
+### Policy-Based Access Control (PBAC)
+
+Access control based on policies that combine different aspects of RBAC and ABAC with complex business rules.
+
+#### Characteristics
+
+- Centralized and reusable policies
+- Condition-based rules
+- Support for complex hierarchies
+- Auditing and compliance
+
+## Implementation in Distributed Systems
+
+<Cards cols={2}>
+
+<Card title="Architecture" accent="yellow">
+
+- Centralized authorization service
+- Distributed policy cache
+- Update propagation
+- Multi-layer validation
+
+</Card>
+
+<Card title="Challenges" accent="yellow">
+
+- Latency in authorization decisions
+- Consistency between services
+- System scalability
+- Policy maintenance
+
+</Card>
+
+</Cards>
+
+<Cards cols={2}>
+
+<Card title="Design" accent="yellow">
+
+- Principle of least privilege
+- Separation of responsibilities
+- Adequate granularity
+- Complete auditing
+
+</Card>
+
+<Card title="Implementation" accent="yellow">
+
+- Intelligent cache
+- Layered decisions
+- Continuous monitoring
+- Atomic updates
+
+</Card>
+
+</Cards>
+
+## Tools and Technologies
+
+<Cards cols={3}>
+
+<Card title="Frameworks" accent="green">
+
+- OAuth 2.0 and OpenID Connect
+- Keycloak
+- Spring Security
+- IdentityServer
+
+</Card>
+
+<Card title="Protocols" accent="green">
+
+- XACML
+- SAML
+- UMA 2.0
+- SCIM
+
+</Card>
+
+<Card title="Services" accent="green">
+
+- AWS IAM
+- Azure AD
+- Google Cloud IAM
+- Auth0
+
+</Card>
+
+</Cards>

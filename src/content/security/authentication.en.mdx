@@ -1,0 +1,130 @@
+# Authentication in Distributed Systems
+
+Understand the concepts, challenges and solutions for authentication in modern distributed systems
+
+<Callout type="info">
+
+Authentication is one of the fundamental pillars of security in distributed systems. In an environment where multiple services need to communicate and verify user identity, implementing a robust authentication strategy is crucial.
+
+</Callout>
+
+## Basic Concepts
+
+Authentication is the process of verifying if someone or something is who or what they claim to be. In distributed systems, this process involves several components and unique challenges.
+
+<Cards cols={2}>
+
+<Card title="Identification" accent="brand">
+
+The process of a user declaring their identity to the system, usually through a unique identifier like username or email.
+
+</Card>
+
+<Card title="Verification" accent="green">
+
+The process of validating the declared identity, usually through credentials like password, token or digital certificate.
+
+</Card>
+
+</Cards>
+
+## Authentication Methods
+
+### Password-Based Authentication
+
+The most common authentication method, where the user provides a combination of identifier and password.
+
+- Secure storage with hashing and salt
+- Password complexity policies
+- Protection against brute force attacks
+- Password recovery and reset
+
+### Token-Based Authentication
+
+Stateless method that uses tokens to maintain authentication state.
+
+- JSON Web Tokens (JWT)
+- Access and refresh tokens
+- Session management
+- Token revocation
+
+[Learn more about Tokens and JWT](/seguranca/tokens)
+
+### OAuth 2.0 and OpenID Connect
+
+Standard protocols for authorization and authentication in distributed systems.
+
+- Authorization flows
+- Single Sign-On (SSO)
+- Access delegation
+- Identity Providers
+
+### Multi-Factor Authentication (MFA)
+
+Adds extra layers of security beyond password.
+
+- Verification codes via SMS or email
+- Authenticator apps (TOTP)
+- Physical security keys (FIDO2/WebAuthn)
+- Biometrics
+
+## Challenges and Best Practices
+
+<Cards cols={2}>
+
+<Card title="Challenges" accent="red">
+
+- Authentication system scalability
+- Distributed session management
+- Protection against common attacks
+- Latency in distributed verifications
+- Consistency across multiple services
+
+</Card>
+
+<Card title="Best Practices" accent="green">
+
+- Use HTTPS for all communications
+- Implement rate limiting
+- Logging and monitoring of attempts
+- Regular rotation of keys and tokens
+- Input validation and sanitization
+
+</Card>
+
+</Cards>
+
+## Implementation
+
+Implementing an authentication system in a distributed environment requires careful planning and consideration of several aspects:
+
+<Cards cols={3}>
+
+<Card title="Architecture" accent="yellow">
+
+- Centralized authentication service
+- API Gateway for validation
+- Distributed cache
+- User database
+
+</Card>
+
+<Card title="Security" accent="yellow">
+
+- Encryption in transit
+- CSRF protection
+- Security headers
+- Access auditing
+
+</Card>
+
+<Card title="Experience" accent="yellow">
+
+- Authentication UX
+- Error feedback
+- Access recovery
+- Profile and preferences
+
+</Card>
+
+</Cards>

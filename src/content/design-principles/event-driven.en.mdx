@@ -1,0 +1,39 @@
+# Event-Driven Development
+
+Event-driven development is an approach where actions and changes in the system are triggered and managed by events. An event is any significant action that occurs in the system, such as a purchase transaction or a database update.
+
+## Event Sourcing
+
+Event sourcing is a design pattern in which the state of a system is derived from a sequence of events, instead of a stored current state. Each state change is captured as an immutable event, and the system can be rebuilt at any time by replaying these events.
+
+### Advantages
+
+- Complete history of changes in the system
+- Easy to audit and track actions
+- Support for reverting or replaying events
+
+### Example
+
+An e-commerce system where each update to an order status (placed, processed, shipped) is recorded as an event. The final state of the order is determined by the sequence of events.
+
+## Distributed Event Systems
+
+Distributed event systems allow different parts of a system (often on different servers) to communicate and synchronize based on events. They are essential for asynchronous systems where different components can react to events in a decentralized manner.
+
+### Popular Tools
+
+- Apache Kafka
+- RabbitMQ
+- Amazon SNS
+
+### Example
+
+A payment application that publishes payment confirmation events, which are consumed by different services to update inventory, notify the user, and generate invoices.
+
+<Callout type="info" title="Interactive Simulator">
+
+Try our interactive Event Sourcing simulation to better understand how events are recorded and processed in a distributed system.
+
+[Access Simulator](/principios-design/eventos/simulator)
+
+</Callout>

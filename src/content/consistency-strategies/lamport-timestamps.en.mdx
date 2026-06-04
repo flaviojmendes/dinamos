@@ -1,0 +1,80 @@
+# Lamport Logical Clocks
+
+Understand how Lamport timestamps establish order among distributed events.
+
+## Overview
+
+<Cards cols={2}>
+
+<Card title="The Problem" accent="brand">
+
+In distributed systems, there is no global clock that all processes can consult. Each process has its own local clock, which may drift from the others.
+
+</Card>
+
+<Card title="The Solution" accent="green">
+
+Lamport logical clocks establish a partial order of events based on the "happened-before" relation, enabling determination of causality among distributed events.
+
+</Card>
+
+</Cards>
+
+## How It Works
+
+<Card title="Basic Rules" accent="brand">
+
+- Each process maintains a counter that is incremented on local events
+- When sending a message, a process includes its current timestamp
+- When receiving a message, a process sets its counter to max(local, received) + 1
+
+</Card>
+
+<Card title="Properties" accent="purple">
+
+- If event A caused event B, then timestamp(A) < timestamp(B)
+- If timestamp(A) < timestamp(B), then A may have caused B
+- If timestamp(A) = timestamp(B), then A and B are concurrent
+
+</Card>
+
+## Applications
+
+<Cards cols={2}>
+
+<Card title="Use Cases" accent="brand">
+
+- Ordering messages in distributed messaging systems
+- Detecting race conditions in concurrent systems
+- Maintaining consistency in distributed databases
+- Synchronizing state in multiplayer games
+
+</Card>
+
+<Card title="Limitations" accent="red">
+
+- Do not capture concurrency relations (events that happen in parallel)
+- Do not provide an absolute global time
+- May yield different orderings in different system executions
+
+</Card>
+
+</Cards>
+
+## Practical Example
+
+<Card title="Distributed Chat System" accent="brand">
+
+In a distributed chat system, Lamport timestamps can be used to:
+
+- Order messages from different users
+- Ensure replies appear after original messages
+- Detect and resolve edit conflicts
+
+</Card>
+
+## Try It in Practice
+
+Use our interactive simulator to better understand how Lamport logical clocks work in different scenarios.
+
+[Open Simulator](/estrategias-de-consistencia/lamport-timestamps/simulador)

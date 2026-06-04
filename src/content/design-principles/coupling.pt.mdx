@@ -1,0 +1,239 @@
+# Acoplamento em Sistemas Distribuídos
+
+O acoplamento mede quão conectados/ dependentes são os componentes. Em sistemas distribuídos, seu tipo e nível impactam flexibilidade, manutenibilidade e resiliência.
+
+<Callout type="info" title="💡 Conceito Chave">
+
+Quanto menor o acoplamento, maior a flexibilidade e manutenção — mas acoplamento extremamente baixo pode aumentar a complexidade. Equilíbrio é essencial.
+
+</Callout>
+
+## Tipos de Acoplamento
+
+### Acoplamento Estático
+
+O acoplamento estático ocorre quando componentes são conectados em tempo de compilação, criando dependências rígidas que são difíceis de modificar sem alterar o código.
+
+<Cards cols={2}>
+
+<Card title="Características" accent="brand">
+
+- **Dependências Diretas** — Referências explícitas a classes ou módulos específicos
+- **Verificação em Tempo de Compilação** — Erros são detectados antes da execução
+- **Menor Flexibilidade** — Mudanças requerem recompilação e reimplantação
+
+</Card>
+
+<Card title="Vantagens" accent="brand">
+
+**Vantagens**
+
+- Detecção precoce de erros
+- Melhor performance em tempo de execução
+- Mais fácil de entender e rastrear
+
+**Desvantagens**
+
+- Menor flexibilidade para mudanças
+- Maior dificuldade de manutenção
+- Menor resiliência a falhas
+
+</Card>
+
+</Cards>
+
+**Exemplo de Acoplamento Estático:**
+
+```ts
+// Acoplamento estático através de importação direta
+import { UserService } from './UserService';
+
+class OrderProcessor {
+  private userService: UserService;
+
+  constructor() {
+    // Dependência direta e fixa
+    this.userService = new UserService();
+  }
+
+  async processOrder(orderId: string) {
+    // Se UserService estiver indisponível, não há alternativa
+    const user = await this.userService.getUser(orderId);
+    // Processamento do pedido...
+  }
+}
+```
+
+### Acoplamento Dinâmico
+
+O acoplamento dinâmico permite que componentes sejam conectados em tempo de execução, oferecendo maior flexibilidade e facilitando mudanças sem necessidade de recompilação.
+
+<Cards cols={2}>
+
+<Card title="Características" accent="purple">
+
+- **Descoberta em Runtime** — Serviços são descobertos e conectados dinamicamente
+- **Maior Flexibilidade** — Facilidade para trocar implementações em runtime
+- **Resiliência** — Melhor adaptação a falhas e mudanças
+
+</Card>
+
+<Card title="Vantagens / Desvantagens" accent="purple">
+
+**Vantagens**
+
+- Maior flexibilidade e adaptabilidade
+- Melhor resiliência a falhas
+- Facilidade de manutenção e evolução
+
+**Desvantagens**
+
+- Maior complexidade de implementação
+- Possíveis falhas em tempo de execução
+- Overhead de performance
+
+</Card>
+
+</Cards>
+
+**Exemplo de Acoplamento Dinâmico:**
+
+```ts
+// Acoplamento dinâmico usando injeção de dependência e service discovery
+interface UserServiceInterface {
+  getUser(id: string): Promise<User>;
+}
+
+class OrderProcessor {
+  private userService: UserServiceInterface;
+  private serviceRegistry: ServiceRegistry;
+
+  constructor(serviceRegistry: ServiceRegistry) {
+    this.serviceRegistry = serviceRegistry;
+  }
+
+  async processOrder(orderId: string) {
+    try {
+      // Descoberta dinâmica do serviço
+      this.userService = await this.serviceRegistry.getService('UserService');
+      const user = await this.userService.getUser(orderId);
+    } catch (error) {
+      // Fallback para serviço alternativo
+      this.userService = await this.serviceRegistry.getBackupService('UserService');
+      const user = await this.userService.getUser(orderId);
+    }
+    // Processamento do pedido...
+  }
+}
+```
+
+### Service Discovery
+
+Service Discovery é um padrão fundamental para acoplamento dinâmico em sistemas distribuídos. Permite que serviços se encontrem e se comuniquem sem conhecimento prévio de localizações.
+
+<Cards cols={2}>
+
+<Card title="Componentes Principais" accent="green">
+
+- **Registro de Serviços** — Onde os serviços se registram ao iniciar
+- **Health Checking** — Monitoramento da saúde dos serviços
+- **DNS Dinâmico** — Resolução dinâmica de endereços
+
+</Card>
+
+<Card title="Ferramentas Populares" accent="green">
+
+- **Consul** — Solução completa com service discovery, configuração e segmentação
+- **Eureka** — Service discovery da Netflix para aplicações Java
+- **etcd** — Armazenamento distribuído de chave-valor usado no Kubernetes
+
+</Card>
+
+</Cards>
+
+## Melhores Práticas
+
+<Cards cols={2}>
+
+<Card title="Design e Arquitetura" accent="brand">
+
+- **Interfaces Bem Definidas** — Use interfaces para definir contratos claros entre serviços
+- **Injeção de Dependência** — Utilize DI para gerenciar dependências de forma flexível
+- **Abstração Adequada** — Encontre o nível certo de abstração para cada componente
+
+</Card>
+
+<Card title="Implementação" accent="purple">
+
+- **Service Discovery** — Implemente mecanismos robustos de descoberta de serviços
+- **Circuit Breakers** — Use circuit breakers para lidar com falhas de serviços
+- **Fallbacks** — Implemente estratégias de fallback para maior resiliência
+
+</Card>
+
+</Cards>
+
+## Trade-offs e Considerações
+
+<Cards cols={3}>
+
+<Card title="Performance" accent="brand">
+
+- Acoplamento estático geralmente tem melhor performance
+- Acoplamento dinâmico adiciona overhead de descoberta
+- Considere o impacto em latência e throughput
+
+</Card>
+
+<Card title="Complexidade" accent="purple">
+
+- Acoplamento dinâmico aumenta a complexidade
+- Necessidade de gerenciar estados distribuídos
+- Maior curva de aprendizado para a equipe
+
+</Card>
+
+<Card title="Manutenibilidade" accent="green">
+
+- Acoplamento baixo facilita mudanças
+- Maior facilidade de testes isolados
+- Melhor suporte para desenvolvimento paralelo
+
+</Card>
+
+</Cards>
+
+## Exemplos do Mundo Real
+
+### Microsserviços na Netflix
+
+A Netflix utiliza acoplamento dinâmico extensivamente em sua arquitetura de microsserviços, com ferramentas como Eureka para service discovery e Hystrix para circuit breaking.
+
+```java
+@EnableEurekaClient
+public class VideoServiceApplication {
+    @Bean
+    @LoadBalanced
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+}
+```
+
+### Kubernetes Service Discovery
+
+O Kubernetes implementa service discovery através de seu sistema de DNS interno e serviços, permitindo que pods se comuniquem sem conhecer localizações específicas.
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+spec:
+  selector:
+    app: user-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+```

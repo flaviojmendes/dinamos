@@ -1,0 +1,65 @@
+# Timeout (Tempo Limite)
+
+A fundamental strategy to avoid slow or stuck operations from hurting user experience and overall system health.
+
+## How It Works
+
+Imagine you place an order at a restaurant. If it takes too long, you will cancel and leave. Timeout works similarly.
+
+It defines a maximum time for an operation to complete. If that time is exceeded, the system assumes something is wrong and aborts the operation.
+
+## Benefits
+
+<Cards cols={3}>
+
+<Card title="Better User Experience" accent="green">
+
+Prevents users from waiting indefinitely.
+
+</Card>
+
+<Card title="Freeing Resources" accent="green">
+
+Releases system resources that could otherwise remain stuck.
+
+</Card>
+
+<Card title="Failure Prevention" accent="green">
+
+Avoids problems in one service from impacting others.
+
+</Card>
+
+</Cards>
+
+<Callout type="neutral" title="Real-World Example">
+
+You are submitting a form online. If the server is slow or down, the submission may take too long. A 30s timeout cancels the request and shows an error instead of waiting forever.
+
+</Callout>
+
+## Best Practices
+
+<Cards cols={3}>
+
+<Card title="Proper Timeouts" accent="slate">
+
+Set realistic timeouts based on operation type and user expectations.
+
+</Card>
+
+<Card title="Clear Messages" accent="slate">
+
+Tell the user what happened and what to do next.
+
+</Card>
+
+<Card title="Retry Strategy" accent="slate">
+
+Combine timeouts with retries for resilience.
+
+</Card>
+
+</Cards>
+
+[Explore Timeout Simulator](/principios-design/tolerancia-falhas/timeout/simulator)
