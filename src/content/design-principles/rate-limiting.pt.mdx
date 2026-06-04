@@ -1,0 +1,95 @@
+# Rate Limiting
+
+Um rate limiter limita quantas requisições um cliente pode fazer numa janela de tempo. Ele protege seu sistema de sobrecarga, abuso e custos descontrolados — e impõe compartilhamento justo entre clientes. A parte interessante é *como* você conta.
+
+<Callout type="info" title="💡 Por que você precisa">
+
+Sem limites, um cliente com bug, um pico de tráfego ou um atacante podem esgotar sua capacidade e derrubar todo mundo. Rate limiting é uma defesa de primeira linha para **disponibilidade** e **controle de custos**.
+
+</Callout>
+
+## Os algoritmos clássicos
+
+<Cards cols={3}>
+
+<Card title="Token bucket" accent="brand">
+
+Um balde guarda até N tokens, reposto a uma taxa constante. Cada requisição gasta um; balde vazio = rejeita. **Permite rajadas** até o tamanho do balde, depois estabiliza na taxa de reposição.
+
+</Card>
+
+<Card title="Leaky bucket" accent="purple">
+
+Requisições entram numa fila de tamanho fixo que drena ("vaza") a uma taxa constante. **Suaviza a saída** num fluxo estável; rejeita quando a fila enche. Sem rajadas a jusante.
+
+</Card>
+
+<Card title="Janela deslizante" accent="green">
+
+Conta requisições na janela de tempo anterior (ex.: último 1s) e rejeita ao atingir o limite. Preciso e sem rajadas, ao custo de rastrear timestamps/contadores.
+
+</Card>
+
+</Cards>
+
+## Escolhendo um
+
+<Callout type="neutral" title="Rajadas vs suavidade">
+
+- **Token bucket**: melhor quando rajadas ocasionais são aceitáveis (a maioria das APIs públicas). Barato e flexível.
+- **Leaky bucket**: melhor quando o downstream precisa de uma taxa *estável* (ex.: proteger um backend frágil).
+- **Janela deslizante**: melhor quando você precisa de limites precisos de "N por janela" sem vazamento de rajadas.
+
+</Callout>
+
+## Onde roda
+
+<Cards cols={2}>
+
+<Card title="Posicionamento" accent="brand">
+
+Normalmente na borda — API gateway, reverse proxy ou load balancer — para que o tráfego ruim seja rejeitado antes de chegar aos seus serviços.
+
+</Card>
+
+<Card title="Limites distribuídos" accent="purple">
+
+Entre várias instâncias você precisa de **estado compartilhado** (em geral Redis) para que o limite seja global, não por instância. Atenção à latência e ao hotspot desse contador compartilhado.
+
+</Card>
+
+</Cards>
+
+<Callout type="warning" title="Seja um bom cidadão">
+
+Retorne `429 Too Many Requests` com um header `Retry-After` para que os clientes recuem de forma inteligente em vez de te martelar mais forte.
+
+</Callout>
+
+<Callout type="success" title="Experimente: Simulador de Rate Limiter">
+
+Compare token bucket, leaky bucket e janela deslizante lado a lado — ajuste as taxas e veja requisições aceitas vs rejeitadas — no [Simulador de Rate Limiter](/principios-design/rate-limiting/simulator).
+
+</Callout>
+
+## Pontos-chave
+
+<Cards cols={2}>
+
+<Card title="Lembre" accent="green">
+
+- Token bucket permite rajadas; leaky bucket suaviza; janela deslizante é precisa
+- Limite na borda, antes que as requisições cheguem aos serviços
+- Limites distribuídos precisam de estado compartilhado para serem globais
+
+</Card>
+
+<Card title="Projete para" accent="brand">
+
+- Escolha o algoritmo conforme a tolerância a rajadas
+- Retorne 429 + Retry-After para guiar os clientes
+- Monitore taxas de rejeição como sinal de carga
+
+</Card>
+
+</Cards>

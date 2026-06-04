@@ -1,0 +1,99 @@
+# DNS — The Distributed Phone Book
+
+Humans remember `example.com`; machines need `93.184.216.34`. **DNS** (Domain Name System) is the globally distributed, hierarchical database that translates names into addresses — billions of times a second.
+
+<Callout type="info" title="💡 A hierarchy, not a single server">
+
+No one machine holds all of DNS. It's a tree: **root** servers point to **TLD** servers (`.com`, `.org`), which point to **authoritative** servers for each domain. Resolution walks down this tree.
+
+</Callout>
+
+## How a lookup works
+
+<Cards cols={4}>
+
+<Card title="1. Resolver" accent="brand">
+
+Your device asks a **recursive resolver** (often your ISP's or `8.8.8.8`) to do the work.
+
+</Card>
+
+<Card title="2. Root → TLD" accent="purple">
+
+The resolver asks a root server, which refers it to the `.com` TLD server.
+
+</Card>
+
+<Card title="3. Authoritative" accent="green">
+
+The TLD refers it to the domain's authoritative server, which returns the record.
+
+</Card>
+
+<Card title="4. Cache" accent="brand">
+
+The answer is cached at every hop based on its **TTL**, so the next lookup is instant.
+
+</Card>
+
+</Cards>
+
+## Common record types
+
+<Callout type="neutral" title="The records you'll meet">
+
+- **A / AAAA** — name → IPv4 / IPv6 address
+- **CNAME** — alias of one name to another
+- **MX** — mail servers for a domain
+- **TXT** — arbitrary text (SPF, domain verification)
+- **NS** — which servers are authoritative for the zone
+
+</Callout>
+
+## DNS as an infrastructure tool
+
+Because DNS sits in front of everything and is heavily cached, it's also a **load-balancing and failover** tool.
+
+<Cards cols={2}>
+
+<Card title="Traffic steering" accent="brand">
+
+Return different IPs by geography (GeoDNS), in round-robin, or weighted, to spread load or route users to the nearest region.
+
+</Card>
+
+<Card title="Failover" accent="purple">
+
+Health-checked DNS can stop handing out a dead endpoint's address — though TTL caching delays how fast clients notice.
+
+</Card>
+
+</Cards>
+
+<Callout type="warning" title="The TTL tradeoff">
+
+Low TTL = fast failover but more DNS traffic and less caching benefit. High TTL = great caching but slow to react to changes. Pick per how often the record changes.
+
+</Callout>
+
+## Takeaways
+
+<Cards cols={2}>
+
+<Card title="Remember" accent="green">
+
+- DNS is a cached, hierarchical name → address database
+- Caching (TTL) makes it fast but slows propagation of changes
+- It doubles as a coarse load-balancer and failover layer
+
+</Card>
+
+<Card title="Design For" accent="brand">
+
+- Set TTLs to match your change/failover needs
+- Don't rely on DNS alone for fast failover
+- Use health-checked, geo-aware DNS for global apps
+
+</Card>
+
+</Cards>

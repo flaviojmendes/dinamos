@@ -64,6 +64,38 @@ ZooKeeper is a coordination service for distributed systems that implements its 
 
 </Cards>
 
+## Byzantine Fault Tolerance (BFT)
+
+Raft and Paxos tolerate nodes that **crash** (fail-stop). They assume nodes that *do* respond are honest. **Byzantine** faults are worse: a node can lie, send conflicting messages to different peers, or be actively malicious (a bug, corruption, or an attacker).
+
+<Callout type="warning" title="Why BFT is harder">
+
+To tolerate **f** Byzantine (lying) nodes you need **3f + 1** total nodes — versus only **2f + 1** to tolerate f crash faults. You need a two-thirds supermajority because some of the votes you receive may be lies.
+
+</Callout>
+
+<Cards cols={2}>
+
+<Card title="Classic BFT" accent="brand">
+
+**PBFT** (Practical Byzantine Fault Tolerance) reaches agreement among known nodes through multiple voting rounds. Used in permissioned systems where membership is controlled.
+
+</Card>
+
+<Card title="Blockchain consensus" accent="purple">
+
+Public blockchains face Byzantine actors at internet scale. Proof-of-Work and Proof-of-Stake are BFT-style mechanisms that make lying economically irrational instead of voting among known peers.
+
+</Card>
+
+</Cards>
+
+<Callout type="neutral" title="When you actually need it">
+
+Most internal systems only need crash fault tolerance (Raft/Paxos) — you trust your own machines. Reach for BFT when nodes are operated by **mutually distrusting parties** or exposed to adversaries: blockchains, cross-organization ledgers, and high-assurance systems.
+
+</Callout>
+
 ## Try It in Practice
 
 Use our interactive simulator to better understand how consensus protocols work in different scenarios.

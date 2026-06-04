@@ -1,0 +1,85 @@
+# O Padrão Saga
+
+Uma única transação de banco te dá atomicidade tudo-ou-nada. Mas um processo de negócio que atravessa **múltiplos serviços** — reservar estoque, cobrar pagamento, agendar envio — não tem uma transação compartilhada. O **padrão saga** coordena esses passos e os desfaz de forma limpa quando um falha.
+
+<Callout type="info" title="💡 Sem rollback global">
+
+Você não pode dar `ROLLBACK` entre serviços. Uma saga, em vez disso, define para cada passo uma **ação compensatória** que o desfaz semanticamente. Se o passo 3 falha, você roda as compensações dos passos 2 e 1 em ordem reversa.
+
+</Callout>
+
+## Uma saga é uma sequência de transações locais
+
+Cada passo faz commit no seu próprio serviço imediatamente. Não há locks segurados pelo fluxo inteiro (o que mataria a disponibilidade). O preço: entre os passos o sistema fica **temporariamente inconsistente**, e você precisa projetar compensações para progresso parcial.
+
+<Cards cols={2}>
+
+<Card title="Caminho de avanço" accent="green">
+
+Reservar estoque → Cobrar pagamento → Agendar envio → Enviar confirmação. Cada um faz commit local e emite sucesso.
+
+</Card>
+
+<Card title="Caminho de compensação" accent="red">
+
+Se "Agendar envio" falha: Estornar pagamento → Liberar estoque. As compensações rodam em ordem **reversa** dos passos concluídos.
+
+</Card>
+
+</Cards>
+
+## Dois estilos de coordenação
+
+<Cards cols={2}>
+
+<Card title="Orquestração" accent="brand">
+
+Um **orquestrador** central diz a cada serviço o que fazer e decide quando compensar. Fácil de entender e monitorar; o orquestrador é uma dependência e pode ficar complexo.
+
+</Card>
+
+<Card title="Coreografia" accent="purple">
+
+Sem cérebro central — cada serviço reage a eventos e emite os seus. Fracamente acoplado e resiliente, mas o fluxo ponta-a-ponta é mais difícil de ver e depurar.
+
+</Card>
+
+</Cards>
+
+## Projetando compensações
+
+<Callout type="warning" title="Compensações não são um undo mágico">
+
+- Precisam ser **idempotentes** (um retry não pode estornar duas vezes).
+- Algumas ações não podem ser desfeitas (um e-mail foi enviado) — use uma contra-ação *semântica* (envie uma correção).
+- Considere a janela em que outras leituras viram o estado intermediário.
+
+</Callout>
+
+<Callout type="success" title="Experimente: Simulador de Saga">
+
+Rode uma saga de quatro passos, escolha orquestrada ou coreografada, injete uma falha em qualquer passo e veja os passos concluídos sendo compensados em ordem reversa no [Simulador de Saga](/estrategias-de-consistencia/saga/simulator).
+
+</Callout>
+
+## Pontos-chave
+
+<Cards cols={2}>
+
+<Card title="Lembre" accent="green">
+
+- Sagas trocam atomicidade global por transações locais por passo
+- Todo passo precisa de uma ação compensatória idempotente
+- Orquestração é explícita; coreografia é orientada a eventos
+
+</Card>
+
+<Card title="Projete para" accent="brand">
+
+- Torne passos e compensações idempotentes e re-executáveis
+- Aceite e limite a inconsistência temporária entre passos
+- Rastreie o estado da saga para retomar após uma queda
+
+</Card>
+
+</Cards>

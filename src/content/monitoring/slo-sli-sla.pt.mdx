@@ -1,0 +1,78 @@
+# SLO, SLI e Error Budgets
+
+"O sistema é confiável o suficiente?" é impossível responder até você torná-lo mensurável. **SLIs**, **SLOs** e **SLAs** transformam confiabilidade em números — e o **error budget** transforma esses números numa ferramenta de decisão.
+
+<Callout type="info" title="💡 As três siglas">
+
+- **SLI** (Indicator): um número *medido* — ex.: % de requisições abaixo de 300ms.
+- **SLO** (Objective): sua *meta* para um SLI — ex.: 99,9% das requisições abaixo de 300ms em 30 dias.
+- **SLA** (Agreement): um *contrato* com consequências (reembolsos) se você falhar. Em geral mais frouxo que seu SLO.
+
+</Callout>
+
+## Do sinal à meta
+
+<Cards cols={3}>
+
+<Card title="Escolha bons SLIs" accent="brand">
+
+Meça o que o usuário sente: disponibilidade, latência, taxa de erro, atualidade. Um ótimo SLI é a razão de *eventos bons* sobre *eventos totais*.
+
+</Card>
+
+<Card title="Defina um SLO realista" accent="purple">
+
+100% é a meta errada — é impossivelmente caro. Escolha um número que mantenha os usuários felizes com margem para manutenção e para entregar features.
+
+</Card>
+
+<Card title="Respalde com um SLA (talvez)" accent="green">
+
+Só promessas externas e contratuais precisam de SLA. Mantenha a meta do SLA abaixo do seu SLO interno para ter margem de segurança.
+
+</Card>
+
+</Cards>
+
+## O error budget
+
+Se seu SLO é 99,9% em 30 dias, você *pode* ficar fora 0,1% — cerca de **43 minutos**. Essa folga é seu **error budget**: uma moeda que você pode gastar.
+
+<Callout type="neutral" title="Gastando o orçamento">
+
+- **Orçamento sobrando** → entregue mais rápido, assuma riscos, faça experimentos.
+- **Orçamento esgotado** → congele mudanças arriscadas, foque em confiabilidade até recuperar.
+
+Ele alinha dev (quer entregar) e ops (quer estabilidade) em torno de um número compartilhado em vez de discussões.
+
+</Callout>
+
+## Burn rate
+
+<Callout type="warning" title="Quão rápido você está gastando?">
+
+**Burn rate** é a velocidade com que você consome o error budget. Um burn rate de 1 o gasta exatamente ao longo da janela; um burn rate de 10 significa esgotar um orçamento de 30 dias em 3 dias. Alerte em **burn rápido** (acione agora) e **burn lento** (investigue em breve) em vez de cada oscilação.
+
+</Callout>
+
+## Pontos-chave
+
+<Cards cols={2}>
+
+<Card title="Lembre" accent="green">
+
+- SLI = medido, SLO = meta, SLA = contrato
+- 100% é a meta errada; escolha um SLO deliberado
+- O error budget = 1 − SLO, um orçamento que você gasta
+
+</Card>
+
+<Card title="Projete para" accent="brand">
+
+- Defina SLIs sob a perspectiva do usuário
+- Condicione releases ao error budget restante
+- Alerte por burn rate, não por picos de erro brutos
+
+</Card>
+
+</Cards>

@@ -1,0 +1,91 @@
+# Consistent Hashing
+
+You have keys (cache entries, user records) and a set of servers. You need a rule that maps each key to a server. The naive rule — `server = hash(key) % N` — works until `N` changes. Then **almost every key** moves to a different server, and your cache empties out in an instant.
+
+<Callout type="warning" title="The modulo trap">
+
+With `hash(key) % N`, going from 4 to 5 servers remaps roughly **80% of keys**. For a cache, that's a cache stampede; for a database, that's a massive rebalancing storm.
+
+</Callout>
+
+## The ring idea
+
+Consistent hashing places both **servers** and **keys** on the same circular hash space (0 → 2³² → wraps to 0). A key is owned by the **first server clockwise** from the key's position.
+
+<Cards cols={3}>
+
+<Card title="1. Hash onto a ring" accent="brand">
+
+Hash each server's identifier to a point on the circle. Hash each key the same way.
+
+</Card>
+
+<Card title="2. Walk clockwise" accent="purple">
+
+Each key belongs to the next server found going clockwise around the ring.
+
+</Card>
+
+<Card title="3. Add/remove locally" accent="green">
+
+When a server joins or leaves, only the keys in its arc move — roughly `1/N` of them, not all of them.
+
+</Card>
+
+</Cards>
+
+## Virtual nodes: fixing lumpiness
+
+A few servers on a ring rarely land evenly — one can own a huge arc and become a hotspot. The fix is **virtual nodes**: each physical server is hashed to *many* points on the ring.
+
+<Callout type="success" title="Why virtual nodes matter">
+
+More points per server = smoother distribution and gentler rebalancing. When a server dies, its load is spread across *many* neighbors instead of dumped on a single one. Typical systems use 100–200 virtual nodes per physical node.
+
+</Callout>
+
+## Where it's used
+
+<Cards cols={2}>
+
+<Card title="Caches & DBs" accent="brand">
+
+Memcached clients, Amazon Dynamo, Cassandra, and Riak all use consistent hashing (or close variants) to place data.
+
+</Card>
+
+<Card title="Load balancing" accent="purple">
+
+"Consistent hashing with bounded loads" routes requests to backends while keeping sticky affinity as the fleet changes.
+
+</Card>
+
+</Cards>
+
+<Callout type="info" title="Try It: Consistent Hashing Simulator">
+
+Add and remove nodes, tune the number of virtual nodes, and watch which keys get remapped — and what percentage moves — in the [Consistent Hashing Simulator](/dados-armazenamento/consistent-hashing/simulator).
+
+</Callout>
+
+## Takeaways
+
+<Cards cols={2}>
+
+<Card title="Remember" accent="green">
+
+- Modulo hashing remaps everything when `N` changes
+- The ring moves only `~1/N` of keys per topology change
+- Virtual nodes smooth out load and failure impact
+
+</Card>
+
+<Card title="Design For" accent="brand">
+
+- Pick enough virtual nodes for even distribution
+- Make server identifiers stable across restarts
+- Combine with replication (store on the next R nodes)
+
+</Card>
+
+</Cards>

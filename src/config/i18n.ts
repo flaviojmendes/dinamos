@@ -59,6 +59,7 @@ const resources = {
           security: 'Security',
           monitoring: 'Monitoring & Maintenance',
           'ai-systems': 'AI & LLM Systems',
+          'data-storage': 'Data & Storage',
           cases: 'Real-World Cases',
         },
       },
@@ -1557,6 +1558,34 @@ const resources = {
           model_gateway: {
             name: 'Model Gateway',
             description: 'Infrastructure that fronts your LLMs'
+          },
+          kafka: {
+            name: 'Kafka & Streaming',
+            description: 'Partitioned, replayable event logs and consumer groups',
+            simulator: {
+              name: 'Kafka Simulator',
+              description: 'Tune partitions and consumers and watch consumer lag'
+            }
+          },
+          dns: {
+            name: 'DNS',
+            description: 'The distributed phone book that resolves names to addresses'
+          },
+          reverse_proxy: {
+            name: 'Reverse Proxy',
+            description: 'A front door that terminates TLS, routes, and caches'
+          },
+          service_discovery: {
+            name: 'Service Discovery',
+            description: 'How services find each other in a dynamic fleet'
+          },
+          service_mesh: {
+            name: 'Service Mesh',
+            description: 'Sidecar proxies for traffic, security, and observability'
+          },
+          kubernetes: {
+            name: 'Kubernetes',
+            description: 'Declarative orchestration of containers at scale'
           }
         },
         principios_design: {
@@ -1673,6 +1702,30 @@ const resources = {
           orquestracao_vs_coreografia: {
             name: 'Orchestration vs Choreography',
             description: 'Compare orchestration and choreography patterns'
+          },
+          cqrs: {
+            name: 'CQRS',
+            description: 'Separate write and read models via an event log',
+            simulator: {
+              name: 'CQRS Simulator',
+              description: 'Issue commands and watch read models catch up'
+            }
+          },
+          rate_limiting: {
+            name: 'Rate Limiting',
+            description: 'Token bucket, leaky bucket, and sliding window',
+            simulator: {
+              name: 'Rate Limiter Simulator',
+              description: 'Compare algorithms and watch accepted vs rejected'
+            }
+          },
+          backpressure: {
+            name: 'Backpressure',
+            description: 'Flow control when consumers can\'t keep up',
+            simulator: {
+              name: 'Backpressure Simulator',
+              description: 'Throttle a producer when the queue fills up'
+            }
           }
         },
         estrategias_de_consistencia: {
@@ -1717,6 +1770,26 @@ const resources = {
               name: 'Simulator',
               description: 'Visualize event ordering with Lamport timestamps'
             }
+          },
+          saga: {
+            name: 'Saga Pattern',
+            description: 'Long-running transactions with compensating actions',
+            simulator: {
+              name: 'Saga Simulator',
+              description: 'Run a saga, inject a failure, and watch it roll back'
+            }
+          },
+          delivery_semantics: {
+            name: 'Delivery Semantics',
+            description: 'At-most-once, at-least-once, and exactly-once',
+            simulator: {
+              name: 'Delivery Semantics Simulator',
+              description: 'Toggle dedup and DLQ to control duplicates and loss'
+            }
+          },
+          vector_clocks: {
+            name: 'Vector Clocks',
+            description: 'Track causality and detect concurrent updates'
           }
         },
         monitoramento_e_manutencao: {
@@ -1753,6 +1826,14 @@ const resources = {
           llm_observability: {
             name: 'LLM Observability',
             description: 'Tokens, cost, traces, and quality evaluations'
+          },
+          distributed_tracing: {
+            name: 'Distributed Tracing',
+            description: 'Follow a request across services with spans and context'
+          },
+          slo_sli_sla: {
+            name: 'SLO, SLI & Error Budgets',
+            description: 'Measure reliability and spend it with burn rate'
           }
         },
         casos_reais: {
@@ -1884,6 +1965,42 @@ const resources = {
             simulator: {
               name: 'Agent Orchestration Simulator',
               description: 'Watch an agent loop call tools, retry, and branch'
+            }
+          }
+        },
+        data_storage: {
+          name: 'Data & Storage',
+          description: 'Partitioning, replication, and finding data at scale',
+          consistent_hashing: {
+            name: 'Consistent Hashing',
+            description: 'Place keys on a ring so topology changes move few keys',
+            simulator: {
+              name: 'Consistent Hashing Simulator',
+              description: 'Add and remove nodes and watch keys remap'
+            }
+          },
+          sharding: {
+            name: 'Sharding & Partitioning',
+            description: 'Split data by range, hash, or directory — and avoid hotspots',
+            simulator: {
+              name: 'Sharding Simulator',
+              description: 'Stream keys into shards and watch hot shards emerge'
+            }
+          },
+          object_storage: {
+            name: 'Object & Blob Storage',
+            description: 'Durable, cheap blob storage at massive scale (S3)'
+          },
+          distributed_file_systems: {
+            name: 'Distributed File Systems',
+            description: 'GFS/HDFS: chunked, replicated files across a cluster'
+          },
+          inverted_index: {
+            name: 'Search & Inverted Index',
+            description: 'The data structure behind full-text search',
+            simulator: {
+              name: 'Inverted Index Simulator',
+              description: 'Query terms and watch documents rank by score'
             }
           }
         },
@@ -2377,6 +2494,169 @@ const resources = {
         }
       },
       simulators: {
+        consistent_hashing: {
+          title: 'Consistent Hashing Simulator',
+          subtitle: 'Keys on a ring — add/remove nodes and watch them remap',
+          controls: {
+            vnodes: 'Virtual nodes per node',
+            keys: 'Number of keys',
+          },
+          buttons: { add_node: 'Add node', remove_node: 'Remove node', shuffle: 'Shuffle keys', reset: 'Reset' },
+          metrics: {
+            title: 'Live Metrics',
+            nodes: 'Nodes',
+            vnodes: 'Virtual nodes',
+            keys: 'Keys',
+            moved: 'Keys moved',
+            imbalance: 'Load imbalance',
+          },
+          labels: {
+            node: 'Node',
+            hint: 'Add or remove a node — only the highlighted keys move. More virtual nodes means smoother distribution.',
+          },
+        },
+        sharding: {
+          title: 'Sharding Simulator',
+          subtitle: 'Route keys to shards by range or hash — and watch skew',
+          controls: {
+            shards: 'Number of shards',
+            strategy: 'Strategy',
+            skew: 'Key skew',
+          },
+          strategies: { hash: 'Hash', range: 'Range' },
+          buttons: { start: 'Start', stop: 'Stop', reset: 'Reset' },
+          metrics: {
+            title: 'Live Metrics',
+            keys: 'Keys routed',
+            shards: 'Shards',
+            imbalance: 'Load imbalance',
+            hot_load: 'Hottest shard',
+          },
+          labels: {
+            shard: 'Shard',
+            hint: 'Crank up skew with range partitioning to create a hot shard — then switch to hash to even it out.',
+          },
+        },
+        inverted_index: {
+          title: 'Inverted Index Simulator',
+          subtitle: 'Pick query terms and watch documents rank by score',
+          modes: { or: 'OR (any term)', and: 'AND (all terms)' },
+          buttons: { clear: 'Clear' },
+          metrics: {
+            title: 'Live Metrics',
+            terms: 'Query terms',
+            matched: 'Matched docs',
+            postings: 'Postings scanned',
+            corpus: 'Corpus size',
+          },
+          labels: {
+            query: 'Query terms',
+            documents: 'Documents',
+            index: 'Inverted index',
+            results: 'Ranked results',
+            doc: 'Doc',
+            score: 'score',
+            no_matches: 'No matching documents',
+            hint: 'AND intersects postings lists; OR unions them. Score counts how many query terms each document contains.',
+          },
+        },
+        kafka: {
+          title: 'Kafka Simulator',
+          subtitle: 'Producers, partitions, and a consumer group — watch the lag',
+          controls: {
+            partitions: 'Partitions',
+            consumers: 'Consumers',
+            produce_rate: 'Produce rate',
+            consume_rate: 'Consume / consumer',
+          },
+          buttons: { start: 'Start', stop: 'Stop', reset: 'Reset' },
+          metrics: {
+            title: 'Live Metrics',
+            produced: 'Produced',
+            consumed: 'Consumed',
+            lag: 'Consumer lag',
+            throughput: 'Consume capacity',
+          },
+          labels: {
+            partition: 'P',
+            producer: 'Producer',
+            consumers: 'Consumer group',
+            consumer: 'C',
+            idle: 'idle',
+            hint: 'Each partition is read by exactly one consumer. Add consumers beyond the partition count and they sit idle — partitions cap parallelism.',
+          },
+        },
+        saga: {
+          title: 'Saga Simulator',
+          subtitle: 'A distributed transaction as a sequence of compensable steps',
+          controls: { mode: 'Coordination', fail_at: 'Inject failure at step' },
+          modes: { orchestrated: 'Orchestrated', choreographed: 'Choreographed' },
+          fail_none: 'None',
+          buttons: { run: 'Run saga', reset: 'Reset' },
+          roles: { coordinator: 'Saga Coordinator' },
+          steps: {
+            reserve: 'Reserve inventory',
+            payment: 'Charge payment',
+            shipping: 'Book shipping',
+            confirm: 'Send confirmation',
+          },
+          status: {
+            pending: 'Pending',
+            running: 'Running',
+            done: 'Committed',
+            failed: 'Failed',
+            compensated: 'Compensated',
+          },
+          metrics: { title: 'Result', committed: 'Steps committed', compensated: 'Steps compensated', outcome: 'Outcome' },
+          outcome: { idle: 'Idle', committed: 'Committed', rolled_back: 'Rolled back' },
+          labels: {
+            hint: 'A saga has no global rollback. When a step fails, each completed step is undone by its own compensating action, in reverse order.',
+          },
+        },
+        delivery_semantics: {
+          title: 'Delivery Semantics Simulator',
+          subtitle: 'At-most-once vs at-least-once vs exactly-once',
+          controls: { mode: 'Semantics', dedup: 'Deduplication', dlq: 'Dead-letter queue' },
+          modes: { at_most_once: 'At-most-once', at_least_once: 'At-least-once', exactly_once: 'Exactly-once' },
+          buttons: { start: 'Start', stop: 'Stop', reset: 'Reset', on: 'On', off: 'Off' },
+          metrics: {
+            title: 'Live Metrics',
+            produced: 'Produced',
+            delivered: 'Delivered',
+            duplicates: 'Duplicates',
+            filtered: 'Dedup filtered',
+            lost: 'Lost',
+            dlq: 'Dead-lettered',
+          },
+          tags: {
+            delivered: 'Delivered',
+            duplicate: 'Duplicate',
+            lost: 'Lost',
+            dlq: 'Dead-letter',
+            filtered: 'Filtered',
+          },
+          labels: {
+            recent: 'Recent messages',
+            empty: 'No messages yet',
+            hint: 'At-most-once can lose messages; at-least-once can duplicate them. "Exactly-once" = at-least-once delivery plus deduplication on the consumer.',
+          },
+        },
+        cqrs: {
+          title: 'CQRS Simulator',
+          subtitle: 'Commands append events; read models are projections',
+          controls: { lag: 'Projection lag' },
+          commands: { create: 'Create order', add_item: 'Add item', ship: 'Ship order', cancel: 'Cancel order' },
+          buttons: { reset: 'Reset' },
+          panels: { command: 'Command side (write)', log: 'Event log', read: 'Read models (query)' },
+          events: { created: 'OrderCreated', item_added: 'ItemAdded', shipped: 'OrderShipped', cancelled: 'OrderCancelled' },
+          read: { status: 'Order status', items: 'Item count', events_applied: 'Events applied', pending: 'Pending' },
+          status_values: { none: '—', created: 'Created', shipped: 'Shipped', cancelled: 'Cancelled' },
+          labels: {
+            log_empty: 'No events yet — issue a command',
+            lag_caption: 'Projection caught up: {{pct}}%',
+            hint: 'Writes go to the event log instantly; read models update asynchronously. Raise the lag to see eventual consistency — the read side trails the write side.',
+          },
+        },
         inference_batching: {
           title: 'Inference Batching Simulator',
           subtitle: 'Continuous batching on a single GPU — throughput vs latency',
@@ -2705,6 +2985,22 @@ const resources = {
         },
         rate_limiter: {
           title: 'Rate Limiter',
+          strategy: 'Algorithm',
+          algorithms: {
+            token: 'Token bucket',
+            leaky: 'Leaky bucket',
+            sliding: 'Sliding window'
+          },
+          algo_desc: {
+            token: 'Tokens refill at a steady rate; each request spends one. Allows bursts up to the bucket size.',
+            leaky: 'Requests fill a fixed queue that drains at a constant rate. Smooths output; rejects when the queue is full.',
+            sliding: 'Counts requests in the trailing 1s window; rejects once the limit is reached. No bursts beyond the limit.'
+          },
+          level: {
+            token: 'Tokens available',
+            leaky: 'Queue depth',
+            sliding: 'Window count (1s)'
+          },
           buttons: {
             configure: 'Configure',
             close_config: 'Close Config',
@@ -2713,13 +3009,13 @@ const resources = {
             reset: 'Reset'
           },
           config: {
-            token_rate: 'Token Rate (per second)',
+            token_rate: 'Refill / leak / limit (per second)',
             message_rate: 'Message Rate (per second)',
-            bucket_size: 'Bucket Size'
+            bucket_size: 'Bucket / queue size'
           },
           bucket: {
             title: 'Token Bucket',
-            rate: 'Rate: {{rate}} tokens/s'
+            rate: 'Rate: {{rate}} /s'
           },
           recent: {
             title: 'Recent Requests',
@@ -5755,6 +6051,7 @@ const resources = {
           security: 'Segurança',
           monitoring: 'Monitoramento e Manutenção',
           'ai-systems': 'Sistemas de IA e LLMs',
+          'data-storage': 'Dados e Armazenamento',
           cases: 'Casos do Mundo Real',
         },
       },
@@ -7253,6 +7550,34 @@ const resources = {
           model_gateway: {
             name: 'Gateway de Modelos',
             description: 'Infraestrutura que fica na frente dos seus LLMs'
+          },
+          kafka: {
+            name: 'Kafka e Streaming',
+            description: 'Logs de eventos particionados e reproduzíveis e consumer groups',
+            simulator: {
+              name: 'Simulador de Kafka',
+              description: 'Ajuste partições e consumidores e veja o consumer lag'
+            }
+          },
+          dns: {
+            name: 'DNS',
+            description: 'A lista telefônica distribuída que resolve nomes em endereços'
+          },
+          reverse_proxy: {
+            name: 'Reverse Proxy',
+            description: 'Uma porta de entrada que termina TLS, roteia e faz cache'
+          },
+          service_discovery: {
+            name: 'Service Discovery',
+            description: 'Como serviços se encontram numa frota dinâmica'
+          },
+          service_mesh: {
+            name: 'Service Mesh',
+            description: 'Proxies sidecar para tráfego, segurança e observabilidade'
+          },
+          kubernetes: {
+            name: 'Kubernetes',
+            description: 'Orquestração declarativa de containers em escala'
           }
         },
         principios_design: {
@@ -7369,6 +7694,30 @@ const resources = {
           orquestracao_vs_coreografia: {
             name: 'Orquestração vs Coreografia',
             description: 'Compare os padrões de orquestração e coreografia'
+          },
+          cqrs: {
+            name: 'CQRS',
+            description: 'Separe os modelos de escrita e leitura via um log de eventos',
+            simulator: {
+              name: 'Simulador de CQRS',
+              description: 'Emita comandos e veja os read models se atualizarem'
+            }
+          },
+          rate_limiting: {
+            name: 'Rate Limiting',
+            description: 'Token bucket, leaky bucket e janela deslizante',
+            simulator: {
+              name: 'Simulador de Rate Limiter',
+              description: 'Compare algoritmos e veja aceitas vs rejeitadas'
+            }
+          },
+          backpressure: {
+            name: 'Backpressure',
+            description: 'Controle de fluxo quando consumidores não acompanham',
+            simulator: {
+              name: 'Simulador de Backpressure',
+              description: 'Throttle o produtor quando a fila enche'
+            }
           }
         },
         estrategias_de_consistencia: {
@@ -7413,6 +7762,26 @@ const resources = {
               name: 'Simulador',
               description: 'Visualize a ordenação de eventos com timestamps de Lamport'
             }
+          },
+          saga: {
+            name: 'Padrão Saga',
+            description: 'Transações longas com ações compensatórias',
+            simulator: {
+              name: 'Simulador de Saga',
+              description: 'Rode uma saga, injete uma falha e veja o rollback'
+            }
+          },
+          delivery_semantics: {
+            name: 'Semânticas de Entrega',
+            description: 'At-most-once, at-least-once e exactly-once',
+            simulator: {
+              name: 'Simulador de Semânticas de Entrega',
+              description: 'Alterne dedup e DLQ para controlar duplicatas e perdas'
+            }
+          },
+          vector_clocks: {
+            name: 'Relógios Vetoriais',
+            description: 'Rastreie causalidade e detecte atualizações concorrentes'
           }
         },
         monitoramento_e_manutencao: {
@@ -7449,6 +7818,14 @@ const resources = {
           llm_observability: {
             name: 'Observabilidade de LLM',
             description: 'Tokens, custo, traces e avaliações de qualidade'
+          },
+          distributed_tracing: {
+            name: 'Distributed Tracing',
+            description: 'Acompanhe uma requisição entre serviços com spans e contexto'
+          },
+          slo_sli_sla: {
+            name: 'SLO, SLI e Error Budgets',
+            description: 'Meça a confiabilidade e gaste-a com burn rate'
           }
         },
         casos_reais: {
@@ -7580,6 +7957,42 @@ const resources = {
             simulator: {
               name: 'Simulador de Orquestração de Agentes',
               description: 'Veja um agente chamar ferramentas, repetir e ramificar'
+            }
+          }
+        },
+        data_storage: {
+          name: 'Dados e Armazenamento',
+          description: 'Particionamento, replicação e como achar dados em escala',
+          consistent_hashing: {
+            name: 'Consistent Hashing',
+            description: 'Coloque chaves num anel para mover poucas a cada mudança',
+            simulator: {
+              name: 'Simulador de Consistent Hashing',
+              description: 'Adicione e remova nós e veja as chaves serem remapeadas'
+            }
+          },
+          sharding: {
+            name: 'Sharding e Particionamento',
+            description: 'Divida dados por faixa, hash ou diretório — e evite gargalos',
+            simulator: {
+              name: 'Simulador de Sharding',
+              description: 'Envie chaves para shards e veja shards quentes surgirem'
+            }
+          },
+          object_storage: {
+            name: 'Object & Blob Storage',
+            description: 'Armazenamento de blobs durável e barato em escala massiva (S3)'
+          },
+          distributed_file_systems: {
+            name: 'Sistemas de Arquivos Distribuídos',
+            description: 'GFS/HDFS: arquivos em blocos e replicados por um cluster'
+          },
+          inverted_index: {
+            name: 'Busca e Índice Invertido',
+            description: 'A estrutura de dados por trás da busca textual',
+            simulator: {
+              name: 'Simulador de Índice Invertido',
+              description: 'Consulte termos e veja documentos ranqueados por pontuação'
             }
           }
         },
@@ -8073,6 +8486,169 @@ const resources = {
         },
       },
       simulators: {
+        consistent_hashing: {
+          title: 'Simulador de Consistent Hashing',
+          subtitle: 'Chaves num anel — adicione/remova nós e veja o remapeamento',
+          controls: {
+            vnodes: 'Nós virtuais por nó',
+            keys: 'Número de chaves',
+          },
+          buttons: { add_node: 'Adicionar nó', remove_node: 'Remover nó', shuffle: 'Embaralhar chaves', reset: 'Resetar' },
+          metrics: {
+            title: 'Métricas ao Vivo',
+            nodes: 'Nós',
+            vnodes: 'Nós virtuais',
+            keys: 'Chaves',
+            moved: 'Chaves movidas',
+            imbalance: 'Desbalanceamento',
+          },
+          labels: {
+            node: 'Nó',
+            hint: 'Adicione ou remova um nó — só as chaves destacadas se movem. Mais nós virtuais significa distribuição mais suave.',
+          },
+        },
+        sharding: {
+          title: 'Simulador de Sharding',
+          subtitle: 'Roteie chaves para shards por faixa ou hash — e veja a desigualdade',
+          controls: {
+            shards: 'Número de shards',
+            strategy: 'Estratégia',
+            skew: 'Desigualdade',
+          },
+          strategies: { hash: 'Hash', range: 'Faixa' },
+          buttons: { start: 'Iniciar', stop: 'Parar', reset: 'Resetar' },
+          metrics: {
+            title: 'Métricas ao Vivo',
+            keys: 'Chaves roteadas',
+            shards: 'Shards',
+            imbalance: 'Desbalanceamento',
+            hot_load: 'Shard mais quente',
+          },
+          labels: {
+            shard: 'Shard',
+            hint: 'Aumente a desigualdade com particionamento por faixa para criar um shard quente — depois mude para hash para equilibrar.',
+          },
+        },
+        inverted_index: {
+          title: 'Simulador de Índice Invertido',
+          subtitle: 'Escolha termos de consulta e veja documentos ranqueados por pontuação',
+          modes: { or: 'OR (qualquer termo)', and: 'AND (todos os termos)' },
+          buttons: { clear: 'Limpar' },
+          metrics: {
+            title: 'Métricas ao Vivo',
+            terms: 'Termos da consulta',
+            matched: 'Docs encontrados',
+            postings: 'Postings varridos',
+            corpus: 'Tamanho do corpus',
+          },
+          labels: {
+            query: 'Termos da consulta',
+            documents: 'Documentos',
+            index: 'Índice invertido',
+            results: 'Resultados ranqueados',
+            doc: 'Doc',
+            score: 'pont.',
+            no_matches: 'Nenhum documento correspondente',
+            hint: 'AND intersecta as listas de postings; OR as une. A pontuação conta quantos termos da consulta cada documento contém.',
+          },
+        },
+        kafka: {
+          title: 'Simulador de Kafka',
+          subtitle: 'Produtores, partições e um consumer group — veja o lag',
+          controls: {
+            partitions: 'Partições',
+            consumers: 'Consumidores',
+            produce_rate: 'Taxa de produção',
+            consume_rate: 'Consumo / consumidor',
+          },
+          buttons: { start: 'Iniciar', stop: 'Parar', reset: 'Resetar' },
+          metrics: {
+            title: 'Métricas ao Vivo',
+            produced: 'Produzidas',
+            consumed: 'Consumidas',
+            lag: 'Consumer lag',
+            throughput: 'Capacidade de consumo',
+          },
+          labels: {
+            partition: 'P',
+            producer: 'Produtor',
+            consumers: 'Consumer group',
+            consumer: 'C',
+            idle: 'ocioso',
+            hint: 'Cada partição é lida por exatamente um consumidor. Adicione consumidores além do número de partições e eles ficam ociosos — as partições limitam o paralelismo.',
+          },
+        },
+        saga: {
+          title: 'Simulador de Saga',
+          subtitle: 'Uma transação distribuída como uma sequência de passos compensáveis',
+          controls: { mode: 'Coordenação', fail_at: 'Injetar falha no passo' },
+          modes: { orchestrated: 'Orquestrada', choreographed: 'Coreografada' },
+          fail_none: 'Nenhuma',
+          buttons: { run: 'Rodar saga', reset: 'Resetar' },
+          roles: { coordinator: 'Coordenador da Saga' },
+          steps: {
+            reserve: 'Reservar estoque',
+            payment: 'Cobrar pagamento',
+            shipping: 'Agendar envio',
+            confirm: 'Enviar confirmação',
+          },
+          status: {
+            pending: 'Pendente',
+            running: 'Executando',
+            done: 'Confirmado',
+            failed: 'Falhou',
+            compensated: 'Compensado',
+          },
+          metrics: { title: 'Resultado', committed: 'Passos confirmados', compensated: 'Passos compensados', outcome: 'Desfecho' },
+          outcome: { idle: 'Inativo', committed: 'Confirmada', rolled_back: 'Revertida' },
+          labels: {
+            hint: 'Uma saga não tem rollback global. Quando um passo falha, cada passo concluído é desfeito por sua própria ação compensatória, em ordem reversa.',
+          },
+        },
+        delivery_semantics: {
+          title: 'Simulador de Semânticas de Entrega',
+          subtitle: 'At-most-once vs at-least-once vs exactly-once',
+          controls: { mode: 'Semântica', dedup: 'Deduplicação', dlq: 'Fila de dead-letter' },
+          modes: { at_most_once: 'At-most-once', at_least_once: 'At-least-once', exactly_once: 'Exactly-once' },
+          buttons: { start: 'Iniciar', stop: 'Parar', reset: 'Resetar', on: 'On', off: 'Off' },
+          metrics: {
+            title: 'Métricas ao Vivo',
+            produced: 'Produzidas',
+            delivered: 'Entregues',
+            duplicates: 'Duplicatas',
+            filtered: 'Filtradas (dedup)',
+            lost: 'Perdidas',
+            dlq: 'Dead-lettered',
+          },
+          tags: {
+            delivered: 'Entregue',
+            duplicate: 'Duplicata',
+            lost: 'Perdida',
+            dlq: 'Dead-letter',
+            filtered: 'Filtrada',
+          },
+          labels: {
+            recent: 'Mensagens recentes',
+            empty: 'Nenhuma mensagem ainda',
+            hint: 'At-most-once pode perder mensagens; at-least-once pode duplicá-las. "Exactly-once" = entrega at-least-once mais deduplicação no consumidor.',
+          },
+        },
+        cqrs: {
+          title: 'Simulador de CQRS',
+          subtitle: 'Comandos anexam eventos; read models são projeções',
+          controls: { lag: 'Lag da projeção' },
+          commands: { create: 'Criar pedido', add_item: 'Adicionar item', ship: 'Enviar pedido', cancel: 'Cancelar pedido' },
+          buttons: { reset: 'Resetar' },
+          panels: { command: 'Lado de comando (escrita)', log: 'Log de eventos', read: 'Read models (consulta)' },
+          events: { created: 'OrderCreated', item_added: 'ItemAdded', shipped: 'OrderShipped', cancelled: 'OrderCancelled' },
+          read: { status: 'Status do pedido', items: 'Quantidade de itens', events_applied: 'Eventos aplicados', pending: 'Pendentes' },
+          status_values: { none: '—', created: 'Criado', shipped: 'Enviado', cancelled: 'Cancelado' },
+          labels: {
+            log_empty: 'Nenhum evento ainda — emita um comando',
+            lag_caption: 'Projeção atualizada: {{pct}}%',
+            hint: 'Escritas vão para o log de eventos instantaneamente; read models atualizam de forma assíncrona. Aumente o lag para ver consistência eventual — a leitura fica atrás da escrita.',
+          },
+        },
         inference_batching: {
           title: 'Simulador de Batching de Inferência',
           subtitle: 'Continuous batching em uma GPU — vazão vs latência',
@@ -8421,6 +8997,22 @@ const resources = {
         },
         rate_limiter: {
           title: 'Rate Limiter',
+          strategy: 'Algoritmo',
+          algorithms: {
+            token: 'Token bucket',
+            leaky: 'Leaky bucket',
+            sliding: 'Janela deslizante'
+          },
+          algo_desc: {
+            token: 'Tokens são repostos a uma taxa constante; cada requisição gasta um. Permite rajadas até o tamanho do bucket.',
+            leaky: 'Requisições preenchem uma fila fixa que drena a uma taxa constante. Suaviza a saída; rejeita quando a fila enche.',
+            sliding: 'Conta requisições na janela de 1s anterior; rejeita ao atingir o limite. Sem rajadas além do limite.'
+          },
+          level: {
+            token: 'Tokens disponíveis',
+            leaky: 'Profundidade da fila',
+            sliding: 'Contagem na janela (1s)'
+          },
           buttons: {
             configure: 'Configurar',
             close_config: 'Fechar Config',
@@ -8429,13 +9021,13 @@ const resources = {
             reset: 'Resetar'
           },
           config: {
-            token_rate: 'Taxa de Tokens (por segundo)',
+            token_rate: 'Reposição / vazamento / limite (por segundo)',
             message_rate: 'Taxa de Mensagens (por segundo)',
-            bucket_size: 'Tamanho do Bucket'
+            bucket_size: 'Tamanho do bucket / fila'
           },
           bucket: {
             title: 'Token Bucket',
-            rate: 'Taxa: {{rate}} tokens/s'
+            rate: 'Taxa: {{rate}} /s'
           },
           recent: {
             title: 'Últimas Requisições',

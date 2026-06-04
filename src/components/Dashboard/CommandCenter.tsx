@@ -40,6 +40,7 @@ const MODULES: ModuleDef[] = [
   { id: 'security', label: 'Security', tier: 'ADVANCED', base: '/seguranca' },
   { id: 'monitoring', label: 'Monitoring & Maintenance', tier: 'ADVANCED', base: '/monitoramento-e-manutencao' },
   { id: 'ai-systems', label: 'AI & LLM Systems', tier: 'APPLIED', base: '/sistemas-ia' },
+  { id: 'data-storage', label: 'Data & Storage', tier: 'CORE', base: '/dados-armazenamento' },
   { id: 'cases', label: 'Real-World Cases', tier: 'APPLIED', base: '/casos-reais' },
 ];
 

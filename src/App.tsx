@@ -61,6 +61,13 @@ import VectorSearchSimulator from "./components/AISystems/VectorSearchSimulator"
 import LlmGatewaySimulator from "./components/AISystems/LlmGatewaySimulator";
 import GpuAutoscalerSimulator from "./components/AISystems/GpuAutoscalerSimulator";
 import AgentOrchestrationSimulator from "./components/AISystems/AgentOrchestrationSimulator";
+import ConsistentHashingSimulator from "./components/DataStorage/ConsistentHashingSimulator";
+import ShardingSimulator from "./components/DataStorage/ShardingSimulator";
+import InvertedIndexSimulator from "./components/DataStorage/InvertedIndexSimulator";
+import KafkaSimulator from "./components/SystemComponents/KafkaSimulator";
+import SagaSimulator from "./components/ConsistencyStrategies/SagaSimulator";
+import DeliverySemanticsSimulator from "./components/ConsistencyStrategies/DeliverySemanticsSimulator";
+import CqrsSimulator from "./components/DesignPrinciples/CqrsSimulator";
 import TwoPhaseCommitSimulator from "./components/ConsistencyStrategies/TwoPhaseCommitSimulator";
 import Logs from "./components/MonitoringMaintenance/Logs";
 
@@ -293,6 +300,43 @@ const createMenuItems = (t: any): MenuItem[] => [
         name: t('menu.componentes.model_gateway.name'),
         description: t('menu.componentes.model_gateway.description'),
       },
+      {
+        path: "/componentes/kafka",
+        name: t('menu.componentes.kafka.name'),
+        description: t('menu.componentes.kafka.description'),
+        children: [
+          {
+            path: "/componentes/kafka/simulator",
+            name: t('menu.componentes.kafka.simulator.name'),
+            description: t('menu.componentes.kafka.simulator.description'),
+          },
+        ],
+      },
+      {
+        path: "/componentes/dns",
+        name: t('menu.componentes.dns.name'),
+        description: t('menu.componentes.dns.description'),
+      },
+      {
+        path: "/componentes/reverse-proxy",
+        name: t('menu.componentes.reverse_proxy.name'),
+        description: t('menu.componentes.reverse_proxy.description'),
+      },
+      {
+        path: "/componentes/service-discovery",
+        name: t('menu.componentes.service_discovery.name'),
+        description: t('menu.componentes.service_discovery.description'),
+      },
+      {
+        path: "/componentes/service-mesh",
+        name: t('menu.componentes.service_mesh.name'),
+        description: t('menu.componentes.service_mesh.description'),
+      },
+      {
+        path: "/componentes/kubernetes",
+        name: t('menu.componentes.kubernetes.name'),
+        description: t('menu.componentes.kubernetes.description'),
+      },
     ],
   },
   {
@@ -465,6 +509,42 @@ const createMenuItems = (t: any): MenuItem[] => [
             path: "/principios-design/canary-deployment/simulator",
             name: t('menu.principios_design.canary_deployment.simulator.name'),
             description: t('menu.principios_design.canary_deployment.simulator.description'),
+          },
+        ],
+      },
+      {
+        path: "/principios-design/cqrs",
+        name: t('menu.principios_design.cqrs.name'),
+        description: t('menu.principios_design.cqrs.description'),
+        children: [
+          {
+            path: "/principios-design/cqrs/simulator",
+            name: t('menu.principios_design.cqrs.simulator.name'),
+            description: t('menu.principios_design.cqrs.simulator.description'),
+          },
+        ],
+      },
+      {
+        path: "/principios-design/rate-limiting",
+        name: t('menu.principios_design.rate_limiting.name'),
+        description: t('menu.principios_design.rate_limiting.description'),
+        children: [
+          {
+            path: "/principios-design/rate-limiting/simulator",
+            name: t('menu.principios_design.rate_limiting.simulator.name'),
+            description: t('menu.principios_design.rate_limiting.simulator.description'),
+          },
+        ],
+      },
+      {
+        path: "/principios-design/backpressure",
+        name: t('menu.principios_design.backpressure.name'),
+        description: t('menu.principios_design.backpressure.description'),
+        children: [
+          {
+            path: "/backpressure",
+            name: t('menu.principios_design.backpressure.simulator.name'),
+            description: t('menu.principios_design.backpressure.simulator.description'),
           },
         ],
       }
@@ -663,6 +743,35 @@ const createMenuItems = (t: any): MenuItem[] => [
           },
         ],
       },
+      {
+        name: t('menu.estrategias_de_consistencia.saga.name'),
+        path: "/estrategias-de-consistencia/saga",
+        description: t('menu.estrategias_de_consistencia.saga.description'),
+        children: [
+          {
+            name: t('menu.estrategias_de_consistencia.saga.simulator.name'),
+            path: "/estrategias-de-consistencia/saga/simulator",
+            description: t('menu.estrategias_de_consistencia.saga.simulator.description'),
+          },
+        ],
+      },
+      {
+        name: t('menu.estrategias_de_consistencia.delivery_semantics.name'),
+        path: "/estrategias-de-consistencia/delivery-semantics",
+        description: t('menu.estrategias_de_consistencia.delivery_semantics.description'),
+        children: [
+          {
+            name: t('menu.estrategias_de_consistencia.delivery_semantics.simulator.name'),
+            path: "/estrategias-de-consistencia/delivery-semantics/simulator",
+            description: t('menu.estrategias_de_consistencia.delivery_semantics.simulator.description'),
+          },
+        ],
+      },
+      {
+        name: t('menu.estrategias_de_consistencia.vector_clocks.name'),
+        path: "/estrategias-de-consistencia/vector-clocks",
+        description: t('menu.estrategias_de_consistencia.vector_clocks.description'),
+      },
     ],
   },
   {
@@ -728,6 +837,16 @@ const createMenuItems = (t: any): MenuItem[] => [
         path: "/monitoramento-e-manutencao/llm-observability",
         name: t('menu.monitoramento_e_manutencao.llm_observability.name'),
         description: t('menu.monitoramento_e_manutencao.llm_observability.description'),
+      },
+      {
+        path: "/monitoramento-e-manutencao/distributed-tracing",
+        name: t('menu.monitoramento_e_manutencao.distributed_tracing.name'),
+        description: t('menu.monitoramento_e_manutencao.distributed_tracing.description'),
+      },
+      {
+        path: "/monitoramento-e-manutencao/slo-sli-sla",
+        name: t('menu.monitoramento_e_manutencao.slo_sli_sla.name'),
+        description: t('menu.monitoramento_e_manutencao.slo_sli_sla.description'),
       },
     ],
   },
@@ -887,6 +1006,74 @@ const createMenuItems = (t: any): MenuItem[] => [
             path: "/sistemas-ia/agentic-systems/simulator",
             name: t('menu.ai_systems.agentic.simulator.name'),
             description: t('menu.ai_systems.agentic.simulator.description'),
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: "/dados-armazenamento",
+    name: t('menu.data_storage.name'),
+    description: t('menu.data_storage.description'),
+    icon: (
+      <svg
+        className="w-6 h-6 text-brand-600 dark:text-brand-400"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M4 7v10c0 1.66 3.58 3 8 3s8-1.34 8-3V7M4 7c0 1.66 3.58 3 8 3s8-1.34 8-3M4 7c0-1.66 3.58-3 8-3s8 1.34 8 3m0 5c0 1.66-3.58 3-8 3s-8-1.34-8-3"
+        />
+      </svg>
+    ),
+    children: [
+      {
+        path: "/dados-armazenamento/consistent-hashing",
+        name: t('menu.data_storage.consistent_hashing.name'),
+        description: t('menu.data_storage.consistent_hashing.description'),
+        children: [
+          {
+            path: "/dados-armazenamento/consistent-hashing/simulator",
+            name: t('menu.data_storage.consistent_hashing.simulator.name'),
+            description: t('menu.data_storage.consistent_hashing.simulator.description'),
+          },
+        ],
+      },
+      {
+        path: "/dados-armazenamento/sharding",
+        name: t('menu.data_storage.sharding.name'),
+        description: t('menu.data_storage.sharding.description'),
+        children: [
+          {
+            path: "/dados-armazenamento/sharding/simulator",
+            name: t('menu.data_storage.sharding.simulator.name'),
+            description: t('menu.data_storage.sharding.simulator.description'),
+          },
+        ],
+      },
+      {
+        path: "/dados-armazenamento/object-storage",
+        name: t('menu.data_storage.object_storage.name'),
+        description: t('menu.data_storage.object_storage.description'),
+      },
+      {
+        path: "/dados-armazenamento/distributed-file-systems",
+        name: t('menu.data_storage.distributed_file_systems.name'),
+        description: t('menu.data_storage.distributed_file_systems.description'),
+      },
+      {
+        path: "/dados-armazenamento/inverted-index",
+        name: t('menu.data_storage.inverted_index.name'),
+        description: t('menu.data_storage.inverted_index.description'),
+        children: [
+          {
+            path: "/dados-armazenamento/inverted-index/simulator",
+            name: t('menu.data_storage.inverted_index.simulator.name'),
+            description: t('menu.data_storage.inverted_index.simulator.description'),
           },
         ],
       },
@@ -1410,6 +1597,86 @@ export default function App() {
                 <ProtectedRoute>
                   <ContentPage>
                     <AgentOrchestrationSimulator />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dados-armazenamento/consistent-hashing/simulator"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <ConsistentHashingSimulator />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dados-armazenamento/sharding/simulator"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <ShardingSimulator />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dados-armazenamento/inverted-index/simulator"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <InvertedIndexSimulator />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/componentes/kafka/simulator"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <KafkaSimulator />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/estrategias-de-consistencia/saga/simulator"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <SagaSimulator />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/estrategias-de-consistencia/delivery-semantics/simulator"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <DeliverySemanticsSimulator />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/cqrs/simulator"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <CqrsSimulator />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/principios-design/rate-limiting/simulator"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <RateLimiter />
                   </ContentPage>
                 </ProtectedRoute>
               }

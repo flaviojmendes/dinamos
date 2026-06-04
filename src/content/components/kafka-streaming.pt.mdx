@@ -1,0 +1,108 @@
+# Kafka e Streaming de Eventos
+
+Uma fila de mensagens tradicional apaga a mensagem assim que ela é consumida. O **Apache Kafka** inverte esse modelo: ele é um **log durável e reproduzível**. Eventos são anexados ao fim e mantidos por uma janela de retenção, então muitos consumidores podem ler o mesmo stream no seu próprio ritmo — até relendo o passado.
+
+<Callout type="info" title="💡 Log, não fila">
+
+Pense no Kafka como um arquivo append-only compartilhado por muitos leitores. Cada leitor controla seu próprio **offset** (posição). Consumir não remove dados — só avança seu marcador.
+
+</Callout>
+
+## Os conceitos centrais
+
+<Cards cols={2}>
+
+<Card title="Tópico e Partições" accent="brand">
+
+Um **tópico** é um stream nomeado, dividido em **partições**. Cada partição é um log ordenado e append-only. Partições são a unidade de paralelismo e de ordenação.
+
+</Card>
+
+<Card title="Produtores" accent="purple">
+
+Anexam registros a um tópico. A **chave** de um registro decide sua partição (mesma chave → mesma partição → ordenado), então eventos relacionados ficam em ordem.
+
+</Card>
+
+<Card title="Consumer Groups" accent="green">
+
+Consumidores entram em um **group**; o Kafka atribui cada partição a exatamente um consumidor do grupo. Adicione consumidores para escalar — até o número de partições.
+
+</Card>
+
+<Card title="Offsets e Retenção" accent="brand">
+
+Cada consumer group faz commit do offset que processou. Mensagens persistem por um período de retenção independente do consumo, permitindo replay.
+
+</Card>
+
+</Cards>
+
+## Por que partições limitam o paralelismo
+
+<Callout type="warning" title="O limite das partições">
+
+Uma partição é consumida por **exatamente um** consumidor de um grupo por vez. Se um tópico tem 4 partições e você roda 6 consumidores, **2 ficam ociosos**. Para ir mais rápido, você precisa adicionar partições — mas reduzir partições é difícil, então planeje com antecedência.
+
+</Callout>
+
+## Consumer lag
+
+**Lag** é o quanto um consumer group está atrasado: `último offset − offset commitado`. Quando produtores superam consumidores, o lag cresce e os dados ficam "mais velhos" antes de serem processados.
+
+<Cards cols={2}>
+
+<Card title="O lag cresce quando…" accent="red">
+
+- Taxa de produção > taxa total de consumo
+- Um consumidor está lento, travado ou caiu
+- Poucas partições para paralelizar
+
+</Card>
+
+<Card title="Corrija o lag…" accent="green">
+
+- Adicionando consumidores (até o número de partições)
+- Adicionando partições para mais paralelismo
+- Tornando o processamento por mensagem mais rápido
+- Ajustando batches e tamanhos de fetch
+
+</Card>
+
+</Cards>
+
+<Callout type="success" title="Experimente: Simulador de Kafka">
+
+Ajuste partições, consumidores e taxas de produção/consumo, e veja o consumer lag crescer ou drenar — e os consumidores ociosos quando você ultrapassa o número de partições — no [Simulador de Kafka](/componentes/kafka/simulator).
+
+</Callout>
+
+## Quando usar streaming
+
+<Callout type="neutral" title="Bons usos">
+
+Event sourcing, change-data-capture, pipelines de logs/métricas, desacoplamento de microsserviços e alimentação de analytics em tempo real ou processadores de stream (Kafka Streams, Flink). Para filas ponto-a-ponto simples com semântica de apagar-no-ack, uma fila clássica (SQS/RabbitMQ) costuma ser mais simples.
+
+</Callout>
+
+## Pontos-chave
+
+<Cards cols={2}>
+
+<Card title="Lembre" accent="green">
+
+- Kafka é um log durável e reproduzível — não uma fila apaga-ao-ler
+- Partições oferecem ordenação *e* paralelismo
+- Lag é o principal sinal de saúde dos consumidores
+
+</Card>
+
+<Card title="Projete para" accent="brand">
+
+- Escolha chaves de partição que preservem a ordenação necessária
+- Provisione partições suficientes para o paralelismo de pico
+- Monitore o consumer lag e alerte sobre crescimento
+
+</Card>
+
+</Cards>

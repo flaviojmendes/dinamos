@@ -1,6 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { motion } from 'framer-motion';
 import { Panel, StatusBadge, TacticalButton } from '../tactical';
+import { AnimatedMetric } from '../AISystems/motion';
+
+type Strategy = 'token' | 'leaky' | 'sliding';
 
 interface Request {
   id: number;
@@ -8,92 +12,109 @@ interface Request {
   status: 'accepted' | 'rejected';
 }
 
-interface Metrics {
-  totalRequests: number;
-  acceptedRequests: number;
-  rejectedRequests: number;
-}
-
 export default function RateLimiter() {
   const { t } = useTranslation();
+  const [strategy, setStrategy] = useState<Strategy>('token');
   const [isRunning, setIsRunning] = useState(false);
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   const [requestsPerSecond, setRequestsPerSecond] = useState(5);
-  const [messageRate, setMessageRate] = useState(5);
+  const [messageRate, setMessageRate] = useState(8);
   const [maxTokens, setMaxTokens] = useState(10);
-  const [tokens, setTokens] = useState(maxTokens);
+
+  // Unified "level": tokens available (token), queue depth (leaky), window count (sliding).
+  const [level, setLevel] = useState(maxTokens);
+  const windowRef = useRef<number[]>([]);
+  const [windowCount, setWindowCount] = useState(0);
+
   const [requests, setRequests] = useState<Request[]>([]);
-  const [metrics, setMetrics] = useState<Metrics>({
-    totalRequests: 0,
-    acceptedRequests: 0,
-    rejectedRequests: 0
-  });
+  const [metrics, setMetrics] = useState({ total: 0, accepted: 0, rejected: 0 });
 
   const resetSimulation = useCallback(() => {
     setIsRunning(false);
     setRequests([]);
-    setTokens(maxTokens);
-    setMetrics({
-      totalRequests: 0,
-      acceptedRequests: 0,
-      rejectedRequests: 0
-    });
-  }, [maxTokens]);
+    setLevel(strategy === 'token' ? maxTokens : 0);
+    windowRef.current = [];
+    setWindowCount(0);
+    setMetrics({ total: 0, accepted: 0, rejected: 0 });
+  }, [maxTokens, strategy]);
 
-  // Token replenishment
+  // Reset level baseline when switching strategy.
+  useEffect(() => {
+    setLevel(strategy === 'token' ? maxTokens : 0);
+    windowRef.current = [];
+    setWindowCount(0);
+    setRequests([]);
+    setMetrics({ total: 0, accepted: 0, rejected: 0 });
+  }, [strategy, maxTokens]);
+
+  // Token refill / leaky drain loop.
   useEffect(() => {
     if (!isRunning) return;
-
     const interval = setInterval(() => {
-      setTokens(prev => Math.min(maxTokens, prev + requestsPerSecond / 10));
+      if (strategy === 'token') {
+        setLevel(prev => Math.min(maxTokens, prev + requestsPerSecond / 10));
+      } else if (strategy === 'leaky') {
+        setLevel(prev => Math.max(0, prev - requestsPerSecond / 10));
+      } else {
+        const now = Date.now();
+        windowRef.current = windowRef.current.filter(ts => now - ts < 1000);
+        setWindowCount(windowRef.current.length);
+      }
     }, 100);
-
     return () => clearInterval(interval);
-  }, [isRunning, requestsPerSecond, maxTokens]);
+  }, [isRunning, requestsPerSecond, maxTokens, strategy]);
 
-  // Request generation
+  // Request generation.
   useEffect(() => {
     if (!isRunning) return;
+    const generate = () => {
+      const now = Date.now();
+      let accepted = false;
 
-    const generateRequest = () => {
-      const hasToken = tokens >= 1;
-      const request: Request = {
-        id: Date.now(),
-        timestamp: Date.now(),
-        status: hasToken ? 'accepted' : 'rejected'
-      };
-
-      if (hasToken) {
-        setTokens(prev => prev - 1);
-        setMetrics(prev => ({
-          ...prev,
-          acceptedRequests: prev.acceptedRequests + 1,
-          totalRequests: prev.totalRequests + 1
-        }));
+      if (strategy === 'token') {
+        if (level >= 1) {
+          accepted = true;
+          setLevel(prev => prev - 1);
+        }
+      } else if (strategy === 'leaky') {
+        if (level < maxTokens) {
+          accepted = true;
+          setLevel(prev => Math.min(maxTokens, prev + 1));
+        }
       } else {
-        setMetrics(prev => ({
-          ...prev,
-          rejectedRequests: prev.rejectedRequests + 1,
-          totalRequests: prev.totalRequests + 1
-        }));
+        windowRef.current = windowRef.current.filter(ts => now - ts < 1000);
+        if (windowRef.current.length < requestsPerSecond) {
+          accepted = true;
+          windowRef.current.push(now);
+          setWindowCount(windowRef.current.length);
+        }
       }
 
-      setRequests(prev => [request, ...prev].slice(0, 5));
+      setMetrics(prev => ({
+        total: prev.total + 1,
+        accepted: prev.accepted + (accepted ? 1 : 0),
+        rejected: prev.rejected + (accepted ? 0 : 1),
+      }));
+      setRequests(prev => [{ id: now + Math.random(), timestamp: now, status: (accepted ? 'accepted' : 'rejected') as Request['status'] }, ...prev].slice(0, 5));
     };
-
-    const requestInterval = setInterval(generateRequest, 1000 / messageRate);
+    const requestInterval = setInterval(generate, 1000 / messageRate);
     return () => clearInterval(requestInterval);
-  }, [isRunning, tokens, messageRate]);
+  }, [isRunning, level, messageRate, strategy, requestsPerSecond, maxTokens]);
 
-  const rangeClass =
-    'flex-1 h-2 bg-slate-200 dark:bg-tactical-border appearance-none cursor-pointer accent-signal-green';
+  const rangeClass = 'flex-1 h-2 bg-slate-200 dark:bg-tactical-border appearance-none cursor-pointer accent-signal-green';
+
+  // Display values per strategy.
+  const displayLevel = strategy === 'sliding' ? windowCount : level;
+  const displayMax = strategy === 'sliding' ? requestsPerSecond : maxTokens;
+  const fillPct = displayMax > 0 ? Math.min(100, (displayLevel / displayMax) * 100) : 0;
+  const fillColor = strategy === 'leaky' && fillPct > 80 ? 'bg-signal-amber/70' : 'bg-signal-cyan/60';
+
+  const acceptedPct = metrics.total > 0 ? Math.round((metrics.accepted / metrics.total) * 100) : 0;
 
   return (
     <div className="space-y-6">
       <div className="max-w-3xl">
-        <div className="label-mono text-signal-cyan mb-2">
-          [ {t('simulators.rate_limiter.title')} ]
-        </div>
+        <div className="label-mono text-signal-cyan mb-2">[ {t('simulators.rate_limiter.title')} ]</div>
       </div>
 
       <Panel
@@ -104,11 +125,7 @@ export default function RateLimiter() {
             <TacticalButton size="sm" variant="ghost" onClick={() => setIsConfigOpen(!isConfigOpen)}>
               {isConfigOpen ? t('simulators.rate_limiter.buttons.close_config') : t('simulators.rate_limiter.buttons.configure')}
             </TacticalButton>
-            <TacticalButton
-              size="sm"
-              variant={isRunning ? 'danger' : 'secondary'}
-              onClick={() => setIsRunning(!isRunning)}
-            >
+            <TacticalButton size="sm" variant={isRunning ? 'danger' : 'secondary'} onClick={() => setIsRunning(!isRunning)}>
               {isRunning ? t('simulators.rate_limiter.buttons.stop') : t('simulators.rate_limiter.buttons.start')}
             </TacticalButton>
             <TacticalButton size="sm" variant="ghost" onClick={resetSimulation}>
@@ -117,73 +134,56 @@ export default function RateLimiter() {
           </div>
         }
       >
+        {/* Strategy selector */}
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          <span className="label-mono text-slate-500 dark:text-tactical-label mr-1">{t('simulators.rate_limiter.strategy')}</span>
+          {(['token', 'leaky', 'sliding'] as Strategy[]).map(s => (
+            <TacticalButton key={s} size="sm" variant={strategy === s ? 'secondary' : 'ghost'} onClick={() => setStrategy(s)}>
+              {t(`simulators.rate_limiter.algorithms.${s}`)}
+            </TacticalButton>
+          ))}
+        </div>
+        <p className="mb-6 font-mono text-xs text-slate-500 dark:text-tactical-dim">{t(`simulators.rate_limiter.algo_desc.${strategy}`)}</p>
+
         {isConfigOpen && (
           <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="space-y-2">
               <label className="block label-mono text-slate-500 dark:text-tactical-label">{t('simulators.rate_limiter.config.token_rate')}</label>
               <div className="flex items-center gap-2">
-                <input
-                  type="range"
-                  min="1"
-                  max="20"
-                  value={requestsPerSecond}
-                  onChange={e => setRequestsPerSecond(Number(e.target.value))}
-                  className={rangeClass}
-                />
+                <input type="range" min="1" max="20" value={requestsPerSecond} onChange={e => setRequestsPerSecond(Number(e.target.value))} className={rangeClass} />
                 <span className="font-mono text-sm w-8 text-right text-signal-cyan tabular-nums">{requestsPerSecond}</span>
               </div>
             </div>
-
             <div className="space-y-2">
               <label className="block label-mono text-slate-500 dark:text-tactical-label">{t('simulators.rate_limiter.config.message_rate')}</label>
               <div className="flex items-center gap-2">
-                <input
-                  type="range"
-                  min="1"
-                  max="20"
-                  value={messageRate}
-                  onChange={e => setMessageRate(Number(e.target.value))}
-                  className={rangeClass}
-                />
+                <input type="range" min="1" max="20" value={messageRate} onChange={e => setMessageRate(Number(e.target.value))} className={rangeClass} />
                 <span className="font-mono text-sm w-8 text-right text-signal-cyan tabular-nums">{messageRate}</span>
               </div>
             </div>
-
-            <div className="space-y-2">
-              <label className="block label-mono text-slate-500 dark:text-tactical-label">{t('simulators.rate_limiter.config.bucket_size')}</label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="range"
-                  min="5"
-                  max="50"
-                  value={maxTokens}
-                  onChange={e => {
-                    const newMax = Number(e.target.value);
-                    setMaxTokens(newMax);
-                    setTokens(prev => Math.min(prev, newMax));
-                  }}
-                  className={rangeClass}
-                />
-                <span className="font-mono text-sm w-8 text-right text-signal-cyan tabular-nums">{maxTokens}</span>
+            {strategy !== 'sliding' && (
+              <div className="space-y-2">
+                <label className="block label-mono text-slate-500 dark:text-tactical-label">{t('simulators.rate_limiter.config.bucket_size')}</label>
+                <div className="flex items-center gap-2">
+                  <input type="range" min="5" max="50" value={maxTokens} onChange={e => setMaxTokens(Number(e.target.value))} className={rangeClass} />
+                  <span className="font-mono text-sm w-8 text-right text-signal-cyan tabular-nums">{maxTokens}</span>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div className="border border-slate-200 dark:border-tactical-border">
             <div className="border-b border-slate-200 dark:border-tactical-border px-3 py-2">
-              <div className="label-mono text-slate-500 dark:text-tactical-label">{t('simulators.rate_limiter.bucket.title')}</div>
+              <div className="label-mono text-slate-500 dark:text-tactical-label">{t(`simulators.rate_limiter.level.${strategy}`)}</div>
               <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{t('simulators.rate_limiter.bucket.rate', { rate: requestsPerSecond })}</div>
             </div>
             <div className="relative h-32 bg-slate-50 dark:bg-tactical-raised overflow-hidden border-t border-slate-200 dark:border-tactical-border">
-              <div 
-                className="absolute bottom-0 w-full bg-signal-cyan/60 transition-all duration-300"
-                style={{ height: `${(tokens / maxTokens) * 100}%` }}
-              />
+              <motion.div className={`absolute bottom-0 w-full ${fillColor}`} animate={{ height: `${fillPct}%` }} transition={{ duration: 0.25 }} />
               <div className="absolute inset-0 flex items-center justify-center">
                 <span className="font-mono text-2xl font-bold tabular-nums text-slate-900 dark:text-tactical-text">
-                  {Math.round(tokens)}/{maxTokens}
+                  {Math.round(displayLevel)}/{displayMax}
                 </span>
               </div>
             </div>
@@ -196,10 +196,7 @@ export default function RateLimiter() {
             </div>
             <div className="p-3 space-y-2">
               {requests.map(request => (
-                <div
-                  key={request.id}
-                  className="flex flex-wrap items-center gap-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
-                >
+                <div key={request.id} className="flex flex-wrap items-center gap-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2">
                   <StatusBadge
                     variant={request.status === 'accepted' ? 'active' : 'classified'}
                     label={request.status === 'accepted' ? t('simulators.rate_limiter.recent.accepted') : t('simulators.rate_limiter.recent.rejected')}
@@ -211,9 +208,7 @@ export default function RateLimiter() {
               ))}
               {requests.length === 0 && (
                 <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center">
-                  <p className="font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">
-                    {t('simulators.rate_limiter.recent.none')}
-                  </p>
+                  <p className="font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">{t('simulators.rate_limiter.recent.none')}</p>
                 </div>
               )}
             </div>
@@ -223,32 +218,9 @@ export default function RateLimiter() {
 
       <Panel title={t('simulators.rate_limiter.metrics.total')} accent="green">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
-            <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">{metrics.totalRequests}</div>
-            <div className="label-mono mt-2">{t('simulators.rate_limiter.metrics.total')}</div>
-          </div>
-          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
-            <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green">
-              {metrics.acceptedRequests}
-              <span className="text-sm text-slate-500 dark:text-tactical-dim ml-1 font-normal">
-                ({metrics.totalRequests > 0 
-                  ? Math.round((metrics.acceptedRequests / metrics.totalRequests) * 100) 
-                  : 0}%)
-              </span>
-            </div>
-            <div className="label-mono mt-2">{t('simulators.rate_limiter.metrics.accepted')}</div>
-          </div>
-          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
-            <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-red">
-              {metrics.rejectedRequests}
-              <span className="text-sm text-slate-500 dark:text-tactical-dim ml-1 font-normal">
-                ({metrics.totalRequests > 0 
-                  ? Math.round((metrics.rejectedRequests / metrics.totalRequests) * 100) 
-                  : 0}%)
-              </span>
-            </div>
-            <div className="label-mono mt-2">{t('simulators.rate_limiter.metrics.rejected')}</div>
-          </div>
+          <AnimatedMetric value={metrics.total} label={t('simulators.rate_limiter.metrics.total')} color="cyan" pulse={isRunning} />
+          <AnimatedMetric value={metrics.accepted} suffix={` (${acceptedPct}%)`} label={t('simulators.rate_limiter.metrics.accepted')} color="green" />
+          <AnimatedMetric value={metrics.rejected} suffix={` (${100 - (metrics.total > 0 ? acceptedPct : 0)}%)`} label={t('simulators.rate_limiter.metrics.rejected')} color="red" />
         </div>
       </Panel>
     </div>

@@ -1,0 +1,108 @@
+# Kafka & Event Streaming
+
+A traditional message queue deletes a message once it's consumed. **Apache Kafka** flips that model: it's a **durable, replayable log**. Events are appended to the end and kept for a retention window, so many consumers can read the same stream at their own pace — even re-reading from the past.
+
+<Callout type="info" title="💡 Log, not queue">
+
+Think of Kafka as an append-only file that many readers share. Each reader tracks its own **offset** (position). Consuming doesn't remove data — it just advances your bookmark.
+
+</Callout>
+
+## The core concepts
+
+<Cards cols={2}>
+
+<Card title="Topic & Partitions" accent="brand">
+
+A **topic** is a named stream, split into **partitions**. Each partition is an ordered, append-only log. Partitions are the unit of parallelism and ordering.
+
+</Card>
+
+<Card title="Producers" accent="purple">
+
+Append records to a topic. A record's **key** decides its partition (same key → same partition → ordered), so related events stay in order.
+
+</Card>
+
+<Card title="Consumer Groups" accent="green">
+
+Consumers join a **group**; Kafka assigns each partition to exactly one consumer in the group. Add consumers to scale — up to the partition count.
+
+</Card>
+
+<Card title="Offsets & Retention" accent="brand">
+
+Each consumer group commits the offset it has processed. Messages persist for a retention period regardless of consumption, enabling replay.
+
+</Card>
+
+</Cards>
+
+## Why partitions cap parallelism
+
+<Callout type="warning" title="The partition limit">
+
+A partition is consumed by **exactly one** consumer in a group at a time. If a topic has 4 partitions and you run 6 consumers, **2 sit idle**. To go faster, you must add partitions — but partition count is hard to shrink, so plan ahead.
+
+</Callout>
+
+## Consumer lag
+
+**Lag** is how far behind a consumer group is: `latest offset − committed offset`. When producers outpace consumers, lag grows and data gets "older" before it's processed.
+
+<Cards cols={2}>
+
+<Card title="Lag grows when…" accent="red">
+
+- Produce rate > total consume rate
+- A consumer is slow, stuck, or crashed
+- Too few partitions to parallelize across
+
+</Card>
+
+<Card title="Fix lag by…" accent="green">
+
+- Adding consumers (up to partition count)
+- Adding partitions for more parallelism
+- Making per-message processing faster
+- Batching and tuning fetch sizes
+
+</Card>
+
+</Cards>
+
+<Callout type="success" title="Try It: Kafka Simulator">
+
+Tune partitions, consumers, and produce/consume rates, then watch consumer lag build or drain — and see idle consumers when you exceed the partition count — in the [Kafka Simulator](/componentes/kafka/simulator).
+
+</Callout>
+
+## When to reach for streaming
+
+<Callout type="neutral" title="Good fits">
+
+Event sourcing, change-data-capture, log/metric pipelines, decoupling microservices, and feeding real-time analytics or stream processors (Kafka Streams, Flink). For simple point-to-point task queues with delete-on-ack semantics, a classic queue (SQS/RabbitMQ) is often simpler.
+
+</Callout>
+
+## Takeaways
+
+<Cards cols={2}>
+
+<Card title="Remember" accent="green">
+
+- Kafka is a durable, replayable log — not a delete-on-read queue
+- Partitions provide ordering *and* parallelism
+- Lag is the key health signal for consumers
+
+</Card>
+
+<Card title="Design For" accent="brand">
+
+- Choose partition keys that preserve needed ordering
+- Provision enough partitions for peak parallelism
+- Monitor consumer lag and alert on growth
+
+</Card>
+
+</Cards>

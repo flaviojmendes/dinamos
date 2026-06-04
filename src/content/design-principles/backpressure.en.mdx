@@ -1,0 +1,88 @@
+# Backpressure
+
+When a fast producer overwhelms a slow consumer, queues grow, memory fills, latency spikes, and eventually something crashes. **Backpressure** is the flow-control mechanism that lets a consumer say "slow down" so the system degrades gracefully instead of falling over.
+
+<Callout type="info" title="💡 The plumbing analogy">
+
+Pour water faster than the drain can handle and the sink overflows. Backpressure is the signal that pushes back up the pipe — telling the source to ease off before the overflow.
+
+</Callout>
+
+## What happens without it
+
+<Cards cols={2}>
+
+<Card title="Unbounded queues" accent="red">
+
+Buffers grow without limit, consuming memory until an out-of-memory crash — often taking the whole service with it.
+
+</Card>
+
+<Card title="Latency collapse" accent="red">
+
+Even if it doesn't crash, requests sit in huge queues. By the time they're processed they may already have timed out — work done for nothing.
+
+</Card>
+
+</Cards>
+
+## Strategies
+
+<Cards cols={3}>
+
+<Card title="Slow the producer" accent="brand">
+
+Propagate a "not ready" signal upstream so the source produces more slowly (pull-based systems and TCP do this naturally).
+
+</Card>
+
+<Card title="Buffer with bounds" accent="purple">
+
+Allow a *limited* queue to absorb bursts — but cap it, and decide what happens when it's full.
+
+</Card>
+
+<Card title="Shed load" accent="green">
+
+When the bounded buffer fills, drop or reject excess work (return 429, drop low-priority messages) to protect the core.
+
+</Card>
+
+</Cards>
+
+## Push vs pull
+
+<Callout type="neutral" title="Who sets the pace?">
+
+- **Push** systems (producer drives) need explicit backpressure signals or they overflow consumers.
+- **Pull** systems (consumer requests the next item) have backpressure built in — the consumer simply asks for more only when ready. Reactive Streams, TCP flow control, and Kafka's consumer pull model all use this.
+
+</Callout>
+
+<Callout type="success" title="Try It: Backpressure Simulator">
+
+Push messages faster than the consumer can handle and watch the queue fill until the producer gets throttled in the [Backpressure Simulator](/backpressure).
+
+</Callout>
+
+## Takeaways
+
+<Cards cols={2}>
+
+<Card title="Remember" accent="green">
+
+- Backpressure protects systems from fast-producer/slow-consumer overload
+- Without it: unbounded queues, OOM, and latency collapse
+- Pull-based designs get backpressure almost for free
+
+</Card>
+
+<Card title="Design For" accent="brand">
+
+- Bound every queue and buffer
+- Decide the full-buffer policy: block, drop, or reject
+- Prefer pull-based flow where you can
+
+</Card>
+
+</Cards>

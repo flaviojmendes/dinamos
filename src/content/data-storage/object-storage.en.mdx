@@ -1,0 +1,98 @@
+# Object & Blob Storage
+
+Object storage (Amazon S3, Google Cloud Storage, Azure Blob) is how the modern internet stores **unstructured data at massive scale** — images, videos, backups, logs, data-lake files, and static website assets.
+
+<Callout type="info" title="💡 Objects, not files">
+
+Object storage isn't a filesystem and isn't a database. Each object is an opaque blob + metadata, addressed by a **key** inside a flat **bucket**. There are no real folders — `photos/2026/cat.jpg` is just a key with slashes.
+
+</Callout>
+
+## Why it scales so well
+
+<Cards cols={3}>
+
+<Card title="Flat namespace" accent="brand">
+
+No directory tree to traverse or lock. A key maps to an object via hashing/partitioning, so the system scales to trillions of objects.
+
+</Card>
+
+<Card title="HTTP API" accent="purple">
+
+Simple `PUT`/`GET`/`DELETE` over HTTP. No mount, no client driver — any service or browser can talk to it.
+
+</Card>
+
+<Card title="Immutable objects" accent="green">
+
+Objects are replaced whole, not edited in place. That makes caching, versioning, and replication far simpler.
+
+</Card>
+
+</Cards>
+
+## Durability & availability
+
+Providers advertise eye-watering durability (e.g. "eleven nines", 99.999999999%). That comes from **erasure coding** and cross-zone replication.
+
+<Callout type="neutral" title="Replication vs erasure coding">
+
+- **Replication**: keep N full copies. Simple, fast reads, but N× storage cost.
+- **Erasure coding**: split an object into `k` data + `m` parity fragments across nodes; tolerate losing any `m`. Survives failures at a fraction of the storage overhead — the default for cold/large data.
+
+</Callout>
+
+## Consistency & tradeoffs
+
+<Cards cols={2}>
+
+<Card title="Strengths" accent="green">
+
+- Cheap per GB, especially cold tiers
+- Effectively unlimited capacity
+- Strong read-after-write consistency (modern S3)
+- Built-in versioning, lifecycle, and replication
+
+</Card>
+
+<Card title="Limitations" accent="red">
+
+- Higher latency than block/file storage
+- No partial/in-place edits or appends
+- No POSIX semantics (no rename, no locking)
+- Per-request cost adds up for tiny objects
+
+</Card>
+
+</Cards>
+
+## When to use it
+
+<Callout type="success" title="Reach for object storage when…">
+
+You need durable, cheap storage for large or numerous blobs accessed over HTTP — media, backups, ML datasets, data lakes, and static assets behind a CDN. Reach for a **database** for queryable structured data, and **block storage** for low-latency random writes (like a database's own disk).
+
+</Callout>
+
+## Takeaways
+
+<Cards cols={2}>
+
+<Card title="Remember" accent="green">
+
+- Flat keyed buckets + HTTP = near-infinite scale
+- Durability comes from erasure coding + replication
+- Objects are immutable; replace, don't edit
+
+</Card>
+
+<Card title="Design For" accent="brand">
+
+- Use storage tiers (hot/cold/archive) to cut cost
+- Put a CDN in front for read-heavy public assets
+- Batch tiny objects; avoid per-request overhead
+
+</Card>
+
+</Cards>

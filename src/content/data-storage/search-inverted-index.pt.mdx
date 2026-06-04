@@ -1,0 +1,99 @@
+# Busca e o Índice Invertido
+
+Como um motor de busca encontra os poucos documentos que contêm "consenso distribuído" entre bilhões — em milissegundos? Não lendo cada documento. Ele lê um **índice invertido**.
+
+<Callout type="info" title="💡 Inverta o mapeamento">
+
+Um índice normal (direto) mapeia **documento → suas palavras**. Um **índice invertido** mapeia **palavra → os documentos que a contêm**. Para responder uma consulta, basta buscar cada termo e combinar as listas — sem varredura completa.
+
+</Callout>
+
+## Construindo o índice
+
+<Cards cols={3}>
+
+<Card title="1. Tokenizar" accent="brand">
+
+Quebre cada documento em termos: minúsculas, separe por espaços/pontuação, descarte stop-words muito comuns.
+
+</Card>
+
+<Card title="2. Normalizar" accent="purple">
+
+Aplique stemming ou lematização ("correndo" → "correr") para que formas diferentes de uma palavra casem com o mesmo termo.
+
+</Card>
+
+<Card title="3. Montar postings" accent="green">
+
+Para cada termo, guarde uma **lista de postings** ordenada com os IDs dos documentos (muitas vezes com posições e frequências) onde ele aparece.
+
+</Card>
+
+</Cards>
+
+## Respondendo uma consulta
+
+<Callout type="neutral" title="Busque, depois combine">
+
+- Consulta **AND**: intersecte as listas de postings de todos os termos (documentos que contêm *todos* os termos).
+- Consulta **OR**: una as listas (documentos que contêm *qualquer* termo).
+- As listas ficam ordenadas para que interseção/união sejam um merge rápido, pulando à frente com "skip pointers".
+
+</Callout>
+
+## Ordenando os resultados
+
+Casar não basta — você precisa ordenar por relevância. A pontuação clássica usa **TF-IDF** / **BM25**:
+
+<Cards cols={2}>
+
+<Card title="Frequência do termo (TF)" accent="brand">
+
+Um termo que aparece mais vezes em um documento sinaliza que o documento é mais sobre ele — com retornos decrescentes.
+
+</Card>
+
+<Card title="Frequência inversa (IDF)" accent="purple">
+
+Um termo que aparece em *poucos* documentos é mais discriminante. "o" não diz nada; "raft" diz muito.
+
+</Card>
+
+</Cards>
+
+<Callout type="success" title="Experimente: Simulador de Índice Invertido">
+
+Escolha termos de consulta, alterne entre AND/OR e veja as listas de postings acenderem enquanto os documentos correspondentes são ranqueados por pontuação no [Simulador de Índice Invertido](/dados-armazenamento/inverted-index/simulator).
+
+</Callout>
+
+## Em escala
+
+<Callout type="neutral" title="Particionando o índice">
+
+Motores de busca como Elasticsearch/Lucene dividem o índice em **shards** (por documento) e os replicam. Uma consulta se espalha por todos os shards, cada um devolve seus melhores resultados, e um coordenador os mescla — o mesmo padrão de particionar + replicar do resto deste módulo.
+
+</Callout>
+
+## Pontos-chave
+
+<Cards cols={2}>
+
+<Card title="Lembre" accent="green">
+
+- Índice invertido = termo → documentos, o coração da busca
+- Listas de postings tornam consultas multi-termo um merge rápido
+- Ranking (TF-IDF/BM25) transforma correspondências em relevância
+
+</Card>
+
+<Card title="Projete para" accent="brand">
+
+- Normalize o texto de forma consistente na indexação e na consulta
+- Particione por documento e espalhe as consultas
+- Separe "casou?" de "quão relevante?"
+
+</Card>
+
+</Cards>

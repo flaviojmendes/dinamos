@@ -64,6 +64,38 @@ ZooKeeper é um serviço de coordenação para sistemas distribuídos que implem
 
 </Cards>
 
+## Tolerância a Falhas Bizantinas (BFT)
+
+Raft e Paxos toleram nós que **caem** (fail-stop). Eles assumem que os nós que *respondem* são honestos. Falhas **bizantinas** são piores: um nó pode mentir, enviar mensagens conflitantes a diferentes pares ou ser ativamente malicioso (um bug, corrupção ou um atacante).
+
+<Callout type="warning" title="Por que BFT é mais difícil">
+
+Para tolerar **f** nós bizantinos (mentirosos) você precisa de **3f + 1** nós no total — contra apenas **2f + 1** para tolerar f falhas de crash. É preciso uma supermaioria de dois terços porque alguns dos votos recebidos podem ser mentiras.
+
+</Callout>
+
+<Cards cols={2}>
+
+<Card title="BFT clássico" accent="brand">
+
+**PBFT** (Practical Byzantine Fault Tolerance) chega a acordo entre nós conhecidos por múltiplas rodadas de votação. Usado em sistemas permissionados onde a membership é controlada.
+
+</Card>
+
+<Card title="Consenso de blockchain" accent="purple">
+
+Blockchains públicas enfrentam atores bizantinos em escala de internet. Proof-of-Work e Proof-of-Stake são mecanismos no estilo BFT que tornam mentir economicamente irracional em vez de votar entre pares conhecidos.
+
+</Card>
+
+</Cards>
+
+<Callout type="neutral" title="Quando você realmente precisa">
+
+A maioria dos sistemas internos só precisa de tolerância a falhas de crash (Raft/Paxos) — você confia nas suas próprias máquinas. Use BFT quando os nós são operados por **partes que desconfiam mutuamente** ou expostos a adversários: blockchains, ledgers entre organizações e sistemas de alta garantia.
+
+</Callout>
+
 ## Experimente na Prática
 
 Use nosso simulador interativo para entender melhor como os protocolos de consenso funcionam em diferentes cenários.

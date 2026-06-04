@@ -41,6 +41,12 @@ export const contentManifest: ContentEntry[] = [
   { path: '/componentes/polling-webhooks', slug: 'components/polling-webhooks' },
   { path: '/componentes/vector-database', slug: 'components/vector-database' },
   { path: '/componentes/model-gateway', slug: 'components/model-gateway' },
+  { path: '/componentes/kafka', slug: 'components/kafka-streaming' },
+  { path: '/componentes/dns', slug: 'components/dns' },
+  { path: '/componentes/reverse-proxy', slug: 'components/reverse-proxy' },
+  { path: '/componentes/service-discovery', slug: 'components/service-discovery' },
+  { path: '/componentes/service-mesh', slug: 'components/service-mesh' },
+  { path: '/componentes/kubernetes', slug: 'components/kubernetes' },
 
   // Design principles
   { path: '/principios-design', slug: 'design-principles/index' },
@@ -48,6 +54,9 @@ export const contentManifest: ContentEntry[] = [
   { path: '/principios-design/acoplamento', slug: 'design-principles/coupling' },
   { path: '/principios-design/orquestracao-vs-coreografia', slug: 'design-principles/orchestration-vs-choreography' },
   { path: '/principios-design/canary-deployment', slug: 'design-principles/canary-deployment' },
+  { path: '/principios-design/cqrs', slug: 'design-principles/cqrs' },
+  { path: '/principios-design/rate-limiting', slug: 'design-principles/rate-limiting' },
+  { path: '/principios-design/backpressure', slug: 'design-principles/backpressure' },
   { path: '/principios-design/tolerancia-falhas', slug: 'design-principles/fault-tolerance' },
   { path: '/principios-design/tolerancia-falhas/retries', slug: 'design-principles/retries' },
   { path: '/principios-design/tolerancia-falhas/circuit-breaker', slug: 'design-principles/circuit-breaker' },
@@ -74,6 +83,9 @@ export const contentManifest: ContentEntry[] = [
   { path: '/estrategias-de-consistencia/sincronizacao', slug: 'consistency-strategies/synchronization' },
   { path: '/estrategias-de-consistencia/sincronizacao/fundamentos', slug: 'consistency-strategies/synchronization-fundamentals' },
   { path: '/estrategias-de-consistencia/sincronizacao/deadlocks', slug: 'consistency-strategies/synchronization-deadlocks' },
+  { path: '/estrategias-de-consistencia/saga', slug: 'consistency-strategies/saga' },
+  { path: '/estrategias-de-consistencia/delivery-semantics', slug: 'consistency-strategies/delivery-semantics' },
+  { path: '/estrategias-de-consistencia/vector-clocks', slug: 'consistency-strategies/vector-clocks' },
 
   // Security
   { path: '/seguranca', slug: 'security/index' },
@@ -93,6 +105,8 @@ export const contentManifest: ContentEntry[] = [
   { path: '/monitoramento-e-manutencao/performance', slug: 'monitoring/performance' },
   { path: '/monitoramento-e-manutencao/health-checks', slug: 'monitoring/health-checks' },
   { path: '/monitoramento-e-manutencao/llm-observability', slug: 'monitoring/llm-observability' },
+  { path: '/monitoramento-e-manutencao/distributed-tracing', slug: 'monitoring/distributed-tracing' },
+  { path: '/monitoramento-e-manutencao/slo-sli-sla', slug: 'monitoring/slo-sli-sla' },
 
   // AI & LLM systems
   { path: '/sistemas-ia', slug: 'ai-systems/index' },
@@ -102,6 +116,14 @@ export const contentManifest: ContentEntry[] = [
   { path: '/sistemas-ia/llm-gateway', slug: 'ai-systems/llm-gateway' },
   { path: '/sistemas-ia/gpu-autoscaling', slug: 'ai-systems/gpu-autoscaling' },
   { path: '/sistemas-ia/agentic-systems', slug: 'ai-systems/agentic-systems' },
+
+  // Data & storage
+  { path: '/dados-armazenamento', slug: 'data-storage/index' },
+  { path: '/dados-armazenamento/consistent-hashing', slug: 'data-storage/consistent-hashing' },
+  { path: '/dados-armazenamento/sharding', slug: 'data-storage/sharding-partitioning' },
+  { path: '/dados-armazenamento/object-storage', slug: 'data-storage/object-storage' },
+  { path: '/dados-armazenamento/distributed-file-systems', slug: 'data-storage/distributed-file-systems' },
+  { path: '/dados-armazenamento/inverted-index', slug: 'data-storage/search-inverted-index' },
 
   // Real-world cases
   { path: '/casos-reais', slug: 'real-cases/index' },

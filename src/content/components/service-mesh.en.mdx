@@ -1,0 +1,89 @@
+# Service Mesh
+
+As microservices multiply, every service re-implements the same plumbing: retries, timeouts, mTLS, load balancing, tracing. A **service mesh** moves all of that *out of your code* and into a dedicated infrastructure layer of **sidecar proxies**.
+
+<Callout type="info" title="💡 The sidecar idea">
+
+Next to each service instance runs a small proxy (e.g. Envoy). Your app talks only to its local proxy; the proxies talk to each other. They form the **data plane** that carries all service-to-service traffic.
+
+</Callout>
+
+## Data plane vs control plane
+
+<Cards cols={2}>
+
+<Card title="Data plane" accent="brand">
+
+The mesh of sidecar proxies that actually move requests — applying routing, retries, encryption, and collecting metrics on every hop.
+
+</Card>
+
+<Card title="Control plane" accent="purple">
+
+The brain (e.g. Istio's istiod) that configures all the proxies: pushing policy, certificates, and routing rules. It doesn't touch request data.
+
+</Card>
+
+</Cards>
+
+## What you get for free
+
+<Cards cols={3}>
+
+<Card title="Traffic management" accent="brand">
+
+Canary releases, traffic splitting, retries, timeouts, and circuit breaking — configured declaratively, no code changes.
+
+</Card>
+
+<Card title="Security" accent="purple">
+
+Automatic **mTLS** between services, identity-based authorization, and encryption in transit by default.
+
+</Card>
+
+<Card title="Observability" accent="green">
+
+Uniform metrics, distributed traces, and access logs for every call — because the proxy sees all traffic.
+
+</Card>
+
+</Cards>
+
+## The tradeoff
+
+<Callout type="warning" title="Power has a price">
+
+A mesh adds a proxy hop (latency), real resource overhead (a sidecar per pod), and significant operational complexity. For a handful of services, libraries or a gateway are simpler. Reach for a mesh when you have *many* services and need consistent security/observability across all of them.
+
+</Callout>
+
+## Mesh vs API gateway
+
+<Callout type="neutral" title="North-south vs east-west">
+
+An **API gateway** handles **north-south** traffic (clients → your system) at the edge. A **service mesh** handles **east-west** traffic (service → service) inside the system. They're complementary, not competitors.
+
+</Callout>
+
+## Takeaways
+
+<Cards cols={2}>
+
+<Card title="Remember" accent="green">
+
+- A mesh moves networking concerns into sidecar proxies
+- Data plane carries traffic; control plane configures it
+- You get mTLS, traffic control, and observability without app changes
+
+</Card>
+
+<Card title="Design For" accent="brand">
+
+- Adopt a mesh when service count justifies the overhead
+- Budget for the latency and resource cost of sidecars
+- Use it for east-west; keep a gateway for north-south
+
+</Card>
+
+</Cards>

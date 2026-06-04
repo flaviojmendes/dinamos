@@ -1,0 +1,112 @@
+# Sistemas de Arquivos Distribuídos
+
+Um sistema de arquivos distribuído (DFS) apresenta os discos de muitas máquinas como **um único sistema de arquivos gigante**. Os designs canônicos — Google File System (GFS) e seu primo open-source HDFS — foram criados para armazenar arquivos de petabytes e transmiti-los para jobs de processamento de dados.
+
+<Callout type="info" title="💡 Feito para leituras grandes e sequenciais">
+
+GFS/HDFS otimizam para **arquivos enormes** lidos **sequencialmente** por jobs em lote, não para muitos arquivos pequenos ou escritas aleatórias. Essa única premissa molda toda a arquitetura.
+
+</Callout>
+
+## A arquitetura
+
+<Cards cols={2}>
+
+<Card title="Master / NameNode" accent="brand">
+
+Um servidor de metadados único rastreia o namespace e onde cada chunk vive. Ele nunca toca nos *dados* do arquivo — só no mapa. Manter os metadados em RAM torna as buscas rápidas.
+
+</Card>
+
+<Card title="Chunkservers / DataNodes" accent="purple">
+
+Nós trabalhadores armazenam os dados reais como **chunks/blocos** grandes de tamanho fixo (64–128 MB). Clientes leem e escrevem os dados diretamente neles, contornando o master.
+
+</Card>
+
+</Cards>
+
+## Como um arquivo é armazenado
+
+<Cards cols={3}>
+
+<Card title="1. Dividir em chunks" accent="brand">
+
+Um arquivo grande é cortado em blocos grandes. Blocos grandes significam menos entradas de metadados e leituras sequenciais longas.
+
+</Card>
+
+<Card title="2. Replicar" accent="purple">
+
+Cada chunk é replicado (tipicamente 3×) entre nós e racks diferentes para durabilidade e paralelismo de leitura.
+
+</Card>
+
+<Card title="3. Localizar via master" accent="green">
+
+Um cliente pergunta ao master *onde* um chunk vive, depois transmite os dados direto de um chunkserver — o master fica fora do caminho de dados.
+
+</Card>
+
+</Cards>
+
+## Decisões-chave de design
+
+<Callout type="neutral" title="Por que essas escolhas">
+
+- **Chunks grandes** reduzem metadados no master e overhead de seek para cargas de streaming.
+- **Master fora do caminho de dados** evita que ele vire gargalo de banda.
+- **Replicação entre racks** sobrevive a falhas de disco, nó e rack.
+- Escritas **otimizadas para append** combinam melhor com padrões de log/ingestão do que updates aleatórios.
+
+</Callout>
+
+## Tradeoffs e evolução
+
+<Cards cols={2}>
+
+<Card title="Pontos fortes" accent="green">
+
+- Throughput massivo para varreduras sequenciais
+- Discos commodity baratos, tolerante a falhas por design
+- Modelo simples que sustenta MapReduce/Spark
+
+</Card>
+
+<Card title="Fraquezas" accent="red">
+
+- Um master único limita a contagem de arquivos/metadados
+- Ruim para muitos arquivos pequenos ou I/O aleatório de baixa latência
+- O master é foco de escala e falha (mitigado por standbys HA / federação)
+
+</Card>
+
+</Cards>
+
+<Callout type="success" title="DFS vs Object Storage">
+
+O armazenamento de objetos (S3) substituiu largamente o DFS para armazenamento de blobs *durável e barato* com API HTTP. O DFS ainda brilha onde a computação roda **ao lado** dos dados (localidade de dados) para analytics de alto throughput. Muitas stacks modernas leem direto do object storage.
+
+</Callout>
+
+## Pontos-chave
+
+<Cards cols={2}>
+
+<Card title="Lembre" accent="green">
+
+- Master de metadados + workers com os dados é o padrão central
+- Chunks grandes replicados permitem leituras duráveis e de alto throughput
+- Mantenha o master fora do caminho de dados
+
+</Card>
+
+<Card title="Projete para" accent="brand">
+
+- Prefira arquivos grandes e acesso sequencial
+- Replique entre domínios de falha (racks/zonas)
+- Considere object storage quando não precisar de localidade de dados
+
+</Card>
+
+</Cards>

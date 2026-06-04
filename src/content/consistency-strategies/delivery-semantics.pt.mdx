@@ -1,0 +1,91 @@
+# Semânticas de Entrega
+
+Quando uma mensagem cruza a rede, coisas dão errado: pacotes caem, acks se perdem, consumidores quebram no meio do processamento. As **semânticas de entrega** descrevem a garantia que um sistema de mensageria dá sobre *quantas vezes* uma mensagem é processada: **at-most-once**, **at-least-once** ou **exactly-once**.
+
+<Callout type="info" title="💡 A tensão central">
+
+Você não tem zero perda *e* zero duplicatas de graça. Repetir para evitar perda arrisca duplicatas; não repetir para evitar duplicatas arrisca perda. A garantia que você escolhe decide qual problema você precisa tratar.
+
+</Callout>
+
+## As três garantias
+
+<Cards cols={3}>
+
+<Card title="At-most-once" accent="red">
+
+Envie e esqueça — nunca repita. Rápido e sem duplicatas, mas uma mensagem perdida é **perdida para sempre**. Ok para dados de alto volume e baixo valor (métricas, telemetria).
+
+</Card>
+
+<Card title="At-least-once" accent="amber">
+
+Repita até receber o ack. **Nunca perde** uma mensagem, mas um ack perdido causa **reentrega** → duplicatas. O padrão mais comum.
+
+</Card>
+
+<Card title="Exactly-once" accent="green">
+
+Cada mensagem tem efeito uma vez. A garantia mais forte — e a mais difícil. Alcançada via entrega at-least-once **mais deduplicação** ou idempotência.
+
+</Card>
+
+</Cards>
+
+## "Exactly-once" é entrega + dedup
+
+A verdadeira *entrega* exactly-once por uma rede não confiável é impossível. O que os sistemas realmente oferecem é **processamento efetivamente-uma-vez**:
+
+<Callout type="neutral" title="Como é feito de verdade">
+
+- Entregue at-least-once (repita até o ack).
+- Dê a cada mensagem um ID único; o consumidor registra IDs processados e **descarta duplicatas**.
+- Ou torne o processamento **idempotente** para que reaplicá-lo não mude nada.
+
+</Callout>
+
+## Ferramentas do ofício
+
+<Cards cols={2}>
+
+<Card title="Deduplicação" accent="green">
+
+Rastreie IDs de mensagem/transação e descarte repetições. Transforma at-least-once em efetivamente-uma-vez ao custo de guardar o que já foi visto.
+
+</Card>
+
+<Card title="Dead-letter queue (DLQ)" accent="brand">
+
+Após N tentativas falhas, mova a mensagem para uma DLQ em vez de repetir para sempre ou descartá-la — assim nada se perde silenciosamente e você pode inspecionar falhas.
+
+</Card>
+
+</Cards>
+
+<Callout type="success" title="Experimente: Simulador de Semânticas de Entrega">
+
+Alterne entre as três semânticas, ative deduplicação e uma dead-letter queue, e veja duplicatas, perdas e mensagens dead-lettered se acumularem no [Simulador de Semânticas de Entrega](/estrategias-de-consistencia/delivery-semantics/simulator).
+
+</Callout>
+
+## Pontos-chave
+
+<Cards cols={2}>
+
+<Card title="Lembre" accent="green">
+
+- At-most-once perde; at-least-once duplica; exactly-once é dedup sobre at-least-once
+- A verdadeira entrega exactly-once é impossível — busque processamento idempotente
+- Uma DLQ evita que mensagens venenosas se percam ou sejam repetidas para sempre
+
+</Card>
+
+<Card title="Projete para" accent="brand">
+
+- Use por padrão at-least-once + consumidores idempotentes
+- Anexe IDs únicos para permitir deduplicação
+- Adicione uma DLQ e alerte sobre ela
+
+</Card>
+
+</Cards>

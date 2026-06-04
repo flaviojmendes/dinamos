@@ -1,0 +1,92 @@
+# Relógios Vetoriais
+
+Um timestamp de Lamport pode dizer que o evento A *talvez* tenha acontecido antes de B — mas não se dois eventos foram realmente **concorrentes**. Os **relógios vetoriais** resolvem isso: capturam a causalidade com precisão, então você pode detectar quando duas atualizações aconteceram de forma independente e *conflitam*.
+
+<Callout type="info" title="💡 Por que um único contador não basta">
+
+Relógios de Lamport dão uma ordem total mas perdem informação: se `A < B` numericamente, você não sabe se A *causou* B ou se apenas aconteceram em alguma ordem. Relógios vetoriais preservam a relação causal completa.
+
+</Callout>
+
+## Como funcionam
+
+Cada um dos N nós mantém um **vetor** de N contadores — um por nó.
+
+<Cards cols={3}>
+
+<Card title="1. Evento local" accent="brand">
+
+Um nó incrementa a **sua própria** entrada no vetor a cada evento local.
+
+</Card>
+
+<Card title="2. Enviar" accent="purple">
+
+Ao enviar uma mensagem, o nó anexa todo o seu vetor atual.
+
+</Card>
+
+<Card title="3. Receber" accent="green">
+
+Ao receber, o nó pega o **máximo** elemento a elemento entre seu vetor e o da mensagem, depois incrementa a própria entrada.
+
+</Card>
+
+</Cards>
+
+## Comparando dois vetores
+
+<Callout type="neutral" title="O ponto central">
+
+- **A aconteceu-antes de B** se toda entrada de A ≤ B e ao menos uma é estritamente menor.
+- **São concorrentes** se nenhum é ≤ o outro — cada um tem uma entrada que o outro não domina.
+
+Esse caso "concorrente" é exatamente o que um único contador de Lamport não consegue detectar — e é onde moram os conflitos.
+
+</Callout>
+
+## Onde são usados
+
+<Cards cols={2}>
+
+<Card title="Detecção de conflitos" accent="brand">
+
+Stores estilo Dynamo (Amazon Dynamo, Riak, Voldemort) anexam relógios vetoriais aos valores. Escritas concorrentes são detectadas como **siblings** a serem resolvidas.
+
+</Card>
+
+<Card title="Resolução" accent="purple">
+
+Conflitos são mesclados pela aplicação, por last-writer-wins ou com CRDTs — mas só porque o relógio vetorial os *sinalizou* em primeiro lugar.
+
+</Card>
+
+</Cards>
+
+<Callout type="warning" title="O custo">
+
+Um vetor cresce com o número de nós/clientes que já escreveram, então vetores podem inchar. Sistemas reais podam entradas obsoletas ou usam dotted version vectors para mantê-los limitados.
+
+</Callout>
+
+## Pontos-chave
+
+<Cards cols={2}>
+
+<Card title="Lembre" accent="green">
+
+- Relógios vetoriais capturam causalidade, não só uma ordem
+- Conseguem distinguir eventos causais de concorrentes
+- A detecção de concorrência é a base da resolução de conflitos
+
+</Card>
+
+<Card title="Projete para" accent="brand">
+
+- Use quando precisar detectar escritas conflitantes
+- Planeje limitar o tamanho do vetor conforme clientes crescem
+- Combine com uma estratégia de merge (lógica da app ou CRDTs)
+
+</Card>
+
+</Cards>

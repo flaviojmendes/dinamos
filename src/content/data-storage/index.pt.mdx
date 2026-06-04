@@ -1,0 +1,57 @@
+# Dados e Armazenamento
+
+Todo sistema distribuído é, em sua essência, um sistema para **armazenar e mover dados**. Este módulo cobre como os dados são espalhados entre máquinas, como são armazenados de forma durável e como são encontrados rapidamente de novo.
+
+<Callout type="info" title="💡 Por que este módulo">
+
+Computação é fácil de escalar — você adiciona mais servidores sem estado. O **estado** é a parte difícil. No momento em que seus dados não cabem mais em uma única máquina (ou uma máquina não é confiável o suficiente), você enfrenta problemas de particionamento, replicação e busca que definem o resto do design de sistemas.
+
+</Callout>
+
+## O que você vai aprender
+
+<Cards cols={2}>
+
+<Card title="Consistent Hashing" accent="brand">
+
+Distribua chaves entre nós de forma que adicionar ou remover um nó mova o mínimo de chaves possível. A base de caches e bancos de dados distribuídos.
+
+</Card>
+
+<Card title="Sharding e Particionamento" accent="purple">
+
+Divida um conjunto de dados entre shards por faixa, hash ou diretório — e entenda por que a distribuição desigual cria partições "quentes".
+
+</Card>
+
+<Card title="Object & Blob Storage" accent="green">
+
+Como sistemas como o S3 armazenam trilhões de objetos de forma durável e barata, e quando usá-los.
+
+</Card>
+
+<Card title="Sistemas de Arquivos Distribuídos" accent="brand">
+
+Como GFS/HDFS dividem arquivos enormes em blocos por um cluster, com replicação e um master de metadados.
+
+</Card>
+
+<Card title="Busca e Índice Invertido" accent="purple">
+
+A estrutura de dados por trás da busca textual: mapeie termos para documentos em vez de varrer tudo.
+
+</Card>
+
+</Cards>
+
+## O modelo mental
+
+<Callout type="neutral" title="Três perguntas para qualquer sistema de armazenamento">
+
+1. **Onde vive cada pedaço de dado?** (particionamento / posicionamento)
+2. **Quantas cópias existem e onde?** (replicação / durabilidade)
+3. **Como encontro o dado sem varrer tudo?** (indexação)
+
+</Callout>
+
+Mantenha essas três perguntas em mente ao longo de cada tópico — quase todo design de armazenamento é um conjunto diferente de respostas para elas.

@@ -1,0 +1,90 @@
+# Distributed Tracing
+
+A single user click can fan out to dozens of services. When it's slow or fails, *which* service was to blame? **Distributed tracing** stitches the whole journey into one timeline so you can see exactly where time went.
+
+<Callout type="info" title="💡 Logs and metrics aren't enough">
+
+Metrics tell you *something* is slow; logs tell you what one service did. Tracing connects them — following a single request **across** service boundaries end to end.
+
+</Callout>
+
+## The vocabulary
+
+<Cards cols={3}>
+
+<Card title="Trace" accent="brand">
+
+The entire end-to-end journey of one request, identified by a **trace ID** shared by every hop.
+
+</Card>
+
+<Card title="Span" accent="purple">
+
+One unit of work within the trace (a service call, a DB query). Spans nest to form a tree and each records start/end time.
+
+</Card>
+
+<Card title="Context propagation" accent="green">
+
+The trace ID and parent span ID are passed along (HTTP headers, message metadata) so downstream spans attach to the right trace.
+
+</Card>
+
+</Cards>
+
+## How a trace is built
+
+<Callout type="neutral" title="From request to flame graph">
+
+1. The first service starts a root span and generates a trace ID.
+2. On each outbound call it injects trace context into the headers.
+3. Each downstream service creates a child span linked to its parent.
+4. Spans are exported to a collector (OpenTelemetry → Jaeger/Tempo/Zipkin) and assembled into a waterfall you can inspect.
+
+</Callout>
+
+## Baggage and attributes
+
+<Cards cols={2}>
+
+<Card title="Attributes" accent="brand">
+
+Key/value tags on a span (HTTP status, DB statement, region) for filtering and grouping in your tracing UI.
+
+</Card>
+
+<Card title="Baggage" accent="purple">
+
+Key/values that **travel with** the context across services (e.g. tenant ID), so any downstream span can read them. Powerful — but it adds overhead to every hop, so keep it small.
+
+</Card>
+
+</Cards>
+
+<Callout type="warning" title="Sample, don't trace everything">
+
+Tracing every request at full volume is expensive. Use **sampling** — head-based (decide up front) or tail-based (keep the slow/errored traces) — to capture the interesting ones without drowning in data.
+
+</Callout>
+
+## Takeaways
+
+<Cards cols={2}>
+
+<Card title="Remember" accent="green">
+
+- A trace = many spans sharing one trace ID across services
+- Context propagation is what links spans into a trace
+- OpenTelemetry is the standard for instrumenting it
+
+</Card>
+
+<Card title="Design For" accent="brand">
+
+- Propagate trace context through every call and queue
+- Add useful span attributes; keep baggage tiny
+- Sample to control cost while keeping anomalies
+
+</Card>
+
+</Cards>
