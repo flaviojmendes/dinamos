@@ -5,6 +5,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useContentProgress } from '../../hooks/useContentProgress';
 import { contentManifest } from '../../config/contentManifest';
 import { getTopics, ForumTopic } from '../../services/forumService';
+import { openCommandPalette } from '../Common/CommandPalette';
 import {
   Panel,
   Stat,
@@ -81,8 +82,6 @@ export default function CommandCenter() {
 
   const [topics, setTopics] = useState<ForumTopic[]>([]);
   const [expanded, setExpanded] = useState<string | null>(null);
-  const [paletteOpen, setPaletteOpen] = useState(false);
-  const [query, setQuery] = useState('');
 
   useEffect(() => {
     let active = true;
@@ -92,20 +91,6 @@ export default function CommandCenter() {
     return () => {
       active = false;
     };
-  }, []);
-
-  // Cmd/Ctrl+K opens the quick-jump palette.
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        setPaletteOpen((v) => !v);
-      } else if (e.key === 'Escape') {
-        setPaletteOpen(false);
-      }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
   }, []);
 
   const rows: ModuleRow[] = useMemo(() => {
@@ -137,23 +122,6 @@ export default function CommandCenter() {
     }
     return null;
   }, [rows]);
-
-  const allLessons = useMemo(
-    () =>
-      Array.from(new Set(contentManifest.map((e) => e.path))).map((path) => ({
-        path,
-        label: lessonLabel(path),
-      })),
-    [],
-  );
-
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    const base = q
-      ? allLessons.filter((l) => l.label.toLowerCase().includes(q) || l.path.toLowerCase().includes(q))
-      : allLessons;
-    return base.slice(0, 12);
-  }, [query, allLessons]);
 
   const columns: Column<ModuleRow>[] = [
     {
@@ -233,7 +201,7 @@ export default function CommandCenter() {
             {t('command_center.operator')} <span className="text-slate-900 dark:text-tactical-text">{greeting}</span> {t('command_center.readiness_suffix', { pct: totals.pct })}
           </p>
         </div>
-        <TacticalButton variant="secondary" onClick={() => setPaletteOpen(true)}>
+        <TacticalButton variant="secondary" onClick={() => openCommandPalette()}>
           {t('command_center.quick_jump')}
           <span className="ml-1 border border-current px-1 text-[10px] opacity-70">⌘K</span>
         </TacticalButton>
@@ -335,58 +303,6 @@ export default function CommandCenter() {
         </Panel>
       </div>
 
-      {/* Quick-jump command palette */}
-      {paletteOpen && (
-        <div
-          className="fixed inset-0 z-[60] flex items-start justify-center bg-black/60 p-4 pt-[12vh] backdrop-blur-sm"
-          onClick={() => setPaletteOpen(false)}
-        >
-          <div
-            className="w-full max-w-xl tactical-panel shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center gap-2 border-b border-slate-200 px-4 py-3 dark:border-tactical-border">
-              <span className="font-mono text-signal-green">›</span>
-              <input
-                autoFocus
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && filtered[0]) {
-                    navigate(filtered[0].path);
-                    setPaletteOpen(false);
-                    setQuery('');
-                  }
-                }}
-                placeholder={t('command_center.search_placeholder')}
-                aria-label={t('command_center.search_aria')}
-                className="flex-1 bg-transparent font-mono text-sm uppercase tracking-wider text-slate-900 placeholder:text-slate-400 focus:outline-none dark:text-tactical-text dark:placeholder:text-tactical-label"
-              />
-              <span className="font-mono text-[10px] text-slate-400 dark:text-tactical-label">ESC</span>
-            </div>
-            <ul className="max-h-80 overflow-y-auto py-1">
-              {filtered.length === 0 && (
-                <li className="px-4 py-6 text-center font-mono text-xs text-slate-500 dark:text-tactical-dim">{t('command_center.no_matches')}</li>
-              )}
-              {filtered.map((l) => (
-                <li key={l.path}>
-                  <button
-                    onClick={() => {
-                      navigate(l.path);
-                      setPaletteOpen(false);
-                      setQuery('');
-                    }}
-                    className="flex w-full items-center justify-between gap-3 px-4 py-2 text-left font-mono text-sm text-slate-700 hover:bg-slate-100 dark:text-tactical-dim dark:hover:bg-tactical-raised"
-                  >
-                    <span className="truncate text-slate-900 dark:text-tactical-text">{l.label}</span>
-                    <span className="shrink-0 text-[10px] text-slate-400 dark:text-tactical-label">{l.path}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

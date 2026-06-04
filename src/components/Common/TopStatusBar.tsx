@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { StatusBadge, Tag } from '../tactical';
+import { quickAccessLinks } from '../../config/quickAccess';
 
 function useClock() {
   const [now, setNow] = useState(() => new Date());
@@ -35,6 +37,30 @@ export default function TopStatusBar() {
         </span>
         <Tag color="green">{t('command_center.open_access')}</Tag>
       </div>
+
+      <nav className="flex items-center gap-1" aria-label={t('quick_access.title')}>
+        {quickAccessLinks.map(({ to, labelKey, label, d }) => (
+          <NavLink
+            key={to}
+            to={to}
+            end={to === '/'}
+            title={t(`quick_access.${labelKey}`, { defaultValue: label })}
+            aria-label={t(`quick_access.${labelKey}`, { defaultValue: label })}
+            className={({ isActive }: { isActive: boolean }) =>
+              `flex items-center justify-center h-8 w-8 border transition-colors ${
+                isActive
+                  ? 'border-brand-600 dark:border-signal-green text-brand-700 dark:text-signal-green bg-brand-50 dark:bg-tactical-raised'
+                  : 'border-transparent text-slate-500 dark:text-tactical-dim hover:text-slate-900 dark:hover:text-tactical-text hover:bg-slate-100 dark:hover:bg-tactical-raised'
+              }`
+            }
+          >
+            <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d={d} />
+            </svg>
+          </NavLink>
+        ))}
+      </nav>
+
       <div className="flex items-center gap-5">
         <span className="label-mono">
           {t('command_center.operator_label')}: <span className="text-slate-900 dark:text-tactical-text normal-case">{operator}</span>
