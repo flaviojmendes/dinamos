@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Panel, StatusBadge, TacticalButton, type StatusVariant } from '../tactical';
+import { AnimatedMetric, GridBackdrop } from './motion';
 
 type Route = 'cache' | 'primary' | 'fallback' | 'rejected';
 
@@ -9,6 +11,31 @@ interface ReqLog {
   route: Route;
   cost: number;
 }
+
+interface Particle {
+  id: number;
+  route: Route;
+}
+
+const ROUTE_ORDER: Route[] = ['cache', 'primary', 'fallback', 'rejected'];
+const routeColor: Record<Route, string> = {
+  cache: 'bg-signal-green',
+  primary: 'bg-signal-cyan',
+  fallback: 'bg-signal-amber',
+  rejected: 'bg-signal-red',
+};
+const routeText: Record<Route, string> = {
+  cache: 'text-signal-green',
+  primary: 'text-signal-cyan',
+  fallback: 'text-signal-amber',
+  rejected: 'text-signal-red',
+};
+const laneTop: Record<Route, string> = {
+  cache: '14%',
+  primary: '38%',
+  fallback: '62%',
+  rejected: '86%',
+};
 
 interface Metrics {
   served: number;
@@ -37,6 +64,7 @@ export default function LlmGatewaySimulator() {
   const [primaryFail, setPrimaryFail] = useState(15);
 
   const [logs, setLogs] = useState<ReqLog[]>([]);
+  const [particles, setParticles] = useState<Particle[]>([]);
   const [metrics, setMetrics] = useState<Metrics>({ served: 0, cacheHits: 0, fallbacks: 0, rejected: 0, cost: 0 });
 
   const nextId = useRef(1);
@@ -45,6 +73,7 @@ export default function LlmGatewaySimulator() {
   const reset = useCallback(() => {
     setIsRunning(false);
     setLogs([]);
+    setParticles([]);
     setMetrics({ served: 0, cacheHits: 0, fallbacks: 0, rejected: 0, cost: 0 });
     tokens.current = rateLimit;
   }, [rateLimit]);
@@ -77,6 +106,7 @@ export default function LlmGatewaySimulator() {
         const cost = COST[route];
         const id = nextId.current++;
         setLogs(prev => [{ id, route, cost }, ...prev].slice(0, 8));
+        setParticles(prev => [...prev, { id, route }].slice(-24));
         setMetrics(prev => ({
           served: prev.served + (route !== 'rejected' ? 1 : 0),
           cacheHits: prev.cacheHits + (route === 'cache' ? 1 : 0),
@@ -116,14 +146,61 @@ export default function LlmGatewaySimulator() {
         </div>
       </Panel>
 
+      {/* Routing flow visualization */}
+      <Panel title={t(`${base}.title`)} accent="cyan" bodyClassName="p-0">
+        <div className="relative h-[230px] overflow-hidden">
+          <GridBackdrop />
+
+          {/* Source node */}
+          <div className="absolute left-[6%] top-1/2 -translate-y-1/2 -translate-x-0">
+            <motion.div
+              className="border border-signal-cyan/60 bg-slate-50 dark:bg-tactical-raised px-3 py-3 text-center"
+              animate={isRunning ? { boxShadow: ['0 0 0px rgba(34,211,238,0)', '0 0 14px rgba(34,211,238,0.5)', '0 0 0px rgba(34,211,238,0)'] } : {}}
+              transition={{ duration: 1.6, repeat: Infinity }}
+            >
+              <div className="font-mono text-lg font-bold text-signal-cyan">⇉</div>
+              <div className="label-mono mt-1">req/s {arrivalRate}</div>
+            </motion.div>
+          </div>
+
+          {/* Lanes */}
+          {ROUTE_ORDER.map(route => (
+            <div
+              key={route}
+              className="absolute right-[5%] flex -translate-y-1/2 items-center"
+              style={{ top: laneTop[route] }}
+            >
+              <div className={`border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider ${routeText[route]}`}>
+                {t(`${base}.routes.${route}`)}
+              </div>
+            </div>
+          ))}
+
+          {/* Travelling request particles */}
+          <AnimatePresence>
+            {particles.map(p => (
+              <motion.div
+                key={p.id}
+                className={`absolute h-2.5 w-2.5 rounded-full ${routeColor[p.route]}`}
+                initial={{ left: '11%', top: '50%', opacity: 0, scale: 0.6 }}
+                animate={{ left: '90%', top: laneTop[p.route], opacity: [0, 1, 1, 0.8], scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.9, ease: 'easeInOut' }}
+                onAnimationComplete={() => setParticles(prev => prev.filter(x => x.id !== p.id))}
+              />
+            ))}
+          </AnimatePresence>
+        </div>
+      </Panel>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Panel title={t(`${base}.metrics.served`)} accent="green">
           <div className="grid grid-cols-2 gap-3">
-            <Metric value={`${metrics.served}`} label={t(`${base}.metrics.served`)} color="green" />
-            <Metric value={`${metrics.cacheHits}`} label={t(`${base}.metrics.cache_hits`)} color="cyan" />
-            <Metric value={`${metrics.fallbacks}`} label={t(`${base}.metrics.fallbacks`)} color="amber" />
-            <Metric value={`${metrics.rejected}`} label={t(`${base}.metrics.rejected`)} color={metrics.rejected > 0 ? 'red' : 'default'} />
-            <Metric value={`$${metrics.cost.toFixed(2)}`} label={t(`${base}.metrics.cost`)} color="default" />
+            <AnimatedMetric value={metrics.served} label={t(`${base}.metrics.served`)} color="green" pulse={isRunning} />
+            <AnimatedMetric value={metrics.cacheHits} label={t(`${base}.metrics.cache_hits`)} color="cyan" />
+            <AnimatedMetric value={metrics.fallbacks} label={t(`${base}.metrics.fallbacks`)} color="amber" />
+            <AnimatedMetric value={metrics.rejected} label={t(`${base}.metrics.rejected`)} color={metrics.rejected > 0 ? 'red' : 'default'} />
+            <AnimatedMetric value={metrics.cost} decimals={2} prefix="$" label={t(`${base}.metrics.cost`)} color="default" />
           </div>
         </Panel>
 
@@ -134,15 +211,25 @@ export default function LlmGatewaySimulator() {
                 {t(`${base}.labels.empty`)}
               </div>
             ) : (
-              logs.map(log => (
-                <div key={log.id} className="flex items-center gap-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2">
-                  <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim w-12 tabular-nums">#{log.id}</span>
-                  <StatusBadge variant={routeVariant[log.route]} label={t(`${base}.routes.${log.route}`)} />
-                  <span className="flex-1 text-right font-mono text-[11px] text-slate-500 dark:text-tactical-dim tabular-nums">
-                    {log.cost > 0 ? `$${log.cost.toFixed(3)}` : '—'}
-                  </span>
-                </div>
-              ))
+              <AnimatePresence mode="popLayout" initial={false}>
+                {logs.map(log => (
+                  <motion.div
+                    key={log.id}
+                    layout
+                    initial={{ opacity: 0, y: -14, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ type: 'spring', stiffness: 420, damping: 32 }}
+                    className="flex items-center gap-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
+                  >
+                    <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim w-12 tabular-nums">#{log.id}</span>
+                    <StatusBadge variant={routeVariant[log.route]} label={t(`${base}.routes.${log.route}`)} />
+                    <span className="flex-1 text-right font-mono text-[11px] text-slate-500 dark:text-tactical-dim tabular-nums">
+                      {log.cost > 0 ? `$${log.cost.toFixed(3)}` : '—'}
+                    </span>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             )}
           </div>
         </Panel>
@@ -159,22 +246,6 @@ function Slider({ label, value, min, max, onChange, cls, suffix }: { label: stri
         <input type="range" min={min} max={max} value={value} onChange={e => onChange(Number(e.target.value))} className={cls} />
         <span className="font-mono text-sm w-12 text-right text-signal-cyan tabular-nums">{value}{suffix ?? ''}</span>
       </div>
-    </div>
-  );
-}
-
-function Metric({ value, label, color }: { value: string; label: string; color: 'default' | 'green' | 'amber' | 'red' | 'cyan' }) {
-  const colorClass: Record<string, string> = {
-    default: 'text-slate-900 dark:text-tactical-text',
-    green: 'text-signal-green',
-    amber: 'text-signal-amber',
-    red: 'text-signal-red',
-    cyan: 'text-signal-cyan',
-  };
-  return (
-    <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
-      <div className={`font-mono text-2xl font-bold tabular-nums leading-none ${colorClass[color]}`}>{value}</div>
-      <div className="label-mono mt-2">{label}</div>
     </div>
   );
 }

@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Panel, StatusBadge, TacticalButton, SegmentBar } from '../tactical';
+import { AnimatedMetric, AnimatedNumber } from './motion';
 
 interface Replica {
   id: number;
@@ -137,35 +139,107 @@ export default function GpuAutoscalerSimulator() {
       </Panel>
 
       <Panel title={t(`${base}.panels.replicas`)} accent="green">
-        {replicas.length === 0 ? (
-          <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">
-            {t(`${base}.labels.scale_to_zero`)}
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
-            {replicas.map(r => (
-              <div key={r.id} className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-3 flex flex-col gap-2">
-                <span className="font-mono text-xs text-slate-700 dark:text-tactical-text">GPU #{r.id}</span>
-                <StatusBadge
-                  variant={r.state === 'ready' ? 'active' : 'in-progress'}
-                  label={r.state === 'ready' ? t(`${base}.labels.ready`) : t(`${base}.labels.warming`)}
+        <AnimatePresence mode="popLayout" initial={false}>
+          {replicas.length === 0 ? (
+            <motion.div
+              key="empty"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label"
+            >
+              {t(`${base}.labels.scale_to_zero`)}
+            </motion.div>
+          ) : (
+            <motion.div layout key="grid" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+              <AnimatePresence mode="popLayout" initial={false}>
+                {replicas.map(r => {
+                  const warmPct = r.state === 'warming' ? Math.max(0, Math.min(100, (1 - r.warmRemaining / coldStart) * 100)) : 100;
+                  return (
+                    <motion.div
+                      key={r.id}
+                      layout
+                      initial={{ opacity: 0, scale: 0.4, y: 12 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.4, y: -12 }}
+                      transition={{ type: 'spring', stiffness: 360, damping: 26 }}
+                      className="relative border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-3 flex flex-col gap-2 overflow-hidden"
+                    >
+                      <div className="flex items-center gap-2">
+                        {r.state === 'warming' ? (
+                          <motion.span
+                            className="inline-block h-3 w-3 rounded-full border-2 border-signal-amber border-t-transparent"
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
+                          />
+                        ) : (
+                          <motion.span
+                            className="inline-block h-3 w-3 rounded-full bg-signal-green"
+                            animate={{ opacity: [1, 0.4, 1], scale: [1, 1.15, 1] }}
+                            transition={{ duration: 1.6, repeat: Infinity }}
+                          />
+                        )}
+                        <span className="font-mono text-xs text-slate-700 dark:text-tactical-text">GPU #{r.id}</span>
+                      </div>
+                      <StatusBadge
+                        variant={r.state === 'ready' ? 'active' : 'in-progress'}
+                        label={r.state === 'ready' ? t(`${base}.labels.ready`) : t(`${base}.labels.warming`)}
+                      />
+                      {r.state === 'warming' && (
+                        <>
+                          <span className="font-mono text-[11px] text-signal-amber tabular-nums">{Math.max(0, r.warmRemaining).toFixed(1)}s</span>
+                          <div className="absolute bottom-0 left-0 h-[3px] w-full bg-slate-200 dark:bg-tactical-border">
+                            <motion.div
+                              className="h-full bg-signal-amber"
+                              animate={{ width: `${warmPct}%` }}
+                              transition={{ duration: TICK_MS / 1000, ease: 'linear' }}
+                            />
+                          </div>
+                        </>
+                      )}
+                    </motion.div>
+                  );
+                })}
+              </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </Panel>
+
+      <Panel title={t(`${base}.metrics.queue`)} accent="cyan">
+        <div className="flex flex-wrap items-center gap-1.5 min-h-[2.5rem]">
+          {queueLen === 0 ? (
+            <span className="font-mono text-[11px] uppercase tracking-wider text-slate-400 dark:text-tactical-label">—</span>
+          ) : (
+            <AnimatePresence mode="popLayout" initial={false}>
+              {Array.from({ length: Math.min(queueLen, 40) }).map((_, i) => (
+                <motion.span
+                  key={`${queueLen}-${i}`}
+                  layout
+                  initial={{ opacity: 0, scale: 0.3 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.3 }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                  className={`h-4 w-2.5 ${i >= scaleThreshold ? 'bg-signal-red' : 'bg-signal-cyan'}`}
                 />
-                {r.state === 'warming' && (
-                  <span className="font-mono text-[11px] text-signal-amber tabular-nums">{Math.max(0, r.warmRemaining).toFixed(1)}s</span>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </AnimatePresence>
+          )}
+        </div>
       </Panel>
 
       <Panel title={t(`${base}.panels.metrics`)} accent="amber">
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
-          <Metric value={`${readyCount}/${replicas.length}`} label={t(`${base}.metrics.replicas`)} color="green" />
-          <Metric value={`${queueLen}`} label={t(`${base}.metrics.queue`)} color={queueLen > scaleThreshold ? 'red' : 'default'} />
-          <Metric value={`${avgLatency}ms`} label={t(`${base}.metrics.latency`)} color={avgLatency > 3000 ? 'red' : 'default'} />
-          <Metric value={`$${cost}`} label={t(`${base}.metrics.cost`)} color="cyan" />
-          <Metric value={`${utilization}%`} label={t(`${base}.metrics.utilization`)} color={utilization > 85 ? 'green' : 'amber'} />
+          <div className="relative overflow-hidden border border-slate-200 dark:border-tactical-border px-3 py-3">
+            <div className="font-mono text-2xl font-bold tabular-nums leading-none text-signal-green">
+              <AnimatedNumber value={readyCount} />/<AnimatedNumber value={replicas.length} />
+            </div>
+            <div className="label-mono mt-2">{t(`${base}.metrics.replicas`)}</div>
+          </div>
+          <AnimatedMetric value={queueLen} label={t(`${base}.metrics.queue`)} color={queueLen > scaleThreshold ? 'red' : 'default'} />
+          <AnimatedMetric value={avgLatency} suffix="ms" label={t(`${base}.metrics.latency`)} color={avgLatency > 3000 ? 'red' : 'default'} />
+          <AnimatedMetric value={Number(cost)} decimals={2} prefix="$" label={t(`${base}.metrics.cost`)} color="cyan" />
+          <AnimatedMetric value={utilization} suffix="%" label={t(`${base}.metrics.utilization`)} color={utilization > 85 ? 'green' : 'amber'} pulse={isRunning} />
         </div>
         <div className="mt-4">
           <div className="flex items-center justify-between mb-1">
@@ -190,18 +264,3 @@ function Slider({ label, value, min, max, onChange, cls, suffix }: { label: stri
   );
 }
 
-function Metric({ value, label, color }: { value: string; label: string; color: 'default' | 'green' | 'amber' | 'red' | 'cyan' }) {
-  const colorClass: Record<string, string> = {
-    default: 'text-slate-900 dark:text-tactical-text',
-    green: 'text-signal-green',
-    amber: 'text-signal-amber',
-    red: 'text-signal-red',
-    cyan: 'text-signal-cyan',
-  };
-  return (
-    <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
-      <div className={`font-mono text-2xl font-bold tabular-nums leading-none ${colorClass[color]}`}>{value}</div>
-      <div className="label-mono mt-2">{label}</div>
-    </div>
-  );
-}

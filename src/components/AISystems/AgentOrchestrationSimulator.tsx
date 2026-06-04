@@ -1,6 +1,10 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Panel, StatusBadge, TacticalButton, type StatusVariant } from '../tactical';
+import { AnimatedMetric } from './motion';
+
+const LOOP_PHASES: EntryType[] = ['think', 'act', 'observe'];
 
 type EntryType = 'think' | 'act' | 'observe' | 'retry' | 'answer';
 
@@ -129,6 +133,16 @@ export default function AgentOrchestrationSimulator() {
       ? summary.success ? t(`${base}.labels.done`) : t(`${base}.labels.failed`)
       : '';
 
+  const lastEntry = revealed > 0 ? trace[revealed - 1] : null;
+  const activePhase: EntryType | null = lastEntry ? (lastEntry.type === 'retry' ? 'act' : lastEntry.type) : null;
+  const solved = !running && summary?.success;
+
+  const phaseClasses: Record<string, { border: string; text: string }> = {
+    think: { border: 'border-signal-cyan', text: 'text-signal-cyan' },
+    act: { border: 'border-signal-amber', text: 'text-signal-amber' },
+    observe: { border: 'border-signal-green', text: 'text-signal-green' },
+  };
+
   return (
     <div className="space-y-6">
       <Panel
@@ -149,6 +163,66 @@ export default function AgentOrchestrationSimulator() {
         </div>
       </Panel>
 
+      {/* Reason -> Act -> Observe loop */}
+      <Panel title={t(`${base}.labels.trace`)} accent="cyan">
+        <div className="flex items-center justify-center gap-2 sm:gap-4 py-4">
+          {LOOP_PHASES.map((phase, i) => {
+            const isActive = activePhase === phase;
+            const c = phaseClasses[phase];
+            return (
+              <div key={phase} className="flex items-center gap-2 sm:gap-4">
+                <motion.div
+                  className={`relative flex h-20 w-20 sm:h-24 sm:w-24 flex-col items-center justify-center border text-center ${isActive ? c.border : 'border-slate-200 dark:border-tactical-border'}`}
+                  animate={{
+                    scale: isActive ? 1.08 : 1,
+                    boxShadow: isActive
+                      ? '0 0 18px rgba(34,211,238,0.35)'
+                      : '0 0 0px rgba(0,0,0,0)',
+                  }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                >
+                  {isActive && (
+                    <motion.span
+                      className={`absolute inset-0 border ${c.border}`}
+                      animate={{ opacity: [0.6, 0, 0.6], scale: [1, 1.18, 1] }}
+                      transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+                    />
+                  )}
+                  <span className={`font-mono text-[11px] uppercase tracking-wider ${isActive ? c.text : 'text-slate-500 dark:text-tactical-label'}`}>
+                    {t(`${base}.steps.${phase}`)}
+                  </span>
+                </motion.div>
+                {i < LOOP_PHASES.length - 1 && (
+                  <motion.span
+                    className="font-mono text-lg text-slate-400 dark:text-tactical-label"
+                    animate={running ? { x: [0, 4, 0], opacity: [0.4, 1, 0.4] } : { opacity: 0.4 }}
+                    transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
+                  >
+                    →
+                  </motion.span>
+                )}
+              </div>
+            );
+          })}
+          <motion.span
+            className="font-mono text-lg text-slate-400 dark:text-tactical-label"
+            animate={running ? { rotate: 360 } : {}}
+            transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+          >
+            ↺
+          </motion.span>
+          <motion.div
+            className={`flex h-20 w-20 sm:h-24 sm:w-24 flex-col items-center justify-center border text-center ${solved ? 'border-signal-green' : 'border-slate-200 dark:border-tactical-border'}`}
+            animate={solved ? { scale: [1, 1.12, 1], borderColor: 'rgb(34 197 94)' } : { scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <span className={`font-mono text-[11px] uppercase tracking-wider ${solved ? 'text-signal-green' : 'text-slate-500 dark:text-tactical-label'}`}>
+              {t(`${base}.steps.answer`)}
+            </span>
+          </motion.div>
+        </div>
+      </Panel>
+
       <Panel title={t(`${base}.labels.trace`)} accent="green">
         {trace.length === 0 ? (
           <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">
@@ -156,15 +230,24 @@ export default function AgentOrchestrationSimulator() {
           </div>
         ) : (
           <div className="space-y-2">
-            {trace.slice(0, revealed).map(e => (
-              <div key={e.id} className="flex items-center gap-3 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2">
-                <span className="font-mono text-[11px] text-slate-500 dark:text-tactical-label w-14">STEP {e.step}</span>
-                <StatusBadge variant={entryVariant[e.type]} label={t(`${base}.steps.${e.type}`)} />
-                {e.tool && (
-                  <span className="font-mono text-[11px] text-brand-600 dark:text-signal-cyan">{t(`${base}.tools.${e.tool}`)}()</span>
-                )}
-              </div>
-            ))}
+            <AnimatePresence initial={false}>
+              {trace.slice(0, revealed).map(e => (
+                <motion.div
+                  key={e.id}
+                  layout
+                  initial={{ opacity: 0, x: -28, scale: 0.96 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 420, damping: 30 }}
+                  className="flex items-center gap-3 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
+                >
+                  <span className="font-mono text-[11px] text-slate-500 dark:text-tactical-label w-14">STEP {e.step}</span>
+                  <StatusBadge variant={entryVariant[e.type]} label={t(`${base}.steps.${e.type}`)} />
+                  {e.tool && (
+                    <span className="font-mono text-[11px] text-brand-600 dark:text-signal-cyan">{t(`${base}.tools.${e.tool}`)}()</span>
+                  )}
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
         )}
       </Panel>
@@ -172,10 +255,10 @@ export default function AgentOrchestrationSimulator() {
       {summary && (
         <Panel title={t(`${base}.metrics.status`)} accent="amber">
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
-            <Metric value={`${summary.steps}`} label={t(`${base}.metrics.steps`)} color="default" />
-            <Metric value={`${summary.toolCalls}`} label={t(`${base}.metrics.tool_calls`)} color="cyan" />
-            <Metric value={`${summary.retries}`} label={t(`${base}.metrics.retries`)} color={summary.retries > 0 ? 'amber' : 'default'} />
-            <Metric value={`${summary.tokens}`} label={t(`${base}.metrics.tokens`)} color="default" />
+            <AnimatedMetric value={summary.steps} label={t(`${base}.metrics.steps`)} color="default" />
+            <AnimatedMetric value={summary.toolCalls} label={t(`${base}.metrics.tool_calls`)} color="cyan" />
+            <AnimatedMetric value={summary.retries} label={t(`${base}.metrics.retries`)} color={summary.retries > 0 ? 'amber' : 'default'} />
+            <AnimatedMetric value={summary.tokens} format={(v) => Math.round(v).toLocaleString()} label={t(`${base}.metrics.tokens`)} color="default" />
             <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 flex flex-col justify-center">
               <StatusBadge variant={summary.success ? 'completed' : 'classified'} label={statusLabel} />
               <div className="label-mono mt-2">{t(`${base}.metrics.status`)}</div>
@@ -199,18 +282,3 @@ function Slider({ label, value, min, max, step, onChange, cls, suffix }: { label
   );
 }
 
-function Metric({ value, label, color }: { value: string; label: string; color: 'default' | 'green' | 'amber' | 'red' | 'cyan' }) {
-  const colorClass: Record<string, string> = {
-    default: 'text-slate-900 dark:text-tactical-text',
-    green: 'text-signal-green',
-    amber: 'text-signal-amber',
-    red: 'text-signal-red',
-    cyan: 'text-signal-cyan',
-  };
-  return (
-    <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
-      <div className={`font-mono text-2xl font-bold tabular-nums leading-none ${colorClass[color]}`}>{value}</div>
-      <div className="label-mono mt-2">{label}</div>
-    </div>
-  );
-}

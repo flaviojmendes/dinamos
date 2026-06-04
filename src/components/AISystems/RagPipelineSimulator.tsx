@@ -1,6 +1,8 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Panel, StatusBadge, TacticalButton, SegmentBar, type StatusVariant } from '../tactical';
+import { AnimatedMetric } from './motion';
 
 type StageKey = 'embed' | 'search' | 'rerank' | 'assemble' | 'generate';
 
@@ -143,13 +145,42 @@ export default function RagPipelineSimulator() {
         </div>
 
         {/* Pipeline stages */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
-          {STAGE_ORDER.map((stage, i) => (
-            <div key={stage} className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-3 flex flex-col gap-2">
-              <span className="label-mono text-slate-500 dark:text-tactical-label">{i + 1}. {t(`${base}.stages.${stage}`)}</span>
-              <StatusBadge variant={stageStatus(i, stage)} label={stage === 'rerank' && !rerank ? t(`${base}.labels.disabled`) : undefined} />
-            </div>
-          ))}
+        <div className="relative">
+          {/* Flow progress line behind the stages */}
+          <div className="absolute left-0 right-0 top-1/2 hidden h-[2px] -translate-y-1/2 bg-slate-200 dark:bg-tactical-border md:block">
+            <motion.div
+              className="h-full bg-signal-cyan"
+              animate={{ width: activeStage < 0 ? '0%' : `${Math.min(100, ((activeStage + 0.5) / STAGE_ORDER.length) * 100)}%` }}
+              transition={{ duration: STAGE_MS / 1000, ease: 'easeInOut' }}
+            />
+          </div>
+          <div className="relative grid grid-cols-1 md:grid-cols-5 gap-2">
+            {STAGE_ORDER.map((stage, i) => {
+              const status = stageStatus(i, stage);
+              const active = status === 'in-progress';
+              return (
+                <motion.div
+                  key={stage}
+                  animate={{
+                    scale: active ? 1.04 : 1,
+                    borderColor: active ? 'rgb(34 211 238)' : undefined,
+                  }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 22 }}
+                  className="relative border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-3 flex flex-col gap-2"
+                >
+                  {active && (
+                    <motion.div
+                      layoutId="rag-packet"
+                      className="absolute -top-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rounded-full bg-signal-cyan shadow-[0_0_10px_rgba(34,211,238,0.9)]"
+                      transition={{ type: 'spring', stiffness: 260, damping: 24 }}
+                    />
+                  )}
+                  <span className="label-mono text-slate-500 dark:text-tactical-label">{i + 1}. {t(`${base}.stages.${stage}`)}</span>
+                  <StatusBadge variant={status} label={stage === 'rerank' && !rerank ? t(`${base}.labels.disabled`) : undefined} />
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
 
         {activeStage < 0 && (
@@ -163,43 +194,33 @@ export default function RagPipelineSimulator() {
         <>
           <Panel title={t(`${base}.labels.retrieved`)} accent="amber">
             <div className="space-y-2">
-              {result.chunks.map(c => (
-                <div key={c.id} className="flex items-center gap-3 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2">
+              {result.chunks.map((c, i) => (
+                <motion.div
+                  key={c.id}
+                  initial={{ opacity: 0, x: -24 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.08, type: 'spring', stiffness: 320, damping: 26 }}
+                  className="flex items-center gap-3 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
+                >
                   <span className="font-mono text-xs text-slate-700 dark:text-tactical-text w-16">{t(`${base}.labels.chunk`)} #{c.id}</span>
                   <SegmentBar value={c.score * 100} max={100} color={c.relevant ? 'green' : 'amber'} />
                   <span className="font-mono text-[11px] text-slate-500 dark:text-tactical-dim tabular-nums w-20 text-right">{t(`${base}.labels.score`)} {c.score}</span>
-                </div>
+                </motion.div>
               ))}
             </div>
           </Panel>
 
           <Panel title={t(`${base}.stages.generate`)} accent="green">
             <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
-              <Metric value={`${result.recall}%`} label={t(`${base}.metrics.recall`)} color={result.recall > 70 ? 'green' : 'amber'} />
-              <Metric value={`${result.latency}ms`} label={t(`${base}.metrics.latency`)} color={result.latency > 600 ? 'red' : 'default'} />
-              <Metric value={`${result.cost}¢`} label={t(`${base}.metrics.cost`)} color="cyan" />
-              <Metric value={`${result.context}`} label={t(`${base}.metrics.context`)} color={result.context > 3000 ? 'red' : 'default'} />
-              <Metric value={`${result.quality}%`} label={t(`${base}.metrics.quality`)} color={result.quality > 70 ? 'green' : 'amber'} />
+              <AnimatedMetric value={result.recall} suffix="%" label={t(`${base}.metrics.recall`)} color={result.recall > 70 ? 'green' : 'amber'} />
+              <AnimatedMetric value={result.latency} suffix="ms" label={t(`${base}.metrics.latency`)} color={result.latency > 600 ? 'red' : 'default'} />
+              <AnimatedMetric value={result.cost} decimals={2} suffix="¢" label={t(`${base}.metrics.cost`)} color="cyan" />
+              <AnimatedMetric value={result.context} label={t(`${base}.metrics.context`)} color={result.context > 3000 ? 'red' : 'default'} />
+              <AnimatedMetric value={result.quality} suffix="%" label={t(`${base}.metrics.quality`)} color={result.quality > 70 ? 'green' : 'amber'} />
             </div>
           </Panel>
         </>
       )}
-    </div>
-  );
-}
-
-function Metric({ value, label, color }: { value: string; label: string; color: 'default' | 'green' | 'amber' | 'red' | 'cyan' }) {
-  const colorClass: Record<string, string> = {
-    default: 'text-slate-900 dark:text-tactical-text',
-    green: 'text-signal-green',
-    amber: 'text-signal-amber',
-    red: 'text-signal-red',
-    cyan: 'text-signal-cyan',
-  };
-  return (
-    <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
-      <div className={`font-mono text-2xl font-bold tabular-nums leading-none ${colorClass[color]}`}>{value}</div>
-      <div className="label-mono mt-2">{label}</div>
     </div>
   );
 }

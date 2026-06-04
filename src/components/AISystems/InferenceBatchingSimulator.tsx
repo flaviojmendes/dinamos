@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Panel, StatusBadge, TacticalButton, SegmentBar } from '../tactical';
+import { AnimatedMetric } from './motion';
 
 interface InferReq {
   id: number;
@@ -167,25 +169,56 @@ export default function InferenceBatchingSimulator() {
               <div className="font-mono text-xs text-signal-cyan tabular-nums">{batch.length}/{batchCapacity}</div>
             </div>
             <div className="p-3 space-y-2 min-h-[180px]">
-              {Array.from({ length: batchCapacity }).map((_, i) => {
-                const r = batch[i];
-                if (!r) {
+              <AnimatePresence mode="popLayout" initial={false}>
+                {Array.from({ length: batchCapacity }).map((_, i) => {
+                  const r = batch[i];
+                  if (!r) {
+                    return (
+                      <motion.div
+                        key={`free-${i}`}
+                        layout
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="border border-dashed border-slate-300 dark:border-tactical-border px-3 py-2 font-mono text-[11px] uppercase tracking-wider text-slate-400 dark:text-tactical-label"
+                      >
+                        {t(`${base}.labels.slot_free`)}
+                      </motion.div>
+                    );
+                  }
+                  const pct = Math.min(100, (r.done / r.totalTokens) * 100);
+                  const almost = pct > 80;
                   return (
-                    <div key={`free-${i}`} className="border border-dashed border-slate-300 dark:border-tactical-border px-3 py-2 font-mono text-[11px] uppercase tracking-wider text-slate-400 dark:text-tactical-label">
-                      {t(`${base}.labels.slot_free`)}
-                    </div>
+                    <motion.div
+                      key={r.id}
+                      layout
+                      initial={{ opacity: 0, x: 40, scale: 0.9 }}
+                      animate={{ opacity: 1, x: 0, scale: 1 }}
+                      exit={{ opacity: 0, scale: 1.08, backgroundColor: 'rgba(34,197,94,0.25)' }}
+                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                      className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
+                    >
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="font-mono text-xs text-slate-700 dark:text-tactical-text flex items-center gap-1.5">
+                          <motion.span
+                            className={`inline-block h-1.5 w-1.5 rounded-full ${almost ? 'bg-signal-green' : 'bg-signal-cyan'}`}
+                            animate={{ opacity: [1, 0.3, 1] }}
+                            transition={{ duration: 0.7, repeat: Infinity }}
+                          />
+                          {t(`${base}.labels.request`)} #{r.id}
+                        </span>
+                        <span className="font-mono text-[11px] text-slate-500 dark:text-tactical-dim tabular-nums">{r.done}/{r.totalTokens} {t(`${base}.labels.tokens`)}</span>
+                      </div>
+                      <div className="relative h-2 bg-slate-200 dark:bg-tactical-border overflow-hidden">
+                        <motion.div
+                          className={`absolute inset-y-0 left-0 ${almost ? 'bg-signal-green' : 'bg-signal-cyan'}`}
+                          animate={{ width: `${pct}%` }}
+                          transition={{ duration: TICK_MS / 1000, ease: 'linear' }}
+                        />
+                      </div>
+                    </motion.div>
                   );
-                }
-                return (
-                  <div key={r.id} className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-mono text-xs text-slate-700 dark:text-tactical-text">{t(`${base}.labels.request`)} #{r.id}</span>
-                      <span className="font-mono text-[11px] text-slate-500 dark:text-tactical-dim tabular-nums">{r.done}/{r.totalTokens} {t(`${base}.labels.tokens`)}</span>
-                    </div>
-                    <SegmentBar value={r.done} max={r.totalTokens} color="cyan" />
-                  </div>
-                );
-              })}
+                })}
+              </AnimatePresence>
             </div>
           </div>
 
@@ -202,11 +235,21 @@ export default function InferenceBatchingSimulator() {
                 </div>
               ) : (
                 <div className="flex flex-wrap gap-1.5">
-                  {queue.map(r => (
-                    <span key={r.id} className="border border-signal-amber/40 text-signal-amber px-2 py-1 font-mono text-[11px] tabular-nums">
-                      #{r.id}
-                    </span>
-                  ))}
+                  <AnimatePresence mode="popLayout" initial={false}>
+                    {queue.map(r => (
+                      <motion.span
+                        key={r.id}
+                        layout
+                        initial={{ opacity: 0, scale: 0.4, y: -8 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.4, x: -12 }}
+                        transition={{ type: 'spring', stiffness: 500, damping: 32 }}
+                        className="border border-signal-amber/40 text-signal-amber px-2 py-1 font-mono text-[11px] tabular-nums"
+                      >
+                        #{r.id}
+                      </motion.span>
+                    ))}
+                  </AnimatePresence>
                 </div>
               )}
               {batch.length === 0 && queue.length === 0 && (
@@ -219,12 +262,12 @@ export default function InferenceBatchingSimulator() {
 
       <Panel title={t(`${base}.panels.metrics`)} accent="green">
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-          <Metric value={`${throughput}`} label={t(`${base}.metrics.throughput`)} color="cyan" />
-          <Metric value={`${utilization}%`} label={t(`${base}.metrics.utilization`)} color={utilization > 90 ? 'green' : 'amber'} />
-          <Metric value={`${queue.length}`} label={t(`${base}.metrics.queue_depth`)} color={queue.length > 10 ? 'red' : 'default'} />
-          <Metric value={`${avgLatency}ms`} label={t(`${base}.metrics.avg_latency`)} color={avgLatency > 1500 ? 'red' : 'default'} />
-          <Metric value={`${metrics.completed}`} label={t(`${base}.metrics.completed`)} color="green" />
-          <Metric value={`${metrics.dropped}`} label={t(`${base}.metrics.dropped`)} color={metrics.dropped > 0 ? 'red' : 'default'} />
+          <AnimatedMetric value={throughput} label={t(`${base}.metrics.throughput`)} color="cyan" pulse={isRunning} />
+          <AnimatedMetric value={utilization} suffix="%" label={t(`${base}.metrics.utilization`)} color={utilization > 90 ? 'green' : 'amber'} />
+          <AnimatedMetric value={queue.length} label={t(`${base}.metrics.queue_depth`)} color={queue.length > 10 ? 'red' : 'default'} />
+          <AnimatedMetric value={avgLatency} suffix="ms" label={t(`${base}.metrics.avg_latency`)} color={avgLatency > 1500 ? 'red' : 'default'} />
+          <AnimatedMetric value={metrics.completed} label={t(`${base}.metrics.completed`)} color="green" />
+          <AnimatedMetric value={metrics.dropped} label={t(`${base}.metrics.dropped`)} color={metrics.dropped > 0 ? 'red' : 'default'} />
         </div>
         <div className="mt-4">
           <div className="flex items-center justify-between mb-1">
@@ -234,22 +277,6 @@ export default function InferenceBatchingSimulator() {
           <SegmentBar value={utilization} max={100} color={utilization > 90 ? 'green' : 'amber'} caption={`${utilization}%`} />
         </div>
       </Panel>
-    </div>
-  );
-}
-
-function Metric({ value, label, color }: { value: string; label: string; color: 'default' | 'green' | 'amber' | 'red' | 'cyan' }) {
-  const colorClass: Record<string, string> = {
-    default: 'text-slate-900 dark:text-tactical-text',
-    green: 'text-signal-green',
-    amber: 'text-signal-amber',
-    red: 'text-signal-red',
-    cyan: 'text-signal-cyan',
-  };
-  return (
-    <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
-      <div className={`font-mono text-2xl font-bold tabular-nums leading-none ${colorClass[color]}`}>{value}</div>
-      <div className="label-mono mt-2">{label}</div>
     </div>
   );
 }
