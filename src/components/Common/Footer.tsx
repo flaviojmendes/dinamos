@@ -27,6 +27,17 @@ export default function Footer() {
             </a>
           </div>
         </div>
+        <div className="mt-6 border-t border-slate-200 dark:border-slate-800 pt-6 text-center text-sm text-slate-500 dark:text-slate-400">
+          Made with <span className="text-purple-500">💜</span> by{' '}
+          <a
+            href="https://instagram.com/trilhainfo"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300 transition-colors"
+          >
+            flaviojmendes
+          </a>
+        </div>
       </div>
     </footer>
   );

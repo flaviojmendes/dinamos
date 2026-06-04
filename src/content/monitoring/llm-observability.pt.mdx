@@ -1,0 +1,99 @@
+# Observabilidade de LLM
+
+Os três pilares — métricas, logs, traces — continuam valendo para sistemas de LLM, mas não bastam. Aplicações de LLM são probabilísticas, têm preço por token e são sensíveis à qualidade, então você precisa de novos sinais: **uso de tokens, custo, traces de prompt/resposta e avaliações de qualidade**.
+
+<Callout type="info" title="💡 Por Que o Monitoramento Clássico É Insuficiente">
+
+Um 200 OK com baixa latência ainda pode ser uma resposta *ruim*: alucinada, irrelevante ou insegura. Métricas tradicionais veem que a requisição teve sucesso; não veem que a resposta estava errada.
+
+</Callout>
+
+## Novos Sinais a Acompanhar
+
+<Cards cols={2}>
+
+<Card title="Custo e Uso" accent="brand">
+
+- Tokens de entrada e saída por requisição
+- Custo por requisição, por funcionalidade, por tenant
+- Tempo até o primeiro token e tokens por segundo
+- Taxa de acerto de cache (exato e semântico)
+
+</Card>
+
+<Card title="Qualidade" accent="green">
+
+- Verificações de alucinação / fundamentação
+- Relevância da recuperação (para RAG)
+- Feedback do usuário (joinha para cima/baixo, edições)
+- Taxas de recusa e de erro
+
+</Card>
+
+</Cards>
+
+## Rastreando uma Requisição de LLM
+
+Uma única requisição de usuário se desdobra em muitos passos. O tracing os conecta para você ver onde foram o tempo, os tokens e a qualidade.
+
+<Cards cols={3}>
+
+<Card title="A Árvore de Spans" accent="brand">
+
+Embeddar → recuperar → reordenar → montar prompt → chamada ao modelo → chamadas de ferramentas. Cada um é um span com tempo e contagem de tokens.
+
+</Card>
+
+<Card title="O Que Capturar" accent="purple">
+
+Prompt, contexto recuperado, modelo + parâmetros, resposta, tokens, custo e latência por span.
+
+</Card>
+
+<Card title="Por Que Importa" accent="green">
+
+Quando uma resposta é ruim, o trace mostra se a recuperação falhou, o prompt estava errado ou o modelo falhou.
+
+</Card>
+
+</Cards>
+
+## Avaliando a Qualidade
+
+Como qualidade não é um código de status, você a mede continuamente:
+
+<Cards cols={3}>
+
+<Card title="Avaliações Offline" accent="brand">
+
+Rode um conjunto de testes fixo a cada mudança para pegar regressões antes do lançamento.
+
+</Card>
+
+<Card title="LLM-como-Juiz" accent="purple">
+
+Use um modelo para pontuar saídas por relevância, fundamentação ou correção em escala.
+
+</Card>
+
+<Card title="Sinais Online" accent="green">
+
+Capture feedback e comportamento reais do usuário como sinal de qualidade ao vivo.
+
+</Card>
+
+</Cards>
+
+<Callout type="warning" title="Não Registre Dados Sensíveis Sem Cuidado">
+
+Prompts e respostas muitas vezes contêm dados pessoais ou proprietários. Anonimize PII, controle a retenção e respeite o isolamento de tenants — a observabilidade não pode virar um vetor de vazamento de dados.
+
+</Callout>
+
+## Ferramentas
+
+Stacks clássicas (Prometheus, Grafana, ELK, Jaeger/OpenTelemetry) seguem carregando métricas e traces de infraestrutura. Plataformas específicas de LLM (LangSmith, Langfuse, Phoenix, Helicone) adicionam captura de prompt/resposta, contabilidade de tokens/custo e avaliações por cima.
+
+## Relacionados
+
+Isto estende os três pilares de [Monitoramento e Manutenção](/monitoramento-e-manutencao), reaproveita as ideias do [simulador de tracing](/monitoramento-e-manutencao/logs/tracing) e é essencial para operar [sistemas com agentes](/sistemas-ia/agentic-systems).

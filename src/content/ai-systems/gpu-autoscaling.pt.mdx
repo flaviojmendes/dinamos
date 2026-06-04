@@ -1,0 +1,128 @@
+# Serving de GPU e Autoescalonamento
+
+Escalar um serviço web sem estado é fácil: adicione mais pods atrás de um balanceador. Escalar **inferência em GPU** é difícil — GPUs são caras, escassas e lentas para iniciar. Acertar o autoescalonamento é a diferença entre uma conta de nuvem enorme e usuários insatisfeitos e enfileirados.
+
+<Callout type="info" title="💡 A Tensão Central">
+
+GPUs custam dólares por hora estejam ocupadas ou ociosas. Você quer rodar poucas (economizar) mas o suficiente para absorver picos de tráfego (manter a latência baixa). Esses objetivos brigam entre si.
+
+</Callout>
+
+## Por Que o Autoescalonamento de GPU É Diferente
+
+<Cards cols={2}>
+
+<Card title="Partidas a Frio São Brutais" accent="red">
+
+- Os pesos do modelo têm dezenas de GBs para carregar
+- Provisionar um nó com GPU pode levar minutos
+- Você não consegue escalar instantaneamente em um pico
+- Requisições enfileiram enquanto novas réplicas aquecem
+
+</Card>
+
+<Card title="A Economia" accent="purple">
+
+- Uma única GPU pode custar por hora mais que dezenas de CPUs
+- GPUs ociosas são puro desperdício
+- Superprovisionar é caro; subprovisionar derruba requisições
+- A utilização é a métrica que importa
+
+</Card>
+
+</Cards>
+
+## Em Que Escalar
+
+A utilização de CPU é um sinal ruim para serving de LLM. Sinais melhores refletem o gargalo real:
+
+<Cards cols={3}>
+
+<Card title="Tamanho da Fila" accent="brand">
+
+Requisições esperando por um slot livre. O sinal mais direto de que você precisa de mais capacidade.
+
+</Card>
+
+<Card title="Utilização do Lote / KV" accent="purple">
+
+Quão cheios estão o lote em execução e o KV cache. Alta utilização significa que você está perto da capacidade.
+
+</Card>
+
+<Card title="SLO de Latência" accent="green">
+
+O tempo até o primeiro token subindo sinaliza saturação antes que as requisições comecem a falhar.
+
+</Card>
+
+</Cards>
+
+## Escala-a-Zero
+
+Para cargas em rajada ou de baixo volume, manter uma GPU rodando 24/7 é desperdício. A **escala-a-zero** desliga todas as réplicas quando ociosas e sobe uma na próxima requisição.
+
+<Callout type="warning" title="O Imposto da Partida a Frio">
+
+A escala-a-zero economiza dinheiro, mas a primeira requisição após a ociosidade paga todo o custo de partida a frio (carga do modelo + provisionamento do nó). Mitigações:
+
+- Mantenha uma réplica aquecida no horário comercial
+- Pré-aqueça antes de picos previsíveis
+- Use snapshot/carregamento preguiçoso dos pesos para reduzir o tempo de início
+- Use modelos menores na camada aquecida
+
+</Callout>
+
+## Lidando com Picos Sem GPUs Suficientes
+
+Como você não pode escalar instantaneamente, precisa de backpressure e degradação graciosa:
+
+<Cards cols={3}>
+
+<Card title="Enfileirar" accent="brand">
+
+Admita o que puder, enfileire o resto com profundidade limitada e um timeout.
+
+</Card>
+
+<Card title="Descartar Carga" accent="amber">
+
+Rejeite ou adie requisições de baixa prioridade quando a fila estiver cheia (veja backpressure).
+
+</Card>
+
+<Card title="Degradar" accent="red">
+
+Roteie o excedente para um modelo menor/mais barato ou uma resposta em cache.
+
+</Card>
+
+</Cards>
+
+<Callout type="success" title="Experimente: Simulador de Autoescalonador de GPU">
+
+Direcione tráfego em rajadas para um pool de GPUs e ajuste a taxa de chegada, o limiar para escalar e o tempo de partida a frio para ver réplicas aquecerem, a fila crescer e esvaziar, e o custo se equilibrar com a latência no [Simulador de Autoescalonador de GPU](/sistemas-ia/gpu-autoscaling/simulator).
+
+</Callout>
+
+## Pontos-Chave
+
+<Cards cols={2}>
+
+<Card title="Lembre-se" accent="green">
+
+- Partidas a frio tornam o escalonamento de GPU lento e reativo
+- Escale por tamanho da fila e utilização, não por CPU
+- A escala-a-zero economiza, mas taxa a próxima requisição
+
+</Card>
+
+<Card title="Projete Para" accent="brand">
+
+- Manter uma camada aquecida para tráfego sensível à latência
+- Usar backpressure e degradação para picos
+- Otimizar o tempo de carga do modelo para reduzir partidas a frio
+
+</Card>
+
+</Cards>

@@ -39,6 +39,7 @@ const MODULES: ModuleDef[] = [
   { id: 'consistency', label: 'Consistency Strategies', tier: 'ADVANCED', base: '/estrategias-de-consistencia' },
   { id: 'security', label: 'Security', tier: 'ADVANCED', base: '/seguranca' },
   { id: 'monitoring', label: 'Monitoring & Maintenance', tier: 'ADVANCED', base: '/monitoramento-e-manutencao' },
+  { id: 'ai-systems', label: 'AI & LLM Systems', tier: 'APPLIED', base: '/sistemas-ia' },
   { id: 'cases', label: 'Real-World Cases', tier: 'APPLIED', base: '/casos-reais' },
 ];
 

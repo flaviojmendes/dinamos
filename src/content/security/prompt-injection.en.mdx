@@ -1,0 +1,118 @@
+# Prompt Injection & LLM Guardrails
+
+LLMs don't distinguish between your instructions and the data they read. If untrusted text can reach the model, that text can hijack it. **Prompt injection** is the defining security risk of LLM applications — and it has no complete fix.
+
+<Callout type="danger" title="⚠ The Root Cause">
+
+To an LLM, the system prompt, the user message, and retrieved documents are all just text in the same context. Attacker-controlled text can say "ignore previous instructions" — and the model may obey.
+
+</Callout>
+
+## Two Flavors of Injection
+
+<Cards cols={2}>
+
+<Card title="Direct Injection" accent="red">
+
+The user types malicious instructions to break out of constraints — jailbreaks, "ignore your rules", role-play attacks to extract the system prompt or forbidden output.
+
+</Card>
+
+<Card title="Indirect Injection" accent="red">
+
+Malicious instructions hide in content the model retrieves — a web page, a PDF, an email, a RAG document. The user is innocent; the *data* is the attacker.
+
+</Card>
+
+</Cards>
+
+## What Attackers Try to Achieve
+
+<Cards cols={3}>
+
+<Card title="Data Exfiltration" accent="red">
+
+Trick the model into leaking the system prompt, secrets, or another user's data.
+
+</Card>
+
+<Card title="Unauthorized Actions" accent="red">
+
+In agentic systems, get the model to call tools it shouldn't — send emails, delete data, make purchases.
+
+</Card>
+
+<Card title="Policy Bypass" accent="red">
+
+Make the model produce content it was instructed to refuse.
+
+</Card>
+
+</Cards>
+
+## Defense in Depth
+
+There's no silver bullet, so layer defenses:
+
+<Cards cols={2}>
+
+<Card title="Input Side" accent="brand">
+
+- Treat all retrieved/user content as untrusted
+- Separate instructions from data (delimiters, structured prompts)
+- Filter and classify inputs for known attack patterns
+- Strip or escape content from external sources
+
+</Card>
+
+<Card title="Output Side" accent="green">
+
+- Validate and sanitize model output before use
+- Never execute model output blindly (code, SQL, shell)
+- Scan responses for leaked secrets / PII
+- Constrain output format and length
+
+</Card>
+
+</Cards>
+
+## The Most Important Guardrail: Least Privilege
+
+<Callout type="warning" title="Assume the Model Can Be Compromised">
+
+Because you can't fully prevent injection, design so a hijacked model can't do much damage:
+
+- Give agents the **minimum** tools and permissions they need
+- Require human approval for high-impact actions
+- Scope data access per request and per user
+- Sandbox tool execution and code
+
+</Callout>
+
+## Other LLM Threats
+
+<Cards cols={3}>
+
+<Card title="Sensitive Data Leakage" accent="red">
+
+Models may echo training data or context. Don't put secrets in prompts.
+
+</Card>
+
+<Card title="Insecure Output Handling" accent="red">
+
+Trusting model output as code/SQL leads to classic injection (XSS, RCE).
+
+</Card>
+
+<Card title="Denial of Wallet" accent="red">
+
+Crafted prompts that maximize tokens to run up your bill. Cap tokens and rate-limit.
+
+</Card>
+
+</Cards>
+
+## Related
+
+This mirrors the patterns in [Common Attacks](/seguranca/ataques), depends on [authorization](/seguranca/autorizacao) and least privilege, and is critical when building [agentic systems](/sistemas-ia/agentic-systems) that can take real actions.

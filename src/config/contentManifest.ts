@@ -39,6 +39,8 @@ export const contentManifest: ContentEntry[] = [
   { path: '/componentes/api-gateway', slug: 'components/api-gateway' },
   { path: '/componentes/firewall', slug: 'components/firewall' },
   { path: '/componentes/polling-webhooks', slug: 'components/polling-webhooks' },
+  { path: '/componentes/vector-database', slug: 'components/vector-database' },
+  { path: '/componentes/model-gateway', slug: 'components/model-gateway' },
 
   // Design principles
   { path: '/principios-design', slug: 'design-principles/index' },
@@ -81,6 +83,7 @@ export const contentManifest: ContentEntry[] = [
   { path: '/seguranca/tokens', slug: 'security/tokens' },
   { path: '/seguranca/ssl-tls', slug: 'security/ssl-tls' },
   { path: '/seguranca/ataques', slug: 'security/common-attacks' },
+  { path: '/seguranca/prompt-injection', slug: 'security/prompt-injection' },
 
   // Monitoring & maintenance
   { path: '/monitoramento-e-manutencao', slug: 'monitoring/index' },
@@ -89,6 +92,16 @@ export const contentManifest: ContentEntry[] = [
   { path: '/monitoramento-e-manutencao/alertas', slug: 'monitoring/alerts' },
   { path: '/monitoramento-e-manutencao/performance', slug: 'monitoring/performance' },
   { path: '/monitoramento-e-manutencao/health-checks', slug: 'monitoring/health-checks' },
+  { path: '/monitoramento-e-manutencao/llm-observability', slug: 'monitoring/llm-observability' },
+
+  // AI & LLM systems
+  { path: '/sistemas-ia', slug: 'ai-systems/index' },
+  { path: '/sistemas-ia/llm-serving-fundamentals', slug: 'ai-systems/llm-serving-fundamentals' },
+  { path: '/sistemas-ia/rag', slug: 'ai-systems/rag' },
+  { path: '/sistemas-ia/vector-search', slug: 'ai-systems/vector-search' },
+  { path: '/sistemas-ia/llm-gateway', slug: 'ai-systems/llm-gateway' },
+  { path: '/sistemas-ia/gpu-autoscaling', slug: 'ai-systems/gpu-autoscaling' },
+  { path: '/sistemas-ia/agentic-systems', slug: 'ai-systems/agentic-systems' },
 
   // Real-world cases
   { path: '/casos-reais', slug: 'real-cases/index' },
@@ -98,4 +111,7 @@ export const contentManifest: ContentEntry[] = [
   { path: '/casos-reais/bitly', slug: 'real-cases/bitly' },
   { path: '/casos-reais/netflix', slug: 'real-cases/netflix' },
   { path: '/casos-reais/uber', slug: 'real-cases/uber' },
+  { path: '/casos-reais/chatgpt', slug: 'real-cases/chatgpt' },
+  { path: '/casos-reais/perplexity', slug: 'real-cases/perplexity' },
+  { path: '/casos-reais/github-copilot', slug: 'real-cases/github-copilot' },
 ];

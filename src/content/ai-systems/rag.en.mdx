@@ -1,0 +1,154 @@
+# Retrieval-Augmented Generation (RAG)
+
+LLMs are trained on a frozen snapshot of data and have no access to your private documents. **RAG** fixes this by retrieving relevant context at query time and feeding it into the prompt — so the model answers from *your* data instead of its memory.
+
+<Callout type="info" title="💡 The Core Idea">
+
+Instead of asking the model to "know" the answer, RAG **finds** the relevant text first, then asks the model to answer *using only that text*. This reduces hallucinations and lets you cite sources.
+
+</Callout>
+
+## Why Not Just Use a Bigger Prompt?
+
+<Cards cols={2}>
+
+<Card title="The Problem" accent="red">
+
+- You can't fit an entire knowledge base in the context window
+- Even if you could, it would be slow and expensive
+- The model can't see data created after training
+- No way to update knowledge without retraining
+
+</Card>
+
+<Card title="The RAG Answer" accent="green">
+
+- Store knowledge externally as searchable embeddings
+- Retrieve only the few most relevant chunks per query
+- Inject those chunks into the prompt
+- Update knowledge by re-indexing, not retraining
+
+</Card>
+
+</Cards>
+
+## The Two Pipelines
+
+RAG has an **offline** indexing pipeline and an **online** query pipeline.
+
+### Indexing (Offline, Batch)
+
+<Cards cols={3}>
+
+<Card title="1. Chunk" accent="brand">
+
+Split documents into passages (e.g. 200–500 tokens) with some overlap so context isn't lost at boundaries.
+
+</Card>
+
+<Card title="2. Embed" accent="purple">
+
+Run each chunk through an embedding model to get a vector that captures its meaning.
+
+</Card>
+
+<Card title="3. Index" accent="green">
+
+Store vectors in a vector database with an approximate-nearest-neighbor index for fast search.
+
+</Card>
+
+</Cards>
+
+### Querying (Online, Per Request)
+
+<Cards cols={4}>
+
+<Card title="1. Embed Query" accent="brand">
+
+Convert the user's question into a vector with the same embedding model.
+
+</Card>
+
+<Card title="2. Retrieve" accent="purple">
+
+Find the top-K most similar chunks via vector search (often plus keyword search — "hybrid").
+
+</Card>
+
+<Card title="3. Rerank" accent="green">
+
+Reorder candidates with a more precise (slower) model and keep only the best few.
+
+</Card>
+
+<Card title="4. Generate" accent="brand">
+
+Assemble the chunks into the prompt and ask the LLM to answer with citations.
+
+</Card>
+
+</Cards>
+
+## The Knobs That Matter
+
+<Callout type="neutral" title="Quality vs Cost vs Latency">
+
+- **Chunk size**: small chunks = precise but fragmented; large chunks = more context but noisier.
+- **top-K**: retrieve more for recall, but you pay for every chunk in the prompt and risk diluting the signal.
+- **Reranking**: big quality boost, extra latency and cost.
+- **Hybrid search**: combine semantic (vectors) with lexical (keywords) to catch exact terms and IDs.
+
+</Callout>
+
+## Failure Modes to Design Against
+
+<Cards cols={3}>
+
+<Card title="Retrieval Miss" accent="red">
+
+The right chunk was never retrieved. The model answers from memory or refuses. Fix with better chunking, hybrid search, or higher K.
+
+</Card>
+
+<Card title="Lost in the Middle" accent="red">
+
+Relevant context buried among many chunks gets ignored. Fix with reranking and tighter top-K.
+
+</Card>
+
+<Card title="Stale Index" accent="red">
+
+Documents changed but the index didn't. Fix with incremental re-indexing and freshness checks.
+
+</Card>
+
+</Cards>
+
+<Callout type="success" title="Try It: RAG Pipeline Simulator">
+
+Watch a query flow through embed → vector search → rerank → context assembly → generate, and tune chunk size, top-K, and reranking to see the effect on answer quality and cost in the [RAG Pipeline Simulator](/sistemas-ia/rag/simulator).
+
+</Callout>
+
+## Takeaways
+
+<Cards cols={2}>
+
+<Card title="Remember" accent="green">
+
+- RAG grounds answers in external, updatable data
+- Retrieval quality caps answer quality — garbage in, garbage out
+- Citations and grounding reduce (not eliminate) hallucinations
+
+</Card>
+
+<Card title="Design For" accent="brand">
+
+- Treat the vector DB as a first-class component
+- Measure retrieval recall separately from answer quality
+- Keep the index fresh with incremental updates
+
+</Card>
+
+</Cards>

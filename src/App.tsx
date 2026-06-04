@@ -55,6 +55,12 @@ import MdxPage, { availableSlugs } from "./components/Common/MdxPage";
 import { contentManifest } from "./config/contentManifest";
 import { quickAccessLinks } from "./config/quickAccess";
 import CanaryDeploymentSimulator from "./components/CanaryDeployment/CanaryDeploymentSimulator";
+import InferenceBatchingSimulator from "./components/AISystems/InferenceBatchingSimulator";
+import RagPipelineSimulator from "./components/AISystems/RagPipelineSimulator";
+import VectorSearchSimulator from "./components/AISystems/VectorSearchSimulator";
+import LlmGatewaySimulator from "./components/AISystems/LlmGatewaySimulator";
+import GpuAutoscalerSimulator from "./components/AISystems/GpuAutoscalerSimulator";
+import AgentOrchestrationSimulator from "./components/AISystems/AgentOrchestrationSimulator";
 import TwoPhaseCommitSimulator from "./components/ConsistencyStrategies/TwoPhaseCommitSimulator";
 import Logs from "./components/MonitoringMaintenance/Logs";
 
@@ -68,6 +74,7 @@ import TopStatusBar from "./components/Common/TopStatusBar";
 import CommandPalette from "./components/Common/CommandPalette";
 import { useTranslation } from 'react-i18next';
 import CookieConsentBanner from './components/Common/CookieConsentBanner';
+import Footer from "./components/Common/Footer";
 import { CookieConsentManager } from './utils/cookieConsent';
 import CookiePreferencesPage from './pages/CookiePreferencesPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
@@ -275,6 +282,16 @@ const createMenuItems = (t: any): MenuItem[] => [
             description: t('menu.componentes.polling_webhooks.simulator.description'),
           },
         ],
+      },
+      {
+        path: "/componentes/vector-database",
+        name: t('menu.componentes.vector_database.name'),
+        description: t('menu.componentes.vector_database.description'),
+      },
+      {
+        path: "/componentes/model-gateway",
+        name: t('menu.componentes.model_gateway.name'),
+        description: t('menu.componentes.model_gateway.description'),
       },
     ],
   },
@@ -506,6 +523,11 @@ const createMenuItems = (t: any): MenuItem[] => [
         name: t('menu.seguranca.ataques.name'),
         description: t('menu.seguranca.ataques.description'),
       },
+      {
+        path: "/seguranca/prompt-injection",
+        name: t('menu.seguranca.prompt_injection.name'),
+        description: t('menu.seguranca.prompt_injection.description'),
+      },
     ],
   },
   {
@@ -702,6 +724,11 @@ const createMenuItems = (t: any): MenuItem[] => [
         name: t('menu.monitoramento_e_manutencao.health_checks.name'),
         description: t('menu.monitoramento_e_manutencao.health_checks.description'),
       },
+      {
+        path: "/monitoramento-e-manutencao/llm-observability",
+        name: t('menu.monitoramento_e_manutencao.llm_observability.name'),
+        description: t('menu.monitoramento_e_manutencao.llm_observability.description'),
+      },
     ],
   },
   {
@@ -753,6 +780,115 @@ const createMenuItems = (t: any): MenuItem[] => [
         path: "/casos-reais/uber",
         name: t('menu.casos_reais.uber.name'),
         description: t('menu.casos_reais.uber.description'),
+      },
+      {
+        path: "/casos-reais/chatgpt",
+        name: t('menu.casos_reais.chatgpt.name'),
+        description: t('menu.casos_reais.chatgpt.description'),
+      },
+      {
+        path: "/casos-reais/perplexity",
+        name: t('menu.casos_reais.perplexity.name'),
+        description: t('menu.casos_reais.perplexity.description'),
+      },
+      {
+        path: "/casos-reais/github-copilot",
+        name: t('menu.casos_reais.github_copilot.name'),
+        description: t('menu.casos_reais.github_copilot.description'),
+      },
+    ],
+  },
+  {
+    path: "/sistemas-ia",
+    name: t('menu.ai_systems.name'),
+    description: t('menu.ai_systems.description'),
+    icon: (
+      <svg
+        className="w-6 h-6 text-brand-600 dark:text-brand-400"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 7h10v10H7V7zm3 3h4v4h-4v-4z"
+        />
+      </svg>
+    ),
+    children: [
+      {
+        path: "/sistemas-ia/llm-serving-fundamentals",
+        name: t('menu.ai_systems.llm_serving_fundamentals.name'),
+        description: t('menu.ai_systems.llm_serving_fundamentals.description'),
+        children: [
+          {
+            path: "/sistemas-ia/llm-serving-fundamentals/simulator",
+            name: t('menu.ai_systems.llm_serving_fundamentals.simulator.name'),
+            description: t('menu.ai_systems.llm_serving_fundamentals.simulator.description'),
+          },
+        ],
+      },
+      {
+        path: "/sistemas-ia/rag",
+        name: t('menu.ai_systems.rag.name'),
+        description: t('menu.ai_systems.rag.description'),
+        children: [
+          {
+            path: "/sistemas-ia/rag/simulator",
+            name: t('menu.ai_systems.rag.simulator.name'),
+            description: t('menu.ai_systems.rag.simulator.description'),
+          },
+        ],
+      },
+      {
+        path: "/sistemas-ia/vector-search",
+        name: t('menu.ai_systems.vector_search.name'),
+        description: t('menu.ai_systems.vector_search.description'),
+        children: [
+          {
+            path: "/sistemas-ia/vector-search/simulator",
+            name: t('menu.ai_systems.vector_search.simulator.name'),
+            description: t('menu.ai_systems.vector_search.simulator.description'),
+          },
+        ],
+      },
+      {
+        path: "/sistemas-ia/llm-gateway",
+        name: t('menu.ai_systems.llm_gateway.name'),
+        description: t('menu.ai_systems.llm_gateway.description'),
+        children: [
+          {
+            path: "/sistemas-ia/llm-gateway/simulator",
+            name: t('menu.ai_systems.llm_gateway.simulator.name'),
+            description: t('menu.ai_systems.llm_gateway.simulator.description'),
+          },
+        ],
+      },
+      {
+        path: "/sistemas-ia/gpu-autoscaling",
+        name: t('menu.ai_systems.gpu_autoscaling.name'),
+        description: t('menu.ai_systems.gpu_autoscaling.description'),
+        children: [
+          {
+            path: "/sistemas-ia/gpu-autoscaling/simulator",
+            name: t('menu.ai_systems.gpu_autoscaling.simulator.name'),
+            description: t('menu.ai_systems.gpu_autoscaling.simulator.description'),
+          },
+        ],
+      },
+      {
+        path: "/sistemas-ia/agentic-systems",
+        name: t('menu.ai_systems.agentic.name'),
+        description: t('menu.ai_systems.agentic.description'),
+        children: [
+          {
+            path: "/sistemas-ia/agentic-systems/simulator",
+            name: t('menu.ai_systems.agentic.simulator.name'),
+            description: t('menu.ai_systems.agentic.simulator.description'),
+          },
+        ],
       },
     ],
   },
@@ -1218,6 +1354,66 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/sistemas-ia/llm-serving-fundamentals/simulator"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <InferenceBatchingSimulator />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/sistemas-ia/rag/simulator"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <RagPipelineSimulator />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/sistemas-ia/vector-search/simulator"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <VectorSearchSimulator />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/sistemas-ia/llm-gateway/simulator"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <LlmGatewaySimulator />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/sistemas-ia/gpu-autoscaling/simulator"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <GpuAutoscalerSimulator />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/sistemas-ia/agentic-systems/simulator"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <AgentOrchestrationSimulator />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
             <Route path="/" element={user ? <CommandCenter /> : <LandingPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
@@ -1644,6 +1840,7 @@ export default function App() {
             />
             
           </Routes>
+          {user && <Footer />}
         </main>
       </div>
       

@@ -1,0 +1,216 @@
+import { useState, useRef, useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Panel, StatusBadge, TacticalButton, type StatusVariant } from '../tactical';
+
+type EntryType = 'think' | 'act' | 'observe' | 'retry' | 'answer';
+
+interface TraceEntry {
+  id: number;
+  step: number;
+  type: EntryType;
+  tool?: string;
+}
+
+interface Summary {
+  steps: number;
+  toolCalls: number;
+  retries: number;
+  tokens: number;
+  success: boolean;
+}
+
+const TOOLS = ['search', 'calculator', 'database'] as const;
+const MAX_STEPS_CAP = 10;
+
+const entryVariant: Record<EntryType, StatusVariant> = {
+  think: 'pending',
+  act: 'active',
+  observe: 'in-progress',
+  retry: 'classified',
+  answer: 'completed',
+};
+
+export default function AgentOrchestrationSimulator() {
+  const { t } = useTranslation();
+  const [maxSteps, setMaxSteps] = useState(6);
+  const [toolLatency, setToolLatency] = useState(400);
+  const [failRate, setFailRate] = useState(20);
+
+  const [trace, setTrace] = useState<TraceEntry[]>([]);
+  const [revealed, setRevealed] = useState(0);
+  const [summary, setSummary] = useState<Summary | null>(null);
+  const [running, setRunning] = useState(false);
+  const timers = useRef<number[]>([]);
+
+  const clearTimers = () => {
+    timers.current.forEach(id => clearTimeout(id));
+    timers.current = [];
+  };
+  useEffect(() => () => clearTimers(), []);
+
+  const buildTrace = useCallback((): { entries: TraceEntry[]; summary: Summary } => {
+    const entries: TraceEntry[] = [];
+    let id = 1;
+    let toolCalls = 0;
+    let retries = 0;
+    let tokens = 0;
+    let success = false;
+    let step = 0;
+
+    for (step = 1; step <= maxSteps; step++) {
+      entries.push({ id: id++, step, type: 'think' });
+      tokens += 140;
+
+      const tool = TOOLS[Math.floor(Math.random() * TOOLS.length)];
+      entries.push({ id: id++, step, type: 'act', tool });
+      toolCalls += 1;
+      tokens += 60;
+
+      // Tool may fail and trigger up to 2 retries.
+      let attempts = 0;
+      while (Math.random() * 100 < failRate && attempts < 2) {
+        entries.push({ id: id++, step, type: 'retry', tool });
+        retries += 1;
+        toolCalls += 1;
+        attempts += 1;
+      }
+
+      entries.push({ id: id++, step, type: 'observe' });
+      tokens += 90;
+
+      // Chance of solving grows with steps taken.
+      if (step >= 2 && Math.random() < 0.35 + step * 0.08) {
+        success = true;
+        break;
+      }
+    }
+
+    if (success) {
+      entries.push({ id: id++, step, type: 'answer' });
+      tokens += 120;
+    }
+
+    return { entries, summary: { steps: Math.min(step, maxSteps), toolCalls, retries, tokens, success } };
+  }, [maxSteps, failRate]);
+
+  const run = useCallback(() => {
+    clearTimers();
+    const { entries, summary: s } = buildTrace();
+    setTrace(entries);
+    setRevealed(0);
+    setSummary(null);
+    setRunning(true);
+
+    entries.forEach((_, i) => {
+      const id = window.setTimeout(() => setRevealed(i + 1), i * toolLatency);
+      timers.current.push(id);
+    });
+    const doneId = window.setTimeout(() => {
+      setSummary(s);
+      setRunning(false);
+    }, entries.length * toolLatency);
+    timers.current.push(doneId);
+  }, [buildTrace, toolLatency]);
+
+  const reset = useCallback(() => {
+    clearTimers();
+    setTrace([]);
+    setRevealed(0);
+    setSummary(null);
+    setRunning(false);
+  }, []);
+
+  const rangeClass = 'flex-1 h-2 bg-slate-200 dark:bg-tactical-border appearance-none cursor-pointer accent-signal-green';
+  const base = 'simulators.agent_orchestration';
+
+  const statusLabel = running
+    ? t(`${base}.labels.running`)
+    : summary
+      ? summary.success ? t(`${base}.labels.done`) : t(`${base}.labels.failed`)
+      : '';
+
+  return (
+    <div className="space-y-6">
+      <Panel
+        title={t(`${base}.title`)}
+        accent="cyan"
+        action={
+          <div className="flex flex-wrap items-center gap-2">
+            <TacticalButton size="sm" variant="secondary" onClick={run} disabled={running}>{t(`${base}.buttons.run`)}</TacticalButton>
+            <TacticalButton size="sm" variant="ghost" onClick={reset}>{t(`${base}.buttons.reset`)}</TacticalButton>
+          </div>
+        }
+      >
+        <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <Slider label={t(`${base}.controls.max_steps`)} value={maxSteps} min={2} max={MAX_STEPS_CAP} onChange={setMaxSteps} cls={rangeClass} />
+          <Slider label={t(`${base}.controls.tool_latency`)} value={toolLatency} min={150} max={900} step={50} onChange={setToolLatency} cls={rangeClass} suffix="ms" />
+          <Slider label={t(`${base}.controls.fail_rate`)} value={failRate} min={0} max={70} onChange={setFailRate} cls={rangeClass} suffix="%" />
+        </div>
+      </Panel>
+
+      <Panel title={t(`${base}.labels.trace`)} accent="green">
+        {trace.length === 0 ? (
+          <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">
+            {t(`${base}.labels.idle`)}
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {trace.slice(0, revealed).map(e => (
+              <div key={e.id} className="flex items-center gap-3 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2">
+                <span className="font-mono text-[11px] text-slate-500 dark:text-tactical-label w-14">STEP {e.step}</span>
+                <StatusBadge variant={entryVariant[e.type]} label={t(`${base}.steps.${e.type}`)} />
+                {e.tool && (
+                  <span className="font-mono text-[11px] text-brand-600 dark:text-signal-cyan">{t(`${base}.tools.${e.tool}`)}()</span>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </Panel>
+
+      {summary && (
+        <Panel title={t(`${base}.metrics.status`)} accent="amber">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+            <Metric value={`${summary.steps}`} label={t(`${base}.metrics.steps`)} color="default" />
+            <Metric value={`${summary.toolCalls}`} label={t(`${base}.metrics.tool_calls`)} color="cyan" />
+            <Metric value={`${summary.retries}`} label={t(`${base}.metrics.retries`)} color={summary.retries > 0 ? 'amber' : 'default'} />
+            <Metric value={`${summary.tokens}`} label={t(`${base}.metrics.tokens`)} color="default" />
+            <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 flex flex-col justify-center">
+              <StatusBadge variant={summary.success ? 'completed' : 'classified'} label={statusLabel} />
+              <div className="label-mono mt-2">{t(`${base}.metrics.status`)}</div>
+            </div>
+          </div>
+        </Panel>
+      )}
+    </div>
+  );
+}
+
+function Slider({ label, value, min, max, step, onChange, cls, suffix }: { label: string; value: number; min: number; max: number; step?: number; onChange: (v: number) => void; cls: string; suffix?: string }) {
+  return (
+    <div className="space-y-2">
+      <label className="block label-mono text-slate-500 dark:text-tactical-label">{label}</label>
+      <div className="flex items-center gap-2">
+        <input type="range" min={min} max={max} step={step ?? 1} value={value} onChange={e => onChange(Number(e.target.value))} className={cls} />
+        <span className="font-mono text-sm w-12 text-right text-signal-cyan tabular-nums">{value}{suffix ?? ''}</span>
+      </div>
+    </div>
+  );
+}
+
+function Metric({ value, label, color }: { value: string; label: string; color: 'default' | 'green' | 'amber' | 'red' | 'cyan' }) {
+  const colorClass: Record<string, string> = {
+    default: 'text-slate-900 dark:text-tactical-text',
+    green: 'text-signal-green',
+    amber: 'text-signal-amber',
+    red: 'text-signal-red',
+    cyan: 'text-signal-cyan',
+  };
+  return (
+    <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+      <div className={`font-mono text-2xl font-bold tabular-nums leading-none ${colorClass[color]}`}>{value}</div>
+      <div className="label-mono mt-2">{label}</div>
+    </div>
+  );
+}

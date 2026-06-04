@@ -1,0 +1,68 @@
+# ChatGPT System Design
+
+How an LLM assistant serves hundreds of millions of users with token-by-token streaming on scarce GPU fleets.
+
+## Impressive Numbers
+
+<Metrics cols={3}>
+
+<Metric value="800M+" label="Weekly active users" accent="green" />
+
+<Metric value="<1s" label="Target time-to-first-token" accent="brand" />
+
+<Metric value="100Ks" label="GPUs in the serving fleet" accent="purple" />
+
+</Metrics>
+
+## System Requirements
+
+<Card title="Functional Requirements" accent="brand">
+
+- Conversational chat with streamed responses
+- Multi-turn memory within a conversation
+- Tool use (browsing, code, retrieval)
+- Multiple models at different price/quality tiers
+- File and image inputs
+
+</Card>
+
+<Card title="Non-Functional Requirements" accent="purple">
+
+- Low time-to-first-token (perceived speed)
+- High throughput per GPU (cost control)
+- Global availability and graceful degradation
+- Safety filtering on inputs and outputs
+
+</Card>
+
+## Architecture at a Glance
+
+Clients (web, mobile, API) → Edge / Load Balancer → API + Auth → Orchestrator → Inference Servers (GPU, continuous batching) → Tools (retrieval, code, browsing) and Conversation Store.
+
+## Key Design Challenges
+
+### 1. Streaming Tokens
+
+Responses are streamed token-by-token over Server-Sent Events so the user sees output immediately. A low time-to-first-token matters more than total completion time for perceived speed.
+
+### 2. Continuous Batching on GPUs
+
+The inference layer packs many concurrent requests into a running batch, adding and removing requests every decode step to keep GPUs saturated. The KV cache, not raw compute, bounds concurrency.
+
+<Callout type="info" title="💡 Where the Cost Goes">
+
+Each conversation turn re-sends prior context, so cost grows with conversation length. Caching the prompt prefix (KV cache reuse) and capping context length are essential cost levers.
+
+</Callout>
+
+### 3. Model Routing
+
+A request is routed to an appropriate model tier — small/cheap for simple turns, large for hard ones — behind a stable API, allowing A/B tests and gradual rollouts.
+
+### 4. Capacity and Autoscaling
+
+GPU capacity is finite and slow to add. During spikes the system relies on queueing, load shedding, and degradation (smaller models) rather than instant scale-up.
+
+## Relevant Concepts
+
+This case ties together [LLM serving fundamentals](/sistemas-ia/llm-serving-fundamentals), [inference batching](/sistemas-ia/llm-serving-fundamentals/simulator), [GPU autoscaling](/sistemas-ia/gpu-autoscaling), the [LLM gateway](/sistemas-ia/llm-gateway), and [prompt-injection defenses](/seguranca/prompt-injection).

@@ -1,0 +1,67 @@
+# System Design do Perplexity
+
+Como um motor de respostas baseado em RAG combina recuperação web ao vivo com geração por LLM para retornar respostas fundamentadas e com citações.
+
+## Números Impressionantes
+
+<Metrics cols={3}>
+
+<Metric value="Bilhões" label="Consultas respondidas" accent="green" />
+
+<Metric value="<3s" label="Latência típica da resposta" accent="brand" />
+
+<Metric value="Ao vivo" label="Resultados fundamentados na web" accent="purple" />
+
+</Metrics>
+
+## Requisitos do Sistema
+
+<Card title="Requisitos Funcionais" accent="brand">
+
+- Responder perguntas com informação atualizada
+- Citar fontes para cada afirmação
+- Perguntas de acompanhamento com contexto da conversa
+- Ranquear e sintetizar múltiplas fontes
+
+</Card>
+
+<Card title="Requisitos Não Funcionais" accent="purple">
+
+- Baixa latência apesar da recuperação em múltiplos estágios
+- Atualidade (resultados refletem a web ao vivo)
+- Fundamentação para reduzir alucinações
+- Controle de custo na recuperação e na geração
+
+</Card>
+
+## Arquitetura em Resumo
+
+Consulta → Entendimento da Consulta → Recuperação (busca web + índice + busca vetorial) → Reordenação → Montagem de Contexto → Geração por LLM (com citações) → Resposta em Streaming.
+
+## Principais Desafios de Design
+
+### 1. A Qualidade da Recuperação Limita a da Resposta
+
+A resposta só pode ser tão boa quanto as fontes recuperadas. O pipeline combina busca por palavra-chave e semântica (vetorial) e depois reordena candidatos para que as passagens mais relevantes cheguem ao modelo.
+
+<Callout type="info" title="💡 Fundamentação e Citações">
+
+Ao instruir o modelo a responder apenas a partir das passagens recuperadas e anexar citações, o sistema torna as respostas verificáveis e reduz alucinações — o valor central do RAG.
+
+</Callout>
+
+### 2. Orçamento de Latência entre Estágios
+
+Cada estágio (busca, reordenação, geração) adiciona latência. Cache agressivo de consultas populares, recuperação paralela e streaming da resposta final mantêm a latência percebida baixa.
+
+### 3. Atualidade vs Custo
+
+Rastrear e indexar a web ao vivo é caro. O sistema equilibra recuperação fresca para consultas sensíveis ao tempo contra respostas em cache para as populares e estáveis.
+
+### 4. Reordenação
+
+Uma busca vetorial rápida retorna muitos candidatos; um reordenador mais lento e preciso os reorganiza para que apenas os melhores preencham a janela de contexto limitada.
+
+## Conceitos Relevantes
+
+Este caso é uma aplicação real de [RAG](/sistemas-ia/rag), [busca vetorial](/sistemas-ia/vector-search), do [simulador de pipeline RAG](/sistemas-ia/rag/simulator) e da [observabilidade de LLM](/monitoramento-e-manutencao/llm-observability).

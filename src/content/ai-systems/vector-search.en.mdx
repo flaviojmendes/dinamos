@@ -1,0 +1,127 @@
+# Vector Search
+
+RAG and semantic search depend on one operation: given a query vector, find the most similar vectors in a huge collection. Doing this *exactly* is too slow at scale, so we use **Approximate Nearest Neighbor (ANN)** search to trade a little accuracy for enormous speed.
+
+<Callout type="info" title="💡 The Core Operation">
+
+Each document chunk is an embedding — a point in a high-dimensional space (often 768–3072 dimensions). "Similarity" is distance in that space. Search means finding the K closest points to the query point.
+
+</Callout>
+
+## Why Exact Search Doesn't Scale
+
+<Cards cols={2}>
+
+<Card title="Brute Force (Exact)" accent="red">
+
+- Compare the query to **every** vector
+- O(N) distance computations per query
+- Fine for thousands of vectors
+- Hopeless for millions or billions
+
+</Card>
+
+<Card title="ANN (Approximate)" accent="green">
+
+- Use an index to skip most comparisons
+- Sub-linear search time
+- ~95–99% of the correct neighbors
+- Powers production search at billion-scale
+
+</Card>
+
+</Cards>
+
+## HNSW: The Workhorse Index
+
+**Hierarchical Navigable Small World** graphs are the most common ANN index. Think of it as a navigable map with express lanes.
+
+<Cards cols={3}>
+
+<Card title="The Graph" accent="brand">
+
+Vectors are nodes connected to their neighbors. Search "walks" the graph, always stepping toward the query.
+
+</Card>
+
+<Card title="The Hierarchy" accent="purple">
+
+Upper layers have few long-range links (express lanes); lower layers are dense. Search starts high and descends.
+
+</Card>
+
+<Card title="The Trade-off" accent="green">
+
+More connections and a longer candidate list = better recall, but more memory and slower queries.
+
+</Card>
+
+</Cards>
+
+## The Knobs That Matter
+
+<Callout type="neutral" title="Recall vs Latency vs Memory">
+
+- **M** (connections per node): higher M = better recall and more memory per vector.
+- **efConstruction**: effort spent building the graph — higher = better index, slower builds.
+- **efSearch**: size of the candidate list at query time — the main runtime dial for recall vs latency.
+
+Turning efSearch up explores more of the graph: recall climbs, but so does latency.
+
+</Callout>
+
+## Other Index Families
+
+<Cards cols={3}>
+
+<Card title="IVF" accent="brand">
+
+Partition vectors into clusters; search only the nearest few clusters. Memory-efficient, tunable with `nprobe`.
+
+</Card>
+
+<Card title="PQ" accent="purple">
+
+Product Quantization compresses vectors into compact codes — huge memory savings at some accuracy cost. Often combined with IVF.
+
+</Card>
+
+<Card title="Flat" accent="green">
+
+No index — exact brute force. The correctness baseline you measure recall against.
+
+</Card>
+
+</Cards>
+
+## Hybrid Search
+
+Pure vector search misses exact terms — product IDs, error codes, rare names. **Hybrid search** combines semantic (vectors) with lexical (BM25/keyword) results, then fuses the rankings (e.g. Reciprocal Rank Fusion).
+
+<Callout type="success" title="Try It: Vector Search Simulator">
+
+Probe an HNSW index and watch how `efSearch`, `M`, and dataset size trade recall against query latency and memory in the [Vector Search Simulator](/sistemas-ia/vector-search/simulator).
+
+</Callout>
+
+## Takeaways
+
+<Cards cols={2}>
+
+<Card title="Remember" accent="green">
+
+- Exact search is O(N); ANN makes it sub-linear
+- HNSW trades memory and latency for recall
+- Always measure recall against an exact baseline
+
+</Card>
+
+<Card title="Design For" accent="brand">
+
+- Pick the index for your scale and memory budget
+- Tune efSearch to hit a recall/latency target
+- Add lexical search for exact-match terms
+
+</Card>
+
+</Cards>

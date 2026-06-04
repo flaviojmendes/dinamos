@@ -1,0 +1,99 @@
+# LLM Observability
+
+The three pillars — metrics, logs, traces — still apply to LLM systems, but they're not enough. LLM applications are probabilistic, token-priced, and quality-sensitive, so you need new signals: **token usage, cost, prompt/response traces, and quality evaluations**.
+
+<Callout type="info" title="💡 Why Classic Monitoring Falls Short">
+
+A 200 OK with low latency can still be a *bad* response: hallucinated, irrelevant, or unsafe. Traditional metrics see the request succeeded; they can't see that the answer was wrong.
+
+</Callout>
+
+## New Signals to Track
+
+<Cards cols={2}>
+
+<Card title="Cost & Usage" accent="brand">
+
+- Input and output tokens per request
+- Cost per request, per feature, per tenant
+- Time-to-first-token and tokens-per-second
+- Cache hit rate (exact and semantic)
+
+</Card>
+
+<Card title="Quality" accent="green">
+
+- Hallucination / groundedness checks
+- Retrieval relevance (for RAG)
+- User feedback (thumbs up/down, edits)
+- Refusal and error rates
+
+</Card>
+
+</Cards>
+
+## Tracing an LLM Request
+
+A single user request fans out into many steps. Tracing ties them together so you can see where time, tokens, and quality went.
+
+<Cards cols={3}>
+
+<Card title="The Span Tree" accent="brand">
+
+Embed → retrieve → rerank → prompt assembly → model call → tool calls. Each is a span with timing and token counts.
+
+</Card>
+
+<Card title="What to Capture" accent="purple">
+
+Prompt, retrieved context, model + parameters, response, tokens, cost, and latency per span.
+
+</Card>
+
+<Card title="Why It Matters" accent="green">
+
+When an answer is bad, the trace shows whether retrieval missed, the prompt was wrong, or the model failed.
+
+</Card>
+
+</Cards>
+
+## Evaluating Quality
+
+Because quality isn't a status code, you measure it continuously:
+
+<Cards cols={3}>
+
+<Card title="Offline Evals" accent="brand">
+
+Run a fixed test set on every change to catch regressions before release.
+
+</Card>
+
+<Card title="LLM-as-Judge" accent="purple">
+
+Use a model to score outputs for relevance, groundedness, or correctness at scale.
+
+</Card>
+
+<Card title="Online Signals" accent="green">
+
+Capture real user feedback and behavior as a live quality signal.
+
+</Card>
+
+</Cards>
+
+<Callout type="warning" title="Don't Log Sensitive Data Carelessly">
+
+Prompts and responses often contain personal or proprietary data. Redact PII, control retention, and respect tenant isolation — observability must not become a data-leak vector.
+
+</Callout>
+
+## Tools
+
+Classic stacks (Prometheus, Grafana, the ELK stack, Jaeger/OpenTelemetry) still carry the infrastructure metrics and traces. LLM-specific platforms (LangSmith, Langfuse, Phoenix, Helicone) add prompt/response capture, token/cost accounting, and evals on top.
+
+## Related
+
+This extends the three pillars in [Monitoring & Maintenance](/monitoramento-e-manutencao), reuses the ideas behind the [tracing simulator](/monitoramento-e-manutencao/logs/tracing), and is essential for operating [agentic systems](/sistemas-ia/agentic-systems).

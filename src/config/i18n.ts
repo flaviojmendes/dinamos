@@ -58,6 +58,7 @@ const resources = {
           consistency: 'Consistency Strategies',
           security: 'Security',
           monitoring: 'Monitoring & Maintenance',
+          'ai-systems': 'AI & LLM Systems',
           cases: 'Real-World Cases',
         },
       },
@@ -1548,6 +1549,14 @@ const resources = {
               name: 'Interactive Simulator',
               description: 'See the difference in practice'
             }
+          },
+          vector_database: {
+            name: 'Vector Database',
+            description: 'Store embeddings and run similarity search'
+          },
+          model_gateway: {
+            name: 'Model Gateway',
+            description: 'Infrastructure that fronts your LLMs'
           }
         },
         principios_design: {
@@ -1740,6 +1749,10 @@ const resources = {
           health_checks: {
             name: 'Health Checks',
             description: 'Service health monitoring'
+          },
+          llm_observability: {
+            name: 'LLM Observability',
+            description: 'Tokens, cost, traces, and quality evaluations'
           }
         },
         casos_reais: {
@@ -1768,6 +1781,18 @@ const resources = {
           uber: {
             name: 'Uber',
             description: 'Real-time geolocation and matching system'
+          },
+          chatgpt: {
+            name: 'ChatGPT',
+            description: 'Serving LLMs to hundreds of millions with streaming'
+          },
+          perplexity: {
+            name: 'Perplexity',
+            description: 'RAG-based answer engine with cited sources'
+          },
+          github_copilot: {
+            name: 'GitHub Copilot',
+            description: 'Low-latency inline code completion at scale'
           }
         },
         seguranca: {
@@ -1804,6 +1829,62 @@ const resources = {
           ataques: {
             name: 'Common Attacks',
             description: 'Prevention against attacks in distributed systems'
+          },
+          prompt_injection: {
+            name: 'Prompt Injection',
+            description: 'LLM-specific attacks and guardrails'
+          }
+        },
+        ai_systems: {
+          name: 'AI & LLM Systems',
+          description: 'Serving LLMs, RAG, vector search, and agents at scale',
+          llm_serving_fundamentals: {
+            name: 'LLM Serving Fundamentals',
+            description: 'Tokens, context windows, prefill vs decode, and the KV cache',
+            simulator: {
+              name: 'Inference Batching Simulator',
+              description: 'See how batching trades throughput against latency'
+            }
+          },
+          rag: {
+            name: 'RAG Architecture',
+            description: 'Ground answers in your own data with retrieval',
+            simulator: {
+              name: 'RAG Pipeline Simulator',
+              description: 'Tune chunking, retrieval, and reranking end to end'
+            }
+          },
+          vector_search: {
+            name: 'Vector Search',
+            description: 'Approximate nearest-neighbor search at scale',
+            simulator: {
+              name: 'Vector Search Simulator',
+              description: 'Trade recall against latency with HNSW parameters'
+            }
+          },
+          llm_gateway: {
+            name: 'LLM Gateway',
+            description: 'Routing, semantic caching, fallback, and cost control',
+            simulator: {
+              name: 'LLM Gateway Simulator',
+              description: 'Route requests with caching, fallback, and rate limits'
+            }
+          },
+          gpu_autoscaling: {
+            name: 'GPU Serving & Autoscaling',
+            description: 'Cold starts, queueing, and scale-to-zero for GPUs',
+            simulator: {
+              name: 'GPU Autoscaler Simulator',
+              description: 'Balance cost against latency under bursty load'
+            }
+          },
+          agentic: {
+            name: 'Agentic Systems',
+            description: 'Tool calling and multi-step orchestration',
+            simulator: {
+              name: 'Agent Orchestration Simulator',
+              description: 'Watch an agent loop call tools, retry, and branch'
+            }
           }
         },
         editor: {
@@ -2285,6 +2366,180 @@ const resources = {
         }
       },
       simulators: {
+        inference_batching: {
+          title: 'Inference Batching Simulator',
+          subtitle: 'Continuous batching on a single GPU — throughput vs latency',
+          controls: {
+            arrival_rate: 'Arrival rate (req/s)',
+            batch_capacity: 'Batch capacity (KV slots)',
+            output_tokens: 'Avg output tokens',
+          },
+          buttons: { start: 'Start', stop: 'Stop', reset: 'Reset' },
+          panels: {
+            batch: 'Running Batch (GPU)',
+            queue: 'Admission Queue',
+            metrics: 'Live Metrics',
+          },
+          metrics: {
+            throughput: 'Throughput (tok/s)',
+            utilization: 'Batch utilization',
+            queue_depth: 'Queue depth',
+            avg_latency: 'Avg latency',
+            completed: 'Completed',
+            dropped: 'Dropped',
+          },
+          labels: {
+            slot_free: 'free slot',
+            tokens: 'tok',
+            waiting: 'waiting',
+            batch_empty: 'GPU idle — no requests in batch',
+            queue_empty: 'Queue empty',
+            request: 'REQ',
+          },
+        },
+        rag_pipeline: {
+          title: 'RAG Pipeline Simulator',
+          subtitle: 'Embed → search → rerank → assemble → generate',
+          controls: {
+            chunk_size: 'Chunk size (tokens)',
+            top_k: 'Retrieve top-K',
+            rerank: 'Reranking',
+          },
+          buttons: { run: 'Run Query', reset: 'Reset', on: 'On', off: 'Off' },
+          stages: {
+            embed: 'Embed Query',
+            search: 'Vector Search',
+            rerank: 'Rerank',
+            assemble: 'Assemble Context',
+            generate: 'Generate',
+          },
+          metrics: {
+            recall: 'Retrieval recall',
+            latency: 'Total latency',
+            cost: 'Cost / query',
+            context: 'Context used',
+            quality: 'Answer quality',
+          },
+          labels: {
+            idle: 'Idle — run a query to start',
+            chunk: 'chunk',
+            score: 'score',
+            retrieved: 'Retrieved chunks',
+            disabled: 'disabled',
+          },
+        },
+        vector_search: {
+          title: 'Vector Search Simulator',
+          subtitle: 'Approximate nearest neighbors with HNSW',
+          controls: {
+            ef_search: 'efSearch (candidate list)',
+            m_links: 'M (graph connections)',
+            dataset: 'Dataset size',
+          },
+          buttons: { search: 'Run Search', reset: 'Reset' },
+          metrics: {
+            recall: 'Recall@10',
+            latency: 'Query latency',
+            comparisons: 'Distance comps',
+            memory: 'Index memory',
+          },
+          labels: {
+            idle: 'Run a search to probe the index',
+            exact: 'Exact (brute force)',
+            approx: 'HNSW (approximate)',
+            found: 'Neighbors found',
+          },
+        },
+        llm_gateway: {
+          title: 'LLM Gateway Simulator',
+          subtitle: 'Semantic cache, model fallback, rate limiting & cost',
+          controls: {
+            cache_rate: 'Cache hit rate (%)',
+            rate_limit: 'Rate limit (req/s)',
+            primary_fail: 'Primary failure (%)',
+          },
+          buttons: { start: 'Start', stop: 'Stop', reset: 'Reset' },
+          routes: {
+            cache: 'Served from cache',
+            primary: 'Primary model',
+            fallback: 'Fallback model',
+            rejected: 'Rate limited',
+          },
+          metrics: {
+            served: 'Served',
+            cache_hits: 'Cache hits',
+            fallbacks: 'Fallbacks',
+            rejected: 'Rejected',
+            cost: 'Total cost',
+          },
+          labels: {
+            recent: 'Recent requests',
+            empty: 'No requests yet',
+          },
+        },
+        gpu_autoscaler: {
+          title: 'GPU Autoscaler Simulator',
+          subtitle: 'Cold starts, queueing & scale-to-zero',
+          controls: {
+            arrival_rate: 'Arrival rate (req/s)',
+            scale_threshold: 'Scale-up queue threshold',
+            cold_start: 'Cold start (s)',
+          },
+          buttons: { start: 'Start', stop: 'Stop', reset: 'Reset' },
+          panels: {
+            replicas: 'GPU Replicas',
+            metrics: 'Live Metrics',
+          },
+          metrics: {
+            replicas: 'Active replicas',
+            queue: 'Queue depth',
+            latency: 'Avg latency',
+            cost: 'Cost ($/min)',
+            utilization: 'Utilization',
+          },
+          labels: {
+            warming: 'WARMING',
+            ready: 'READY',
+            idle: 'IDLE',
+            scale_to_zero: 'Scaled to zero — no active GPUs',
+          },
+        },
+        agent_orchestration: {
+          title: 'Agent Orchestration Simulator',
+          subtitle: 'Reason → act → observe loop with tool calls',
+          controls: {
+            max_steps: 'Max steps',
+            tool_latency: 'Tool latency (ms)',
+            fail_rate: 'Tool failure (%)',
+          },
+          buttons: { run: 'Run Agent', reset: 'Reset' },
+          steps: {
+            think: 'Think',
+            act: 'Call Tool',
+            observe: 'Observe',
+            answer: 'Final Answer',
+            retry: 'Retry',
+          },
+          tools: {
+            search: 'web_search',
+            calculator: 'calculator',
+            database: 'db_query',
+          },
+          metrics: {
+            steps: 'Steps taken',
+            tool_calls: 'Tool calls',
+            retries: 'Retries',
+            tokens: 'Tokens used',
+            status: 'Status',
+          },
+          labels: {
+            idle: 'Idle — run the agent to start',
+            running: 'Running',
+            done: 'Done',
+            failed: 'Failed (max steps reached)',
+            trace: 'Execution trace',
+          },
+        },
         gateway: {
           title: 'API Gateway Simulator',
           description: 'See how an API Gateway routes different types of requests to the appropriate services in a microservices architecture.',
@@ -5488,6 +5743,7 @@ const resources = {
           consistency: 'Estratégias de Consistência',
           security: 'Segurança',
           monitoring: 'Monitoramento e Manutenção',
+          'ai-systems': 'Sistemas de IA e LLMs',
           cases: 'Casos do Mundo Real',
         },
       },
@@ -6978,6 +7234,14 @@ const resources = {
               name: 'Simulador Interativo',
               description: 'Veja a diferença na prática'
             }
+          },
+          vector_database: {
+            name: 'Banco de Dados Vetorial',
+            description: 'Armazene embeddings e faça busca por similaridade'
+          },
+          model_gateway: {
+            name: 'Gateway de Modelos',
+            description: 'Infraestrutura que fica na frente dos seus LLMs'
           }
         },
         principios_design: {
@@ -7170,6 +7434,10 @@ const resources = {
           health_checks: {
             name: 'Health Checks',
             description: 'Monitoramento de saúde dos serviços'
+          },
+          llm_observability: {
+            name: 'Observabilidade de LLM',
+            description: 'Tokens, custo, traces e avaliações de qualidade'
           }
         },
         casos_reais: {
@@ -7198,6 +7466,18 @@ const resources = {
           uber: {
             name: 'Uber',
             description: 'Sistema de geolocalização e matching em tempo real'
+          },
+          chatgpt: {
+            name: 'ChatGPT',
+            description: 'Servindo LLMs a centenas de milhões com streaming'
+          },
+          perplexity: {
+            name: 'Perplexity',
+            description: 'Motor de respostas baseado em RAG com fontes citadas'
+          },
+          github_copilot: {
+            name: 'GitHub Copilot',
+            description: 'Autocompletar de código inline de baixa latência em escala'
           }
         },
         seguranca: {
@@ -7234,6 +7514,62 @@ const resources = {
           ataques: {
             name: 'Ataques Comuns',
             description: 'Prevenção contra ataques em sistemas distribuídos'
+          },
+          prompt_injection: {
+            name: 'Prompt Injection',
+            description: 'Ataques específicos de LLM e guardrails'
+          }
+        },
+        ai_systems: {
+          name: 'Sistemas de IA e LLMs',
+          description: 'Servir LLMs, RAG, busca vetorial e agentes em escala',
+          llm_serving_fundamentals: {
+            name: 'Fundamentos de Serving de LLM',
+            description: 'Tokens, janelas de contexto, prefill vs decode e o KV cache',
+            simulator: {
+              name: 'Simulador de Batching de Inferência',
+              description: 'Veja como o batching equilibra vazão e latência'
+            }
+          },
+          rag: {
+            name: 'Arquitetura RAG',
+            description: 'Fundamente respostas nos seus próprios dados com recuperação',
+            simulator: {
+              name: 'Simulador de Pipeline RAG',
+              description: 'Ajuste fragmentação, recuperação e reordenação de ponta a ponta'
+            }
+          },
+          vector_search: {
+            name: 'Busca Vetorial',
+            description: 'Busca de vizinhos mais próximos aproximados em escala',
+            simulator: {
+              name: 'Simulador de Busca Vetorial',
+              description: 'Equilibre recall e latência com parâmetros do HNSW'
+            }
+          },
+          llm_gateway: {
+            name: 'Gateway de LLM',
+            description: 'Roteamento, cache semântico, fallback e controle de custo',
+            simulator: {
+              name: 'Simulador de Gateway de LLM',
+              description: 'Roteie requisições com cache, fallback e limites de taxa'
+            }
+          },
+          gpu_autoscaling: {
+            name: 'Serving de GPU e Autoescalonamento',
+            description: 'Partidas a frio, filas e escala-a-zero para GPUs',
+            simulator: {
+              name: 'Simulador de Autoescalonador de GPU',
+              description: 'Equilibre custo e latência sob carga em rajadas'
+            }
+          },
+          agentic: {
+            name: 'Sistemas com Agentes',
+            description: 'Chamada de ferramentas e orquestração de múltiplos passos',
+            simulator: {
+              name: 'Simulador de Orquestração de Agentes',
+              description: 'Veja um agente chamar ferramentas, repetir e ramificar'
+            }
           }
         },
         editor: {
@@ -7715,6 +8051,180 @@ const resources = {
         },
       },
       simulators: {
+        inference_batching: {
+          title: 'Simulador de Batching de Inferência',
+          subtitle: 'Continuous batching em uma GPU — vazão vs latência',
+          controls: {
+            arrival_rate: 'Taxa de chegada (req/s)',
+            batch_capacity: 'Capacidade do lote (slots KV)',
+            output_tokens: 'Média de tokens de saída',
+          },
+          buttons: { start: 'Iniciar', stop: 'Parar', reset: 'Reiniciar' },
+          panels: {
+            batch: 'Lote em Execução (GPU)',
+            queue: 'Fila de Admissão',
+            metrics: 'Métricas ao Vivo',
+          },
+          metrics: {
+            throughput: 'Vazão (tok/s)',
+            utilization: 'Utilização do lote',
+            queue_depth: 'Tamanho da fila',
+            avg_latency: 'Latência média',
+            completed: 'Concluídas',
+            dropped: 'Descartadas',
+          },
+          labels: {
+            slot_free: 'slot livre',
+            tokens: 'tok',
+            waiting: 'esperando',
+            batch_empty: 'GPU ociosa — nenhuma requisição no lote',
+            queue_empty: 'Fila vazia',
+            request: 'REQ',
+          },
+        },
+        rag_pipeline: {
+          title: 'Simulador de Pipeline RAG',
+          subtitle: 'Embeddar → buscar → reordenar → montar → gerar',
+          controls: {
+            chunk_size: 'Tamanho do trecho (tokens)',
+            top_k: 'Recuperar top-K',
+            rerank: 'Reordenação',
+          },
+          buttons: { run: 'Executar Consulta', reset: 'Reiniciar', on: 'Ligado', off: 'Desligado' },
+          stages: {
+            embed: 'Embeddar Consulta',
+            search: 'Busca Vetorial',
+            rerank: 'Reordenar',
+            assemble: 'Montar Contexto',
+            generate: 'Gerar',
+          },
+          metrics: {
+            recall: 'Recall da recuperação',
+            latency: 'Latência total',
+            cost: 'Custo / consulta',
+            context: 'Contexto usado',
+            quality: 'Qualidade da resposta',
+          },
+          labels: {
+            idle: 'Ocioso — execute uma consulta para começar',
+            chunk: 'trecho',
+            score: 'score',
+            retrieved: 'Trechos recuperados',
+            disabled: 'desativado',
+          },
+        },
+        vector_search: {
+          title: 'Simulador de Busca Vetorial',
+          subtitle: 'Vizinhos mais próximos aproximados com HNSW',
+          controls: {
+            ef_search: 'efSearch (lista de candidatos)',
+            m_links: 'M (conexões do grafo)',
+            dataset: 'Tamanho do dataset',
+          },
+          buttons: { search: 'Executar Busca', reset: 'Reiniciar' },
+          metrics: {
+            recall: 'Recall@10',
+            latency: 'Latência da consulta',
+            comparisons: 'Comp. de distância',
+            memory: 'Memória do índice',
+          },
+          labels: {
+            idle: 'Execute uma busca para sondar o índice',
+            exact: 'Exata (força bruta)',
+            approx: 'HNSW (aproximada)',
+            found: 'Vizinhos encontrados',
+          },
+        },
+        llm_gateway: {
+          title: 'Simulador de Gateway de LLM',
+          subtitle: 'Cache semântico, fallback de modelo, limite de taxa e custo',
+          controls: {
+            cache_rate: 'Taxa de acerto do cache (%)',
+            rate_limit: 'Limite de taxa (req/s)',
+            primary_fail: 'Falha do primário (%)',
+          },
+          buttons: { start: 'Iniciar', stop: 'Parar', reset: 'Reiniciar' },
+          routes: {
+            cache: 'Servido do cache',
+            primary: 'Modelo primário',
+            fallback: 'Modelo de fallback',
+            rejected: 'Limitado por taxa',
+          },
+          metrics: {
+            served: 'Atendidas',
+            cache_hits: 'Acertos de cache',
+            fallbacks: 'Fallbacks',
+            rejected: 'Rejeitadas',
+            cost: 'Custo total',
+          },
+          labels: {
+            recent: 'Requisições recentes',
+            empty: 'Nenhuma requisição ainda',
+          },
+        },
+        gpu_autoscaler: {
+          title: 'Simulador de Autoescalonador de GPU',
+          subtitle: 'Partidas a frio, filas e escala-a-zero',
+          controls: {
+            arrival_rate: 'Taxa de chegada (req/s)',
+            scale_threshold: 'Limiar de fila para escalar',
+            cold_start: 'Partida a frio (s)',
+          },
+          buttons: { start: 'Iniciar', stop: 'Parar', reset: 'Reiniciar' },
+          panels: {
+            replicas: 'Réplicas de GPU',
+            metrics: 'Métricas ao Vivo',
+          },
+          metrics: {
+            replicas: 'Réplicas ativas',
+            queue: 'Tamanho da fila',
+            latency: 'Latência média',
+            cost: 'Custo ($/min)',
+            utilization: 'Utilização',
+          },
+          labels: {
+            warming: 'AQUECENDO',
+            ready: 'PRONTA',
+            idle: 'OCIOSA',
+            scale_to_zero: 'Escalado a zero — nenhuma GPU ativa',
+          },
+        },
+        agent_orchestration: {
+          title: 'Simulador de Orquestração de Agentes',
+          subtitle: 'Laço raciocinar → agir → observar com chamadas de ferramentas',
+          controls: {
+            max_steps: 'Máx. de passos',
+            tool_latency: 'Latência da ferramenta (ms)',
+            fail_rate: 'Falha da ferramenta (%)',
+          },
+          buttons: { run: 'Executar Agente', reset: 'Reiniciar' },
+          steps: {
+            think: 'Pensar',
+            act: 'Chamar Ferramenta',
+            observe: 'Observar',
+            answer: 'Resposta Final',
+            retry: 'Repetir',
+          },
+          tools: {
+            search: 'web_search',
+            calculator: 'calculator',
+            database: 'db_query',
+          },
+          metrics: {
+            steps: 'Passos executados',
+            tool_calls: 'Chamadas de ferramenta',
+            retries: 'Tentativas',
+            tokens: 'Tokens usados',
+            status: 'Status',
+          },
+          labels: {
+            idle: 'Ocioso — execute o agente para começar',
+            running: 'Executando',
+            done: 'Concluído',
+            failed: 'Falhou (máx. de passos atingido)',
+            trace: 'Trace de execução',
+          },
+        },
         gateway: {
           title: 'Simulador de API Gateway',
           description: 'Visualize como um API Gateway roteia diferentes tipos de requisições para os serviços apropriados em uma arquitetura de microsserviços.',

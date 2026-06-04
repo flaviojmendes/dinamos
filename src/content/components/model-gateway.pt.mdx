@@ -1,0 +1,69 @@
+# Gateway de Modelos
+
+Um **gateway de modelos** é o componente de infraestrutura que fica na frente dos seus LLMs, assim como um API gateway fica na frente dos seus microsserviços. Toda chamada de aplicação a um modelo passa por ele, então é ali que você centraliza roteamento, cache, resiliência, limites e custo.
+
+<Callout type="info" title="💡 Uma Porta para Todo Modelo">
+
+Em vez de cada serviço guardar chaves de API de provedores e reimplementar retries, o gateway expõe uma API estável e esconde qual modelo ou provedor realmente atende a requisição.
+
+</Callout>
+
+## Responsabilidades
+
+<Cards cols={2}>
+
+<Card title="Tráfego" accent="brand">
+
+- API unificada entre provedores e modelos
+- Roteamento por custo, capacidade, tenant ou prompt
+- Respostas com streaming de tokens
+- Testes A/B e rollouts graduais de modelos
+
+</Card>
+
+<Card title="Confiabilidade e Governança" accent="green">
+
+- Retries, timeouts, cadeias de fallback, circuit breakers
+- Cache exato e semântico
+- Limites de taxa e orçamentos de tokens por chave
+- Contabilidade de custo, logging e auditoria
+
+</Card>
+
+</Cards>
+
+## Por Que É um Componente, Não uma Biblioteca
+
+Colocar essas preocupações em um serviço compartilhado (em vez de uma biblioteca por aplicação) significa:
+
+<Cards cols={3}>
+
+<Card title="Consistência" accent="brand">
+
+Um único lugar define roteamento, limites e fallback — toda equipe tem o mesmo comportamento.
+
+</Card>
+
+<Card title="Controle" accent="purple">
+
+Troque modelos ou provedores centralmente sem reimplantar cada consumidor.
+
+</Card>
+
+<Card title="Visibilidade" accent="green">
+
+Todo o gasto e tráfego de LLM passa por um único ponto que você pode observar e governar.
+
+</Card>
+
+</Cards>
+
+<Callout type="warning" title="É um Ponto Único de Falha">
+
+Como toda chamada de modelo depende dele, o gateway precisa ser altamente disponível: rode várias réplicas, mantenha sua lógica rápida e sem estado e garanta que uma queda do gateway degrade graciosamente em vez de derrubar toda funcionalidade.
+
+</Callout>
+
+## Relacionados
+
+O gateway de modelos implementa os padrões de [Gateway de LLM](/sistemas-ia/llm-gateway), reaproveita ideias do [API Gateway](/componentes/api-gateway) e se apoia em [circuit breakers](/principios-design/tolerancia-falhas/circuit-breaker) e [limitação de taxa](/componentes/api-gateway) para resiliência.

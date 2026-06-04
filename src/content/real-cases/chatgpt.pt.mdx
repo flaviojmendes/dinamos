@@ -1,0 +1,68 @@
+# System Design do ChatGPT
+
+Como um assistente baseado em LLM atende centenas de milhões de usuários com streaming token a token sobre frotas escassas de GPUs.
+
+## Números Impressionantes
+
+<Metrics cols={3}>
+
+<Metric value="800M+" label="Usuários ativos por semana" accent="green" />
+
+<Metric value="<1s" label="Meta de tempo até o primeiro token" accent="brand" />
+
+<Metric value="100Ks" label="GPUs na frota de serving" accent="purple" />
+
+</Metrics>
+
+## Requisitos do Sistema
+
+<Card title="Requisitos Funcionais" accent="brand">
+
+- Chat conversacional com respostas em streaming
+- Memória de múltiplos turnos dentro de uma conversa
+- Uso de ferramentas (navegação, código, recuperação)
+- Múltiplos modelos em diferentes camadas de preço/qualidade
+- Entradas de arquivos e imagens
+
+</Card>
+
+<Card title="Requisitos Não Funcionais" accent="purple">
+
+- Baixo tempo até o primeiro token (velocidade percebida)
+- Alta vazão por GPU (controle de custo)
+- Disponibilidade global e degradação graciosa
+- Filtragem de segurança nas entradas e saídas
+
+</Card>
+
+## Arquitetura em Resumo
+
+Clientes (web, mobile, API) → Edge / Balanceador → API + Auth → Orquestrador → Servidores de Inferência (GPU, continuous batching) → Ferramentas (recuperação, código, navegação) e Armazenamento de Conversas.
+
+## Principais Desafios de Design
+
+### 1. Streaming de Tokens
+
+As respostas são transmitidas token a token via Server-Sent Events para o usuário ver a saída imediatamente. Um baixo tempo até o primeiro token importa mais que o tempo total de conclusão para a velocidade percebida.
+
+### 2. Continuous Batching nas GPUs
+
+A camada de inferência empacota muitas requisições simultâneas em um lote em execução, adicionando e removendo requisições a cada passo de decode para manter as GPUs saturadas. O KV cache, não o cálculo bruto, limita a concorrência.
+
+<Callout type="info" title="💡 Para Onde Vai o Custo">
+
+Cada turno da conversa reenvia o contexto anterior, então o custo cresce com o tamanho da conversa. Cachear o prefixo do prompt (reuso de KV cache) e limitar o tamanho do contexto são alavancas essenciais de custo.
+
+</Callout>
+
+### 3. Roteamento de Modelos
+
+Uma requisição é roteada para a camada de modelo apropriada — pequeno/barato para turnos simples, grande para difíceis — atrás de uma API estável, permitindo testes A/B e rollouts graduais.
+
+### 4. Capacidade e Autoescalonamento
+
+A capacidade de GPU é finita e lenta de adicionar. Durante picos, o sistema depende de enfileiramento, descarte de carga e degradação (modelos menores) em vez de escala instantânea.
+
+## Conceitos Relevantes
+
+Este caso conecta [fundamentos de serving de LLM](/sistemas-ia/llm-serving-fundamentals), [batching de inferência](/sistemas-ia/llm-serving-fundamentals/simulator), [autoescalonamento de GPU](/sistemas-ia/gpu-autoscaling), o [gateway de LLM](/sistemas-ia/llm-gateway) e as [defesas contra prompt injection](/seguranca/prompt-injection).

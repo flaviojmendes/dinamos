@@ -1,0 +1,127 @@
+# Busca Vetorial
+
+RAG e busca semântica dependem de uma operação: dado um vetor de consulta, encontrar os vetores mais similares em uma coleção enorme. Fazer isso de forma *exata* é lento demais em escala, então usamos a busca por **Vizinhos Mais Próximos Aproximados (ANN)** para trocar um pouco de precisão por uma velocidade enorme.
+
+<Callout type="info" title="💡 A Operação Central">
+
+Cada trecho de documento é um embedding — um ponto em um espaço de alta dimensão (muitas vezes 768–3072 dimensões). "Similaridade" é distância nesse espaço. Buscar significa encontrar os K pontos mais próximos do ponto da consulta.
+
+</Callout>
+
+## Por Que a Busca Exata Não Escala
+
+<Cards cols={2}>
+
+<Card title="Força Bruta (Exata)" accent="red">
+
+- Compara a consulta com **todos** os vetores
+- O(N) cálculos de distância por consulta
+- Ok para milhares de vetores
+- Inviável para milhões ou bilhões
+
+</Card>
+
+<Card title="ANN (Aproximada)" accent="green">
+
+- Usa um índice para pular a maioria das comparações
+- Tempo de busca sublinear
+- ~95–99% dos vizinhos corretos
+- Sustenta busca em produção em escala de bilhões
+
+</Card>
+
+</Cards>
+
+## HNSW: O Índice Cavalo de Batalha
+
+Grafos **Hierarchical Navigable Small World** são o índice ANN mais comum. Pense neles como um mapa navegável com vias expressas.
+
+<Cards cols={3}>
+
+<Card title="O Grafo" accent="brand">
+
+Os vetores são nós conectados aos seus vizinhos. A busca "caminha" pelo grafo, sempre dando um passo em direção à consulta.
+
+</Card>
+
+<Card title="A Hierarquia" accent="purple">
+
+Camadas superiores têm poucos links de longo alcance (vias expressas); camadas inferiores são densas. A busca começa no alto e desce.
+
+</Card>
+
+<Card title="O Trade-off" accent="green">
+
+Mais conexões e uma lista de candidatos maior = melhor recall, mas mais memória e consultas mais lentas.
+
+</Card>
+
+</Cards>
+
+## Os Botões Que Importam
+
+<Callout type="neutral" title="Recall vs Latência vs Memória">
+
+- **M** (conexões por nó): M maior = melhor recall e mais memória por vetor.
+- **efConstruction**: esforço gasto ao construir o grafo — maior = índice melhor, builds mais lentos.
+- **efSearch**: tamanho da lista de candidatos na consulta — o principal botão de tempo de execução para recall vs latência.
+
+Aumentar o efSearch explora mais o grafo: o recall sobe, mas a latência também.
+
+</Callout>
+
+## Outras Famílias de Índice
+
+<Cards cols={3}>
+
+<Card title="IVF" accent="brand">
+
+Particiona vetores em clusters; busca apenas os clusters mais próximos. Eficiente em memória, ajustável com `nprobe`.
+
+</Card>
+
+<Card title="PQ" accent="purple">
+
+Product Quantization comprime vetores em códigos compactos — grande economia de memória com algum custo de precisão. Frequentemente combinado com IVF.
+
+</Card>
+
+<Card title="Flat" accent="green">
+
+Sem índice — força bruta exata. A linha de base de correção contra a qual você mede o recall.
+
+</Card>
+
+</Cards>
+
+## Busca Híbrida
+
+A busca vetorial pura erra termos exatos — IDs de produto, códigos de erro, nomes raros. A **busca híbrida** combina resultados semânticos (vetores) com léxicos (BM25/palavra-chave) e funde os rankings (ex.: Reciprocal Rank Fusion).
+
+<Callout type="success" title="Experimente: Simulador de Busca Vetorial">
+
+Sonde um índice HNSW e veja como `efSearch`, `M` e o tamanho do dataset equilibram recall, latência de consulta e memória no [Simulador de Busca Vetorial](/sistemas-ia/vector-search/simulator).
+
+</Callout>
+
+## Pontos-Chave
+
+<Cards cols={2}>
+
+<Card title="Lembre-se" accent="green">
+
+- A busca exata é O(N); a ANN a torna sublinear
+- O HNSW troca memória e latência por recall
+- Sempre meça o recall contra uma linha de base exata
+
+</Card>
+
+<Card title="Projete Para" accent="brand">
+
+- Escolher o índice conforme sua escala e orçamento de memória
+- Ajustar o efSearch para atingir uma meta de recall/latência
+- Adicionar busca léxica para termos de correspondência exata
+
+</Card>
+
+</Cards>

@@ -1,0 +1,67 @@
+# System Design do GitHub Copilot
+
+Como um par-programador de IA entrega autocompletar de código inline com a latência ultrabaixa que um editor exige.
+
+## Números Impressionantes
+
+<Metrics cols={3}>
+
+<Metric value="Milhões" label="Desenvolvedores atendidos" accent="green" />
+
+<Metric value="~poucos 100ms" label="Orçamento de latência por completar" accent="brand" />
+
+<Metric value="IDE" label="Inline, conforme você digita" accent="purple" />
+
+</Metrics>
+
+## Requisitos do Sistema
+
+<Card title="Requisitos Funcionais" accent="brand">
+
+- Sugestões de código inline enquanto o desenvolvedor digita
+- Contexto do arquivo aberto e do projeto
+- Assistência de código baseada em chat
+- Suporte a múltiplas linguagens
+
+</Card>
+
+<Card title="Requisitos Não Funcionais" accent="purple">
+
+- Latência extremamente baixa (as sugestões devem parecer instantâneas)
+- Alto volume de requisições (cada pausa na digitação é uma chamada potencial)
+- Eficiência de custo por sugestão
+- Privacidade do código-fonte
+
+</Card>
+
+## Arquitetura em Resumo
+
+Editor (gatilho com debounce) → Montagem de Contexto (arquivo atual, código próximo, símbolos) → Gateway → Inferência (modelo de código, streaming) → Sugestão exibida inline.
+
+## Principais Desafios de Design
+
+### 1. A Latência É o Produto
+
+Diferente do chat, uma sugestão de código que chega atrasada é inútil — o desenvolvedor já digitou além dela. O sistema otimiza agressivamente o tempo até o primeiro token.
+
+<Callout type="info" title="💡 Não Chame a Cada Tecla">
+
+As requisições têm **debounce**: o cliente espera uma breve pausa na digitação antes de chamar e cancela requisições em andamento quando o desenvolvedor continua digitando. Isso reduz drasticamente custo e carga.
+
+</Callout>
+
+### 2. Seleção de Contexto
+
+Uma boa sugestão precisa do contexto certo, mas mais contexto significa maior latência e custo. O cliente monta um prompt compacto e relevante a partir do arquivo atual, do código próximo e das abas abertas — um problema de recuperação no nível da edição.
+
+### 3. Aceitação como Sinal de Qualidade
+
+Se uma sugestão é aceita, editada ou rejeitada é uma métrica direta de qualidade — muito mais significativa que um 200 OK. Esses sinais orientam melhorias no modelo e nos prompts.
+
+### 4. Vazão e Custo
+
+Com sugestões disparadas o tempo todo, a frota de inferência precisa agrupar de forma eficiente e rotear para modelos do tamanho certo para manter o custo por sugestão viável.
+
+## Conceitos Relevantes
+
+Este caso aplica [fundamentos de serving de LLM](/sistemas-ia/llm-serving-fundamentals), o [gateway de LLM](/sistemas-ia/llm-gateway), a [observabilidade de LLM](/monitoramento-e-manutencao/llm-observability) e técnicas de latência dos [princípios de design](/principios-design/escalabilidade/latencia).

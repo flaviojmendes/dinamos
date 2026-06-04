@@ -1,0 +1,67 @@
+# GitHub Copilot System Design
+
+How an AI pair-programmer delivers inline code completions with the ultra-low latency an editor demands.
+
+## Impressive Numbers
+
+<Metrics cols={3}>
+
+<Metric value="Millions" label="Developers served" accent="green" />
+
+<Metric value="~few 100ms" label="Completion latency budget" accent="brand" />
+
+<Metric value="IDE" label="Inline, as-you-type" accent="purple" />
+
+</Metrics>
+
+## System Requirements
+
+<Card title="Functional Requirements" accent="brand">
+
+- Inline code suggestions as the developer types
+- Context from the open file and project
+- Chat-based code assistance
+- Multi-language support
+
+</Card>
+
+<Card title="Non-Functional Requirements" accent="purple">
+
+- Extremely low latency (suggestions must feel instant)
+- High request volume (every keystroke pause is a potential call)
+- Cost efficiency per completion
+- Privacy of source code
+
+</Card>
+
+## Architecture at a Glance
+
+Editor (debounced trigger) → Context Assembly (current file, nearby code, symbols) → Gateway → Inference (code model, streaming) → Suggestion shown inline.
+
+## Key Design Challenges
+
+### 1. Latency Is the Product
+
+Unlike chat, a code completion that arrives late is worthless — the developer has already typed past it. The system optimizes aggressively for time-to-first-token.
+
+<Callout type="info" title="💡 Don't Call on Every Keystroke">
+
+Requests are **debounced**: the client waits for a brief typing pause before calling, and cancels in-flight requests when the developer keeps typing. This slashes cost and load.
+
+</Callout>
+
+### 2. Context Selection
+
+A good suggestion needs the right context, but more context means higher latency and cost. The client assembles a compact, relevant prompt from the current file, nearby code, and open tabs — a retrieval problem at the edit level.
+
+### 3. Acceptance as a Quality Signal
+
+Whether a suggestion is accepted, edited, or rejected is a direct quality metric — far more meaningful than a 200 OK. These signals drive model and prompt improvements.
+
+### 4. Throughput and Cost
+
+With completions triggered constantly, the inference fleet must batch efficiently and route to right-sized models to keep per-completion cost viable.
+
+## Relevant Concepts
+
+This case applies [LLM serving fundamentals](/sistemas-ia/llm-serving-fundamentals), the [LLM gateway](/sistemas-ia/llm-gateway), [LLM observability](/monitoramento-e-manutencao/llm-observability), and latency techniques from [design principles](/principios-design/escalabilidade/latencia).

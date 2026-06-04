@@ -1,0 +1,95 @@
+# Vector Database
+
+A **vector database** stores embeddings — high-dimensional vectors that represent the *meaning* of text, images, or audio — and answers similarity queries over them. It became a first-class system component with the rise of RAG and semantic search.
+
+<Callout type="info" title="💡 What Makes It Different">
+
+A relational database finds rows by exact values. A vector database finds items by **closeness in meaning**: "show me the chunks most similar to this query," even when they share no keywords.
+
+</Callout>
+
+## Where It Fits
+
+A vector DB sits beside your primary store, not instead of it. Documents are chunked, embedded, and indexed; at query time the app embeds the question, retrieves the nearest chunks, and passes them to the LLM.
+
+<Cards cols={3}>
+
+<Card title="Stores" accent="brand">
+
+Vectors plus metadata (source, timestamps, tenant, tags) for filtering.
+
+</Card>
+
+<Card title="Indexes" accent="purple">
+
+An ANN index (usually HNSW) for fast approximate nearest-neighbor search.
+
+</Card>
+
+<Card title="Serves" accent="green">
+
+Top-K similarity queries, often with metadata filters and hybrid keyword search.
+
+</Card>
+
+</Cards>
+
+## Key Capabilities
+
+<Cards cols={2}>
+
+<Card title="Must-Haves" accent="green">
+
+- Approximate nearest-neighbor search (HNSW/IVF)
+- Metadata filtering (tenant, date, source)
+- Upserts and deletes for fresh data
+- Hybrid (vector + keyword) search
+
+</Card>
+
+<Card title="At Scale" accent="brand">
+
+- Sharding across nodes for billions of vectors
+- Replication for availability
+- Quantization to fit memory budgets
+- Multi-tenancy isolation
+
+</Card>
+
+</Cards>
+
+## Options
+
+<Cards cols={3}>
+
+<Card title="Embedded / SQL" accent="brand">
+
+`pgvector` (Postgres), SQLite extensions — simplest if you already run the database.
+
+</Card>
+
+<Card title="Dedicated" accent="purple">
+
+Pinecone, Qdrant, Weaviate, Milvus — purpose-built for vector workloads at scale.
+
+</Card>
+
+<Card title="Search Engines" accent="green">
+
+Elasticsearch / OpenSearch — vectors alongside mature lexical search and filtering.
+
+</Card>
+
+</Cards>
+
+<Callout type="warning" title="Common Pitfalls">
+
+- **Stale index**: documents changed but embeddings didn't — schedule incremental re-indexing.
+- **Wrong distance metric**: cosine vs dot vs L2 must match how the embedding model was trained.
+- **Ignoring metadata filters**: filtering before/after ANN dramatically changes recall and cost.
+
+</Callout>
+
+## Related
+
+This component powers [RAG](/sistemas-ia/rag) and is searched using the techniques in [Vector Search](/sistemas-ia/vector-search). It complements, rather than replaces, your [cache](/componentes/cache) and [database](/componentes/banco-dados).

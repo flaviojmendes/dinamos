@@ -1,0 +1,120 @@
+# Gateway de LLM
+
+Assim que mais de um serviço chama um LLM, você não quer que cada um fale diretamente com um provedor. Um **gateway de LLM** é um proxy inteligente entre suas aplicações e os modelos — o padrão de API gateway, especializado para a realidade do tráfego de LLMs.
+
+<Callout type="info" title="💡 Por Que um Gateway">
+
+Chamadas a LLMs são lentas, caras, limitadas por taxa e ocasionalmente falham. Um gateway centraliza as preocupações transversais — roteamento, cache, fallback, limites e custo — para que cada serviço não as reinvente.
+
+</Callout>
+
+## O Que Ele Faz
+
+<Cards cols={2}>
+
+<Card title="Roteamento" accent="brand">
+
+- Envia tarefas baratas a modelos pequenos e difíceis a modelos grandes
+- Roteia por tenant, funcionalidade ou classificação do prompt
+- Faz teste A/B de modelos atrás de uma API estável
+
+</Card>
+
+<Card title="Resiliência" accent="green">
+
+- Faz failover para outro modelo ou provedor em erro/timeout
+- Repete com backoff
+- Abre o circuito de um provedor degradado
+
+</Card>
+
+<Card title="Custo e Limites" accent="purple">
+
+- Limites de taxa por chave e por tenant
+- Orçamentos e cotas de tokens
+- Acompanha o gasto por equipe e por funcionalidade
+
+</Card>
+
+<Card title="Cache" accent="brand">
+
+- Cache de correspondência exata para prompts idênticos
+- **Cache semântico** para prompts similares
+- Grande economia de latência e custo no tráfego repetido
+
+</Card>
+
+</Cards>
+
+## Cache Semântico
+
+Um cache comum só acerta com chaves idênticas. Um **cache semântico** embedda o prompt recebido e verifica se um prompt *suficientemente similar* já foi respondido antes — retornando a resposta em cache instantaneamente.
+
+<Callout type="warning" title="O Trade-off do Limiar">
+
+O cache semântico é regido por um limiar de similaridade:
+
+- **Muito frouxo** → respostas erradas servidas do cache (falsos acertos).
+- **Muito rígido** → poucos acertos de cache, pouco benefício.
+
+Ele brilha em FAQs e consultas repetitivas; é arriscado para prompts em que pequenas mudanças de redação devem mudar a resposta.
+
+</Callout>
+
+## Fallback e Failover
+
+Provedores têm quedas, limites de taxa e picos de latência. Um gateway define uma cadeia de fallback:
+
+<Cards cols={3}>
+
+<Card title="1. Primário" accent="green">
+
+Seu modelo preferido. A maior parte do tráfego vai para cá.
+
+</Card>
+
+<Card title="2. Fallback" accent="amber">
+
+Um segundo modelo ou provedor, acionado em erro, timeout ou limite de taxa do primário.
+
+</Card>
+
+<Card title="3. Degradar" accent="red">
+
+Último recurso: um modelo menor/mais barato, uma resposta em cache ou um erro gracioso.
+
+</Card>
+
+</Cards>
+
+## Limitação de Taxa e Controle de Custo
+
+Como tokens custam dinheiro e os provedores impõem seus próprios limites, o gateway é onde você impõe os seus: limites de taxa por token-bucket por chave de API, orçamentos mensais rígidos e contabilidade de custo por requisição que alimenta dashboards e alertas.
+
+<Callout type="success" title="Experimente: Simulador de Gateway de LLM">
+
+Envie tráfego por um gateway e ajuste a taxa de acerto do cache, o limite de taxa e a taxa de falha do primário para ver requisições servidas do cache, roteadas para fallback ou rejeitadas — e o custo acumulado — no [Simulador de Gateway de LLM](/sistemas-ia/llm-gateway/simulator).
+
+</Callout>
+
+## Pontos-Chave
+
+<Cards cols={2}>
+
+<Card title="Lembre-se" accent="green">
+
+- Um gateway centraliza roteamento, cache, fallback, limites e custo
+- O cache semântico troca um limiar de similaridade por taxa de acerto
+- Cadeias de fallback mantêm o atendimento durante falhas de provedores
+
+</Card>
+
+<Card title="Projete Para" accent="brand">
+
+- Tratar o gateway como infraestrutura crítica (é um ponto único de falha)
+- Tornar roteamento e limites configuráveis, não fixos no código
+- Medir custo e taxa de acerto de cache por tenant
+
+</Card>
+
+</Cards>

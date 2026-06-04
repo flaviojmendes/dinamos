@@ -1,0 +1,120 @@
+# LLM Gateway
+
+Once more than one service calls an LLM, you don't want each one talking directly to a provider. An **LLM gateway** is a smart proxy that sits between your applications and the models — the API gateway pattern, specialized for the realities of LLM traffic.
+
+<Callout type="info" title="💡 Why a Gateway">
+
+LLM calls are slow, expensive, rate-limited, and occasionally fail. A gateway centralizes the cross-cutting concerns — routing, caching, fallback, limits, and cost — so individual services don't reinvent them.
+
+</Callout>
+
+## What It Does
+
+<Cards cols={2}>
+
+<Card title="Routing" accent="brand">
+
+- Send cheap tasks to small models, hard tasks to large ones
+- Route by tenant, feature, or prompt classification
+- A/B test models behind a stable API
+
+</Card>
+
+<Card title="Resilience" accent="green">
+
+- Fail over to another model or provider on error/timeout
+- Retry with backoff
+- Circuit-break a degraded provider
+
+</Card>
+
+<Card title="Cost & Limits" accent="purple">
+
+- Per-key and per-tenant rate limits
+- Token budgets and quotas
+- Track spend per team and per feature
+
+</Card>
+
+<Card title="Caching" accent="brand">
+
+- Exact-match cache for identical prompts
+- **Semantic cache** for similar prompts
+- Huge latency and cost savings on repeat traffic
+
+</Card>
+
+</Cards>
+
+## Semantic Caching
+
+A normal cache only hits on identical keys. A **semantic cache** embeds the incoming prompt and checks whether a *similar enough* prompt was answered before — returning the cached answer instantly.
+
+<Callout type="warning" title="The Threshold Trade-off">
+
+Semantic caching is governed by a similarity threshold:
+
+- **Too loose** → wrong answers served from cache (false hits).
+- **Too strict** → few cache hits, little benefit.
+
+It shines for FAQs and repetitive queries; it's risky for prompts where small wording changes must change the answer.
+
+</Callout>
+
+## Fallback and Failover
+
+Providers have outages, rate limits, and latency spikes. A gateway defines a fallback chain:
+
+<Cards cols={3}>
+
+<Card title="1. Primary" accent="green">
+
+Your preferred model. Most traffic goes here.
+
+</Card>
+
+<Card title="2. Fallback" accent="amber">
+
+A second model or provider, tried on error, timeout, or rate-limit from the primary.
+
+</Card>
+
+<Card title="3. Degrade" accent="red">
+
+Last resort: a smaller/cheaper model, a cached answer, or a graceful error.
+
+</Card>
+
+</Cards>
+
+## Rate Limiting and Cost Control
+
+Because tokens cost money and providers enforce their own limits, the gateway is where you enforce yours: token-bucket rate limits per API key, hard monthly budgets, and per-request cost accounting that feeds dashboards and alerts.
+
+<Callout type="success" title="Try It: LLM Gateway Simulator">
+
+Send traffic through a gateway and tune the cache hit rate, rate limit, and primary failure rate to watch requests get served from cache, routed to fallback, or rejected — and see the running cost — in the [LLM Gateway Simulator](/sistemas-ia/llm-gateway/simulator).
+
+</Callout>
+
+## Takeaways
+
+<Cards cols={2}>
+
+<Card title="Remember" accent="green">
+
+- A gateway centralizes routing, caching, fallback, limits, and cost
+- Semantic caching trades a similarity threshold for hit rate
+- Fallback chains keep you serving during provider failures
+
+</Card>
+
+<Card title="Design For" accent="brand">
+
+- Treat the gateway as critical infrastructure (it's a SPOF)
+- Make routing and limits configurable, not hard-coded
+- Measure cost and cache hit rate per tenant
+
+</Card>
+
+</Cards>

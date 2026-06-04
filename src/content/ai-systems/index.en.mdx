@@ -1,0 +1,85 @@
+# AI & LLM Systems
+
+Since 2021, large language models (LLMs) moved from research labs into production at massive scale. This changed distributed systems engineering: we now serve stateful, GPU-bound, probabilistic workloads with latency and cost profiles unlike any classic web service.
+
+<Callout type="info" title="💡 Why This Section Exists">
+
+Everything you learned about caching, queues, load balancing, and replication still applies — but LLM serving adds new constraints: expensive GPUs, token-by-token generation, huge model weights, and retrieval pipelines that ground answers in your own data.
+
+</Callout>
+
+## What Actually Changed
+
+<Cards cols={2}>
+
+<Card title="The Workload" accent="brand">
+
+- Requests are **generative**: output is produced one token at a time
+- Latency has two parts: **time-to-first-token** and **time-per-output-token**
+- A single request can hold GPU memory for seconds
+- The same prompt can cost wildly different amounts depending on length
+
+</Card>
+
+<Card title="The Hardware" accent="purple">
+
+- GPUs are scarce, expensive, and slow to start
+- Model weights are tens of GBs — cold starts are measured in minutes
+- Throughput depends on **batching** many requests together
+- Memory (the KV cache) is the real bottleneck, not raw compute
+
+</Card>
+
+</Cards>
+
+## The New Building Blocks
+
+<Cards cols={3}>
+
+<Card title="Inference Server" accent="green">
+
+Schedules and batches requests onto GPUs, manages the KV cache, and streams tokens back (vLLM, TGI, TensorRT-LLM).
+
+</Card>
+
+<Card title="Vector Database" accent="brand">
+
+Stores embeddings and answers approximate nearest-neighbor queries for semantic search and retrieval (pgvector, Pinecone, Qdrant).
+
+</Card>
+
+<Card title="Model Gateway" accent="purple">
+
+A smart proxy in front of models: routing, semantic caching, fallback, rate limiting, and cost accounting.
+
+</Card>
+
+</Cards>
+
+## What You'll Learn Here
+
+<Cards cols={2}>
+
+<Card title="Serving & Scaling" accent="green">
+
+- **LLM Serving Fundamentals**: tokens, context windows, prefill vs decode, the KV cache
+- **Inference batching**: how throughput and latency trade off
+- **GPU autoscaling**: cold starts, queueing, scale-to-zero
+
+</Card>
+
+<Card title="Retrieval & Orchestration" accent="brand">
+
+- **RAG**: grounding answers in your own documents
+- **Vector search**: approximate nearest neighbors at scale
+- **Agentic systems**: tool calling and multi-step orchestration
+
+</Card>
+
+</Cards>
+
+<Callout type="success" title="Prerequisites">
+
+This section builds on the rest of the course. If terms like *cache*, *load balancer*, *queue*, *backpressure*, and *replication* are not yet familiar, start with **System Components** and **Design Principles** first.
+
+</Callout>
