@@ -310,7 +310,7 @@ const resources = {
       terms: {
         title: 'Terms and Conditions',
         last_updated_label: 'Last updated:',
-        last_updated_date: 'December 2024',
+        last_updated_date: 'June 2026',
         sections: {
           acceptance: {
             title: '1. Acceptance of Terms',
@@ -363,13 +363,13 @@ const resources = {
             note: 'Refunds may be provided at our discretion in cases of unavailability or exceptional circumstances.'
           },
           ip_rights: {
-            title: '6. Intellectual Property Rights',
-            intro: 'The Service and its original content are owned by Dinamos and protected by intellectual property laws. You may not:',
+            title: '6. Intellectual Property & Attribution',
+            intro: 'All educational content on the Service is free to access, study, and share. We ask only one thing in return: always credit the platform. Whenever you use, reference, or reproduce our content — including in videos, courses, classes, presentations, articles, social media, or any other medium — you must:',
             items: [
-              'Copy, modify, or distribute our content without permission',
-              'Use our content for commercial purposes without authorization',
-              'Remove or alter copyright, trademark, or proprietary notices',
-              'Reverse engineer or attempt to extract source code'
+              'Give clear and visible credit to Dinamos (trilhainfo) as the source of the content',
+              'Include a link back to the platform (https://instagram.com/trilhainfo) whenever the medium allows it',
+              'Keep any copyright, trademark, or authorship notices intact',
+              'Not present our content as your own or imply official endorsement, partnership, or affiliation without permission'
             ]
           },
           conduct: {
@@ -1940,11 +1940,22 @@ const resources = {
         in_dev: 'In development',
         modules: 'modules',
         completed: 'Completed',
+        in_progress: 'In progress',
+        not_started: 'Not started',
         start_module: 'Start module',
+        resume_module: 'Resume module',
         review_module: 'Review module',
         prerequisites: 'Prerequisites:',
         skills: 'Skills:',
-        completed_percent: '{{percent}}% of content completed'
+        completed_percent: '{{percent}}% of content completed',
+        ops_map: 'OPS MAP',
+        phase: 'Phase',
+        lessons: 'lessons',
+        modules_cleared: 'Modules cleared',
+        lessons_done: 'Lessons done',
+        readiness: 'Readiness',
+        total_phases: 'Phases',
+        of_count: 'of {{count}}'
       },
       editor: {
         title: 'Distributed System Simulator',
@@ -5995,7 +6006,7 @@ const resources = {
       terms: {
         title: 'Termos e Condições',
         last_updated_label: 'Última atualização:',
-        last_updated_date: 'Dezembro de 2024',
+        last_updated_date: 'Junho de 2026',
         sections: {
           acceptance: {
             title: '1. Aceitação dos Termos',
@@ -6048,13 +6059,13 @@ const resources = {
             note: 'Reembolsos podem ser concedidos a nosso critério em casos de indisponibilidade ou circunstâncias excepcionais.'
           },
           ip_rights: {
-            title: '6. Direitos de Propriedade Intelectual',
-            intro: 'O Serviço e seu conteúdo original são de propriedade do Dinamos e protegidos por leis de propriedade intelectual. Você não pode:',
+            title: '6. Propriedade Intelectual e Atribuição',
+            intro: 'Todo o conteúdo educacional do Serviço é gratuito para acessar, estudar e compartilhar. Pedimos apenas uma coisa em troca: sempre dê os créditos à plataforma. Sempre que você usar, referenciar ou reproduzir nosso conteúdo — incluindo em vídeos, cursos, aulas, apresentações, artigos, redes sociais ou qualquer outro meio — você deve:',
             items: [
-              'Copiar, modificar ou distribuir nosso conteúdo sem permissão',
-              'Usar nosso conteúdo para fins comerciais sem autorização',
-              'Remover ou alterar avisos de direitos autorais ou propriedade',
-              'Fazer engenharia reversa ou tentar extrair código-fonte'
+              'Dar crédito claro e visível ao Dinamos (trilhainfo) como fonte do conteúdo',
+              'Incluir um link para a plataforma (https://instagram.com/trilhainfo) sempre que o meio permitir',
+              'Manter intactos os avisos de direitos autorais, marca ou autoria',
+              'Não apresentar nosso conteúdo como se fosse seu nem sugerir endosso, parceria ou afiliação oficial sem permissão'
             ]
           },
           conduct: {
@@ -7625,11 +7636,22 @@ const resources = {
         in_dev: 'Em desenvolvimento',
         modules: 'módulos',
         completed: 'Concluído',
+        in_progress: 'Em andamento',
+        not_started: 'Não iniciado',
         start_module: 'Começar módulo',
+        resume_module: 'Continuar módulo',
         review_module: 'Revisar módulo',
         prerequisites: 'Pré-requisitos:',
         skills: 'Habilidades:',
-        completed_percent: '{{percent}}% do conteúdo completado'
+        completed_percent: '{{percent}}% do conteúdo completado',
+        ops_map: 'MAPA OPS',
+        phase: 'Fase',
+        lessons: 'lições',
+        modules_cleared: 'Módulos concluídos',
+        lessons_done: 'Lições concluídas',
+        readiness: 'Prontidão',
+        total_phases: 'Fases',
+        of_count: 'de {{count}}'
       },
       theoretical_foundations_main: {
         subtitle: 'Construindo conhecimento inabalável em sistemas distribuídos',

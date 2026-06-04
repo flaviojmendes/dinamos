@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useContentProgress } from '../../hooks/useContentProgress';
 import ContentLayout from '../Common/ContentLayout';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { Panel, Stat, StatusBadge, SegmentBar, Tag, TacticalButton, type StatusVariant } from '../tactical';
 
 // Add a declaration for the window object with our custom property
 declare global {
@@ -32,12 +33,11 @@ interface MenuItem {
   customHoverStyle?: string;
 }
 
-const getChildPaths = (item: MenuItem): string[] => {
+const getDescendantPaths = (item: MenuItem): string[] => {
   const paths: string[] = [];
   if (item.children) {
     for (const child of item.children) {
       paths.push(child.path);
-      // Get paths from child's children (simulators, etc)
       if (child.children) {
         for (const grandchild of child.children) {
           paths.push(grandchild.path);
@@ -51,201 +51,67 @@ const getChildPaths = (item: MenuItem): string[] => {
 export default function Roadmap() {
   const { isCompleted } = useContentProgress();
   const location = useLocation();
+  const navigate = useNavigate();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [expanded, setExpanded] = useState<string | null>(null);
   const { t } = useTranslation();
 
-  // Access the menuItems array from the window object
-  // This is added to window by App.tsx when it initializes
   useEffect(() => {
-    // Check if we can access App's menuItems through the window object
-    // This is a hack, but it avoids circular dependencies
     const getMenuItems = () => {
-      // Try to access from window.__APP_DATA__ if available (you need to add this in App.tsx)
       if (window.__APP_DATA__ && window.__APP_DATA__.menuItems) {
         return window.__APP_DATA__.menuItems;
       }
       return [];
     };
-
-    // Set menu items from App
     const items = getMenuItems();
     if (items && items.length > 0) {
       setMenuItems(items);
     }
-  }, [location]); // Re-run when location changes to catch any updates
+  }, [location]);
 
-  // Transform menuItems to the roadmap structure
-  const roadmapItems = menuItems.filter(item => 
-    // Filter out special items like "Comece Aqui", the roadmap itself, and external tools
-    item.path !== "/roadmap" && 
-    !item.path.includes("editor") && 
-    !item.path.startsWith("http")
+  const makeMenuKey = (path: string, field: 'name' | 'description') =>
+    `menu.${path.replace(/^\//, '').replace(/\//g, '.')}.${field}`;
+
+  // Top-level modules only (exclude the roadmap itself, editors and external tools).
+  const roadmapItems = menuItems.filter(item =>
+    item.path !== '/roadmap' &&
+    !item.path.includes('editor') &&
+    !item.path.startsWith('http'),
   );
 
-  const getStepStatus = (item: MenuItem) => {
-    if (isCompleted(item.path)) {
-      return 'text-signal-green';
-    }
-
-    if (item.badges?.some(badge => badge.text === "Grátis" || badge.text === "Free")) {
-      return 'text-signal-green'; // Free content
-    } else if (item.status === 'recommended' || item.status === 'new') {
-      return 'text-signal-cyan'; // Recommended content
-    } else if (item.status === 'required') {
-      return 'text-brand-600 dark:text-signal-amber'; // Required content
-    } else {
-      return 'text-brand-600 dark:text-tactical-dim'; // Default content
-    }
-  };
-  const makeMenuKey = (path: string, field: 'name' | 'description') => `menu.${path.replace(/^\//, '').replace(/\//g, '.')}.${field}`;
-  
-  const translateBadgeText = (badgeText: string) => {
-    if (!badgeText) return '';
-    if (badgeText.toLowerCase() === 'grátis') return t('badges.free');
-    if (badgeText.toLowerCase() === 'novo') return t('badges.new');
-    return badgeText;
-  };
-      
-  const calculateProgress = () => {
-    const getAllItems = (items: MenuItem[]): MenuItem[] => {
-      return items.reduce((acc: MenuItem[], item) => {
-        if (item.path !== '/roadmap' && !item.disabled) {
-          acc.push(item);
-          if (item.children) {
-            acc.push(...getAllItems(item.children));
-          }
-        }
-        return acc;
-    }, []);
-    };
-
-    const allItems = getAllItems(menuItems);
-    const completedItems = allItems.filter(item => isCompleted(item.path));
-    return Math.round((completedItems.length / allItems.length) * 100);
+  const moduleStats = (item: MenuItem) => {
+    const descendants = item.children && item.children.length > 0 ? getDescendantPaths(item) : [item.path];
+    const total = descendants.length;
+    const done = descendants.filter(isCompleted).length;
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+    const status: StatusVariant = done === 0 ? 'pending' : done >= total ? 'completed' : 'in-progress';
+    return { total, done, pct, status };
   };
 
-  const renderItem = (item: MenuItem, index: number, isChild = false) => {
-    const childPaths = getChildPaths(item);
-    const defaultIcon = (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-      </svg>
-    );
+  const statusLabel = (status: StatusVariant) =>
+    status === 'completed' ? t('roadmap.completed') : status === 'in-progress' ? t('roadmap.in_progress') : t('roadmap.not_started');
 
-    const statusLabel = isCompleted(item.path)
-      ? t('roadmap.completed')
-      : item.badges?.some(badge => badge.text === "Grátis" || badge.text === "Free")
-        ? t('roadmap.free')
-        : item.status === 'recommended'
-          ? t('status.recommended')
-          : item.status === 'new'
-            ? t('status.new')
-            : t('status.content');
+  // Aggregate metrics.
+  const totals = roadmapItems.reduce(
+    (acc, item) => {
+      const { total, done, status } = moduleStats(item);
+      acc.lessons += total;
+      acc.lessonsDone += done;
+      if (status === 'completed') acc.modulesCleared += 1;
+      return acc;
+    },
+    { lessons: 0, lessonsDone: 0, modulesCleared: 0 },
+  );
+  const readiness = totals.lessons > 0 ? Math.round((totals.lessonsDone / totals.lessons) * 100) : 0;
 
-    const displayName = t(makeMenuKey(item.path, 'name'), { defaultValue: item.name });
-    const displayDescription = t(makeMenuKey(item.path, 'description'), { defaultValue: item.description });
-
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: index * 0.1 }}
-        key={item.path}
-        className={`relative ${isChild ? 'ml-8 mt-4' : 'mb-8'}`}
-      >
-        <div className="tactical-panel p-6 hover:border-slate-400 dark:hover:border-signal-green transition-colors">
-          <div className="flex items-start gap-4">
-            <div className={`p-3 border relative group ${
-              isCompleted(item.path) ? 'border-signal-green/50 bg-signal-green/10' : 'border-brand-500/30 bg-brand-500/10 dark:border-signal-cyan/30 dark:bg-signal-cyan/10'
-            }`}>
-              <div className="text-brand-600 dark:text-brand-400">
-                {item.icon ? React.cloneElement(item.icon as React.ReactElement, {
-                  className: `w-6 h-6 ${isCompleted(item.path) ? 'text-green-400' : 'text-brand-600 dark:text-brand-400'}`
-                }) : 
-                React.cloneElement(defaultIcon, {
-                  className: `w-6 h-6 ${isCompleted(item.path) ? 'text-green-400' : 'text-brand-600 dark:text-brand-400'}`
-                })}
-              </div>
-              {isCompleted(item.path) && (
-                <div className="absolute -top-2 -right-2 bg-green-500 rounded-full p-1">
-                  <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-              )}
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center flex-wrap gap-3 mb-2">
-                <h3 className="text-xl font-mono font-semibold text-slate-900 dark:text-tactical-text">{displayName}</h3>
-                <span className={`font-mono text-[11px] uppercase tracking-wider px-2 py-0.5 border border-slate-200 dark:border-tactical-border ${getStepStatus(item)}`}>
-                  {statusLabel}
-                </span>
-                {item.badges?.map((badge, i) => (
-                  <span key={i} className="font-mono text-[11px] uppercase tracking-wider text-signal-green">
-                    [{translateBadgeText(badge.text)}]
-                  </span>
-                ))}
-              </div>
-              <p className="text-slate-600 dark:text-tactical-dim mb-4">{displayDescription}</p>
-              
-              {item.prerequisites && item.prerequisites.length > 0 && (
-                <div className="mb-4">
-                  <div className="label-mono mb-2">{t('roadmap.prerequisites')}</div>
-                  <div className="flex flex-wrap gap-2">
-                    {item.prerequisites.map(prereq => (
-                      <span key={prereq} className="font-mono text-xs border border-slate-200 dark:border-tactical-border px-2 py-1 text-slate-600 dark:text-tactical-dim">
-                        {prereq}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {item.skills && item.skills.length > 0 && (
-                <div className="mb-4">
-                  <div className="label-mono mb-2">{t('roadmap.skills')}</div>
-                  <div className="flex flex-wrap gap-2">
-                    {item.skills.map(skill => (
-                      <span key={skill} className="font-mono text-xs border border-slate-200 dark:border-tactical-border px-2 py-1 text-slate-600 dark:text-tactical-dim">
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <Link
-                to={item.path}
-                state={{ childPaths }}
-                className="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-wider text-brand-600 dark:text-signal-green hover:opacity-80 transition-opacity"
-              >
-                {isCompleted(item.path) ? t('roadmap.review_module') : t('roadmap.start_module')}
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </div>
-          </div>
-
-          {item.children && (
-            <div className="mt-4 ml-8 space-y-4">
-              {item.children.map((child, childIndex) => renderItem(child, childIndex, true))}
-            </div>
-          )}
-        </div>
-      </motion.div>
-    );
-  };
-
-  // Display a loading state until we've fetched the menu items
   if (menuItems.length === 0) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-8">
         <ContentLayout hideCompletion>
           <div className="flex items-center justify-center h-64">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto mb-4"></div>
-              <p className="text-slate-600 dark:text-slate-300">{t('common.loading')}</p>
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-signal-cyan mx-auto mb-4"></div>
+              <p className="label-mono">{t('common.loading')}</p>
             </div>
           </div>
         </ContentLayout>
@@ -253,60 +119,174 @@ export default function Roadmap() {
     );
   }
 
-  const percent = calculateProgress();
-
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="mx-auto max-w-[1400px] px-4 py-6 sm:px-6 lg:px-8">
       <ContentLayout hideCompletion>
-        <div className="space-y-8">
-          <div className="mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <h1 className="text-4xl font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-tactical-text">{t('roadmap.title')}</h1>
-              <span className="font-mono text-[11px] uppercase tracking-wider text-signal-amber">[OPS MAP]</span>
-            </div>
-            <p className="text-lg text-slate-600 dark:text-tactical-dim mb-4">
-              {t('roadmap.description_1')}
-              {" "}
-              {t('roadmap.description_2')}
-            </p>
-
-            <div className="bg-slate-200 dark:bg-tactical-raised h-4 overflow-hidden">
-              <div
-                className="seg-bar h-full text-signal-green transition-all duration-500"
-                style={{ width: `${percent}%` }}
-              />
-            </div>
-            <p className="label-mono mt-2">
-              {t('roadmap.completed_percent', { percent })}
-            </p>
+        {/* Header */}
+        <div className="mb-6">
+          <div className="flex items-center gap-3">
+            <h1 className="font-mono text-2xl font-bold uppercase tracking-wider text-slate-900 dark:text-tactical-text">
+              {t('roadmap.title')}
+            </h1>
+            <Tag color="amber">{t('roadmap.ops_map')}</Tag>
           </div>
+          <p className="mt-1 max-w-3xl font-mono text-sm text-slate-500 dark:text-tactical-dim">
+            {t('roadmap.description_1')} {t('roadmap.description_2')}
+          </p>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div className="tactical-panel p-4">
-              <div className="label-mono mb-2 text-signal-green">{t('roadmap.free')}</div>
-              <div className="text-2xl font-mono font-bold text-slate-900 dark:text-tactical-text">
-                {menuItems.filter(item => item.badges?.some(b => b.text === "Grátis" || b.text === "Free")).length} {t('roadmap.modules')}
-              </div>
-            </div>
-            <div className="tactical-panel p-4">
-              <div className="label-mono mb-2 text-signal-cyan">{t('roadmap.premium')}</div>
-              <div className="text-2xl font-mono font-bold text-slate-900 dark:text-tactical-text">
-                {menuItems.filter(item => !item.badges?.some(b => b.text === "Grátis" || b.text === "Free") && !item.disabled).length} {t('roadmap.modules')}
-              </div>
-            </div>
-            <div className="tactical-panel p-4">
-              <div className="label-mono mb-2 text-signal-amber">{t('roadmap.in_dev')}</div>
-              <div className="text-2xl font-mono font-bold text-slate-900 dark:text-tactical-text">
-                {menuItems.filter(item => item.status === 'coming-soon' || item.disabled).length} {t('roadmap.modules')}
-              </div>
-            </div>
-          </div>
+        {/* Metrics */}
+        <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <Stat
+            value={totals.modulesCleared}
+            label={t('roadmap.modules_cleared')}
+            color="green"
+            sub={t('roadmap.of_count', { count: roadmapItems.length })}
+          />
+          <Stat
+            value={totals.lessonsDone}
+            label={t('roadmap.lessons_done')}
+            color="cyan"
+            sub={t('roadmap.of_count', { count: totals.lessons })}
+          />
+          <Stat value={`${readiness}%`} label={t('roadmap.readiness')} color="amber" />
+          <Stat value={roadmapItems.length} label={t('roadmap.total_phases')} />
+        </div>
 
-          <div className="space-y-6">
-            {roadmapItems.map((item, index) => renderItem(item, index))}
-          </div>
+        {/* Overall progress */}
+        <Panel title={t('roadmap.readiness')} accent="green" className="mb-6">
+          <SegmentBar value={readiness} max={100} color={readiness === 100 ? 'green' : 'cyan'} caption={`${readiness}%`} />
+          <p className="label-mono mt-2">{t('roadmap.completed_percent', { percent: readiness })}</p>
+        </Panel>
+
+        {/* Phase timeline */}
+        <div className="space-y-4">
+          {roadmapItems.map((item, index) => {
+            const { total, done, pct, status } = moduleStats(item);
+            const displayName = t(makeMenuKey(item.path, 'name'), { defaultValue: item.name });
+            const displayDescription = t(makeMenuKey(item.path, 'description'), { defaultValue: item.description });
+            const isOpen = expanded === item.path;
+            const accent = status === 'completed' ? 'green' : status === 'in-progress' ? 'amber' : 'cyan';
+
+            return (
+              <motion.div
+                key={item.path}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: Math.min(index * 0.05, 0.4) }}
+              >
+                <Panel accent={accent} padded={false}>
+                  <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center">
+                    {/* Phase index */}
+                    <div className="flex shrink-0 items-center gap-3">
+                      <div className={`flex h-12 w-12 flex-col items-center justify-center border ${
+                        status === 'completed'
+                          ? 'border-signal-green/50 text-signal-green'
+                          : status === 'in-progress'
+                            ? 'border-signal-amber/50 text-signal-amber'
+                            : 'border-slate-200 text-slate-500 dark:border-tactical-border dark:text-tactical-dim'
+                      }`}>
+                        <span className="font-mono text-[9px] uppercase leading-none tracking-wider opacity-70">{t('roadmap.phase')}</span>
+                        <span className="font-mono text-lg font-bold leading-none tabular-nums">{String(index + 1).padStart(2, '0')}</span>
+                      </div>
+                    </div>
+
+                    {/* Main */}
+                    <div className="min-w-0 flex-1">
+                      <div className="mb-1 flex flex-wrap items-center gap-3">
+                        <h3 className="font-mono text-lg font-semibold text-slate-900 dark:text-tactical-text">{displayName}</h3>
+                        <StatusBadge variant={status} label={statusLabel(status)} />
+                      </div>
+                      <p className="mb-3 font-mono text-xs text-slate-500 dark:text-tactical-dim">{displayDescription}</p>
+                      <div className="max-w-md">
+                        <SegmentBar value={done} max={total || 1} color={status === 'completed' ? 'green' : status === 'in-progress' ? 'amber' : 'cyan'} caption={`${done}/${total}`} />
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex shrink-0 items-center gap-2">
+                      {item.children && item.children.length > 0 && (
+                        <TacticalButton
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => setExpanded(isOpen ? null : item.path)}
+                        >
+                          {isOpen ? '▾' : '▸'} {item.children.length} {t('roadmap.lessons')}
+                        </TacticalButton>
+                      )}
+                      <TacticalButton
+                        size="sm"
+                        variant={status === 'completed' ? 'ghost' : 'secondary'}
+                        onClick={() => navigate(item.path)}
+                      >
+                        {status === 'completed'
+                          ? t('roadmap.review_module')
+                          : done > 0
+                            ? t('roadmap.resume_module')
+                            : t('roadmap.start_module')}
+                      </TacticalButton>
+                    </div>
+                  </div>
+
+                  {/* Prerequisites / skills */}
+                  {((item.prerequisites && item.prerequisites.length > 0) || (item.skills && item.skills.length > 0)) && (
+                    <div className="flex flex-wrap gap-6 border-t border-slate-200 px-5 py-3 dark:border-tactical-border">
+                      {item.prerequisites && item.prerequisites.length > 0 && (
+                        <div>
+                          <div className="label-mono mb-1.5">{t('roadmap.prerequisites')}</div>
+                          <div className="flex flex-wrap gap-1.5">
+                            {item.prerequisites.map(p => (
+                              <span key={p} className="border border-slate-200 px-2 py-0.5 font-mono text-[11px] text-slate-600 dark:border-tactical-border dark:text-tactical-dim">{p}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {item.skills && item.skills.length > 0 && (
+                        <div>
+                          <div className="label-mono mb-1.5">{t('roadmap.skills')}</div>
+                          <div className="flex flex-wrap gap-1.5">
+                            {item.skills.map(s => (
+                              <span key={s} className="border border-slate-200 px-2 py-0.5 font-mono text-[11px] text-slate-600 dark:border-tactical-border dark:text-tactical-dim">{s}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Lessons list */}
+                  {isOpen && item.children && item.children.length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      className="border-t border-slate-200 px-5 py-3 dark:border-tactical-border"
+                    >
+                      <div className="grid grid-cols-1 gap-1 sm:grid-cols-2">
+                        {item.children.map(child => {
+                          const childName = t(makeMenuKey(child.path, 'name'), { defaultValue: child.name });
+                          const childDone = isCompleted(child.path);
+                          return (
+                            <Link
+                              key={child.path}
+                              to={child.path}
+                              className="flex items-center gap-2 px-2 py-1.5 font-mono text-xs text-slate-600 transition-colors hover:bg-slate-100 dark:text-tactical-dim dark:hover:bg-tactical-surface"
+                            >
+                              <span className={childDone ? 'text-signal-green' : 'text-slate-400 dark:text-tactical-label'}>
+                                {childDone ? '[x]' : '[ ]'}
+                              </span>
+                              {childName}
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </motion.div>
+                  )}
+                </Panel>
+              </motion.div>
+            );
+          })}
         </div>
       </ContentLayout>
     </div>
   );
-} 
+}

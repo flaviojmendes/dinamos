@@ -6,34 +6,36 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-12">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="text-slate-500 dark:text-slate-400 text-sm">
-            © {currentYear} Dinamos. {t('footer.all_rights_reserved', 'All rights reserved.')}
+    <footer className="border-t border-slate-200 dark:border-tactical-border bg-white/80 dark:bg-tactical-surface/90 backdrop-blur">
+      <div className="mx-auto max-w-[1400px] px-4 py-6 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+          <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-slate-500 dark:text-tactical-dim">
+            <span className="h-1.5 w-1.5 bg-signal-green" aria-hidden />
+            © {currentYear} Dinamos
+            <span className="text-slate-400 dark:text-tactical-label normal-case">— {t('footer.all_rights_reserved', 'All rights reserved.')}</span>
           </div>
-          <div className="flex items-center gap-6 text-sm">
-            <a 
-              href="/privacy-policy" 
-              className="text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+          <div className="flex items-center gap-5 font-mono text-xs uppercase tracking-wider">
+            <a
+              href="/privacy-policy"
+              className="text-slate-500 transition-colors hover:text-slate-900 dark:text-tactical-dim dark:hover:text-tactical-text"
             >
               {t('footer.privacy_policy', 'Privacy Policy')}
             </a>
-            <a 
-              href="/terms-and-conditions" 
-              className="text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+            <a
+              href="/terms-and-conditions"
+              className="text-slate-500 transition-colors hover:text-slate-900 dark:text-tactical-dim dark:hover:text-tactical-text"
             >
               {t('footer.terms', 'Terms of Service')}
             </a>
           </div>
         </div>
-        <div className="mt-6 border-t border-slate-200 dark:border-slate-800 pt-6 text-center text-sm text-slate-500 dark:text-slate-400">
-          Made with <span className="text-purple-500">💜</span> by{' '}
+        <div className="mt-5 border-t border-slate-200 pt-5 text-center font-mono text-xs text-slate-500 dark:border-tactical-border dark:text-tactical-dim">
+          Made with <span className="text-signal-red">💜</span> by{' '}
           <a
             href="https://instagram.com/trilhainfo"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300 transition-colors"
+            className="font-semibold text-brand-600 transition-colors hover:text-brand-700 dark:text-signal-green dark:hover:text-signal-green/80"
           >
             flaviojmendes
           </a>
