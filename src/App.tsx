@@ -122,19 +122,16 @@ const createMenuItems = (t: any): MenuItem[] => [
     path: "/intro",
     name: t('menu.intro.name'),
     description: t('menu.intro.description'),
-    badges: [{ text: t('badges.free'), color: "bg-green-500" }],
   },
   {
     path: "/sistemas-distribuidos-101",
     name: t('menu.sistemas_distribuidos_101.name'),
     description: t('menu.sistemas_distribuidos_101.description'),
-    badges: [{ text: t('badges.free'), color: "bg-green-500" }],
   },
   {
     path: "/theoretical-foundations",
     name: t('menu.theoretical_foundations.name'),
     description: t('menu.theoretical_foundations.description'),
-    badges: [{ text: t('badges.new'), color: "bg-blue-500" }, { text: t('badges.free'), color: "bg-green-500" }],
     status: "recommended",
     prerequisites: ["sistemas-distribuidos-101"],
     category: "Foundational",
@@ -266,8 +263,6 @@ const createMenuItems = (t: any): MenuItem[] => [
         path: "/componentes/polling-webhooks",
         name: t('menu.componentes.polling_webhooks.name'),
         description: t('menu.componentes.polling_webhooks.description'),
-        status: "new",
-        badges: [{ text: t('badges.new'), color: "bg-blue-500" }],
         children: [
           {
             path: "/componentes/polling-webhooks",
@@ -287,7 +282,6 @@ const createMenuItems = (t: any): MenuItem[] => [
     path: "/system-design-101",
     name: t('menu.system_design_101.name'),
     description: t('menu.system_design_101.description'),
-    badges: [{ text: t('badges.free'), color: "bg-green-500" }],
     status: "recommended",
     prerequisites: ["componentes"],
     category: "Application",
@@ -439,20 +433,16 @@ const createMenuItems = (t: any): MenuItem[] => [
         path: "/principios-design/acoplamento",
         name: t('menu.principios_design.acoplamento.name'),
         description: t('menu.principios_design.acoplamento.description'),
-        badges: [{ text: t('badges.new'), color: "bg-blue-500" }],
       },
       {
         path: "/principios-design/orquestracao-vs-coreografia",
         name: t('menu.principios_design.orquestracao_vs_coreografia.name'),
         description: t('menu.principios_design.orquestracao_vs_coreografia.description'),
-        status: "new"
       },
       {
         path: "/principios-design/canary-deployment",
         name: t('menu.principios_design.canary_deployment.name'),
         description: t('menu.principios_design.canary_deployment.description'),
-        status: "new",
-        badges: [{ text: t('badges.new'), color: "bg-blue-500" }],
         children: [
           {
             path: "/principios-design/canary-deployment/simulator",
@@ -657,7 +647,6 @@ const createMenuItems = (t: any): MenuItem[] => [
     path: "/monitoramento-e-manutencao",
     name: t('menu.monitoramento_e_manutencao.name'),
     description: t('menu.monitoramento_e_manutencao.description'),
-    badges: [{ text: t('badges.new'), color: "bg-blue-500" }],
     icon: (
       <svg
         className="w-6 h-6"
@@ -689,14 +678,12 @@ const createMenuItems = (t: any): MenuItem[] => [
             description: t('menu.monitoramento_e_manutencao.logs.simulador.description'),
             path: "/monitoramento-e-manutencao/logs/simulador",
             component: LogSimulator,
-            status: "new"
           },
           {
             path: "/monitoramento-e-manutencao/logs/tracing",
             name: t('menu.monitoramento_e_manutencao.logs.tracing.name'),
             description: t('menu.monitoramento_e_manutencao.logs.tracing.description'),
             component: TracingSimulator,
-            status: "new"
           }
         ]
       },
@@ -721,7 +708,6 @@ const createMenuItems = (t: any): MenuItem[] => [
     path: "/casos-reais",
     name: t('menu.casos_reais.name'),
     description: t('menu.casos_reais.description'),
-    badges: [{ text: t('badges.new'), color: "bg-blue-500" }],
     icon: (
       <svg
         className="w-6 h-6"
@@ -774,8 +760,6 @@ const createMenuItems = (t: any): MenuItem[] => [
     path: "/editor",
     name: t('menu.editor.name'),
     description: t('menu.editor.description'),
-    status: "new",
-    badges: [{ text: t('badges.new'), color: "bg-blue-500" }],
     icon: (
       <svg
         className="w-6 h-6 text-brand-600 dark:text-brand-400"
@@ -796,8 +780,6 @@ const createMenuItems = (t: any): MenuItem[] => [
     path: "/forum",
     name: t('menu.forum.name'),
     description: t('menu.forum.description'),
-    status: "new",
-    badges: [{ text: t('badges.new'), color: "bg-blue-500" }],
     icon: (
       <svg
         className="w-6 h-6 text-emerald-500"
@@ -819,8 +801,6 @@ const createMenuItems = (t: any): MenuItem[] => [
     name: t('menu.design_lab.name'),
     description: t('menu.design_lab.description'),
     external: true,
-    status: "new",
-    badges: [{ text: t('badges.new'), color: "bg-blue-500" }],
     icon: (
       <svg
         className="w-6 h-6 text-pink-500"
