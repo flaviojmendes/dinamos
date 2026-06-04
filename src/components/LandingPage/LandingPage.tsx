@@ -78,9 +78,9 @@ export default function LandingPage() {
         )}
   
         {/* Hero Section */}
-        <div className={`relative overflow-hidden ${!user ? 'pt-20' : ''}`}>
-          <div className="absolute inset-0 bg-gradient-to-br from-brand-500/10 to-brand-700/10" />
-          <div className="absolute inset-0 bg-grid dark:bg-grid-dark [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
+        <div className={`relative overflow-hidden scanline ${!user ? 'pt-20' : ''}`}>
+          <div className="absolute inset-0 bg-gradient-to-br from-brand-500/5 to-transparent dark:from-signal-green/5" />
+          <div className="absolute inset-0 bg-grid dark:bg-grid [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
           <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -88,15 +88,19 @@ export default function LandingPage() {
               transition={{ duration: 0.5 }}
               className="text-center"
             >
+              <div className="mb-5 inline-flex items-center gap-2 border border-slate-300 dark:border-tactical-border px-3 py-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-signal-green animate-pulse" />
+                <span className="font-mono text-[11px] uppercase tracking-widest text-slate-600 dark:text-tactical-dim">System Online // Distributed Systems Field Manual</span>
+              </div>
               <Typography 
                 variant="h1" 
-                className="mb-6 bg-gradient-to-r from-brand-500 to-brand-700 bg-clip-text text-transparent"
+                className="mb-6 font-mono uppercase tracking-tight text-slate-900 dark:text-tactical-text"
               >
                 {t('landing.hero_title')}
               </Typography>
               <Typography 
                 variant="p" 
-                className="text-xl md:text-2xl text-slate-600 dark:text-slate-400 mb-8 max-w-3xl mx-auto"
+                className="text-xl md:text-2xl text-slate-600 dark:text-tactical-dim mb-8 max-w-3xl mx-auto"
               >
                 {t('landing.hero_subtitle')}
               </Typography>
@@ -104,7 +108,7 @@ export default function LandingPage() {
                 <Link
                   to="/intro"
                   onClick={() => trackEvent('User', 'Clicked on Start Now Button')}
-                  className="inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
+                  className="inline-flex items-center gap-2 bg-slate-900 dark:bg-white hover:bg-slate-700 dark:hover:bg-slate-200 text-white dark:text-black px-8 py-3 text-lg font-mono uppercase tracking-wider font-medium transition-colors"
                 >
                   <span>{t('common.start_now')}</span>
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,7 +117,7 @@ export default function LandingPage() {
                 </Link>
                 <Link
                   to="/intro"
-                  className="inline-flex items-center gap-2 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-900 dark:text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
+                  className="inline-flex items-center gap-2 bg-transparent border border-slate-300 dark:border-tactical-line hover:border-slate-900 dark:hover:border-signal-green text-slate-900 dark:text-tactical-text px-8 py-3 text-lg font-mono uppercase tracking-wider font-medium transition-colors"
                 >
                   <span>{t('common.view_content')}</span>
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -274,7 +278,7 @@ export default function LandingPage() {
         >
           <Typography 
             variant="h2" 
-            className="mb-6 bg-gradient-to-r from-brand-400 to-brand-600 bg-clip-text text-transparent"
+            className="mb-6 font-mono uppercase tracking-tight text-slate-900 dark:text-tactical-text"
           >
             {t('landing.features_title')}
           </Typography>
@@ -335,7 +339,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="group bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-slate-300 dark:border-slate-700/30 hover:border-purple-500/50 transition-colors"
+            className="group tactical-panel p-6 hover:border-purple-500/50 transition-colors"
           >
             <div className="bg-purple-500/10 p-3 rounded-lg w-12 h-12 mb-4 group-hover:bg-purple-500/20 transition-colors">
               <svg className="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -378,7 +382,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="group bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-slate-300 dark:border-slate-700/30 hover:border-green-500/50 transition-colors"
+            className="group tactical-panel p-6 hover:border-green-500/50 transition-colors"
           >
             <div className="bg-green-500/10 p-3 rounded-lg w-12 h-12 mb-4 group-hover:bg-green-500/20 transition-colors">
               <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -428,7 +432,7 @@ export default function LandingPage() {
         >
           <Typography 
             variant="h2" 
-            className="mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+            className="mb-6 font-mono uppercase tracking-tight text-slate-900 dark:text-tactical-text"
           >
             {t('landing.journey_title')}
           </Typography>
@@ -611,7 +615,7 @@ export default function LandingPage() {
         >
           <Typography 
             variant="h2" 
-            className="mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+            className="mb-6 font-mono uppercase tracking-tight text-slate-900 dark:text-tactical-text"
           >
             {t('landing.simulators_title')}
           </Typography>
@@ -628,7 +632,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="group bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-slate-300 dark:border-slate-700/30 hover:border-blue-500/50 transition-colors"
+            className="group tactical-panel p-6 hover:border-blue-500/50 transition-colors"
           >
             <div className="relative aspect-video mb-4 overflow-hidden rounded-lg">
               <img 
@@ -649,7 +653,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="group bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-slate-300 dark:border-slate-700/30 hover:border-purple-500/50 transition-colors"
+            className="group tactical-panel p-6 hover:border-purple-500/50 transition-colors"
           >
             <div className="relative aspect-video mb-4 overflow-hidden rounded-lg">
               <img 
@@ -670,7 +674,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="group bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-slate-300 dark:border-slate-700/30 hover:border-green-500/50 transition-colors"
+            className="group tactical-panel p-6 hover:border-green-500/50 transition-colors"
           >
             <div className="relative aspect-video mb-4 overflow-hidden rounded-lg">
               <img 
@@ -699,7 +703,7 @@ export default function LandingPage() {
         >
           <Typography 
             variant="h2" 
-            className="mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+            className="mb-6 font-mono uppercase tracking-tight text-slate-900 dark:text-tactical-text"
           >
             {t('landing.teacher_title')}
           </Typography>
@@ -711,7 +715,7 @@ export default function LandingPage() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-slate-300 dark:border-slate-700/30"
+              className="tactical-panel p-6"
             >
               <h3 className="text-xl font-bold mb-4 text-brand-600 dark:text-brand-400">{t('landing.teacher_experience_title')}</h3>
               <ul className="space-y-3">
@@ -740,7 +744,7 @@ export default function LandingPage() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 border border-slate-300 dark:border-slate-700/30"
+              className="tactical-panel p-6"
             >
               <h3 className="text-xl font-bold mb-4 text-purple-400">{t('landing.teacher_specialties_title')}</h3>
               <ul className="space-y-3">
@@ -770,7 +774,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5 }}
-            className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-8 border border-slate-300 dark:border-slate-700/30"
+            className="tactical-panel p-8"
           >
             <div className="space-y-6">
               <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -803,7 +807,7 @@ export default function LandingPage() {
           </div>
           <Typography 
             variant="h2" 
-            className="mb-6 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent"
+            className="mb-6 font-mono uppercase tracking-tight text-green-600 dark:text-signal-green"
           >
             {t('landing.free_title')}
           </Typography>
@@ -821,25 +825,25 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-gradient-to-b from-green-600/10 to-emerald-600/10 rounded-xl p-8 border-2 border-green-500/30 hover:border-green-500/50 transition-colors relative overflow-hidden"
+            className="tactical-panel p-8 border-signal-green/40 hover:border-signal-green transition-colors relative overflow-hidden"
           >
-            <div className="absolute -top-0 -right-0">
-              <span className="bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs font-bold px-4 py-2 rounded-bl-lg rounded-tr-xl shadow-lg">
+            <div className="absolute top-0 right-0">
+              <span className="bg-signal-green text-black text-xs font-mono uppercase tracking-wider font-bold px-4 py-2">
                 100% {t('landing.free_badge')}
               </span>
             </div>
 
             <div className="text-center py-8">
-              <div className="text-6xl font-bold text-white mb-4">
+              <div className="text-6xl font-mono font-bold text-slate-900 dark:text-tactical-text mb-4">
                 {t('landing.free_price')}
               </div>
-              <p className="text-lg text-slate-300 mb-8">
+              <p className="text-lg text-slate-600 dark:text-tactical-dim mb-8">
                 {t('landing.free_description')}
               </p>
               <Link
                 to="/intro"
                 onClick={() => trackEvent('User', 'Clicked on Free Access Button')}
-                className="inline-block bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-8 py-3 rounded-lg font-medium transition-colors text-lg"
+                className="inline-block bg-signal-green hover:opacity-90 text-black px-8 py-3 font-mono uppercase tracking-wider font-medium transition-opacity text-lg"
               >
                 {t('common.start_now')}
               </Link>

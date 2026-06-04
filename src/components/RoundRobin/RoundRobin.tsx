@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Panel, StatusBadge, TacticalButton } from '../tactical';
 
 type LoadBalancingStrategy = 'roundRobin' | 'leastConnections' | 'random';
 
@@ -147,168 +148,184 @@ export default function RoundRobin() {
     };
   }, [isRunning, config.requestsPerSecond, config.serverCount, config.serverCapacity, config.strategy]);
 
+  const selectClass =
+    'p-2 bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border font-mono text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-signal-green w-full sm:w-auto';
+
+  const rangeClass =
+    'w-full h-2 bg-slate-200 dark:bg-tactical-border appearance-none cursor-pointer accent-signal-green';
+
   return (
-    <div className="flex-1 min-h-full overflow-auto">
-      <div className="p-4 h-full">
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-            <h1 className="text-xl text-white font-semibold">{t('simulators.round_robin.title')}</h1>
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
-              <button
-                onClick={() => setIsRunning(!isRunning)}
-                className={`w-full sm:w-auto px-4 py-2 rounded-md font-medium transition-colors ${
-                  isRunning 
-                    ? 'bg-red-500 hover:bg-red-600' 
-                    : 'bg-green-500 hover:bg-green-600'
-                }`}
-              >
-                {isRunning ? t('simulators.round_robin.buttons.stop') : t('simulators.round_robin.buttons.start')}
-              </button>
-            </div>
+    <div className="space-y-6">
+      <div className="max-w-3xl">
+        <div className="label-mono text-signal-cyan mb-2">
+          [ {t('simulators.round_robin.title')} ]
+        </div>
+      </div>
+
+      <Panel
+        title={t('simulators.round_robin.config.strategy')}
+        accent="cyan"
+        action={
+          <TacticalButton
+            size="sm"
+            variant={isRunning ? 'danger' : 'secondary'}
+            onClick={() => setIsRunning(!isRunning)}
+          >
+            {isRunning ? t('simulators.round_robin.buttons.stop') : t('simulators.round_robin.buttons.start')}
+          </TacticalButton>
+        }
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block label-mono text-slate-500 dark:text-tactical-label mb-2">
+              {t('simulators.round_robin.config.strategy')}
+            </label>
+            <select
+              value={config.strategy}
+              onChange={(e) =>
+                setConfig((c) => ({
+                  ...c,
+                  strategy: e.target.value as LoadBalancingStrategy,
+                }))
+              }
+              className={selectClass}
+            >
+              <option value="roundRobin">Round Robin</option>
+              <option value="leastConnections">Least Connections</option>
+              <option value="random">Random</option>
+            </select>
           </div>
 
-          {/* Configuration */}
-          <div className="mb-6 bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-white mb-2">
-                  {t('simulators.round_robin.config.strategy')}
-                  <select
-                    value={config.strategy}
-                    onChange={(e) =>
-                      setConfig((c) => ({
-                        ...c,
-                        strategy: e.target.value as LoadBalancingStrategy,
-                      }))
-                    }
-                    className="ml-2 p-2 bg-zinc-700 text-white rounded border border-zinc-600 w-full sm:w-auto"
-                  >
-                    <option value="roundRobin">Round Robin</option>
-                    <option value="leastConnections">Least Connections</option>
-                    <option value="random">Random</option>
-                  </select>
-                </label>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <div className="flex justify-between text-white mb-1">
-                    <span>{t('simulators.round_robin.config.server_count')}</span>
-                    <span className="text-brand-600 dark:text-brand-400">{config.serverCount}</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="1"
-                    max="10"
-                    value={config.serverCount}
-                    onChange={(e) =>
-                      setConfig((c) => ({
-                        ...c,
-                        serverCount: parseInt(e.target.value),
-                      }))
-                    }
-                    className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
-                  />
-                </div>
-
-                <div>
-                  <div className="flex justify-between text-white mb-1">
-                    <span>{t('simulators.round_robin.config.server_capacity')}</span>
-                    <span className="text-brand-600 dark:text-brand-400">{t('simulators.round_robin.server_card.requests', { current: config.serverCapacity, capacity: '' }).replace('undefined/', '').replace(' requests', '')}</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="10"
-                    max="1000"
-                    step="10"
-                    value={config.serverCapacity}
-                    onChange={(e) =>
-                      setConfig((c) => ({
-                        ...c,
-                        serverCapacity: parseInt(e.target.value),
-                      }))
-                    }
-                    className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
-                  />
-                </div>
-
-                <div>
-                  <div className="flex justify-between text-white mb-1">
-                    <span>{t('simulators.round_robin.config.rps')}</span>
-                    <span className="text-brand-600 dark:text-brand-400">{config.requestsPerSecond} req/s</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="1"
-                    max="100"
-                    value={config.requestsPerSecond}
-                    onChange={(e) =>
-                      setConfig((c) => ({
-                        ...c,
-                        requestsPerSecond: parseInt(e.target.value),
-                      }))
-                    }
-                    className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Strategy Description */}
-            <div className="mt-4 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-300 text-sm">
-              {config.strategy === 'roundRobin' && t('simulators.round_robin.strategies.round_robin')}
-              {config.strategy === 'leastConnections' && t('simulators.round_robin.strategies.least_conn')}
-              {config.strategy === 'random' && t('simulators.round_robin.strategies.random')}
-            </div>
-          </div>
-
-          {/* Servers Visualization */}
           <div className="space-y-4">
-            {servers.map((server) => (
-              <div
-                key={server.id}
-                className={`bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg border ${
-                  currentServerIndex === server.id ? 'border-blue-500' : 'border-slate-300 dark:border-slate-700'
-                }`}
-              >
-                <div className="flex flex-col space-y-3">
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                    <div className="flex items-center gap-4">
-                      <span className="text-white font-medium">{t('simulators.round_robin.server_card.server_label', { id: server.id + 1 })}</span>
-                      <div className="text-sm">
-                        <span className="text-slate-500 dark:text-slate-400">{t('simulators.round_robin.server_card.requests', { current: server.currentLoad, capacity: server.capacity })}</span>
-                        <span className="text-sm text-brand-600 dark:text-brand-400 ml-2">{t('simulators.round_robin.server_card.response_time_ms', { ms: server.responseTime })}</span>
-                      </div>
-                    </div>
-                    <div className="w-full sm:w-1/3 flex items-center gap-2">
-                      <span className="text-slate-500 dark:text-slate-400 text-sm whitespace-nowrap">{t('simulators.round_robin.server_card.response_time_label')}</span>
-                      <input
-                        type="range"
-                        min="100"
-                        max="2000"
-                        step="100"
-                        value={server.responseTime}
-                        onChange={(e) => updateServerResponseTime(server.id, parseInt(e.target.value))}
-                        className="flex-grow h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
-                      />
+            <div>
+              <div className="flex justify-between font-mono text-sm text-slate-600 dark:text-tactical-dim mb-1">
+                <span>{t('simulators.round_robin.config.server_count')}</span>
+                <span className="text-signal-cyan tabular-nums">{config.serverCount}</span>
+              </div>
+              <input
+                type="range"
+                min="1"
+                max="10"
+                value={config.serverCount}
+                onChange={(e) =>
+                  setConfig((c) => ({
+                    ...c,
+                    serverCount: parseInt(e.target.value),
+                  }))
+                }
+                className={rangeClass}
+              />
+            </div>
+
+            <div>
+              <div className="flex justify-between font-mono text-sm text-slate-600 dark:text-tactical-dim mb-1">
+                <span>{t('simulators.round_robin.config.server_capacity')}</span>
+                <span className="text-signal-cyan tabular-nums">{t('simulators.round_robin.server_card.requests', { current: config.serverCapacity, capacity: '' }).replace('undefined/', '').replace(' requests', '')}</span>
+              </div>
+              <input
+                type="range"
+                min="10"
+                max="1000"
+                step="10"
+                value={config.serverCapacity}
+                onChange={(e) =>
+                  setConfig((c) => ({
+                    ...c,
+                    serverCapacity: parseInt(e.target.value),
+                  }))
+                }
+                className={rangeClass}
+              />
+            </div>
+
+            <div>
+              <div className="flex justify-between font-mono text-sm text-slate-600 dark:text-tactical-dim mb-1">
+                <span>{t('simulators.round_robin.config.rps')}</span>
+                <span className="text-signal-cyan tabular-nums">{config.requestsPerSecond} req/s</span>
+              </div>
+              <input
+                type="range"
+                min="1"
+                max="100"
+                value={config.requestsPerSecond}
+                onChange={(e) =>
+                  setConfig((c) => ({
+                    ...c,
+                    requestsPerSecond: parseInt(e.target.value),
+                  }))
+                }
+                className={rangeClass}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-4 tactical-panel border-l-2 border-l-signal-cyan p-4">
+          <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim">
+            {config.strategy === 'roundRobin' && t('simulators.round_robin.strategies.round_robin')}
+            {config.strategy === 'leastConnections' && t('simulators.round_robin.strategies.least_conn')}
+            {config.strategy === 'random' && t('simulators.round_robin.strategies.random')}
+          </p>
+        </div>
+      </Panel>
+
+      <Panel
+        title={t('simulators.round_robin.config.server_count')}
+        accent="green"
+        action={isRunning ? <StatusBadge variant="active" label="RUNNING" /> : undefined}
+      >
+        <div className="space-y-4">
+          {servers.map((server) => (
+            <div
+              key={server.id}
+              className={`border p-4 ${
+                currentServerIndex === server.id
+                  ? 'border-signal-cyan bg-signal-cyan/5'
+                  : 'border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised'
+              }`}
+            >
+              <div className="flex flex-col space-y-3">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                  <div className="flex items-center gap-4">
+                    <span className="font-mono text-sm font-medium text-slate-900 dark:text-tactical-text">
+                      {t('simulators.round_robin.server_card.server_label', { id: server.id + 1 })}
+                    </span>
+                    {currentServerIndex === server.id && isRunning && (
+                      <StatusBadge variant="in-progress" label="ACTIVE" />
+                    )}
+                    <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
+                      <span>{t('simulators.round_robin.server_card.requests', { current: server.currentLoad, capacity: server.capacity })}</span>
+                      <span className="text-signal-cyan ml-2">{t('simulators.round_robin.server_card.response_time_ms', { ms: server.responseTime })}</span>
                     </div>
                   </div>
-
-                  <div className="w-full bg-zinc-700 rounded-full h-3">
-                    <div
-                      className="h-3 rounded-full transition-all duration-200"
-                      style={{
-                        width: `${(server.currentLoad / server.capacity) * 100}%`,
-                        backgroundColor: getLoadColor(server.currentLoad, server.capacity),
-                      }}
+                  <div className="w-full sm:w-1/3 flex items-center gap-2">
+                    <span className="label-mono whitespace-nowrap">{t('simulators.round_robin.server_card.response_time_label')}</span>
+                    <input
+                      type="range"
+                      min="100"
+                      max="2000"
+                      step="100"
+                      value={server.responseTime}
+                      onChange={(e) => updateServerResponseTime(server.id, parseInt(e.target.value))}
+                      className={`flex-grow ${rangeClass}`}
                     />
                   </div>
                 </div>
+
+                <div className="w-full bg-slate-200 dark:bg-tactical-border h-3">
+                  <div
+                    className="h-3 transition-all duration-200"
+                    style={{
+                      width: `${(server.currentLoad / server.capacity) * 100}%`,
+                      backgroundColor: getLoadColor(server.currentLoad, server.capacity),
+                    }}
+                  />
+                </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
-      </div>
+      </Panel>
     </div>
   );
-} 
+}

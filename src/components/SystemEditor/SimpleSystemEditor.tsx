@@ -75,9 +75,9 @@ interface DistributedSystemDesign {
 const ClientNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
   const { t } = useTranslation();
   return (
-    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-blue-500 bg-slate-100 dark:bg-slate-800 min-w-[180px]">
+    <div className="px-4 py-2 shadow-lg border-2 border-blue-500 bg-tactical-surface min-w-[180px]">
       <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
-      <div className="flex items-center gap-2 font-bold text-white">
+      <div className="flex items-center gap-2 font-mono font-bold text-white tracking-tight">
         <Users className="w-4 h-4" />
         {data.label}
       </div>
@@ -99,7 +99,7 @@ const ClientNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
         <input type="range" min="0" max="100" value={data.failureRate || 0} onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))} className="w-full" />
         <div className="text-right">{data.failureRate || 0}%</div>
       </div>
-      <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+      <div className="mt-1 h-1.5 bg-tactical-line overflow-hidden">
         <div className="h-full transition-all duration-500" style={{ width: `${data.metrics?.load || 0}%`, backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e' }} />
       </div>
     </div>
@@ -109,10 +109,10 @@ const ClientNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
 const ServerNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
   const { t } = useTranslation();
   return (
-    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-purple-500 bg-slate-100 dark:bg-slate-800 min-w-[180px]">
+    <div className="px-4 py-2 shadow-lg border-2 border-purple-500 bg-tactical-surface min-w-[180px]">
       <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
       <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
-      <div className="flex items-center gap-2 font-bold text-white">
+      <div className="flex items-center gap-2 font-mono font-bold text-white tracking-tight">
         <Server className="w-4 h-4" />
         {data.label}
       </div>
@@ -134,7 +134,7 @@ const ServerNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
         <input type="range" min="0" max="100" value={data.failureRate || 0} onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))} className="w-full" />
         <div className="text-right">{data.failureRate || 0}%</div>
       </div>
-      <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+      <div className="mt-1 h-1.5 bg-tactical-line overflow-hidden">
         <div className="h-full transition-all duration-500" style={{ width: `${data.metrics?.load || 0}%`, backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e' }} />
       </div>
     </div>
@@ -144,9 +144,9 @@ const ServerNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
 const DatabaseNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
   const { t } = useTranslation();
   return (
-    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-yellow-500 bg-slate-100 dark:bg-slate-800 min-w-[180px]">
+    <div className="px-4 py-2 shadow-lg border-2 border-yellow-500 bg-tactical-surface min-w-[180px]">
       <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
-      <div className="flex items-center gap-2 font-bold text-white">
+      <div className="flex items-center gap-2 font-mono font-bold text-white tracking-tight">
         <DatabaseIcon className="w-4 h-4" />
         {data.label}
       </div>
@@ -168,7 +168,7 @@ const DatabaseNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
         <input type="range" min="0" max="100" value={data.failureRate || 0} onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))} className="w-full" />
         <div className="text-right">{data.failureRate || 0}%</div>
       </div>
-      <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+      <div className="mt-1 h-1.5 bg-tactical-line overflow-hidden">
         <div className="h-full transition-all duration-500" style={{ width: `${data.metrics?.load || 0}%`, backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e' }} />
       </div>
     </div>
@@ -178,10 +178,10 @@ const DatabaseNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
 const LoadBalancerNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
   const { t } = useTranslation();
   return (
-    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-green-500 bg-slate-100 dark:bg-slate-800 min-w-[180px]">
+    <div className="px-4 py-2 shadow-lg border-2 border-green-500 bg-tactical-surface min-w-[180px]">
       <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
       <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
-      <div className="flex items-center gap-2 font-bold text-white">
+      <div className="flex items-center gap-2 font-mono font-bold text-white tracking-tight">
         <Network className="w-4 h-4" />
         {data.label}
       </div>
@@ -200,7 +200,7 @@ const LoadBalancerNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
       </div>
       <div className="mt-2 text-xs text-white">
         <label>{t('editor.metrics.algorithm')}</label>
-        <select value={data.algorithm || 'roundRobin'} onChange={(e) => data.onAlgorithmChange?.(e.target.value as 'roundRobin')} className="w-full mt-1 bg-zinc-700 rounded px-2 py-1 text-white">
+        <select value={data.algorithm || 'roundRobin'} onChange={(e) => data.onAlgorithmChange?.(e.target.value as 'roundRobin')} className="w-full mt-1 bg-tactical-raised border border-tactical-border px-2 py-1 text-white font-mono">
           <option value="roundRobin">Round Robin</option>
         </select>
       </div>
@@ -209,7 +209,7 @@ const LoadBalancerNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
         <input type="range" min="0" max="100" value={data.failureRate || 0} onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))} className="w-full" />
         <div className="text-right">{data.failureRate || 0}%</div>
       </div>
-      <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+      <div className="mt-1 h-1.5 bg-tactical-line overflow-hidden">
         <div className="h-full transition-all duration-500" style={{ width: `${data.metrics?.load || 0}%`, backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e' }} />
       </div>
     </div>
@@ -219,10 +219,10 @@ const LoadBalancerNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
 const APIGatewayNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
   const { t } = useTranslation();
   return (
-    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-indigo-500 bg-slate-100 dark:bg-slate-800 min-w-[220px]">
+    <div className="px-4 py-2 shadow-lg border-2 border-indigo-500 bg-tactical-surface min-w-[220px]">
       <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
       <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
-      <div className="flex items-center gap-2 font-bold text-white">
+      <div className="flex items-center gap-2 font-mono font-bold text-white tracking-tight">
         <Shield className="w-4 h-4" />
         {data.label}
       </div>
@@ -253,7 +253,7 @@ const APIGatewayNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
         <input type="range" min="0" max="100" value={data.failureRate || 0} onChange={(e) => data.onFailureRateChange?.(Number(e.target.value))} className="w-full" />
         <div className="text-right">{data.failureRate || 0}%</div>
       </div>
-      <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+      <div className="mt-1 h-1.5 bg-tactical-line overflow-hidden">
         <div className="h-full transition-all duration-500" style={{ width: `${data.metrics?.load || 0}%`, backgroundColor: (data.metrics?.load || 0) > 80 ? '#ef4444' : (data.metrics?.load || 0) > 60 ? '#eab308' : '#22c55e' }} />
       </div>
     </div>
@@ -264,10 +264,10 @@ const APIGatewayNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
 const CacheNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
   const { t } = useTranslation();
   return (
-    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-pink-500 bg-slate-100 dark:bg-slate-800 min-w-[200px]">
+    <div className="px-4 py-2 shadow-lg border-2 border-pink-500 bg-tactical-surface min-w-[200px]">
       <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
       <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
-      <div className="flex items-center gap-2 font-bold text-white">
+      <div className="flex items-center gap-2 font-mono font-bold text-white tracking-tight">
         <HardDrive className="w-4 h-4" />
         {data.label}
       </div>
@@ -318,7 +318,7 @@ const CacheNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
         />
         <div className="text-right">{data.failureRate || 0}%</div>
       </div>
-      <div className="mt-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+      <div className="mt-1 h-1.5 bg-tactical-line overflow-hidden">
         <div
           className="h-full transition-all duration-500"
           style={{
@@ -335,10 +335,10 @@ const CacheNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
 const MessageQueueNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
   const { t } = useTranslation();
   return (
-    <div className="px-4 py-2 shadow-lg rounded-lg border-2 border-orange-500 bg-slate-100 dark:bg-slate-800 min-w-[220px]">
+    <div className="px-4 py-2 shadow-lg border-2 border-orange-500 bg-tactical-surface min-w-[220px]">
       <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
       <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
-      <div className="flex items-center gap-2 font-bold text-white">
+      <div className="flex items-center gap-2 font-mono font-bold text-white tracking-tight">
         <MessageSquare className="w-4 h-4" />
         {data.label}
       </div>
@@ -386,14 +386,14 @@ const MessageQueueNode = ({ data, isConnectable }: NodeProps<NodeData>) => {
           return (
             <div
               key={index}
-              className={`h-4 flex-1 rounded-sm transition-colors ${
+              className={`h-4 flex-1 transition-colors ${
                 isActive
                   ? isDanger
-                    ? 'bg-red-500'
+                    ? 'bg-signal-red'
                     : isWarning
-                      ? 'bg-yellow-500'
+                      ? 'bg-signal-amber'
                       : 'bg-orange-500'
-                  : 'bg-zinc-700'
+                  : 'bg-tactical-line'
               }`}
             />
           );
@@ -1435,29 +1435,34 @@ export default function SimpleSystemEditor() {
   const totalCost = costBreakdown.reduce((sum, n) => sum + n.cost, 0);
 
   return (
-    <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
-      <div className="prose prose-invert prose-lg max-w-none mb-8">
-        <h1 className="text-3xl font-bold mb-4 text-brand-600 dark:text-brand-400">
+    <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto">
+      <div className="max-w-none mb-6">
+        <div className="label-mono text-signal-amber mb-2">
+          [ SYSTEM DESIGN ] // TACTICAL EDITOR
+        </div>
+        <h1 className="text-2xl md:text-3xl font-mono font-bold mb-4 tracking-tight text-slate-900 dark:text-tactical-text">
           {t('editor.title')}
         </h1>
         <div className="flex flex-col gap-4 mb-4">
-          <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-3 flex-wrap">
             <button
               onClick={() => setIsSimulationRunning(!isSimulationRunning)}
-              className={`px-4 py-2 ${
-                isSimulationRunning ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
-              } text-white rounded transition-colors`}
+              className={`px-4 py-2 font-mono text-sm uppercase tracking-wider border transition-colors ${
+                isSimulationRunning
+                  ? 'border-signal-red text-signal-red hover:bg-signal-red/10'
+                  : 'border-signal-green text-signal-green hover:bg-signal-green/10'
+              }`}
             >
-              {isSimulationRunning ? t('editor.buttons.stop') : t('editor.buttons.start')}
+              {isSimulationRunning ? `■ ${t('editor.buttons.stop')}` : `▶ ${t('editor.buttons.start')}`}
             </button>
             
-            <div className="border-l border-slate-300 dark:border-slate-700 h-8 mx-2"></div>
+            <div className="border-l border-slate-300 dark:border-tactical-line h-8 mx-1"></div>
             
             <button
               onClick={exportSystemDesign}
-              className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded transition-colors flex items-center gap-2"
+              className="px-4 py-2 font-mono text-sm uppercase tracking-wider border border-slate-300 dark:border-tactical-border text-slate-700 dark:text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan transition-colors flex items-center gap-2"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
               </svg>
               {t('editor.buttons.export')}
@@ -1465,9 +1470,9 @@ export default function SimpleSystemEditor() {
             
             <button
               onClick={handleImportClick}
-              className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded transition-colors flex items-center gap-2"
+              className="px-4 py-2 font-mono text-sm uppercase tracking-wider border border-slate-300 dark:border-tactical-border text-slate-700 dark:text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan transition-colors flex items-center gap-2"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
               </svg>
               {t('editor.buttons.import')}
@@ -1485,7 +1490,7 @@ export default function SimpleSystemEditor() {
           </div>
           
           {importError && (
-            <div className="bg-red-500/20 border border-red-500 rounded-lg p-3 text-red-200 text-sm">
+            <div className="bg-signal-red/10 border border-signal-red p-3 text-signal-red font-mono text-sm">
               <div className="flex items-center gap-2">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -1495,46 +1500,46 @@ export default function SimpleSystemEditor() {
             </div>
           )}
 
-          <div className="flex gap-4 text-sm text-slate-500 dark:text-slate-400">
+          <div className="flex gap-4 font-mono text-xs uppercase tracking-wider text-slate-500 dark:text-tactical-label">
             <div>{t('editor.labels.load_status')}</div>
-            <div className="flex items-center gap-1">
-              <div className="w-2 h-2 rounded-full bg-green-500"></div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-2 h-2 bg-signal-green"></div>
               <span>{t('editor.labels.normal')}</span>
             </div>
-            <div className="flex items-center gap-1">
-              <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-2 h-2 bg-signal-amber"></div>
               <span>{t('editor.labels.warning')}</span>
             </div>
-            <div className="flex items-center gap-1">
-              <div className="w-2 h-2 rounded-full bg-red-500"></div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-2 h-2 bg-signal-red"></div>
               <span>{t('editor.labels.critical')}</span>
             </div>
           </div>
 
           {/* Cost Estimation Panel */}
-          <div className="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg mt-2 shadow-lg w-full max-w-3xl">
+          <div className="tactical-panel mt-2 w-full max-w-3xl">
             <div
-              className={`flex items-center justify-between px-4 py-2 cursor-pointer select-none rounded-t-lg ${!isCostPanelOpen ? 'bg-white dark:bg-slate-900/80' : ''}`}
+              className="flex items-center justify-between px-4 py-2 cursor-pointer select-none border-b border-transparent dark:border-tactical-border"
               onClick={() => setIsCostPanelOpen(open => !open)}
               aria-label={isCostPanelOpen ? t('editor.labels.monthly_cost_estimate', { provider: provider === 'aws' ? 'AWS' : 'Google Cloud' }) : t('editor.labels.monthly_cost_estimate', { provider: provider === 'aws' ? 'AWS' : 'Google Cloud' })}
             >
               <div className="flex items-center gap-3 flex-wrap">
-                <label className="text-white font-semibold">{t('editor.labels.cloud')}</label>
+                <label className="label-mono">{t('editor.labels.cloud')}</label>
                 <select
                   value={provider}
                   onClick={e => e.stopPropagation()} // Prevent toggle when changing provider
                   onChange={e => setProvider(e.target.value as 'aws' | 'gcp')}
-                  className="bg-zinc-700 text-white rounded px-2 py-1"
+                  className="bg-slate-100 dark:bg-tactical-raised text-slate-900 dark:text-tactical-text font-mono border border-slate-300 dark:border-tactical-border px-2 py-1"
                 >
                   <option value="aws">AWS</option>
                   <option value="gcp">Google Cloud</option>
                 </select>
-                <span className="text-white font-bold text-lg ml-2 whitespace-nowrap">
+                <span className="text-slate-900 dark:text-tactical-text font-mono font-bold ml-2 whitespace-nowrap">
                   {t('editor.labels.monthly_cost_estimate', { provider: provider === 'aws' ? 'AWS' : 'Google Cloud' })}
                 </span>
               </div>
               <ChevronDown
-                className={`w-6 h-6 text-white chevron-animated ${isCostPanelOpen ? 'expanded' : 'collapsed'}`}
+                className={`w-5 h-5 text-slate-500 dark:text-tactical-dim chevron-animated ${isCostPanelOpen ? 'expanded' : 'collapsed'}`}
               />
             </div>
             <div className={`cost-panel-content${isCostPanelOpen ? '' : ' collapsed'}`}
@@ -1542,19 +1547,19 @@ export default function SimpleSystemEditor() {
             >
               <div className="flex flex-col gap-1 text-sm px-4 pt-2">
                 {costBreakdown.map(n => (
-                  <div key={n.id} className="flex justify-between items-baseline">
-                    <span className="text-slate-600 dark:text-slate-300 flex flex-col sm:flex-row sm:items-baseline gap-0.5">
-                      <span>{n.label} <span className="text-zinc-500">({n.type})</span></span>
+                  <div key={n.id} className="flex justify-between items-baseline font-mono">
+                    <span className="text-slate-600 dark:text-tactical-dim flex flex-col sm:flex-row sm:items-baseline gap-0.5">
+                      <span>{n.label} <span className="text-slate-400 dark:text-tactical-label">({n.type})</span></span>
                       {n.product && (
-                        <span className="text-slate-500 dark:text-slate-400 italic text-xs sm:ml-2">{n.product}</span>
+                        <span className="text-slate-500 dark:text-tactical-label italic text-xs sm:ml-2">{n.product}</span>
                       )}
                     </span>
-                    <span className="text-green-400 font-mono">${n.cost.toFixed(2)}</span>
+                    <span className="text-signal-green font-mono">${n.cost.toFixed(2)}</span>
                   </div>
                 ))}
-                <div className="flex justify-between border-t border-slate-300 dark:border-slate-700 mt-2 pt-2 font-bold">
-                  <span className="text-white">{t('editor.labels.total')}</span>
-                  <span className="text-green-300 font-mono text-lg">${totalCost.toFixed(2)}</span>
+                <div className="flex justify-between border-t border-slate-300 dark:border-tactical-border mt-2 pt-2 font-bold font-mono">
+                  <span className="text-slate-900 dark:text-tactical-text uppercase tracking-wider text-xs self-center">{t('editor.labels.total')}</span>
+                  <span className="text-signal-green font-mono text-lg">${totalCost.toFixed(2)}</span>
                 </div>
               </div>
               <div className="text-xs text-slate-500 dark:text-slate-400 mt-2 px-4 pb-2">
@@ -1567,7 +1572,7 @@ export default function SimpleSystemEditor() {
         </div>
       </div>
       
-      <div style={{ width: '100%', height: '600px' }} className="bg-white dark:bg-slate-900 rounded-lg relative">
+      <div style={{ width: '100%', height: '600px' }} className="tactical-panel relative">
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -1591,17 +1596,17 @@ export default function SimpleSystemEditor() {
           onEdgeContextMenu={onEdgeContextMenu}
           onPaneClick={onPaneClick}
         >
-          <Panel position="top-left" className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
+          <Panel position="top-left" className="bg-white/95 dark:bg-tactical-surface/95 border border-slate-200 dark:border-tactical-border p-4 backdrop-blur-sm">
             <div className="flex flex-col gap-2">
-              <h3 className="text-white font-semibold mb-2">{t('editor.labels.components')}</h3>
+              <h3 className="label-mono text-signal-amber mb-2">{t('editor.labels.components')}</h3>
               <div className="flex flex-col gap-2">
                 {availableComponents.map((component) => {
                   const Icon = component.icon;
                   return (
                     <div
                       key={component.type}
-                      className={`px-4 py-2 bg-zinc-700 rounded cursor-move hover:bg-zinc-600 
-                        transition-colors border-2 ${component.className} text-white`}
+                      className={`px-3 py-2 bg-slate-50 dark:bg-tactical-raised cursor-move hover:bg-slate-100 dark:hover:bg-tactical-line
+                        transition-colors border-l-2 ${component.className} font-mono text-sm text-slate-700 dark:text-tactical-text`}
                       onDragStart={(e) => onDragStart(e, component.type)}
                       draggable
                     >
@@ -1623,13 +1628,13 @@ export default function SimpleSystemEditor() {
         {/* Custom context menu */}
         {contextMenu && (
           <div
-            className="absolute z-50 bg-slate-100 dark:bg-slate-800 rounded shadow-lg p-2"
+            className="absolute z-50 bg-white dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border shadow-lg p-1"
             style={{ top: contextMenu.y, left: contextMenu.x }}
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={onRemoveEdge}
-              className="text-white hover:bg-red-600 py-1 px-3 rounded w-full text-left flex items-center gap-2"
+              className="font-mono text-sm text-slate-700 dark:text-tactical-text hover:bg-signal-red/10 hover:text-signal-red py-1.5 px-3 w-full text-left flex items-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

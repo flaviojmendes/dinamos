@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { Panel, TacticalButton, StatusBadge } from '../tactical';
 
 interface Server {
   id: number;
@@ -121,199 +122,135 @@ export default function HorizontalScalingSimulator() {
     }
   }, [servers, config.autoScale, config.scaleUpThreshold, config.scaleDownThreshold]);
 
+  const rangeClass = 'w-full h-2 bg-slate-200 dark:bg-tactical-raised appearance-none cursor-pointer accent-signal-green';
+  const numberInputClass = 'w-16 bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-2 py-1 font-mono text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-signal-green';
+
+  const requestStatusVariant = (status: Request['status']) => {
+    switch (status) {
+      case 'completed': return 'completed' as const;
+      case 'failed': return 'classified' as const;
+      default: return 'in-progress' as const;
+    }
+  };
+
   return (
-    <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
-      <div className="prose prose-invert prose-lg max-w-none mb-12">
-        <motion.h1 
-          className="text-4xl font-bold mb-4 text-brand-600 dark:text-brand-400"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          {t('simulators.horizontal_scaling.title')}
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-xl text-slate-600 dark:text-slate-300"
-        >
+    <div className="space-y-6">
+      <div className="max-w-3xl">
+        <div className="label-mono text-signal-cyan mb-2">
+          [ {t('simulators.horizontal_scaling.title')} ]
+        </div>
+        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
           {t('simulators.horizontal_scaling.intro')}
-        </motion.p>
+        </p>
       </div>
 
-      {/* Controls */}
-      <div className="bg-white dark:bg-slate-900 rounded-lg p-6 mb-8">
+      <Panel title={t('simulators.horizontal_scaling.controls.request_rate')} accent="cyan">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="space-y-2">
-            <label className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.horizontal_scaling.controls.request_rate')}</label>
-            <input
-              type="range"
-              min="1"
-              max="10"
-              value={config.requestRate}
-              onChange={e => setConfig({ ...config, requestRate: Number(e.target.value) })}
-              className="w-full"
-            />
-            <div className="text-sm text-slate-500 dark:text-slate-400">{config.requestRate} req/s</div>
+            <label className="label-mono text-slate-500 dark:text-tactical-label">{t('simulators.horizontal_scaling.controls.request_rate')}</label>
+            <input type="range" min="1" max="10" value={config.requestRate} onChange={e => setConfig({ ...config, requestRate: Number(e.target.value) })} className={rangeClass} />
+            <div className="font-mono text-sm text-slate-500 dark:text-tactical-dim">{config.requestRate} req/s</div>
           </div>
-
           <div className="space-y-2">
-            <label className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.horizontal_scaling.controls.processing_time_ms')}</label>
-            <input
-              type="range"
-              min="500"
-              max="5000"
-              step="500"
-              value={config.processingTime}
-              onChange={e => setConfig({ ...config, processingTime: Number(e.target.value) })}
-              className="w-full"
-            />
-            <div className="text-sm text-slate-500 dark:text-slate-400">{config.processingTime}ms</div>
+            <label className="label-mono text-slate-500 dark:text-tactical-label">{t('simulators.horizontal_scaling.controls.processing_time_ms')}</label>
+            <input type="range" min="500" max="5000" step="500" value={config.processingTime} onChange={e => setConfig({ ...config, processingTime: Number(e.target.value) })} className={rangeClass} />
+            <div className="font-mono text-sm text-slate-500 dark:text-tactical-dim">{config.processingTime}ms</div>
           </div>
-
           <div className="space-y-2">
             <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={config.autoScale}
-                onChange={e => setConfig({ ...config, autoScale: e.target.checked })}
-              />
-              <span className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.horizontal_scaling.controls.auto_scaling')}</span>
+              <input type="checkbox" checked={config.autoScale} onChange={e => setConfig({ ...config, autoScale: e.target.checked })} />
+              <span className="label-mono text-slate-500 dark:text-tactical-label">{t('simulators.horizontal_scaling.controls.auto_scaling')}</span>
             </label>
             {config.autoScale && (
               <>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.horizontal_scaling.controls.scale_up')}</span>
-                  <input
-                    type="number"
-                    min="0"
-                    max="100"
-                    value={config.scaleUpThreshold}
-                    onChange={e => setConfig({ ...config, scaleUpThreshold: Number(e.target.value) })}
-                    className="w-16 bg-slate-100 dark:bg-slate-800 rounded px-2 py-1"
-                  />
-                  <span className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.horizontal_scaling.controls.percent')}</span>
+                  <span className="font-mono text-sm text-slate-500 dark:text-tactical-dim">{t('simulators.horizontal_scaling.controls.scale_up')}</span>
+                  <input type="number" min="0" max="100" value={config.scaleUpThreshold} onChange={e => setConfig({ ...config, scaleUpThreshold: Number(e.target.value) })} className={numberInputClass} />
+                  <span className="font-mono text-sm text-slate-500 dark:text-tactical-dim">{t('simulators.horizontal_scaling.controls.percent')}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.horizontal_scaling.controls.scale_down')}</span>
-                  <input
-                    type="number"
-                    min="0"
-                    max="100"
-                    value={config.scaleDownThreshold}
-                    onChange={e => setConfig({ ...config, scaleDownThreshold: Number(e.target.value) })}
-                    className="w-16 bg-slate-100 dark:bg-slate-800 rounded px-2 py-1"
-                  />
-                  <span className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.horizontal_scaling.controls.percent')}</span>
+                  <span className="font-mono text-sm text-slate-500 dark:text-tactical-dim">{t('simulators.horizontal_scaling.controls.scale_down')}</span>
+                  <input type="number" min="0" max="100" value={config.scaleDownThreshold} onChange={e => setConfig({ ...config, scaleDownThreshold: Number(e.target.value) })} className={numberInputClass} />
+                  <span className="font-mono text-sm text-slate-500 dark:text-tactical-dim">{t('simulators.horizontal_scaling.controls.percent')}</span>
                 </div>
               </>
             )}
           </div>
         </div>
-
-        <div className="mt-6 flex gap-4">
-          <button
-            onClick={() => setIsRunning(!isRunning)}
-            className={`px-4 py-2 rounded-lg ${
-              isRunning 
-                ? 'bg-red-600 hover:bg-red-700' 
-                : 'bg-blue-600 hover:bg-blue-700'
-            } transition-colors`}
-          >
+        <div className="mt-6 flex flex-wrap gap-2">
+          <TacticalButton size="sm" variant={isRunning ? 'danger' : 'primary'} onClick={() => setIsRunning(!isRunning)}>
             {isRunning ? t('simulators.horizontal_scaling.buttons.stop') : t('simulators.horizontal_scaling.buttons.start')}
-          </button>
+          </TacticalButton>
           {!config.autoScale && (
             <>
-              <button
-                onClick={addServer}
-                disabled={servers.length >= config.maxServers}
-                className="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
+              <TacticalButton size="sm" variant="secondary" onClick={addServer} disabled={servers.length >= config.maxServers}>
                 {t('simulators.horizontal_scaling.buttons.add_server')}
-              </button>
-              <button
-                onClick={removeServer}
-                disabled={servers.length <= 1}
-                className="px-4 py-2 rounded-lg bg-yellow-600 hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
+              </TacticalButton>
+              <TacticalButton size="sm" variant="ghost" onClick={removeServer} disabled={servers.length <= 1}>
                 {t('simulators.horizontal_scaling.buttons.remove_server')}
-              </button>
+              </TacticalButton>
             </>
           )}
         </div>
-      </div>
+      </Panel>
 
-      {/* Servers */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {servers.map(server => (
-          <motion.div
-            key={server.id}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            className="bg-white dark:bg-slate-900 rounded-lg p-6"
-          >
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium">{t('simulators.horizontal_scaling.server_card.server_label', { id: server.id })}</h3>
-              <span className={`px-2 py-1 rounded-full text-sm ${
-                server.status === 'active' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
-              }`}>
-                {server.status === 'active' ? t('simulators.horizontal_scaling.server_card.active') : t('simulators.horizontal_scaling.server_card.inactive')}
-              </span>
-            </div>
-            <div className="space-y-4">
-              <div>
-                <div className="flex justify-between text-sm text-slate-500 dark:text-slate-400 mb-1">
-                  <span>{t('simulators.horizontal_scaling.server_card.load')}</span>
-                  <span>{server.load}%</span>
+          <motion.div key={server.id} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}>
+            <Panel
+              title={t('simulators.horizontal_scaling.server_card.server_label', { id: server.id })}
+              accent="green"
+              action={
+                <StatusBadge
+                  variant={server.status === 'active' ? 'active' : 'offline'}
+                  label={server.status === 'active' ? t('simulators.horizontal_scaling.server_card.active') : t('simulators.horizontal_scaling.server_card.inactive')}
+                />
+              }
+            >
+              <div className="space-y-4">
+                <div>
+                  <div className="flex justify-between font-mono text-sm text-slate-500 dark:text-tactical-dim mb-1">
+                    <span>{t('simulators.horizontal_scaling.server_card.load')}</span>
+                    <span className="text-signal-cyan">{server.load}%</span>
+                  </div>
+                  <div className="h-2 border border-slate-200 dark:border-tactical-border bg-slate-100 dark:bg-tactical-raised overflow-hidden">
+                    <motion.div className="h-full bg-signal-cyan/70" initial={{ width: 0 }} animate={{ width: `${server.load}%` }} transition={{ duration: 0.5 }} />
+                  </div>
                 </div>
-                <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                  <motion.div
-                    className="h-full bg-blue-500"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${server.load}%` }}
-                    transition={{ duration: 0.5 }}
-                  />
+                <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
+                  {t('simulators.horizontal_scaling.server_card.processed_requests', { count: server.requests })}
                 </div>
               </div>
-              <div className="text-sm text-slate-500 dark:text-slate-400">
-                {t('simulators.horizontal_scaling.server_card.processed_requests', { count: server.requests })}
-              </div>
-            </div>
+            </Panel>
           </motion.div>
         ))}
       </div>
 
-      {/* Requests */}
-      <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
-        <h3 className="text-lg font-medium mb-4">{t('simulators.horizontal_scaling.requests.recent')}</h3>
+      <Panel title={t('simulators.horizontal_scaling.requests.recent')} accent="amber">
         <div className="space-y-2">
           {requests.slice().reverse().map(request => (
             <motion.div
               key={request.id}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-4 text-sm"
+              className="flex items-center gap-4 font-mono text-sm border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
             >
-              <span className="text-slate-500 dark:text-slate-400">
+              <span className="text-slate-500 dark:text-tactical-dim">
                 {new Date(request.timestamp).toLocaleTimeString()}
               </span>
-              <span>{t('simulators.horizontal_scaling.requests.server_label', { id: request.server })}</span>
-              <span className={`px-2 py-1 rounded-full ${
-                request.status === 'completed' 
-                  ? 'bg-green-500/20 text-green-400'
-                  : request.status === 'failed'
-                  ? 'bg-red-500/20 text-red-400'
-                  : 'bg-yellow-500/20 text-yellow-400'
-              }`}>
-                {request.status === 'completed' ? t('simulators.horizontal_scaling.requests.status_completed') : 
-                 request.status === 'failed' ? t('simulators.horizontal_scaling.requests.status_failed') : t('simulators.horizontal_scaling.requests.status_processing')}
-              </span>
+              <span className="text-slate-900 dark:text-tactical-text">{t('simulators.horizontal_scaling.requests.server_label', { id: request.server })}</span>
+              <StatusBadge
+                variant={requestStatusVariant(request.status)}
+                label={
+                  request.status === 'completed' ? t('simulators.horizontal_scaling.requests.status_completed') :
+                  request.status === 'failed' ? t('simulators.horizontal_scaling.requests.status_failed') :
+                  t('simulators.horizontal_scaling.requests.status_processing')
+                }
+              />
             </motion.div>
           ))}
         </div>
-      </div>
+      </Panel>
     </div>
   );
-} 
+}

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Panel, StatusBadge, TacticalButton } from '../tactical';
 
 interface CacheEntry {
   key: string;
@@ -21,6 +22,15 @@ interface RequestLog {
   key: string;
   duration: number;
 }
+
+const logBadgeVariant = (type: RequestLog['type']) => {
+  switch (type) {
+    case 'request': return 'pending' as const;
+    case 'cache-hit': return 'active' as const;
+    case 'cache-miss': return 'in-progress' as const;
+    case 'db-query': return 'offline' as const;
+  }
+};
 
 export default function CacheSimulation() {
   const { t } = useTranslation();
@@ -158,89 +168,89 @@ export default function CacheSimulation() {
     setCache(new Map());
   };
 
-  return (
-    <div className="p-4 md:p-8 space-y-4 md:space-y-8">
-      {/* Animation */}
-      <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-lg">
-        <div className="relative h-20 flex items-center justify-between max-w-3xl mx-auto">
-          {/* Connection Line */}
-          <div className="absolute h-1 bg-zinc-600 left-0 right-0 top-1/2 -translate-y-1/2" />
+  const inputClass =
+    'w-full bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-2 py-1 font-mono text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-signal-green';
 
-          {/* Moving Dot */}
+  const rangeClass =
+    'w-full h-2 bg-slate-200 dark:bg-tactical-border appearance-none cursor-pointer accent-signal-green';
+
+  return (
+    <div className="space-y-6">
+      <Panel accent="cyan" padded={false} bodyClassName="p-4 md:p-6">
+        <div className="relative h-20 flex items-center justify-between max-w-3xl mx-auto">
+          <div className="absolute h-px bg-slate-300 dark:bg-tactical-line left-0 right-0 top-1/2 -translate-y-1/2" />
+
           <div
-            className={`absolute w-4 h-4 rounded-full bg-blue-500 shadow-lg shadow-blue-500/50 transition-all duration-500 ease-in-out top-1/2 -translate-y-1/2
+            className={`absolute w-4 h-4 bg-signal-cyan transition-all duration-500 ease-in-out top-1/2 -translate-y-1/2
               ${position === 'client' ? 'left-0' : 
                 position === 'cache' ? 'left-1/2 -translate-x-1/2' : 
                 position === 'db' ? 'left-full -translate-x-full' : 
                 'left-0 opacity-0'}`}
           />
 
-          {/* Nodes */}
-          <div className={`relative z-10 w-16 h-16 rounded-lg border-2 transition-colors duration-300
-            ${position === 'client' ? 'border-blue-500 bg-blue-500/20' : 'border-zinc-600 bg-white dark:bg-slate-900'}
+          <div className={`relative z-10 w-16 h-16 border-2 transition-colors duration-300
+            ${position === 'client' ? 'border-signal-cyan bg-signal-cyan/10' : 'border-slate-300 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised'}
             flex items-center justify-center`}>
-            <span className="text-white text-sm">{t('cache.simulation.client')}</span>
+            <span className="font-mono text-xs text-slate-900 dark:text-tactical-text">{t('cache.simulation.client')}</span>
           </div>
           
-          <div className={`relative z-10 w-16 h-16 rounded-lg border-2 transition-colors duration-300
+          <div className={`relative z-10 w-16 h-16 border-2 transition-colors duration-300
             ${position === 'cache' && config.cacheEnabled ? 
               (cache.has(currentKey) && Date.now() - cache.get(currentKey)!.timestamp <= config.cacheTTL * 1000) ?
-                'border-green-500 bg-green-500/20' : 'border-yellow-500 bg-yellow-500/20'
-              : position === 'cache' ? 'border-red-500 bg-red-500/20' 
-              : 'border-zinc-600 bg-white dark:bg-slate-900'}
+                'border-signal-green bg-signal-green/10' : 'border-signal-amber bg-signal-amber/10'
+              : position === 'cache' ? 'border-signal-red bg-signal-red/10' 
+              : 'border-slate-300 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised'}
             flex items-center justify-center`}>
-            <span className="text-white text-sm">{t('cache.simulation.cache')}</span>
+            <span className="font-mono text-xs text-slate-900 dark:text-tactical-text">{t('cache.simulation.cache')}</span>
           </div>
 
-          <div className={`relative z-10 w-16 h-16 rounded-lg border-2 transition-colors duration-300
-            ${position === 'db' ? 'border-red-500 bg-red-500/20' : 'border-zinc-600 bg-white dark:bg-slate-900'}
+          <div className={`relative z-10 w-16 h-16 border-2 transition-colors duration-300
+            ${position === 'db' ? 'border-signal-red bg-signal-red/10' : 'border-slate-300 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised'}
             flex items-center justify-center`}>
-            <span className="text-white text-sm">{t('cache.simulation.database')}</span>
+            <span className="font-mono text-xs text-slate-900 dark:text-tactical-text">{t('cache.simulation.database')}</span>
           </div>
         </div>
-      </div>
+      </Panel>
 
-      {/* Configuration */}
-      <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-lg">
-        <button
-          onClick={() => setIsConfigOpen(!isConfigOpen)}
-          className="w-full flex items-center justify-between text-base md:text-lg font-semibold text-white focus:outline-none"
-        >
-          <span>{t('cache.simulation.configuration')}</span>
-          <svg
-            className={`w-5 h-5 md:w-6 md:h-6 transform transition-transform duration-200 ${isConfigOpen ? 'rotate-180' : ''}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+      <Panel
+        title={t('cache.simulation.configuration')}
+        accent="amber"
+        action={
+          <button
+            onClick={() => setIsConfigOpen(!isConfigOpen)}
+            className="text-slate-400 dark:text-tactical-label hover:text-slate-900 dark:hover:text-tactical-text transition-colors"
+            aria-expanded={isConfigOpen}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        </button>
-        
+            <svg
+              className={`w-5 h-5 transform transition-transform duration-200 ${isConfigOpen ? 'rotate-180' : ''}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        }
+      >
         <div className={`space-y-4 overflow-hidden transition-all duration-200 ease-in-out ${
-          isConfigOpen ? 'max-h-96 opacity-100 mt-4 md:mt-6' : 'max-h-0 opacity-0'
+          isConfigOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
         }`}>
           <div className="flex items-center justify-between">
-            <label className="text-white flex items-center space-x-2">
+            <label className="font-mono text-sm text-slate-600 dark:text-tactical-dim flex items-center gap-2">
               <input
                 type="checkbox"
                 checked={config.cacheEnabled}
                 onChange={(e) => setConfig(c => ({ ...c, cacheEnabled: e.target.checked }))}
-                className="rounded bg-zinc-700 border-zinc-600 text-blue-500 focus:ring-blue-500"
+                className="border-slate-300 dark:border-tactical-border text-signal-green focus:ring-signal-green"
               />
               <span>{t('cache.simulation.cache_enabled')}</span>
             </label>
           </div>
 
           <div>
-            <div className="flex justify-between text-white mb-1">
+            <div className="flex justify-between font-mono text-sm text-slate-600 dark:text-tactical-dim mb-1">
               <span>{t('cache.simulation.cache_ttl')}</span>
-              <span className="text-brand-600 dark:text-brand-400">{config.cacheTTL}s</span>
+              <span className="text-signal-cyan tabular-nums">{config.cacheTTL}s</span>
             </div>
             <input
               type="range"
@@ -248,14 +258,14 @@ export default function CacheSimulation() {
               max="60"
               value={config.cacheTTL}
               onChange={(e) => setConfig(c => ({ ...c, cacheTTL: parseInt(e.target.value) }))}
-              className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+              className={rangeClass}
             />
           </div>
 
           <div>
-            <div className="flex justify-between text-white mb-1">
+            <div className="flex justify-between font-mono text-sm text-slate-600 dark:text-tactical-dim mb-1">
               <span>{t('cache.simulation.network_delay')}</span>
-              <span className="text-brand-600 dark:text-brand-400">{config.requestDelay}ms</span>
+              <span className="text-signal-cyan tabular-nums">{config.requestDelay}ms</span>
             </div>
             <input
               type="range"
@@ -264,14 +274,14 @@ export default function CacheSimulation() {
               step="100"
               value={config.requestDelay}
               onChange={(e) => setConfig(c => ({ ...c, requestDelay: parseInt(e.target.value) }))}
-              className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+              className={rangeClass}
             />
           </div>
 
           <div>
-            <div className="flex justify-between text-white mb-1">
+            <div className="flex justify-between font-mono text-sm text-slate-600 dark:text-tactical-dim mb-1">
               <span>{t('cache.simulation.database_delay')}</span>
-              <span className="text-brand-600 dark:text-brand-400">{config.dbDelay}ms</span>
+              <span className="text-signal-cyan tabular-nums">{config.dbDelay}ms</span>
             </div>
             <input
               type="range"
@@ -280,93 +290,94 @@ export default function CacheSimulation() {
               step="100"
               value={config.dbDelay}
               onChange={(e) => setConfig(c => ({ ...c, dbDelay: parseInt(e.target.value) }))}
-              className="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+              className={rangeClass}
             />
           </div>
         </div>
-      </div>
+      </Panel>
 
-      {/* Controls */}
-      <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-lg">
+      <Panel title={t('cache.simulation.send')} accent="green">
         <div className="flex flex-col md:flex-row gap-4">
           <input
             type="text"
             value={currentKey}
             onChange={(e) => setCurrentKey(e.target.value)}
             placeholder={t('cache.simulation.cache_key_placeholder')}
-            className="w-full md:flex-1 px-4 py-2 bg-slate-100 dark:bg-slate-800 text-white rounded border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-blue-500"
+            className={`flex-1 ${inputClass} px-4 py-2`}
           />
           <div className="flex gap-2 md:gap-4">
-            <button
+            <TacticalButton
+              size="sm"
+              variant="primary"
               onClick={simulateRequest}
               disabled={isProcessing}
-              className={`flex-1 md:flex-none px-4 md:px-6 py-2 rounded font-medium transition-colors ${
-                isProcessing
-                  ? 'bg-zinc-700 text-slate-500 dark:text-slate-400 cursor-not-allowed'
-                  : 'bg-blue-500 text-white hover:bg-blue-600'
-              }`}
+              className="flex-1 md:flex-none"
             >
               {isProcessing ? t('cache.simulation.processing') : t('cache.simulation.send')}
-            </button>
-            <button
+            </TacticalButton>
+            <TacticalButton
+              size="sm"
+              variant="danger"
               onClick={clearCache}
-              className="flex-1 md:flex-none px-4 md:px-6 py-2 bg-red-500 text-white rounded font-medium hover:bg-red-600 transition-colors"
+              className="flex-1 md:flex-none"
             >
               {t('cache.simulation.clear')}
-            </button>
+            </TacticalButton>
           </div>
         </div>
-      </div>
+      </Panel>
 
-      {/* Cache Status */}
-      <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-lg">
-        <h3 className="text-base md:text-lg font-semibold text-white mb-4">{t('cache.simulation.cache_status')}</h3>
+      <Panel title={t('cache.simulation.cache_status')} accent="cyan">
         <div className="space-y-2">
           {Array.from(cache.entries()).map(([key, entry]) => (
-            <div key={key} className="flex flex-col md:flex-row md:justify-between md:items-center bg-slate-100 dark:bg-slate-800 p-3 rounded gap-2 md:gap-0">
-              <div className="text-white break-all">{key}</div>
-              <div className="text-slate-500 dark:text-slate-400 text-sm md:text-base">
+            <div key={key} className="flex flex-col md:flex-row md:justify-between md:items-center border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-3 gap-2 md:gap-0">
+              <div className="font-mono text-sm text-slate-900 dark:text-tactical-text break-all">{key}</div>
+              <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
                 {t('cache.simulation.expires_in')} {getRemainingTime(entry.timestamp, config.cacheTTL)}s
               </div>
             </div>
           ))}
           {cache.size === 0 && (
-            <div className="text-zinc-500 text-center py-4">{t('cache.simulation.cache_empty')}</div>
+            <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center">
+              <p className="font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">
+                {t('cache.simulation.cache_empty')}
+              </p>
+            </div>
           )}
         </div>
-      </div>
+      </Panel>
 
-      {/* Request Logs */}
-      <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-lg">
-        <h3 className="text-base md:text-lg font-semibold text-white mb-4">{t('cache.simulation.logs')}</h3>
+      <Panel title={t('cache.simulation.logs')} accent="amber">
         <div className="space-y-2">
           {logs.map(log => (
             <div
               key={log.id}
-              className="flex flex-col md:flex-row md:justify-between md:items-center bg-slate-100 dark:bg-slate-800 p-3 rounded gap-2 md:gap-0"
+              className="flex flex-col md:flex-row md:justify-between md:items-center border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-3 gap-2 md:gap-0"
             >
               <div className="flex flex-wrap items-center gap-2 md:gap-3">
-                <span className={`px-2 py-1 rounded text-sm ${
-                  log.type === 'request' ? 'bg-blue-500 text-white' :
-                  log.type === 'cache-hit' ? 'bg-green-500 text-white' :
-                  log.type === 'cache-miss' ? 'bg-yellow-500 text-white' :
-                  'bg-red-500 text-white'
-                }`}>
-                  {log.type === 'request' ? t('cache.simulation.request') :
-                   log.type === 'cache-hit' ? t('cache.simulation.cache_hit') :
-                   log.type === 'cache-miss' ? t('cache.simulation.cache_miss') :
-                   t('cache.simulation.db_query')}
-                </span>
-                <span className="text-white break-all">{log.key}</span>
+                <StatusBadge
+                  variant={logBadgeVariant(log.type)}
+                  label={
+                    log.type === 'request' ? t('cache.simulation.request') :
+                    log.type === 'cache-hit' ? t('cache.simulation.cache_hit') :
+                    log.type === 'cache-miss' ? t('cache.simulation.cache_miss') :
+                    t('cache.simulation.db_query')
+                  }
+                />
+                <span className="font-mono text-sm text-slate-900 dark:text-tactical-text break-all">{log.key}</span>
               </div>
-              <span className="text-slate-500 dark:text-slate-400 text-sm md:text-base">{log.duration}ms</span>
+              <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim tabular-nums">{log.duration}ms</span>
             </div>
           ))}
           {logs.length === 0 && (
-            <div className="text-zinc-500 text-center py-4">{t('cache.simulation.no_logs')}</div>
+            <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center">
+              <p className="font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">
+                {t('cache.simulation.no_logs')}
+              </p>
+            </div>
           )}
         </div>
-      </div>
+      </Panel>
     </div>
   );
-} 
+}

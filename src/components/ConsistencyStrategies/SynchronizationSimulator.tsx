@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Panel, StatusBadge, TacticalButton } from '../tactical';
 
 interface Philosopher {
   id: number;
@@ -9,8 +10,11 @@ interface Philosopher {
 
 interface Fork {
   id: number;
-  heldBy: number | null; // ID of philosopher holding the fork, or null if not held
+  heldBy: number | null;
 }
+
+const inputClass =
+  'w-full bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-3 py-2 font-mono text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-signal-green';
 
 export default function PhilosophersSimulator() {
   const [philosophers, setPhilosophers] = useState<Philosopher[]>([
@@ -38,19 +42,16 @@ export default function PhilosophersSimulator() {
     setLogs(prev => [`[${new Date().toLocaleTimeString()}] ${message}`, ...prev.slice(0, 9)]);
   };
 
-  // Get fork IDs for a philosopher
   const getForkIds = (philosopherId: number) => ({
     left: philosopherId,
     right: (philosopherId + 1) % philosophers.length
   });
 
-  // Check if a philosopher can eat
   const canEat = (philosopherId: number): boolean => {
     const { left, right } = getForkIds(philosopherId);
     
     switch (strategy) {
       case 'hierarchical':
-        // Must pick up lower-numbered fork first
         if (left < right) {
           return forks[left].heldBy === null;
         } else {
@@ -58,22 +59,20 @@ export default function PhilosophersSimulator() {
         }
       
       case 'both':
-        // Both forks must be available
         return forks[left].heldBy === null && forks[right].heldBy === null;
       
-      case 'arbitrator':
-        // Ensure no more than N-1 philosophers are eating
+      case 'arbitrator': {
         const eatingCount = philosophers.filter(p => p.state === 'eating').length;
         return eatingCount < philosophers.length - 1 && 
                forks[left].heldBy === null && 
                forks[right].heldBy === null;
+      }
       
       default:
         return false;
     }
   };
 
-  // Try to pick up forks
   const tryPickUpForks = (philosopherId: number) => {
     if (!canEat(philosopherId)) {
       addLog(`${philosophers[philosopherId].name} não pode pegar os garfos agora`);
@@ -85,14 +84,12 @@ export default function PhilosophersSimulator() {
     switch (strategy) {
       case 'hierarchical':
         if (left < right) {
-          // Pick up left fork first
           if (forks[left].heldBy === null) {
             setForks(prev => prev.map(f => 
               f.id === left ? { ...f, heldBy: philosopherId } : f
             ));
             addLog(`${philosophers[philosopherId].name} pegou o garfo esquerdo`);
 
-            // Try to pick up right fork
             if (forks[right].heldBy === null) {
               setForks(prev => prev.map(f => 
                 f.id === right ? { ...f, heldBy: philosopherId } : f
@@ -105,14 +102,12 @@ export default function PhilosophersSimulator() {
             }
           }
         } else {
-          // Pick up right fork first
           if (forks[right].heldBy === null) {
             setForks(prev => prev.map(f => 
               f.id === right ? { ...f, heldBy: philosopherId } : f
             ));
             addLog(`${philosophers[philosopherId].name} pegou o garfo direito`);
 
-            // Try to pick up left fork
             if (forks[left].heldBy === null) {
               setForks(prev => prev.map(f => 
                 f.id === left ? { ...f, heldBy: philosopherId } : f
@@ -145,7 +140,6 @@ export default function PhilosophersSimulator() {
     return false;
   };
 
-  // Release forks
   const releaseForks = (philosopherId: number) => {
     const { left, right } = getForkIds(philosopherId);
     
@@ -196,131 +190,141 @@ export default function PhilosophersSimulator() {
     return () => clearInterval(interval);
   }, [isRunning, speed, strategy]);
 
-  const getStateColor = (state: string) => {
+  const getStateBorder = (state: string) => {
     switch (state) {
-      case 'thinking': return 'bg-blue-500/20 text-brand-600 dark:text-brand-300 border-blue-500/50';
-      case 'hungry': return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/50';
-      case 'eating': return 'bg-green-500/20 text-green-300 border-green-500/50';
-      default: return 'bg-zinc-500/20 text-slate-600 dark:text-slate-300 border-zinc-500/50';
+      case 'thinking': return 'border-signal-cyan/50 bg-signal-cyan/10 text-signal-cyan';
+      case 'hungry': return 'border-signal-amber/50 bg-signal-amber/10 text-signal-amber';
+      case 'eating': return 'border-signal-green/50 bg-signal-green/10 text-signal-green';
+      default: return 'border-tactical-border bg-tactical-raised text-slate-600 dark:text-tactical-dim';
+    }
+  };
+
+  const getStateBadge = (state: string): React.ComponentProps<typeof StatusBadge>['variant'] => {
+    switch (state) {
+      case 'thinking': return 'online';
+      case 'hungry': return 'pending';
+      case 'eating': return 'active';
+      default: return 'offline';
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-        Simulador do Jantar dos Filósofos
-      </h1>
-
-      {/* Controls */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <select
-          value={strategy}
-          onChange={(e) => setStrategy(e.target.value as any)}
-          className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-lg p-2 border border-slate-300 dark:border-slate-700"
-        >
-          <option value="hierarchical">Hierarquia de Recursos</option>
-          <option value="both">Pegar Dois ou Nenhum</option>
-          <option value="arbitrator">Árbitro Central</option>
-        </select>
-
-        <input
-          type="range"
-          min="0.5"
-          max="2"
-          step="0.1"
-          value={speed}
-          onChange={(e) => setSpeed(parseFloat(e.target.value))}
-          className="w-full"
-        />
-
-        <button
-          onClick={() => setIsRunning(!isRunning)}
-          className={`py-2 px-4 rounded-lg font-medium ${
-            isRunning ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
-          } text-white transition-colors`}
-        >
-          {isRunning ? 'Parar' : 'Iniciar'}
-        </button>
+    <div className="space-y-6">
+      <div className="max-w-3xl">
+        <div className="label-mono text-signal-cyan mb-2">
+          [ Simulador do Jantar dos Filósofos ]
+        </div>
       </div>
 
-      {/* Visualization */}
-      <div className="relative aspect-square max-w-xl mx-auto mb-8 bg-white dark:bg-slate-900/50 rounded-xl p-8">
-        {/* Table */}
-        <div className="absolute inset-[15%] rounded-full border-4 border-slate-300 dark:border-slate-700/50" />
-        
-        {/* Philosophers */}
-        {philosophers.map((philosopher, index) => {
-          const angle = (index * 2 * Math.PI) / 5;
-          const radius = 40;
-          const x = 50 + radius * Math.cos(angle);
-          const y = 50 + radius * Math.sin(angle);
+      <Panel title="Controles" accent="amber">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          <select
+            value={strategy}
+            onChange={(e) => setStrategy(e.target.value as 'hierarchical' | 'both' | 'arbitrator')}
+            className={inputClass}
+          >
+            <option value="hierarchical">Hierarquia de Recursos</option>
+            <option value="both">Pegar Dois ou Nenhum</option>
+            <option value="arbitrator">Árbitro Central</option>
+          </select>
 
-          return (
-            <motion.div
-              key={philosopher.id}
-              className={`absolute w-24 h-24 -ml-12 -mt-12 rounded-xl border ${getStateColor(philosopher.state)} 
-                         flex flex-col items-center justify-center p-2`}
-              style={{
-                left: `${x}%`,
-                top: `${y}%`,
-              }}
-              whileHover={{ scale: 1.1 }}
-            >
-              <div className="text-center">
-                <div className="font-medium">{philosopher.name}</div>
-                <div className="text-sm opacity-75">{philosopher.state}</div>
-              </div>
-            </motion.div>
-          );
-        })}
+          <input
+            type="range"
+            min="0.5"
+            max="2"
+            step="0.1"
+            value={speed}
+            onChange={(e) => setSpeed(parseFloat(e.target.value))}
+            className="w-full accent-signal-green"
+          />
 
-        {/* Forks */}
-        {forks.map((fork, index) => {
-          const angle = ((index * 2 * Math.PI) / 5) + (Math.PI / 5);
-          const radius = 30;
-          const x = 50 + radius * Math.cos(angle);
-          const y = 50 + radius * Math.sin(angle);
+          <TacticalButton
+            variant={isRunning ? 'danger' : 'primary'}
+            onClick={() => setIsRunning(!isRunning)}
+          >
+            {isRunning ? 'Parar' : 'Iniciar'}
+          </TacticalButton>
+        </div>
+      </Panel>
 
-          return (
-            <motion.div
-              key={fork.id}
-              className="absolute"
-              style={{
-                left: `${x}%`,
-                top: `${y}%`,
-                width: '2rem',
-                height: '0.25rem',
-                transform: `translate(-50%, -50%) rotate(${angle * (180/Math.PI)}deg)`,
-              }}
-            >
-              <div 
-                className={`w-full h-full rounded ${
-                  fork.heldBy !== null 
-                    ? 'bg-yellow-500 shadow-lg shadow-yellow-500/50' 
-                    : 'bg-zinc-600'
-                }`}
-              />
-              {fork.heldBy !== null && (
-                <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-yellow-500/20 text-yellow-300 
-                               text-xs px-2 py-1 rounded-full whitespace-nowrap">
-                  Garfo {fork.id}
+      <Panel title="Visualização" accent="green">
+        <div className="relative aspect-square max-w-xl mx-auto p-8">
+          <div className="absolute inset-[15%] border-2 border-slate-300 dark:border-tactical-border" />
+          
+          {philosophers.map((philosopher, index) => {
+            const angle = (index * 2 * Math.PI) / 5;
+            const radius = 40;
+            const x = 50 + radius * Math.cos(angle);
+            const y = 50 + radius * Math.sin(angle);
+
+            return (
+              <motion.div
+                key={philosopher.id}
+                className={`absolute w-24 h-24 -ml-12 -mt-12 border flex flex-col items-center justify-center p-2 font-mono text-xs ${getStateBorder(philosopher.state)}`}
+                style={{
+                  left: `${x}%`,
+                  top: `${y}%`,
+                }}
+                whileHover={{ scale: 1.1 }}
+              >
+                <div className="text-center">
+                  <div className="font-medium">{philosopher.name}</div>
+                  <StatusBadge variant={getStateBadge(philosopher.state)} label={philosopher.state} className="mt-1" />
                 </div>
-              )}
-            </motion.div>
-          );
-        })}
-      </div>
+              </motion.div>
+            );
+          })}
 
-      {/* Logs */}
-      <div className="bg-white dark:bg-slate-900/50 rounded-xl p-4">
+          {forks.map((fork, index) => {
+            const angle = ((index * 2 * Math.PI) / 5) + (Math.PI / 5);
+            const radius = 30;
+            const x = 50 + radius * Math.cos(angle);
+            const y = 50 + radius * Math.sin(angle);
+
+            return (
+              <motion.div
+                key={fork.id}
+                className="absolute"
+                style={{
+                  left: `${x}%`,
+                  top: `${y}%`,
+                  width: '2rem',
+                  height: '0.25rem',
+                  transform: `translate(-50%, -50%) rotate(${angle * (180/Math.PI)}deg)`,
+                }}
+              >
+                <div 
+                  className={`w-full h-full ${
+                    fork.heldBy !== null 
+                      ? 'bg-signal-amber' 
+                      : 'bg-slate-400 dark:bg-tactical-line'
+                  }`}
+                />
+                {fork.heldBy !== null && (
+                  <div className="absolute -top-6 left-1/2 -translate-x-1/2 border border-signal-amber/40 text-signal-amber font-mono text-[10px] px-2 py-0.5 whitespace-nowrap">
+                    Garfo {fork.id}
+                  </div>
+                )}
+              </motion.div>
+            );
+          })}
+        </div>
+      </Panel>
+
+      <Panel title="Log de Eventos" accent="cyan">
         <div className="h-48 overflow-y-auto space-y-1">
           {logs.map((log, index) => (
-            <div key={index} className="text-sm text-slate-600 dark:text-slate-300">
+            <div key={index} className="font-mono text-sm text-slate-600 dark:text-tactical-dim">
               {log}
             </div>
           ))}
+          {logs.length === 0 && (
+            <div className="font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label text-center py-8">
+              Aguardando eventos…
+            </div>
+          )}
         </div>
-      </div>
+      </Panel>
     </div>
   );
-} 
+}

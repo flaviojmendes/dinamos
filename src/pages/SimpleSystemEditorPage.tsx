@@ -2,7 +2,7 @@ import SimpleSystemEditor from '../components/SystemEditor/SimpleSystemEditor';
 
 export default function SimpleSystemEditorPage() {
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-900">
+    <div className="min-h-screen bg-canvas-paper dark:bg-tactical-bg">
       <SimpleSystemEditor />
     </div>
   );

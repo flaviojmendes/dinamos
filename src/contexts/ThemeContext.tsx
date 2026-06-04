@@ -11,18 +11,14 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
-    // Verifica se há preferência salva no localStorage
+    // Respeita a escolha explícita do usuário, se houver.
     const savedTheme = localStorage.getItem('theme') as Theme | null;
-    if (savedTheme) {
+    if (savedTheme === 'light' || savedTheme === 'dark') {
       return savedTheme;
     }
-    
-    // Caso contrário, verifica a preferência do sistema
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
-    
-    return 'light';
+
+    // Caso contrário, o tema tático escuro é o padrão.
+    return 'dark';
   });
 
   useEffect(() => {

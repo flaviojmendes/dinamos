@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { Panel, StatusBadge, TacticalButton } from '../tactical';
 
 interface Event {
   id: number;
@@ -187,40 +188,33 @@ export default function EventSourcingSimulator() {
   };
 
   return (
-    <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
-      <div className="prose prose-invert prose-lg max-w-none mb-8">
-        <div className="flex items-center justify-between">
-          <h1 className="text-4xl font-bold mb-4 text-brand-600 dark:text-brand-400">
-            {t('simulators.event_sourcing.title')}
-          </h1>
-          <div className="flex gap-4">
-            <button
-              onClick={() => setShowSettings(!showSettings)}
-              className="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-white rounded-lg hover:bg-zinc-700 transition-colors flex items-center gap-2"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div className="space-y-6">
+      <div className="max-w-3xl">
+        <div className="flex items-center justify-between gap-4 mb-2">
+          <div className="label-mono text-signal-cyan">
+            [ {t('simulators.event_sourcing.title')} ]
+          </div>
+          <div className="flex gap-2">
+            <TacticalButton size="sm" variant="ghost" onClick={() => setShowSettings(!showSettings)}>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
               {t('simulators.event_sourcing.buttons.settings')}
-            </button>
-            <button
-              onClick={resetSimulator}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            </TacticalButton>
+            <TacticalButton size="sm" variant="danger" onClick={resetSimulator}>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
               {t('simulators.event_sourcing.buttons.reset')}
-            </button>
+            </TacticalButton>
           </div>
         </div>
-        <p className="text-xl text-slate-600 dark:text-slate-300">
+        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
           {t('simulators.event_sourcing.intro')}
         </p>
       </div>
 
-      {/* Settings Panel */}
       <AnimatePresence>
         {showSettings && (
           <motion.div
@@ -228,180 +222,181 @@ export default function EventSourcingSimulator() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
-            className="bg-white dark:bg-slate-900 p-6 rounded-lg mb-8"
           >
-            <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-6">{t('simulators.event_sourcing.settings.title')}</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+            <Panel title={t('simulators.event_sourcing.settings.title')} accent="cyan">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="flex items-center gap-2 font-mono text-sm text-slate-600 dark:text-tactical-dim">
+                    <input
+                      type="checkbox"
+                      checked={config.autoAdvance}
+                      onChange={(e) => setConfig(prev => ({ ...prev, autoAdvance: e.target.checked }))}
+                      className="rounded border-slate-300 dark:border-tactical-border"
+                    />
+                    {t('simulators.event_sourcing.settings.auto_advance')}
+                  </label>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
+                    {t('simulators.event_sourcing.settings.event_delay', { ms: config.eventDelay })}
+                  </label>
                   <input
-                    type="checkbox"
-                    checked={config.autoAdvance}
-                    onChange={(e) => setConfig(prev => ({ ...prev, autoAdvance: e.target.checked }))}
-                    className="rounded border-zinc-600"
+                    type="range"
+                    min="200"
+                    max="3000"
+                    step="100"
+                    value={config.eventDelay}
+                    onChange={(e) => setConfig(prev => ({ ...prev, eventDelay: Number(e.target.value) }))}
+                    className="w-full"
                   />
-                  {t('simulators.event_sourcing.settings.auto_advance')}
-                </label>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
-                  {t('simulators.event_sourcing.settings.event_delay', { ms: config.eventDelay })}
-                </label>
-                <input
-                  type="range"
-                  min="200"
-                  max="3000"
-                  step="100"
-                  value={config.eventDelay}
-                  onChange={(e) => setConfig(prev => ({ ...prev, eventDelay: Number(e.target.value) }))}
-                  className="w-full"
-                />
-              </div>
-              <div>
-                <label className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+                </div>
+                <div>
+                  <label className="flex items-center gap-2 font-mono text-sm text-slate-600 dark:text-tactical-dim">
+                    <input
+                      type="checkbox"
+                      checked={config.showEventData}
+                      onChange={(e) => setConfig(prev => ({ ...prev, showEventData: e.target.checked }))}
+                      className="rounded border-slate-300 dark:border-tactical-border"
+                    />
+                    {t('simulators.event_sourcing.settings.show_event_data')}
+                  </label>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
+                    {t('simulators.event_sourcing.settings.animation_duration', { seconds: config.animationDuration })}
+                  </label>
                   <input
-                    type="checkbox"
-                    checked={config.showEventData}
-                    onChange={(e) => setConfig(prev => ({ ...prev, showEventData: e.target.checked }))}
-                    className="rounded border-zinc-600"
+                    type="range"
+                    min="0.1"
+                    max="1"
+                    step="0.1"
+                    value={config.animationDuration}
+                    onChange={(e) => setConfig(prev => ({ ...prev, animationDuration: Number(e.target.value) }))}
+                    className="w-full"
                   />
-                  {t('simulators.event_sourcing.settings.show_event_data')}
-                </label>
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
-                  {t('simulators.event_sourcing.settings.animation_duration', { seconds: config.animationDuration })}
-                </label>
-                <input
-                  type="range"
-                  min="0.1"
-                  max="1"
-                  step="0.1"
-                  value={config.animationDuration}
-                  onChange={(e) => setConfig(prev => ({ ...prev, animationDuration: Number(e.target.value) }))}
-                  className="w-full"
-                />
-              </div>
-            </div>
+            </Panel>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Left Column - Event Creation */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <motion.div 
           className="space-y-6"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: config.animationDuration }}
         >
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-lg">
-            <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">{t('simulators.event_sourcing.create_order.title')}</h2>
-            <div className="grid grid-cols-2 gap-4 mb-4">
+          <Panel title={t('simulators.event_sourcing.create_order.title')} accent="green">
+            <div className="grid grid-cols-2 gap-3 mb-4">
               {products.map(product => (
                 <button
                   key={product.name}
                   onClick={() => handleItemSelection(product.name)}
-                  className="p-3 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-zinc-700 transition-colors"
+                  className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2.5 hover:border-signal-green transition-colors text-left"
                 >
-                  <div className="font-medium text-slate-700 dark:text-slate-200">{product.name}</div>
-                  <div className="text-sm text-slate-500 dark:text-slate-400">R$ {product.price}</div>
+                  <div className="font-mono text-sm text-slate-900 dark:text-tactical-text">{product.name}</div>
+                  <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">R$ {product.price}</div>
                 </button>
               ))}
             </div>
             {selectedItems.length > 0 && (
-              <div className="mt-4 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg">
-                <h3 className="font-medium text-slate-700 dark:text-slate-200 mb-2">{t('simulators.event_sourcing.create_order.selected_items')}</h3>
+              <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-3 mb-4">
+                <h3 className="label-mono mb-2">{t('simulators.event_sourcing.create_order.selected_items')}</h3>
                 {selectedItems.map(item => (
-                  <div key={item.name} className="text-sm text-slate-500 dark:text-slate-400">
+                  <div key={item.name} className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
                     {item.name} x{item.quantity}
                   </div>
                 ))}
-                <div className="mt-2 text-slate-700 dark:text-slate-200">
+                <div className="mt-2 font-mono text-sm text-slate-900 dark:text-tactical-text">
                   {t('simulators.event_sourcing.create_order.total', { amount: calculateTotal(selectedItems) })}
                 </div>
               </div>
             )}
-            <button
+            <TacticalButton
+              variant="primary"
+              className="w-full"
               onClick={createOrder}
               disabled={selectedItems.length === 0}
-              className="mt-4 w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-zinc-700 disabled:cursor-not-allowed transition-colors"
             >
               {t('simulators.event_sourcing.create_order.create_button')}
-            </button>
-          </div>
+            </TacticalButton>
+          </Panel>
 
           {currentState && (
-            <div className="space-y-4">
-              <button
-                onClick={() => addEvent({
-                  id: events.length + 1,
-                  type: 'PAYMENT_RECEIVED',
-                  timestamp: Date.now(),
-                  data: { orderId: currentState.orderId },
-                })}
-                disabled={currentState.status !== 'PENDING'}
-                className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-zinc-700 disabled:cursor-not-allowed transition-colors"
-              >
-                {t('simulators.event_sourcing.actions.pay')}
-              </button>
+            <div className="space-y-2">
+                <TacticalButton
+                  variant="primary"
+                  className="w-full"
+                  onClick={() => addEvent({
+                    id: events.length + 1,
+                    type: 'PAYMENT_RECEIVED',
+                    timestamp: Date.now(),
+                    data: { orderId: currentState.orderId },
+                  })}
+                  disabled={currentState.status !== 'PENDING'}
+                >
+                  {t('simulators.event_sourcing.actions.pay')}
+                </TacticalButton>
 
-              <button
-                onClick={() => addEvent({
-                  id: events.length + 1,
-                  type: 'ORDER_SHIPPED',
-                  timestamp: Date.now(),
-                  data: {
-                    orderId: currentState.orderId,
-                    trackingNumber: 'TRK-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
-                  },
-                })}
-                disabled={currentState.status !== 'PAID'}
-                className="w-full px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 disabled:bg-zinc-700 disabled:cursor-not-allowed transition-colors"
-              >
-                {t('simulators.event_sourcing.actions.ship')}
-              </button>
+                <TacticalButton
+                  variant="secondary"
+                  className="w-full"
+                  onClick={() => addEvent({
+                    id: events.length + 1,
+                    type: 'ORDER_SHIPPED',
+                    timestamp: Date.now(),
+                    data: {
+                      orderId: currentState.orderId,
+                      trackingNumber: 'TRK-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+                    },
+                  })}
+                  disabled={currentState.status !== 'PAID'}
+                >
+                  {t('simulators.event_sourcing.actions.ship')}
+                </TacticalButton>
 
-              <button
-                onClick={() => addEvent({
-                  id: events.length + 1,
-                  type: 'ORDER_DELIVERED',
-                  timestamp: Date.now(),
-                  data: { orderId: currentState.orderId },
-                })}
-                disabled={currentState.status !== 'SHIPPED'}
-                className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-zinc-700 disabled:cursor-not-allowed transition-colors"
-              >
-                {t('simulators.event_sourcing.actions.deliver')}
-              </button>
+                <TacticalButton
+                  variant="secondary"
+                  className="w-full"
+                  onClick={() => addEvent({
+                    id: events.length + 1,
+                    type: 'ORDER_DELIVERED',
+                    timestamp: Date.now(),
+                    data: { orderId: currentState.orderId },
+                  })}
+                  disabled={currentState.status !== 'SHIPPED'}
+                >
+                  {t('simulators.event_sourcing.actions.deliver')}
+                </TacticalButton>
 
-              <button
-                onClick={() => addEvent({
-                  id: events.length + 1,
-                  type: 'ORDER_CANCELLED',
-                  timestamp: Date.now(),
-                  data: {
-                    orderId: currentState.orderId,
-                    reason: 'Cliente cancelou o pedido',
-                  },
-                })}
-                disabled={!['PENDING', 'PAID'].includes(currentState.status)}
-                className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-zinc-700 disabled:cursor-not-allowed transition-colors"
-              >
-                {t('simulators.event_sourcing.actions.cancel')}
-              </button>
+                <TacticalButton
+                  variant="danger"
+                  className="w-full"
+                  onClick={() => addEvent({
+                    id: events.length + 1,
+                    type: 'ORDER_CANCELLED',
+                    timestamp: Date.now(),
+                    data: {
+                      orderId: currentState.orderId,
+                      reason: 'Cliente cancelou o pedido',
+                    },
+                  })}
+                  disabled={!['PENDING', 'PAID'].includes(currentState.status)}
+                >
+                  {t('simulators.event_sourcing.actions.cancel')}
+                </TacticalButton>
             </div>
           )}
         </motion.div>
 
-        {/* Right Column - Current State and Events */}
         <motion.div 
           className="space-y-6"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: config.animationDuration }}
         >
-          {/* Current State */}
           <AnimatePresence mode="wait">
             {currentState && (
               <motion.div
@@ -410,74 +405,85 @@ export default function EventSourcingSimulator() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: config.animationDuration }}
-                className="bg-white dark:bg-slate-900 p-6 rounded-lg"
               >
-                <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">{t('simulators.event_sourcing.state.title')}</h2>
-                <div className="space-y-2 text-slate-600 dark:text-slate-300">
-                  <div>{t('simulators.event_sourcing.state.order', { id: currentState.orderId })}</div>
-                  <motion.div
-                    key={currentState.status}
-                    initial={{ color: '#60A5FA' }}
-                    animate={{ color: '#E5E7EB' }}
-                    transition={{ duration: 1 }}
-                  >
-                    {t('simulators.event_sourcing.state.status', { status: currentState.status })}
-                  </motion.div>
-                  <div>{t('simulators.event_sourcing.state.total', { amount: currentState.amount })}</div>
-                  {currentState.trackingNumber && (
+                <Panel title={t('simulators.event_sourcing.state.title')} accent="cyan">
+                  <div className="space-y-2 font-mono text-sm text-slate-600 dark:text-tactical-dim">
+                    <div className="text-slate-900 dark:text-tactical-text">{t('simulators.event_sourcing.state.order', { id: currentState.orderId })}</div>
                     <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: config.animationDuration }}
+                      key={currentState.status}
+                      initial={{ color: '#60A5FA' }}
+                      animate={{ color: '#E5E7EB' }}
+                      transition={{ duration: 1 }}
                     >
-                      {t('simulators.event_sourcing.state.tracking', { code: currentState.trackingNumber })}
+                      <StatusBadge
+                        variant={
+                          currentState.status === 'DELIVERED' ? 'completed' :
+                          currentState.status === 'CANCELLED' ? 'classified' :
+                          currentState.status === 'SHIPPED' ? 'in-progress' :
+                          currentState.status === 'PAID' ? 'active' :
+                          'pending'
+                        }
+                        label={t('simulators.event_sourcing.state.status', { status: currentState.status })}
+                      />
                     </motion.div>
-                  )}
-                  <div className="mt-4">
-                    <div className="font-medium mb-2">{t('simulators.event_sourcing.state.items')}</div>
-                    {currentState.items.map(item => (
-                      <div key={item.name} className="text-sm text-slate-500 dark:text-slate-400">
-                        {item.name} x{item.quantity}
-                      </div>
-                    ))}
+                    <div>{t('simulators.event_sourcing.state.total', { amount: currentState.amount })}</div>
+                    {currentState.trackingNumber && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: config.animationDuration }}
+                      >
+                        {t('simulators.event_sourcing.state.tracking', { code: currentState.trackingNumber })}
+                      </motion.div>
+                    )}
+                    <div className="mt-4">
+                      <div className="label-mono mb-2">{t('simulators.event_sourcing.state.items')}</div>
+                      {currentState.items.map(item => (
+                        <div key={item.name} className="text-xs text-slate-500 dark:text-tactical-dim">
+                          {item.name} x{item.quantity}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                </Panel>
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Event Log */}
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-lg">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200">{t('simulators.event_sourcing.events.title')}</h2>
-              {events.length > 0 && (
-                <div className="flex gap-4">
+          <Panel
+            title={t('simulators.event_sourcing.events.title')}
+            accent="amber"
+            action={
+              events.length > 0 ? (
+                <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2">
-                    <label className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.event_sourcing.events.speed')}</label>
+                    <label className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{t('simulators.event_sourcing.events.speed')}</label>
                     <select
                       value={replaySpeed}
                       onChange={(e) => setReplaySpeed(Number(e.target.value))}
-                      className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded px-2 py-1"
+                      className="bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-2 py-1 font-mono text-xs text-slate-900 dark:text-tactical-text focus:outline-none focus:border-signal-green"
                     >
                       <option value={500}>{t('simulators.event_sourcing.events.speed_opts.half')}</option>
                       <option value={1000}>{t('simulators.event_sourcing.events.speed_opts.one')}</option>
                       <option value={2000}>{t('simulators.event_sourcing.events.speed_opts.two')}</option>
                     </select>
                   </div>
-                  <button
+                  <TacticalButton
+                    size="sm"
+                    variant="primary"
                     onClick={startReplay}
                     disabled={isReplayMode}
-                    className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:bg-zinc-700 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     {t('simulators.event_sourcing.buttons.replay')}
-                  </button>
+                  </TacticalButton>
                 </div>
-              )}
-            </div>
+              ) : undefined
+            }
+          >
             <div className="space-y-2">
               <AnimatePresence>
                 {events.map((event, index) => (
@@ -487,20 +493,20 @@ export default function EventSourcingSimulator() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ duration: config.animationDuration }}
-                    className={`p-3 rounded ${
+                    className={`border px-3 py-2.5 ${
                       isReplayMode && index === replayIndex - 1
-                        ? 'bg-blue-900/30 border border-blue-700'
-                        : 'bg-slate-100 dark:bg-slate-800'
+                        ? 'border-signal-cyan bg-signal-cyan/5 dark:bg-signal-cyan/10'
+                        : 'border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised'
                     }`}
                   >
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-700 dark:text-slate-200">{event.type}</span>
-                      <span className="text-slate-500 dark:text-slate-400">
+                    <div className="flex justify-between font-mono text-xs">
+                      <span className="text-slate-900 dark:text-tactical-text">{event.type}</span>
+                      <span className="text-slate-500 dark:text-tactical-dim">
                         {new Date(event.timestamp).toLocaleTimeString()}
                       </span>
                     </div>
                     {config.showEventData && (
-                      <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                      <div className="mt-2 font-mono text-[11px] text-slate-500 dark:text-tactical-dim">
                         <pre className="whitespace-pre-wrap">{JSON.stringify(event.data, null, 2)}</pre>
                       </div>
                     )}
@@ -508,9 +514,9 @@ export default function EventSourcingSimulator() {
                 ))}
               </AnimatePresence>
             </div>
-          </div>
+          </Panel>
         </motion.div>
       </div>
     </div>
   );
-} 
+}

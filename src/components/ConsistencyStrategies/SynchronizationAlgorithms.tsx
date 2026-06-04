@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { Panel, StatusBadge, Tag, TacticalButton } from '../tactical';
 
 interface Process {
   id: number;
   state: 'idle' | 'requesting' | 'executing';
-  number?: number; // For Bakery algorithm
-  timestamp?: number; // For Ricart-Agrawala
+  number?: number;
+  timestamp?: number;
 }
 
 export default function SynchronizationAlgorithms() {
   const { t } = useTranslation();
-  // Bakery Algorithm Demo State
   const [bakeryProcesses, setBakeryProcesses] = useState<Process[]>([
     { id: 0, state: 'idle' },
     { id: 1, state: 'idle' },
@@ -20,7 +19,6 @@ export default function SynchronizationAlgorithms() {
   ]);
   const [nextBakeryNumber, setNextBakeryNumber] = useState(1);
 
-  // Token Ring Demo State
   const [tokenRingProcesses, setTokenRingProcesses] = useState<Process[]>([
     { id: 0, state: 'idle' },
     { id: 1, state: 'idle' },
@@ -29,14 +27,12 @@ export default function SynchronizationAlgorithms() {
   ]);
   const [tokenPosition, setTokenPosition] = useState(0);
 
-  // Ricart-Agrawala Demo State
   const [ricartProcesses, setRicartProcesses] = useState<Process[]>([
     { id: 0, state: 'idle', timestamp: 0 },
     { id: 1, state: 'idle', timestamp: 0 },
     { id: 2, state: 'idle', timestamp: 0 },
   ]);
 
-  // Bakery Algorithm Demo Functions
   const requestBakeryAccess = (processId: number) => {
     setBakeryProcesses(prev => prev.map(p => 
       p.id === processId 
@@ -45,13 +41,11 @@ export default function SynchronizationAlgorithms() {
     ));
     setNextBakeryNumber(prev => prev + 1);
     
-    // Simulate process execution after delay
     setTimeout(() => {
       setBakeryProcesses(prev => prev.map(p => 
         p.id === processId ? { ...p, state: 'executing' } : p
       ));
       
-      // Release after execution
       setTimeout(() => {
         setBakeryProcesses(prev => prev.map(p => 
           p.id === processId ? { ...p, state: 'idle', number: undefined } : p
@@ -60,7 +54,6 @@ export default function SynchronizationAlgorithms() {
     }, 1000);
   };
 
-  // Token Ring Demo Functions
   const moveToken = () => {
     setTokenPosition(prev => (prev + 1) % tokenRingProcesses.length);
     setTokenRingProcesses(prev => prev.map(p => ({
@@ -69,7 +62,6 @@ export default function SynchronizationAlgorithms() {
     })));
   };
 
-  // Ricart-Agrawala Demo Functions
   const requestRicartAccess = (processId: number) => {
     const timestamp = Date.now();
     setRicartProcesses(prev => prev.map(p => 
@@ -78,13 +70,11 @@ export default function SynchronizationAlgorithms() {
         : p
     ));
 
-    // Simulate receiving responses
     setTimeout(() => {
       setRicartProcesses(prev => prev.map(p => 
         p.id === processId ? { ...p, state: 'executing' } : p
       ));
 
-      // Release after execution
       setTimeout(() => {
         setRicartProcesses(prev => prev.map(p => 
           p.id === processId ? { ...p, state: 'idle' } : p
@@ -93,55 +83,67 @@ export default function SynchronizationAlgorithms() {
     }, 1000);
   };
 
+  const getProcessBorder = (state: Process['state']) => {
+    switch (state) {
+      case 'idle': return 'border-tactical-border bg-tactical-raised text-slate-900 dark:text-tactical-text';
+      case 'requesting': return 'border-signal-amber bg-signal-amber/10 text-signal-amber';
+      case 'executing': return 'border-signal-green bg-signal-green/10 text-signal-green';
+      default: return 'border-tactical-border bg-tactical-raised';
+    }
+  };
+
+  const getProcessBadge = (state: Process['state']): React.ComponentProps<typeof StatusBadge>['variant'] => {
+    switch (state) {
+      case 'idle': return 'offline';
+      case 'requesting': return 'pending';
+      case 'executing': return 'active';
+      default: return 'offline';
+    }
+  };
+
   return (
-    <div className="max-w-4xl mx-auto">
-      {/* Introduction */}
+    <div className="space-y-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="mb-12"
       >
-        <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-          {t('design_principles.algorithms.title')}
-        </h1>
-        <p className="text-lg text-slate-600 dark:text-slate-300 mb-6">
-          {t('design_principles.algorithms.intro')}
-        </p>
-        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-brand-600 dark:text-brand-300">
-          <strong className="block mb-2">{t('design_principles.algorithms.key_concept_label')}</strong>
-          {t('design_principles.algorithms.key_concept_text')}
+        <div className="max-w-3xl">
+          <div className="label-mono text-signal-cyan mb-2">
+            [ {t('design_principles.algorithms.title')} ]
+          </div>
+          <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim mb-6">
+            {t('design_principles.algorithms.intro')}
+          </p>
+        </div>
+        <div className="tactical-panel border-l-2 border-l-signal-cyan p-5">
+          <div className="label-mono text-signal-cyan mb-2">{t('design_principles.algorithms.key_concept_label')}</div>
+          <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim">
+            {t('design_principles.algorithms.key_concept_text')}
+          </p>
         </div>
       </motion.div>
 
-      {/* Bakery Algorithm */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">{t('design_principles.algorithms.bakery.title')}</h2>
-        <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 mb-8">
+        <Panel title={t('design_principles.algorithms.bakery.title')} accent="cyan">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-brand-600 dark:text-brand-400">{t('design_principles.algorithms.bakery.concept_title')}</h3>
-              <p className="text-slate-600 dark:text-slate-300 mb-4">
+              <div className="label-mono text-signal-cyan mb-3">{t('design_principles.algorithms.bakery.concept_title')}</div>
+              <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim mb-4">
                 {t('design_principles.algorithms.bakery.concept_p')}
               </p>
-              <div className="flex items-center gap-2 text-sm mb-6">
-                <span className="px-2 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded">
-                  {t('design_principles.algorithms.bakery.badges.total_order')}
-                </span>
-                <span className="px-2 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded">
-                  {t('design_principles.algorithms.bakery.badges.fairness')}
-                </span>
+              <div className="flex flex-wrap items-center gap-2 mb-6">
+                <Tag color="cyan">{t('design_principles.algorithms.bakery.badges.total_order')}</Tag>
+                <Tag color="cyan">{t('design_principles.algorithms.bakery.badges.fairness')}</Tag>
               </div>
 
-              {/* Code Example */}
-              <div className="bg-white dark:bg-slate-900/50 rounded-lg p-4 mb-4">
+              <div className="tactical-panel border border-slate-200 dark:border-tactical-border p-4 mb-4">
                 <pre className="text-sm overflow-x-auto">
-                  <code className="text-brand-600 dark:text-brand-300">
+                  <code className="font-mono text-signal-cyan">
 {`// Estrutura do processo
 type Process = {
   id: number;
@@ -182,9 +184,8 @@ function enterCriticalSection(process: Process, processes: Process[]) {
               </div>
             </div>
 
-            {/* Interactive Demo */}
-            <div className="bg-white dark:bg-slate-900/50 rounded-lg p-6">
-              <h4 className="text-lg font-semibold mb-4 text-brand-600 dark:text-brand-400">{t('design_principles.algorithms.bakery.demo_title')}</h4>
+            <div className="tactical-panel border border-slate-200 dark:border-tactical-border p-4">
+              <div className="label-mono text-signal-cyan mb-4">{t('design_principles.algorithms.bakery.demo_title')}</div>
               <div className="space-y-4">
                 {bakeryProcesses.map(process => (
                   <div 
@@ -192,73 +193,59 @@ function enterCriticalSection(process: Process, processes: Process[]) {
                     className="flex items-center gap-4"
                   >
                     <motion.div 
-                      className={`w-32 h-12 rounded-lg flex items-center justify-center ${
-                        process.state === 'idle' ? 'bg-slate-100 dark:bg-slate-800' :
-                        process.state === 'requesting' ? 'bg-yellow-500/20' :
-                        'bg-green-500/20'
-                      }`}
+                      className={`w-32 h-12 border flex items-center justify-center font-mono text-sm ${getProcessBorder(process.state)}`}
                       animate={{
                         scale: process.state === 'idle' ? 1 : 1.05,
                         transition: { duration: 0.2 }
                       }}
                     >
-                      <span className="text-white">
-                        {t('design_principles.algorithms.bakery.labels.process')} {process.id}
-                      </span>
+                      {t('design_principles.algorithms.bakery.labels.process')} {process.id}
                     </motion.div>
                     {process.number && (
                       <motion.div
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="bg-blue-500/20 px-3 py-1 rounded text-brand-600 dark:text-brand-300"
+                        className="border border-signal-cyan/40 px-3 py-1 font-mono text-sm text-signal-cyan"
                       >
                         {t('design_principles.algorithms.bakery.labels.ticket')}: {process.number}
                       </motion.div>
                     )}
                     {process.state === 'idle' && (
-                      <button
-                        onClick={() => requestBakeryAccess(process.id)}
-                        className="px-3 py-1 bg-blue-500/20 text-brand-600 dark:text-brand-300 rounded hover:bg-blue-500/30"
-                      >
+                      <TacticalButton size="sm" variant="primary" onClick={() => requestBakeryAccess(process.id)}>
                         {t('design_principles.algorithms.bakery.labels.request_access')}
-                      </button>
+                      </TacticalButton>
+                    )}
+                    {process.state !== 'idle' && (
+                      <StatusBadge variant={getProcessBadge(process.state)} />
                     )}
                   </div>
                 ))}
               </div>
             </div>
           </div>
-        </div>
+        </Panel>
       </motion.div>
 
-      {/* Token Ring */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
-        className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">{t('design_principles.algorithms.token_ring.title')}</h2>
-        <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 mb-8">
+        <Panel title={t('design_principles.algorithms.token_ring.title')} accent="green">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-green-400">{t('design_principles.algorithms.token_ring.concept_title')}</h3>
-              <p className="text-slate-600 dark:text-slate-300 mb-4">
+              <div className="label-mono text-signal-green mb-3">{t('design_principles.algorithms.token_ring.concept_title')}</div>
+              <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim mb-4">
                 {t('design_principles.algorithms.token_ring.concept_p')}
               </p>
-              <div className="flex items-center gap-2 text-sm mb-6">
-                <span className="px-2 py-1 bg-green-500/20 text-green-300 rounded">
-                  {t('design_principles.algorithms.token_ring.badges.single_token')}
-                </span>
-                <span className="px-2 py-1 bg-green-500/20 text-green-300 rounded">
-                  {t('design_principles.algorithms.token_ring.badges.circular_passing')}
-                </span>
+              <div className="flex flex-wrap items-center gap-2 mb-6">
+                <Tag color="green">{t('design_principles.algorithms.token_ring.badges.single_token')}</Tag>
+                <Tag color="green">{t('design_principles.algorithms.token_ring.badges.circular_passing')}</Tag>
               </div>
 
-              {/* Code Example */}
-              <div className="bg-white dark:bg-slate-900/50 rounded-lg p-4 mb-4">
+              <div className="tactical-panel border border-slate-200 dark:border-tactical-border p-4 mb-4">
                 <pre className="text-sm overflow-x-auto">
-                  <code className="text-green-300">
+                  <code className="font-mono text-signal-green">
 {`// Estrutura do processo
 type Process = {
   id: number;
@@ -301,9 +288,8 @@ class TokenRing {
               </div>
             </div>
 
-            {/* Interactive Demo */}
-            <div className="bg-white dark:bg-slate-900/50 rounded-lg p-6">
-              <h4 className="text-lg font-semibold mb-4 text-green-400">{t('design_principles.algorithms.token_ring.demo_title')}</h4>
+            <div className="tactical-panel border border-slate-200 dark:border-tactical-border p-4">
+              <div className="label-mono text-signal-green mb-4">{t('design_principles.algorithms.token_ring.demo_title')}</div>
               <div className="relative aspect-square">
                 {tokenRingProcesses.map((process, index) => {
                   const angle = (index * 2 * Math.PI) / tokenRingProcesses.length;
@@ -314,10 +300,10 @@ class TokenRing {
                   return (
                     <motion.div
                       key={process.id}
-                      className={`absolute w-16 h-16 -ml-8 -mt-8 rounded-full flex items-center justify-center ${
+                      className={`absolute w-16 h-16 -ml-8 -mt-8 flex items-center justify-center font-mono text-xs ${
                         tokenPosition === process.id 
-                          ? 'bg-green-500/20 border-2 border-green-500'
-                          : 'bg-slate-100 dark:bg-slate-800'
+                          ? 'border-2 border-signal-green bg-signal-green/10 text-signal-green'
+                          : 'border border-tactical-border bg-tactical-raised text-slate-600 dark:text-tactical-dim'
                       }`}
                       style={{
                         left: `${x}%`,
@@ -328,57 +314,41 @@ class TokenRing {
                         transition: { duration: 0.3 }
                       }}
                     >
-                      <span className={`${
-                        tokenPosition === process.id ? 'text-green-300' : 'text-slate-600 dark:text-slate-300'
-                      }`}>
-                        {t('design_principles.algorithms.token_ring.labels.process_prefix')}{process.id}
-                      </span>
+                      {t('design_principles.algorithms.token_ring.labels.process_prefix')}{process.id}
                     </motion.div>
                   );
                 })}
-                {/* Token Movement Control */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <button
-                    onClick={moveToken}
-                    className="px-4 py-2 bg-green-500/20 text-green-300 rounded-lg hover:bg-green-500/30"
-                  >
+                  <TacticalButton size="sm" variant="primary" onClick={moveToken}>
                     {t('design_principles.algorithms.token_ring.move_token')}
-                  </button>
+                  </TacticalButton>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </Panel>
       </motion.div>
 
-      {/* Ricart-Agrawala */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
-        className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">{t('design_principles.algorithms.ricart_agrawala.title')}</h2>
-        <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6 mb-8">
+        <Panel title={t('design_principles.algorithms.ricart_agrawala.title')} accent="amber">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-yellow-400">{t('design_principles.algorithms.ricart_agrawala.concept_title')}</h3>
-              <p className="text-slate-600 dark:text-slate-300 mb-4">
+              <div className="label-mono text-signal-amber mb-3">{t('design_principles.algorithms.ricart_agrawala.concept_title')}</div>
+              <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim mb-4">
                 {t('design_principles.algorithms.ricart_agrawala.concept_p')}
               </p>
-              <div className="flex items-center gap-2 text-sm mb-6">
-                <span className="px-2 py-1 bg-yellow-500/20 text-yellow-300 rounded">
-                  {t('design_principles.algorithms.ricart_agrawala.badges.timestamps')}
-                </span>
-                <span className="px-2 py-1 bg-yellow-500/20 text-yellow-300 rounded">
-                  {t('design_principles.algorithms.ricart_agrawala.badges.consensus')}
-                </span>
+              <div className="flex flex-wrap items-center gap-2 mb-6">
+                <Tag color="amber">{t('design_principles.algorithms.ricart_agrawala.badges.timestamps')}</Tag>
+                <Tag color="amber">{t('design_principles.algorithms.ricart_agrawala.badges.consensus')}</Tag>
               </div>
 
-              {/* Code Example */}
-              <div className="bg-white dark:bg-slate-900/50 rounded-lg p-4 mb-4">
+              <div className="tactical-panel border border-slate-200 dark:border-tactical-border p-4 mb-4">
                 <pre className="text-sm overflow-x-auto">
-                  <code className="text-yellow-300">
+                  <code className="font-mono text-signal-amber">
 {`// Estrutura do processo
 type Process = {
   id: number;
@@ -432,9 +402,8 @@ class RicartAgrawala {
               </div>
             </div>
 
-            {/* Interactive Demo */}
-            <div className="bg-white dark:bg-slate-900/50 rounded-lg p-6">
-              <h4 className="text-lg font-semibold mb-4 text-yellow-400">{t('design_principles.algorithms.ricart_agrawala.demo_title')}</h4>
+            <div className="tactical-panel border border-slate-200 dark:border-tactical-border p-4">
+              <div className="label-mono text-signal-amber mb-4">{t('design_principles.algorithms.ricart_agrawala.demo_title')}</div>
               <div className="space-y-4">
                 {ricartProcesses.map(process => (
                   <div 
@@ -442,129 +411,107 @@ class RicartAgrawala {
                     className="flex items-center gap-4"
                   >
                     <motion.div 
-                      className={`w-32 h-12 rounded-lg flex items-center justify-center ${
-                        process.state === 'idle' ? 'bg-slate-100 dark:bg-slate-800' :
-                        process.state === 'requesting' ? 'bg-yellow-500/20' :
-                        'bg-green-500/20'
-                      }`}
+                      className={`w-32 h-12 border flex items-center justify-center font-mono text-sm ${getProcessBorder(process.state)}`}
                       animate={{
                         scale: process.state === 'idle' ? 1 : 1.05,
                         transition: { duration: 0.2 }
                       }}
                     >
-                      <span className="text-white">
-                        {t('design_principles.algorithms.ricart_agrawala.labels.process')} {process.id}
-                      </span>
+                      {t('design_principles.algorithms.ricart_agrawala.labels.process')} {process.id}
                     </motion.div>
                     {process.timestamp !== undefined && process.timestamp > 0 && process.state !== 'idle' && (
                       <motion.div
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="bg-yellow-500/20 px-3 py-1 rounded text-yellow-300"
+                        className="border border-signal-amber/40 px-3 py-1 font-mono text-sm text-signal-amber"
                       >
                         {t('design_principles.algorithms.ricart_agrawala.labels.ts_prefix')}: {process.timestamp}
                       </motion.div>
                     )}
                     {process.state === 'idle' && (
-                      <button
-                        onClick={() => requestRicartAccess(process.id)}
-                        className="px-3 py-1 bg-yellow-500/20 text-yellow-300 rounded hover:bg-yellow-500/30"
-                      >
+                      <TacticalButton size="sm" variant="primary" onClick={() => requestRicartAccess(process.id)}>
                         {t('design_principles.algorithms.ricart_agrawala.labels.request_access')}
-                      </button>
+                      </TacticalButton>
+                    )}
+                    {process.state !== 'idle' && (
+                      <StatusBadge variant={getProcessBadge(process.state)} />
                     )}
                   </div>
                 ))}
               </div>
             </div>
           </div>
-        </div>
+        </Panel>
       </motion.div>
 
-      {/* Comparison */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.5 }}
-        className="mb-12"
       >
-        <h2 className="text-2xl font-bold mb-6 text-white">{t('design_principles.algorithms.comparison.title')}</h2>
-        <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 rounded-xl p-6">
+        <Panel title={t('design_principles.algorithms.comparison.title')} accent="cyan">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-brand-600 dark:text-brand-400">{t('design_principles.algorithms.comparison.bakery_title')}</h3>
+              <div className="label-mono text-signal-cyan mb-4">{t('design_principles.algorithms.comparison.bakery_title')}</div>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
-                  <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
+                  <span className="text-signal-green font-mono mt-0.5">✓</span>
                   <div>
-                    <span className="text-white font-medium">{t('design_principles.algorithms.comparison.advantages')}</span>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">{t('design_principles.algorithms.comparison.bakery.pros')}</p>
+                    <span className="font-mono text-sm text-slate-900 dark:text-tactical-text">{t('design_principles.algorithms.comparison.advantages')}</span>
+                    <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{t('design_principles.algorithms.comparison.bakery.pros')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
-                  <svg className="w-5 h-5 text-red-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  <span className="text-signal-red font-mono mt-0.5">✗</span>
                   <div>
-                    <span className="text-white font-medium">{t('design_principles.algorithms.comparison.disadvantages')}</span>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">{t('design_principles.algorithms.comparison.bakery.cons')}</p>
+                    <span className="font-mono text-sm text-slate-900 dark:text-tactical-text">{t('design_principles.algorithms.comparison.disadvantages')}</span>
+                    <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{t('design_principles.algorithms.comparison.bakery.cons')}</p>
                   </div>
                 </li>
               </ul>
             </div>
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-green-400">{t('design_principles.algorithms.comparison.token_ring_title')}</h3>
+              <div className="label-mono text-signal-green mb-4">{t('design_principles.algorithms.comparison.token_ring_title')}</div>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
-                  <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
+                  <span className="text-signal-green font-mono mt-0.5">✓</span>
                   <div>
-                    <span className="text-white font-medium">{t('design_principles.algorithms.comparison.advantages')}</span>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">{t('design_principles.algorithms.comparison.token_ring.pros')}</p>
+                    <span className="font-mono text-sm text-slate-900 dark:text-tactical-text">{t('design_principles.algorithms.comparison.advantages')}</span>
+                    <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{t('design_principles.algorithms.comparison.token_ring.pros')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
-                  <svg className="w-5 h-5 text-red-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  <span className="text-signal-red font-mono mt-0.5">✗</span>
                   <div>
-                    <span className="text-white font-medium">{t('design_principles.algorithms.comparison.disadvantages')}</span>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">{t('design_principles.algorithms.comparison.token_ring.cons')}</p>
+                    <span className="font-mono text-sm text-slate-900 dark:text-tactical-text">{t('design_principles.algorithms.comparison.disadvantages')}</span>
+                    <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{t('design_principles.algorithms.comparison.token_ring.cons')}</p>
                   </div>
                 </li>
               </ul>
             </div>
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-yellow-400">{t('design_principles.algorithms.comparison.ricart_title')}</h3>
+              <div className="label-mono text-signal-amber mb-4">{t('design_principles.algorithms.comparison.ricart_title')}</div>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
-                  <svg className="w-5 h-5 text-yellow-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
+                  <span className="text-signal-green font-mono mt-0.5">✓</span>
                   <div>
-                    <span className="text-white font-medium">{t('design_principles.algorithms.comparison.advantages')}</span>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">{t('design_principles.algorithms.comparison.ricart.pros')}</p>
+                    <span className="font-mono text-sm text-slate-900 dark:text-tactical-text">{t('design_principles.algorithms.comparison.advantages')}</span>
+                    <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{t('design_principles.algorithms.comparison.ricart.pros')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
-                  <svg className="w-5 h-5 text-red-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  <span className="text-signal-red font-mono mt-0.5">✗</span>
                   <div>
-                    <span className="text-white font-medium">{t('design_principles.algorithms.comparison.disadvantages')}</span>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">{t('design_principles.algorithms.comparison.ricart.cons')}</p>
+                    <span className="font-mono text-sm text-slate-900 dark:text-tactical-text">{t('design_principles.algorithms.comparison.disadvantages')}</span>
+                    <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{t('design_principles.algorithms.comparison.ricart.cons')}</p>
                   </div>
                 </li>
               </ul>
             </div>
           </div>
-        </div>
+        </Panel>
       </motion.div>
 
-      {/* Next Steps */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -575,4 +522,4 @@ class RicartAgrawala {
       </motion.div>
     </div>
   );
-} 
+}

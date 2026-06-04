@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Panel, StatusBadge, TacticalButton } from '../tactical';
 
 interface Request {
   id: number;
@@ -84,180 +85,172 @@ export default function RateLimiter() {
     return () => clearInterval(requestInterval);
   }, [isRunning, tokens, messageRate]);
 
+  const rangeClass =
+    'flex-1 h-2 bg-slate-200 dark:bg-tactical-border appearance-none cursor-pointer accent-signal-green';
+
   return (
-    <div className="flex-1 min-h-full overflow-auto">
-      <div className="p-4 h-full">
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-xl font-semibold">{t('simulators.rate_limiter.title')}</h1>
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
-              <button
-                onClick={() => setIsConfigOpen(!isConfigOpen)}
-                className="w-full sm:w-auto px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-md hover:bg-zinc-700 font-medium transition-colors"
-              >
-                {isConfigOpen ? t('simulators.rate_limiter.buttons.close_config') : t('simulators.rate_limiter.buttons.configure')}
-              </button>
-              <button
-                onClick={() => setIsRunning(!isRunning)}
-                className={`w-full sm:w-auto px-4 py-2 rounded-md font-medium transition-colors ${
-                  isRunning 
-                    ? 'bg-red-500 hover:bg-red-600' 
-                    : 'bg-green-500 hover:bg-green-600'
-                }`}
-              >
-                {isRunning ? t('simulators.rate_limiter.buttons.stop') : t('simulators.rate_limiter.buttons.start')}
-              </button>
-              <button
-                onClick={resetSimulation}
-                className="w-full sm:w-auto px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-md hover:bg-zinc-700 font-medium transition-colors"
-              >
-                {t('simulators.rate_limiter.buttons.reset')}
-              </button>
+    <div className="space-y-6">
+      <div className="max-w-3xl">
+        <div className="label-mono text-signal-cyan mb-2">
+          [ {t('simulators.rate_limiter.title')} ]
+        </div>
+      </div>
+
+      <Panel
+        title={t('simulators.rate_limiter.bucket.title')}
+        accent="cyan"
+        action={
+          <div className="flex flex-wrap items-center gap-2">
+            <TacticalButton size="sm" variant="ghost" onClick={() => setIsConfigOpen(!isConfigOpen)}>
+              {isConfigOpen ? t('simulators.rate_limiter.buttons.close_config') : t('simulators.rate_limiter.buttons.configure')}
+            </TacticalButton>
+            <TacticalButton
+              size="sm"
+              variant={isRunning ? 'danger' : 'secondary'}
+              onClick={() => setIsRunning(!isRunning)}
+            >
+              {isRunning ? t('simulators.rate_limiter.buttons.stop') : t('simulators.rate_limiter.buttons.start')}
+            </TacticalButton>
+            <TacticalButton size="sm" variant="ghost" onClick={resetSimulation}>
+              {t('simulators.rate_limiter.buttons.reset')}
+            </TacticalButton>
+          </div>
+        }
+      >
+        {isConfigOpen && (
+          <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <label className="block label-mono text-slate-500 dark:text-tactical-label">{t('simulators.rate_limiter.config.token_rate')}</label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="range"
+                  min="1"
+                  max="20"
+                  value={requestsPerSecond}
+                  onChange={e => setRequestsPerSecond(Number(e.target.value))}
+                  className={rangeClass}
+                />
+                <span className="font-mono text-sm w-8 text-right text-signal-cyan tabular-nums">{requestsPerSecond}</span>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="block label-mono text-slate-500 dark:text-tactical-label">{t('simulators.rate_limiter.config.message_rate')}</label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="range"
+                  min="1"
+                  max="20"
+                  value={messageRate}
+                  onChange={e => setMessageRate(Number(e.target.value))}
+                  className={rangeClass}
+                />
+                <span className="font-mono text-sm w-8 text-right text-signal-cyan tabular-nums">{messageRate}</span>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="block label-mono text-slate-500 dark:text-tactical-label">{t('simulators.rate_limiter.config.bucket_size')}</label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="range"
+                  min="5"
+                  max="50"
+                  value={maxTokens}
+                  onChange={e => {
+                    const newMax = Number(e.target.value);
+                    setMaxTokens(newMax);
+                    setTokens(prev => Math.min(prev, newMax));
+                  }}
+                  className={rangeClass}
+                />
+                <span className="font-mono text-sm w-8 text-right text-signal-cyan tabular-nums">{maxTokens}</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="border border-slate-200 dark:border-tactical-border">
+            <div className="border-b border-slate-200 dark:border-tactical-border px-3 py-2">
+              <div className="label-mono text-slate-500 dark:text-tactical-label">{t('simulators.rate_limiter.bucket.title')}</div>
+              <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{t('simulators.rate_limiter.bucket.rate', { rate: requestsPerSecond })}</div>
+            </div>
+            <div className="relative h-32 bg-slate-50 dark:bg-tactical-raised overflow-hidden border-t border-slate-200 dark:border-tactical-border">
+              <div 
+                className="absolute bottom-0 w-full bg-signal-cyan/60 transition-all duration-300"
+                style={{ height: `${(tokens / maxTokens) * 100}%` }}
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="font-mono text-2xl font-bold tabular-nums text-slate-900 dark:text-tactical-text">
+                  {Math.round(tokens)}/{maxTokens}
+                </span>
+              </div>
             </div>
           </div>
 
-          {isConfigOpen && (
-            <div className="mb-6 bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <label className="block text-sm text-slate-500 dark:text-slate-400">{t('simulators.rate_limiter.config.token_rate')}</label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="range"
-                      min="1"
-                      max="20"
-                      value={requestsPerSecond}
-                      onChange={e => setRequestsPerSecond(Number(e.target.value))}
-                      className="flex-1"
-                    />
-                    <span className="text-sm font-mono w-8 text-right">{requestsPerSecond}</span>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="block text-sm text-slate-500 dark:text-slate-400">{t('simulators.rate_limiter.config.message_rate')}</label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="range"
-                      min="1"
-                      max="20"
-                      value={messageRate}
-                      onChange={e => setMessageRate(Number(e.target.value))}
-                      className="flex-1"
-                    />
-                    <span className="text-sm font-mono w-8 text-right">{messageRate}</span>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="block text-sm text-slate-500 dark:text-slate-400">{t('simulators.rate_limiter.config.bucket_size')}</label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="range"
-                      min="5"
-                      max="50"
-                      value={maxTokens}
-                      onChange={e => {
-                        const newMax = Number(e.target.value);
-                        setMaxTokens(newMax);
-                        setTokens(prev => Math.min(prev, newMax));
-                      }}
-                      className="flex-1"
-                    />
-                    <span className="text-sm font-mono w-8 text-right">{maxTokens}</span>
-                  </div>
-                </div>
-              </div>
+          <div className="border border-slate-200 dark:border-tactical-border">
+            <div className="border-b border-slate-200 dark:border-tactical-border px-3 py-2">
+              <div className="label-mono text-slate-500 dark:text-tactical-label">{t('simulators.rate_limiter.recent.title')}</div>
+              <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{t('simulators.rate_limiter.recent.rate', { rate: messageRate })}</div>
             </div>
-          )}
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-            {/* Token Bucket Visualization */}
-            <div className="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4 mb-4">
-                <h2 className="text-lg font-medium">{t('simulators.rate_limiter.bucket.title')}</h2>
-                <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.rate_limiter.bucket.rate', { rate: requestsPerSecond })}</div>
-              </div>
-              <div className="relative h-32 bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden border border-slate-300 dark:border-slate-700">
-                <div 
-                  className="absolute bottom-0 w-full bg-blue-500 transition-all duration-300"
-                  style={{ height: `${(tokens / maxTokens) * 100}%` }}
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-2xl font-bold">
-                    {Math.round(tokens)}/{maxTokens}
+            <div className="p-3 space-y-2">
+              {requests.map(request => (
+                <div
+                  key={request.id}
+                  className="flex flex-wrap items-center gap-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
+                >
+                  <StatusBadge
+                    variant={request.status === 'accepted' ? 'active' : 'classified'}
+                    label={request.status === 'accepted' ? t('simulators.rate_limiter.recent.accepted') : t('simulators.rate_limiter.recent.rejected')}
+                  />
+                  <span className="flex-1 min-w-[120px] font-mono text-xs text-slate-500 dark:text-tactical-dim tabular-nums">
+                    {((Date.now() - request.timestamp) / 1000).toFixed(1)}s
                   </span>
                 </div>
-              </div>
-            </div>
-
-            {/* Recent Requests */}
-            <div className="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4 mb-4">
-                <h2 className="text-lg font-medium">{t('simulators.rate_limiter.recent.title')}</h2>
-                <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.rate_limiter.recent.rate', { rate: messageRate })}</div>
-              </div>
-              <div className="space-y-2">
-                {requests.map(request => (
-                  <div
-                    key={request.id}
-                    className={`flex flex-wrap items-center gap-2 p-2 rounded-md ${
-                      request.status === 'accepted' 
-                        ? 'bg-green-500/20 text-green-300' 
-                        : 'bg-red-500/20 text-red-300'
-                    }`}
-                  >
-                    <span className="text-lg">
-                      {request.status === 'accepted' ? '✓' : '✗'}
-                    </span>
-                    <span className="flex-1 min-w-[120px]">
-                      {request.status === 'accepted' ? t('simulators.rate_limiter.recent.accepted') : t('simulators.rate_limiter.recent.rejected')}
-                    </span>
-                    <span className="text-sm opacity-75">
-                      {((Date.now() - request.timestamp) / 1000).toFixed(1)}s
-                    </span>
-                  </div>
-                ))}
-                {requests.length === 0 && (
-                  <div className="text-zinc-500 text-center py-4">
+              ))}
+              {requests.length === 0 && (
+                <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center">
+                  <p className="font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">
                     {t('simulators.rate_limiter.recent.none')}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Metrics */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
-              <div className="text-sm text-slate-500 dark:text-slate-400 mb-1">{t('simulators.rate_limiter.metrics.total')}</div>
-              <div className="text-2xl font-medium">{metrics.totalRequests}</div>
-            </div>
-            <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
-              <div className="text-sm text-slate-500 dark:text-slate-400 mb-1">{t('simulators.rate_limiter.metrics.accepted')}</div>
-              <div className="text-2xl font-medium text-green-400">
-                {metrics.acceptedRequests}
-                <span className="text-sm text-slate-500 dark:text-slate-400 ml-1">
-                  ({metrics.totalRequests > 0 
-                    ? Math.round((metrics.acceptedRequests / metrics.totalRequests) * 100) 
-                    : 0}%)
-                </span>
-              </div>
-            </div>
-            <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
-              <div className="text-sm text-slate-500 dark:text-slate-400 mb-1">{t('simulators.rate_limiter.metrics.rejected')}</div>
-              <div className="text-2xl font-medium text-red-400">
-                {metrics.rejectedRequests}
-                <span className="text-sm text-slate-500 dark:text-slate-400 ml-1">
-                  ({metrics.totalRequests > 0 
-                    ? Math.round((metrics.rejectedRequests / metrics.totalRequests) * 100) 
-                    : 0}%)
-                </span>
-              </div>
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
-      </div>
+      </Panel>
+
+      <Panel title={t('simulators.rate_limiter.metrics.total')} accent="green">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+            <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">{metrics.totalRequests}</div>
+            <div className="label-mono mt-2">{t('simulators.rate_limiter.metrics.total')}</div>
+          </div>
+          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+            <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green">
+              {metrics.acceptedRequests}
+              <span className="text-sm text-slate-500 dark:text-tactical-dim ml-1 font-normal">
+                ({metrics.totalRequests > 0 
+                  ? Math.round((metrics.acceptedRequests / metrics.totalRequests) * 100) 
+                  : 0}%)
+              </span>
+            </div>
+            <div className="label-mono mt-2">{t('simulators.rate_limiter.metrics.accepted')}</div>
+          </div>
+          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+            <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-red">
+              {metrics.rejectedRequests}
+              <span className="text-sm text-slate-500 dark:text-tactical-dim ml-1 font-normal">
+                ({metrics.totalRequests > 0 
+                  ? Math.round((metrics.rejectedRequests / metrics.totalRequests) * 100) 
+                  : 0}%)
+              </span>
+            </div>
+            <div className="label-mono mt-2">{t('simulators.rate_limiter.metrics.rejected')}</div>
+          </div>
+        </div>
+      </Panel>
     </div>
   );
-} 
+}

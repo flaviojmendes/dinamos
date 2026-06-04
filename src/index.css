@@ -27,15 +27,204 @@
   }
 
   .dark .bg-grid {
-    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-                      linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 32px 32px;
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
   }
 
   .card-shadow {
     box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.1);
   }
-  
+
   .dark .card-shadow {
-    box-shadow: 4px 4px 0px 0px rgba(255, 255, 255, 0.1);
+    /* Tactical look uses hairline borders, not drop shadows. */
+    box-shadow: none;
   }
+
+  /* ---- Tactical command-center utilities ---- */
+
+  /* Bordered panel. Dark = near-black surface + hairline border. */
+  .tactical-panel {
+    @apply bg-white dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border;
+  }
+
+  /* Uppercase mono micro-label (MISSION NAME, PRIORITY, ...). */
+  .label-mono {
+    @apply font-mono uppercase tracking-wider text-[11px] leading-tight text-slate-500 dark:text-tactical-label;
+  }
+
+  /* Segmented / dithered progress bar fill (the 84/112 + RISK LEVEL bars). */
+  .seg-bar {
+    background-image: repeating-linear-gradient(
+      to right,
+      currentColor 0,
+      currentColor 4px,
+      transparent 4px,
+      transparent 7px
+    );
+  }
+
+  /* Faint scanline overlay for hero / live-feed panels. */
+  .scanline {
+    position: relative;
+  }
+  .scanline::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.025) 0px,
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  }
+
+  /* Blinking terminal caret. */
+  .caret::after {
+    content: '_';
+    @apply animate-caret-blink text-signal-green;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scanline::after {
+    background-image: none;
+  }
+  .caret::after {
+    animation: none;
+  }
+}
+
+/*
+ * Scoped tactical treatment for interactive simulators (BOTH themes).
+ * Applied via the `.sim-scope` wrapper added by ContentLayout, this gives all
+ * ~40 bespoke simulators a consistent command-console look without editing each
+ * file. The STRUCTURAL language (sharp corners, flat shadows, hairline borders,
+ * mono headings, signal-accented controls) applies in light AND dark; only the
+ * surface/text colour remap is theme-specific (light keeps clean white panels,
+ * dark switches to the near-black tactical palette).
+ */
+
+/* ---- Structural treatment: both themes ---- */
+
+/* Sharpen card corners (leave pills/avatars `rounded-full` alone). */
+.sim-scope .rounded,
+.sim-scope .rounded-md,
+.sim-scope .rounded-lg,
+.sim-scope .rounded-xl,
+.sim-scope .rounded-2xl,
+.sim-scope .rounded-3xl {
+  border-radius: 0 !important;
+}
+
+/* Flat command-console surfaces: drop drop-shadows for hairline edges. */
+.sim-scope .shadow-sm,
+.sim-scope .shadow,
+.sim-scope .shadow-md,
+.sim-scope .shadow-lg,
+.sim-scope .shadow-xl,
+.sim-scope .shadow-2xl {
+  box-shadow: none !important;
+}
+
+/* Headings inside simulators read as mono command labels. */
+.sim-scope h1,
+.sim-scope h2,
+.sim-scope h3,
+.sim-scope h4 {
+  font-family: theme('fontFamily.mono');
+  letter-spacing: 0.01em;
+}
+
+/* Buttons become sharp mono command keys (colours preserved per simulator). */
+.sim-scope button {
+  font-family: theme('fontFamily.mono');
+  letter-spacing: 0.02em;
+}
+
+/* Tactical accent on native form controls used by simulators. */
+.sim-scope input[type='range'],
+.sim-scope input[type='checkbox'],
+.sim-scope input[type='radio'],
+.sim-scope select,
+.sim-scope progress {
+  accent-color: theme('colors.signal.green');
+}
+
+/* ---- Dark theme: near-black tactical palette ---- */
+.dark .sim-scope {
+  --tw-prose-body: theme('colors.tactical.dim');
+}
+
+/*
+ * Unify panel surfaces to the tactical palette. The `:not([class*="dark:bg-"])`
+ * guard means we only auto-darken surfaces that DON'T already declare their own
+ * dark-mode background — so elements that manage their own dark surface (the
+ * TacticalButton primary `dark:bg-white`, tactical-panel primitives, link
+ * buttons, etc.) keep their intended colour instead of being clobbered.
+ */
+.dark .sim-scope .bg-white:not([class*="dark:bg-"]),
+.dark .sim-scope .bg-slate-50:not([class*="dark:bg-"]),
+.dark .sim-scope .bg-slate-100:not([class*="dark:bg-"]),
+.dark .sim-scope .bg-gray-50:not([class*="dark:bg-"]),
+.dark .sim-scope .bg-gray-100:not([class*="dark:bg-"]) {
+  background-color: theme('colors.tactical.surface') !important;
+}
+.dark .sim-scope .bg-slate-800:not([class*="dark:bg-"]),
+.dark .sim-scope .bg-slate-900:not([class*="dark:bg-"]),
+.dark .sim-scope .bg-gray-800:not([class*="dark:bg-"]),
+.dark .sim-scope .bg-gray-900:not([class*="dark:bg-"]),
+.dark .sim-scope .bg-zinc-800:not([class*="dark:bg-"]),
+.dark .sim-scope .bg-zinc-900:not([class*="dark:bg-"]) {
+  background-color: theme('colors.tactical.surface') !important;
+}
+.dark .sim-scope .bg-slate-700:not([class*="dark:bg-"]),
+.dark .sim-scope .bg-gray-700:not([class*="dark:bg-"]),
+.dark .sim-scope .bg-zinc-700:not([class*="dark:bg-"]) {
+  background-color: theme('colors.tactical.raised') !important;
+}
+
+/* Hairline borders (override the light-theme slate borders in dark). */
+.dark .sim-scope .border,
+.dark .sim-scope .border-2,
+.dark .sim-scope .border-t,
+.dark .sim-scope .border-b,
+.dark .sim-scope .border-l,
+.dark .sim-scope .border-r {
+  border-color: theme('colors.tactical.border');
+}
+
+/* ---- React Flow dark tactical theme (system editor) ---- */
+.dark .react-flow__controls-button {
+  background-color: theme('colors.tactical.surface');
+  border-color: theme('colors.tactical.border');
+  color: theme('colors.tactical.text');
+}
+.dark .react-flow__controls-button:hover {
+  background-color: theme('colors.tactical.raised');
+}
+.dark .react-flow__controls-button svg {
+  fill: currentColor;
+}
+.dark .react-flow__minimap {
+  background-color: theme('colors.tactical.surface');
+  border: 1px solid theme('colors.tactical.border');
+}
+.dark .react-flow__attribution {
+  background: transparent;
+  color: theme('colors.tactical.label');
+}
+.dark .react-flow__edge-path {
+  stroke: theme('colors.tactical.line');
+}
+.dark .react-flow__edge.selected .react-flow__edge-path,
+.dark .react-flow__edge:hover .react-flow__edge-path {
+  stroke: theme('colors.signal.green');
+}
+.dark .react-flow__handle {
+  background-color: theme('colors.signal.green');
+  border-color: theme('colors.tactical.bg');
 }

@@ -164,7 +164,7 @@ function TopicCard({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="bg-slate-800/50 rounded-xl border border-slate-700/50 hover:border-slate-600 transition-all cursor-pointer group"
+      className="bg-tactical-surface border border-tactical-border hover:border-signal-green transition-all cursor-pointer group"
       onClick={onClick}
     >
       <div className="p-5">
@@ -283,7 +283,7 @@ function NewTopicForm({
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      className="bg-slate-800/80 backdrop-blur-sm rounded-xl border border-slate-700 p-6"
+      className="bg-tactical-surface backdrop-blur-sm border border-tactical-border p-6"
     >
       <h3 className="text-xl font-bold text-slate-100 mb-4">{t('forum.new_topic')}</h3>
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -360,7 +360,7 @@ function NewTopicForm({
           <button
             type="submit"
             disabled={isSubmitting || !title.trim() || !content.trim() || !category}
-            className="px-6 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2 bg-white hover:bg-slate-200 text-black font-mono uppercase tracking-wider text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? t('forum.posting') : t('forum.post')}
           </button>
@@ -684,7 +684,7 @@ function TopicDetail({
       </button>
 
       {/* Topic */}
-      <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-6">
+      <div className="bg-tactical-surface border border-tactical-border p-6">
         <div className="flex gap-4">
           <div className="flex flex-col items-center">
             <button
@@ -793,7 +793,7 @@ function TopicDetail({
 
       {/* Reply Form - Only for subscribed users */}
       {isSubscribed ? (
-        <form id="reply-form" onSubmit={handleReply} className="bg-slate-800/30 rounded-xl border border-slate-700/30 p-4">
+        <form id="reply-form" onSubmit={handleReply} className="bg-tactical-surface border border-tactical-border p-4">
           {replyingToMessage && (
             <div className="mb-3 p-3 bg-slate-900/50 rounded-lg border-l-4 border-brand-500 flex items-start justify-between">
               <div>
@@ -823,19 +823,19 @@ function TopicDetail({
             <button
               type="submit"
               disabled={isReplying || !replyContent.trim()}
-              className="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-white hover:bg-slate-200 text-black font-mono uppercase tracking-wider text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isReplying ? t('forum.posting') : t('forum.reply')}
             </button>
           </div>
         </form>
       ) : (
-        <div id="reply-form" className="bg-slate-800/30 rounded-xl border border-slate-700/30 p-4">
+        <div id="reply-form" className="bg-tactical-surface border border-tactical-border p-4">
           <div className="flex items-center justify-between">
             <p className="text-slate-400">{t('forum.subscribe_to_reply')}</p>
             <a
               href="/pagamento"
-              className="flex items-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg font-medium transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-slate-200 text-black font-mono uppercase tracking-wider text-sm font-medium transition-colors"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -963,17 +963,20 @@ export default function ForumPage() {
   return (
     <div className="space-y-6 lg:p-10 p-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-tactical-border pb-4">
         <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-brand-400 to-purple-400 bg-clip-text text-transparent">
-            {t('forum.title')}
-          </h1>
-          <p className="text-slate-400 mt-1">{t('forum.subtitle')}</p>
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-mono font-bold uppercase tracking-wider text-tactical-text">
+              {t('forum.title')}
+            </h1>
+            <span className="font-mono text-[11px] uppercase tracking-wider text-signal-green">[COMMS CHANNEL]</span>
+          </div>
+          <p className="text-tactical-dim font-mono text-sm mt-1">{t('forum.subtitle')}</p>
         </div>
         {isSubscribed ? (
           <button
             onClick={() => setShowNewTopicForm(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg font-medium transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-slate-200 text-black font-mono uppercase tracking-wider text-sm font-medium transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />

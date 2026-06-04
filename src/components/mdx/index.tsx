@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 /**
- * MDX content component library.
+ * MDX content component library — tactical command-console styling.
  *
  * All content-only pages are authored as MDX and rendered through MdxPage,
  * which provides this `mdxComponents` map via <MDXProvider>. Authors therefore
@@ -10,31 +10,30 @@ import { motion } from 'framer-motion';
  * without importing anything.
  *
  * IMPORTANT: `@tailwindcss/typography` is NOT installed, so the `prose` classes
- * are inert. The HTML element map below carries ALL of the typographic styling,
- * reproducing the utility classes the legacy page components used. Keep accent /
- * variant class strings STATIC (never build class names dynamically) so Tailwind's
- * purge step keeps them.
+ * are inert. The HTML element map below carries ALL of the typographic styling.
+ * Keep accent / variant class strings STATIC (never build class names
+ * dynamically) so Tailwind's purge step keeps them.
  */
 
 type AccentKey = 'brand' | 'green' | 'purple' | 'red' | 'yellow' | 'slate';
 
-// Full static class strings per accent so Tailwind keeps them in the build.
-const cardAccent: Record<AccentKey, string> = {
-  brand: 'bg-blue-900/20 border-blue-700',
-  green: 'bg-green-900/20 border-green-700',
-  purple: 'bg-purple-900/20 border-purple-700',
-  red: 'bg-red-900/20 border-red-700',
-  yellow: 'bg-yellow-900/20 border-yellow-700',
-  slate: 'bg-slate-100 dark:bg-slate-800/50 border-slate-300 dark:border-slate-700',
+// Left accent bar color per accent (the tactical section-marker treatment).
+const accentBar: Record<AccentKey, string> = {
+  brand: 'bg-signal-cyan',
+  green: 'bg-signal-green',
+  purple: 'bg-signal-cyan',
+  red: 'bg-signal-red',
+  yellow: 'bg-signal-amber',
+  slate: 'bg-slate-400 dark:bg-tactical-line',
 };
 
 const titleAccent: Record<AccentKey, string> = {
-  brand: 'text-brand-600 dark:text-brand-400',
-  green: 'text-green-400',
-  purple: 'text-purple-400',
-  red: 'text-red-400',
-  yellow: 'text-yellow-400',
-  slate: 'text-slate-900 dark:text-slate-100',
+  brand: 'text-brand-600 dark:text-signal-cyan',
+  green: 'text-green-600 dark:text-signal-green',
+  purple: 'text-purple-600 dark:text-signal-cyan',
+  red: 'text-red-600 dark:text-signal-red',
+  yellow: 'text-yellow-600 dark:text-signal-amber',
+  slate: 'text-slate-900 dark:text-tactical-text',
 };
 
 // ---------------------------------------------------------------------------
@@ -59,10 +58,10 @@ export function Section({ children, className = '' }: { children: React.ReactNod
 export function Cards({ children, cols = 3 }: { children: React.ReactNode; cols?: 2 | 3 | 4 }) {
   const colClass =
     cols === 2 ? 'md:grid-cols-2' : cols === 4 ? 'md:grid-cols-4' : 'md:grid-cols-3';
-  return <div className={`grid grid-cols-1 ${colClass} gap-6 my-8`}>{children}</div>;
+  return <div className={`grid grid-cols-1 ${colClass} gap-4 my-8`}>{children}</div>;
 }
 
-/** A single colored panel card with optional emoji + title. */
+/** A single bordered tactical panel with an optional accent header. */
 export function Card({
   title,
   emoji,
@@ -75,12 +74,15 @@ export function Card({
   children: React.ReactNode;
 }) {
   return (
-    <div className={`p-6 rounded-lg border ${cardAccent[accent]}`}>
-      {emoji && <div className="text-2xl mb-3">{emoji}</div>}
+    <div className="tactical-panel">
       {title && (
-        <h3 className={`text-2xl font-semibold mb-4 ${titleAccent[accent]}`}>{title}</h3>
+        <div className="flex items-center gap-2.5 border-b border-slate-200 dark:border-tactical-border px-4 py-3">
+          <span className={`h-3.5 w-1 shrink-0 ${accentBar[accent]}`} aria-hidden />
+          {emoji && <span className="text-base">{emoji}</span>}
+          <h3 className={`font-mono uppercase tracking-wider text-sm font-semibold ${titleAccent[accent]}`}>{title}</h3>
+        </div>
       )}
-      <div className="space-y-3 text-slate-700 dark:text-gray-300 text-sm leading-relaxed [&_ul]:list-disc [&_ul]:list-inside [&_ul]:space-y-1">
+      <div className="p-4 space-y-3 text-slate-700 dark:text-tactical-dim text-sm leading-relaxed [&_ul]:list-disc [&_ul]:list-inside [&_ul]:space-y-1">
         {children}
       </div>
     </div>
@@ -97,18 +99,37 @@ export function Callout({
   title?: string;
   children: React.ReactNode;
 }) {
-  const styles: Record<string, string> = {
-    info: 'bg-blue-900/20 border-blue-700 text-brand-600 dark:text-brand-300',
-    success: 'bg-green-900/20 border-green-700 text-green-400',
-    warning: 'bg-yellow-900/20 border-yellow-700 text-yellow-400',
-    danger: 'bg-red-900/20 border-red-700 text-red-400',
-    neutral: 'bg-slate-100 dark:bg-slate-800/30 border-zinc-300 dark:border-zinc-600 text-slate-900 dark:text-slate-100',
+  const bar: Record<string, string> = {
+    info: 'bg-signal-cyan',
+    success: 'bg-signal-green',
+    warning: 'bg-signal-amber',
+    danger: 'bg-signal-red',
+    neutral: 'bg-slate-400 dark:bg-tactical-line',
+  };
+  const titleColor: Record<string, string> = {
+    info: 'text-brand-600 dark:text-signal-cyan',
+    success: 'text-green-600 dark:text-signal-green',
+    warning: 'text-yellow-600 dark:text-signal-amber',
+    danger: 'text-red-600 dark:text-signal-red',
+    neutral: 'text-slate-900 dark:text-tactical-text',
+  };
+  const label: Record<string, string> = {
+    info: 'NOTE',
+    success: 'CONFIRMED',
+    warning: 'CAUTION',
+    danger: 'ALERT',
+    neutral: 'MEMO',
   };
   return (
-    <div className={`my-8 p-6 rounded-lg border ${styles[type]}`}>
-      {title && <div className="text-lg font-semibold mb-2">{title}</div>}
-      <div className="space-y-3 text-slate-700 dark:text-gray-200 [&_ul]:list-disc [&_ul]:list-inside [&_ul]:space-y-1">
-        {children}
+    <div className="my-8 tactical-panel flex">
+      <div className={`w-1 shrink-0 ${bar[type]}`} aria-hidden />
+      <div className="flex-1 p-5">
+        <div className={`font-mono uppercase tracking-wider text-xs font-semibold mb-2 ${titleColor[type]}`}>
+          {title ?? label[type]}
+        </div>
+        <div className="space-y-3 text-slate-700 dark:text-tactical-dim [&_ul]:list-disc [&_ul]:list-inside [&_ul]:space-y-1">
+          {children}
+        </div>
       </div>
     </div>
   );
@@ -118,15 +139,15 @@ export function Callout({
 export function Metrics({ children, cols = 3 }: { children: React.ReactNode; cols?: 2 | 3 | 4 }) {
   const colClass =
     cols === 2 ? 'md:grid-cols-2' : cols === 4 ? 'md:grid-cols-4' : 'md:grid-cols-3';
-  return <div className={`grid grid-cols-1 ${colClass} gap-4 my-8`}>{children}</div>;
+  return <div className={`grid grid-cols-1 ${colClass} gap-3 my-8`}>{children}</div>;
 }
 
-/** A single big-number metric card. */
+/** A single big-number metric tile. */
 export function Metric({ value, label, accent = 'brand' }: { value: string; label: string; accent?: AccentKey }) {
   return (
-    <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg text-center">
-      <div className={`text-2xl font-bold ${titleAccent[accent]}`}>{value}</div>
-      <div className="text-sm text-slate-500 dark:text-slate-400">{label}</div>
+    <div className="tactical-panel px-4 py-4">
+      <div className={`font-mono text-3xl font-bold tabular-nums leading-none ${titleAccent[accent]}`}>{value}</div>
+      <div className="label-mono mt-2">{label}</div>
     </div>
   );
 }
@@ -134,11 +155,11 @@ export function Metric({ value, label, accent = 'brand' }: { value: string; labe
 /** Responsive 16:9 video embed (YouTube etc.). */
 export function VideoEmbed({ src, title = 'video' }: { src: string; title?: string }) {
   return (
-    <div className="relative w-full aspect-video my-10">
+    <div className="relative w-full aspect-video my-10 tactical-panel p-1">
       <iframe
         src={src}
         title={title}
-        className="absolute top-0 left-0 w-full h-full rounded-lg"
+        className="absolute inset-1 w-[calc(100%-0.5rem)] h-[calc(100%-0.5rem)]"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
       />
@@ -154,49 +175,52 @@ type EProps = React.HTMLAttributes<HTMLElement> & { href?: string };
 
 const elements = {
   h1: (p: EProps) => (
-    <h1 className="text-4xl md:text-5xl font-bold mb-8 text-brand-600 dark:text-brand-400" {...p} />
+    <h1 className="text-3xl md:text-4xl font-mono font-bold tracking-tight mb-8 text-slate-900 dark:text-tactical-text" {...p} />
   ),
   h2: (p: EProps) => (
-    <h2 className="text-3xl font-bold mt-16 mb-6 text-brand-600 dark:text-brand-300" {...p} />
+    <h2
+      className="flex items-center gap-3 text-2xl font-mono font-bold mt-16 mb-6 text-slate-900 dark:text-tactical-text before:content-[''] before:h-6 before:w-1 before:bg-signal-amber before:shrink-0"
+      {...p}
+    />
   ),
   h3: (p: EProps) => (
-    <h3 className="text-2xl font-semibold mt-10 mb-4 text-slate-900 dark:text-slate-100" {...p} />
+    <h3 className="text-xl font-mono font-semibold mt-10 mb-4 text-brand-600 dark:text-signal-cyan" {...p} />
   ),
   h4: (p: EProps) => (
-    <h4 className="text-xl font-medium mt-6 mb-3 text-slate-900 dark:text-slate-200" {...p} />
+    <h4 className="text-lg font-mono font-medium mt-6 mb-3 text-slate-900 dark:text-tactical-text" {...p} />
   ),
   p: (p: EProps) => (
-    <p className="my-5 leading-relaxed text-slate-700 dark:text-slate-200" {...p} />
+    <p className="my-5 leading-relaxed text-slate-700 dark:text-tactical-dim" {...p} />
   ),
-  ul: (p: EProps) => <ul className="list-disc list-inside space-y-2 ml-4 my-5 text-slate-700 dark:text-slate-200" {...p} />,
-  ol: (p: EProps) => <ol className="list-decimal list-inside space-y-2 ml-4 my-5 text-slate-700 dark:text-slate-200" {...p} />,
+  ul: (p: EProps) => <ul className="list-disc list-inside space-y-2 ml-4 my-5 text-slate-700 dark:text-tactical-dim marker:text-signal-amber" {...p} />,
+  ol: (p: EProps) => <ol className="list-decimal list-inside space-y-2 ml-4 my-5 text-slate-700 dark:text-tactical-dim marker:text-signal-amber" {...p} />,
   li: (p: EProps) => <li className="leading-relaxed" {...p} />,
   blockquote: (p: EProps) => (
     <blockquote
-      className="border-l-4 border-blue-500 pl-4 my-8 text-xl font-medium text-brand-600 dark:text-brand-200 italic"
+      className="border-l-2 border-signal-amber pl-4 my-8 text-lg font-mono text-slate-800 dark:text-tactical-text italic"
       {...p}
     />
   ),
   a: ({ href = '#', ...p }: EProps) => (
-    <a href={href} className="text-brand-600 dark:text-brand-400 underline hover:no-underline" {...p} />
+    <a href={href} className="text-brand-600 dark:text-signal-cyan underline underline-offset-2 hover:no-underline" {...p} />
   ),
   code: (p: EProps) => (
-    <code className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-sm font-mono" {...p} />
+    <code className="px-1.5 py-0.5 bg-slate-200 dark:bg-tactical-raised text-sm font-mono text-brand-700 dark:text-signal-green" {...p} />
   ),
   pre: (p: EProps) => (
-    <pre className="my-6 p-4 rounded-lg bg-slate-900 text-slate-100 overflow-x-auto text-sm [&_code]:bg-transparent [&_code]:p-0" {...p} />
+    <pre className="my-6 p-4 bg-slate-950 dark:bg-black border border-slate-800 dark:border-tactical-border text-slate-100 overflow-x-auto text-sm [&_code]:bg-transparent [&_code]:p-0 [&_code]:text-slate-100" {...p} />
   ),
-  hr: (p: EProps) => <hr className="my-10 border-slate-300 dark:border-slate-700" {...p} />,
+  hr: (p: EProps) => <hr className="my-10 border-slate-200 dark:border-tactical-border" {...p} />,
   img: (p: React.ImgHTMLAttributes<HTMLImageElement>) => (
-    <img className="rounded-lg my-6 max-w-full" {...p} />
+    <img className="my-6 max-w-full border border-slate-200 dark:border-tactical-border" {...p} />
   ),
   table: (p: EProps) => (
-    <div className="my-6 overflow-x-auto">
+    <div className="my-6 overflow-x-auto tactical-panel">
       <table className="w-full text-left border-collapse text-sm" {...p} />
     </div>
   ),
-  th: (p: EProps) => <th className="border-b border-slate-300 dark:border-slate-700 px-3 py-2 font-semibold" {...p} />,
-  td: (p: EProps) => <td className="border-b border-slate-200 dark:border-slate-800 px-3 py-2" {...p} />,
+  th: (p: EProps) => <th className="label-mono border-b border-slate-200 dark:border-tactical-border px-3 py-2.5 bg-slate-50 dark:bg-tactical-surface" {...p} />,
+  td: (p: EProps) => <td className="border-b border-slate-100 dark:border-tactical-border/60 px-3 py-2.5 font-mono text-slate-700 dark:text-tactical-dim" {...p} />,
 };
 
 /** The complete component set handed to <MDXProvider>. */

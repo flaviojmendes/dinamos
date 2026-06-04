@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { Panel, StatusBadge, TacticalButton } from '../tactical';
 
 interface Node {
   id: number;
@@ -20,6 +21,9 @@ interface Message {
   content: string;
 }
 
+const inputClass =
+  'bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-3 py-2 font-mono text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-signal-green';
+
 export default function TwoPhaseCommitSimulator() {
   const { t } = useTranslation();
   const [nodes, setNodes] = useState<Node[]>([
@@ -32,27 +36,38 @@ export default function TwoPhaseCommitSimulator() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [step, setStep] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(false);
-  const [speed, setSpeed] = useState(1500); // milliseconds between steps
+  const [speed, setSpeed] = useState(1500);
 
-  const getNodeColor = (state: Node['state']) => {
+  const getNodeBorder = (state: Node['state']) => {
     switch (state) {
-      case 'idle': return 'bg-zinc-700';
-      case 'preparing': return 'bg-yellow-600';
-      case 'prepared': return 'bg-blue-600';
-      case 'committed': return 'bg-green-600';
-      case 'aborted': return 'bg-red-600';
-      default: return 'bg-zinc-700';
+      case 'idle': return 'border-tactical-border bg-tactical-raised';
+      case 'preparing': return 'border-signal-amber bg-signal-amber/10';
+      case 'prepared': return 'border-signal-cyan bg-signal-cyan/10';
+      case 'committed': return 'border-signal-green bg-signal-green/10';
+      case 'aborted': return 'border-signal-red bg-signal-red/10';
+      default: return 'border-tactical-border bg-tactical-raised';
+    }
+  };
+
+  const getStateBadge = (state: Node['state']): React.ComponentProps<typeof StatusBadge>['variant'] => {
+    switch (state) {
+      case 'idle': return 'offline';
+      case 'preparing': return 'in-progress';
+      case 'prepared': return 'pending';
+      case 'committed': return 'completed';
+      case 'aborted': return 'classified';
+      default: return 'offline';
     }
   };
 
   const getMessageColor = (type: Message['type']) => {
     switch (type) {
-      case 'prepare': return 'text-yellow-400';
-      case 'vote': return 'text-brand-600 dark:text-brand-400';
-      case 'commit': return 'text-green-400';
-      case 'abort': return 'text-red-400';
-      case 'ack': return 'text-purple-400';
-      default: return 'text-white';
+      case 'prepare': return 'text-signal-amber';
+      case 'vote': return 'text-signal-cyan';
+      case 'commit': return 'text-signal-green';
+      case 'abort': return 'text-signal-red';
+      case 'ack': return 'text-slate-500 dark:text-tactical-dim';
+      default: return 'text-slate-900 dark:text-tactical-text';
     }
   };
 
@@ -83,7 +98,7 @@ export default function TwoPhaseCommitSimulator() {
 
   const simulateStep = useCallback(() => {
     switch (step) {
-      case 0: // Phase 1 start: Prepare
+      case 0:
         setNodes(prev => prev.map(node => 
           node.type === 'coordinator' ? { ...node, state: 'preparing' } : node
         ));
@@ -94,7 +109,7 @@ export default function TwoPhaseCommitSimulator() {
         });
         break;
 
-      case 1: // Participants respond
+      case 1:
         setNodes(prev => prev.map(node => {
           if (node.type === 'participant') {
             return {
@@ -117,7 +132,7 @@ export default function TwoPhaseCommitSimulator() {
         });
         break;
 
-      case 2: // Phase 2 start: Decision
+      case 2: {
         const allPrepared = nodes.every(node => 
           node.type === 'coordinator' || (node.type === 'participant' && node.willVoteYes)
         );
@@ -138,8 +153,9 @@ export default function TwoPhaseCommitSimulator() {
           }
         });
         break;
+      }
 
-      case 3: // Final acknowledgment
+      case 3:
         nodes.forEach(node => {
           if (node.type === 'participant') {
             addMessage(
@@ -169,118 +185,112 @@ export default function TwoPhaseCommitSimulator() {
   }, [isAutoPlaying, step, simulateStep, speed]);
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-lg p-6 mt-8">
-      <div className="mb-6">
-        <h3 className="text-2xl font-bold text-white mb-4">{t('design_principles.two_phase_commit_simulator.title')}</h3>
-        <p className="text-slate-500 dark:text-slate-400 mb-4">
+    <div className="space-y-6">
+      <div className="max-w-3xl">
+        <div className="label-mono text-signal-cyan mb-2">
+          [ {t('design_principles.two_phase_commit_simulator.title')} ]
+        </div>
+        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
           {t('design_principles.two_phase_commit_simulator.intro')}
         </p>
       </div>
 
-      {/* Controls */}
-      <div className="flex gap-4 mb-6">
-        <button
-          onClick={() => setIsAutoPlaying(!isAutoPlaying)}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-          disabled={step >= 4}
-        >
-          {isAutoPlaying ? t('design_principles.two_phase_commit_simulator.controls.pause') : t('design_principles.two_phase_commit_simulator.controls.start')} {t('design_principles.two_phase_commit_simulator.controls.simulation')}
-        </button>
-        <button
-          onClick={resetSimulation}
-          className="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 text-white rounded-lg transition-colors"
-        >
-          {t('design_principles.two_phase_commit_simulator.controls.reset')}
-        </button>
-        <div className="flex items-center gap-2">
-          <label className="text-slate-500 dark:text-slate-400">{t('design_principles.two_phase_commit_simulator.controls.speed_label')}</label>
-          <select
-            value={speed}
-            onChange={(e) => setSpeed(Number(e.target.value))}
-            className="bg-slate-100 dark:bg-slate-800 text-white px-3 py-2 rounded-lg"
+      <Panel title={t('design_principles.two_phase_commit_simulator.controls.simulation')} accent="amber">
+        <div className="flex flex-wrap items-center gap-3">
+          <TacticalButton
+            size="sm"
+            variant={isAutoPlaying ? 'danger' : 'primary'}
+            onClick={() => setIsAutoPlaying(!isAutoPlaying)}
+            disabled={step >= 4}
           >
-            <option value={2000}>{t('design_principles.two_phase_commit_simulator.controls.speed_opts.slow')}</option>
-            <option value={1500}>{t('design_principles.two_phase_commit_simulator.controls.speed_opts.normal')}</option>
-            <option value={800}>{t('design_principles.two_phase_commit_simulator.controls.speed_opts.fast')}</option>
-          </select>
+            {isAutoPlaying ? t('design_principles.two_phase_commit_simulator.controls.pause') : t('design_principles.two_phase_commit_simulator.controls.start')} {t('design_principles.two_phase_commit_simulator.controls.simulation')}
+          </TacticalButton>
+          <TacticalButton size="sm" variant="secondary" onClick={resetSimulation}>
+            {t('design_principles.two_phase_commit_simulator.controls.reset')}
+          </TacticalButton>
+          <div className="flex items-center gap-2">
+            <label className="label-mono text-slate-500 dark:text-tactical-label">{t('design_principles.two_phase_commit_simulator.controls.speed_label')}</label>
+            <select
+              value={speed}
+              onChange={(e) => setSpeed(Number(e.target.value))}
+              className={inputClass}
+            >
+              <option value={2000}>{t('design_principles.two_phase_commit_simulator.controls.speed_opts.slow')}</option>
+              <option value={1500}>{t('design_principles.two_phase_commit_simulator.controls.speed_opts.normal')}</option>
+              <option value={800}>{t('design_principles.two_phase_commit_simulator.controls.speed_opts.fast')}</option>
+            </select>
+          </div>
         </div>
-      </div>
+      </Panel>
 
-      {/* Simulation Area */}
-      <div className="relative bg-slate-100 dark:bg-slate-800 rounded-lg p-6 min-h-[400px]">
-        {/* Nodes */}
+      <Panel title={t('design_principles.two_phase_commit_simulator.steps.current_phase')} accent="green" bodyClassName="min-h-[400px]">
         <div className="grid grid-cols-4 gap-4 mb-8">
           {nodes.map((node) => (
-              <motion.div
+            <motion.div
               key={node.id}
-              className={`p-4 rounded-lg ${getNodeColor(node.state)} transition-colors`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
-                <h4 className="text-white font-semibold mb-2">{node.name}</h4>
-                <div className="text-sm text-slate-600 dark:text-slate-300">
-                  {t('design_principles.two_phase_commit_simulator.node_states.' + node.state, node.state)}
-                  {node.response && <div>{t('design_principles.two_phase_commit_simulator.responses.' + node.response)}</div>}
-                  {node.type === 'participant' && step === 0 && (
-                    <div className="mt-3 space-y-2">
-                        <div className="text-xs text-slate-500 dark:text-slate-400">{t('design_principles.two_phase_commit_simulator.config.configure_response')}</div>
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => toggleNodeResponse(node.id)}
-                              className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
-                                node.willVoteYes
-                                  ? 'bg-green-500 hover:bg-green-600 text-white'
-                                  : 'bg-zinc-700 hover:bg-zinc-600 text-slate-600 dark:text-slate-300'
-                              }`}
-                            >
-                              {t('design_principles.two_phase_commit_simulator.config.approve')}
-                            </button>
-                            <button
-                              onClick={() => toggleNodeResponse(node.id)}
-                              className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
-                                !node.willVoteYes
-                                  ? 'bg-red-500 hover:bg-red-600 text-white'
-                                  : 'bg-zinc-700 hover:bg-zinc-600 text-slate-600 dark:text-slate-300'
-                              }`}
-                            >
-                              {t('design_principles.two_phase_commit_simulator.config.reject')}
-                            </button>
-                          </div>
-                          <div className="text-xs mt-2">
-                            {t('design_principles.two_phase_commit_simulator.config.status')} <span className={node.willVoteYes ? 'text-green-400' : 'text-red-400'}>
-                              {node.willVoteYes ? t('design_principles.two_phase_commit_simulator.config.will_approve') : t('design_principles.two_phase_commit_simulator.config.will_reject')}
-                            </span>
-                        </div>
+              className={`p-4 border ${getNodeBorder(node.state)} transition-colors`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <div className="flex items-start justify-between gap-2 mb-2">
+                <h4 className="font-mono text-sm font-semibold text-slate-900 dark:text-tactical-text">{node.name}</h4>
+                <StatusBadge variant={getStateBadge(node.state)} label={t('design_principles.two_phase_commit_simulator.node_states.' + node.state, node.state)} />
+              </div>
+              <div className="font-mono text-xs text-slate-600 dark:text-tactical-dim">
+                {node.response && <div>{t('design_principles.two_phase_commit_simulator.responses.' + node.response)}</div>}
+                {node.type === 'participant' && step === 0 && (
+                  <div className="mt-3 space-y-2">
+                    <div className="label-mono">{t('design_principles.two_phase_commit_simulator.config.configure_response')}</div>
+                    <div className="flex gap-2">
+                      <TacticalButton
+                        size="sm"
+                        variant={node.willVoteYes ? 'primary' : 'ghost'}
+                        onClick={() => toggleNodeResponse(node.id)}
+                      >
+                        {t('design_principles.two_phase_commit_simulator.config.approve')}
+                      </TacticalButton>
+                      <TacticalButton
+                        size="sm"
+                        variant={!node.willVoteYes ? 'danger' : 'ghost'}
+                        onClick={() => toggleNodeResponse(node.id)}
+                      >
+                        {t('design_principles.two_phase_commit_simulator.config.reject')}
+                      </TacticalButton>
                     </div>
-                  )}
-                </div>
-              </motion.div>
+                    <div className="text-xs mt-2">
+                      {t('design_principles.two_phase_commit_simulator.config.status')}{' '}
+                      <span className={node.willVoteYes ? 'text-signal-green' : 'text-signal-red'}>
+                        {node.willVoteYes ? t('design_principles.two_phase_commit_simulator.config.will_approve') : t('design_principles.two_phase_commit_simulator.config.will_reject')}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </motion.div>
           ))}
-                    </div>
+        </div>
 
-        {/* Messages */}
-        <div className="space-y-2">
-                      <AnimatePresence mode="popLayout">
+        <div className="space-y-2 border-t border-slate-200 dark:border-tactical-border pt-4">
+          <AnimatePresence mode="popLayout">
             {messages.map((message) => (
-                          <motion.div
-                            key={message.id}
+              <motion.div
+                key={message.id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
-                className={`flex items-center gap-2 ${getMessageColor(message.type)}`}
-                          >
-                <span className="font-mono">{nodes[message.from].name} → {nodes[message.to].name}:</span>
+                className={`flex items-center gap-2 font-mono text-sm ${getMessageColor(message.type)}`}
+              >
+                <span>{nodes[message.from].name} → {nodes[message.to].name}:</span>
                 <span>{message.content}</span>
-                          </motion.div>
-                        ))}
-                      </AnimatePresence>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
-      </div>
+      </Panel>
 
-      {/* Step Description */}
-      <div className="mt-6 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg">
-        <h4 className="text-lg font-semibold text-white mb-2">{t('design_principles.two_phase_commit_simulator.steps.current_phase')}</h4>
-        <p className="text-slate-600 dark:text-slate-300">
+      <div className="tactical-panel border-l-2 border-l-signal-cyan p-5">
+        <h4 className="label-mono text-signal-cyan mb-2">{t('design_principles.two_phase_commit_simulator.steps.current_phase')}</h4>
+        <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim">
           {step === 0 && t('design_principles.two_phase_commit_simulator.steps.s0')}
           {step === 1 && t('design_principles.two_phase_commit_simulator.steps.s1')}
           {step === 2 && t('design_principles.two_phase_commit_simulator.steps.s2')}
@@ -290,4 +300,4 @@ export default function TwoPhaseCommitSimulator() {
       </div>
     </div>
   );
-} 
+}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { Panel, TacticalButton } from '../tactical';
 
 interface Module {
   id: string;
@@ -286,46 +287,43 @@ export default function ServiceArchitectureSimulator() {
   };
 
   return (
-    <div className="p-6 md:p-8 lg:p-12 max-w-4xl mx-auto">
-      <div className="prose prose-invert prose-lg max-w-none">
-        <h1 className="text-4xl md:text-5xl font-bold mb-8 text-brand-600 dark:text-brand-400">
-          Simulador de Arquiteturas de Serviços
-        </h1>
-
-        <p className="text-xl text-slate-600 dark:text-slate-300 mb-12">
+    <div className="space-y-6">
+      <div className="max-w-3xl">
+        <div className="label-mono text-signal-cyan mb-2">
+          [ Simulador de Arquiteturas de Serviços ]
+        </div>
+        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim mb-6">
           Compare as diferentes abordagens de organização de código e suas implicações.
         </p>
 
-        {/* Architecture Selection */}
-        <div className="flex gap-4 mb-12">
+        <div className="flex flex-wrap gap-2 mb-6">
           {architectures.map(arch => (
-            <motion.button
+            <motion.div
               key={arch.type}
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              onClick={() => setSelectedArch(arch)}
-              className={`px-6 py-3 rounded-lg transition-colors ${
-                selectedArch.type === arch.type
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-zinc-700'
-              }`}
             >
-              {arch.name}
-            </motion.button>
+              <TacticalButton
+                size="sm"
+                variant={selectedArch.type === arch.type ? 'primary' : 'secondary'}
+                onClick={() => setSelectedArch(arch)}
+              >
+                {arch.name}
+              </TacticalButton>
+            </motion.div>
           ))}
         </div>
+      </div>
 
-        {/* Architecture Description */}
-        <motion.div
-          key={selectedArch.type}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
-          className="bg-white dark:bg-slate-900 rounded-lg p-6 mb-12"
-        >
-          <h2 className="text-3xl font-bold mb-4 text-brand-600 dark:text-brand-300">{selectedArch.name}</h2>
-          <p className="text-slate-700 dark:text-slate-200">{selectedArch.description}</p>
-        </motion.div>
+      <motion.div
+        key={selectedArch.type}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+      >
+        <Panel title={selectedArch.name} accent="cyan" className="mb-6">
+          <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{selectedArch.description}</p>
+        </Panel>
 
         {/* Modules Visualization */}
         <div className="relative">
@@ -342,48 +340,48 @@ export default function ServiceArchitectureSimulator() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3 }}
-                className={`p-6 rounded-lg ${module.color} bg-opacity-10 relative ${
+                className={`p-4 border relative bg-slate-50 dark:bg-tactical-raised border-slate-200 dark:border-tactical-border ${
                   hoveredModule && hoveredModule !== module.id && !module.dependencies?.includes(hoveredModule)
                     ? 'opacity-30'
-                    : ''
+                    : hoveredModule === module.id ? 'border-signal-cyan' : ''
                 }`}
                 onMouseEnter={() => setHoveredModule(module.id)}
                 onMouseLeave={() => setHoveredModule(null)}
               >
-                <h3 className="text-2xl font-bold mb-4 text-brand-600 dark:text-brand-300">{module.name}</h3>
+                <h3 className="font-mono text-sm font-semibold mb-3 text-slate-900 dark:text-tactical-text">{module.name}</h3>
                 
                 {/* Module Details - Always Visible */}
                 {module.details && (
-                  <div className="text-sm text-slate-700 dark:text-slate-200 space-y-2">
+                  <div className="font-mono text-xs text-slate-600 dark:text-tactical-dim space-y-2">
                     <div className="flex items-start gap-2">
-                      <span className="font-medium min-w-[100px] text-brand-600 dark:text-brand-200">Deploy:</span>
+                      <span className="label-mono min-w-[100px] shrink-0">Deploy:</span>
                       <span>{module.details.deployment}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="font-medium min-w-[100px] text-brand-600 dark:text-brand-200">Comunicação:</span>
+                      <span className="label-mono min-w-[100px] shrink-0">Comunicação:</span>
                       <span>{module.details.communication}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="font-medium min-w-[100px] text-brand-600 dark:text-brand-200">Banco:</span>
+                      <span className="label-mono min-w-[100px] shrink-0">Banco:</span>
                       <span>{module.details.database}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="font-medium min-w-[100px] text-brand-600 dark:text-brand-200">Escala:</span>
+                      <span className="label-mono min-w-[100px] shrink-0">Escala:</span>
                       <span>{module.details.scaling}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="font-medium min-w-[100px] text-brand-600 dark:text-brand-200">Dev:</span>
+                      <span className="label-mono min-w-[100px] shrink-0">Dev:</span>
                       <span>{module.details.development}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="font-medium min-w-[100px] text-brand-600 dark:text-brand-200">Manutenção:</span>
+                      <span className="label-mono min-w-[100px] shrink-0">Manutenção:</span>
                       <span>{module.details.maintenance}</span>
                     </div>
                   </div>
                 )}
 
                 {module.dependencies && (
-                  <div className="text-sm text-slate-500 dark:text-slate-400 mt-4 pt-4 border-t border-slate-300 dark:border-slate-700">
+                  <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim mt-4 pt-4 border-t border-slate-200 dark:border-tactical-border">
                     Depende de: {module.dependencies.map(dep => {
                       const depModule = selectedArch.modules.find(m => m.id === dep);
                       return depModule?.name;
@@ -396,18 +394,12 @@ export default function ServiceArchitectureSimulator() {
           </div>
         </div>
 
-        {/* Instructions */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="mt-8 bg-white dark:bg-slate-900 p-6 rounded-lg text-center"
-        >
-          <p className="text-slate-700 dark:text-slate-200">
+        <div className="tactical-panel border-l-2 border-l-signal-cyan p-5 text-center">
+          <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim">
             Passe o mouse sobre os módulos para visualizar suas dependências.
           </p>
-        </motion.div>
-      </div>
+        </div>
+      </motion.div>
     </div>
   );
 } 

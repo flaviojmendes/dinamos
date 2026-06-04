@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { Panel, SegmentBar, TacticalButton } from '../tactical';
+
+const inputClass =
+  'bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-3 py-2 font-mono text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-signal-green';
 
 interface Node {
   id: number;
@@ -216,27 +220,27 @@ export default function ConsensusSimulator() {
 
   const getNodeColor = (role: string) => {
     switch (role) {
-      case 'leader': return 'bg-green-500';
-      case 'candidate': return 'bg-yellow-500';
-      case 'proposer': return 'bg-purple-500';
-      case 'acceptor': return 'bg-blue-500';
-      case 'learner': return 'bg-cyan-500';
-      case 'participant': return 'bg-orange-500';
-      default: return 'bg-blue-500';
+      case 'leader': return 'bg-signal-green/20 border-2 border-signal-green text-signal-green';
+      case 'candidate': return 'bg-signal-amber/20 border-2 border-signal-amber text-signal-amber';
+      case 'proposer': return 'bg-signal-cyan/20 border-2 border-signal-cyan text-signal-cyan';
+      case 'acceptor': return 'bg-tactical-raised border-2 border-tactical-border text-slate-900 dark:text-tactical-text';
+      case 'learner': return 'bg-signal-cyan/10 border-2 border-signal-cyan/50 text-signal-cyan';
+      case 'participant': return 'bg-signal-amber/10 border-2 border-signal-amber/50 text-signal-amber';
+      default: return 'bg-tactical-raised border-2 border-tactical-border text-slate-900 dark:text-tactical-text';
     }
   };
 
   const getMessageColor = (type: Message['type']) => {
     switch (type) {
       case 'vote_request':
-      case 'prepare': return 'bg-yellow-500';
+      case 'prepare': return 'bg-signal-amber';
       case 'vote_response':
-      case 'promise': return 'bg-green-500';
-      case 'propose': return 'bg-purple-500';
-      case 'accept': return 'bg-cyan-500';
-      case 'watch': return 'bg-orange-500';
-      case 'notify': return 'bg-red-500';
-      default: return 'bg-blue-500';
+      case 'promise': return 'bg-signal-green';
+      case 'propose': return 'bg-signal-cyan';
+      case 'accept': return 'bg-signal-cyan';
+      case 'watch': return 'bg-signal-amber';
+      case 'notify': return 'bg-signal-red';
+      default: return 'bg-signal-cyan';
     }
   };
 
@@ -245,57 +249,54 @@ export default function ConsensusSimulator() {
 
   return (
     <div className="space-y-6">
-      {/* Protocol Selection */}
-      <div className="bg-white dark:bg-slate-900 rounded-lg p-4">
+      <Panel title={t('design_principles.consistency_strategies.consensus_simulator.controls.protocol_label')} accent="cyan">
         <div className="flex items-center gap-4">
-          <label className="text-slate-600 dark:text-slate-300">{t('design_principles.consistency_strategies.consensus_simulator.controls.protocol_label')}</label>
           <select
             value={protocol}
             onChange={(e) => setProtocol(e.target.value as Protocol)}
-            className="bg-slate-100 dark:bg-slate-800 text-white rounded-lg px-3 py-2"
+            className={inputClass}
           >
             <option value="raft">{t('design_principles.consistency_strategies.consensus_simulator.controls.options.raft')}</option>
             <option value="paxos">{t('design_principles.consistency_strategies.consensus_simulator.controls.options.paxos')}</option>
             <option value="zookeeper">{t('design_principles.consistency_strategies.consensus_simulator.controls.options.zookeeper')}</option>
           </select>
         </div>
-      </div>
+      </Panel>
 
-      {/* Controls */}
-      <div className="bg-white dark:bg-slate-900 rounded-lg p-4 flex flex-wrap gap-4">
-        <button
-          onClick={() => setIsPlaying(!isPlaying)}
-          className={`px-4 py-2 rounded-lg font-medium ${isPlaying ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} text-white transition-colors`}
-        >
-          {isPlaying ? t('design_principles.consistency_strategies.consensus_simulator.controls.pause') : t('design_principles.consistency_strategies.consensus_simulator.controls.start')}
-        </button>
-        <button
-          onClick={() => { setStep(0); protocolSteps[protocol][0].action(); }}
-          className="px-4 py-2 rounded-lg font-medium bg-zinc-700 hover:bg-zinc-600 text-white transition-colors"
-        >
-          {t('design_principles.consistency_strategies.consensus_simulator.controls.restart')}
-        </button>
-        <div className="flex items-center gap-2">
-          <label className="text-slate-600 dark:text-slate-300">{t('design_principles.consistency_strategies.consensus_simulator.controls.speed_label')}</label>
-          <select
-            value={speed}
-            onChange={(e) => setSpeed(Number(e.target.value))}
-            className="bg-slate-100 dark:bg-slate-800 text-white rounded-lg px-2 py-1"
+      <Panel title={t('design_principles.consistency_strategies.consensus_simulator.controls.start')} accent="amber">
+        <div className="flex flex-wrap items-center gap-3">
+          <TacticalButton
+            size="sm"
+            variant={isPlaying ? 'danger' : 'primary'}
+            onClick={() => setIsPlaying(!isPlaying)}
           >
-            <option value={3000}>{t('design_principles.consistency_strategies.consensus_simulator.controls.speed_opts.slow')}</option>
-            <option value={2000}>{t('design_principles.consistency_strategies.consensus_simulator.controls.speed_opts.normal')}</option>
-            <option value={1000}>{t('design_principles.consistency_strategies.consensus_simulator.controls.speed_opts.fast')}</option>
-          </select>
+            {isPlaying ? t('design_principles.consistency_strategies.consensus_simulator.controls.pause') : t('design_principles.consistency_strategies.consensus_simulator.controls.start')}
+          </TacticalButton>
+          <TacticalButton
+            size="sm"
+            variant="secondary"
+            onClick={() => { setStep(0); protocolSteps[protocol][0].action(); }}
+          >
+            {t('design_principles.consistency_strategies.consensus_simulator.controls.restart')}
+          </TacticalButton>
+          <div className="flex items-center gap-2">
+            <label className="label-mono text-slate-500 dark:text-tactical-label">{t('design_principles.consistency_strategies.consensus_simulator.controls.speed_label')}</label>
+            <select
+              value={speed}
+              onChange={(e) => setSpeed(Number(e.target.value))}
+              className={inputClass}
+            >
+              <option value={3000}>{t('design_principles.consistency_strategies.consensus_simulator.controls.speed_opts.slow')}</option>
+              <option value={2000}>{t('design_principles.consistency_strategies.consensus_simulator.controls.speed_opts.normal')}</option>
+              <option value={1000}>{t('design_principles.consistency_strategies.consensus_simulator.controls.speed_opts.fast')}</option>
+            </select>
+          </div>
+          <TacticalButton size="sm" variant="ghost" onClick={() => setShowExplanation(!showExplanation)}>
+            {showExplanation ? t('design_principles.consistency_strategies.consensus_simulator.controls.hide_explanations') : t('design_principles.consistency_strategies.consensus_simulator.controls.show_explanations')}
+          </TacticalButton>
         </div>
-        <button
-          onClick={() => setShowExplanation(!showExplanation)}
-          className="px-4 py-2 rounded-lg font-medium bg-blue-500 hover:bg-blue-600 text-white transition-colors"
-        >
-          {showExplanation ? t('design_principles.consistency_strategies.consensus_simulator.controls.hide_explanations') : t('design_principles.consistency_strategies.consensus_simulator.controls.show_explanations')}
-        </button>
-      </div>
+      </Panel>
 
-      {/* Current Step */}
       <AnimatePresence mode="wait">
         {showExplanation && (
           <motion.div
@@ -303,19 +304,17 @@ export default function ConsensusSimulator() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4"
+            className="tactical-panel border-l-2 border-l-signal-cyan p-5"
           >
-            <h3 className="text-lg font-semibold text-brand-600 dark:text-brand-400 mb-2">
+            <h3 className="label-mono text-signal-cyan mb-2">
               {t('design_principles.consistency_strategies.consensus_simulator.step_prefix')} {step + 1}: {protocolSteps[protocol][step].title}
             </h3>
-            <p className="text-slate-600 dark:text-slate-300">{protocolSteps[protocol][step].description}</p>
+            <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{protocolSteps[protocol][step].description}</p>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Nodes Visualization */}
-      <div className="bg-white dark:bg-slate-900 rounded-lg p-6 pb-20">
-        <h2 className="text-xl font-bold text-brand-600 dark:text-brand-400 mb-6">{t('design_principles.consistency_strategies.consensus_simulator.cluster_vis_title')}</h2>
+      <Panel title={t('design_principles.consistency_strategies.consensus_simulator.cluster_vis_title')} accent="green" bodyClassName="pb-20">
         <div ref={containerRef} className="relative aspect-square max-w-3xl mx-auto" style={{ height: '400px' }}>
           {/* Messages */}
           <AnimatePresence>
@@ -341,7 +340,7 @@ export default function ConsensusSimulator() {
             return (
               <motion.div
                 key={node.id}
-                className={`absolute w-32 h-32 -translate-x-1/2 -translate-y-1/2 ${getNodeColor(node.role)} rounded-lg p-4 flex flex-col items-center justify-center text-white ${node.active ? 'opacity-100' : 'opacity-50'} shadow-lg`}
+                className={`absolute w-32 h-32 -translate-x-1/2 -translate-y-1/2 ${getNodeColor(node.role)} p-4 flex flex-col items-center justify-center font-mono text-xs ${node.active ? 'opacity-100' : 'opacity-50'}`}
                 style={{ left: position.x, top: position.y }}
                 animate={{
                   scale: node.role === 'leader' || node.role === 'proposer' ? 1.1 : 1,
@@ -392,7 +391,7 @@ export default function ConsensusSimulator() {
                 )}
                 {(node.role === 'leader' || node.role === 'proposer') && (
                   <motion.div
-                    className="absolute inset-0 rounded-lg border-2 border-white"
+                    className="absolute inset-0 border-2 border-signal-green/50"
                     initial={false}
                     animate={{ scale: [1, 1.05, 1], opacity: [0.5, 0.8, 0.5] }}
                     transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
@@ -402,77 +401,74 @@ export default function ConsensusSimulator() {
             );
           })}
         </div>
-      </div>
+      </Panel>
 
-      {/* Progress Bar */}
-      <div className="bg-white dark:bg-slate-900 rounded-lg p-4">
-        <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-          <div className="h-full bg-blue-500 transition-all duration-300" style={{ width: `${(step / (protocolSteps[protocol].length - 1)) * 100}%` }} />
-        </div>
-        <div className="mt-2 text-slate-500 dark:text-slate-400 text-sm text-center">
-          {t('design_principles.consistency_strategies.consensus_simulator.progress_label', { percent: Math.round((step / (protocolSteps[protocol].length - 1)) * 100) })}
-        </div>
-      </div>
+      <Panel title={t('design_principles.consistency_strategies.consensus_simulator.progress_label', { percent: Math.round((step / (protocolSteps[protocol].length - 1)) * 100) })} accent="cyan">
+        <SegmentBar
+          value={step}
+          max={protocolSteps[protocol].length - 1}
+          color="cyan"
+          caption={`${Math.round((step / (protocolSteps[protocol].length - 1)) * 100)}%`}
+        />
+      </Panel>
 
-      {/* Legend */}
-      <div className="bg-white dark:bg-slate-900 rounded-lg p-4">
-        <h3 className="font-medium text-slate-600 dark:text-slate-300 mb-2">{t('design_principles.consistency_strategies.consensus_simulator.legend.legend_title')}</h3>
+      <Panel title={t('design_principles.consistency_strategies.consensus_simulator.legend.legend_title')} accent="amber">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <h4 className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">{t('design_principles.consistency_strategies.consensus_simulator.legend.node_states_title')}</h4>
+            <h4 className="label-mono text-slate-500 dark:text-tactical-label mb-2">{t('design_principles.consistency_strategies.consensus_simulator.legend.node_states_title')}</h4>
             <div className="grid gap-2">
               {protocol === 'raft' && (
                 <>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-blue-500"></div><span className="text-slate-600 dark:text-slate-300">{roles.follower}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-yellow-500"></div><span className="text-slate-600 dark:text-slate-300">{roles.candidate}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-green-500"></div><span className="text-slate-600 dark:text-slate-300">{roles.leader}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-tactical-raised border border-tactical-border"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{roles.follower}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-amber"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{roles.candidate}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-green"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{roles.leader}</span></div>
                 </>
               )}
               {protocol === 'paxos' && (
                 <>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-purple-500"></div><span className="text-slate-600 dark:text-slate-300">{roles.proposer}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-blue-500"></div><span className="text-slate-600 dark:text-slate-300">{roles.acceptor}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-cyan-500"></div><span className="text-slate-600 dark:text-slate-300">{roles.learner}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-cyan"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{roles.proposer}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-tactical-raised border border-tactical-border"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{roles.acceptor}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-cyan/60"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{roles.learner}</span></div>
                 </>
               )}
               {protocol === 'zookeeper' && (
                 <>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-green-500"></div><span className="text-slate-600 dark:text-slate-300">{roles.leader}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-blue-500"></div><span className="text-slate-600 dark:text-slate-300">{roles.follower}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-orange-500"></div><span className="text-slate-600 dark:text-slate-300">{roles.participant}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-green"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{roles.leader}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-tactical-raised border border-tactical-border"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{roles.follower}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-amber"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{roles.participant}</span></div>
                 </>
               )}
             </div>
           </div>
           <div>
-            <h4 className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">{t('design_principles.consistency_strategies.consensus_simulator.legend.message_types_title')}</h4>
+            <h4 className="label-mono text-slate-500 dark:text-tactical-label mb-2">{t('design_principles.consistency_strategies.consensus_simulator.legend.message_types_title')}</h4>
             <div className="grid gap-2">
               {protocol === 'raft' && (
                 <>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-yellow-500"></div><span className="text-slate-600 dark:text-slate-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.vote_request')}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-green-500"></div><span className="text-slate-600 dark:text-slate-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.vote_response')}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-purple-500"></div><span className="text-slate-600 dark:text-slate-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.log_replication')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-amber"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.vote_request')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-green"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.vote_response')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-cyan"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.log_replication')}</span></div>
                 </>
               )}
               {protocol === 'paxos' && (
                 <>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-yellow-500"></div><span className="text-slate-600 dark:text-slate-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.prepare')}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-green-500"></div><span className="text-slate-600 dark:text-slate-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.promise')}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-purple-500"></div><span className="text-slate-600 dark:text-slate-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.propose')}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-cyan-500"></div><span className="text-slate-600 dark:text-slate-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.accept')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-amber"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.prepare')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-green"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.promise')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-cyan"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.propose')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-cyan/60"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.accept')}</span></div>
                 </>
               )}
               {protocol === 'zookeeper' && (
                 <>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-orange-500"></div><span className="text-slate-600 dark:text-slate-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.watch')}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-blue-500"></div><span className="text-slate-600 dark:text-slate-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.replication')}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-red-500"></div><span className="text-slate-600 dark:text-slate-300">{t('design_principles.consistency_strategies.consensus_simulator.messages.notification')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-amber"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.watch')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-cyan"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.replication')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-red"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.notification')}</span></div>
                 </>
               )}
             </div>
           </div>
         </div>
-      </div>
+      </Panel>
     </div>
   );
 } 

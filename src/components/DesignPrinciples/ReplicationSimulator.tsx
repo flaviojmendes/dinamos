@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Panel, StatusBadge, TacticalButton } from '../tactical';
 
 interface Server {
   id: string;
@@ -27,6 +28,19 @@ interface SimulationConfig {
   autoFailover: boolean;
   networkLatency: number;
 }
+
+const serverStatusVariant = (status: Server['status']) => {
+  if (status === 'online') return 'online' as const;
+  if (status === 'degraded') return 'in-progress' as const;
+  return 'offline' as const;
+};
+
+const transactionStatusVariant = (status: Transaction['status']) => {
+  if (status === 'completed') return 'completed' as const;
+  if (status === 'failed') return 'classified' as const;
+  if (status === 'processing') return 'in-progress' as const;
+  return 'pending' as const;
+};
 
 export default function ReplicationSimulator() {
   const [servers, setServers] = useState<Server[]>([
@@ -222,141 +236,140 @@ export default function ReplicationSimulator() {
     };
   }, [isRunning, config.writeRate, config.readRate, config.replicationMode]);
 
+  const inputClass = 'w-full bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-3 py-2 font-mono text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-signal-green';
+
+  const loadBarColor = (load: number) => {
+    if (load > 4) return 'bg-signal-red';
+    if (load > 2) return 'bg-signal-amber';
+    return 'bg-signal-green';
+  };
+
+  const lagBarColor = (lag: number) => {
+    if (lag > 80) return 'bg-signal-red';
+    if (lag > 40) return 'bg-signal-amber';
+    return 'bg-signal-green';
+  };
+
   return (
-    <div className="min-h-screen bg-canvas-paper dark:bg-canvas-dark text-white p-8">
-      <div className="max-w-6xl mx-auto">
+    <div className="space-y-6">
+      <div className="max-w-3xl">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
         >
-          <h1 className="text-3xl font-bold mb-4">Simulador de Replicação e Failover</h1>
-          <p className="text-lg text-slate-500 dark:text-slate-400">
+          <div className="label-mono text-signal-cyan mb-2">
+            [ Simulador de Replicação e Failover ]
+          </div>
+          <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
             Explore como a replicação de dados e o failover automático funcionam em um 
             ambiente distribuído.
           </p>
         </motion.div>
+      </div>
 
-        {/* Controls */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="bg-white dark:bg-slate-900 rounded-xl p-6 mb-8"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                Taxa de Escrita (por segundo)
-              </label>
-              <input
-                type="range"
-                min="1"
-                max="5"
-                step="1"
-                value={config.writeRate}
-                onChange={e => setConfig(prev => ({ 
-                  ...prev, 
-                  writeRate: Number(e.target.value) 
-                }))}
-                className="w-full"
-              />
-              <span className="text-sm text-slate-500 dark:text-slate-400">{config.writeRate}/s</span>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                Taxa de Leitura (por segundo)
-              </label>
-              <input
-                type="range"
-                min="1"
-                max="10"
-                step="1"
-                value={config.readRate}
-                onChange={e => setConfig(prev => ({ 
-                  ...prev, 
-                  readRate: Number(e.target.value) 
-                }))}
-                className="w-full"
-              />
-              <span className="text-sm text-slate-500 dark:text-slate-400">{config.readRate}/s</span>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                Modo de Replicação
-              </label>
-              <select
-                value={config.replicationMode}
-                onChange={e => setConfig(prev => ({ 
-                  ...prev, 
-                  replicationMode: e.target.value as 'sync' | 'async' 
-                }))}
-                className="w-full bg-slate-100 dark:bg-slate-800 rounded-lg p-2 text-sm"
-              >
-                <option value="sync">Síncrona</option>
-                <option value="async">Assíncrona</option>
-              </select>
-            </div>
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={config.autoFailover}
-                onChange={e => setConfig(prev => ({ 
-                  ...prev, 
-                  autoFailover: e.target.checked 
-                }))}
-                className="rounded"
-              />
-              <label className="text-sm font-medium">Auto Failover</label>
-            </div>
-            <div>
-              <button
-                onClick={() => setIsRunning(!isRunning)}
-                className={`w-full py-2 px-4 rounded-lg font-medium ${
-                  isRunning 
-                    ? 'bg-red-600 hover:bg-red-700' 
-                    : 'bg-green-600 hover:bg-green-700'
-                } transition-colors`}
-              >
-                {isRunning ? 'Parar Simulação' : 'Iniciar Simulação'}
-              </button>
-            </div>
+      <Panel title="Controles" accent="cyan">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+          <div>
+            <label className="block label-mono mb-2">
+              Taxa de Escrita (por segundo)
+            </label>
+            <input
+              type="range"
+              min="1"
+              max="5"
+              step="1"
+              value={config.writeRate}
+              onChange={e => setConfig(prev => ({ 
+                ...prev, 
+                writeRate: Number(e.target.value) 
+              }))}
+              className="w-full"
+            />
+            <span className="font-mono text-sm text-slate-500 dark:text-tactical-dim">{config.writeRate}/s</span>
           </div>
-        </motion.div>
-
-        {/* Servers Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-          {servers.map((server) => (
-            <motion.div
-              key={server.id}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-white dark:bg-slate-900 rounded-xl p-6"
+          <div>
+            <label className="block label-mono mb-2">
+              Taxa de Leitura (por segundo)
+            </label>
+            <input
+              type="range"
+              min="1"
+              max="10"
+              step="1"
+              value={config.readRate}
+              onChange={e => setConfig(prev => ({ 
+                ...prev, 
+                readRate: Number(e.target.value) 
+              }))}
+              className="w-full"
+            />
+            <span className="font-mono text-sm text-slate-500 dark:text-tactical-dim">{config.readRate}/s</span>
+          </div>
+          <div>
+            <label className="block label-mono mb-2">
+              Modo de Replicação
+            </label>
+            <select
+              value={config.replicationMode}
+              onChange={e => setConfig(prev => ({ 
+                ...prev, 
+                replicationMode: e.target.value as 'sync' | 'async' 
+              }))}
+              className={inputClass}
             >
+              <option value="sync">Síncrona</option>
+              <option value="async">Assíncrona</option>
+            </select>
+          </div>
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={config.autoFailover}
+              onChange={e => setConfig(prev => ({ 
+                ...prev, 
+                autoFailover: e.target.checked 
+              }))}
+              className="rounded"
+            />
+            <label className="font-mono text-sm text-slate-600 dark:text-tactical-dim">Auto Failover</label>
+          </div>
+          <div className="flex items-end">
+            <TacticalButton
+              variant={isRunning ? 'danger' : 'primary'}
+              className="w-full"
+              onClick={() => setIsRunning(!isRunning)}
+            >
+              {isRunning ? 'Parar Simulação' : 'Iniciar Simulação'}
+            </TacticalButton>
+          </div>
+        </div>
+      </Panel>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {servers.map((server) => (
+          <motion.div
+            key={server.id}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+          >
+            <Panel title={server.name} accent={server.role === 'primary' ? 'green' : 'cyan'}>
               <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="text-xl font-semibold">{server.name}</h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">{server.region}</p>
-                </div>
-                <div className="flex flex-col items-end">
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-medium ${
+                <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{server.region}</p>
+                <div className="flex flex-col items-end gap-1">
+                  <StatusBadge
+                    variant={serverStatusVariant(server.status)}
+                    label={
                       server.status === 'online'
-                        ? 'bg-green-500/20 text-green-400'
+                        ? 'Online'
                         : server.status === 'degraded'
-                        ? 'bg-yellow-500/20 text-yellow-400'
-                        : 'bg-red-500/20 text-red-400'
-                    }`}
-                  >
-                    {server.status === 'online'
-                      ? 'Online'
-                      : server.status === 'degraded'
-                      ? 'Degradado'
-                      : 'Offline'}
-                  </span>
-                  <span className={`text-sm mt-1 ${
+                        ? 'Degradado'
+                        : 'Offline'
+                    }
+                  />
+                  <span className={`font-mono text-xs ${
                     server.role === 'primary' 
-                      ? 'text-brand-600 dark:text-brand-400' 
-                      : 'text-slate-500 dark:text-slate-400'
+                      ? 'text-signal-green' 
+                      : 'text-slate-500 dark:text-tactical-label'
                   }`}>
                     {server.role === 'primary' ? 'Primário' : 'Secundário'}
                   </span>
@@ -365,90 +378,73 @@ export default function ReplicationSimulator() {
 
               <div className="space-y-4">
                 <div>
-                  <div className="flex justify-between text-sm mb-1">
+                  <div className="flex justify-between font-mono text-xs mb-1 text-slate-600 dark:text-tactical-dim">
                     <span>Carga</span>
                     <span>{server.load} transações</span>
                   </div>
-                  <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                  <div className="h-2 bg-slate-100 dark:bg-tactical-raised overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${Math.min(100, server.load * 20)}%` }}
-                      className={`h-full rounded-full ${
-                        server.load > 4
-                          ? 'bg-red-500'
-                          : server.load > 2
-                          ? 'bg-yellow-500'
-                          : 'bg-green-500'
-                      }`}
+                      className={`h-full ${loadBarColor(server.load)}`}
                     />
                   </div>
                 </div>
 
                 {server.role === 'secondary' && (
                   <div>
-                    <div className="flex justify-between text-sm mb-1">
+                    <div className="flex justify-between font-mono text-xs mb-1 text-slate-600 dark:text-tactical-dim">
                       <span>Lag de Replicação</span>
                       <span>{Math.round(server.replicationLag)}ms</span>
                     </div>
-                    <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                    <div className="h-2 bg-slate-100 dark:bg-tactical-raised overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${Math.min(100, server.replicationLag)}%` }}
-                        className={`h-full rounded-full ${
-                          server.replicationLag > 80
-                            ? 'bg-red-500'
-                            : server.replicationLag > 40
-                            ? 'bg-yellow-500'
-                            : 'bg-green-500'
-                        }`}
+                        className={`h-full ${lagBarColor(server.replicationLag)}`}
                       />
                     </div>
                   </div>
                 )}
 
-                <div className="flex space-x-2">
-                  {server.status !== 'offline' ? (
-                    <button
-                      onClick={() => simulateServerFailure(server.id)}
-                      className="flex-1 py-1 px-3 bg-red-600 hover:bg-red-700 rounded-lg text-sm transition-colors"
-                    >
-                      Simular Falha
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => recoverServer(server.id)}
-                      className="flex-1 py-1 px-3 bg-green-600 hover:bg-green-700 rounded-lg text-sm transition-colors"
-                    >
-                      Recuperar
-                    </button>
-                  )}
-                </div>
+                {server.status !== 'offline' ? (
+                  <TacticalButton
+                    size="sm"
+                    variant="danger"
+                    className="w-full"
+                    onClick={() => simulateServerFailure(server.id)}
+                  >
+                    Simular Falha
+                  </TacticalButton>
+                ) : (
+                  <TacticalButton
+                    size="sm"
+                    variant="secondary"
+                    className="w-full"
+                    onClick={() => recoverServer(server.id)}
+                  >
+                    Recuperar
+                  </TacticalButton>
+                )}
               </div>
-            </motion.div>
-          ))}
-        </div>
+            </Panel>
+          </motion.div>
+        ))}
+      </div>
 
-        {/* Stats and Transactions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Stats */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white dark:bg-slate-900 rounded-xl p-6"
-          >
-            <h3 className="text-xl font-semibold mb-4">Estatísticas</h3>
-            <div className="space-y-4">
-              <div>
-                <div className="flex justify-between text-sm mb-1">
-                  <span>Total de Transações</span>
-                  <span>{stats.total}</span>
-                </div>
-                <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full">
-                  <div className="h-full bg-blue-500 rounded-full" style={{ width: '100%' }} />
-                </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <Panel title="Estatísticas" accent="green">
+            <div className="grid grid-cols-1 gap-4">
+              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">{stats.total}</div>
+                <div className="label-mono mt-2">Total de Transações</div>
               </div>
               <div>
-                <div className="flex justify-between text-sm mb-1">
+                <div className="flex justify-between font-mono text-xs mb-1 text-slate-600 dark:text-tactical-dim">
                   <span>Taxa de Sucesso</span>
                   <span>
                     {stats.total > 0 
@@ -456,7 +452,7 @@ export default function ReplicationSimulator() {
                       : '0%'}
                   </span>
                 </div>
-                <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                <div className="h-2 bg-slate-100 dark:bg-tactical-raised overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ 
@@ -464,39 +460,32 @@ export default function ReplicationSimulator() {
                         ? Math.round((stats.successful / stats.total) * 100)
                         : 0}%` 
                     }}
-                    className="h-full bg-green-500 rounded-full"
+                    className="h-full bg-signal-green"
                   />
                 </div>
               </div>
               <div>
-                <div className="flex justify-between text-sm mb-1">
+                <div className="flex justify-between font-mono text-xs mb-1 text-slate-600 dark:text-tactical-dim">
                   <span>Lag Médio de Replicação</span>
                   <span>{Math.round(stats.avgReplicationLag)}ms</span>
                 </div>
-                <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                <div className="h-2 bg-slate-100 dark:bg-tactical-raised overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${Math.min(100, stats.avgReplicationLag)}%` }}
-                    className={`h-full rounded-full ${
-                      stats.avgReplicationLag > 80
-                        ? 'bg-red-500'
-                        : stats.avgReplicationLag > 40
-                        ? 'bg-yellow-500'
-                        : 'bg-green-500'
-                    }`}
+                    className={`h-full ${lagBarColor(stats.avgReplicationLag)}`}
                   />
                 </div>
               </div>
             </div>
-          </motion.div>
+          </Panel>
+        </motion.div>
 
-          {/* Recent Transactions */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white dark:bg-slate-900 rounded-xl p-6"
-          >
-            <h3 className="text-xl font-semibold mb-4">Transações Recentes</h3>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <Panel title="Transações Recentes" accent="amber">
             <div className="space-y-2">
               <AnimatePresence>
                 {transactions.slice(-5).map((transaction) => (
@@ -505,47 +494,41 @@ export default function ReplicationSimulator() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
-                    className="flex items-center justify-between bg-slate-100 dark:bg-slate-800 rounded-lg p-3"
+                    className="flex items-center justify-between border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2.5"
                   >
-                    <div className="flex items-center space-x-3">
-                      <span className={`w-2 h-2 rounded-full ${
-                        transaction.status === 'completed'
-                          ? 'bg-green-500'
-                          : transaction.status === 'failed'
-                          ? 'bg-red-500'
-                          : transaction.status === 'processing'
-                          ? 'bg-yellow-500'
-                          : 'bg-blue-500'
-                      }`} />
-                      <div className="flex flex-col">
-                        <span className="text-sm">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <StatusBadge
+                        variant={transactionStatusVariant(transaction.status)}
+                        label={
+                          transaction.status === 'completed'
+                            ? 'Concluída'
+                            : transaction.status === 'failed'
+                            ? 'Falha'
+                            : transaction.status === 'processing'
+                            ? 'Processando'
+                            : 'Pendente'
+                        }
+                      />
+                      <div className="flex flex-col min-w-0">
+                        <span className="font-mono text-xs text-slate-900 dark:text-tactical-text truncate">
                           {servers.find(s => s.id === transaction.server)?.name}
                         </span>
-                        <span className={`text-xs ${
+                        <span className={`font-mono text-[11px] ${
                           transaction.type === 'write' 
-                            ? 'text-brand-600 dark:text-brand-400' 
-                            : 'text-green-400'
+                            ? 'text-signal-cyan' 
+                            : 'text-signal-green'
                         }`}>
                           {transaction.type === 'write' ? 'Escrita' : 'Leitura'}
                         </span>
                       </div>
                     </div>
-                    <span className="text-sm text-slate-500 dark:text-slate-400">
-                      {transaction.status === 'completed'
-                        ? 'Concluída'
-                        : transaction.status === 'failed'
-                        ? 'Falha'
-                        : transaction.status === 'processing'
-                        ? 'Processando'
-                        : 'Pendente'}
-                    </span>
                   </motion.div>
                 ))}
               </AnimatePresence>
             </div>
-          </motion.div>
-        </div>
+          </Panel>
+        </motion.div>
       </div>
     </div>
   );
-} 
+}

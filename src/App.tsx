@@ -23,6 +23,7 @@ import LogSimulator from "./components/Monitoramento/LogSimulator";
 import TracingSimulator from './components/Monitoramento/TracingSimulator';
 
 import LandingPage from "./components/LandingPage/LandingPage";
+import CommandCenter from "./components/Dashboard/CommandCenter";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import Login from "./components/Auth/Login";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
@@ -62,6 +63,7 @@ import SimpleSystemEditorPage from "./pages/SimpleSystemEditorPage";
 import PollingWebhooks from "./components/SystemComponents/PollingWebhooks";
 import { LanguageSwitcher, CouponModal } from './components/Common';
 import ThemeToggle from "./components/Common/ThemeToggle";
+import TopStatusBar from "./components/Common/TopStatusBar";
 import { useTranslation } from 'react-i18next';
 import CookieConsentBanner from './components/Common/CookieConsentBanner';
 import { CookieConsentManager } from './utils/cookieConsent';
@@ -835,6 +837,15 @@ const createMenuItems = (t: any): MenuItem[] => [
   },
 ];
 
+// Quick-access destinations surfaced at the top of the main sidebar.
+const railLinks: { to: string; labelKey: string; label: string; d: string }[] = [
+  { to: '/', labelKey: 'command_center', label: 'Command Center', d: 'M3 12l9-9 9 9M5 10v10h14V10' },
+  { to: '/roadmap', labelKey: 'roadmap', label: 'Roadmap', d: 'M9 20l-5.447-2.724A2 2 0 013 15.382V5.618a2 2 0 012.447-1.842L9 5m0 15l6-3m-6 3V5m6 12l5.447 2.724A2 2 0 0021 15.382V5.618a2 2 0 00-2.447-1.842L15 5m0 12V5' },
+  { to: '/editor', labelKey: 'editor', label: 'System Editor', d: 'M11 4H4a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-7m-9 2l9-9 3 3-9 9H8v-2z' },
+  { to: '/forum', labelKey: 'forum', label: 'Forum', d: 'M8 12h8M8 8h8m-8 8h5M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+  { to: '/preferences', labelKey: 'preferences', label: 'Preferences', d: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065zM15 12a3 3 0 11-6 0 3 3 0 016 0z' },
+];
+
 export default function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
@@ -904,38 +915,52 @@ export default function App() {
       return badgeText;
     };
 
+    // Tactical menu item: sharp edges, mono label, left accent on active, bracket tags.
+    const itemBase =
+      'group flex-1 flex flex-col gap-0.5 px-3 py-2.5 border-l-2 transition-colors relative';
+    const itemInactive =
+      'border-transparent text-slate-600 dark:text-tactical-dim hover:bg-slate-100 dark:hover:bg-tactical-raised hover:text-slate-900 dark:hover:text-tactical-text';
+    const itemActive =
+      'border-brand-600 dark:border-signal-green bg-brand-50 dark:bg-tactical-raised text-slate-900 dark:text-tactical-text';
+
+    const CompletedMark = () => (
+      <span className="ml-auto flex-shrink-0 text-signal-green" title="completed">
+        <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+        </svg>
+      </span>
+    );
+
+    const Badges = () =>
+      item.badges ? (
+        <div className="flex gap-1.5 mt-1">
+          {item.badges.map((badge, index) => (
+            <span key={index} className="font-mono text-[10px] uppercase tracking-wider text-signal-green">
+              [{translatedBadge(badge.text)}]
+            </span>
+          ))}
+        </div>
+      ) : null;
+
     return (
-      <div className="text-slate-900 dark:text-white">
-        <div className="flex items-center gap-1">
+      <div className="text-slate-900 dark:text-tactical-text">
+        <div className="flex items-stretch gap-1">
           {item.disabled ? (
-            <div className="flex-1 flex flex-col p-3 rounded-lg text-slate-400 dark:text-slate-600 relative cursor-not-allowed">
-              <div className="absolute -top-2 right-2 bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs px-2 py-0.5 rounded-full">
-                {t('status.coming_soon')}
-              </div>
+            <div className="flex-1 flex flex-col gap-0.5 px-3 py-2.5 border-l-2 border-transparent text-slate-400 dark:text-tactical-label/70 relative cursor-not-allowed">
               <div className="flex items-center">
-                <span className="font-medium mr-2">{item.name}</span>
-                {isCompleted(item.path) && (
-                  <span className="flex-shrink-0 bg-green-500 rounded-full w-5 h-5 flex items-center justify-center text-white">
-                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                    </svg>
-                  </span>
-                )}
+                <span className="font-mono text-sm tracking-tight mr-2">{item.name}</span>
+                <span className="ml-auto font-mono text-[10px] uppercase tracking-wider text-slate-400 dark:text-tactical-label">
+                  [{t('status.coming_soon')}]
+                </span>
               </div>
-              <span className="text-sm opacity-75">{item.description}</span>
+              <span className="font-mono text-xs opacity-70">{item.description}</span>
             </div>
           ) : item.external ? (
             <a
               href={item.path}
               target="_blank"
               rel="noopener noreferrer"
-              className={`flex-1 flex flex-col p-3 rounded-lg transition-colors relative ${
-                item.customStyle
-                  ? `${item.customStyle} ${
-                      item.customHoverStyle || "hover:bg-slate-100 dark:hover:bg-slate-800"
-                    } text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white`
-                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
-              }`}
+              className={`${itemBase} ${item.customStyle ? `${item.customStyle} ${item.customHoverStyle || 'hover:bg-slate-100 dark:hover:bg-tactical-raised'}` : ''} ${itemInactive}`}
               onClick={() => {
                 if (!item.disabled) {
                   onNavigate?.();
@@ -944,38 +969,19 @@ export default function App() {
               }}
             >
               <div className="flex items-center">
-                <span className="font-medium mr-2">{displayName}</span>
-                <svg className="w-4 h-4 ml-auto opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <span className="font-mono text-sm tracking-tight mr-2">{displayName}</span>
+                <svg className="w-3.5 h-3.5 ml-auto opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
               </div>
-              <span className="text-sm opacity-75">{displayDescription}</span>
-              {item.badges && (
-                <div className="absolute -top-2 right-2 flex gap-1">
-                  {item.badges.map((badge, index) => (
-                    <span
-                      key={index}
-                      className={`text-xs px-2 py-0.5 rounded-full text-white ${badge.color}`}
-                    >
-                      {translatedBadge(badge.text)}
-                    </span>
-                  ))}
-                </div>
-              )}
+              <span className="font-mono text-xs opacity-70">{displayDescription}</span>
+              <Badges />
             </a>
           ) : (
             <NavLink
               to={item.path}
               className={({ isActive }: { isActive: boolean }) =>
-                `flex-1 flex flex-col p-3 rounded-lg transition-colors relative ${
-                  isActive
-                    ? "bg-brand-600 text-white"
-                    : item.customStyle
-                    ? `${item.customStyle} ${
-                        item.customHoverStyle || "hover:bg-slate-100 dark:hover:bg-slate-800"
-                      } text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white`
-                    : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
-                }`
+                `${itemBase} ${isActive ? itemActive : `${item.customStyle ?? ''} ${itemInactive}`}`
               }
               onClick={() => {
                 if (!item.disabled) {
@@ -985,28 +991,11 @@ export default function App() {
               }}
             >
               <div className="flex items-center">
-                <span className="font-medium mr-2">{displayName}</span>
-                {isCompleted(item.path) && (
-                  <span className="flex-shrink-0 bg-green-500 rounded-full w-5 h-5 flex items-center justify-center text-white">
-                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                    </svg>
-                  </span>
-                )}
+                <span className="font-mono text-sm tracking-tight mr-2">{displayName}</span>
+                {isCompleted(item.path) && <CompletedMark />}
               </div>
-              <span className="text-sm opacity-75">{displayDescription}</span>
-              {item.badges && (
-                <div className="absolute -top-2 right-2 flex gap-1">
-                  {item.badges.map((badge, index) => (
-                    <span
-                      key={index}
-                      className={`text-xs px-2 py-0.5 rounded-full text-white ${badge.color}`}
-                    >
-                      {translatedBadge(badge.text)}
-                    </span>
-                  ))}
-                </div>
-              )}
+              <span className="font-mono text-xs opacity-70">{displayDescription}</span>
+              <Badges />
             </NavLink>
           )}
           {item.children && (
@@ -1016,30 +1005,24 @@ export default function App() {
                 setIsExpanded(!isExpanded);
                 trackEvent("User", "Clicked on Menu Item", displayName);
               }}
-              className={`p-2 text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-transform ${
-                isActive ? "text-slate-900 dark:text-white" : ""
+              className={`px-2 text-slate-400 dark:text-tactical-label hover:text-slate-900 dark:hover:text-tactical-text hover:bg-slate-100 dark:hover:bg-tactical-raised transition-colors ${
+                isActive ? "text-slate-900 dark:text-tactical-text" : ""
               }`}
+              aria-label={isExpanded ? 'Collapse' : 'Expand'}
             >
               <svg
-                className={`w-4 h-4 transform transition-transform ${
-                  isExpanded ? "rotate-90" : ""
-                }`}
+                className={`w-3.5 h-3.5 transform transition-transform ${isExpanded ? "rotate-90" : ""}`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </button>
           )}
         </div>
         {item.children && isExpanded && (
-          <div className="ml-4 mt-1 space-y-1 border-l border-slate-200 dark:border-slate-800 pl-3">
+          <div className="ml-3 mt-1 space-y-0.5 border-l border-slate-200 dark:border-tactical-border pl-2">
             {item.children.map((child) => (
               <MenuLink key={child.path} item={child} onNavigate={onNavigate} />
             ))}
@@ -1071,7 +1054,7 @@ export default function App() {
       <div className="flex h-screen overflow-hidden">
         {/* Mobile Header */}
         {isMobile && user && (
-          <div className="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 px-4 py-3">
+          <div className="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-tactical-surface/95 backdrop-blur-xl border-b border-slate-200 dark:border-tactical-border px-4 py-3">
             <div className="flex items-center justify-between">
               <Link to="/" className="text-xl font-bold bg-gradient-to-r from-brand-500 to-brand-700 bg-clip-text text-transparent">
                 <img src="/logo.png" alt="Logo" className="h-12" />
@@ -1081,7 +1064,7 @@ export default function App() {
                 <LanguageSwitcher />
                 <button
                   onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                  className="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+                  className="p-2 text-slate-500 hover:text-slate-900 dark:text-tactical-dim dark:hover:text-tactical-text rounded-lg dark:rounded-none hover:bg-slate-100 dark:hover:bg-tactical-raised"
                 >
                   {isSidebarOpen ? (
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1105,24 +1088,57 @@ export default function App() {
               isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
             } ${
               isMobile ? 'fixed inset-y-0 left-0 z-40' : 'relative'
-            } w-80 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 transition-transform duration-300 ease-in-out flex flex-col`}
+            } w-80 bg-white dark:bg-tactical-surface border-r border-slate-200 dark:border-tactical-border transition-transform duration-300 ease-in-out flex flex-col`}
           >
             {/* Sidebar Content */}
-            <div className={`flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-700 scrollbar-track-transparent ${isMobile ? 'pt-16' : ''}`}>
-              <div className="p-6">
+            <div className={`flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-tactical-line scrollbar-track-transparent ${isMobile ? 'pt-16' : ''}`}>
+              <div className="p-4">
                 {!isMobile && (
-                  <div className="flex items-center justify-between mb-8 ">
-                    <Link to="/" className="text-xl font-bold bg-gradient-to-r from-brand-500 to-brand-700 bg-clip-text text-transparent mx-auto">
-                      <img src="/logo.png" alt="Logo" className="h-14 mx-auto" /> 
+                  <div className="flex items-center justify-between mb-5 px-2">
+                    <Link to="/" className="flex items-center gap-2">
+                      <img src="/logo.png" alt="Logo" className="h-9" />
+                      <span className="font-mono text-sm font-semibold uppercase tracking-widest text-slate-900 dark:text-tactical-text">Dinamos</span>
                     </Link>
                   </div>
                 )}
-                <div className="flex justify-end mb-4 gap-2">
-                  <ThemeToggle />
-                  <LanguageSwitcher />
+                <div className="flex items-center justify-between mb-4 px-2">
+                  <span className="label-mono">NAV // INDEX</span>
+                  <div className="flex gap-2">
+                    <ThemeToggle />
+                    <LanguageSwitcher />
+                  </div>
                 </div>
 
-                <nav className="space-y-1">
+                {/* Quick access: top-level destinations with icons */}
+                <div className="mb-4">
+                  <span className="label-mono px-2">{t('quick_access.title')}</span>
+                  <div className="mt-2 space-y-0.5">
+                    {railLinks.map(({ to, labelKey, label, d }) => (
+                      <NavLink
+                        key={to}
+                        to={to}
+                        end={to === '/'}
+                        onClick={() => isMobile && setIsSidebarOpen(false)}
+                        className={({ isActive }: { isActive: boolean }) =>
+                          `flex items-center gap-2.5 px-3 py-2 border-l-2 font-mono text-sm tracking-tight transition-colors ${
+                            isActive
+                              ? 'border-brand-600 dark:border-signal-green bg-brand-50 dark:bg-tactical-raised text-slate-900 dark:text-tactical-text'
+                              : 'border-transparent text-slate-600 dark:text-tactical-dim hover:bg-slate-100 dark:hover:bg-tactical-raised hover:text-slate-900 dark:hover:text-tactical-text'
+                          }`
+                        }
+                      >
+                        <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d={d} />
+                        </svg>
+                        <span className="truncate">{t(`quick_access.${labelKey}`, { defaultValue: label })}</span>
+                      </NavLink>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mb-3 border-t border-slate-200 dark:border-tactical-border" />
+
+                <nav className="space-y-0.5">
                   {menuItems.map((item) => (
                     <MenuLink 
                       key={item.path} 
@@ -1136,34 +1152,33 @@ export default function App() {
 
             {/* User profile section */}
             {user && (
-              <div className="p-4 border-t border-slate-200 dark:border-slate-800">
-                <div className="flex items-center gap-3 p-3 bg-slate-100 dark:bg-slate-800/50 backdrop-blur-xl rounded-lg">
+              <div className="p-3 border-t border-slate-200 dark:border-tactical-border">
+                <div className="flex items-center gap-3 p-3 tactical-panel bg-slate-100 dark:bg-tactical-raised">
                   {user.photoURL ? (
                     <img
                       src={user.photoURL}
                       alt="Profile"
-                      className="w-10 h-10 rounded-full border-2 border-brand-500"
+                      className="w-10 h-10 rounded-none border border-brand-500 dark:border-signal-green"
                     />
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-brand-500 flex items-center justify-center">
-                      <span className="text-lg font-bold text-white">
+                    <div className="w-10 h-10 bg-brand-500 dark:bg-tactical-bg dark:border dark:border-signal-green flex items-center justify-center">
+                      <span className="text-lg font-bold font-mono text-white dark:text-signal-green">
                         {user.email?.charAt(0).toUpperCase()}
                       </span>
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
+                    <p className="text-sm font-mono font-medium text-slate-900 dark:text-tactical-text truncate">
                       {user.displayName || user.email}
                     </p>
-                    {user.displayName && (
-                      <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                        {user.email}
-                      </p>
-                    )}
+                    <p className="label-mono truncate">
+                      {isSubscribed ? 'ACCESS: FREE-TIER-1' : 'ACCESS: GUEST'}
+                    </p>
                   </div>
                   <button
                     onClick={signOut}
-                    className="text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors"
+                    className="text-slate-400 hover:text-slate-700 dark:text-tactical-label dark:hover:text-signal-red transition-colors"
+                    aria-label="Sign out"
                   >
                     <svg
                       className="w-5 h-5"
@@ -1194,7 +1209,8 @@ export default function App() {
         )}
 
         {/* Main content */}
-        <main className={`flex-1 overflow-y-auto bg-canvas-paper dark:bg-canvas-dark bg-grid ${isMobile ? 'pt-16' : ''}`}>
+        <main className={`flex-1 overflow-y-auto bg-canvas-paper dark:bg-canvas-dark ${isMobile ? 'pt-16' : ''}`}>
+          {user && <TopStatusBar />}
           <Routes>
             {/* Content-only pages rendered from MDX (src/content/**). One route per
                 manifest entry replaces the ~60 former per-page component routes.
@@ -1224,7 +1240,7 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={user ? <CommandCenter /> : <LandingPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/terms-and-conditions" element={<TermsAndConditionsPage />} />

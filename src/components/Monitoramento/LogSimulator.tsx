@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { Panel, StatusBadge, TacticalButton } from '../tactical';
 
 interface Log {
   timestamp: string;
@@ -141,54 +142,47 @@ export default function LogSimulator() {
     setIndiceReplay(0);
   };
 
-  const getLogColor = (nivel: Log['nivel'], isGood: boolean) => {
+  const getLogLevelClass = (nivel: Log['nivel']) => {
     switch (nivel) {
       case 'INFO':
-        return isGood ? 'text-brand-600 dark:text-brand-400' : 'text-brand-600 dark:text-brand-200';
+        return 'text-signal-cyan';
       case 'WARN':
-        return isGood ? 'text-yellow-400' : 'text-yellow-200';
+        return 'text-signal-amber';
       case 'ERROR':
-        return isGood ? 'text-red-400' : 'text-red-200';
+        return 'text-signal-red';
       default:
-        return 'text-gray-400';
+        return 'text-slate-500 dark:text-tactical-dim';
     }
   };
 
   return (
-    <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
-      <div className="prose prose-invert prose-lg max-w-none mb-8">
-        <div className="flex items-center justify-between">
-          <h1 className="text-4xl font-bold mb-4 text-brand-600 dark:text-brand-400">
-            {t(`${base}.title`)}
-          </h1>
-          <div className="flex gap-4">
-            <button
-              onClick={() => setMostrarConfiguracoes(!mostrarConfiguracoes)}
-              className="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-white rounded-lg hover:bg-zinc-700 transition-colors flex items-center gap-2"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              {t(`${base}.actions.settings`)}
-            </button>
-            <button
-              onClick={reiniciarSimulador}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              {t(`${base}.actions.reset`)}
-            </button>
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="max-w-3xl">
+          <div className="label-mono text-signal-cyan mb-2">
+            [ {t(`${base}.title`)} ]
           </div>
+          <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
+            {t(`${base}.intro`)}
+          </p>
         </div>
-        <p className="text-xl text-slate-600 dark:text-slate-300">
-          {t(`${base}.intro`)}
-        </p>
+        <div className="flex flex-wrap gap-2">
+          <TacticalButton variant="ghost" size="sm" onClick={() => setMostrarConfiguracoes(!mostrarConfiguracoes)}>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            {t(`${base}.actions.settings`)}
+          </TacticalButton>
+          <TacticalButton variant="danger" size="sm" onClick={reiniciarSimulador}>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            {t(`${base}.actions.reset`)}
+          </TacticalButton>
+        </div>
       </div>
 
-      {/* Settings Panel */}
       <AnimatePresence>
         {mostrarConfiguracoes && (
           <motion.div
@@ -196,127 +190,130 @@ export default function LogSimulator() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
-            className="bg-white dark:bg-slate-900 p-6 rounded-lg mb-8"
           >
-            <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-6">{t(`${base}.settings_title`)}</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+            <Panel title={t(`${base}.settings_title`)} accent="cyan">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="flex items-center gap-2 font-mono text-sm text-slate-600 dark:text-tactical-dim">
+                    <input
+                      type="checkbox"
+                      checked={config.autoAvancar}
+                      onChange={(e) => setConfig(prev => ({ ...prev, autoAvancar: e.target.checked }))}
+                      className="border-slate-300 dark:border-tactical-border"
+                    />
+                    {t(`${base}.settings.auto_advance`)}
+                  </label>
+                </div>
+                <div>
+                  <label className="block label-mono text-slate-500 dark:text-tactical-label mb-2">
+                    {t(`${base}.settings.delay_label`, { ms: config.delayEventos })}
+                  </label>
                   <input
-                    type="checkbox"
-                    checked={config.autoAvancar}
-                    onChange={(e) => setConfig(prev => ({ ...prev, autoAvancar: e.target.checked }))}
-                    className="rounded border-zinc-600"
+                    type="range"
+                    min="0"
+                    max="5000"
+                    step="100"
+                    value={config.delayEventos}
+                    onChange={(e) => setConfig(prev => ({ ...prev, delayEventos: parseInt(e.target.value) }))}
+                    className="w-full"
                   />
-                  {t(`${base}.settings.auto_advance`)}
-                </label>
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
-                  {t(`${base}.settings.delay_label`, { ms: config.delayEventos })}
-                </label>
-                <input
-                  type="range"
-                  min="0"
-                  max="5000"
-                  step="100"
-                  value={config.delayEventos}
-                  onChange={(e) => setConfig(prev => ({ ...prev, delayEventos: parseInt(e.target.value) }))}
-                  className="w-full"
-                />
-              </div>
-            </div>
+            </Panel>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Simulation Controls */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-green-400">{t(`${base}.controls.info_title`)}</h3>
-          <div className="grid grid-cols-2 gap-4">
-            <button onClick={() => adicionarLog(exemplosLogs.infoBom)} className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Panel title={t(`${base}.controls.info_title`)} accent="cyan">
+          <div className="grid grid-cols-1 gap-2">
+            <TacticalButton variant="secondary" size="sm" onClick={() => adicionarLog(exemplosLogs.infoBom)}>
               {t(`${base}.controls.add_good_info`)}
-            </button>
-            <button onClick={() => adicionarLog(exemplosLogs.infoRuim)} className="px-4 py-2 bg-green-400 text-white rounded-lg hover:bg-green-500 transition-colors">
+            </TacticalButton>
+            <TacticalButton variant="ghost" size="sm" onClick={() => adicionarLog(exemplosLogs.infoRuim)}>
               {t(`${base}.controls.add_bad_info`)}
-            </button>
+            </TacticalButton>
           </div>
-        </div>
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-yellow-400">{t(`${base}.controls.warn_title`)}</h3>
-          <div className="grid grid-cols-2 gap-4">
-            <button onClick={() => adicionarLog(exemplosLogs.warnBom)} className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
+        </Panel>
+        <Panel title={t(`${base}.controls.warn_title`)} accent="amber">
+          <div className="grid grid-cols-1 gap-2">
+            <TacticalButton variant="secondary" size="sm" onClick={() => adicionarLog(exemplosLogs.warnBom)}>
               {t(`${base}.controls.add_good_warn`)}
-            </button>
-            <button onClick={() => adicionarLog(exemplosLogs.warnRuim)} className="px-4 py-2 bg-yellow-400 text-white rounded-lg hover:bg-yellow-500 transition-colors">
+            </TacticalButton>
+            <TacticalButton variant="ghost" size="sm" onClick={() => adicionarLog(exemplosLogs.warnRuim)}>
               {t(`${base}.controls.add_bad_warn`)}
-            </button>
+            </TacticalButton>
           </div>
-        </div>
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-red-400">{t(`${base}.controls.error_title`)}</h3>
-          <div className="grid grid-cols-2 gap-4">
-            <button onClick={() => adicionarLog(exemplosLogs.erroBom)} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+        </Panel>
+        <Panel title={t(`${base}.controls.error_title`)} accent="red">
+          <div className="grid grid-cols-1 gap-2">
+            <TacticalButton variant="secondary" size="sm" onClick={() => adicionarLog(exemplosLogs.erroBom)}>
               {t(`${base}.controls.add_good_error`)}
-            </button>
-            <button onClick={() => adicionarLog(exemplosLogs.erroRuim)} className="px-4 py-2 bg-red-400 text-white rounded-lg hover:bg-red-500 transition-colors">
+            </TacticalButton>
+            <TacticalButton variant="ghost" size="sm" onClick={() => adicionarLog(exemplosLogs.erroRuim)}>
               {t(`${base}.controls.add_bad_error`)}
-            </button>
+            </TacticalButton>
           </div>
-        </div>
+        </Panel>
       </div>
 
-      {/* Log Viewer */}
-      <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
-        <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">{t(`${base}.viewer_title`)}</h2>
-        <div className="bg-black p-4 rounded-lg h-[400px] overflow-y-auto font-mono text-sm">
-          {logs.map((log, index) => {
-            const isGood = Boolean(
-              log.metadados && 
-              Object.keys(log.metadados).length > 0 && 
-              log.mensagem && 
-              log.mensagem.length > 10 && 
-              log.acao && 
-              log.acao.includes('_')
-            );
-            return (
-              <div key={index} className="mb-4">
-                <div className={`flex items-center gap-2 mb-1 ${getLogColor(log.nivel, isGood)}`}>
-                  <span className="font-bold">{log.nivel}</span>
-                  <span className="text-xs opacity-75">{log.timestamp}</span>
-                  {isGood ? (
-                    <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded">{t(`${base}.badges.good`)}</span>
-                  ) : (
-                    <span className="text-xs bg-red-900 text-red-300 px-2 py-0.5 rounded">{t(`${base}.badges.bad`)}</span>
-                  )}
+      <Panel title={t(`${base}.viewer_title`)} accent="green">
+        <div className="bg-slate-50 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border p-4 h-[400px] overflow-y-auto font-mono text-sm">
+          {logs.length === 0 ? (
+            <p className="text-slate-400 dark:text-tactical-label text-xs uppercase tracking-wider text-center py-10">—</p>
+          ) : (
+            logs.map((log, index) => {
+              const isGood = Boolean(
+                log.metadados && 
+                Object.keys(log.metadados).length > 0 && 
+                log.mensagem && 
+                log.mensagem.length > 10 && 
+                log.acao && 
+                log.acao.includes('_')
+              );
+              return (
+                <div key={index} className="mb-4 pb-4 border-b border-slate-200 dark:border-tactical-border last:border-0">
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <span className={`font-bold ${getLogLevelClass(log.nivel)}`}>{log.nivel}</span>
+                    <span className="text-xs text-slate-500 dark:text-tactical-label">{log.timestamp}</span>
+                    {isGood ? (
+                      <StatusBadge variant="active" label={t(`${base}.badges.good`)} />
+                    ) : (
+                      <StatusBadge variant="classified" label={t(`${base}.badges.bad`)} />
+                    )}
+                  </div>
+                  <pre className="whitespace-pre-wrap text-slate-700 dark:text-tactical-dim">{JSON.stringify(log, null, 2)}</pre>
                 </div>
-                <pre className="whitespace-pre-wrap">{JSON.stringify(log, null, 2)}</pre>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
-      </div>
+      </Panel>
 
-      {/* Best/Bad Practices */}
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-lg">
-          <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">{t(`${base}.best_practices_title`)}</h2>
-          <ul className="space-y-2 text-slate-600 dark:text-slate-300">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="tactical-panel border-l-2 border-l-signal-green p-5">
+          <h2 className="label-mono text-signal-green mb-3">{t(`${base}.best_practices_title`)}</h2>
+          <ul className="space-y-1.5 font-mono text-sm text-slate-600 dark:text-tactical-dim">
             {(t(`${base}.best_practices_items`, { returnObjects: true }) as string[]).map((item, idx) => (
-              <li key={idx}>• {item}</li>
+              <li key={idx} className="flex gap-2">
+                <span className="text-signal-green">›</span>
+                {item}
+              </li>
             ))}
           </ul>
         </div>
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-lg">
-          <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">{t(`${base}.bad_practices_title`)}</h2>
-          <ul className="space-y-2 text-slate-600 dark:text-slate-300">
+        <div className="tactical-panel border-l-2 border-l-signal-red p-5">
+          <h2 className="label-mono text-signal-red mb-3">{t(`${base}.bad_practices_title`)}</h2>
+          <ul className="space-y-1.5 font-mono text-sm text-slate-600 dark:text-tactical-dim">
             {(t(`${base}.bad_practices_items`, { returnObjects: true }) as string[]).map((item, idx) => (
-              <li key={idx}>• {item}</li>
+              <li key={idx} className="flex gap-2">
+                <span className="text-signal-red">›</span>
+                {item}
+              </li>
             ))}
           </ul>
         </div>
       </div>
     </div>
   );
-} 
+}

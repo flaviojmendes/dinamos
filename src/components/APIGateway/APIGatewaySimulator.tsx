@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { Panel, TacticalButton, StatusBadge } from '../tactical';
 
 interface Request {
   id: number;
@@ -68,6 +69,11 @@ const services: Service[] = [
   }
 ];
 
+const requestCardClass = (type: Request['type']) => {
+  const svc = services.find(s => s.type === type);
+  return `p-3 border-l-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised ${svc?.color.replace('bg-', 'border-l-')}`;
+};
+
 export default function APIGatewaySimulator() {
   const { t } = useTranslation();
   const [requests, setRequests] = useState<Request[]>([]);
@@ -81,7 +87,6 @@ export default function APIGatewaySimulator() {
     failedRequests: 0,
   });
 
-  // Function to generate a new request
   const generateRequest = useCallback((): Request => {
     const types: Request['type'][] = ['auth', 'products', 'orders', 'payments'];
     const randomType = types[Math.floor(Math.random() * types.length)];
@@ -95,17 +100,13 @@ export default function APIGatewaySimulator() {
     };
   }, [requestCount]);
 
-  // Function to process a request through its lifecycle
   const processRequest = useCallback((request: Request) => {
     const service = services.find(s => s.type === request.type)!;
     
-    // Update stats
     setStats(prev => ({ ...prev, totalRequests: prev.totalRequests + 1 }));
     
-    // Step 1: Add request to pending
     setRequests(prev => [...prev, request]);
     
-    // Step 2: Route request after delay
     const routingTimer = setTimeout(() => {
       setRequests(prev => 
         prev.map(req => 
@@ -114,7 +115,6 @@ export default function APIGatewaySimulator() {
       );
     }, config.routingDelay);
 
-    // Step 3: Process request and determine success/failure
     const processingTimer = setTimeout(() => {
       const failed = Math.random() < (service.errorRate + config.errorRate);
       
@@ -133,7 +133,6 @@ export default function APIGatewaySimulator() {
       }));
     }, config.routingDelay + service.processingTime);
 
-    // Step 4: Remove request after completion
     const removalTimer = setTimeout(() => {
       setRequests(prev => prev.filter(req => req.id !== request.id));
     }, config.removeDelay);
@@ -145,7 +144,6 @@ export default function APIGatewaySimulator() {
     };
   }, [config.routingDelay, config.errorRate, config.removeDelay]);
 
-  // Main simulation loop
   useEffect(() => {
     if (!isSimulationRunning) return;
 
@@ -160,7 +158,6 @@ export default function APIGatewaySimulator() {
     };
   }, [isSimulationRunning, config.requestsPerSecond, generateRequest, processRequest]);
 
-  // Reset simulation
   const resetSimulation = () => {
     setIsSimulationRunning(false);
     setRequests([]);
@@ -172,19 +169,23 @@ export default function APIGatewaySimulator() {
     });
   };
 
+  const rangeClass = 'w-full h-2 bg-slate-200 dark:bg-tactical-raised appearance-none cursor-pointer accent-signal-green';
+
   return (
-    <div className="p-6 md:p-8 lg:p-12 max-w-6xl mx-auto">
-      <div className="prose prose-invert prose-lg max-w-none mb-8">
-        <h1 className="text-4xl font-bold mb-4 text-brand-600 dark:text-brand-400">
-          {t('simulators.gateway.title')}
-        </h1>
-        <p className="text-xl text-slate-600 dark:text-slate-300">
+    <div className="space-y-6">
+      <div className="max-w-3xl">
+        <div className="label-mono text-signal-cyan mb-2">
+          [ {t('simulators.gateway.title')} ]
+        </div>
+        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
           {t('simulators.gateway.description')}
         </p>
       </div>
 
-      <div className="flex gap-4 mb-8">
-        <button
+      <div className="flex flex-wrap gap-2">
+        <TacticalButton
+          size="sm"
+          variant={isSimulationRunning ? 'danger' : 'primary'}
           onClick={() => {
             if (isSimulationRunning) {
               setIsSimulationRunning(false);
@@ -193,119 +194,74 @@ export default function APIGatewaySimulator() {
               setIsSimulationRunning(true);
             }
           }}
-          className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-            isSimulationRunning 
-              ? 'bg-red-600 hover:bg-red-700 text-white' 
-              : 'bg-blue-600 hover:bg-blue-700 text-white'
-          }`}
         >
           {isSimulationRunning ? t('simulators.gateway.buttons.stop') : t('simulators.gateway.buttons.start')}
-        </button>
-        <button
-          onClick={() => setShowConfig(!showConfig)}
-          className="px-6 py-3 rounded-lg font-medium bg-slate-100 dark:bg-slate-800 hover:bg-zinc-700 text-white transition-colors"
-        >
+        </TacticalButton>
+        <TacticalButton size="sm" variant="ghost" onClick={() => setShowConfig(!showConfig)}>
           {showConfig ? t('simulators.gateway.buttons.hide_config') : t('simulators.gateway.buttons.show_config')}
-        </button>
-        <button
-          onClick={resetSimulation}
-          className="px-6 py-3 rounded-lg font-medium bg-slate-100 dark:bg-slate-800 hover:bg-zinc-700 text-white transition-colors"
-        >
+        </TacticalButton>
+        <TacticalButton size="sm" variant="secondary" onClick={resetSimulation}>
           {t('simulators.gateway.buttons.reset')}
-        </button>
+        </TacticalButton>
+        {isSimulationRunning && <StatusBadge variant="active" label="LIVE" />}
       </div>
 
       {showConfig && (
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-lg mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200">{t('simulators.gateway.config.title')}</h3>
-            <button
-              onClick={() => setConfig(defaultConfig)}
-              className="px-4 py-2 text-sm bg-slate-100 dark:bg-slate-800 hover:bg-zinc-700 rounded-lg transition-colors"
-            >
+        <Panel
+          title={t('simulators.gateway.config.title')}
+          accent="cyan"
+          action={
+            <TacticalButton size="sm" variant="ghost" onClick={() => setConfig(defaultConfig)}>
               {t('simulators.gateway.buttons.restore_defaults')}
-            </button>
-          </div>
+            </TacticalButton>
+          }
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
+              <label className="block label-mono text-slate-500 dark:text-tactical-label mb-2">
                 {t('simulators.gateway.config.rps', { value: config.requestsPerSecond })}
               </label>
-              <input
-                type="range"
-                min="0.1"
-                max="2"
-                step="0.1"
-                value={config.requestsPerSecond}
-                onChange={(e) => setConfig(prev => ({ ...prev, requestsPerSecond: parseFloat(e.target.value) }))}
-                className="w-full"
-              />
+              <input type="range" min="0.1" max="2" step="0.1" value={config.requestsPerSecond} onChange={(e) => setConfig(prev => ({ ...prev, requestsPerSecond: parseFloat(e.target.value) }))} className={rangeClass} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
+              <label className="block label-mono text-slate-500 dark:text-tactical-label mb-2">
                 {t('simulators.gateway.config.routing_delay', { ms: config.routingDelay })}
               </label>
-              <input
-                type="range"
-                min="500"
-                max="2000"
-                step="100"
-                value={config.routingDelay}
-                onChange={(e) => setConfig(prev => ({ ...prev, routingDelay: parseInt(e.target.value) }))}
-                className="w-full"
-              />
+              <input type="range" min="500" max="2000" step="100" value={config.routingDelay} onChange={(e) => setConfig(prev => ({ ...prev, routingDelay: parseInt(e.target.value) }))} className={rangeClass} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
+              <label className="block label-mono text-slate-500 dark:text-tactical-label mb-2">
                 {t('simulators.gateway.config.extra_error_rate', { percent: (config.errorRate * 100).toFixed(1) })}
               </label>
-              <input
-                type="range"
-                min="0"
-                max="0.3"
-                step="0.01"
-                value={config.errorRate}
-                onChange={(e) => setConfig(prev => ({ ...prev, errorRate: parseFloat(e.target.value) }))}
-                className="w-full"
-              />
+              <input type="range" min="0" max="0.3" step="0.01" value={config.errorRate} onChange={(e) => setConfig(prev => ({ ...prev, errorRate: parseFloat(e.target.value) }))} className={rangeClass} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
+              <label className="block label-mono text-slate-500 dark:text-tactical-label mb-2">
                 {t('simulators.gateway.config.removal_delay', { ms: config.removeDelay })}
               </label>
-              <input
-                type="range"
-                min="2000"
-                max="8000"
-                step="500"
-                value={config.removeDelay}
-                onChange={(e) => setConfig(prev => ({ ...prev, removeDelay: parseInt(e.target.value) }))}
-                className="w-full"
-              />
+              <input type="range" min="2000" max="8000" step="500" value={config.removeDelay} onChange={(e) => setConfig(prev => ({ ...prev, removeDelay: parseInt(e.target.value) }))} className={rangeClass} />
             </div>
           </div>
-        </div>
+        </Panel>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-lg">
-          <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.gateway.stats.total')}</div>
-          <div className="text-2xl font-bold text-white">{stats.totalRequests}</div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+          <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">{stats.totalRequests}</div>
+          <div className="label-mono mt-2">{t('simulators.gateway.stats.total')}</div>
         </div>
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-lg">
-          <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.gateway.stats.success')}</div>
-          <div className="text-2xl font-bold text-green-500">{stats.successfulRequests}</div>
+        <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+          <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green">{stats.successfulRequests}</div>
+          <div className="label-mono mt-2">{t('simulators.gateway.stats.success')}</div>
         </div>
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-lg">
-          <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.gateway.stats.error')}</div>
-          <div className="text-2xl font-bold text-red-500">{stats.failedRequests}</div>
+        <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+          <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-red">{stats.failedRequests}</div>
+          <div className="label-mono mt-2">{t('simulators.gateway.stats.error')}</div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Clients */}
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-lg">
-          <h3 className="text-xl font-bold mb-4 text-slate-700 dark:text-slate-200">{t('simulators.gateway.columns.clients')}</h3>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Panel title={t('simulators.gateway.columns.clients')} accent="cyan">
           <div className="space-y-2">
             <AnimatePresence>
               {requests.filter(r => r.status === 'pending').map(request => (
@@ -314,23 +270,21 @@ export default function APIGatewaySimulator() {
                   initial={{ opacity: 0, x: -50 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 50 }}
-                  className={`p-4 rounded ${services.find(s => s.type === request.type)?.color} bg-opacity-20 border-l-4 ${services.find(s => s.type === request.type)?.color}`}
+                  className={requestCardClass(request.type)}
                 >
-                  <div className="text-sm font-medium">
+                  <div className="font-mono text-sm text-slate-900 dark:text-tactical-text">
                     {t('simulators.gateway.items.request_id', { id: request.id })}
                   </div>
-                  <div className="text-xs opacity-75">
+                  <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
                     {t('simulators.gateway.items.type', { type: request.type })}
                   </div>
                 </motion.div>
               ))}
             </AnimatePresence>
           </div>
-        </div>
+        </Panel>
 
-        {/* API Gateway */}
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-lg">
-          <h3 className="text-xl font-bold mb-4 text-slate-700 dark:text-slate-200">{t('simulators.gateway.columns.apigw')}</h3>
+        <Panel title={t('simulators.gateway.columns.apigw')} accent="amber">
           <div className="space-y-2">
             <AnimatePresence>
               {requests.filter(r => r.status === 'routing').map(request => (
@@ -339,29 +293,27 @@ export default function APIGatewaySimulator() {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
-                  className={`p-4 rounded ${services.find(s => s.type === request.type)?.color} bg-opacity-20 border-l-4 ${services.find(s => s.type === request.type)?.color}`}
+                  className={requestCardClass(request.type)}
                 >
-                  <div className="text-sm font-medium">
+                  <div className="font-mono text-sm text-slate-900 dark:text-tactical-text">
                     {t('simulators.gateway.items.routing_to', { id: request.id })}
                   </div>
-                  <div className="text-xs opacity-75">
+                  <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
                     {t('simulators.gateway.items.to_service', { service: services.find(s => s.type === request.type)?.name })}
                   </div>
                 </motion.div>
               ))}
             </AnimatePresence>
           </div>
-        </div>
+        </Panel>
 
-        {/* Microservices */}
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-lg">
-          <h3 className="text-xl font-bold mb-4 text-slate-700 dark:text-slate-200">{t('simulators.gateway.columns.microservices')}</h3>
+        <Panel title={t('simulators.gateway.columns.microservices')} accent="green">
           <div className="space-y-4">
             {services.map(service => (
-              <div key={service.type} className={`p-4 rounded ${service.color} bg-opacity-10`}>
-                <div className="font-medium mb-1">{service.name}</div>
-                <div className="text-sm opacity-75">{service.description}</div>
-                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              <div key={service.type} className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-3">
+                <div className="font-mono text-sm font-medium text-slate-900 dark:text-tactical-text mb-1">{service.name}</div>
+                <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{service.description}</div>
+                <div className="font-mono text-xs text-slate-500 dark:text-tactical-label mt-1">
                   {t('simulators.gateway.items.processing_time', { ms: service.processingTime })}
                   <br />
                   {t('simulators.gateway.items.base_error_rate', { percent: (service.errorRate * 100).toFixed(1) })}
@@ -375,21 +327,21 @@ export default function APIGatewaySimulator() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className={`mt-2 text-sm p-2 rounded ${
-                          request.status === 'rejected' 
-                            ? 'bg-red-900 bg-opacity-20 text-red-200' 
-                            : 'bg-black bg-opacity-20'
-                        }`}
+                        className="mt-2 font-mono text-xs p-2 border border-slate-200 dark:border-tactical-border"
                       >
-                        {request.status === 'rejected' ? t('simulators.gateway.items.error') : t('simulators.gateway.items.processing')} #{request.id}
+                        {request.status === 'rejected' ? (
+                          <StatusBadge variant="classified" label={`${t('simulators.gateway.items.error')} #${request.id}`} />
+                        ) : (
+                          <StatusBadge variant="completed" label={`${t('simulators.gateway.items.processing')} #${request.id}`} />
+                        )}
                       </motion.div>
                     ))}
                 </AnimatePresence>
               </div>
             ))}
           </div>
-        </div>
+        </Panel>
       </div>
     </div>
   );
-} 
+}

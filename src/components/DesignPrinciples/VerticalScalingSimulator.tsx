@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { Panel, TacticalButton } from '../tactical';
 
 interface ServerTier {
   name: string;
@@ -58,7 +59,7 @@ export default function VerticalScalingSimulator() {
   const [currentTier, setCurrentTier] = useState<number>(0);
   const [requests, setRequests] = useState<Request[]>([]);
   const [isRunning, setIsRunning] = useState(false);
-  const [requestRate, setRequestRate] = useState(1); // requests per second
+  const [requestRate, setRequestRate] = useState(1);
   const [stats, setStats] = useState({
     processed: 0,
     rejected: 0,
@@ -79,17 +80,15 @@ export default function VerticalScalingSimulator() {
   useEffect(() => {
     if (!isRunning) return;
 
-    // Generate new requests
     requestInterval.current = window.setInterval(() => {
       const newRequest: Request = {
         id: Date.now(),
         timestamp: Date.now(),
-        processingTime: 2000 + Math.random() * 2000, // 2-4 seconds
+        processingTime: 2000 + Math.random() * 2000,
         status: 'queued'
       };
 
       setRequests(prev => {
-        // Remove old completed/rejected requests if there are too many
         const filtered = prev.filter(r => 
           r.status !== 'completed' && 
           r.status !== 'rejected' || 
@@ -100,7 +99,6 @@ export default function VerticalScalingSimulator() {
       });
     }, 1000 / requestRate);
 
-    // Process requests
     const processInterval = window.setInterval(() => {
       setRequests(prev => {
         const newRequests = [...prev];
@@ -108,13 +106,11 @@ export default function VerticalScalingSimulator() {
         const available = currentServer.maxRequests - processing;
 
         if (available > 0) {
-          // Find queued requests and start processing them
           const queued = newRequests.filter(r => r.status === 'queued');
           for (let i = 0; i < Math.min(available, queued.length); i++) {
             const request = queued[i];
             request.status = 'processing';
             
-            // Schedule completion
             setTimeout(() => {
               setRequests(current => 
                 current.map(r => 
@@ -128,7 +124,6 @@ export default function VerticalScalingSimulator() {
           }
         }
 
-        // Reject requests that have been queued too long (5 seconds)
         newRequests.forEach(request => {
           if (
             request.status === 'queued' && 
@@ -143,7 +138,6 @@ export default function VerticalScalingSimulator() {
       });
     }, 100);
 
-    // Update uptime and cost
     uptimeInterval.current = window.setInterval(() => {
       setStats(s => ({
         ...s,
@@ -152,7 +146,6 @@ export default function VerticalScalingSimulator() {
       }));
     }, 1000);
 
-    // Cleanup old requests
     cleanupInterval.current = window.setInterval(() => {
       setRequests(prev => 
         prev.filter(r => Date.now() - r.timestamp < 10000)
@@ -187,134 +180,131 @@ export default function VerticalScalingSimulator() {
   };
 
   return (
-    <div className="min-h-screen bg-canvas-paper dark:bg-canvas-dark text-white p-8">
-      {/* Header */}
+    <div className="space-y-6">
       <motion.div 
-        className="max-w-4xl mx-auto mb-8"
+        className="max-w-3xl"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h1 className="text-3xl font-bold mb-4">{t('simulators.vertical_scaling.title')}</h1>
-        <p className="text-slate-500 dark:text-slate-400">
+        <div className="label-mono text-signal-cyan mb-2">
+          [ {t('simulators.vertical_scaling.title')} ]
+        </div>
+        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
           {t('simulators.vertical_scaling.intro')}
         </p>
       </motion.div>
 
-      {/* Main Grid */}
-      <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Server Info */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <motion.div 
-          className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-xl p-6 shadow-xl"
+          className="lg:col-span-2"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
         >
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <h2 className="text-xl font-semibold mb-1">{currentServer.name}</h2>
-              <p className="text-slate-500 dark:text-slate-400 text-sm">{t('simulators.vertical_scaling.level_of_total', { current: currentTier + 1, total: SERVER_TIERS.length })}</p>
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={handleDowngrade}
-                disabled={currentTier === 0}
-                className="px-3 py-1 rounded bg-yellow-600 hover:bg-yellow-700 disabled:opacity-50 
-                         disabled:cursor-not-allowed transition-colors text-sm"
-              >
-                {t('simulators.vertical_scaling.buttons.downgrade')}
-              </button>
-              <button
-                onClick={() => setShowUpgradeModal(true)}
-                disabled={currentTier === SERVER_TIERS.length - 1}
-                className="px-3 py-1 rounded bg-blue-600 hover:bg-blue-700 disabled:opacity-50 
-                         disabled:cursor-not-allowed transition-colors text-sm"
-              >
-                {t('simulators.vertical_scaling.buttons.upgrade')}
-              </button>
-            </div>
-          </div>
+          <Panel
+            title={currentServer.name}
+            accent="cyan"
+            action={
+              <div className="flex gap-2">
+                <TacticalButton
+                  size="sm"
+                  variant="ghost"
+                  onClick={handleDowngrade}
+                  disabled={currentTier === 0}
+                >
+                  {t('simulators.vertical_scaling.buttons.downgrade')}
+                </TacticalButton>
+                <TacticalButton
+                  size="sm"
+                  variant="primary"
+                  onClick={() => setShowUpgradeModal(true)}
+                  disabled={currentTier === SERVER_TIERS.length - 1}
+                >
+                  {t('simulators.vertical_scaling.buttons.upgrade')}
+                </TacticalButton>
+              </div>
+            }
+          >
+            <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim mb-6">
+              {t('simulators.vertical_scaling.level_of_total', { current: currentTier + 1, total: SERVER_TIERS.length })}
+            </p>
 
-          {/* Resource Bars */}
-          <div className="space-y-4 mb-6">
-            <div>
-              <div className="flex justify-between text-sm mb-1">
-                <span className="text-slate-500 dark:text-slate-400">{t('simulators.vertical_scaling.resources.cpu', { cores: currentServer.cpu })}</span>
-                <span className="text-slate-500 dark:text-slate-400">{Math.round(serverLoad)}%</span>
-              </div>
-              <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                <motion.div
-                  className="h-full bg-blue-500"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${serverLoad}%` }}
-                  transition={{ duration: 0.3 }}
-                />
-              </div>
-            </div>
-            <div>
-              <div className="flex justify-between text-sm mb-1">
-                <span className="text-slate-500 dark:text-slate-400">{t('simulators.vertical_scaling.resources.memory', { gb: currentServer.memory })}</span>
-                <span className="text-slate-500 dark:text-slate-400">{Math.round(serverLoad)}%</span>
-              </div>
-              <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                <motion.div
-                  className="h-full bg-blue-500"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${serverLoad}%` }}
-                  transition={{ duration: 0.3 }}
-                />
-              </div>
-            </div>
-            <div>
-              <div className="flex justify-between text-sm mb-1">
-                <span className="text-slate-500 dark:text-slate-400">{t('simulators.vertical_scaling.resources.storage', { gb: currentServer.storage })}</span>
-                <span className="text-slate-500 dark:text-slate-400">{Math.round(serverLoad)}%</span>
-              </div>
-              <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                <motion.div
-                  className="h-full bg-blue-500"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${serverLoad}%` }}
-                  transition={{ duration: 0.3 }}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Request Queue Visualization */}
-          <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4">
-            <h3 className="text-sm font-medium mb-3">{t('simulators.vertical_scaling.queue_title')}</h3>
-            <div className="flex gap-2 flex-wrap">
-              {requests
-                .filter(r => r.status === 'queued' || r.status === 'processing')
-                .slice(-12)
-                .map((request) => (
+            <div className="space-y-4 mb-6">
+              <div>
+                <div className="flex justify-between font-mono text-xs mb-1 text-slate-600 dark:text-tactical-dim">
+                  <span>{t('simulators.vertical_scaling.resources.cpu', { cores: currentServer.cpu })}</span>
+                  <span>{Math.round(serverLoad)}%</span>
+                </div>
+                <div className="h-2 bg-slate-100 dark:bg-tactical-raised overflow-hidden">
                   <motion.div
-                    key={request.id}
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    exit={{ scale: 0 }}
-                    className={`w-4 h-4 rounded-full ${
-                      request.status === 'processing' 
-                        ? 'bg-green-500 animate-pulse' 
-                        : 'bg-yellow-500'
-                    }`}
+                    className="h-full bg-signal-cyan"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${serverLoad}%` }}
+                    transition={{ duration: 0.3 }}
                   />
-                ))}
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-between font-mono text-xs mb-1 text-slate-600 dark:text-tactical-dim">
+                  <span>{t('simulators.vertical_scaling.resources.memory', { gb: currentServer.memory })}</span>
+                  <span>{Math.round(serverLoad)}%</span>
+                </div>
+                <div className="h-2 bg-slate-100 dark:bg-tactical-raised overflow-hidden">
+                  <motion.div
+                    className="h-full bg-signal-cyan"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${serverLoad}%` }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-between font-mono text-xs mb-1 text-slate-600 dark:text-tactical-dim">
+                  <span>{t('simulators.vertical_scaling.resources.storage', { gb: currentServer.storage })}</span>
+                  <span>{Math.round(serverLoad)}%</span>
+                </div>
+                <div className="h-2 bg-slate-100 dark:bg-tactical-raised overflow-hidden">
+                  <motion.div
+                    className="h-full bg-signal-cyan"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${serverLoad}%` }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </div>
+              </div>
             </div>
-          </div>
+
+            <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4">
+              <h3 className="label-mono mb-3">{t('simulators.vertical_scaling.queue_title')}</h3>
+              <div className="flex gap-2 flex-wrap">
+                {requests
+                  .filter(r => r.status === 'queued' || r.status === 'processing')
+                  .slice(-12)
+                  .map((request) => (
+                    <motion.div
+                      key={request.id}
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      className={`w-4 h-4 ${
+                        request.status === 'processing' 
+                          ? 'bg-signal-green animate-pulse' 
+                          : 'bg-signal-amber'
+                      }`}
+                    />
+                  ))}
+              </div>
+            </div>
+          </Panel>
         </motion.div>
 
-        {/* Controls & Stats */}
         <motion.div 
-          className="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-xl"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
         >
-          {/* Controls */}
-          <div className="mb-6">
-            <h3 className="text-lg font-medium mb-4">{t('simulators.vertical_scaling.controls_title')}</h3>
+          <Panel title={t('simulators.vertical_scaling.controls_title')} accent="amber" className="mb-6">
             <div className="space-y-4">
               <div>
-                <label className="block text-sm text-slate-500 dark:text-slate-400 mb-2">
+                <label className="block label-mono mb-2">
                   {t('simulators.vertical_scaling.request_rate', { rate: requestRate })}
                 </label>
                 <input
@@ -326,97 +316,85 @@ export default function VerticalScalingSimulator() {
                   className="w-full"
                 />
               </div>
-              <button
+              <TacticalButton
+                variant={isRunning ? 'danger' : 'primary'}
+                className="w-full"
                 onClick={() => setIsRunning(!isRunning)}
-                className={`w-full py-2 rounded-lg ${
-                  isRunning 
-                    ? 'bg-red-600 hover:bg-red-700' 
-                    : 'bg-green-600 hover:bg-green-700'
-                } transition-colors`}
               >
                 {isRunning ? t('simulators.vertical_scaling.buttons.stop') : t('simulators.vertical_scaling.buttons.start')}
-              </button>
+              </TacticalButton>
             </div>
-          </div>
+          </Panel>
 
-          {/* Stats */}
-          <div>
-            <h3 className="text-lg font-medium mb-4">{t('simulators.vertical_scaling.stats_title')}</h3>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-slate-500 dark:text-slate-400">{t('simulators.vertical_scaling.processed')}</span>
-                <span className="text-green-400">{stats.processed}</span>
+          <Panel title={t('simulators.vertical_scaling.stats_title')} accent="green">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green">{stats.processed}</div>
+                <div className="label-mono mt-2">{t('simulators.vertical_scaling.processed')}</div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500 dark:text-slate-400">{t('simulators.vertical_scaling.rejected')}</span>
-                <span className="text-red-400">{stats.rejected}</span>
+              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-red">{stats.rejected}</div>
+                <div className="label-mono mt-2">{t('simulators.vertical_scaling.rejected')}</div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500 dark:text-slate-400">{t('simulators.vertical_scaling.success_rate')}</span>
-                <span className="text-brand-600 dark:text-brand-400">
+              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">
                   {stats.processed + stats.rejected === 0 
                     ? '0' 
                     : Math.round((stats.processed / (stats.processed + stats.rejected)) * 100)
                   }%
-                </span>
+                </div>
+                <div className="label-mono mt-2">{t('simulators.vertical_scaling.success_rate')}</div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500 dark:text-slate-400">{t('simulators.vertical_scaling.uptime')}</span>
-                <span>{Math.floor(stats.uptime)}s</span>
+              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-slate-900 dark:text-tactical-text">{Math.floor(stats.uptime)}s</div>
+                <div className="label-mono mt-2">{t('simulators.vertical_scaling.uptime')}</div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500 dark:text-slate-400">{t('simulators.vertical_scaling.total_cost')}</span>
-                <span className="text-yellow-400">R${stats.totalCost.toFixed(4)}</span>
+              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-amber">R${stats.totalCost.toFixed(4)}</div>
+                <div className="label-mono mt-2">{t('simulators.vertical_scaling.total_cost')}</div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500 dark:text-slate-400">{t('simulators.vertical_scaling.current_load')}</span>
-                <span className={`${
+              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+                <div className={`font-mono text-3xl font-bold tabular-nums leading-none ${
                   serverLoad > 90 
-                    ? 'text-red-400' 
+                    ? 'text-signal-red' 
                     : serverLoad > 70 
-                    ? 'text-yellow-400' 
-                    : 'text-green-400'
+                    ? 'text-signal-amber' 
+                    : 'text-signal-green'
                 }`}>
                   {Math.round(serverLoad)}%
-                </span>
+                </div>
+                <div className="label-mono mt-2">{t('simulators.vertical_scaling.current_load')}</div>
               </div>
             </div>
-          </div>
+          </Panel>
         </motion.div>
       </div>
 
-      {/* Upgrade Modal */}
       <AnimatePresence>
         {showUpgradeModal && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 flex items-center justify-center"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white dark:bg-slate-900 rounded-xl p-6 max-w-md w-full mx-4"
+              className="tactical-panel p-6 w-full max-w-lg"
             >
-              <h2 className="text-xl font-semibold mb-4">{t('simulators.vertical_scaling.upgrade_modal.title')}</h2>
-              <p className="text-slate-500 dark:text-slate-400 mb-4">
+              <h2 className="font-mono text-lg font-bold mb-4 text-slate-900 dark:text-tactical-text">{t('simulators.vertical_scaling.upgrade_modal.title')}</h2>
+              <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim mb-6">
                 {t('simulators.vertical_scaling.upgrade_modal.text', { tier: SERVER_TIERS[currentTier + 1]?.name, cost: SERVER_TIERS[currentTier + 1]?.cost })}
               </p>
-              <div className="flex justify-end gap-4">
-                <button
-                  onClick={() => setShowUpgradeModal(false)}
-                  className="px-4 py-2 rounded bg-zinc-700 hover:bg-zinc-600 transition-colors"
-                >
+              <div className="flex justify-end gap-3">
+                <TacticalButton variant="ghost" onClick={() => setShowUpgradeModal(false)}>
                   {t('simulators.vertical_scaling.upgrade_modal.cancel')}
-                </button>
-                <button
-                  onClick={handleUpgrade}
-                  className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 transition-colors"
-                >
+                </TacticalButton>
+                <TacticalButton variant="primary" onClick={handleUpgrade}>
                   {t('simulators.vertical_scaling.upgrade_modal.confirm')}
-                </button>
+                </TacticalButton>
               </div>
             </motion.div>
           </motion.div>
@@ -424,4 +402,4 @@ export default function VerticalScalingSimulator() {
       </AnimatePresence>
     </div>
   );
-} 
+}

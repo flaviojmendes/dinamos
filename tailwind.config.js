@@ -20,9 +20,26 @@ module.exports = {
         },
         canvas: {
           light: '#ffffff',
-          dark: '#0f172a', // Slate 900
+          dark: '#0a0a0b', // Tactical near-black
           paper: '#f8fafc', // Slate 50
-        }
+        },
+        // Tactical command-center palette (dark theme is the default).
+        tactical: {
+          bg: '#0a0a0b',       // app background
+          surface: '#101012',  // panels
+          raised: '#16161a',   // raised cells / hover
+          border: '#26262b',   // hairline borders
+          line: '#2f2f36',     // dividers / stronger lines
+          label: '#8a909c',    // uppercase muted labels (AA on surface)
+          dim: '#aab0bb',      // secondary text
+          text: '#e5e7eb',     // primary text
+        },
+        signal: {
+          green: '#4ade80', // online / success / completed
+          amber: '#f59e0b', // section accent / warning / in-progress
+          red: '#ef4444',   // classified / danger
+          cyan: '#22d3ee',  // info / assessment
+        },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
@@ -35,7 +52,16 @@ module.exports = {
       },
       backgroundSize: {
         'grid': '20px 20px',
-      }
+      },
+      keyframes: {
+        'caret-blink': {
+          '0%, 49%': { opacity: '1' },
+          '50%, 100%': { opacity: '0' },
+        },
+      },
+      animation: {
+        'caret-blink': 'caret-blink 1s steps(1) infinite',
+      },
     },
   },
   plugins: [require("tailwind-scrollbar")],

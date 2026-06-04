@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Panel, TacticalButton, StatusBadge } from '../tactical';
 
 interface Resource {
   id: string;
@@ -30,6 +31,22 @@ interface AnimatedRequest {
   status: 'trying-primary' | 'success' | 'trying-secondary' | 'fallback' | 'error';
   progress: number;
 }
+
+const resourceStatusVariant = (status: Resource['status']) => {
+  switch (status) {
+    case 'healthy': return 'active' as const;
+    case 'degraded': return 'in-progress' as const;
+    case 'failed': return 'classified' as const;
+  }
+};
+
+const requestStatusVariant = (status: Request['status']) => {
+  switch (status) {
+    case 'success': return 'active' as const;
+    case 'fallback': return 'in-progress' as const;
+    case 'error': return 'classified' as const;
+  }
+};
 
 export default function Fallback() {
   const [isRunning, setIsRunning] = useState(false);
@@ -78,7 +95,6 @@ export default function Fallback() {
     });
   }, []);
 
-  // Resource status monitoring
   useEffect(() => {
     if (!isRunning) return;
 
@@ -94,7 +110,6 @@ export default function Fallback() {
     return () => clearInterval(interval);
   }, [isRunning]);
 
-  // Request generation
   useEffect(() => {
     if (!isRunning) return;
 
@@ -107,14 +122,12 @@ export default function Fallback() {
 
       const requestId = Date.now();
       
-      // Start with trying primary
       setAnimatedRequests(prev => [...prev, {
         id: requestId,
         status: 'trying-primary',
         progress: 0
       }]);
 
-      // Animate the request
       const animate = () => {
         setAnimatedRequests(prev => {
           const request = prev.find(r => r.id === requestId);
@@ -123,7 +136,6 @@ export default function Fallback() {
           const newProgress = request.progress + 2;
           
           if (newProgress >= 100) {
-            // Decide next state based on current status
             if (request.status === 'trying-primary') {
               const primaryFailed = primaryResource.status === 'failed' || shouldFail(primaryResource);
               if (!primaryFailed) {
@@ -136,7 +148,6 @@ export default function Fallback() {
                 } : r);
               }
             } else if (request.status === 'trying-secondary') {
-              const secondaryFailed = secondaryResource.status === 'failed' || shouldFail(secondaryResource);
               return prev.filter(r => r.id !== requestId);
             }
             return prev.filter(r => r.id !== requestId);
@@ -153,7 +164,6 @@ export default function Fallback() {
 
       let request: Request;
       
-      // Try primary first
       if (primaryResource.status !== 'failed' && !shouldFail(primaryResource)) {
         request = {
           id: requestId,
@@ -163,7 +173,6 @@ export default function Fallback() {
           latency: primaryResource.latency * (1 + Math.random() * 0.2)
         };
       } 
-      // Try secondary if primary fails
       else if (secondaryResource.status !== 'failed' && !shouldFail(secondaryResource)) {
         request = {
           id: requestId,
@@ -173,7 +182,6 @@ export default function Fallback() {
           latency: secondaryResource.latency * (1 + Math.random() * 0.2)
         };
       }
-      // Both failed
       else {
         request = {
           id: requestId,
@@ -203,303 +211,226 @@ export default function Fallback() {
     return () => clearInterval(requestInterval);
   }, [isRunning, resources, requestsPerSecond]);
 
-  return (
-    <div className="p-4">
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-xl font-semibold">Mecanismo de Fallback</h1>
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => setIsConfigOpen(!isConfigOpen)}
-              className="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-md hover:bg-zinc-700 font-medium transition-colors"
-            >
-              {isConfigOpen ? 'Fechar Config' : 'Configurar'}
-            </button>
-            <button
-              onClick={() => setIsRunning(!isRunning)}
-              className={`px-4 py-2 rounded-md font-medium transition-colors ${
-                isRunning 
-                  ? 'bg-red-500 hover:bg-red-600' 
-                  : 'bg-green-500 hover:bg-green-600'
-              }`}
-            >
-              {isRunning ? 'Parar' : 'Iniciar'}
-            </button>
-            <button
-              onClick={resetSimulation}
-              className="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-md hover:bg-zinc-700 font-medium transition-colors"
-            >
-              Resetar
-            </button>
-          </div>
-        </div>
+  const rangeClass = 'flex-1 h-2 bg-slate-200 dark:bg-tactical-raised appearance-none cursor-pointer accent-signal-green';
 
-        {isConfigOpen && (
-          <div className="mb-6 bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <label className="block text-sm text-slate-500 dark:text-slate-400">
-                  Requisições por Segundo
+  return (
+    <div className="space-y-6">
+      <div className="max-w-3xl">
+        <div className="label-mono text-signal-cyan mb-2">
+          [ MECANISMO DE FALLBACK ]
+        </div>
+        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
+          Simulação de fallback entre recurso principal e secundário com taxa de falha configurável.
+        </p>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2">
+        <TacticalButton size="sm" variant="ghost" onClick={() => setIsConfigOpen(!isConfigOpen)}>
+          {isConfigOpen ? 'Fechar Config' : 'Configurar'}
+        </TacticalButton>
+        <TacticalButton size="sm" variant={isRunning ? 'danger' : 'primary'} onClick={() => setIsRunning(!isRunning)}>
+          {isRunning ? 'Parar' : 'Iniciar'}
+        </TacticalButton>
+        <TacticalButton size="sm" variant="secondary" onClick={resetSimulation}>
+          Resetar
+        </TacticalButton>
+      </div>
+
+      {isConfigOpen && (
+        <Panel title="Configuração" accent="cyan">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <label className="block label-mono text-slate-500 dark:text-tactical-label">
+                Requisições por Segundo
+              </label>
+              <div className="flex items-center gap-2">
+                <input type="range" min="1" max="20" value={requestsPerSecond} onChange={e => setRequestsPerSecond(Number(e.target.value))} className={rangeClass} />
+                <span className="font-mono text-sm w-6 text-signal-cyan">{requestsPerSecond}</span>
+              </div>
+            </div>
+            {resources.map(resource => (
+              <div key={resource.id} className="space-y-2">
+                <label className="block label-mono text-slate-500 dark:text-tactical-label">
+                  Taxa de Falha - {resource.name}
                 </label>
                 <div className="flex items-center gap-2">
-                  <input
-                    type="range"
-                    min="1"
-                    max="20"
-                    value={requestsPerSecond}
-                    onChange={e => setRequestsPerSecond(Number(e.target.value))}
-                    className="flex-1"
-                  />
-                  <span className="text-sm font-mono w-6">{requestsPerSecond}</span>
+                  <input type="range" min="0" max="100" value={resource.failureRate} onChange={e => {
+                    const newRate = Number(e.target.value);
+                    setResources(prev => prev.map(r => 
+                      r.id === resource.id ? { ...r, failureRate: newRate } : r
+                    ));
+                  }} className={rangeClass} />
+                  <span className="font-mono text-sm w-8 text-signal-cyan">{resource.failureRate}%</span>
                 </div>
               </div>
+            ))}
+          </div>
+        </Panel>
+      )}
 
-              {resources.map(resource => (
-                <div key={resource.id} className="space-y-2">
-                  <label className="block text-sm text-slate-500 dark:text-slate-400">
-                    Taxa de Falha - {resource.name}
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="range"
-                      min="0"
-                      max="100"
-                      value={resource.failureRate}
-                      onChange={e => {
-                        const newRate = Number(e.target.value);
-                        setResources(prev => prev.map(r => 
-                          r.id === resource.id ? { ...r, failureRate: newRate } : r
-                        ));
-                      }}
-                      className="flex-1"
-                    />
-                    <span className="text-sm font-mono w-8">{resource.failureRate}%</span>
-                  </div>
-                </div>
-              ))}
+      <Panel title="Fluxo de Requisições" accent="amber">
+        <div className="relative h-[400px] flex flex-col items-center">
+          <div className="w-40 h-24 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised flex items-center justify-center">
+            <div className="text-center">
+              <div className="font-mono text-sm font-medium text-slate-900 dark:text-tactical-text">Cliente</div>
+              <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim mt-1">{requestsPerSecond} req/s</div>
             </div>
           </div>
-        )}
-
-        {/* Flow Visualization */}
-        <div className="mb-6 bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4">
-          <h2 className="text-lg font-medium mb-4">Fluxo de Requisições</h2>
-          <div className="relative h-[400px] flex flex-col items-center">
-            {/* Client */}
-            <div className="w-40 h-24 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center border border-slate-300 dark:border-slate-700">
+          <div className="mt-20">
+            <div className={`w-40 h-24 border bg-slate-50 dark:bg-tactical-raised flex items-center justify-center transition-colors ${
+              resources[0].status === 'healthy' ? 'border-signal-green/50' :
+              resources[0].status === 'degraded' ? 'border-signal-amber/50' :
+              'border-signal-red/50'
+            }`}>
               <div className="text-center">
-                <div className="text-sm font-medium">Cliente</div>
-                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{requestsPerSecond} req/s</div>
-              </div>
-            </div>
-
-            {/* Primary Resource */}
-            <div className="mt-20">
-              <div className={`w-40 h-24 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center border transition-colors ${
-                resources[0].status === 'healthy' ? 'border-green-500/50' :
-                resources[0].status === 'degraded' ? 'border-yellow-500/50' :
-                'border-red-500/50'
-              }`}>
-                <div className="text-center">
-                  <div className="text-sm font-medium">Principal</div>
-                  <div className={`text-xs mt-1 ${
-                    resources[0].status === 'healthy' ? 'text-green-400' :
-                    resources[0].status === 'degraded' ? 'text-yellow-400' :
-                    'text-red-400'
-                  }`}>
-                    {resources[0].status === 'healthy' ? 'Saudável' :
-                     resources[0].status === 'degraded' ? 'Degradado' :
-                     'Falho'}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Secondary Resource */}
-            <div className="mt-20">
-              <div className={`w-40 h-24 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center border transition-colors ${
-                resources[1].status === 'healthy' ? 'border-green-500/50' :
-                resources[1].status === 'degraded' ? 'border-yellow-500/50' :
-                'border-red-500/50'
-              }`}>
-                <div className="text-center">
-                  <div className="text-sm font-medium">Secundário</div>
-                  <div className={`text-xs mt-1 ${
-                    resources[1].status === 'healthy' ? 'text-green-400' :
-                    resources[1].status === 'degraded' ? 'text-yellow-400' :
-                    'text-red-400'
-                  }`}>
-                    {resources[1].status === 'healthy' ? 'Saudável' :
-                     resources[1].status === 'degraded' ? 'Degradado' :
-                     'Falho'}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Animated Requests */}
-            <AnimatePresence>
-              {animatedRequests.map(request => (
-                <motion.div
-                  key={request.id}
-                  className={`absolute w-3 h-3 rounded-full ${
-                    request.status === 'trying-primary' ? 'bg-green-500' : 'bg-yellow-500'
-                  }`}
-                  initial={{ 
-                    top: 48,
-                    left: '50%',
-                    x: '-50%',
-                    scale: 0
-                  }}
-                  animate={{ 
-                    top: request.status === 'trying-primary' ? 168 : 312,
-                    scale: 1
-                  }}
-                  exit={{ 
-                    scale: 0,
-                    opacity: 0
-                  }}
-                  transition={{ 
-                    duration: 0.5,
-                    ease: "easeInOut"
-                  }}
+                <div className="font-mono text-sm font-medium text-slate-900 dark:text-tactical-text">Principal</div>
+                <StatusBadge
+                  variant={resourceStatusVariant(resources[0].status)}
+                  label={resources[0].status === 'healthy' ? 'Saudável' : resources[0].status === 'degraded' ? 'Degradado' : 'Falho'}
                 />
-              ))}
-            </AnimatePresence>
-
-            {/* Legend */}
-            <div className="absolute top-4 right-4 space-y-2">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                <span className="text-xs">Requisição Principal</span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                <span className="text-xs">Requisição Fallback</span>
+            </div>
+          </div>
+          <div className="mt-20">
+            <div className={`w-40 h-24 border bg-slate-50 dark:bg-tactical-raised flex items-center justify-center transition-colors ${
+              resources[1].status === 'healthy' ? 'border-signal-green/50' :
+              resources[1].status === 'degraded' ? 'border-signal-amber/50' :
+              'border-signal-red/50'
+            }`}>
+              <div className="text-center">
+                <div className="font-mono text-sm font-medium text-slate-900 dark:text-tactical-text">Secundário</div>
+                <StatusBadge
+                  variant={resourceStatusVariant(resources[1].status)}
+                  label={resources[1].status === 'healthy' ? 'Saudável' : resources[1].status === 'degraded' ? 'Degradado' : 'Falho'}
+                />
               </div>
+            </div>
+          </div>
+          <AnimatePresence>
+            {animatedRequests.map(request => (
+              <motion.div
+                key={request.id}
+                className={`absolute w-3 h-3 rounded-full ${
+                  request.status === 'trying-primary' ? 'bg-signal-green' : 'bg-signal-amber'
+                }`}
+                initial={{ top: 48, left: '50%', x: '-50%', scale: 0 }}
+                animate={{ top: request.status === 'trying-primary' ? 168 : 312, scale: 1 }}
+                exit={{ scale: 0, opacity: 0 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+              />
+            ))}
+          </AnimatePresence>
+          <div className="absolute top-4 right-4 space-y-2">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-signal-green" />
+              <span className="font-mono text-xs text-slate-600 dark:text-tactical-dim">Requisição Principal</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-signal-amber" />
+              <span className="font-mono text-xs text-slate-600 dark:text-tactical-dim">Requisição Fallback</span>
             </div>
           </div>
         </div>
+      </Panel>
 
-        <div className="grid grid-cols-2 gap-6 mb-6">
-          {/* Resources Status */}
-          <div className="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4">
-            <h2 className="text-lg font-medium mb-4">Status dos Recursos</h2>
-            <div className="space-y-4">
-              {resources.map(resource => (
-                <div key={resource.id} className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium">{resource.name}</span>
-                    <span className={`px-2 py-1 rounded text-sm ${
-                      resource.status === 'healthy' ? 'bg-green-500/20 text-green-300' :
-                      resource.status === 'degraded' ? 'bg-yellow-500/20 text-yellow-300' :
-                      'bg-red-500/20 text-red-300'
-                    }`}>
-                      {resource.status === 'healthy' ? 'Saudável' :
-                       resource.status === 'degraded' ? 'Degradado' :
-                       'Falho'}
-                    </span>
-                  </div>
-                  <div className="h-2 bg-zinc-700 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full transition-all duration-300 ${
-                        resource.status === 'healthy' ? 'bg-green-500' :
-                        resource.status === 'degraded' ? 'bg-yellow-500' :
-                        'bg-red-500'
-                      }`}
-                      style={{ width: `${100 - resource.failureRate}%` }}
-                    />
-                  </div>
-                  <div className="text-sm text-slate-500 dark:text-slate-400">
-                    Taxa de Falha: {resource.failureRate}% | Latência: {resource.latency}ms
-                  </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Panel title="Status dos Recursos" accent="green">
+          <div className="space-y-4">
+            {resources.map(resource => (
+              <div key={resource.id} className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="font-mono text-sm text-slate-900 dark:text-tactical-text">{resource.name}</span>
+                  <StatusBadge
+                    variant={resourceStatusVariant(resource.status)}
+                    label={resource.status === 'healthy' ? 'Saudável' : resource.status === 'degraded' ? 'Degradado' : 'Falho'}
+                  />
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Recent Requests */}
-          <div className="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-medium">Últimas Requisições</h2>
-              <div className="text-sm text-slate-500 dark:text-slate-400">
-                Taxa: {requestsPerSecond} req/s
+                <div className="h-2 border border-slate-200 dark:border-tactical-border bg-slate-100 dark:bg-tactical-raised overflow-hidden">
+                  <div
+                    className={`h-full transition-all duration-300 ${
+                      resource.status === 'healthy' ? 'bg-signal-green' :
+                      resource.status === 'degraded' ? 'bg-signal-amber' :
+                      'bg-signal-red'
+                    }`}
+                    style={{ width: `${100 - resource.failureRate}%` }}
+                  />
+                </div>
+                <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
+                  Taxa de Falha: {resource.failureRate}% | Latência: {resource.latency}ms
+                </div>
               </div>
-            </div>
-            <div className="space-y-2">
-              {requests.map(request => (
-                <div
-                  key={request.id}
-                  className={`flex items-center gap-2 p-2 rounded-md ${
-                    request.status === 'success' ? 'bg-green-500/20 text-green-300' :
-                    request.status === 'fallback' ? 'bg-yellow-500/20 text-yellow-300' :
-                    'bg-red-500/20 text-red-300'
-                  }`}
-                >
-                  <span className="text-lg">
-                    {request.status === 'success' ? '✓' :
-                     request.status === 'fallback' ? '⚠' : '✗'}
-                  </span>
-                  <span className="flex-1">
-                    {request.status === 'success' ? 'Sucesso (Principal)' :
-                     request.status === 'fallback' ? 'Sucesso (Secundário)' :
-                     'Falha Total'}
-                  </span>
-                  <span className="text-sm opacity-75">
-                    {request.status !== 'error' ? `${Math.round(request.latency)}ms` : '-'}
-                  </span>
-                </div>
-              ))}
-              {requests.length === 0 && (
-                <div className="text-zinc-500 text-center py-4">
+            ))}
+          </div>
+        </Panel>
+
+        <Panel
+          title="Últimas Requisições"
+          accent="cyan"
+          action={<span className="font-mono text-xs text-slate-500 dark:text-tactical-dim">Taxa: {requestsPerSecond} req/s</span>}
+        >
+          <div className="space-y-2">
+            {requests.map(request => (
+              <div
+                key={request.id}
+                className="flex items-center gap-2 p-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised"
+              >
+                <StatusBadge variant={requestStatusVariant(request.status)} dot={false} label={
+                  request.status === 'success' ? '✓' : request.status === 'fallback' ? '⚠' : '✗'
+                } />
+                <span className="flex-1 font-mono text-sm text-slate-900 dark:text-tactical-text">
+                  {request.status === 'success' ? 'Sucesso (Principal)' :
+                   request.status === 'fallback' ? 'Sucesso (Secundário)' :
+                   'Falha Total'}
+                </span>
+                <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
+                  {request.status !== 'error' ? `${Math.round(request.latency)}ms` : '-'}
+                </span>
+              </div>
+            ))}
+            {requests.length === 0 && (
+              <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center">
+                <p className="font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">
                   Nenhuma requisição ainda
-                </div>
-              )}
-            </div>
+                </p>
+              </div>
+            )}
           </div>
-        </div>
+        </Panel>
+      </div>
 
-        {/* Metrics */}
-        <div className="grid grid-cols-4 gap-4">
-          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
-            <div className="text-sm text-slate-500 dark:text-slate-400 mb-1">Total de Requisições</div>
-            <div className="text-2xl font-medium">{metrics.totalRequests}</div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+          <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">{metrics.totalRequests}</div>
+          <div className="label-mono mt-2">Total de Requisições</div>
+        </div>
+        <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+          <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green">
+            {metrics.successfulRequests}
+            <span className="text-sm text-slate-500 dark:text-tactical-dim ml-1">
+              ({metrics.totalRequests > 0 ? Math.round((metrics.successfulRequests / metrics.totalRequests) * 100) : 0}%)
+            </span>
           </div>
-          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
-            <div className="text-sm text-slate-500 dark:text-slate-400 mb-1">Sucesso (Principal)</div>
-            <div className="text-2xl font-medium text-green-400">
-              {metrics.successfulRequests}
-              <span className="text-sm text-slate-500 dark:text-slate-400 ml-1">
-                ({metrics.totalRequests > 0 
-                  ? Math.round((metrics.successfulRequests / metrics.totalRequests) * 100) 
-                  : 0}%)
-              </span>
-            </div>
+          <div className="label-mono mt-2">Sucesso (Principal)</div>
+        </div>
+        <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+          <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-amber">
+            {metrics.fallbackRequests}
+            <span className="text-sm text-slate-500 dark:text-tactical-dim ml-1">
+              ({metrics.totalRequests > 0 ? Math.round((metrics.fallbackRequests / metrics.totalRequests) * 100) : 0}%)
+            </span>
           </div>
-          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
-            <div className="text-sm text-slate-500 dark:text-slate-400 mb-1">Fallback (Secundário)</div>
-            <div className="text-2xl font-medium text-yellow-400">
-              {metrics.fallbackRequests}
-              <span className="text-sm text-slate-500 dark:text-slate-400 ml-1">
-                ({metrics.totalRequests > 0 
-                  ? Math.round((metrics.fallbackRequests / metrics.totalRequests) * 100) 
-                  : 0}%)
-              </span>
-            </div>
+          <div className="label-mono mt-2">Fallback (Secundário)</div>
+        </div>
+        <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+          <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-red">
+            {metrics.failedRequests}
+            <span className="text-sm text-slate-500 dark:text-tactical-dim ml-1">
+              ({metrics.totalRequests > 0 ? Math.round((metrics.failedRequests / metrics.totalRequests) * 100) : 0}%)
+            </span>
           </div>
-          <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg">
-            <div className="text-sm text-slate-500 dark:text-slate-400 mb-1">Falhas Totais</div>
-            <div className="text-2xl font-medium text-red-400">
-              {metrics.failedRequests}
-              <span className="text-sm text-slate-500 dark:text-slate-400 ml-1">
-                ({metrics.totalRequests > 0 
-                  ? Math.round((metrics.failedRequests / metrics.totalRequests) * 100) 
-                  : 0}%)
-              </span>
-            </div>
-          </div>
+          <div className="label-mono mt-2">Falhas Totais</div>
         </div>
       </div>
     </div>
   );
-} 
+}

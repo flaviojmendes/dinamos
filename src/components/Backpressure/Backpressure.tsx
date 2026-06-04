@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Panel, StatusBadge, TacticalButton } from '../tactical';
 
 interface Message {
   id: number;
@@ -26,6 +27,15 @@ interface Metrics {
   droppedTotal: number;
   currentBackpressure: number; // 0-100%
 }
+
+const messageStatusVariant = (status: Message['status']) => {
+  switch (status) {
+    case 'completed': return 'active' as const;
+    case 'dropped': return 'classified' as const;
+    case 'queued': return 'pending' as const;
+    case 'processing': return 'in-progress' as const;
+  }
+};
 
 export default function Backpressure() {
   const { t } = useTranslation();
@@ -147,31 +157,43 @@ export default function Backpressure() {
     };
   }, [isRunning, produceMessages, consumeMessages]);
 
-  return (
-    <div className="p-4">
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-xl font-semibold">{t('simulators.backpressure.title')}</h1>
-          <button
-            onClick={() => setIsConfigOpen(!isConfigOpen)}
-            className="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-md hover:bg-zinc-700"
-          >
-            {t('simulators.backpressure.buttons.settings')}
-          </button>
-        </div>
+  const inputClass =
+    'w-full bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-2 py-1 font-mono text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-signal-green';
 
-        <details className="mb-4 text-slate-600 dark:text-slate-300">
-          <summary className="cursor-pointer hover:text-white transition-colors">
+  const backpressureBarColor =
+    metrics.currentBackpressure > 80 ? 'bg-signal-red' :
+    metrics.currentBackpressure > 50 ? 'bg-signal-amber' :
+    'bg-signal-green';
+
+  return (
+    <div className="space-y-6">
+      <div className="max-w-3xl">
+        <div className="label-mono text-signal-cyan mb-2">
+          [ {t('simulators.backpressure.title')} ]
+        </div>
+      </div>
+
+      <Panel
+        title={t('simulators.backpressure.title')}
+        accent="cyan"
+        action={
+          <TacticalButton size="sm" variant="ghost" onClick={() => setIsConfigOpen(!isConfigOpen)}>
+            {t('simulators.backpressure.buttons.settings')}
+          </TacticalButton>
+        }
+      >
+        <details className="mb-4 font-mono text-sm text-slate-600 dark:text-tactical-dim">
+          <summary className="cursor-pointer label-mono text-signal-cyan hover:text-signal-green transition-colors">
             O que é Backpressure?
           </summary>
-          <div className="mt-2 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg space-y-3">
+          <div className="mt-2 tactical-panel border-l-2 border-l-signal-cyan p-4 space-y-3">
             <p>
               Backpressure é um mecanismo fundamental em sistemas distribuídos que lida com situações onde um componente não consegue processar dados na mesma velocidade em que os recebe. É como uma válvula de pressão que regula o fluxo de dados para evitar sobrecarga.
             </p>
             <p>
               No mundo real, isso acontece quando, por exemplo, um serviço de processamento de pedidos recebe mais requisições do que consegue processar. Sem backpressure, o sistema poderia falhar, perder dados ou consumir memória indefinidamente.
             </p>
-            <h3 className="text-white font-medium mt-4 mb-2">Como funciona o simulador:</h3>
+            <h3 className="font-mono text-sm font-semibold text-slate-900 dark:text-tactical-text mt-4 mb-2">Como funciona o simulador:</h3>
             <ul className="list-disc list-inside space-y-2">
               <li>
                 <strong>Produtor:</strong> Gera mensagens em uma taxa configurável (mensagens/segundo)
@@ -198,124 +220,109 @@ export default function Backpressure() {
         </details>
 
         {isConfigOpen && (
-          <div className="mb-4 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm mb-1">Taxa de Produção (msg/s)</label>
-                <input
-                  type="number"
-                  value={producers[0].rate}
-                  onChange={e => setProducers([{ ...producers[0], rate: Math.max(1, Math.min(20, +e.target.value)) }])}
-                  className="w-full bg-zinc-700 rounded px-2 py-1"
-                />
-              </div>
-              <div>
-                <label className="block text-sm mb-1">Taxa de Consumo (msg/s)</label>
-                <input
-                  type="number"
-                  value={consumer.processingRate}
-                  onChange={e => setConsumer(prev => ({ ...prev, processingRate: Math.max(1, Math.min(20, +e.target.value)) }))}
-                  className="w-full bg-zinc-700 rounded px-2 py-1"
-                />
-              </div>
-              <div>
-                <label className="block text-sm mb-1">Tamanho Máximo da Fila</label>
-                <input
-                  type="number"
-                  value={consumer.maxQueueSize}
-                  onChange={e => setConsumer(prev => ({ ...prev, maxQueueSize: Math.max(1, +e.target.value) }))}
-                  className="w-full bg-zinc-700 rounded px-2 py-1"
-                />
-              </div>
+          <div className="mb-4 grid grid-cols-2 gap-4 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4">
+            <div>
+              <label className="block label-mono text-slate-500 dark:text-tactical-label mb-1">Taxa de Produção (msg/s)</label>
+              <input
+                type="number"
+                value={producers[0].rate}
+                onChange={e => setProducers([{ ...producers[0], rate: Math.max(1, Math.min(20, +e.target.value)) }])}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className="block label-mono text-slate-500 dark:text-tactical-label mb-1">Taxa de Consumo (msg/s)</label>
+              <input
+                type="number"
+                value={consumer.processingRate}
+                onChange={e => setConsumer(prev => ({ ...prev, processingRate: Math.max(1, Math.min(20, +e.target.value)) }))}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className="block label-mono text-slate-500 dark:text-tactical-label mb-1">Tamanho Máximo da Fila</label>
+              <input
+                type="number"
+                value={consumer.maxQueueSize}
+                onChange={e => setConsumer(prev => ({ ...prev, maxQueueSize: Math.max(1, +e.target.value) }))}
+                className={inputClass}
+              />
             </div>
           </div>
         )}
 
-        <div className="flex gap-4 mb-6">
-          <button
+        <div className="flex flex-wrap gap-2 mb-6">
+          <TacticalButton
+            size="sm"
+            variant={isRunning ? 'danger' : 'secondary'}
             onClick={() => setIsRunning(!isRunning)}
-            className={`px-4 py-2 rounded-md ${
-              isRunning ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
-            }`}
           >
             {isRunning ? t('simulators.backpressure.buttons.stop') : t('simulators.backpressure.buttons.start')}
-          </button>
-          <button
-            onClick={resetSimulation}
-            className="px-4 py-2 bg-zinc-700 rounded-md hover:bg-zinc-600"
-          >
+          </TacticalButton>
+          <TacticalButton size="sm" variant="ghost" onClick={resetSimulation}>
             {t('simulators.backpressure.buttons.reset')}
-          </button>
+          </TacticalButton>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
-            <div className="text-sm text-slate-500 dark:text-slate-400 mb-2">{t('simulators.backpressure.title')}</div>
-            <div className="h-2 bg-zinc-700 rounded-full overflow-hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+            <div className="label-mono text-slate-500 dark:text-tactical-label mb-2">{t('simulators.backpressure.title')}</div>
+            <div className="h-2 bg-slate-200 dark:bg-tactical-border overflow-hidden">
               <div
-                className={`h-full transition-all duration-300 ${
-                  metrics.currentBackpressure > 80 ? 'bg-red-500' :
-                  metrics.currentBackpressure > 50 ? 'bg-yellow-500' :
-                  'bg-green-500'
-                }`}
+                className={`h-full transition-all duration-300 ${backpressureBarColor}`}
                 style={{ width: `${metrics.currentBackpressure}%` }}
               />
             </div>
-            <div className="mt-1 text-sm font-medium">
+            <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-amber mt-2">
               {Math.round(metrics.currentBackpressure)}%
             </div>
           </div>
-          <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
-            <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.backpressure.producer_status.title')}</div>
-            <div className="font-medium">
-              {producers[0].isThrottled ? (
-                <span className="text-yellow-400">{t('simulators.backpressure.producer_status.throttled')}</span>
-              ) : (
-                <span className="text-green-400">{t('simulators.backpressure.producer_status.normal')}</span>
-              )}
+          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+            <div className="label-mono text-slate-500 dark:text-tactical-label mb-2">{t('simulators.backpressure.producer_status.title')}</div>
+            {producers[0].isThrottled ? (
+              <StatusBadge variant="in-progress" label={t('simulators.backpressure.producer_status.throttled')} />
+            ) : (
+              <StatusBadge variant="active" label={t('simulators.backpressure.producer_status.normal')} />
+            )}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+            <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">{metrics.producedTotal}</div>
+            <div className="label-mono mt-2">{t('simulators.backpressure.labels.produced')}</div>
+          </div>
+          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+            <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green">{metrics.processedTotal}</div>
+            <div className="label-mono mt-2">{t('simulators.backpressure.labels.processed')}</div>
+          </div>
+          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+            <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-red">{metrics.droppedTotal}</div>
+            <div className="label-mono mt-2">{t('simulators.backpressure.labels.dropped')}</div>
+          </div>
+        </div>
+      </Panel>
+
+      <Panel title={t('simulators.backpressure.labels.latest')} accent="amber">
+        <div className="space-y-2">
+          {messages.slice(-5).map(message => (
+            <div
+              key={message.id}
+              className="flex justify-between items-center border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
+            >
+              <StatusBadge variant={messageStatusVariant(message.status)} label={message.status.toUpperCase()} />
+              <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim tabular-nums">{((Date.now() - message.timestamp) / 1000).toFixed(1)}s ago</span>
             </div>
-          </div>
+          ))}
+          {messages.slice(-5).length === 0 && (
+            <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center">
+              <p className="font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">
+                —
+              </p>
+            </div>
+          )}
         </div>
-
-        <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
-            <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.backpressure.labels.produced')}</div>
-            <div className="font-medium">{metrics.producedTotal}</div>
-          </div>
-          <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
-            <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.backpressure.labels.processed')}</div>
-            <div className="font-medium">{metrics.processedTotal}</div>
-          </div>
-          <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
-            <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.backpressure.labels.dropped')}</div>
-            <div className="font-medium">{metrics.droppedTotal}</div>
-          </div>
-        </div>
-
-        <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
-          <h2 className="text-lg font-medium mb-3">{t('simulators.backpressure.labels.latest')}</h2>
-          <div className="space-y-2">
-            {messages.slice(-5).map(message => (
-              <div
-                key={message.id}
-                className={`p-2 rounded flex justify-between ${
-                  message.status === 'completed' ? 'bg-green-500/20' :
-                  message.status === 'dropped' ? 'bg-red-500/20' :
-                  message.status === 'queued' ? 'bg-yellow-500/20' :
-                  'bg-blue-500/20'
-                }`}
-              >
-                <span>
-                  {message.status === 'completed' ? '✓' :
-                   message.status === 'dropped' ? '✗' :
-                   message.status === 'queued' ? '⋯' : '↻'} {message.status.toUpperCase()}
-                </span>
-                <span>{((Date.now() - message.timestamp) / 1000).toFixed(1)}s ago</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      </Panel>
     </div>
   );
-} 
+}

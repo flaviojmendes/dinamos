@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Panel, TacticalButton } from '../tactical';
 
 interface Process {
   id: string;
@@ -105,136 +106,116 @@ export default function LamportTimestampsSimulator() {
     );
   }, []);
 
+  const getEventBorder = (type: Event['type']) => {
+    switch (type) {
+      case 'local': return 'border-signal-green bg-signal-green/10';
+      case 'send': return 'border-signal-cyan bg-signal-cyan/10';
+      default: return 'border-signal-amber bg-signal-amber/10';
+    }
+  };
+
+  const getEventDot = (type: Event['type']) => {
+    switch (type) {
+      case 'local': return 'bg-signal-green';
+      case 'send': return 'bg-signal-cyan';
+      default: return 'bg-signal-amber';
+    }
+  };
+
   return (
-    <div className="min-h-full bg-gradient-to-b from-zinc-900 to-black">
-      <div className="py-8 md:py-12 px-4 md:px-6 max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8 md:mb-12">
-          <h1 className="text-2xl md:text-3xl font-bold text-white mb-3 md:mb-4">
-            {t('design_principles.consistency_strategies.lamport_timestamps_simulator.title')}
-          </h1>
-          <p className="text-base md:text-lg text-slate-500 dark:text-slate-400">
-            {t('design_principles.consistency_strategies.lamport_timestamps_simulator.subtitle')}
-          </p>
+    <div className="space-y-6">
+      <div className="max-w-3xl">
+        <div className="label-mono text-signal-cyan mb-2">
+          [ {t('design_principles.consistency_strategies.lamport_timestamps_simulator.title')} ]
         </div>
+        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
+          {t('design_principles.consistency_strategies.lamport_timestamps_simulator.subtitle')}
+        </p>
+      </div>
 
-        {/* Info Banner */}
-        <div className="bg-blue-500/20 border border-blue-500 rounded-lg p-3 md:p-4 mb-6 md:mb-8">
-          <div className="flex gap-3">
-            <div className="text-brand-600 dark:text-brand-400 mt-1 shrink-0">
-              <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <p className="text-sm md:text-base text-brand-600 dark:text-brand-300">
-              {t('design_principles.consistency_strategies.lamport_timestamps_simulator.info')}
-            </p>
-          </div>
-        </div>
+      <div className="tactical-panel border-l-2 border-l-signal-cyan p-5">
+        <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim">
+          {t('design_principles.consistency_strategies.lamport_timestamps_simulator.info')}
+        </p>
+      </div>
 
-        {/* Controls */}
-        <div className="flex gap-4 mb-6 md:mb-8">
-          <button
-            onClick={resetSimulation}
-            className="px-3 md:px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm md:text-base rounded transition-colors"
-          >
-            {t('design_principles.consistency_strategies.lamport_timestamps_simulator.controls.reset')}
-          </button>
-        </div>
+      <div className="flex gap-3">
+        <TacticalButton size="sm" variant="danger" onClick={resetSimulation}>
+          {t('design_principles.consistency_strategies.lamport_timestamps_simulator.controls.reset')}
+        </TacticalButton>
+      </div>
 
-        {/* Timeline View */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-4">
-          {processes.map((process) => (
-            <div key={process.id} className="flex flex-col">
-              {/* Process Header */}
-              <div className="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-3 md:p-4 mb-4">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-base md:text-lg font-semibold text-white">{process.name}</h3>
-                  <span className="text-brand-600 dark:text-brand-400 font-mono text-sm md:text-base">{t('design_principles.consistency_strategies.lamport_timestamps_simulator.timeline.clock_prefix')} {process.clock}</span>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    onClick={() => addLocalEvent(process.id)}
-                    className="px-2 md:px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded text-xs md:text-sm transition-colors"
-                  >
-                    {t('design_principles.consistency_strategies.lamport_timestamps_simulator.buttons.local_event')}
-                  </button>
-                  {processes
-                    .filter(p => p.id !== process.id)
-                    .map(targetProcess => (
-                      <button
-                        key={targetProcess.id}
-                        onClick={() => sendMessage(process.id, targetProcess.id)}
-                        className="px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded text-xs md:text-sm transition-colors"
-                      >
-                        {t('design_principles.consistency_strategies.lamport_timestamps_simulator.buttons.send_to', { target: targetProcess.name })}
-                      </button>
-                    ))}
-                </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {processes.map((process) => (
+          <div key={process.id} className="flex flex-col">
+            <Panel title={process.name} accent="cyan" action={
+              <span className="font-mono text-sm text-signal-cyan tabular-nums">
+                {t('design_principles.consistency_strategies.lamport_timestamps_simulator.timeline.clock_prefix')} {process.clock}
+              </span>
+            }>
+              <div className="flex flex-wrap gap-2 mb-4">
+                <TacticalButton size="sm" variant="primary" onClick={() => addLocalEvent(process.id)}>
+                  {t('design_principles.consistency_strategies.lamport_timestamps_simulator.buttons.local_event')}
+                </TacticalButton>
+                {processes
+                  .filter(p => p.id !== process.id)
+                  .map(targetProcess => (
+                    <TacticalButton
+                      key={targetProcess.id}
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => sendMessage(process.id, targetProcess.id)}
+                    >
+                      {t('design_principles.consistency_strategies.lamport_timestamps_simulator.buttons.send_to', { target: targetProcess.name })}
+                    </TacticalButton>
+                  ))}
               </div>
 
-              {/* Timeline */}
               <div className="flex-1 relative">
-                <div className="absolute inset-0 w-px bg-slate-100 dark:bg-slate-800 left-1/2 transform -translate-x-1/2" />
+                <div className="absolute inset-0 w-px bg-slate-200 dark:bg-tactical-border left-1/2 transform -translate-x-1/2" />
                 <div className="space-y-3 md:space-y-4">
                   {process.events.map((event) => (
                     <div key={event.id} className="relative pl-6 md:pl-8 pr-4 md:pr-8">
-                      {/* Timeline Node */}
                       <div className="absolute left-1/2 transform -translate-x-1/2">
-                        <div
-                          className={`w-3 h-3 md:w-4 md:h-4 rounded-full ${
-                            event.type === 'local' ? 'bg-green-500' : event.type === 'send' ? 'bg-blue-500' : 'bg-purple-500'
-                          }`}
-                        />
+                        <div className={`w-3 h-3 md:w-4 md:h-4 ${getEventDot(event.type)}`} />
                       </div>
-                      {/* Event Card */}
-                      <div
-                        className={`p-2 md:p-3 rounded-lg ml-4 ${
-                          event.type === 'local'
-                            ? 'bg-green-500/20 border border-green-500'
-                            : event.type === 'send'
-                            ? 'bg-blue-500/20 border border-blue-500'
-                            : 'bg-purple-500/20 border border-purple-500'
-                        }`}
-                      >
-                        <div className="flex justify-between items-center text-xs md:text-sm">
-                          <span className="text-slate-600 dark:text-slate-300">
+                      <div className={`p-2 md:p-3 border ml-4 ${getEventBorder(event.type)}`}>
+                        <div className="flex justify-between items-center font-mono text-xs md:text-sm">
+                          <span className="text-slate-600 dark:text-tactical-dim">
                             {event.type === 'local'
                               ? t('design_principles.consistency_strategies.lamport_timestamps_simulator.event_labels.local')
                               : event.type === 'send'
                               ? t('design_principles.consistency_strategies.lamport_timestamps_simulator.event_labels.send_prefix', { target: event.targetProcess })
                               : t('design_principles.consistency_strategies.lamport_timestamps_simulator.event_labels.receive_prefix', { source: event.sourceProcess })}
                           </span>
-                          <span className="font-mono text-slate-500 dark:text-slate-400">{t('design_principles.consistency_strategies.lamport_timestamps_simulator.timeline.clock_prefix')}{event.timestamp}</span>
+                          <span className="font-mono tabular-nums text-slate-500 dark:text-tactical-label">{t('design_principles.consistency_strategies.lamport_timestamps_simulator.timeline.clock_prefix')}{event.timestamp}</span>
                         </div>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            </Panel>
+          </div>
+        ))}
+      </div>
 
-        {/* Legend */}
-        <div className="mt-8 bg-slate-100 dark:bg-slate-800/50 rounded-lg p-4">
-          <h4 className="text-sm md:text-base font-medium text-white mb-3">{t('design_principles.consistency_strategies.lamport_timestamps_simulator.legend.title')}</h4>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-green-500"></div>
-              <span className="text-xs md:text-sm text-slate-500 dark:text-slate-400">{t('design_principles.consistency_strategies.lamport_timestamps_simulator.legend.local')}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-              <span className="text-xs md:text-sm text-slate-500 dark:text-slate-400">{t('design_principles.consistency_strategies.lamport_timestamps_simulator.legend.sent')}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-              <span className="text-xs md:text-sm text-slate-500 dark:text-slate-400">{t('design_principles.consistency_strategies.lamport_timestamps_simulator.legend.received')}</span>
-            </div>
+      <Panel title={t('design_principles.consistency_strategies.lamport_timestamps_simulator.legend.title')} accent="amber">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-signal-green"></div>
+            <span className="font-mono text-xs md:text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.lamport_timestamps_simulator.legend.local')}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-signal-cyan"></div>
+            <span className="font-mono text-xs md:text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.lamport_timestamps_simulator.legend.sent')}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-signal-amber"></div>
+            <span className="font-mono text-xs md:text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.lamport_timestamps_simulator.legend.received')}</span>
           </div>
         </div>
-      </div>
+      </Panel>
     </div>
   );
-} 
+}

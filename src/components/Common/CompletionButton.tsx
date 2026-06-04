@@ -34,17 +34,17 @@ export default function CompletionButton({ path, childPaths }: Props) {
   return (
     <button
       onClick={handleClick}
-      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+      className={`flex items-center gap-2 px-4 py-2 font-mono text-sm uppercase tracking-wider transition-colors border ${
         completed
-          ? 'bg-green-500 hover:bg-green-600'
-          : 'bg-blue-500 hover:bg-blue-600'
+          ? 'bg-signal-green/10 border-signal-green/50 text-green-700 dark:text-signal-green hover:bg-signal-green/20'
+          : 'bg-slate-900 dark:bg-white text-white dark:text-black border-transparent hover:bg-slate-700 dark:hover:bg-slate-200'
       }`}
     >
-      <span className="text-white font-medium">
+      <span className="font-medium">
         {completed ? t('content.completed_label') : t('content.mark_complete')}
       </span>
       {completed && (
-        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
         </svg>
       )}

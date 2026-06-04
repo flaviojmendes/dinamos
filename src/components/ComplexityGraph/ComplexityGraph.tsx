@@ -9,6 +9,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
+import { Panel, TacticalButton } from '../tactical';
 
 
 interface Algorithm {
@@ -434,81 +435,60 @@ export default function ComplexityGraph() {
     setSelectedAlgorithms(new Set(categories[index].algorithms.map((_, i) => i)));
   };
 
+  const rangeClass = 'w-full h-2 bg-slate-200 dark:bg-tactical-raised appearance-none cursor-pointer accent-signal-green';
+
   return (
-    <div className="px-0 lg:px-6 font-content">
-      <div className="flex items-center justify-center gap-4 mb-8">
-        
-        <h1 className="text-3xl font-semibold text-white font-title text-center">
-          Visualização de <span className="text-primary">Complexidades Algorítmicas</span>
-        </h1>
+    <div className="space-y-6">
+      <div className="max-w-3xl">
+        <div className="label-mono text-signal-cyan mb-2">
+          [ VISUALIZAÇÃO DE COMPLEXIDADES ALGORÍTMICAS ]
+        </div>
+        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
+          Compare curvas de complexidade temporal entre categorias de algoritmos.
+        </p>
       </div>
 
-      <div className="max-w-6xl mx-auto bg-box-primary rounded-sm shadow-lg p-4 lg:p-6">
-        <div className="space-y-6 mb-6">
-          {/* Category Selection */}
-          <div className="flex flex-col justify-between">
-            <h2 className="text-xl text-white font-title">Categorias</h2>
-            <div className="to-transparent h-1 w-36 bg-gradient-to-r from-primary mb-3"></div>
-            <div className="flex flex-wrap gap-3">
-              {categories.map((category, index) => (
-                <button
-                  key={index}
-                  onClick={() => changeCategory(index)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
-                    ${selectedCategory === index
-                      ? 'bg-primary-hover text-text-primary'
-                      : 'bg-box-primary text-text-primary border border-primary-hover hover:bg-primary-hover/10'
-                    }`}
-                >
-                  {category.name}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Algorithm Selection */}
-          <div className="flex flex-col justify-between">
-            <h2 className="text-xl text-white font-title">Algoritmos</h2>
-            <div className="to-transparent h-1 w-36 bg-gradient-to-r from-primary mb-3"></div>
-            <div className="flex flex-wrap gap-3">
-              {algorithms.map((algorithm, index) => (
-                <button
-                  key={index}
-                  onClick={() => toggleAlgorithm(index)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
-                    ${selectedAlgorithms.has(index)
-                      ? 'bg-primary-hover text-text-primary'
-                      : 'bg-box-primary text-text-primary border border-primary-hover hover:bg-primary-hover/10'
-                    }`}
-                  style={{ borderColor: algorithm.color }}
-                >
-                  {algorithm.name}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Input Size Control */}
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between">
-              <label className="text-text-primary font-content">
-                Tamanho da entrada (n):
-              </label>
-              <span className="text-text-primary font-content font-semibold">
-                {maxN}
-              </span>
-            </div>
-            <input
-              type="range"
-              min="1"
-              max="100"
-              value={maxN}
-              onChange={(e) => setMaxN(Number(e.target.value))}
-              className="w-full h-2 bg-box-primary rounded-lg appearance-none cursor-pointer accent-primary"
-            />
-          </div>
+      <Panel title="Categorias" accent="cyan">
+        <div className="flex flex-wrap gap-2">
+          {categories.map((category, index) => (
+            <TacticalButton
+              key={index}
+              size="sm"
+              variant={selectedCategory === index ? 'primary' : 'secondary'}
+              onClick={() => changeCategory(index)}
+            >
+              {category.name}
+            </TacticalButton>
+          ))}
         </div>
+      </Panel>
 
+      <Panel title="Algoritmos" accent="amber">
+        <div className="flex flex-wrap gap-2">
+          {algorithms.map((algorithm, index) => (
+            <TacticalButton
+              key={index}
+              size="sm"
+              variant={selectedAlgorithms.has(index) ? 'primary' : 'ghost'}
+              onClick={() => toggleAlgorithm(index)}
+              className={selectedAlgorithms.has(index) ? '' : 'border-slate-300 dark:border-tactical-line'}
+              style={selectedAlgorithms.has(index) ? undefined : { borderColor: algorithm.color }}
+            >
+              {algorithm.name}
+            </TacticalButton>
+          ))}
+        </div>
+      </Panel>
+
+      <Panel title="Tamanho da entrada (n)" accent="green">
+        <div className="flex items-center justify-between mb-2">
+          <span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">n =</span>
+          <span className="font-mono text-sm font-bold text-signal-cyan tabular-nums">{maxN}</span>
+        </div>
+        <input type="range" min="1" max="100" value={maxN} onChange={(e) => setMaxN(Number(e.target.value))} className={rangeClass} />
+      </Panel>
+
+      <Panel title="Gráfico" accent="cyan" padded={false} bodyClassName="p-4">
         <div className="h-[600px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
@@ -571,24 +551,22 @@ export default function ComplexityGraph() {
             </LineChart>
           </ResponsiveContainer>
         </div>
+      </Panel>
 
-        <div className="mt-8 space-y-6">
-          <h2 className="text-2xl font-bold text-title-primary">
-            Explicação das Complexidades
-          </h2>
-          
+      <Panel title="Explicação das Complexidades" accent="red">
+        <div className="space-y-4">
           {algorithms.map((algorithm, index) => (
             selectedAlgorithms.has(index) && (
-              <div key={index} className="p-4 bg-box-primary border border-primary-hover rounded-lg">
-                <h3 className="text-lg font-semibold text-text-primary mb-2" style={{ color: algorithm.color }}>
+              <div key={index} className="tactical-panel border-l-2 border-l-signal-cyan p-5">
+                <h3 className="label-mono mb-2" style={{ color: algorithm.color }}>
                   {algorithm.name}
                 </h3>
-                <div className="space-y-4 text-text-primary">
+                <div className="space-y-4 font-mono text-sm text-slate-600 dark:text-tactical-dim">
                   <p>{explanations[categories[selectedCategory].name][index].explanation}</p>
                   <div>
-                    <p className="font-semibold mb-2">Exemplo:</p>
-                    <pre className="bg-black bg-opacity-50 p-4 rounded-lg overflow-x-auto">
-                      <code className="text-sm font-monospace text-text-primary whitespace-pre">
+                    <p className="label-mono text-signal-cyan mb-2">Exemplo:</p>
+                    <pre className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 overflow-x-auto">
+                      <code className="text-sm whitespace-pre text-slate-900 dark:text-tactical-text">
                         {explanations[categories[selectedCategory].name][index].example}
                       </code>
                     </pre>
@@ -598,7 +576,7 @@ export default function ComplexityGraph() {
             )
           ))}
         </div>
-      </div>
+      </Panel>
     </div>
   );
 } 

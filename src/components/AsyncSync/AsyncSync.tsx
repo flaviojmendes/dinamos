@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Panel, StatusBadge, TacticalButton } from '../tactical';
 
 interface Request {
   id: number;
@@ -131,90 +132,73 @@ export default function AsyncSync() {
 
   return (
     <div className="space-y-6">
-      {/* Controls */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
+      <Panel title="CONTROLS" accent="cyan">
         <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <button
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <TacticalButton
+                size="sm"
+                variant="primary"
                 onClick={placeOrder}
                 disabled={communicationType === 'sync' && isButtonDisabled}
-                className={`px-4 py-2 rounded-lg font-medium ${
-                  communicationType === 'sync' && isButtonDisabled
-                    ? 'bg-slate-100 dark:bg-slate-800 text-zinc-500 cursor-not-allowed'
-                    : 'bg-green-500/10 text-green-500 hover:bg-green-500/20'
-                }`}
               >
                 Enviar Mensagem {nextId}
-              </button>
-              <button
-                onClick={resetSimulation}
-                className="px-4 py-2 rounded-lg font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-zinc-700"
-              >
+              </TacticalButton>
+              <TacticalButton size="sm" variant="ghost" onClick={resetSimulation}>
                 Reiniciar
-              </button>
+              </TacticalButton>
             </div>
-            <div className="flex items-center gap-4">
-              <button
+            <div className="flex items-center gap-2">
+              <TacticalButton
+                size="sm"
+                variant={communicationType === 'sync' ? 'primary' : 'secondary'}
                 onClick={() => {
                   setCommunicationType('sync');
                   resetSimulation();
                 }}
-                className={`px-4 py-2 rounded-lg font-medium ${
-                  communicationType === 'sync'
-                    ? 'bg-blue-500/10 text-blue-500 border border-blue-500/50'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-zinc-700'
-                }`}
               >
                 Síncrono
-              </button>
-              <button
+              </TacticalButton>
+              <TacticalButton
+                size="sm"
+                variant={communicationType === 'async' ? 'primary' : 'secondary'}
                 onClick={() => {
                   setCommunicationType('async');
                   resetSimulation();
                 }}
-                className={`px-4 py-2 rounded-lg font-medium ${
-                  communicationType === 'async'
-                    ? 'bg-purple-500/10 text-purple-500 border border-purple-500/50'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-zinc-700'
-                }`}
               >
                 Assíncrono
-              </button>
+              </TacticalButton>
             </div>
           </div>
+          {communicationType === 'sync' && isButtonDisabled && (
+            <StatusBadge variant="in-progress" label="BLOQUEANTE" />
+          )}
         </div>
-      </div>
+      </Panel>
 
-      {/* Restaurant Visualization */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
+      <Panel title="VISUALIZAÇÃO" accent="green">
         <div className="relative h-[300px]">
-          {/* Restaurant Sections */}
           <div className="absolute inset-0 flex flex-col">
-            {/* Section Headers */}
-            <div className="flex h-8 text-sm text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
+            <div className="flex h-8 label-mono text-slate-500 dark:text-tactical-label border-b border-slate-200 dark:border-tactical-border">
               <div className="w-1/3 text-center">Cliente</div>
-              <div className="w-1/3 text-center border-l border-slate-200 dark:border-slate-800">Servidor</div>
-              <div className="w-1/3 text-center border-l border-slate-200 dark:border-slate-800">DB</div>
+              <div className="w-1/3 text-center border-l border-slate-200 dark:border-tactical-border">Servidor</div>
+              <div className="w-1/3 text-center border-l border-slate-200 dark:border-tactical-border">DB</div>
             </div>
 
-            {/* Restaurant Content */}
             <div className="flex-1 relative">
-              {/* Background Sections */}
               <div className="absolute inset-0 flex">
-                <div className="w-1/3 border-r border-slate-200 dark:border-slate-800" />
-                <div className="w-1/3 border-r border-slate-200 dark:border-slate-800" />
+                <div className="w-1/3 border-r border-slate-200 dark:border-tactical-border" />
+                <div className="w-1/3 border-r border-slate-200 dark:border-tactical-border" />
                 <div className="w-1/3" />
               </div>
 
-              {/* Order Animations */}
               <AnimatePresence>
                 {requests.map((request) => (
                   <div key={request.id} className="absolute left-0 right-0" style={{ top: request.lane * 40 + 16 }}>
-                    {/* Order Flow Line */}
                     <motion.div
                       className={`absolute h-0.5 ${
-                        request.type === 'sync' ? 'bg-blue-500/20' : 'bg-purple-500/20'
+                        request.type === 'sync' ? 'bg-signal-cyan/30' : 'bg-signal-amber/30'
                       }`}
                       initial={{ width: '0%', left: '33%' }}
                       animate={{
@@ -225,10 +209,9 @@ export default function AsyncSync() {
                       transition={{ duration: 0.3 }}
                     />
 
-                    {/* Order Dot */}
                     <motion.div
-                      className={`absolute h-6 w-6 rounded-full flex items-center justify-center text-sm ${
-                        request.type === 'sync' ? 'bg-blue-500' : 'bg-purple-500'
+                      className={`absolute h-6 w-6 flex items-center justify-center font-mono text-xs text-white ${
+                        request.type === 'sync' ? 'bg-signal-cyan' : 'bg-signal-amber'
                       }`}
                       initial={{ left: '31%', opacity: 0 }}
                       animate={{
@@ -241,15 +224,14 @@ export default function AsyncSync() {
                       {request.id}
                     </motion.div>
 
-                    {/* Customer Waiting Indicator (Sync Only) */}
                     {request.type === 'sync' && request.status !== 'served' && (
                       <motion.div
-                        className="absolute h-6 bg-red-500/20 left-[2%] w-[29%]"
+                        className="absolute h-6 bg-signal-red/10 border border-signal-red/30 left-[2%] w-[29%]"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                       >
-                        <div className="absolute inset-0 flex items-center justify-center text-red-500 text-xs">
+                        <div className="absolute inset-0 flex items-center justify-center font-mono text-signal-red text-xs">
                           Aguardando...
                         </div>
                       </motion.div>
@@ -258,13 +240,12 @@ export default function AsyncSync() {
                 ))}
               </AnimatePresence>
 
-              {/* Customer Actions */}
               <AnimatePresence>
                 {userActions.map((action) => (
                   <motion.div
                     key={`${action.id}-${action.type}`}
-                    className={`absolute h-6 w-6 rounded-full flex items-center justify-center ${
-                      action.type === 'order' ? 'bg-green-500' : 'bg-yellow-500'
+                    className={`absolute h-6 w-6 flex items-center justify-center ${
+                      action.type === 'order' ? 'bg-signal-green' : 'bg-signal-amber'
                     }`}
                     initial={{ 
                       left: action.type === 'order' ? '2%' : '15%',
@@ -280,24 +261,22 @@ export default function AsyncSync() {
                 ))}
               </AnimatePresence>
 
-              {/* Service Line */}
-              <div className="absolute left-[15%] top-0 bottom-0 w-0.5 bg-zinc-700">
+              <div className="absolute left-[15%] top-0 bottom-0 w-px bg-slate-300 dark:bg-tactical-line">
                 {communicationType === 'async' && (
-                  <div className="absolute inset-0 border-l-2 border-dashed border-green-500/30 animate-pulse" />
+                  <div className="absolute inset-0 border-l border-dashed border-signal-green/30 animate-pulse" />
                 )}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Legend */}
-        <div className="flex justify-center gap-6 mt-4 text-xs">
+        <div className="flex flex-wrap justify-center gap-6 mt-4 font-mono text-xs text-slate-500 dark:text-tactical-dim">
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+            <div className="w-2 h-2 bg-signal-cyan"></div>
             <span>Síncrono (Bloqueante)</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-purple-500"></div>
+            <div className="w-2 h-2 bg-signal-amber"></div>
             <span>Assíncrono (Não Bloqueante)</span>
           </div>
           <div className="flex items-center gap-2">
@@ -307,13 +286,15 @@ export default function AsyncSync() {
             <span>✅ Processado</span>
           </div>
         </div>
+      </Panel>
 
-        {/* Explanation */}
-        <div className="mt-4 p-4 bg-slate-100 dark:bg-slate-800/50 rounded-lg text-xs text-slate-600 dark:text-slate-300">
+      <div className="tactical-panel border-l-2 border-l-signal-cyan p-5">
+        <h3 className="label-mono text-signal-cyan mb-3">INFO</h3>
+        <div className="space-y-1.5 font-mono text-sm text-slate-600 dark:text-tactical-dim">
           <p><strong>Síncrono:</strong> A mensagem é enviada e o cliente espera a resposta.</p>
           <p><strong>Assíncrono:</strong> A mensagem é enviada e o cliente não espera a resposta.</p>
         </div>
       </div>
     </div>
   );
-} 
+}

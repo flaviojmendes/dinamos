@@ -132,23 +132,30 @@ export default function Subscription() {
   const features: string[] = t('subscription.features', { returnObjects: true }) as string[];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-black text-white p-8">
+    <div className="min-h-screen bg-canvas-paper dark:bg-tactical-bg text-slate-900 dark:text-tactical-text p-8">
       <div className="max-w-6xl mx-auto">
         {error && (
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-lg mb-8 text-center"
+            className="bg-signal-red/10 border border-signal-red/50 text-signal-red p-4 mb-8 text-center font-mono"
           >
             {error}
           </motion.div>
         )}
 
         <div className="text-center mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-3 font-mono text-[11px] uppercase tracking-widest text-signal-amber"
+          >
+            [CLEARANCE UPGRADE]
+          </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent"
+            className="text-4xl md:text-5xl font-mono font-bold uppercase tracking-wider mb-6 text-slate-900 dark:text-tactical-text"
           >
             {t('subscription.title')}
           </motion.h1>
@@ -156,7 +163,7 @@ export default function Subscription() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-xl text-slate-500 dark:text-slate-400"
+            className="text-xl text-slate-500 dark:text-tactical-dim"
           >
             {t('subscription.subtitle')}
           </motion.p>
@@ -170,13 +177,13 @@ export default function Subscription() {
             transition={{ delay: 0.15 }}
             className="text-center mb-8"
           >
-            <label className="block text-sm text-slate-500 dark:text-slate-400 mb-2">
+            <label className="block label-mono mb-2">
               {t('subscription.select_currency')}
             </label>
             <select
               value={selectedCurrency}
               onChange={(e) => setSelectedCurrency(e.target.value)}
-              className="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border px-4 py-2 font-mono text-slate-900 dark:text-tactical-text focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-signal-green"
             >
               {availableCurrencies.map((curr) => (
                 <option key={curr.key} value={curr.key}>
@@ -193,41 +200,41 @@ export default function Subscription() {
             transition={{ delay: 0.2 }}
             className="flex justify-center mb-8"
           >
-            <div className="bg-slate-800/50 p-1 rounded-xl inline-flex flex-wrap justify-center gap-1">
+            <div className="border border-slate-200 dark:border-tactical-border bg-white dark:bg-tactical-surface p-1 inline-flex flex-wrap justify-center gap-1">
               <button
                 onClick={() => setSelectedPlan('monthly')}
-                className={`px-6 py-2 rounded-lg text-sm font-medium transition-all ${
+                className={`px-6 py-2 font-mono text-sm uppercase tracking-wider transition-all ${
                   selectedPlan === 'monthly'
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-slate-900 dark:bg-white text-white dark:text-black'
+                    : 'text-slate-500 dark:text-tactical-dim hover:text-slate-900 dark:hover:text-tactical-text'
                 }`}
               >
                 {t('subscription.monthly')}
               </button>
               <button
                 onClick={() => setSelectedPlan('yearly')}
-                className={`px-6 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
+                className={`px-6 py-2 font-mono text-sm uppercase tracking-wider transition-all flex items-center gap-2 ${
                   selectedPlan === 'yearly'
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-slate-900 dark:bg-white text-white dark:text-black'
+                    : 'text-slate-500 dark:text-tactical-dim hover:text-slate-900 dark:hover:text-tactical-text'
                 }`}
               >
                 {t('subscription.yearly')}
-                <span className="bg-green-500/20 text-green-400 text-xs px-2 py-0.5 rounded-full font-semibold">
+                <span className="text-signal-green text-xs font-semibold">
                   -{yearlySavings}%
                 </span>
               </button>
               {hasLifetimePrice && (
                 <button
                   onClick={() => setSelectedPlan('lifetime')}
-                  className={`px-6 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
+                  className={`px-6 py-2 font-mono text-sm uppercase tracking-wider transition-all flex items-center gap-2 ${
                     selectedPlan === 'lifetime'
-                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-signal-amber text-black'
+                      : 'text-slate-500 dark:text-tactical-dim hover:text-slate-900 dark:hover:text-tactical-text'
                   }`}
                 >
                   {t('subscription.one_time')}
-                  <span className="bg-amber-500/20 text-amber-300 text-xs px-2 py-0.5 rounded-full font-semibold whitespace-nowrap">
+                  <span className="text-signal-amber text-xs font-semibold whitespace-nowrap">
                     {t('subscription.lifetime_access_label')}
                   </span>
                 </button>
@@ -243,33 +250,33 @@ export default function Subscription() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.25 }}
               onClick={() => setSelectedPlan('monthly')}
-              className={`relative bg-gradient-to-b from-slate-800/50 to-slate-900/50 rounded-xl p-6 border-2 cursor-pointer transition-all ${
+              className={`relative tactical-panel p-6 cursor-pointer transition-all ${
                 selectedPlan === 'monthly'
-                  ? 'border-blue-500/50 shadow-lg shadow-blue-500/10'
-                  : 'border-slate-700/50 hover:border-slate-600/50'
+                  ? 'border-brand-500 dark:border-signal-green'
+                  : 'hover:border-slate-400 dark:hover:border-tactical-line'
               }`}
             >
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-white">
+                <h3 className="font-mono uppercase tracking-wider text-sm font-semibold text-slate-900 dark:text-tactical-text">
                   {t('subscription.monthly_plan')}
                 </h3>
-                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                  selectedPlan === 'monthly' ? 'border-blue-500 bg-blue-500' : 'border-slate-500'
+                <div className={`w-5 h-5 border-2 flex items-center justify-center ${
+                  selectedPlan === 'monthly' ? 'border-brand-500 dark:border-signal-green bg-brand-500 dark:bg-signal-green' : 'border-slate-400 dark:border-tactical-line'
                 }`}>
                   {selectedPlan === 'monthly' && (
-                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-3 h-3 text-white dark:text-black" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
                   )}
                 </div>
               </div>
               <div className="mb-2">
-                <span className="text-3xl font-bold text-white">
+                <span className="text-3xl font-mono font-bold text-slate-900 dark:text-tactical-text">
                   {formatPrice(pricingData.monthlyPrice, pricingData)}
                 </span>
-                <span className="text-slate-400 ml-2">/ {t('common.month')}</span>
+                <span className="text-slate-400 dark:text-tactical-label ml-2 font-mono">/ {t('common.month')}</span>
               </div>
-              <p className="text-sm text-slate-400">
+              <p className="label-mono">
                 {t('subscription.billed_monthly')}
               </p>
             </motion.div>
@@ -280,44 +287,44 @@ export default function Subscription() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
               onClick={() => setSelectedPlan('yearly')}
-              className={`relative bg-gradient-to-b from-blue-600/10 to-purple-600/10 rounded-xl p-6 border-2 cursor-pointer transition-all ${
+              className={`relative tactical-panel p-6 cursor-pointer transition-all ${
                 selectedPlan === 'yearly'
-                  ? 'border-blue-500/50 shadow-lg shadow-blue-500/10'
-                  : 'border-slate-700/50 hover:border-slate-600/50'
+                  ? 'border-brand-500 dark:border-signal-green'
+                  : 'hover:border-slate-400 dark:hover:border-tactical-line'
               }`}
             >
               {/* Best Value Badge */}
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                <span className="bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg whitespace-nowrap">
+                <span className="bg-signal-green text-black text-[11px] font-mono uppercase tracking-wider font-bold px-3 py-1 whitespace-nowrap">
                   {t('subscription.best_value')}
                 </span>
               </div>
 
               <div className="flex items-center justify-between mb-4 mt-2">
-                <h3 className="text-lg font-semibold text-white">
+                <h3 className="font-mono uppercase tracking-wider text-sm font-semibold text-slate-900 dark:text-tactical-text">
                   {t('subscription.yearly_plan')}
                 </h3>
-                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                  selectedPlan === 'yearly' ? 'border-blue-500 bg-blue-500' : 'border-slate-500'
+                <div className={`w-5 h-5 border-2 flex items-center justify-center ${
+                  selectedPlan === 'yearly' ? 'border-brand-500 dark:border-signal-green bg-brand-500 dark:bg-signal-green' : 'border-slate-400 dark:border-tactical-line'
                 }`}>
                   {selectedPlan === 'yearly' && (
-                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-3 h-3 text-white dark:text-black" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
                   )}
                 </div>
               </div>
               <div className="mb-2">
-                <span className="text-3xl font-bold text-white">
+                <span className="text-3xl font-mono font-bold text-slate-900 dark:text-tactical-text">
                   {formatPrice(pricingData.yearlyPrice, pricingData)}
                 </span>
-                <span className="text-slate-400 ml-2">/ {t('common.year')}</span>
+                <span className="text-slate-400 dark:text-tactical-label ml-2 font-mono">/ {t('common.year')}</span>
               </div>
               <div className="flex items-center gap-2">
-                <p className="text-sm text-slate-400 line-through">
+                <p className="text-sm text-slate-400 dark:text-tactical-label line-through font-mono">
                   {formatPrice(pricingData.monthlyPrice * 12, pricingData)}
                 </p>
-                <span className="bg-green-500/20 text-green-400 text-xs px-2 py-0.5 rounded-full font-semibold">
+                <span className="text-signal-green text-xs font-mono font-semibold">
                   {t('subscription.save')} {yearlySavings}%
                 </span>
               </div>
@@ -328,45 +335,45 @@ export default function Subscription() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.35 }}
                 onClick={() => setSelectedPlan('lifetime')}
-                className={`relative bg-gradient-to-b from-amber-500/10 to-orange-500/10 rounded-xl p-6 border-2 cursor-pointer transition-all ${
+                className={`relative tactical-panel p-6 cursor-pointer transition-all ${
                   selectedPlan === 'lifetime'
-                    ? 'border-amber-400/50 shadow-lg shadow-amber-400/20'
-                    : 'border-slate-700/50 hover:border-slate-600/50'
+                    ? 'border-signal-amber'
+                    : 'hover:border-slate-400 dark:hover:border-tactical-line'
                 }`}
               >
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg whitespace-nowrap">
+                  <span className="bg-signal-amber text-black text-[11px] font-mono uppercase tracking-wider font-bold px-3 py-1 whitespace-nowrap">
                     {t('subscription.one_time')}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between mb-4 mt-2">
-                  <h3 className="text-lg font-semibold text-white">
+                  <h3 className="font-mono uppercase tracking-wider text-sm font-semibold text-slate-900 dark:text-tactical-text">
                     {t('subscription.lifetime_plan')}
                   </h3>
-                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                    selectedPlan === 'lifetime' ? 'border-amber-400 bg-amber-400' : 'border-slate-500'
+                  <div className={`w-5 h-5 border-2 flex items-center justify-center ${
+                    selectedPlan === 'lifetime' ? 'border-signal-amber bg-signal-amber' : 'border-slate-400 dark:border-tactical-line'
                   }`}>
                     {selectedPlan === 'lifetime' && (
-                      <svg className="w-3 h-3 text-slate-900" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="w-3 h-3 text-black" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     )}
                   </div>
                 </div>
                 <div className="mb-2">
-                  <span className="text-3xl font-bold text-white">
+                  <span className="text-3xl font-mono font-bold text-slate-900 dark:text-tactical-text">
                     {pricingData.lifetimePrice ? formatPrice(pricingData.lifetimePrice, pricingData) : '--'}
                   </span>
                 </div>
-                <p className="text-sm text-slate-300">
+                <p className="text-sm text-slate-600 dark:text-tactical-dim">
                   {t('subscription.lifetime_description')}
                 </p>
                 <div className="mt-4 flex flex-col items-center gap-2">
-                  <span className="bg-emerald-500/20 text-emerald-300 text-xs px-2 py-0.5 rounded-full font-semibold whitespace-nowrap">
-                    {t('subscription.lifetime_access_label')}
+                  <span className="text-signal-amber text-xs font-mono uppercase tracking-wider font-semibold whitespace-nowrap">
+                    [{t('subscription.lifetime_access_label')}]
                   </span>
-                  <span className="text-emerald-200 text-xs whitespace-nowrap">
+                  <span className="text-slate-500 dark:text-tactical-dim text-xs font-mono whitespace-nowrap">
                     {t('subscription.pay_once')}
                   </span>
                 </div>
@@ -379,12 +386,12 @@ export default function Subscription() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35 }}
-            className="mt-8 bg-gradient-to-b from-slate-800/30 to-slate-900/30 rounded-xl p-8 border border-slate-700/50"
+            className="mt-8 tactical-panel p-8"
           >
             <ul className="space-y-4 mb-8">
               {features.map((feature) => (
-                <li key={feature} className="flex items-center gap-3 text-slate-600 dark:text-slate-300">
-                  <svg className="w-5 h-5 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <li key={feature} className="flex items-center gap-3 font-mono text-sm text-slate-600 dark:text-tactical-dim">
+                  <svg className="w-5 h-5 text-signal-green flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   {feature}
@@ -395,7 +402,7 @@ export default function Subscription() {
             <button
               onClick={handlePayment}
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-4 rounded-xl font-medium text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full bg-slate-900 dark:bg-white hover:bg-slate-700 dark:hover:bg-slate-200 text-white dark:text-black px-6 py-4 font-mono uppercase tracking-wider font-medium text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center">
@@ -419,7 +426,7 @@ export default function Subscription() {
               )}
             </button>
             
-            <p className="text-center text-sm text-slate-500 mt-4">
+            <p className="text-center font-mono text-xs text-slate-500 dark:text-tactical-label mt-4">
               {selectedPlan === 'lifetime' ? t('subscription.lifetime_note') : t('subscription.cancel_anytime')}
             </p>
           </motion.div>
@@ -432,29 +439,29 @@ export default function Subscription() {
           transition={{ delay: 0.4 }}
           className="mt-16 text-center max-w-2xl mx-auto"
         >
-          <h3 className="text-2xl font-bold mb-4">{t('subscription.why_buy_title')}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left mt-8">
-            <div className="bg-white dark:bg-slate-900/50 p-6 rounded-lg">
-              <h4 className="text-lg font-semibold mb-2 text-brand-600 dark:text-brand-400">{t('subscription.why_practical_title')}</h4>
-              <p className="text-slate-500 dark:text-slate-400">
+          <h3 className="text-2xl font-mono font-bold uppercase tracking-wider mb-4">{t('subscription.why_buy_title')}</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left mt-8">
+            <div className="tactical-panel p-6">
+              <h4 className="label-mono mb-2 text-brand-600 dark:text-signal-cyan">{t('subscription.why_practical_title')}</h4>
+              <p className="text-slate-500 dark:text-tactical-dim">
                 {t('subscription.why_practical_desc')}
               </p>
             </div>
-            <div className="bg-white dark:bg-slate-900/50 p-6 rounded-lg">
-              <h4 className="text-lg font-semibold mb-2 text-purple-400">{t('subscription.why_updated_title')}</h4>
-              <p className="text-slate-500 dark:text-slate-400">
+            <div className="tactical-panel p-6">
+              <h4 className="label-mono mb-2 text-purple-500 dark:text-signal-cyan">{t('subscription.why_updated_title')}</h4>
+              <p className="text-slate-500 dark:text-tactical-dim">
                 {t('subscription.why_updated_desc')}
               </p>
             </div>
-            <div className="bg-white dark:bg-slate-900/50 p-6 rounded-lg">
-              <h4 className="text-lg font-semibold mb-2 text-yellow-400">{t('subscription.why_career_title')}</h4>
-              <p className="text-slate-500 dark:text-slate-400">
+            <div className="tactical-panel p-6">
+              <h4 className="label-mono mb-2 text-yellow-500 dark:text-signal-amber">{t('subscription.why_career_title')}</h4>
+              <p className="text-slate-500 dark:text-tactical-dim">
                 {t('subscription.why_career_desc')}
               </p>
             </div>
-            <div className="bg-white dark:bg-slate-900/50 p-6 rounded-lg">
-              <h4 className="text-lg font-semibold mb-2 text-orange-400">{t('subscription.why_community_title')}</h4>
-              <p className="text-slate-500 dark:text-slate-400">
+            <div className="tactical-panel p-6">
+              <h4 className="label-mono mb-2 text-orange-500 dark:text-signal-amber">{t('subscription.why_community_title')}</h4>
+              <p className="text-slate-500 dark:text-tactical-dim">
                 {t('subscription.why_community_desc')}
               </p>
             </div>

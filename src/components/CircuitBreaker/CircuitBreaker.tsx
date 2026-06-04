@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Panel, StatusBadge, TacticalButton } from '../tactical';
 
 interface Config {
   failureThreshold: number;
@@ -16,6 +17,14 @@ interface Request {
   status: 'success' | 'error' | 'timeout';
   duration: number;
 }
+
+const circuitStateVariant = (state: CircuitState) => {
+  switch (state) {
+    case 'CLOSED': return 'active' as const;
+    case 'OPEN': return 'classified' as const;
+    case 'HALF_OPEN': return 'in-progress' as const;
+  }
+};
 
 export default function CircuitBreaker() {
   const { t } = useTranslation();
@@ -113,152 +122,141 @@ export default function CircuitBreaker() {
     return () => clearInterval(countdown);
   }, [circuitState, resetCountdown]);
 
-  const getStateColor = () => {
-    switch (circuitState) {
-      case 'CLOSED': return 'bg-green-500';
-      case 'OPEN': return 'bg-red-500';
-      case 'HALF_OPEN': return 'bg-yellow-500';
-    }
-  };
+  const inputClass =
+    'w-full bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-2 py-1 font-mono text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-signal-green';
 
   return (
-    <div className="p-4">
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-          <h1 className="text-xl font-semibold">{t('simulators.circuit_breaker.title')}</h1>
-          <button
-            onClick={() => setIsConfigOpen(!isConfigOpen)}
-            className="w-full sm:w-auto px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-md hover:bg-zinc-700"
-          >
-            {t('simulators.circuit_breaker.buttons.settings')}
-          </button>
+    <div className="space-y-6">
+      <div className="max-w-3xl">
+        <div className="label-mono text-signal-cyan mb-2">
+          [ {t('simulators.circuit_breaker.title')} ]
         </div>
+      </div>
 
+      <Panel
+        title={t('simulators.circuit_breaker.labels.state')}
+        accent="cyan"
+        action={
+          <TacticalButton size="sm" variant="ghost" onClick={() => setIsConfigOpen(!isConfigOpen)}>
+            {t('simulators.circuit_breaker.buttons.settings')}
+          </TacticalButton>
+        }
+      >
         {isConfigOpen && (
-          <div className="mb-4 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm mb-1">Limite de Falhas</label>
-                <input
-                  type="number"
-                  value={config.failureThreshold}
-                  onChange={e => setConfig(prev => ({ ...prev, failureThreshold: +e.target.value }))}
-                  className="w-full bg-zinc-700 rounded px-2 py-1"
-                />
-              </div>
-              <div>
-                <label className="block text-sm mb-1">Timeout de Reset (ms)</label>
-                <input
-                  type="number"
-                  value={config.resetTimeout}
-                  onChange={e => setConfig(prev => ({ ...prev, resetTimeout: +e.target.value }))}
-                  className="w-full bg-zinc-700 rounded px-2 py-1"
-                />
-              </div>
-              <div>
-                <label className="block text-sm mb-1">Taxa de Erro (%)</label>
-                <input
-                  type="number"
-                  value={config.errorRate}
-                  onChange={e => setConfig(prev => ({ ...prev, errorRate: +e.target.value }))}
-                  className="w-full bg-zinc-700 rounded px-2 py-1"
-                />
-              </div>
+          <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 gap-4 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4">
+            <div>
+              <label className="block label-mono text-slate-500 dark:text-tactical-label mb-1">Limite de Falhas</label>
+              <input
+                type="number"
+                value={config.failureThreshold}
+                onChange={e => setConfig(prev => ({ ...prev, failureThreshold: +e.target.value }))}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className="block label-mono text-slate-500 dark:text-tactical-label mb-1">Timeout de Reset (ms)</label>
+              <input
+                type="number"
+                value={config.resetTimeout}
+                onChange={e => setConfig(prev => ({ ...prev, resetTimeout: +e.target.value }))}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className="block label-mono text-slate-500 dark:text-tactical-label mb-1">Taxa de Erro (%)</label>
+              <input
+                type="number"
+                value={config.errorRate}
+                onChange={e => setConfig(prev => ({ ...prev, errorRate: +e.target.value }))}
+                className={inputClass}
+              />
             </div>
           </div>
         )}
 
-        <div className="flex flex-col sm:flex-row gap-4 mb-6">
-          <div className="flex gap-2 sm:gap-4">
-            <button
-              onClick={() => setIsRunning(!isRunning)}
-              className={`flex-1 sm:flex-none px-4 py-2 rounded-md ${
-                isRunning ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
-              }`}
-            >
-              {isRunning ? t('simulators.circuit_breaker.buttons.stop') : t('simulators.circuit_breaker.buttons.start')}
-            </button>
-            <button
-              onClick={() => setErrorsEnabled(!errorsEnabled)}
-              className={`flex-1 sm:flex-none px-4 py-2 rounded-md ${
-                errorsEnabled ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'
-              }`}
-              disabled={!isRunning}
-            >
-              {errorsEnabled ? t('simulators.circuit_breaker.buttons.stop_errors') : t('simulators.circuit_breaker.buttons.start_errors')}
-            </button>
-            <button
-              onClick={resetSimulation}
-              className="flex-1 sm:flex-none px-4 py-2 bg-zinc-700 rounded-md hover:bg-zinc-600"
-            >
-              {t('simulators.circuit_breaker.buttons.reset')}
-            </button>
-          </div>
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <label className="text-sm whitespace-nowrap">{t('simulators.circuit_breaker.labels.rps')}</label>
+        <div className="flex flex-col sm:flex-row flex-wrap gap-4 mb-6">
+          <TacticalButton
+            size="sm"
+            variant={isRunning ? 'danger' : 'secondary'}
+            onClick={() => setIsRunning(!isRunning)}
+          >
+            {isRunning ? t('simulators.circuit_breaker.buttons.stop') : t('simulators.circuit_breaker.buttons.start')}
+          </TacticalButton>
+          <TacticalButton
+            size="sm"
+            variant={errorsEnabled ? 'danger' : 'secondary'}
+            onClick={() => setErrorsEnabled(!errorsEnabled)}
+            disabled={!isRunning}
+          >
+            {errorsEnabled ? t('simulators.circuit_breaker.buttons.stop_errors') : t('simulators.circuit_breaker.buttons.start_errors')}
+          </TacticalButton>
+          <TacticalButton size="sm" variant="ghost" onClick={resetSimulation}>
+            {t('simulators.circuit_breaker.buttons.reset')}
+          </TacticalButton>
+          <div className="flex items-center gap-2 w-full sm:w-auto sm:ml-auto">
+            <label className="label-mono whitespace-nowrap">{t('simulators.circuit_breaker.labels.rps')}</label>
             <input
               type="number"
               value={requestsPerSecond}
               onChange={e => setRequestsPerSecond(Math.max(1, Math.min(10, +e.target.value)))}
-              className="w-full sm:w-20 bg-zinc-700 rounded px-2 py-1"
+              className={`w-full sm:w-20 ${inputClass}`}
             />
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-          <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
             <div className="flex flex-wrap items-center gap-4 mb-4">
-              <div className={`w-4 h-4 rounded-full ${getStateColor()}`} />
-              <div>
-                <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.circuit_breaker.labels.state')}</div>
-                <div className="font-medium">{circuitState}</div>
-              </div>
+              <StatusBadge variant={circuitStateVariant(circuitState)} label={circuitState} />
               {circuitState === 'OPEN' && resetCountdown > 0 && (
                 <div>
-                  <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.circuit_breaker.labels.reset_in')}</div>
-                  <div className="font-medium">{resetCountdown}s</div>
+                  <div className="label-mono text-slate-500 dark:text-tactical-label">{t('simulators.circuit_breaker.labels.reset_in')}</div>
+                  <div className="font-mono text-sm font-medium text-slate-900 dark:text-tactical-text tabular-nums">{resetCountdown}s</div>
                 </div>
               )}
             </div>
-            <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.circuit_breaker.labels.consecutive_failures')}</div>
-            <div className="font-medium">{consecutiveFailures}</div>
+            <div className="label-mono text-slate-500 dark:text-tactical-label">{t('simulators.circuit_breaker.labels.consecutive_failures')}</div>
+            <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-amber">{consecutiveFailures}</div>
           </div>
-          <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
-            <div className="text-sm text-slate-500 dark:text-slate-400">{t('simulators.circuit_breaker.labels.error_status')}</div>
-            <div className="font-medium">
-              {errorsEnabled ? (
-                <span className="text-red-400">{t('simulators.circuit_breaker.labels.active_with_chance', { percent: config.errorRate })}</span>
-              ) : (
-                <span className="text-green-400">{t('simulators.circuit_breaker.labels.inactive')}</span>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
-          <h2 className="text-lg font-medium mb-3">{t('simulators.circuit_breaker.labels.latest_requests')}</h2>
-          <div className="space-y-2">
-            {requests.map(request => (
-              <div
-                key={request.id}
-                className={`p-2 rounded flex flex-wrap justify-between gap-2 ${
-                  request.status === 'success' ? 'bg-green-500/20' : 'bg-red-500/20'
-                }`}
-              >
-                <span>
-                  {request.status === 'success' ? '✓' : '✗'} {request.status.toUpperCase()}
-                </span>
-                <span className="text-sm">{request.duration.toFixed(0)}ms</span>
-              </div>
-            ))}
-            {requests.length === 0 && (
-              <div className="text-zinc-500 text-center py-4">
-                {t('simulators.circuit_breaker.labels.no_requests')}
-              </div>
+          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+            <div className="label-mono text-slate-500 dark:text-tactical-label mb-2">{t('simulators.circuit_breaker.labels.error_status')}</div>
+            {errorsEnabled ? (
+              <StatusBadge
+                variant="classified"
+                label={t('simulators.circuit_breaker.labels.active_with_chance', { percent: config.errorRate })}
+              />
+            ) : (
+              <StatusBadge variant="active" label={t('simulators.circuit_breaker.labels.inactive')} />
             )}
           </div>
         </div>
-      </div>
+      </Panel>
+
+      <Panel title={t('simulators.circuit_breaker.labels.latest_requests')} accent="amber">
+        <div className="space-y-2">
+          {requests.map(request => (
+            <div
+              key={request.id}
+              className="flex flex-wrap justify-between gap-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2.5"
+            >
+              <div className="flex items-center gap-2">
+                <StatusBadge
+                  variant={request.status === 'success' ? 'active' : 'classified'}
+                  label={request.status.toUpperCase()}
+                />
+              </div>
+              <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim tabular-nums">{request.duration.toFixed(0)}ms</span>
+            </div>
+          ))}
+          {requests.length === 0 && (
+            <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center">
+              <p className="font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">
+                {t('simulators.circuit_breaker.labels.no_requests')}
+              </p>
+            </div>
+          )}
+        </div>
+      </Panel>
     </div>
   );
-} 
+}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Panel, StatusBadge, TacticalButton } from '../tactical';
 
 interface User {
   id: string;
@@ -13,6 +14,9 @@ interface DecodedToken {
   payload: any;
   signature: string;
 }
+
+const inputClass =
+  'w-full bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-3 py-2 font-mono text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-signal-green';
 
 export default function TokensSimulator() {
   const { t } = useTranslation();
@@ -28,7 +32,7 @@ export default function TokensSimulator() {
   const [customClaims, setCustomClaims] = useState<Record<string, string>>({});
   const [token, setToken] = useState<string>('');
   const [decodedToken, setDecodedToken] = useState<DecodedToken | null>(null);
-  const [expirationTime, setExpirationTime] = useState<number>(3600); // 1 hour in seconds
+  const [expirationTime, setExpirationTime] = useState<number>(3600);
   const [selectedAlgorithm, setSelectedAlgorithm] = useState<string>('HS256');
   const [verificationResult, setVerificationResult] = useState<{
     isValid: boolean;
@@ -39,7 +43,6 @@ export default function TokensSimulator() {
   const verificationMessages = t(`${base}.verification_messages`, { returnObjects: true }) as Record<string, string>;
   const instructions = t(`${base}.instructions`, { returnObjects: true }) as string[];
 
-  // Generate token function (moved outside to be reusable)
   const generateToken = () => {
     const header = {
       alg: selectedAlgorithm,
@@ -67,17 +70,14 @@ export default function TokensSimulator() {
     setVerificationResult(null);
   };
 
-  // Effect to update token when any input changes
   useEffect(() => {
     generateToken();
   }, [user, customClaims, expirationTime, selectedAlgorithm]);
 
-  // Update user information with real-time token generation
   const updateUser = (field: keyof User, value: string) => {
     setUser(prev => ({ ...prev, [field]: value }));
   };
 
-  // Add custom claim with real-time token generation
   const addCustomClaim = (key: string, value: string) => {
     if (key && value) {
       setCustomClaims(prev => ({ ...prev, [key]: value }));
@@ -86,7 +86,6 @@ export default function TokensSimulator() {
     }
   };
 
-  // Simula a verificação de um token
   const verifyToken = () => {
     if (!decodedToken) {
       setVerificationResult({
@@ -114,247 +113,228 @@ export default function TokensSimulator() {
   };
 
   return (
-    <div className="min-h-full bg-gradient-to-b from-zinc-900 to-black">
-      <div className="py-12 px-6 max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-12">
-          <h1 className="text-4xl font-bold text-white mb-4">
-            {t(`${base}.title`)}
-          </h1>
-          <p className="text-lg text-slate-500 dark:text-slate-400">
-            {t(`${base}.subtitle`)}
-          </p>
+    <div className="space-y-6">
+      <div className="max-w-3xl">
+        <div className="label-mono text-signal-cyan mb-2">
+          [ {t(`${base}.title`)} ]
         </div>
+        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
+          {t(`${base}.subtitle`)}
+        </p>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Token Generation Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Panel title={t(`${base}.token_configuration_title`)} accent="cyan">
           <div className="space-y-6">
-            <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
-              <h2 className="text-2xl font-bold text-brand-600 dark:text-brand-400 mb-6">{t(`${base}.token_configuration_title`)}</h2>
-              
-              {/* User Information */}
-              <div className="space-y-4 mb-6">
-                <h3 className="text-xl font-semibold text-white">{t(`${base}.user_information_title`)}</h3>
-                <div className="grid gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
-                      {t(`${base}.name_label`)}
-                    </label>
-                    <input
-                      type="text"
-                      value={user.name}
-                      onChange={e => updateUser('name', e.target.value)}
-                      className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
-                      {t(`${base}.email_label`)}
-                    </label>
-                    <input
-                      type="email"
-                      value={user.email}
-                      onChange={e => updateUser('email', e.target.value)}
-                      className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
-                      {t(`${base}.role_label`)}
-                    </label>
-                    <select
-                      value={user.role}
-                      onChange={e => updateUser('role', e.target.value)}
-                      className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-white"
-                    >
-                      <option value="user">{roles.user}</option>
-                      <option value="admin">{roles.admin}</option>
-                      <option value="guest">{roles.guest}</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              {/* Token Settings */}
-              <div className="space-y-4 mb-6">
-                <h3 className="text-xl font-semibold text-white">{t(`${base}.token_settings_title`)}</h3>
-                <div className="grid gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
-                      {t(`${base}.algorithm_label`)}
-                    </label>
-                    <select
-                      value={selectedAlgorithm}
-                      onChange={e => setSelectedAlgorithm(e.target.value)}
-                      className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-white"
-                    >
-                      <option value="HS256">HS256</option>
-                      <option value="HS384">HS384</option>
-                      <option value="HS512">HS512</option>
-                      <option value="RS256">RS256</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
-                      {t(`${base}.expiration_label`)}
-                    </label>
-                    <input
-                      type="number"
-                      value={expirationTime}
-                      onChange={e => setExpirationTime(parseInt(e.target.value))}
-                      className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-white"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Custom Claims */}
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-white">{t(`${base}.custom_claims_title`)}</h3>
-                
-                {/* Display current claims */}
-                {Object.keys(customClaims).length > 0 && (
-                  <div className="bg-slate-100 dark:bg-slate-800 rounded p-4 mb-4">
-                    <div className="grid gap-2">
-                      {Object.entries(customClaims).map(([key, value]) => (
-                        <div key={key} className="flex items-center justify-between">
-                          <div className="flex-1">
-                            <span className="text-purple-400">{key}: </span>
-                            <span className="text-slate-600 dark:text-slate-300">{value}</span>
-                          </div>
-                          <button
-                            onClick={() => {
-                              const newClaims = { ...customClaims };
-                              delete newClaims[key];
-                              setCustomClaims(newClaims);
-                            }}
-                            className="ml-2 text-red-400 hover:text-red-300 p-1"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                            </svg>
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-4">
+              <div className="label-mono text-signal-cyan">{t(`${base}.user_information_title`)}</div>
+              <div className="grid gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
+                    {t(`${base}.name_label`)}
+                  </label>
                   <input
                     type="text"
-                    placeholder={t(`${base}.key_placeholder`)}
-                    className="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-white"
-                    id="customClaimKey"
-                  />
-                  <input
-                    type="text"
-                    placeholder={t(`${base}.value_placeholder`)}
-                    className="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-white"
-                    id="customClaimValue"
+                    value={user.name}
+                    onChange={e => updateUser('name', e.target.value)}
+                    className={inputClass}
                   />
                 </div>
-                <button
-                  onClick={() => {
-                    const key = (document.getElementById('customClaimKey') as HTMLInputElement).value;
-                    const value = (document.getElementById('customClaimValue') as HTMLInputElement).value;
-                    addCustomClaim(key, value);
-                  }}
-                  className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium px-4 py-2 rounded transition-colors"
-                >
-                  {t(`${base}.add_claim_button`)}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Token Display and Verification Section */}
-          <div className="space-y-6">
-            {/* Generated Token */}
-            <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
-              <h2 className="text-2xl font-bold text-brand-600 dark:text-brand-400 mb-6">{t(`${base}.generated_token_title`)}</h2>
-              {token ? (
-                <div className="space-y-4">
-                  <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded">
-                    <p className="text-slate-500 dark:text-slate-400 break-all font-mono text-sm">{token}</p>
-                  </div>
-                  <button
-                    onClick={verifyToken}
-                    className="w-full bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded transition-colors"
+                <div>
+                  <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
+                    {t(`${base}.email_label`)}
+                  </label>
+                  <input
+                    type="email"
+                    value={user.email}
+                    onChange={e => updateUser('email', e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
+                    {t(`${base}.role_label`)}
+                  </label>
+                  <select
+                    value={user.role}
+                    onChange={e => updateUser('role', e.target.value)}
+                    className={inputClass}
                   >
-                    {t(`${base}.verify_token_button`)}
-                  </button>
+                    <option value="user">{roles.user}</option>
+                    <option value="admin">{roles.admin}</option>
+                    <option value="guest">{roles.guest}</option>
+                  </select>
                 </div>
-              ) : (
-                <p className="text-zinc-500">
-                  {t(`${base}.no_token_message`)}
-                </p>
-              )}
+              </div>
             </div>
 
-            {/* Decoded Token */}
-            {decodedToken && (
-              <div className="bg-white dark:bg-slate-900 rounded-lg p-6">
-                <h2 className="text-2xl font-bold text-brand-600 dark:text-brand-400 mb-6">{t(`${base}.decoded_token_title`)}</h2>
-                <div className="space-y-4">
-                  <div>
-                    <h3 className="text-lg font-semibold text-brand-600 dark:text-brand-300 mb-2">{t(`${base}.header_title`)}</h3>
-                    <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded">
-                      <pre className="text-slate-500 dark:text-slate-400 text-sm">
-                        {JSON.stringify(decodedToken.header, null, 2)}
-                      </pre>
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-green-300 mb-2">{t(`${base}.payload_title`)}</h3>
-                    <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded">
-                      <pre className="text-slate-500 dark:text-slate-400 text-sm">
-                        {JSON.stringify(decodedToken.payload, null, 2)}
-                      </pre>
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-purple-300 mb-2">{t(`${base}.signature_title`)}</h3>
-                    <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded">
-                      <p className="text-slate-500 dark:text-slate-400 font-mono text-sm break-all">
-                        {decodedToken.signature}
-                      </p>
-                    </div>
-                  </div>
+            <div className="space-y-4">
+              <div className="label-mono text-signal-cyan">{t(`${base}.token_settings_title`)}</div>
+              <div className="grid gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
+                    {t(`${base}.algorithm_label`)}
+                  </label>
+                  <select
+                    value={selectedAlgorithm}
+                    onChange={e => setSelectedAlgorithm(e.target.value)}
+                    className={inputClass}
+                  >
+                    <option value="HS256">HS256</option>
+                    <option value="HS384">HS384</option>
+                    <option value="HS512">HS512</option>
+                    <option value="RS256">RS256</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
+                    {t(`${base}.expiration_label`)}
+                  </label>
+                  <input
+                    type="number"
+                    value={expirationTime}
+                    onChange={e => setExpirationTime(parseInt(e.target.value))}
+                    className={inputClass}
+                  />
                 </div>
               </div>
-            )}
+            </div>
 
-            {/* Verification Result */}
-            {verificationResult && (
-              <div className={`bg-white dark:bg-slate-900 rounded-lg p-6 border-l-4 ${
-                verificationResult.isValid ? 'border-green-500' : 'border-red-500'
-              }`}>
-                <h2 className="text-2xl font-bold mb-4 text-white">
-                  {t(`${base}.verification_result_title`)}
-                </h2>
-                <div className={`text-lg ${
-                  verificationResult.isValid ? 'text-green-400' : 'text-red-400'
-                }`}>
-                  {verificationResult.message}
+            <div className="space-y-4">
+              <div className="label-mono text-signal-cyan">{t(`${base}.custom_claims_title`)}</div>
+
+              {Object.keys(customClaims).length > 0 && (
+                <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4">
+                  <div className="grid gap-2">
+                    {Object.entries(customClaims).map(([key, value]) => (
+                      <div key={key} className="flex items-center justify-between">
+                        <div className="flex-1 font-mono text-sm">
+                          <span className="text-signal-cyan">{key}: </span>
+                          <span className="text-slate-600 dark:text-tactical-dim">{value}</span>
+                        </div>
+                        <button
+                          onClick={() => {
+                            const newClaims = { ...customClaims };
+                            delete newClaims[key];
+                            setCustomClaims(newClaims);
+                          }}
+                          className="ml-2 text-slate-400 dark:text-tactical-label hover:text-signal-red transition-colors p-1"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-4">
+                <input
+                  type="text"
+                  placeholder={t(`${base}.key_placeholder`)}
+                  className={inputClass}
+                  id="customClaimKey"
+                />
+                <input
+                  type="text"
+                  placeholder={t(`${base}.value_placeholder`)}
+                  className={inputClass}
+                  id="customClaimValue"
+                />
               </div>
-            )}
+              <TacticalButton
+                variant="primary"
+                className="w-full"
+                onClick={() => {
+                  const key = (document.getElementById('customClaimKey') as HTMLInputElement).value;
+                  const value = (document.getElementById('customClaimValue') as HTMLInputElement).value;
+                  addCustomClaim(key, value);
+                }}
+              >
+                {t(`${base}.add_claim_button`)}
+              </TacticalButton>
+            </div>
           </div>
-        </div>
+        </Panel>
 
-        {/* Help Section */}
-        <div className="mt-12 bg-white dark:bg-slate-900 rounded-lg p-6">
-          <h2 className="text-2xl font-bold text-brand-600 dark:text-brand-400 mb-6">{t(`${base}.how_to_use_title`)}</h2>
-          <div className="space-y-4 text-slate-500 dark:text-slate-400">
-            {instructions.map((instruction, index) => (
-              <p key={index}>
-                {index + 1}. {instruction}
+        <div className="space-y-6">
+          <Panel title={t(`${base}.generated_token_title`)} accent="green">
+            {token ? (
+              <div className="space-y-4">
+                <div className="bg-slate-50 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border p-4">
+                  <p className="text-slate-600 dark:text-tactical-dim break-all font-mono text-sm">{token}</p>
+                </div>
+                <TacticalButton variant="primary" className="w-full" onClick={verifyToken}>
+                  {t(`${base}.verify_token_button`)}
+                </TacticalButton>
+              </div>
+            ) : (
+              <p className="font-mono text-sm text-slate-400 dark:text-tactical-label">
+                {t(`${base}.no_token_message`)}
               </p>
-            ))}
-          </div>
+            )}
+          </Panel>
+
+          {decodedToken && (
+            <Panel title={t(`${base}.decoded_token_title`)} accent="amber">
+              <div className="space-y-4">
+                <div>
+                  <div className="label-mono text-signal-cyan mb-2">{t(`${base}.header_title`)}</div>
+                  <div className="bg-slate-50 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border p-4">
+                    <pre className="text-slate-600 dark:text-tactical-dim text-sm font-mono">
+                      {JSON.stringify(decodedToken.header, null, 2)}
+                    </pre>
+                  </div>
+                </div>
+                <div>
+                  <div className="label-mono text-signal-green mb-2">{t(`${base}.payload_title`)}</div>
+                  <div className="bg-slate-50 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border p-4">
+                    <pre className="text-slate-600 dark:text-tactical-dim text-sm font-mono">
+                      {JSON.stringify(decodedToken.payload, null, 2)}
+                    </pre>
+                  </div>
+                </div>
+                <div>
+                  <div className="label-mono text-signal-amber mb-2">{t(`${base}.signature_title`)}</div>
+                  <div className="bg-slate-50 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border p-4">
+                    <p className="text-slate-600 dark:text-tactical-dim font-mono text-sm break-all">
+                      {decodedToken.signature}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Panel>
+          )}
+
+          {verificationResult && (
+            <Panel
+              title={t(`${base}.verification_result_title`)}
+              accent={verificationResult.isValid ? 'green' : 'red'}
+              action={
+                <StatusBadge variant={verificationResult.isValid ? 'active' : 'classified'} />
+              }
+            >
+              <p className={`font-mono text-sm ${verificationResult.isValid ? 'text-signal-green' : 'text-signal-red'}`}>
+                {verificationResult.message}
+              </p>
+            </Panel>
+          )}
         </div>
+      </div>
+
+      <div className="tactical-panel border-l-2 border-l-signal-cyan p-5">
+        <h3 className="label-mono text-signal-cyan mb-3">{t(`${base}.how_to_use_title`)}</h3>
+        <ul className="space-y-1.5 font-mono text-sm text-slate-600 dark:text-tactical-dim">
+          {instructions.map((instruction, index) => (
+            <li key={index} className="flex gap-2">
+              <span className="text-signal-cyan">{index + 1}.</span>
+              {instruction}
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
-} 
+}
