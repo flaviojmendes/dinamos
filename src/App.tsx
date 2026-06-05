@@ -42,7 +42,6 @@ import Preferences from "./components/Preferences/Preferences";
 import ConsensusSimulator from "./components/ConsistencyStrategies/ConsensusSimulator";
 import FirewallSimulator from "./components/SystemComponents/FirewallSimulator";
 import LamportTimestampsSimulator from "./components/ConsistencyStrategies/LamportTimestampsSimulator";
-import SystemEditor from "./components/SystemEditor/SystemEditor";
 import TokensSimulator from "./components/Security/TokensSimulator";
 import CryptographySimulator from "./components/Security/CryptographySimulator";
 import AttackSimulatorPage from "./components/Security/AttackSimulatorPage";

@@ -1,9 +1,9 @@
-import SimpleSystemEditor from '../components/SystemEditor/SimpleSystemEditor';
+import SystemEditorV2 from '../components/SystemEditor/SystemEditorV2';
 
 export default function SimpleSystemEditorPage() {
   return (
     <div className="min-h-screen bg-canvas-paper dark:bg-tactical-bg">
-      <SimpleSystemEditor />
+      <SystemEditorV2 />
     </div>
   );
 } 
