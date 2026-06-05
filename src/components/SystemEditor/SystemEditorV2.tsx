@@ -32,6 +32,7 @@ import SimNode, { SimNodeData } from './ui/SimNode';
 import { NODE_CATALOG, PALETTE_ORDER, KIND_DEFAULT_LABEL } from './ui/nodeCatalog';
 import { MetricsContext } from './ui/MetricsContext';
 import InspectorPanel from './ui/InspectorPanel';
+import CostPanel from './ui/CostPanel';
 import Dashboard from './ui/Dashboard';
 import ScenarioBar from './ui/ScenarioBar';
 import { parseDesign, serializeDesign, SerializedNode } from './ui/persistence';
@@ -98,6 +99,7 @@ function EditorInner() {
   const [importError, setImportError] = useState<string | null>(null);
 
   const [menu, setMenu] = useState<{ kind: 'node' | 'edge'; id: string; x: number; y: number } | null>(null);
+  const [showBill, setShowBill] = useState(false);
 
   const simRef = useRef<Simulator | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -266,6 +268,7 @@ function EditorInner() {
   const onNodeContextMenu = useCallback(
     (event: React.MouseEvent, node: Node) => {
       setSelectedId(node.id);
+      setShowBill(false);
       openMenuAt('node', node.id, event);
     },
     [openMenuAt],
@@ -496,7 +499,7 @@ function EditorInner() {
               onNodesDelete={onNodesDelete}
               onDragOver={onDragOver}
               onDrop={onDrop}
-              onNodeClick={(_, node) => { setSelectedId(node.id); closeMenu(); }}
+              onNodeClick={(_, node) => { setSelectedId(node.id); setShowBill(false); closeMenu(); }}
               onNodeContextMenu={onNodeContextMenu}
               onEdgeContextMenu={onEdgeContextMenu}
               onEdgeClick={closeMenu}
@@ -558,13 +561,23 @@ function EditorInner() {
           </div>
 
           <div className="w-80 shrink-0 border-l border-slate-200 dark:border-tactical-border bg-white dark:bg-tactical-surface">
-            <InspectorPanel config={selectedConfig} onChange={patchSelected} onDelete={deleteSelected} />
+            {showBill ? (
+              <CostPanel
+                nodes={nodes.map((n) => ({ id: n.id, config: n.data.config }))}
+                metrics={metrics}
+                provider={provider}
+                totalCost={totalCost}
+                onClose={() => setShowBill(false)}
+              />
+            ) : (
+              <InspectorPanel config={selectedConfig} onChange={patchSelected} onDelete={deleteSelected} />
+            )}
           </div>
         </div>
 
         {/* Dashboard */}
         <div className="mt-4">
-          <Dashboard history={history} totalCost={totalCost} provider={provider} warnings={warnings} />
+          <Dashboard history={history} totalCost={totalCost} provider={provider} warnings={warnings} onCostClick={() => setShowBill(true)} />
         </div>
       </div>
     </MetricsContext.Provider>

@@ -21,14 +21,19 @@ interface Props {
   totalCost: number;
   provider: CloudProvider;
   warnings: string[];
+  onCostClick?: () => void;
 }
 
 const SLO_P95_MS = 250;
 const SLO_SUCCESS = 0.99;
 
-function Stat({ label, value, tone }: { label: string; value: string; tone?: string }) {
+function Stat({ label, value, tone, onClick, title }: { label: string; value: string; tone?: string; onClick?: () => void; title?: string }) {
   return (
-    <div className="border border-tactical-border bg-tactical-raised px-3 py-2">
+    <div
+      onClick={onClick}
+      title={title}
+      className={`border border-tactical-border bg-tactical-raised px-3 py-2 ${onClick ? 'cursor-pointer hover:border-signal-cyan transition-colors' : ''}`}
+    >
       <div className="font-mono text-[10px] uppercase tracking-wider text-tactical-label">{label}</div>
       <div className={`font-mono text-lg font-bold ${tone ?? 'text-tactical-text'}`}>{value}</div>
     </div>
@@ -43,7 +48,7 @@ function formatWarning(w: string, t: (k: string, o?: Record<string, unknown>) =>
   return t(`editor.warnings.${code}`, { name: name ?? '', defaultValue: w.replace(/_/g, ' ') });
 }
 
-export default function Dashboard({ history, totalCost, provider, warnings }: Props) {
+export default function Dashboard({ history, totalCost, provider, warnings, onCostClick }: Props) {
   const { t } = useTranslation();
   const latest = history[history.length - 1]?.system;
   const data = history.map((f) => ({
@@ -70,7 +75,7 @@ export default function Dashboard({ history, totalCost, provider, warnings }: Pr
         <Stat label={t('editor.dashboard.success')} value={`${((latest?.successRate ?? 1) * 100).toFixed(1)}%`} tone={successTone} />
         <Stat label={t('editor.dashboard.p95')} value={`${Math.round(latest?.p95 ?? 0)}ms`} tone={p95Tone} />
         <Stat label={t('editor.dashboard.in_flight')} value={`${Math.round(latest?.inFlightTotal ?? 0)}`} />
-        <Stat label={t('editor.dashboard.cost', { provider: providerLabel(provider) })} value={`$${(latest?.costPerHour ?? 0).toFixed(2)}/h`} tone="text-signal-cyan" />
+        <Stat label={t('editor.dashboard.cost', { provider: providerLabel(provider) })} value={`$${(latest?.costPerHour ?? 0).toFixed(2)}/h`} tone="text-signal-cyan" onClick={onCostClick} title={t('editor.bill.open_hint')} />
       </div>
 
       {/* Error budget bar */}

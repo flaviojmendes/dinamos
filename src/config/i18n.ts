@@ -2193,6 +2193,16 @@ const resources = {
           cons: { strong: 'Strong', quorum: 'Quorum', eventual: 'Eventual' },
           shard_strat: { hash: 'Hash', range: 'Range' }
         },
+        bill: {
+          title: '{{provider}} bill',
+          open_hint: 'Click to see the cost breakdown by product',
+          close: 'Close',
+          empty: 'No billable resources yet. Run the simulation.',
+          units: '{{count}} resource',
+          units_plural: '{{count}} resources',
+          total: 'Total',
+          accumulated: 'Accumulated this run'
+        },
         dashboard: {
           offered: 'Offered',
           throughput: 'Throughput',
@@ -8375,6 +8385,16 @@ const resources = {
           strat: { roundRobin: 'Round Robin', leastConnections: 'Menos Conexões', weighted: 'Ponderado', hashing: 'Hashing Consistente' },
           cons: { strong: 'Forte', quorum: 'Quórum', eventual: 'Eventual' },
           shard_strat: { hash: 'Hash', range: 'Intervalo' }
+        },
+        bill: {
+          title: 'Fatura {{provider}}',
+          open_hint: 'Clique para ver o detalhamento de custos por produto',
+          close: 'Fechar',
+          empty: 'Nenhum recurso faturável ainda. Execute a simulação.',
+          units: '{{count}} recurso',
+          units_plural: '{{count}} recursos',
+          total: 'Total',
+          accumulated: 'Acumulado nesta execução'
         },
         dashboard: {
           offered: 'Ofertado',

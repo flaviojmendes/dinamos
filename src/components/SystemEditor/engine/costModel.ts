@@ -59,3 +59,63 @@ export function estimateNodeCostPerHour(rt: NodeRuntime, provider: CloudProvider
 export function providerLabel(provider: CloudProvider): string {
   return provider === 'aws' ? 'AWS' : 'Google Cloud';
 }
+
+/**
+ * Cost of a node computed directly from its live metrics (servers/arrival),
+ * mirroring estimateNodeCostPerHour but without needing a NodeRuntime — handy
+ * for the UI bill which only has NodeMetrics.
+ */
+export function estimateCostFromMetrics(
+  kind: NodeKind,
+  servers: number,
+  arrivalPerSec: number,
+  replicaCount: number | undefined,
+  provider: CloudProvider,
+): number {
+  const rates = RATES[provider];
+  if (COMPUTE_KINDS.includes(kind)) {
+    return Math.max(0, servers) * rates.serverHour;
+  }
+  if (kind === 'database' || kind === 'replicatedDb') {
+    const replicas = kind === 'replicatedDb' ? replicaCount ?? 1 : 1;
+    return Math.max(1, replicas) * rates.dbReplicaHour;
+  }
+  if (USAGE_KINDS.includes(kind)) {
+    return ((arrivalPerSec * 3600) / 1_000_000) * rates.perMillionRequests;
+  }
+  if (kind === 'externalDependency') {
+    return ((arrivalPerSec * 3600) / 1_000_000) * rates.externalPerMillion;
+  }
+  return 0;
+}
+
+/** Marketing name of the cloud product a node maps to, per provider. */
+export function productName(kind: NodeKind, provider: CloudProvider): string {
+  const aws = provider === 'aws';
+  switch (kind) {
+    case 'server':
+      return aws ? 'EC2' : 'Compute Engine';
+    case 'autoScaler':
+      return aws ? 'EC2 Auto Scaling' : 'Managed Instance Group';
+    case 'loadBalancer':
+      return aws ? 'Elastic Load Balancing' : 'Cloud Load Balancing';
+    case 'cache':
+      return aws ? 'ElastiCache' : 'Memorystore';
+    case 'circuitBreaker':
+      return aws ? 'App Mesh' : 'Traffic Director';
+    case 'shardRouter':
+      return aws ? 'EC2 (sharding)' : 'Compute Engine (sharding)';
+    case 'database':
+      return aws ? 'RDS' : 'Cloud SQL';
+    case 'replicatedDb':
+      return aws ? 'RDS Multi-AZ' : 'Cloud SQL HA';
+    case 'apiGateway':
+      return aws ? 'API Gateway' : 'API Gateway (Apigee)';
+    case 'messageQueue':
+      return aws ? 'SQS' : 'Pub/Sub';
+    case 'externalDependency':
+      return aws ? 'Third-party API' : 'Third-party API';
+    default:
+      return aws ? 'AWS' : 'GCP';
+  }
+}
