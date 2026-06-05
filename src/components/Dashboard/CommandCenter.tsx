@@ -31,6 +31,98 @@ const tierColor: Record<Tier, string> = {
   TOOLS: 'text-slate-400 dark:text-tactical-label',
 };
 
+// Merged designLab destinations, surfaced as quick-launch cards on the dashboard.
+interface PracticeLink {
+  path: string;
+  nameKey: string;
+  name: string;
+  descKey: string;
+  desc: string;
+  color: string;
+  icon: JSX.Element;
+}
+
+const PRACTICE_LINKS: PracticeLink[] = [
+  {
+    path: '/home',
+    nameKey: 'menu.home.name',
+    name: 'Design Lab',
+    descKey: 'menu.home.description',
+    desc: 'Solve architecture challenges with AI feedback',
+    color: 'text-signal-green',
+    icon: (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 3v6l-5.5 9.5A1.5 1.5 0 005 21h14a1.5 1.5 0 001.3-2.5L15 9V3M8 3h8M9 14h6" />
+      </svg>
+    ),
+  },
+  {
+    path: '/quizzes',
+    nameKey: 'menu.quizzes.name',
+    name: 'Quizzes',
+    descKey: 'menu.quizzes.description',
+    desc: 'Test your knowledge and earn DinaCoins',
+    color: 'text-signal-amber',
+    icon: (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
+  },
+  {
+    path: '/ranking',
+    nameKey: 'menu.ranking.name',
+    name: 'Ranking',
+    descKey: 'menu.ranking.description',
+    desc: 'Global community leaderboard',
+    color: 'text-signal-cyan',
+    icon: (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+      </svg>
+    ),
+  },
+  {
+    path: '/forum',
+    nameKey: 'menu.forum.name',
+    name: 'Forum',
+    descKey: 'menu.forum.description',
+    desc: 'Discuss and learn with the community',
+    color: 'text-signal-green',
+    icon: (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586M7 4h8a2 2 0 012 2v6a2 2 0 01-2 2H9l-4 4V6a2 2 0 012-2z" />
+      </svg>
+    ),
+  },
+  {
+    path: '/notifications',
+    nameKey: 'menu.notifications.name',
+    name: 'Notifications',
+    descKey: 'menu.notifications.description',
+    desc: 'Replies, mentions and announcements',
+    color: 'text-signal-red',
+    icon: (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+      </svg>
+    ),
+  },
+  {
+    path: '/profile',
+    nameKey: 'menu.profile.name',
+    name: 'Profile',
+    descKey: 'menu.profile.description',
+    desc: 'Your progress, solutions and DinaCoins',
+    color: 'text-slate-400 dark:text-tactical-label',
+    icon: (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+      </svg>
+    ),
+  },
+];
+
 function lessonLabel(path: string): string {
   const seg = path.split('/').filter(Boolean).pop() ?? path;
   return seg.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
@@ -225,6 +317,35 @@ export default function CommandCenter() {
         </Panel>
       </div>
 
+      {/* Practice Arena: merged designLab destinations */}
+      <div className="mt-4">
+        <Panel
+          title={t('command_center.modules.practice', { defaultValue: 'Practice Arena' })}
+          accent="amber"
+          bodyClassName="p-4"
+        >
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {PRACTICE_LINKS.map((p) => (
+              <button
+                key={p.path}
+                onClick={() => navigate(p.path)}
+                className="group flex cursor-pointer items-start gap-3 border border-slate-200 bg-white p-3 text-left transition-colors hover:border-brand-500 dark:border-tactical-border dark:bg-tactical-surface dark:hover:border-signal-green"
+              >
+                <span className={`mt-0.5 shrink-0 ${p.color}`}>{p.icon}</span>
+                <span className="min-w-0">
+                  <span className="block font-mono text-sm font-semibold uppercase tracking-wider text-slate-900 dark:text-tactical-text">
+                    {t(p.nameKey, { defaultValue: p.name })}
+                  </span>
+                  <span className="mt-0.5 block font-mono text-xs text-slate-500 dark:text-tactical-dim">
+                    {t(p.descKey, { defaultValue: p.desc })}
+                  </span>
+                </span>
+              </button>
+            ))}
+          </div>
+        </Panel>
+      </div>
+
       {/* Mission table + feed */}
       <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Panel title={t('command_center.mission_table')} className="lg:col-span-2" padded={false}>
@@ -266,7 +387,7 @@ export default function CommandCenter() {
               {topics.map((tp) => (
                 <li key={tp.id}>
                   <button
-                    onClick={() => navigate(`/forum/${tp.id}`)}
+                    onClick={() => navigate(`/forum/topic/${tp.id}`)}
                     className="w-full border border-transparent px-2 py-2 text-left hover:border-slate-200 hover:bg-slate-50 dark:hover:border-tactical-border dark:hover:bg-tactical-raised"
                   >
                     <div className="flex items-center justify-between gap-2">

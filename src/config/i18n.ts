@@ -61,6 +61,8 @@ const resources = {
           'ai-systems': 'AI & LLM Systems',
           'data-storage': 'Data & Storage',
           cases: 'Real-World Cases',
+          tools: 'Tools & Community',
+          practice: 'Practice Arena',
         },
       },
       quick_access: {
@@ -2019,6 +2021,26 @@ const resources = {
         design_lab: {
           name: 'Design Lab',
           description: 'Access our design lab'
+        },
+        home: {
+          name: 'Design Lab',
+          description: 'Solve architecture challenges with AI feedback'
+        },
+        quizzes: {
+          name: 'Quizzes',
+          description: 'Test your knowledge and earn DinaCoins'
+        },
+        ranking: {
+          name: 'Ranking',
+          description: 'Global community leaderboard'
+        },
+        profile: {
+          name: 'Profile',
+          description: 'Your progress, solutions and DinaCoins'
+        },
+        notifications: {
+          name: 'Notifications',
+          description: 'Replies, mentions and announcements'
         }
       },
       skills: {
@@ -6234,6 +6256,8 @@ const resources = {
           'ai-systems': 'Sistemas de IA e LLMs',
           'data-storage': 'Dados e Armazenamento',
           cases: 'Casos do Mundo Real',
+          tools: 'Ferramentas e Comunidade',
+          practice: 'Arena de Prática',
         },
       },
       quick_access: {
@@ -8192,6 +8216,26 @@ const resources = {
         design_lab: {
           name: 'Design Lab',
           description: 'Acesse nosso design lab'
+        },
+        home: {
+          name: 'Design Lab',
+          description: 'Resolva desafios de arquitetura com feedback de IA'
+        },
+        quizzes: {
+          name: 'Quizzes',
+          description: 'Teste seus conhecimentos e ganhe DinaCoins'
+        },
+        ranking: {
+          name: 'Ranking',
+          description: 'Classificação global da comunidade'
+        },
+        profile: {
+          name: 'Perfil',
+          description: 'Seu progresso, soluções e DinaCoins'
+        },
+        notifications: {
+          name: 'Notificações',
+          description: 'Respostas, menções e anúncios'
         }
       },
       skills: {

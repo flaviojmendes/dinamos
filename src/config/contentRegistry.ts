@@ -54,6 +54,13 @@ export const MODULES: ModuleDef[] = [
   { id: 'ai-systems', label: 'AI & LLM Systems', tier: 'APPLIED', base: '/sistemas-ia' },
   { id: 'cases', label: 'Real-World Cases', tier: 'APPLIED', base: '/casos-reais' },
   { id: 'tools', label: 'Tools & Community', tier: 'TOOLS', base: '/editor' },
+  {
+    id: 'practice',
+    label: 'Practice Arena',
+    tier: 'TOOLS',
+    base: '/home',
+    paths: ['/home', '/quizzes', '/ranking', '/forum', '/profile', '/notifications'],
+  },
 ];
 
 /** Tier display order, used to group the sidebar and the explore page. */
@@ -168,7 +175,19 @@ const SIMULATOR_PATHS: string[] = [
 ];
 
 // Tools and community destinations.
-const TOOL_PATHS: string[] = ['/editor', '/roadmap', '/forum'];
+const TOOL_PATHS: string[] = ['/editor', '/roadmap'];
+
+// Practice Arena: the merged designLab destinations (challenges hub, quizzes,
+// ranking, forum, profile, notifications). Registered so they are searchable in
+// the command palette and browsable on /explore alongside lessons & simulators.
+const PRACTICE_PATHS: { path: string; free: boolean }[] = [
+  { path: '/home', free: true },
+  { path: '/quizzes', free: true },
+  { path: '/ranking', free: true },
+  { path: '/forum', free: true },
+  { path: '/profile', free: false },
+  { path: '/notifications', free: false },
+];
 
 function buildRegistry(): ContentItem[] {
   const byPath = new Map<string, ContentItem>();
@@ -210,6 +229,18 @@ function buildRegistry(): ContentItem[] {
       tier: 'TOOLS',
       type: 'tool',
       free: true,
+    });
+  }
+
+  // Practice Arena (merged designLab destinations).
+  for (const { path, free } of PRACTICE_PATHS) {
+    if (byPath.has(path)) continue;
+    byPath.set(path, {
+      path,
+      moduleId: 'practice',
+      tier: 'TOOLS',
+      type: 'tool',
+      free,
     });
   }
 

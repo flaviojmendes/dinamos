@@ -29,6 +29,44 @@ import Login from "./components/Auth/Login";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
 import Subscription from "./components/Subscription/Subscription";
 import PaymentSuccess from "./pages/PaymentSuccess";
+// --- designLab (merged) ---
+import DLProtectedRoute from "./designlab/components/ProtectedRoute";
+const DLHome = React.lazy(() => import("./designlab/pages/Home"));
+const DLChallenge = React.lazy(() => import("./designlab/pages/Challenge"));
+const DLFeedback = React.lazy(() => import("./designlab/pages/Feedback"));
+const DLProfile = React.lazy(() => import("./designlab/pages/Profile"));
+const DLNotifications = React.lazy(() => import("./designlab/pages/Notifications"));
+const DLLeaderboard = React.lazy(() => import("./designlab/pages/Leaderboard"));
+const DLRegister = React.lazy(() => import("./designlab/pages/Register"));
+const DLForgotPassword = React.lazy(() => import("./designlab/pages/ForgotPassword"));
+const DLVerifyEmail = React.lazy(() => import("./designlab/pages/VerifyEmail"));
+const DLSubscriptionRequired = React.lazy(() => import("./designlab/pages/SubscriptionRequired"));
+const DLForumList = React.lazy(() => import("./designlab/pages/forum/ForumList"));
+const DLCreateTopic = React.lazy(() => import("./designlab/pages/forum/CreateTopic"));
+const DLTopicView = React.lazy(() => import("./designlab/pages/forum/TopicView"));
+const DLQuizList = React.lazy(() => import("./designlab/pages/quiz/QuizList"));
+const DLQuizTake = React.lazy(() => import("./designlab/pages/quiz/QuizTake"));
+const DLAdminUsers = React.lazy(() => import("./designlab/pages/AdminUsers"));
+const DLAdminRoles = React.lazy(() => import("./designlab/pages/AdminRoles"));
+const DLAdminChallenges = React.lazy(() => import("./designlab/pages/AdminChallenges"));
+const DLAdminForumCategories = React.lazy(() => import("./designlab/pages/AdminForumCategories"));
+const DLAdminNotifications = React.lazy(() => import("./designlab/pages/AdminNotifications"));
+const DLAdminSettings = React.lazy(() => import("./designlab/pages/AdminSettings"));
+const DLAdminQuizzes = React.lazy(() => import("./designlab/pages/AdminQuizzes"));
+const DLAdminDashboard = React.lazy(() => import("./designlab/pages/AdminDashboard"));
+
+function DesignLabRouteFallback() {
+  return (
+    <div className="min-h-[60vh] flex items-center justify-center">
+      <div className="inline-flex items-center space-x-3">
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-brand-600 dark:border-signal-green border-t-transparent" aria-hidden />
+        <span className="font-mono uppercase tracking-wider text-sm text-slate-600 dark:text-tactical-dim">
+          Carregando...
+        </span>
+      </div>
+    </div>
+  );
+}
 import { trackEvent, trackPageView, initializeAnalytics, handleConsentChange } from './utils/analytics';
 import ServiceOriented from "./components/DesignPrinciples/ServiceOriented";
 import RetriesSimulator from "./components/DesignPrinciples/RetriesSimulator";
@@ -96,7 +134,7 @@ import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsAndConditionsPage from './pages/TermsAndConditionsPage';
 import ReplicationSimulator from "./components/DesignPrinciples/ReplicationSimulator";
 import AvailabilityZonesSimulator from "./components/DesignPrinciples/AvailabilityZonesSimulator";
-import { ForumPage } from "./components/Forum";
+// Forum is now served by the merged designLab forum (see /forum routes below).
 import ExplorePage from "./components/Explore/ExplorePage";
 
 interface MenuItem {
@@ -1136,10 +1174,9 @@ const createMenuItems = (t: any): MenuItem[] => [
     ),
   },
   {
-    path: "https://lab.dinamos.net",
+    path: "/home",
     name: t('menu.design_lab.name'),
     description: t('menu.design_lab.description'),
-    external: true,
     icon: (
       <svg
         className="w-6 h-6 text-pink-500"
@@ -1153,6 +1190,26 @@ const createMenuItems = (t: any): MenuItem[] => [
           strokeWidth={2}
           d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
         />
+      </svg>
+    ),
+  },
+  {
+    path: "/quizzes",
+    name: t('menu.quizzes.name', { defaultValue: 'Quizzes' }),
+    description: t('menu.quizzes.description', { defaultValue: 'Teste seus conhecimentos e ganhe DinaCoins' }),
+    icon: (
+      <svg className="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
+  },
+  {
+    path: "/ranking",
+    name: t('menu.ranking.name', { defaultValue: 'Ranking' }),
+    description: t('menu.ranking.description', { defaultValue: 'Classificação global da comunidade' }),
+    icon: (
+      <svg className="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
       </svg>
     ),
   },
@@ -1701,6 +1758,7 @@ export default function App() {
         {/* Main content */}
         <main className={`flex-1 overflow-y-auto bg-canvas-paper dark:bg-canvas-dark ${isMobile ? 'pt-16' : ''}`}>
           {user && <TopStatusBar isSidebarOpen={isSidebarOpen} onToggleSidebar={toggleSidebar} />}
+          <React.Suspense fallback={<DesignLabRouteFallback />}>
           <Routes>
             {/* Content-only pages rendered from MDX (src/content/**). One route per
                 manifest entry replaces the ~60 former per-page component routes.
@@ -2292,28 +2350,172 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+            {/* --- Forum (designLab: polls, nested replies, notifications) --- */}
             <Route
               path="/forum"
               element={
-                <ProtectedRoute requiresSubscription={false}>
-                  <ContentPage>
-                    <ForumPage />
-                  </ContentPage>
-                </ProtectedRoute>
+                <DLProtectedRoute requireSubscription={false}>
+                  <DLForumList />
+                </DLProtectedRoute>
               }
             />
             <Route
-              path="/forum/:topicId"
+              path="/forum/new"
               element={
-                <ProtectedRoute requiresSubscription={false}>
-                  <ContentPage>
-                    <ForumPage />
-                  </ContentPage>
-                </ProtectedRoute>
+                <DLProtectedRoute>
+                  <DLCreateTopic />
+                </DLProtectedRoute>
               }
             />
-            
+            <Route
+              path="/forum/topic/:id"
+              element={
+                <DLProtectedRoute requireSubscription={false}>
+                  <DLTopicView />
+                </DLProtectedRoute>
+              }
+            />
+
+            {/* --- designLab: challenges, feedback, quizzes, ranking, profile --- */}
+            <Route
+              path="/home"
+              element={
+                <DLProtectedRoute requireSubscription={false}>
+                  <DLHome />
+                </DLProtectedRoute>
+              }
+            />
+            <Route
+              path="/challenge/:id"
+              element={
+                <DLProtectedRoute>
+                  <DLChallenge />
+                </DLProtectedRoute>
+              }
+            />
+            <Route
+              path="/feedback"
+              element={
+                <DLProtectedRoute>
+                  <DLFeedback />
+                </DLProtectedRoute>
+              }
+            />
+            <Route
+              path="/quizzes"
+              element={
+                <DLProtectedRoute requireSubscription={false}>
+                  <DLQuizList />
+                </DLProtectedRoute>
+              }
+            />
+            <Route
+              path="/quizzes/:id"
+              element={
+                <DLProtectedRoute>
+                  <DLQuizTake />
+                </DLProtectedRoute>
+              }
+            />
+            <Route
+              path="/ranking"
+              element={
+                <DLProtectedRoute requireSubscription={false}>
+                  <DLLeaderboard />
+                </DLProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <DLProtectedRoute>
+                  <DLProfile />
+                </DLProtectedRoute>
+              }
+            />
+            <Route
+              path="/notifications"
+              element={
+                <DLProtectedRoute>
+                  <DLNotifications />
+                </DLProtectedRoute>
+              }
+            />
+
+            {/* --- designLab: auth flows --- */}
+            <Route path="/register" element={<DLRegister />} />
+            <Route path="/forgot-password" element={<DLForgotPassword />} />
+            <Route path="/verify-email" element={<DLVerifyEmail />} />
+            <Route path="/subscription-required" element={<DLSubscriptionRequired />} />
+
+            {/* --- designLab: admin panels (gated by Sub + Admin role) --- */}
+            <Route
+              path="/admin/users"
+              element={
+                <DLProtectedRoute>
+                  <DLAdminUsers />
+                </DLProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/roles"
+              element={
+                <DLProtectedRoute>
+                  <DLAdminRoles />
+                </DLProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/challenges"
+              element={
+                <DLProtectedRoute>
+                  <DLAdminChallenges />
+                </DLProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/forum/categories"
+              element={
+                <DLProtectedRoute>
+                  <DLAdminForumCategories />
+                </DLProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/notifications"
+              element={
+                <DLProtectedRoute>
+                  <DLAdminNotifications />
+                </DLProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/settings"
+              element={
+                <DLProtectedRoute>
+                  <DLAdminSettings />
+                </DLProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/dashboard"
+              element={
+                <DLProtectedRoute>
+                  <DLAdminDashboard />
+                </DLProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/quizzes"
+              element={
+                <DLProtectedRoute>
+                  <DLAdminQuizzes />
+                </DLProtectedRoute>
+              }
+            />
+
           </Routes>
+          </React.Suspense>
           {user && <Footer />}
         </main>
       </div>

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { 
+import {
   User,
   signInWithPopup,
   GoogleAuthProvider,
@@ -7,13 +7,32 @@ import {
   signOut as firebaseSignOut,
   fetchSignInMethodsForEmail,
   linkWithPopup,
-  signInWithCredential,
-  GithubAuthProvider as GithubProvider,
-  AuthError
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  sendEmailVerification,
+  AuthError,
 } from 'firebase/auth';
 import { auth } from '../config/firebase';
 
+// Shape of the backend user profile returned by GET /api/users/me.
+export interface AppUser {
+  id: string;
+  email: string;
+  nickname: string | null;
+  role: string;
+  role_color: string;
+  permissions: string[];
+  avatar_image: string | null;
+  github_username: string | null;
+  is_subscribed: boolean;
+  tokens: number;
+  onboarding_completed: boolean;
+  [key: string]: unknown;
+}
+
 interface AuthContextType {
+  // Dinamos-native API
   user: User | null;
   loading: boolean;
   isSubscribed: boolean;
@@ -22,234 +41,229 @@ interface AuthContextType {
   signOut: () => Promise<void>;
   setIsSubscribed: (isSubscribed: boolean) => void;
   checkSubscription: (forceRefresh?: boolean) => Promise<boolean>;
-  
+
+  // designLab-compatible API (aliases + extensions)
+  currentUser: User | null;
+  appUser: AppUser | null;
+  checkingSubscription: boolean;
+  isEmailVerified: boolean;
+  logout: () => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
+  loginWithGithub: () => Promise<void>;
+  loginWithEmail: (email: string, password: string) => Promise<void>;
+  signUpWithEmail: (email: string, password: string) => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
+  resendVerificationEmail: () => Promise<void>;
+  reloadUser: () => Promise<boolean>;
+  getIdToken: () => Promise<string | null>;
+  refreshUserProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-
-
 export function useAuth() {
   const context = useContext(AuthContext);
-
-
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 }
 
+const API_URL = import.meta.env.VITE_API_URL ?? '';
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [userState, setUserState] = useState<User | null>(null);
+  const [appUser, setAppUser] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [checkingSubscription, setCheckingSubscription] = useState(true);
+  const [emailVerified, setEmailVerified] = useState(false);
 
-  const checkSubscription = async (forceRefresh: boolean = false) => {
-    if (!userState) {
+  const fetchUserProfile = async (forceRefresh = false): Promise<boolean> => {
+    const current = auth.currentUser;
+    if (!current) {
+      setAppUser(null);
       setIsSubscribed(false);
       return false;
     }
-    
     try {
-      // Get the ID token (force refresh if requested)
-      const token = await userState.getIdToken(forceRefresh);
-      
-      const apiUrl = import.meta.env.VITE_API_URL ?? '';
-      // Use the authorization endpoint (user profile) to check subscription status
-      const response = await fetch(`${apiUrl}/api/users/me`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      const token = await current.getIdToken(forceRefresh);
+      const response = await fetch(`${API_URL}/api/users/me`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-
       if (!response.ok) {
-        console.warn('Failed to fetch user profile from authorization endpoint', response.status);
         setIsSubscribed(false);
         return false;
       }
-
-      const userData = await response.json();
-      // Check subscription status from DB (single source of truth)
-      const hasSubscription = userData.is_subscribed === true;
-      
-      // Log subscription status for monitoring
-      if (hasSubscription) {
-        console.log(`Subscription verified for user ${userState.uid}`);
-      } else {
-        console.warn(`No subscription found for user ${userState.uid}`);
-      }
-      
-      setIsSubscribed(hasSubscription);
-      return hasSubscription;
-      
+      const data: AppUser = await response.json();
+      setAppUser(data);
+      const subscribed = data.is_subscribed === true;
+      setIsSubscribed(subscribed);
+      return subscribed;
     } catch (error) {
-      console.error('Subscription check failed:', error);
+      console.error('Error fetching user profile:', error);
       setIsSubscribed(false);
       return false;
     }
   };
 
-  useEffect(() => {
-    if (userState) {
-      checkSubscription();
-    }
-  }, [userState]);
-
-
+  const checkSubscription = async (forceRefresh = false): Promise<boolean> => {
+    return fetchUserProfile(forceRefresh);
+  };
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       try {
+        setUserState(user);
+        setEmailVerified(user?.emailVerified ?? false);
         if (user) {
-          // Security: Log successful authentication
-          console.log(`User authenticated: ${user.uid}`);
-          
-          // Verify user has required fields
-          if (!user.uid || (!user.email && !user.providerData?.length)) {
-            console.error('User object missing critical data');
-            setUserState(null);
-            setIsSubscribed(false);
-            setLoading(false);
-            return;
-          }
-          
-          setUserState(user);
-          await checkSubscription();
+          setCheckingSubscription(true);
+          await fetchUserProfile();
+          setCheckingSubscription(false);
         } else {
-          console.log('User signed out');
-          setUserState(null);
+          setAppUser(null);
           setIsSubscribed(false);
+          setCheckingSubscription(false);
         }
       } catch (error) {
         console.error('Auth state change error:', error);
         setUserState(null);
         setIsSubscribed(false);
+        setCheckingSubscription(false);
       } finally {
         setLoading(false);
       }
     });
-
-    
-
-
     return unsubscribe;
   }, []);
 
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      if (result.user) {
-        console.log(`Google sign-in successful for user: ${result.user.uid}`);
-      }
-    } catch (error: any) {
-      console.error('Google sign-in failed:', error);
-      
-      // Security: Log specific error types
-      if (error.code === 'auth/popup-closed-by-user') {
-        console.warn('User closed authentication popup');
-      } else if (error.code === 'auth/popup-blocked') {
-        console.warn('Authentication popup was blocked');
-      } else {
-        console.error('Unexpected Google sign-in error:', error.code);
-      }
-      
-      throw error; // Re-throw for UI error handling
-    }
+    await signInWithPopup(auth, provider);
   };
 
   const signInWithGithub = async () => {
     const provider = new GithubAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
-      if (result.user) {
-        console.log(`GitHub sign-in successful for user: ${result.user.uid}`);
+      // Capture GitHub username when available and sync to backend.
+      // @ts-ignore - reloadUserInfo is undocumented but commonly present
+      const screenName = result.user?.reloadUserInfo?.screenName;
+      if (screenName) {
+        try {
+          const token = await result.user.getIdToken();
+          await fetch(`${API_URL}/api/users/me`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ github_username: screenName }),
+          });
+          await fetchUserProfile();
+        } catch (e) {
+          console.error('Failed to sync GitHub username:', e);
+        }
       }
     } catch (error) {
       const authError = error as AuthError;
-      console.error('GitHub sign-in failed:', authError);
-      
       if (authError.code === 'auth/account-exists-with-different-credential') {
-        console.warn('Account linking required - user has existing account with different provider');
-        const email = authError.customData?.email;
-        
+        const email = authError.customData?.email as string | undefined;
         if (email) {
-          try {
-            const methods = await fetchSignInMethodsForEmail(auth, email);
-            console.log(`Existing sign-in methods for ${email}:`, methods);
-            
-            if (methods.includes('google.com')) {
-              console.log('Attempting to link with existing Google account');
-              const googleProvider = new GoogleAuthProvider();
-              
-              try {
-                const result = await signInWithPopup(auth, googleProvider);
-                if (result.user) {
-                  await linkWithPopup(result.user, provider);
-                  console.log('Successfully linked GitHub to Google account');
-                }
-              } catch (linkError) {
-                console.error('Account linking failed:', linkError);
-                throw linkError;
-              }
-            } else {
-              const error = new Error(`Please sign in with your original method: ${methods[0]}`);
-              console.error(error.message);
-              throw error;
-            }
-          } catch (fetchError) {
-            console.error('Error fetching sign-in methods:', fetchError);
-            throw fetchError;
+          const methods = await fetchSignInMethodsForEmail(auth, email);
+          if (methods.includes('google.com')) {
+            const googleProvider = new GoogleAuthProvider();
+            const result = await signInWithPopup(auth, googleProvider);
+            if (result.user) await linkWithPopup(result.user, provider);
+          } else {
+            throw new Error(`Please sign in with your original method: ${methods[0]}`);
           }
         } else {
-          const error = new Error('No email found for account linking');
-          console.error(error.message);
-          throw error;
+          throw new Error('No email found for account linking');
         }
       } else {
-        // Log other specific error types
-        if (authError.code === 'auth/popup-closed-by-user') {
-          console.warn('User closed GitHub authentication popup');
-        } else if (authError.code === 'auth/popup-blocked') {
-          console.warn('GitHub authentication popup was blocked');
-        }
         throw authError;
       }
     }
   };
 
-  const signOut = async () => {
-    try {
-      const currentUser = auth.currentUser;
-      await firebaseSignOut(auth);
-      
-      // Security: Log sign-out events
-      if (currentUser) {
-        console.log(`User signed out: ${currentUser.uid}`);
+  const loginWithEmail = async (email: string, password: string) => {
+    await signInWithEmailAndPassword(auth, email, password);
+  };
+
+  const signUpWithEmail = async (email: string, password: string) => {
+    const result = await createUserWithEmailAndPassword(auth, email, password);
+    if (result.user) {
+      try {
+        await sendEmailVerification(result.user);
+      } catch (e) {
+        console.error('Failed to send verification email:', e);
       }
-      
-      // Clear subscription state
-      setIsSubscribed(false);
-    } catch (error) {
-      console.error('Sign-out failed:', error);
-      throw error; // Re-throw for UI error handling
     }
   };
 
-  const value = {
+  const resetPassword = async (email: string) => {
+    await sendPasswordResetEmail(auth, email);
+  };
+
+  const resendVerificationEmail = async () => {
+    const user = auth.currentUser;
+    if (user && !user.emailVerified) {
+      await sendEmailVerification(user);
+    }
+  };
+
+  const reloadUser = async (): Promise<boolean> => {
+    if (auth.currentUser) {
+      await auth.currentUser.reload();
+      const verified = auth.currentUser.emailVerified;
+      setEmailVerified(verified);
+      setUserState(auth.currentUser);
+      return verified;
+    }
+    return false;
+  };
+
+  const getIdToken = async (): Promise<string | null> => {
+    if (auth.currentUser) return auth.currentUser.getIdToken();
+    return null;
+  };
+
+  const signOut = async () => {
+    await firebaseSignOut(auth);
+    setAppUser(null);
+    setIsSubscribed(false);
+  };
+
+  const value: AuthContextType = {
     user: userState,
     loading,
     isSubscribed,
     signInWithGoogle,
     signInWithGithub,
     signOut,
+    setIsSubscribed,
     checkSubscription,
-    setIsSubscribed
+    // designLab-compatible
+    currentUser: userState,
+    appUser,
+    checkingSubscription,
+    isEmailVerified: emailVerified,
+    logout: signOut,
+    loginWithGoogle: signInWithGoogle,
+    loginWithGithub: signInWithGithub,
+    loginWithEmail,
+    signUpWithEmail,
+    resetPassword,
+    resendVerificationEmail,
+    reloadUser,
+    getIdToken,
+    refreshUserProfile: async () => {
+      await fetchUserProfile();
+    },
   };
 
   return (
-    <AuthContext.Provider value={value}>
-      {!loading && children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>
   );
-} 
+}
