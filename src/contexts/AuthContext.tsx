@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import {
   User,
   signInWithPopup,
@@ -79,7 +79,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [checkingSubscription, setCheckingSubscription] = useState(true);
   const [emailVerified, setEmailVerified] = useState(false);
 
-  const fetchUserProfile = async (forceRefresh = false): Promise<boolean> => {
+  // NOTE: must be referentially stable (useCallback) because consumers like
+  // ProtectedRoute put `checkSubscription` in effect dependency arrays. An
+  // unstable identity here previously caused an infinite "Verifying access"
+  // loop on subscription-gated pages.
+  const fetchUserProfile = useCallback(async (forceRefresh = false): Promise<boolean> => {
     const current = auth.currentUser;
     if (!current) {
       setAppUser(null);
@@ -96,7 +100,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return false;
       }
       const data: AppUser = await response.json();
-      setAppUser(data);
+      setAppUser((prev) => (prev && prev.id === data.id && prev.is_subscribed === data.is_subscribed && prev.tokens === data.tokens ? prev : data));
       const subscribed = data.is_subscribed === true;
       setIsSubscribed(subscribed);
       return subscribed;
@@ -105,11 +109,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsSubscribed(false);
       return false;
     }
-  };
+  }, []);
 
-  const checkSubscription = async (forceRefresh = false): Promise<boolean> => {
-    return fetchUserProfile(forceRefresh);
-  };
+  const checkSubscription = useCallback(
+    (forceRefresh = false): Promise<boolean> => fetchUserProfile(forceRefresh),
+    [fetchUserProfile],
+  );
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -224,10 +229,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return false;
   };
 
-  const getIdToken = async (): Promise<string | null> => {
+  // Stable identity: NotificationBell uses this in an effect dependency array.
+  const getIdToken = useCallback(async (): Promise<string | null> => {
     if (auth.currentUser) return auth.currentUser.getIdToken();
     return null;
-  };
+  }, []);
 
   const signOut = async () => {
     await firebaseSignOut(auth);
