@@ -14,6 +14,20 @@ Como o YouTube processa, armazena e distribui bilhões de vídeos globalmente
 
 </Metrics>
 
+## A História da Empresa
+
+O YouTube foi fundado em fevereiro de 2005 por três ex-funcionários iniciais do PayPal — Chad Hurley, Steve Chen e Jawed Karim — e funcionou, em seus primeiros dias, em um escritório acima de uma pizzaria em San Mateo. Os fundadores estavam frustrados com o quanto era difícil compartilhar clipes de vídeo online e construíram a solução mais simples possível: faça upload uma vez, receba um link, assista no navegador. O primeiro upload de todos, o vídeo de 19 segundos "Me at the zoo" de Karim, foi ao ar em 23 de abril de 2005.
+
+O crescimento foi explosivo. Em cerca de 18 meses — e antes de o YouTube ter ganhado um único dólar — o Google o adquiriu em novembro de 2006 por US$ 1,65 bilhão em ações. Essa aquisição deu ao YouTube acesso à infraestrutura do Google (GFS, BigTable e, mais tarde, Colossus e Spanner) exatamente quando sua stack caseira de MySQL cedia sob a carga.
+
+O restante desta página traça como aquele monólito inicial evoluiu para uma plataforma em escala planetária que ingere centenas de horas de vídeo por minuto.
+
+<Callout type="info" title="💡 Uma Aposta de US$ 1,65 bi numa Startup de Pizzaria">
+
+O Google comprou o YouTube por US$ 1,65 bilhão apenas 18 meses após o lançamento — antes de o site gerar receita relevante. Hoje é uma das plataformas mais assistidas do planeta.
+
+</Callout>
+
 ## Requisitos do Sistema
 
 <Card title="Requisitos Funcionais" accent="red">
@@ -156,15 +170,39 @@ Manter dados consistentes globalmente. Solução: Uso de Spanner para dados crí
 
 ### 2005: Arquitetura Monolítica
 
-Usuários → Web Server → MySQL → Storage
+<Architecture
+  layers={[
+    { name: 'Usuários', accent: 'slate', nodes: ['Clientes'] },
+    { name: 'App', accent: 'red', nodes: ['Web Server'] },
+    { name: 'Dados', accent: 'slate', nodes: ['MySQL'] },
+    { name: 'Arquivos', accent: 'slate', nodes: ['Storage'] },
+  ]}
+  caption="Um único servidor web apoiado por MySQL — suficiente para 2–3 vídeos por minuto."
+/>
 
 ### 2008: Arquitetura Distribuída
 
-Usuários → Load Balancer → Web Server → BigTable / GFS
+<Architecture
+  layers={[
+    { name: 'Usuários', accent: 'slate', nodes: ['Clientes'] },
+    { name: 'Borda', accent: 'red', nodes: ['Load Balancer'] },
+    { name: 'App', accent: 'red', nodes: ['Web Server'] },
+    { name: 'Dados', accent: 'slate', nodes: ['BigTable', 'GFS'] },
+  ]}
+  caption="Após a aquisição pelo Google, o load balancing e o armazenamento do Google (BigTable, GFS) substituem a stack de máquina única."
+/>
 
 ### 2020+: Arquitetura Moderna
 
-Usuários → Global CDN → Load Balancer → Upload Service / Transcode / ML Service / Analytics / Search
+<Architecture
+  layers={[
+    { name: 'Usuários', accent: 'slate', nodes: ['Clientes'] },
+    { name: 'CDN', accent: 'red', nodes: ['Global Cache'] },
+    { name: 'Borda', accent: 'red', nodes: ['Load Balancer'] },
+    { name: 'Serviços', accent: 'red', nodes: ['Upload', 'Transcode', 'ML', 'Analytics', 'Busca'] },
+  ]}
+  caption="Hoje, uma CDN global está à frente de uma frota de microsserviços especializados em upload, transcodificação, recomendações, analytics e busca."
+/>
 
 ## Jornada Arquitetural: Contexto e Decisões
 

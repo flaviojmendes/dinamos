@@ -14,6 +14,20 @@ How YouTube processes, stores and distributes billions of videos globally
 
 </Metrics>
 
+## Origin Story
+
+YouTube was founded in February 2005 by three early PayPal employees — Chad Hurley, Steve Chen, and Jawed Karim — and run, in its earliest days, out of an office above a pizzeria in San Mateo. The founders were frustrated with how hard it was to share video clips online and built the simplest possible fix: upload once, get a link, watch in the browser. The first-ever upload, Karim's 19-second "Me at the zoo," went live on April 23, 2005.
+
+Growth was explosive. Within roughly 18 months — and before YouTube had earned a dollar — Google acquired it in November 2006 for $1.65 billion in stock. That acquisition gave YouTube access to Google's infrastructure (GFS, BigTable, and later Colossus and Spanner) exactly when its homegrown MySQL stack was buckling under the load.
+
+The rest of this page traces how that early monolith evolved into a planet-scale platform ingesting hundreds of hours of video every minute.
+
+<Callout type="info" title="💡 A $1.65B Bet on a Pizzeria Startup">
+
+Google bought YouTube for $1.65 billion just 18 months after its launch — before the site had generated meaningful revenue. It is now one of the most-watched platforms on Earth.
+
+</Callout>
+
 ## System Requirements
 
 <Card title="Functional Requirements" accent="red">
@@ -156,15 +170,39 @@ Maintain global data consistency. Solution: Use Spanner for critical data and ev
 
 ### 2005: Monolithic Architecture
 
-Users → Web Server → MySQL → Storage
+<Architecture
+  layers={[
+    { name: 'Users', accent: 'slate', nodes: ['Clients'] },
+    { name: 'App', accent: 'red', nodes: ['Web Server'] },
+    { name: 'Data', accent: 'slate', nodes: ['MySQL'] },
+    { name: 'Files', accent: 'slate', nodes: ['Storage'] },
+  ]}
+  caption="A single web server backed by MySQL — enough to handle 2–3 videos per minute."
+/>
 
 ### 2008: Distributed Architecture
 
-Users → Load Balancer → Web Server → BigTable / GFS
+<Architecture
+  layers={[
+    { name: 'Users', accent: 'slate', nodes: ['Clients'] },
+    { name: 'Edge', accent: 'red', nodes: ['Load Balancer'] },
+    { name: 'App', accent: 'red', nodes: ['Web Server'] },
+    { name: 'Data', accent: 'slate', nodes: ['BigTable', 'GFS'] },
+  ]}
+  caption="After the Google acquisition, load balancing and Google's storage (BigTable, GFS) replace the single-box stack."
+/>
 
 ### 2020+: Modern Architecture
 
-Users → Global CDN → Load Balancer → Upload Service / Transcode / ML Service / Analytics / Search
+<Architecture
+  layers={[
+    { name: 'Users', accent: 'slate', nodes: ['Clients'] },
+    { name: 'CDN', accent: 'red', nodes: ['Global Cache'] },
+    { name: 'Edge', accent: 'red', nodes: ['Load Balancer'] },
+    { name: 'Services', accent: 'red', nodes: ['Upload', 'Transcode', 'ML', 'Analytics', 'Search'] },
+  ]}
+  caption="Today, a global CDN fronts a fleet of specialized microservices for upload, transcoding, recommendations, analytics, and search."
+/>
 
 ## Architectural Journey: Context and Decisions
 

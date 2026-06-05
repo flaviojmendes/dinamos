@@ -14,6 +14,20 @@ Como o Spotify gerencia, processa e distribui milhões de músicas em tempo real
 
 </Metrics>
 
+## A História da Empresa
+
+O Spotify foi fundado em 2006 em Estocolmo por Daniel Ek e Martin Lorentzon, no auge da era da pirataria musical. A Suécia era a casa do The Pirate Bay, e a indústria estava convencida de que seu inimigo eram os downloads gratuitos. O insight contraintuitivo de Ek era que a pirataria é, no fundo, um problema de *experiência do usuário*: você não vence o "grátis" no preço, então o vence na conveniência. A meta era radical — fazer o streaming legal parecer mais rápido do que encontrar e baixar um arquivo pirata.
+
+Para entregar essa sensação de reprodução instantânea nas conexões de internet de 2008, o produto inicial se apoiava em tecnologia peer-to-peer para que uma faixa começasse em menos de 200 milissegundos. Depois de lançar por convite na Europa em 2008, o Spotify passou anos negociando com as gravadoras antes de finalmente chegar aos Estados Unidos em 2011 — os acordos de licenciamento, não a tecnologia, eram a parte difícil.
+
+O Spotify abriu capital via listagem direta na NYSE em 2018 e, no caminho, tornou-se tão influente na cultura de engenharia quanto na música. Seu modelo organizacional de "squads e tribes", seu portal de desenvolvedores open source Backstage e suas ferramentas de big data (Luigi) moldaram como muitas empresas constroem software hoje.
+
+<Callout type="info" title="💡 Não Dá Para Vencer o Grátis no Preço">
+
+A aposta de fundação do Spotify era que a pirataria era um problema de conveniência, não de preço. Ao fazer o streaming legal começar em milissegundos, ele ofereceu uma experiência que os downloads "gratuitos" não conseguiam igualar.
+
+</Callout>
+
 ## Requisitos do Sistema
 
 <Card title="Requisitos Funcionais" accent="green">
@@ -42,13 +56,22 @@ Como o Spotify gerencia, processa e distribui milhões de músicas em tempo real
 
 Visão geral da arquitetura distribuída do Spotify, mostrando os principais componentes e suas interações.
 
-Clientes (Web, Mobile, Desktop) → CDN e Edge Cache → Load Balancer → Serviço de Streaming / Serviço de Recomendação / Serviço de Metadados → S3 (Áudio) / Cassandra (Metadados) / Redis (Cache)
+<Architecture
+  layers={[
+    { name: 'Clientes', accent: 'slate', nodes: ['Web', 'Mobile', 'Desktop'] },
+    { name: 'Borda', accent: 'green', nodes: ['CDN & Edge Cache'] },
+    { name: 'Balancer', accent: 'green', nodes: ['Load Balancer'] },
+    { name: 'Serviços', accent: 'green', nodes: ['Streaming', 'Recomendação', 'Metadados'] },
+    { name: 'Armazenamento', accent: 'slate', nodes: ['S3 · Áudio', 'Cassandra', 'Redis'] },
+  ]}
+  caption="O áudio popular é servido por edge caches próximos aos ouvintes; o restante passa pelo load balancer até os serviços de backend e seus armazenamentos."
+/>
 
 ### Arquitetura de Streaming
 
 Fluxo de streaming de áudio, demonstrando como o conteúdo é entregue aos usuários através de edge caching e transcodificação adaptativa.
 
-Cliente Spotify → Edge Cache → Serviço de Streaming → Storage (S3), com componentes de Transcodificação e Processamento.
+<Flow accent="green" steps={['Cliente Spotify', 'Edge cache', 'Serviço de streaming', 'Object storage (S3)']} caption="No cache hit a faixa começa direto da borda; no miss ela é buscada no S3, transcodificada e cacheada para o próximo ouvinte." />
 
 ### 1. Sistema de Streaming
 
@@ -58,6 +81,18 @@ Cliente Spotify → Edge Cache → Serviço de Streaming → Storage (S3), com c
 - Chunks de áudio de 2-10 segundos
 - Múltiplas qualidades de áudio (16-320kbps)
 - Buffering adaptativo baseado na conexão
+
+O player adapta entre os níveis de qualidade conforme a conexão do ouvinte — trocando banda por fidelidade:
+
+<BarChart
+  data={[
+    { label: 'Baixa', value: 24, display: '24 kbps', accent: 'slate' },
+    { label: 'Normal', value: 96, display: '96 kbps', accent: 'green' },
+    { label: 'Alta', value: 160, display: '160 kbps', accent: 'green' },
+    { label: 'Muito alta (Premium)', value: 320, display: '320 kbps', accent: 'brand' },
+  ]}
+  caption="Níveis de qualidade do áudio Ogg Vorbis. Bitrates maiores significam mais fidelidade, mas também mais banda e armazenamento."
+/>
 
 #### Processamento de Áudio
 
@@ -167,25 +202,15 @@ Gerenciamento de centenas de microserviços. Solução: Backstage para developer
 
 ## Evolução da Arquitetura
 
-### 2006 — Arquitetura Inicial
-
-Monolito PHP com PostgreSQL, focado no mercado sueco.
-
-### 2008-2009 — Primeira Escala
-
-Migração para Python/C++, introdução de cache distribuído.
-
-### 2011-2012 — Era dos Microserviços
-
-Adoção de microserviços, migração para AWS.
-
-### 2014-2015 — Arquitetura Event-Driven
-
-Implementação do Kafka, processamento assíncrono.
-
-### 2016-Presente — Cloud Native e ML
-
-Kubernetes, ML em larga escala, Backstage.
+<Timeline
+  items={[
+    { year: '2006', title: 'Arquitetura inicial', body: 'Um monólito PHP com PostgreSQL, focado no mercado sueco.', accent: 'green' },
+    { year: '2008–2009', title: 'Primeira escala', body: 'Migração para Python/C++ e introdução de cache distribuído.', accent: 'green' },
+    { year: '2011–2012', title: 'Era dos microsserviços', body: 'Adoção de microsserviços e migração para a AWS.', accent: 'green' },
+    { year: '2014–2015', title: 'Arquitetura event-driven', body: 'A implementação do Kafka habilita o processamento assíncrono.', accent: 'green' },
+    { year: '2016–Presente', title: 'Cloud native & ML', body: 'Kubernetes, ML em larga escala e o portal de desenvolvedores Backstage.', accent: 'green' },
+  ]}
+/>
 
 ## Referências
 

@@ -14,6 +14,20 @@ How a RAG-based answer engine combines live web retrieval with LLM generation to
 
 </Metrics>
 
+## Origin Story
+
+Perplexity was founded in August 2022 by Aravind Srinivas (CEO, formerly a researcher at OpenAI and DeepMind), Denis Yarats (CTO, ex-Meta AI), Johnny Ho, and Andy Konwinski (a co-founder of Databricks). The team didn't start with a search engine — early experiments explored natural-language interfaces over structured data — before pivoting to the idea that became their identity: a conversational *answer engine*.
+
+The founding frustration was the "ten blue links" model of web search, where users are handed a list of pages and left to do the synthesis themselves. Perplexity's answer, launched as a public beta on December 7, 2022 — the same window in which ChatGPT exploded — was to return a direct, written answer with inline citations you can verify. Grounding every claim in retrieved sources was the whole point.
+
+That product is essentially Retrieval-Augmented Generation taken to production: search the live web, rerank the results, and let an LLM compose a cited answer. Backed by investors including Jeff Bezos, Nat Friedman, and NVIDIA, Perplexity became one of the most visible examples of RAG as a consumer product.
+
+<Callout type="info" title="💡 Answers, Not Links">
+
+Perplexity's founding bet was to replace the list of blue links with a single, written answer — every sentence backed by a citation you can check. It's RAG as a mainstream product.
+
+</Callout>
+
 ## System Requirements
 
 <Card title="Functional Requirements" accent="brand">
@@ -36,7 +50,11 @@ How a RAG-based answer engine combines live web retrieval with LLM generation to
 
 ## Architecture at a Glance
 
-Query → Query Understanding → Retrieval (web search + index + vector search) → Rerank → Context Assembly → LLM Generation (with citations) → Streamed Answer.
+<Flow
+  accent="purple"
+  steps={['Query', 'Query understanding', 'Retrieval (web + vector)', 'Rerank', 'Context assembly', 'LLM generation', 'Streamed answer']}
+  caption="A RAG pipeline: understand the query, retrieve and rerank sources, assemble context, then generate a cited answer and stream it back."
+/>
 
 ## Key Design Challenges
 

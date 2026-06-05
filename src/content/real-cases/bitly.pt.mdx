@@ -14,6 +14,20 @@ Como o Bit.ly gerencia bilhões de redirecionamentos e encurtamentos de URLs em 
 
 </Metrics>
 
+## A História da Empresa
+
+O Bit.ly foi criado em 2008 dentro da Betaworks, um estúdio de startups de Nova York liderado por John Borthwick. Seu propósito era quase trivial: o Twitter acabara de popularizar mensagens de 140 caracteres, e URLs longas devoravam um espaço precioso. O Bit.ly transformava qualquer link em um punhado de caracteres — e, crucialmente, registrava um clique toda vez que alguém o seguia.
+
+Seu momento de explosão veio em 2009, quando o Bit.ly se tornou o encurtador de URLs padrão do Twitter. Da noite para o dia, um projeto paralelo virou peça central do encanamento da web social, encurtando centenas de milhões de links e acumulando um dos conjuntos de dados em tempo real mais ricos sobre o que a internet estava clicando. Quando o Twitter lançou seu próprio encurtador (t.co) em 2011, o Bit.ly migrou de utilitário de consumo para uma plataforma corporativa de gestão de links e analytics.
+
+O Bit.ly mais tarde se desmembrou da Betaworks como empresa independente, com a Spectrum Equity adquirindo participação majoritária em 2017. Para estudantes de system design, ele continua sendo o exemplo canônico: um serviço enganosamente simples — gerar o hash de uma URL, armazená-lo, redirecionar rápido — que se torna um sério problema de sistemas distribuídos com bilhões de links e latência abaixo de 50ms.
+
+<Callout type="info" title="💡 De Projeto Paralelo a Encanamento da Web Social">
+
+Quando o Twitter tornou o Bit.ly seu encurtador de links padrão em 2009, um pequeno experimento da Betaworks passou a lidar com centenas de milhões de links — e um problema clássico de system design virou um problema real.
+
+</Callout>
+
 ## Requisitos do Sistema
 
 <Card title="Requisitos Funcionais" accent="brand">
@@ -44,13 +58,22 @@ Como o Bit.ly gerencia bilhões de redirecionamentos e encurtamentos de URLs em 
 
 Visão geral da arquitetura distribuída do Bit.ly, mostrando os principais componentes e suas interações.
 
-Clientes (Web, Mobile, API) → CDN e Edge Cache → Load Balancer → Serviço de Encurtamento / Serviço de Redirecionamento / Serviço de Analytics → MySQL (Metadados) / Redis (Cache) / Cassandra (Analytics)
+<Architecture
+  layers={[
+    { name: 'Clientes', accent: 'slate', nodes: ['Web', 'Mobile', 'API'] },
+    { name: 'Borda', accent: 'brand', nodes: ['CDN & Edge Cache'] },
+    { name: 'Balancer', accent: 'brand', nodes: ['Load Balancer'] },
+    { name: 'Serviços', accent: 'brand', nodes: ['Encurtamento', 'Redirecionamento', 'Analytics'] },
+    { name: 'Armazenamento', accent: 'slate', nodes: ['MySQL · Mapeamento', 'Redis · Cache', 'Cassandra · Analytics'] },
+  ]}
+  caption="Os redirecionamentos são servidos quentes do cache/CDN para latência abaixo de 50ms; o mapeamento no MySQL é a fonte da verdade e o analytics chega de forma assíncrona no Cassandra."
+/>
 
 ### Fluxo de URLs
 
 Fluxo de processamento de URLs, desde a submissão até a geração da URL curta.
 
-URL Original → Geração de Hash → Armazenamento → URL Curta
+<Flow accent="brand" steps={['URL original', 'Hash Base62', 'Armazenar mapeamento', 'URL curta']} caption="Uma URL longa vira uma chave curta em Base62, o mapeamento é persistido e o link curto é retornado." />
 
 ### 1. Sistema de Encurtamento
 
@@ -159,25 +182,15 @@ Detecção e prevenção de URLs maliciosas. Solução: ML e rate limiting distr
 
 ## Evolução da Arquitetura
 
-### 2008 — Lançamento
-
-Monolito Python com MySQL.
-
-### 2010-2011 — Primeira Escala
-
-Introdução de cache e CDN.
-
-### 2012-2013 — Foco Enterprise
-
-Analytics avançado, APIs empresariais.
-
-### 2015-2016 — Microsserviços
-
-Decomposição em serviços menores.
-
-### 2018-Presente — Stack Moderna
-
-Kubernetes, ML para segurança, APIs modernas.
+<Timeline
+  items={[
+    { year: '2008', title: 'Lançamento', body: 'Um monólito Python com MySQL, incubado na Betaworks.', accent: 'brand' },
+    { year: '2010–2011', title: 'Primeira escala', body: 'Cache e CDN introduzidos conforme o tráfego do Twitter explode.', accent: 'brand' },
+    { year: '2012–2013', title: 'Foco enterprise', body: 'Analytics avançado e APIs de nível empresarial.', accent: 'brand' },
+    { year: '2015–2016', title: 'Microsserviços', body: 'Decomposição em serviços menores e independentes.', accent: 'brand' },
+    { year: '2018–Presente', title: 'Stack moderna', body: 'Kubernetes, ML para detecção de abuso e APIs modernas.', accent: 'brand' },
+  ]}
+/>
 
 ## Referências
 

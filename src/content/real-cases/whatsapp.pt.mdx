@@ -14,6 +14,20 @@ Como o WhatsApp gerencia bilhões de mensagens em tempo real com criptografia po
 
 </Metrics>
 
+## A História da Empresa
+
+O WhatsApp foi fundado em 2009 por Jan Koum e Brian Acton, dois ex-engenheiros do Yahoo. A trajetória de Koum é improvável: um imigrante da Ucrânia que cresceu em parte com vale-alimentação na Califórnia, ele aprendeu redes sozinho com manuais usados. Curiosamente, ambos os fundadores haviam sido *rejeitados* em vagas no Facebook antes de criar a empresa que o Facebook mais tarde pagaria uma fortuna para ter.
+
+A primeira versão do app quase foi um fracasso — ela servia para mostrar mensagens de status ao lado dos contatos, não para enviar mensagens. A virada veio quando a Apple introduziu as notificações push: as pessoas começaram a se cutucar por meio das atualizações de status, e Koum percebeu que havia acidentalmente construído um mensageiro. Ao trafegar mensagens por dados em vez de SMS pago, o WhatsApp passou por cima das operadoras e se espalhou viralmente entre fronteiras.
+
+Em 2014, o Facebook adquiriu o WhatsApp por cerca de US$ 19 bilhões — uma das maiores aquisições de tecnologia da história — enquanto o app ainda era tocado por uma equipe famosamente pequena. A criptografia de ponta a ponta usando o protocolo Signal chegou em 2016. A lenda de engenharia permanece: algumas dezenas de engenheiros, a linguagem Erlang e servidores FreeBSD sustentando centenas de milhões de usuários.
+
+<Callout type="info" title="💡 Rejeitados pelo Facebook, Comprados pelo Facebook">
+
+Ambos os fundadores foram recusados em vagas no Facebook. Cinco anos depois, o Facebook comprou a empresa deles por cerca de US$ 19 bilhões — e um punhado de engenheiros atendia cerca de 900 milhões de usuários com Erlang.
+
+</Callout>
+
 ## Requisitos do Sistema
 
 <Card title="Requisitos Funcionais" accent="green">
@@ -44,13 +58,21 @@ Como o WhatsApp gerencia bilhões de mensagens em tempo real com criptografia po
 
 Visão geral da arquitetura distribuída do WhatsApp, mostrando os principais componentes e suas interações.
 
-Clientes (Mobile, Web, Desktop) → Load Balancer → Servidores de Chat / Servidores de Presença / Servidores de Mídia / Autenticação / Gerenciamento de Chaves → Cassandra (Mensagens) / Redis (Cache) / S3 (Mídia)
+<Architecture
+  layers={[
+    { name: 'Clientes', accent: 'slate', nodes: ['Mobile', 'Web', 'Desktop'] },
+    { name: 'Borda', accent: 'green', nodes: ['Load Balancer'] },
+    { name: 'Servidores', accent: 'green', nodes: ['Chat', 'Presença', 'Mídia', 'Auth', 'Chaves'] },
+    { name: 'Armazenamento', accent: 'slate', nodes: ['Cassandra · Mensagens', 'Redis · Cache', 'S3 · Mídia'] },
+  ]}
+  caption="As conexões persistentes dos clientes terminam no load balancer e se distribuem para servidores em Erlang; mensagens e mídia vão para Cassandra, Redis e S3."
+/>
 
 ### Fluxo de Mensagens
 
 Fluxo de mensagens criptografadas, demonstrando o processo desde o envio até a entrega.
 
-Remetente → Servidor de Chat → Fila de Mensagens → Destinatário (1. Encrypt → 2. Queue → 3. Deliver)
+<Flow accent="green" steps={['Remetente', 'Criptografia (E2EE)', 'Servidor de chat', 'Fila de mensagens', 'Entrega ao destinatário']} caption="As mensagens são criptografadas no dispositivo do remetente, enfileiradas no servidor apenas até a entrega e então removidas." />
 
 ### 1. Sistema de Mensagens
 
@@ -156,25 +178,15 @@ Gerenciamento de grupos com milhares de membros. Solução: Otimização de broa
 
 ## Evolução da Arquitetura
 
-### 2009 — Versão Inicial
-
-App iOS simples, focado em status.
-
-### 2011-2012 — Mensagens Básicas
-
-Implementação de chat, XMPP modificado.
-
-### 2014 — Aquisição Facebook
-
-Escala massiva, migração infraestrutura.
-
-### 2016 — Criptografia E2E
-
-Implementação do protocolo Signal.
-
-### 2019-Presente — Multi-Dispositivo
-
-Suporte nativo multi-device, nova arquitetura de sync.
+<Timeline
+  items={[
+    { year: '2009', title: 'Versão inicial', body: 'Um app iOS simples, focado em mensagens de status.', accent: 'green' },
+    { year: '2011–2012', title: 'Mensagens básicas', body: 'Chat implementado sobre um protocolo XMPP modificado.', accent: 'green' },
+    { year: '2014', title: 'Aquisição pelo Facebook', body: 'Escala massiva e migração de infraestrutura após o acordo de ~US$ 19 bi.', accent: 'green' },
+    { year: '2016', title: 'Criptografia ponta a ponta', body: 'O protocolo Signal é implantado em todas as conversas.', accent: 'green' },
+    { year: '2019–Presente', title: 'Multi-dispositivo', body: 'Suporte nativo a múltiplos dispositivos com nova arquitetura de sincronização.', accent: 'green' },
+  ]}
+/>
 
 ## Referências
 

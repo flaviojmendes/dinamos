@@ -14,6 +14,20 @@ How Netflix delivers high-quality video streaming to millions of users globally
 
 </Metrics>
 
+## Origin Story
+
+Netflix was founded in 1997 in Scotts Valley, California, by Reed Hastings and Marc Randolph. The now-legendary version of the story credits a $40 late fee Hastings received for a copy of *Apollo 13* — though Randolph has admitted the tale is partly mythologized. The real insight was simpler: a DVD was light enough to mail cheaply, and the web could replace the video-store counter. In 1999 they killed due dates and late fees entirely with a flat monthly subscription, a model that quietly redefined the business.
+
+In 2000, Netflix offered to sell itself to Blockbuster for $50 million. Blockbuster passed. A decade later Blockbuster was bankrupt, and Netflix had become a public company (IPO in 2002) with a streaming product that would eclipse the DVD business that built it. The 2007 launch of "Watch Now" streaming marked the pivot from a logistics company to one of the largest distributed systems on the planet.
+
+That scale forced Netflix to invent much of the modern reliability playbook. A catastrophic 2008 database corruption pushed the company off its own data centers and onto AWS — a multi-year migration that produced Chaos Engineering (Chaos Monkey), the Open Connect CDN, and a microservices architecture whose open-source tools (Hystrix, Zuul, Eureka) became industry standards.
+
+<Callout type="info" title="💡 The $50 Million Mistake">
+
+In 2000, Netflix offered to sell itself to Blockbuster for $50 million — and was turned down. Blockbuster filed for bankruptcy in 2010. The decision to keep building became one of the most expensive "no thanks" in business history.
+
+</Callout>
+
 ## System Requirements
 
 <Card title="Functional Requirements" accent="red">
@@ -44,7 +58,16 @@ How Netflix delivers high-quality video streaming to millions of users globally
 
 Overview of Netflix's distributed architecture, showing the main components and their interactions.
 
-Clients (TV, Mobile, Web) → Open Connect (CDN) → API Gateway → Streaming Service / Recommendation Service / Metadata Service → S3 (Videos) / Cassandra (Metadata) / EVCache (Cache)
+<Architecture
+  layers={[
+    { name: 'Clients', accent: 'slate', nodes: ['TV', 'Mobile', 'Web'] },
+    { name: 'Edge', accent: 'red', nodes: ['Open Connect CDN'] },
+    { name: 'Gateway', accent: 'red', nodes: ['API Gateway'] },
+    { name: 'Services', accent: 'red', nodes: ['Streaming', 'Recommendation', 'Metadata'] },
+    { name: 'Storage', accent: 'slate', nodes: ['S3 · Video', 'Cassandra', 'EVCache'] },
+  ]}
+  caption="Video bytes are served directly from Open Connect; control-plane traffic flows through the API gateway to backend services and their stores."
+/>
 
 ### 1. Streaming System
 
@@ -149,25 +172,15 @@ Managing hundreds of services. Solution: Chaos Engineering and resilience.
 
 ## Architecture Evolution
 
-### 2007 — Streaming Launch
-
-Streaming launch, basic infrastructure.
-
-### 2009-2010 — AWS Migration
-
-Move to cloud, beginning of global scale.
-
-### 2011-2012 — Microservices
-
-Monolith decomposition, Chaos Monkey introduction.
-
-### 2012-2016 — Open Connect
-
-Own CDN development, global expansion.
-
-### 2016-Present — Adaptive Streaming and ML
-
-Focus on quality and personalization with advanced ML.
+<Timeline
+  items={[
+    { year: '2007', title: 'Streaming launch', body: 'Streaming launches alongside the DVD business on basic infrastructure.', accent: 'red' },
+    { year: '2009–2010', title: 'AWS migration', body: 'Move to the cloud begins — the start of true global scale.', accent: 'red' },
+    { year: '2011–2012', title: 'Microservices', body: 'The monolith is decomposed into services; Chaos Monkey is introduced.', accent: 'red' },
+    { year: '2012–2016', title: 'Open Connect', body: 'Netflix builds its own CDN and expands across the globe.', accent: 'red' },
+    { year: '2016–Present', title: 'Adaptive streaming & ML', body: 'Focus shifts to quality and personalization with advanced machine learning.', accent: 'red' },
+  ]}
+/>
 
 ## References
 

@@ -1913,7 +1913,11 @@ const resources = {
           },
           prompt_injection: {
             name: 'Prompt Injection',
-            description: 'LLM-specific attacks and guardrails'
+            description: 'LLM-specific attacks and guardrails',
+            simulador: {
+              name: 'Prompt Injection Simulator',
+              description: 'Stack defenses and watch whether the secret leaks'
+            }
           }
         },
         ai_systems: {
@@ -7905,7 +7909,11 @@ const resources = {
           },
           prompt_injection: {
             name: 'Prompt Injection',
-            description: 'Ataques específicos de LLM e guardrails'
+            description: 'Ataques específicos de LLM e guardrails',
+            simulador: {
+              name: 'Simulador de Prompt Injection',
+              description: 'Combine defesas e veja se o segredo vaza'
+            }
           }
         },
         ai_systems: {

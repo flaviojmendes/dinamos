@@ -46,6 +46,7 @@ import SystemEditor from "./components/SystemEditor/SystemEditor";
 import TokensSimulator from "./components/Security/TokensSimulator";
 import CryptographySimulator from "./components/Security/CryptographySimulator";
 import AttackSimulatorPage from "./components/Security/AttackSimulatorPage";
+import PromptInjectionSimulator from "./components/Security/PromptInjectionSimulator";
 import Roadmap from "./components/Roadmap/Roadmap";
 import ContentLayout from "./components/Common/ContentLayout";
 import LanguageDetectionDialog from "./components/Common/LanguageDetectionDialog";
@@ -53,7 +54,15 @@ import { useContentProgress, PROGRESS_UPDATED_EVENT } from "./hooks/useContentPr
 import ContentPage from "./components/Common/ContentPage";
 import MdxPage, { availableSlugs } from "./components/Common/MdxPage";
 import { contentManifest } from "./config/contentManifest";
-import { quickAccessLinks } from "./config/quickAccess";
+import {
+  contentRegistry,
+  getItem,
+  getModule,
+  menuKey,
+  fallbackLabel,
+  TIER_ORDER,
+  type Tier,
+} from "./config/contentRegistry";
 import CanaryDeploymentSimulator from "./components/CanaryDeployment/CanaryDeploymentSimulator";
 import InferenceBatchingSimulator from "./components/AISystems/InferenceBatchingSimulator";
 import RagPipelineSimulator from "./components/AISystems/RagPipelineSimulator";
@@ -78,7 +87,7 @@ import PollingWebhooks from "./components/SystemComponents/PollingWebhooks";
 import { LanguageSwitcher, CouponModal } from './components/Common';
 import ThemeToggle from "./components/Common/ThemeToggle";
 import TopStatusBar from "./components/Common/TopStatusBar";
-import CommandPalette from "./components/Common/CommandPalette";
+import CommandPalette, { openCommandPalette } from "./components/Common/CommandPalette";
 import { useTranslation } from 'react-i18next';
 import CookieConsentBanner from './components/Common/CookieConsentBanner';
 import Footer from "./components/Common/Footer";
@@ -89,6 +98,7 @@ import TermsAndConditionsPage from './pages/TermsAndConditionsPage';
 import ReplicationSimulator from "./components/DesignPrinciples/ReplicationSimulator";
 import AvailabilityZonesSimulator from "./components/DesignPrinciples/AvailabilityZonesSimulator";
 import { ForumPage } from "./components/Forum";
+import ExplorePage from "./components/Explore/ExplorePage";
 
 interface MenuItem {
   name: string;
@@ -607,6 +617,13 @@ const createMenuItems = (t: any): MenuItem[] => [
         path: "/seguranca/prompt-injection",
         name: t('menu.seguranca.prompt_injection.name'),
         description: t('menu.seguranca.prompt_injection.description'),
+        children: [
+          {
+            path: "/seguranca/prompt-injection/simulador",
+            name: t('menu.seguranca.prompt_injection.simulador.name'),
+            description: t('menu.seguranca.prompt_injection.simulador.description'),
+          },
+        ],
       },
     ],
   },
@@ -1142,16 +1159,73 @@ const createMenuItems = (t: any): MenuItem[] => [
   },
 ];
 
-// Quick-access destinations (shared with the top status bar).
-const railLinks = quickAccessLinks;
-
 export default function App() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+    // On desktop, restore the saved open/closed preference (default: open).
+    try {
+      if (typeof window !== 'undefined' && window.innerWidth >= 768) {
+        const saved = localStorage.getItem('sidebar-open');
+        return saved == null ? true : saved === '1';
+      }
+    } catch {
+      /* ignore storage failures (private mode) */
+    }
+    return true;
+  });
   const [isMobile, setIsMobile] = useState(false);
+  const [navFilter, setNavFilter] = useState('');
   const { user, signOut, isSubscribed } = useAuth();
   const { isCompleted, progress, updateTrigger } = useContentProgress();
   const { t } = useTranslation();
   const menuItems = createMenuItems(t);
+
+  // Group the top-level nav by learning tier, derived from the registry.
+  const tierLabelFallback: Record<Tier, string> = {
+    FOUNDATIONAL: 'Foundations',
+    CORE: 'Core',
+    ADVANCED: 'Advanced',
+    APPLIED: 'Applied',
+    TOOLS: 'Tools & Community',
+  };
+  const tierLabel = (tier: Tier) =>
+    tier === 'TOOLS'
+      ? t('nav.tier_tools', { defaultValue: tierLabelFallback.TOOLS })
+      : t(`command_center.tier.${tier.toLowerCase()}`, { defaultValue: tierLabelFallback[tier] });
+  const tierForMenuItem = (item: MenuItem): Tier =>
+    item.external ? 'TOOLS' : getItem(item.path)?.tier ?? 'TOOLS';
+  // Roadmap is pinned to the very top of the nav, above the tier groups.
+  const pinnedPaths = ['/roadmap'];
+  const pinnedItems = pinnedPaths
+    .map((p) => menuItems.find((it) => it.path === p))
+    .filter((it): it is MenuItem => Boolean(it));
+  const groupedMenu = TIER_ORDER.map((tier) => ({
+    tier,
+    items: menuItems.filter(
+      (it) => !pinnedPaths.includes(it.path) && tierForMenuItem(it) === tier,
+    ),
+  })).filter((g) => g.items.length > 0);
+
+  // Flat, translated index used when the inline nav filter has a query.
+  const filteredNavItems = (() => {
+    const q = navFilter.trim().toLowerCase();
+    if (!q) return [] as { path: string; label: string; moduleLabel: string; type: string }[];
+    const tokens = q.split(/\s+/).filter(Boolean);
+    return contentRegistry
+      .map((i) => {
+        const m = getModule(i.moduleId);
+        return {
+          path: i.path,
+          label: t(menuKey(i.path, 'name'), { defaultValue: fallbackLabel(i.path) }),
+          moduleLabel: m ? t(`command_center.modules.${m.id}`, { defaultValue: m.label }) : '',
+          type: i.type,
+        };
+      })
+      .filter((i) => {
+        const hay = `${i.label} ${i.moduleLabel} ${i.path}`.toLowerCase();
+        return tokens.every((tok) => hay.includes(tok));
+      })
+      .slice(0, 50);
+  })();
   
   // Make menuItems accessible to other components via window object
   // This helps avoid circular dependencies when components need to access menuItems
@@ -1178,7 +1252,23 @@ export default function App() {
   }, []);
 
   const MenuLink = ({ item, onNavigate }: { item: MenuItem; onNavigate?: () => void }) => {
-    const [isExpanded, setIsExpanded] = useState(false);
+    const expandStorageKey = `nav-exp:${item.path}`;
+    const [isExpanded, setIsExpanded] = useState<boolean>(() => {
+      try {
+        const saved = localStorage.getItem(expandStorageKey);
+        return saved != null ? saved === '1' : false;
+      } catch {
+        return false;
+      }
+    });
+    const setExpandedPersist = (next: boolean) => {
+      setIsExpanded(next);
+      try {
+        localStorage.setItem(expandStorageKey, next ? '1' : '0');
+      } catch {
+        /* ignore storage failures (private mode) */
+      }
+    };
     const { pathname } = useLocation();
     const { isCompleted, updateTrigger } = useContentProgress();
     const { t } = useTranslation();
@@ -1221,6 +1311,15 @@ export default function App() {
       'border-transparent text-slate-600 dark:text-tactical-dim hover:bg-slate-100 dark:hover:bg-tactical-raised hover:text-slate-900 dark:hover:text-tactical-text';
     const itemActive =
       'border-brand-600 dark:border-signal-green bg-brand-50 dark:bg-tactical-raised text-slate-900 dark:text-tactical-text';
+
+    const regType = getItem(item.path)?.type;
+    const TypeMarker = () => {
+      if (regType === 'simulator')
+        return <span className="mr-1.5 font-mono text-xs text-signal-amber" aria-hidden>◆</span>;
+      if (regType === 'case')
+        return <span className="mr-1.5 font-mono text-xs text-signal-red" aria-hidden>★</span>;
+      return null;
+    };
 
     const CompletedMark = () => (
       <span className="ml-auto flex-shrink-0 text-signal-green" title="completed">
@@ -1290,6 +1389,7 @@ export default function App() {
               }}
             >
               <div className="flex items-center">
+                <TypeMarker />
                 <span className="font-mono text-sm tracking-tight mr-2">{displayName}</span>
                 {isCompleted(item.path) && <CompletedMark />}
               </div>
@@ -1301,7 +1401,7 @@ export default function App() {
             <button
               onClick={(e) => {
                 e.preventDefault();
-                setIsExpanded(!isExpanded);
+                setExpandedPersist(!isExpanded);
                 trackEvent("User", "Clicked on Menu Item", displayName);
               }}
               className={`px-2 text-slate-400 dark:text-tactical-label hover:text-slate-900 dark:hover:text-tactical-text hover:bg-slate-100 dark:hover:bg-tactical-raised transition-colors ${
@@ -1336,11 +1436,39 @@ export default function App() {
     window.location.href = "/";
   };
 
+  // Toggle the sidebar. On desktop the choice is persisted so it survives reloads.
+  const toggleSidebar = () => {
+    setIsSidebarOpen((prev) => {
+      const next = !prev;
+      if (!isMobile) {
+        try {
+          localStorage.setItem('sidebar-open', next ? '1' : '0');
+        } catch {
+          /* ignore storage failures (private mode) */
+        }
+      }
+      return next;
+    });
+  };
+
   useEffect(() => {
     const checkMobile = () => {
       const isMobileView = window.innerWidth < 768;
       setIsMobile(isMobileView);
-      setIsSidebarOpen(!isMobileView);
+      if (isMobileView) {
+        // Mobile always starts collapsed (the panel is an overlay).
+        setIsSidebarOpen(false);
+      } else {
+        // Desktop restores the persisted preference (default: open).
+        let open = true;
+        try {
+          const saved = localStorage.getItem('sidebar-open');
+          if (saved != null) open = saved === '1';
+        } catch {
+          /* ignore */
+        }
+        setIsSidebarOpen(open);
+      }
     };
 
     checkMobile();
@@ -1362,7 +1490,7 @@ export default function App() {
                 <ThemeToggle />
                 <LanguageSwitcher />
                 <button
-                  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                  onClick={toggleSidebar}
                   className="p-2 text-slate-500 hover:text-slate-900 dark:text-tactical-dim dark:hover:text-tactical-text rounded-lg dark:rounded-none hover:bg-slate-100 dark:hover:bg-tactical-raised"
                 >
                   {isSidebarOpen ? (
@@ -1384,11 +1512,13 @@ export default function App() {
         {user && (
           <aside
             className={`${
-              isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-            } ${
-              isMobile ? 'fixed inset-y-0 left-0 z-40' : 'relative'
-            } w-80 bg-white dark:bg-tactical-surface border-r border-slate-200 dark:border-tactical-border transition-transform duration-300 ease-in-out flex flex-col`}
+              isMobile
+                ? `fixed inset-y-0 left-0 z-40 w-80 border-r border-slate-200 dark:border-tactical-border transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`
+                : `relative shrink-0 overflow-hidden transition-[width] duration-300 ease-in-out ${isSidebarOpen ? 'w-80 border-r border-slate-200 dark:border-tactical-border' : 'w-0'}`
+            } bg-white dark:bg-tactical-surface flex flex-col`}
           >
+            {/* Fixed-width inner shell so content doesn't reflow while the panel animates open/closed */}
+            <div className="flex h-full w-80 flex-col">
             {/* Sidebar Content */}
             <div className={`flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-tactical-line scrollbar-track-transparent ${isMobile ? 'pt-16' : ''}`}>
               <div className="p-4">
@@ -1405,47 +1535,106 @@ export default function App() {
                   <div className="flex gap-2">
                     <ThemeToggle />
                     <LanguageSwitcher />
-                  </div>
-                </div>
-
-                {/* Quick access: top-level destinations with icons */}
-                <div className="mb-4">
-                  <span className="label-mono px-2">{t('quick_access.title')}</span>
-                  <div className="mt-2 space-y-0.5">
-                    {railLinks.map(({ to, labelKey, label, d }) => (
-                      <NavLink
-                        key={to}
-                        to={to}
-                        end={to === '/'}
-                        onClick={() => isMobile && setIsSidebarOpen(false)}
-                        className={({ isActive }: { isActive: boolean }) =>
-                          `flex items-center gap-2.5 px-3 py-2 border-l-2 font-mono text-sm tracking-tight transition-colors ${
-                            isActive
-                              ? 'border-brand-600 dark:border-signal-green bg-brand-50 dark:bg-tactical-raised text-slate-900 dark:text-tactical-text'
-                              : 'border-transparent text-slate-600 dark:text-tactical-dim hover:bg-slate-100 dark:hover:bg-tactical-raised hover:text-slate-900 dark:hover:text-tactical-text'
-                          }`
-                        }
+                    {!isMobile && (
+                      <button
+                        onClick={toggleSidebar}
+                        title={t('nav.collapse_sidebar', { defaultValue: 'Collapse menu' })}
+                        aria-label={t('nav.collapse_sidebar', { defaultValue: 'Collapse menu' })}
+                        className="flex h-8 w-8 items-center justify-center border border-transparent text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-tactical-dim dark:hover:bg-tactical-raised dark:hover:text-tactical-text cursor-pointer"
                       >
                         <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d={d} />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M11 19l-7-7 7-7M19 19l-7-7 7-7" />
                         </svg>
-                        <span className="truncate">{t(`quick_access.${labelKey}`, { defaultValue: label })}</span>
-                      </NavLink>
-                    ))}
+                      </button>
+                    )}
                   </div>
                 </div>
 
-                <div className="mb-3 border-t border-slate-200 dark:border-tactical-border" />
+                {/* Global search: prominent trigger for the command palette */}
+                <button
+                  onClick={() => openCommandPalette()}
+                  className="mb-4 flex w-full cursor-pointer items-center gap-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2 text-left text-slate-500 dark:text-tactical-dim transition-colors hover:border-brand-500 dark:hover:border-signal-green hover:text-slate-900 dark:hover:text-tactical-text"
+                  aria-label={t('command_center.search_aria')}
+                >
+                  <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+                  </svg>
+                  <span className="flex-1 truncate font-mono text-xs uppercase tracking-wider">
+                    {t('command_center.search_placeholder')}
+                  </span>
+                  <span className="shrink-0 border border-current px-1 font-mono text-[10px] opacity-70">⌘K</span>
+                </button>
 
-                <nav className="space-y-0.5">
-                  {menuItems.map((item) => (
-                    <MenuLink 
-                      key={item.path} 
-                      item={item} 
-                      onNavigate={() => isMobile && setIsSidebarOpen(false)}
-                    />
-                  ))}
-                </nav>
+                {/* Inline nav filter */}
+                <div className="mb-3 px-0.5">
+                  <input
+                    value={navFilter}
+                    onChange={(e) => setNavFilter(e.target.value)}
+                    placeholder={t('nav.filter_placeholder', { defaultValue: 'Filter navigation…' })}
+                    aria-label={t('nav.filter_placeholder', { defaultValue: 'Filter navigation' })}
+                    className="w-full border border-slate-200 bg-slate-50 px-3 py-1.5 font-mono text-xs text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none dark:border-tactical-border dark:bg-tactical-raised dark:text-tactical-text dark:placeholder:text-tactical-label dark:focus:border-signal-green"
+                  />
+                </div>
+
+                {navFilter.trim() ? (
+                  <nav className="space-y-0.5">
+                    {filteredNavItems.length === 0 ? (
+                      <p className="px-3 py-4 font-mono text-xs text-slate-400 dark:text-tactical-label">
+                        {t('command_center.no_matches')}
+                      </p>
+                    ) : (
+                      filteredNavItems.map((i) => (
+                        <NavLink
+                          key={i.path}
+                          to={i.path}
+                          onClick={() => isMobile && setIsSidebarOpen(false)}
+                          className={({ isActive }: { isActive: boolean }) =>
+                            `flex items-center gap-2 border-l-2 px-3 py-2 font-mono text-sm tracking-tight transition-colors ${
+                              isActive
+                                ? 'border-brand-600 bg-brand-50 text-slate-900 dark:border-signal-green dark:bg-tactical-raised dark:text-tactical-text'
+                                : 'border-transparent text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-tactical-dim dark:hover:bg-tactical-raised dark:hover:text-tactical-text'
+                            }`
+                          }
+                        >
+                          {i.type === 'simulator' && <span className="text-signal-amber" aria-hidden>◆</span>}
+                          {i.type === 'case' && <span className="text-signal-red" aria-hidden>★</span>}
+                          <span className="truncate">{i.label}</span>
+                          <span className="ml-auto shrink-0 text-[10px] uppercase tracking-wider text-slate-400 dark:text-tactical-label">
+                            {i.moduleLabel}
+                          </span>
+                        </NavLink>
+                      ))
+                    )}
+                  </nav>
+                ) : (
+                  <nav className="space-y-3">
+                    {pinnedItems.length > 0 && (
+                      <div className="space-y-0.5">
+                        {pinnedItems.map((item) => (
+                          <MenuLink
+                            key={item.path}
+                            item={item}
+                            onNavigate={() => isMobile && setIsSidebarOpen(false)}
+                          />
+                        ))}
+                      </div>
+                    )}
+                    {groupedMenu.map((group) => (
+                      <div key={group.tier}>
+                        <div className="label-mono px-2 pb-1 pt-1">{tierLabel(group.tier)}</div>
+                        <div className="space-y-0.5">
+                          {group.items.map((item) => (
+                            <MenuLink
+                              key={item.path}
+                              item={item}
+                              onNavigate={() => isMobile && setIsSidebarOpen(false)}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </nav>
+                )}
               </div>
             </div>
 
@@ -1496,6 +1685,7 @@ export default function App() {
                 </div>
               </div>
             )}
+            </div>
           </aside>
         )}
 
@@ -1511,7 +1701,7 @@ export default function App() {
 
         {/* Main content */}
         <main className={`flex-1 overflow-y-auto bg-canvas-paper dark:bg-canvas-dark ${isMobile ? 'pt-16' : ''}`}>
-          {user && <TopStatusBar />}
+          {user && <TopStatusBar isSidebarOpen={isSidebarOpen} onToggleSidebar={toggleSidebar} />}
           <Routes>
             {/* Content-only pages rendered from MDX (src/content/**). One route per
                 manifest entry replaces the ~60 former per-page component routes.
@@ -1682,6 +1872,14 @@ export default function App() {
               }
             />
             <Route path="/" element={user ? <CommandCenter /> : <LandingPage />} />
+            <Route
+              path="/explore"
+              element={
+                <ProtectedRoute requiresSubscription={false}>
+                  <ExplorePage />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/login" element={<Login />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/terms-and-conditions" element={<TermsAndConditionsPage />} />
@@ -1989,6 +2187,16 @@ export default function App() {
                 <ProtectedRoute>
                   <ContentPage>
                     <CryptographySimulator />
+                  </ContentPage>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/seguranca/prompt-injection/simulador"
+              element={
+                <ProtectedRoute>
+                  <ContentPage>
+                    <PromptInjectionSimulator />
                   </ContentPage>
                 </ProtectedRoute>
               }

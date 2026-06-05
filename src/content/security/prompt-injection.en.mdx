@@ -2,6 +2,8 @@
 
 LLMs don't distinguish between your instructions and the data they read. If untrusted text can reach the model, that text can hijack it. **Prompt injection** is the defining security risk of LLM applications — and it has no complete fix.
 
+[Try the Prompt Injection Simulator](/seguranca/prompt-injection/simulador)
+
 <Callout type="danger" title="⚠ The Root Cause">
 
 To an LLM, the system prompt, the user message, and retrieved documents are all just text in the same context. Attacker-controlled text can say "ignore previous instructions" — and the model may obey.

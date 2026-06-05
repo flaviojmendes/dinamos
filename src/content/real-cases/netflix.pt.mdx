@@ -14,6 +14,20 @@ Como a Netflix entrega streaming de vídeo em alta qualidade para milhões de us
 
 </Metrics>
 
+## A História da Empresa
+
+A Netflix foi fundada em 1997 em Scotts Valley, Califórnia, por Reed Hastings e Marc Randolph. A versão hoje lendária da história credita uma multa de US$ 40 que Hastings recebeu por atrasar a devolução de *Apollo 13* — embora Randolph admita que o relato é em parte mitológico. O insight real era mais simples: um DVD era leve o bastante para ser enviado pelo correio de forma barata, e a web podia substituir o balcão da locadora. Em 1999, eles eliminaram prazos e multas por atraso com uma assinatura mensal fixa, um modelo que redefiniu silenciosamente o negócio.
+
+Em 2000, a Netflix se ofereceu para ser vendida à Blockbuster por US$ 50 milhões. A Blockbuster recusou. Uma década depois, a Blockbuster estava falida, e a Netflix havia se tornado uma empresa pública (IPO em 2002) com um produto de streaming que ofuscaria o negócio de DVDs que a construiu. O lançamento do streaming "Watch Now" em 2007 marcou a virada de empresa de logística para um dos maiores sistemas distribuídos do planeta.
+
+Essa escala forçou a Netflix a inventar boa parte do manual moderno de confiabilidade. Uma corrupção catastrófica de banco de dados em 2008 empurrou a empresa para fora dos próprios data centers e para a AWS — uma migração de vários anos que produziu o Chaos Engineering (Chaos Monkey), a CDN Open Connect e uma arquitetura de microsserviços cujas ferramentas open source (Hystrix, Zuul, Eureka) se tornaram padrões da indústria.
+
+<Callout type="info" title="💡 O Erro de US$ 50 Milhões">
+
+Em 2000, a Netflix se ofereceu para ser vendida à Blockbuster por US$ 50 milhões — e foi recusada. A Blockbuster pediu falência em 2010. A decisão de continuar construindo tornou-se um dos "não, obrigado" mais caros da história dos negócios.
+
+</Callout>
+
 ## Requisitos do Sistema
 
 <Card title="Requisitos Funcionais" accent="red">
@@ -44,7 +58,16 @@ Como a Netflix entrega streaming de vídeo em alta qualidade para milhões de us
 
 Visão geral da arquitetura distribuída da Netflix, mostrando os principais componentes e suas interações.
 
-Clientes (TV, Mobile, Web) → Open Connect (CDN) → API Gateway → Serviço de Streaming / Serviço de Recomendação / Serviço de Metadados → S3 (Vídeos) / Cassandra (Metadados) / EVCache (Cache)
+<Architecture
+  layers={[
+    { name: 'Clientes', accent: 'slate', nodes: ['TV', 'Mobile', 'Web'] },
+    { name: 'Borda', accent: 'red', nodes: ['Open Connect CDN'] },
+    { name: 'Gateway', accent: 'red', nodes: ['API Gateway'] },
+    { name: 'Serviços', accent: 'red', nodes: ['Streaming', 'Recomendação', 'Metadados'] },
+    { name: 'Armazenamento', accent: 'slate', nodes: ['S3 · Vídeo', 'Cassandra', 'EVCache'] },
+  ]}
+  caption="Os bytes de vídeo são servidos diretamente do Open Connect; o tráfego de controle passa pelo API gateway até os serviços de backend e seus armazenamentos."
+/>
 
 ### 1. Sistema de Streaming
 
@@ -149,25 +172,15 @@ Gerenciamento de centenas de serviços. Solução: Chaos Engineering e resiliên
 
 ## Evolução da Arquitetura
 
-### 2007 — Início do Streaming
-
-Lançamento do streaming, infraestrutura básica.
-
-### 2009-2010 — Migração para AWS
-
-Mudança para cloud, início da escala global.
-
-### 2011-2012 — Microsserviços
-
-Decomposição do monolito, introdução do Chaos Monkey.
-
-### 2012-2016 — Open Connect
-
-Desenvolvimento da CDN própria, expansão global.
-
-### 2016-Presente — Streaming Adaptativo e ML
-
-Foco em qualidade e personalização com ML avançado.
+<Timeline
+  items={[
+    { year: '2007', title: 'Início do streaming', body: 'O streaming é lançado ao lado do negócio de DVDs, em infraestrutura básica.', accent: 'red' },
+    { year: '2009–2010', title: 'Migração para a AWS', body: 'Começa a mudança para a nuvem — o início da escala verdadeiramente global.', accent: 'red' },
+    { year: '2011–2012', title: 'Microsserviços', body: 'O monólito é decomposto em serviços; o Chaos Monkey é introduzido.', accent: 'red' },
+    { year: '2012–2016', title: 'Open Connect', body: 'A Netflix constrói sua própria CDN e expande pelo mundo.', accent: 'red' },
+    { year: '2016–Presente', title: 'Streaming adaptativo & ML', body: 'O foco migra para qualidade e personalização com machine learning avançado.', accent: 'red' },
+  ]}
+/>
 
 ## Referências
 

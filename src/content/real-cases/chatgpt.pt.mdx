@@ -14,6 +14,20 @@ Como um assistente baseado em LLM atende centenas de milhões de usuários com s
 
 </Metrics>
 
+## A História da Empresa
+
+O ChatGPT é a face de consumo da OpenAI, um laboratório fundado em dezembro de 2015 por Sam Altman, Elon Musk, Greg Brockman, Ilya Sutskever e outros — originalmente como uma organização sem fins lucrativos com a missão de garantir que a inteligência artificial geral beneficie a humanidade. A linhagem de pesquisa é o que importa tecnicamente: GPT-1 (2018), GPT-2 (2019) e GPT-3 (2020) mostraram de forma consistente que escalar modelos de linguagem transformer produzia capacidades surpreendentemente gerais.
+
+O próprio ChatGPT foi lançado em 30 de novembro de 2022, construído sobre um GPT-3.5 ajustado. A OpenAI o apresentou como um "research preview discreto", esperando interesse modesto. Em vez disso, ele alcançou um milhão de usuários em cinco dias e cerca de 100 milhões de usuários mensais em dois meses — o aplicativo de consumo de crescimento mais rápido da história até então, e o momento em que a IA generativa se tornou mainstream.
+
+Essa demanda repentina transformou um artefato de pesquisa em um dos problemas de serving mais difíceis da indústria: transmitir tokens para centenas de milhões de usuários a partir de uma frota de GPUs finita e cara. A arquitetura desta página existe porque o produto teve sucesso muito mais rápido do que qualquer um havia planejado.
+
+<Callout type="info" title="💡 Um 'Research Preview Discreto'">
+
+A OpenAI esperava que o ChatGPT atraísse interesse modesto. Ele chegou a cerca de 100 milhões de usuários mensais em aproximadamente dois meses — tornando-se o app de consumo de crescimento mais rápido da história até então e inaugurando a era da IA generativa.
+
+</Callout>
+
 ## Requisitos do Sistema
 
 <Card title="Requisitos Funcionais" accent="brand">
@@ -37,7 +51,17 @@ Como um assistente baseado em LLM atende centenas de milhões de usuários com s
 
 ## Arquitetura em Resumo
 
-Clientes (web, mobile, API) → Edge / Balanceador → API + Auth → Orquestrador → Servidores de Inferência (GPU, continuous batching) → Ferramentas (recuperação, código, navegação) e Armazenamento de Conversas.
+<Architecture
+  layers={[
+    { name: 'Clientes', accent: 'slate', nodes: ['Web', 'Mobile', 'API'] },
+    { name: 'Borda', accent: 'brand', nodes: ['Balanceador'] },
+    { name: 'API', accent: 'brand', nodes: ['API + Auth'] },
+    { name: 'Controle', accent: 'purple', nodes: ['Orquestrador'] },
+    { name: 'Inferência', accent: 'purple', nodes: ['Servidores GPU (continuous batching)'] },
+    { name: 'Backends', accent: 'slate', nodes: ['Ferramentas (recuperação/código/web)', 'Armazenamento de conversas'] },
+  ]}
+  caption="O orquestrador comanda os servidores de inferência em GPU, que transmitem tokens de volta, acionando ferramentas e o armazenamento de conversas conforme necessário."
+/>
 
 ## Principais Desafios de Design
 

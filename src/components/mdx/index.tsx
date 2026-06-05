@@ -152,6 +152,155 @@ export function Metric({ value, label, accent = 'brand' }: { value: string; labe
   );
 }
 
+// ---------------------------------------------------------------------------
+// Diagram / data-visualization components (dependency-free, tactical styling)
+// ---------------------------------------------------------------------------
+
+// Border + soft fill per accent for diagram node boxes.
+const nodeBox: Record<AccentKey, string> = {
+  brand: 'border-brand-300 bg-brand-50 dark:border-signal-cyan/40 dark:bg-signal-cyan/5',
+  green: 'border-green-300 bg-green-50 dark:border-signal-green/40 dark:bg-signal-green/5',
+  purple: 'border-purple-300 bg-purple-50 dark:border-signal-cyan/40 dark:bg-signal-cyan/5',
+  red: 'border-red-300 bg-red-50 dark:border-signal-red/40 dark:bg-signal-red/5',
+  yellow: 'border-yellow-300 bg-yellow-50 dark:border-signal-amber/40 dark:bg-signal-amber/5',
+  slate: 'border-slate-300 bg-slate-50 dark:border-tactical-border dark:bg-tactical-raised',
+};
+
+// Solid fill per accent for bar charts / markers.
+const solidFill: Record<AccentKey, string> = {
+  brand: 'bg-brand-500 dark:bg-signal-cyan',
+  green: 'bg-green-500 dark:bg-signal-green',
+  purple: 'bg-purple-500 dark:bg-signal-cyan',
+  red: 'bg-red-500 dark:bg-signal-red',
+  yellow: 'bg-yellow-500 dark:bg-signal-amber',
+  slate: 'bg-slate-400 dark:bg-tactical-line',
+};
+
+type ArchNode = { label: string; accent?: AccentKey };
+type ArchLayer = { name?: string; nodes: (string | ArchNode)[]; accent?: AccentKey };
+
+/** Arrow that points right on wide screens and down when layers stack on mobile. */
+function LayerConnector() {
+  return (
+    <div className="flex items-center justify-center font-mono text-signal-amber shrink-0 py-1 md:py-0 md:px-1">
+      <span className="md:hidden text-lg leading-none">↓</span>
+      <span className="hidden md:inline text-lg leading-none">→</span>
+    </div>
+  );
+}
+
+/**
+ * Layered box-and-arrow architecture diagram. Each layer is a column of node
+ * boxes; arrows connect consecutive layers. Stacks vertically on mobile.
+ */
+export function Architecture({ layers, caption }: { layers: ArchLayer[]; caption?: string }) {
+  return (
+    <figure className="my-8 tactical-panel p-4 md:p-6">
+      <div className="flex flex-col md:flex-row md:items-stretch gap-1">
+        {layers.map((layer, i) => (
+          <React.Fragment key={i}>
+            <div className="flex-1 flex flex-col min-w-0">
+              {layer.name && <div className="label-mono mb-2 text-center">{layer.name}</div>}
+              <div className="flex flex-col gap-2 justify-center h-full">
+                {layer.nodes.map((n, j) => {
+                  const node: ArchNode = typeof n === 'string' ? { label: n } : n;
+                  const acc = node.accent ?? layer.accent ?? 'slate';
+                  return (
+                    <div
+                      key={j}
+                      className={`border px-3 py-2 text-center font-mono text-xs md:text-[0.8rem] leading-tight text-slate-800 dark:text-tactical-text ${nodeBox[acc]}`}
+                    >
+                      {node.label}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            {i < layers.length - 1 && <LayerConnector />}
+          </React.Fragment>
+        ))}
+      </div>
+      {caption && (
+        <figcaption className="mt-4 text-xs font-mono text-slate-500 dark:text-tactical-dim text-center">
+          {caption}
+        </figcaption>
+      )}
+    </figure>
+  );
+}
+
+/** Compact left-to-right (wrapping) sequence of steps connected by arrows. */
+export function Flow({ steps, caption, accent = 'brand' }: { steps: string[]; caption?: string; accent?: AccentKey }) {
+  return (
+    <figure className="my-8 tactical-panel p-4 md:p-5">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-3">
+        {steps.map((s, i) => (
+          <React.Fragment key={i}>
+            <div className={`border px-3 py-2 font-mono text-xs md:text-sm text-slate-800 dark:text-tactical-text ${nodeBox[accent]}`}>
+              {s}
+            </div>
+            {i < steps.length - 1 && <span className="font-mono text-signal-amber text-lg leading-none">→</span>}
+          </React.Fragment>
+        ))}
+      </div>
+      {caption && (
+        <figcaption className="mt-4 text-xs font-mono text-slate-500 dark:text-tactical-dim">{caption}</figcaption>
+      )}
+    </figure>
+  );
+}
+
+type TimelineItem = { year?: string; title: string; body?: string; accent?: AccentKey };
+
+/** Vertical timeline with a marked rail — used for architecture evolution. */
+export function Timeline({ items }: { items: TimelineItem[] }) {
+  return (
+    <div className="my-8 relative pl-7 border-l border-slate-200 dark:border-tactical-border space-y-7">
+      {items.map((it, i) => (
+        <div key={i} className="relative">
+          <span
+            className={`absolute -left-[2.05rem] top-1 h-3.5 w-3.5 rounded-full ring-4 ring-white dark:ring-tactical-bg ${solidFill[it.accent ?? 'brand']}`}
+            aria-hidden
+          />
+          {it.year && <div className="label-mono">{it.year}</div>}
+          <div className="font-mono font-semibold text-slate-900 dark:text-tactical-text mt-0.5">{it.title}</div>
+          {it.body && <div className="text-sm leading-relaxed text-slate-700 dark:text-tactical-dim mt-1">{it.body}</div>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+type BarDatum = { label: string; value: number; display?: string; accent?: AccentKey };
+
+/** Horizontal bar chart for comparative figures. Bars scale to the largest value. */
+export function BarChart({ data, caption }: { data: BarDatum[]; caption?: string }) {
+  const max = Math.max(...data.map((d) => d.value), 0);
+  return (
+    <figure className="my-8 tactical-panel p-4 md:p-5 space-y-4">
+      {data.map((d, i) => {
+        const pct = max > 0 ? Math.max(2, (d.value / max) * 100) : 0;
+        return (
+          <div key={i} className="space-y-1.5">
+            <div className="flex items-baseline justify-between gap-3 text-xs font-mono">
+              <span className="text-slate-700 dark:text-tactical-dim truncate">{d.label}</span>
+              <span className="tabular-nums font-semibold text-slate-900 dark:text-tactical-text shrink-0">
+                {d.display ?? d.value}
+              </span>
+            </div>
+            <div className="h-2.5 bg-slate-200 dark:bg-tactical-raised overflow-hidden">
+              <div className={`h-full ${solidFill[d.accent ?? 'brand']}`} style={{ width: `${pct}%` }} />
+            </div>
+          </div>
+        );
+      })}
+      {caption && (
+        <figcaption className="text-xs font-mono text-slate-500 dark:text-tactical-dim">{caption}</figcaption>
+      )}
+    </figure>
+  );
+}
+
 /** Responsive 16:9 video embed (YouTube etc.). */
 export function VideoEmbed({ src, title = 'video' }: { src: string; title?: string }) {
   return (
@@ -232,6 +381,10 @@ export const mdxComponents = {
   Callout,
   Metrics,
   Metric,
+  Architecture,
+  Flow,
+  Timeline,
+  BarChart,
   VideoEmbed,
 };
 

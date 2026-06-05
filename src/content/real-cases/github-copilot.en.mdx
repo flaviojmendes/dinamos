@@ -14,6 +14,20 @@ How an AI pair-programmer delivers inline code completions with the ultra-low la
 
 </Metrics>
 
+## Origin Story
+
+GitHub Copilot was born from a collaboration between GitHub (acquired by Microsoft in 2018) and OpenAI. Its engine was OpenAI Codex, a descendant of GPT-3 fine-tuned on a vast corpus of public source code. The premise was bold for 2021: an editor extension that doesn't just autocomplete tokens, but suggests whole lines and functions from a comment or a function signature.
+
+Copilot launched as a technical preview in June 2021 and became generally available — as a paid product — in June 2022, making it one of the first large-scale, paid applications of generative AI. It also kicked off an ongoing debate about training on public code and the licensing implications, including litigation the industry is still working through.
+
+What makes Copilot a distinct system-design problem is the constraint of the editor itself: a suggestion that arrives a moment too late is worthless, because the developer has already typed past it. Everything on this page — debouncing, compact context assembly, right-sized models — flows from that single, unforgiving latency requirement.
+
+<Callout type="info" title="💡 The First Mainstream AI Pair Programmer">
+
+By wrapping OpenAI's Codex model in an editor extension, Copilot turned "AI autocomplete" into a daily tool for millions of developers — and one of the first paid, at-scale products built on generative AI.
+
+</Callout>
+
 ## System Requirements
 
 <Card title="Functional Requirements" accent="brand">
@@ -36,7 +50,11 @@ How an AI pair-programmer delivers inline code completions with the ultra-low la
 
 ## Architecture at a Glance
 
-Editor (debounced trigger) → Context Assembly (current file, nearby code, symbols) → Gateway → Inference (code model, streaming) → Suggestion shown inline.
+<Flow
+  accent="purple"
+  steps={['Editor (debounced)', 'Context assembly', 'Gateway', 'Code-model inference', 'Inline suggestion']}
+  caption="A typing pause triggers context assembly from the current file and nearby code, then a streamed completion is rendered inline."
+/>
 
 ## Key Design Challenges
 

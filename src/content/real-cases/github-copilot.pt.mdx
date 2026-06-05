@@ -14,6 +14,20 @@ Como um par-programador de IA entrega autocompletar de código inline com a lat�
 
 </Metrics>
 
+## A História da Empresa
+
+O GitHub Copilot nasceu de uma colaboração entre o GitHub (adquirido pela Microsoft em 2018) e a OpenAI. Seu motor era o OpenAI Codex, um descendente do GPT-3 ajustado sobre um vasto corpus de código-fonte público. A premissa era ousada para 2021: uma extensão de editor que não apenas completa tokens, mas sugere linhas e funções inteiras a partir de um comentário ou de uma assinatura de função.
+
+O Copilot foi lançado como uma prévia técnica em junho de 2021 e ficou disponível de forma geral — como produto pago — em junho de 2022, tornando-se uma das primeiras aplicações de IA generativa pagas em larga escala. Ele também iniciou um debate contínuo sobre o treinamento com código público e suas implicações de licenciamento, incluindo litígios que a indústria ainda está resolvendo.
+
+O que torna o Copilot um problema distinto de system design é a restrição do próprio editor: uma sugestão que chega um instante tarde demais é inútil, porque o desenvolvedor já digitou além dela. Tudo nesta página — debouncing, montagem compacta de contexto, modelos do tamanho certo — decorre desse único e implacável requisito de latência.
+
+<Callout type="info" title="💡 O Primeiro Par-Programador de IA Mainstream">
+
+Ao envolver o modelo Codex da OpenAI em uma extensão de editor, o Copilot transformou o "autocompletar com IA" em uma ferramenta diária para milhões de desenvolvedores — e em um dos primeiros produtos pagos e em escala construídos sobre IA generativa.
+
+</Callout>
+
 ## Requisitos do Sistema
 
 <Card title="Requisitos Funcionais" accent="brand">
@@ -36,7 +50,11 @@ Como um par-programador de IA entrega autocompletar de código inline com a lat�
 
 ## Arquitetura em Resumo
 
-Editor (gatilho com debounce) → Montagem de Contexto (arquivo atual, código próximo, símbolos) → Gateway → Inferência (modelo de código, streaming) → Sugestão exibida inline.
+<Flow
+  accent="purple"
+  steps={['Editor (debounce)', 'Montagem de contexto', 'Gateway', 'Inferência (modelo de código)', 'Sugestão inline']}
+  caption="Uma pausa na digitação dispara a montagem de contexto a partir do arquivo atual e do código próximo, e então uma sugestão em streaming é renderizada inline."
+/>
 
 ## Principais Desafios de Design
 

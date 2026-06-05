@@ -14,6 +14,20 @@ Como um motor de respostas baseado em RAG combina recuperação web ao vivo com 
 
 </Metrics>
 
+## A História da Empresa
+
+A Perplexity foi fundada em agosto de 2022 por Aravind Srinivas (CEO, ex-pesquisador da OpenAI e da DeepMind), Denis Yarats (CTO, ex-Meta AI), Johnny Ho e Andy Konwinski (cofundador da Databricks). A equipe não começou com um mecanismo de busca — experimentos iniciais exploravam interfaces de linguagem natural sobre dados estruturados — antes de pivotar para a ideia que se tornou sua identidade: um *mecanismo de respostas* conversacional.
+
+A frustração de fundação era o modelo dos "dez links azuis" da busca na web, em que o usuário recebe uma lista de páginas e fica encarregado de fazer a síntese sozinho. A resposta da Perplexity, lançada como beta público em 7 de dezembro de 2022 — na mesma janela em que o ChatGPT explodiu —, era devolver uma resposta direta e escrita, com citações em linha que você pode verificar. Embasar cada afirmação em fontes recuperadas era todo o ponto.
+
+Esse produto é, essencialmente, o Retrieval-Augmented Generation levado à produção: buscar na web ao vivo, reordenar os resultados e deixar um LLM compor uma resposta com citações. Apoiada por investidores como Jeff Bezos, Nat Friedman e NVIDIA, a Perplexity se tornou um dos exemplos mais visíveis de RAG como produto de consumo.
+
+<Callout type="info" title="💡 Respostas, Não Links">
+
+A aposta de fundação da Perplexity era substituir a lista de links azuis por uma única resposta escrita — cada frase respaldada por uma citação que você pode conferir. É RAG como produto mainstream.
+
+</Callout>
+
 ## Requisitos do Sistema
 
 <Card title="Requisitos Funcionais" accent="brand">
@@ -36,7 +50,11 @@ Como um motor de respostas baseado em RAG combina recuperação web ao vivo com 
 
 ## Arquitetura em Resumo
 
-Consulta → Entendimento da Consulta → Recuperação (busca web + índice + busca vetorial) → Reordenação → Montagem de Contexto → Geração por LLM (com citações) → Resposta em Streaming.
+<Flow
+  accent="purple"
+  steps={['Consulta', 'Entendimento da consulta', 'Recuperação (web + vetorial)', 'Reordenação', 'Montagem de contexto', 'Geração por LLM', 'Resposta em streaming']}
+  caption="Um pipeline de RAG: entender a consulta, recuperar e reordenar fontes, montar o contexto e então gerar uma resposta com citações e transmiti-la."
+/>
 
 ## Principais Desafios de Design
 

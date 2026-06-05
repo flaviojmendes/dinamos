@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import CompletionButton from './CompletionButton';
 import ReadingTime from './ReadingTime';
 import { SimulatorConsole } from '../tactical';
+import { getItem } from '../../config/contentRegistry';
+import { ContentBreadcrumb, ContentFooterNav } from './ContentNav';
 
 interface Props {
   children: React.ReactNode;
@@ -50,8 +52,20 @@ export default function ContentLayout({ children, hideCompletion = false, childP
     return t(key, { defaultValue: fallback });
   }, [currentPath, t]);
 
+  // Registry-driven breadcrumb + prev/next/related, shown on real content
+  // pages (lessons, cases, simulators) but not on tool pages.
+  const regItem = getItem(currentPath);
+  const showNav = !!regItem && !isRoadmapPage && !isForumPage && !isEditor;
+  const navContainer = isSimulator ? 'px-4 md:px-6' : 'mx-auto max-w-4xl px-4 md:px-8';
+
   return (
     <div className="relative">
+      {showNav && (
+        <div className={`${navContainer} pt-6`}>
+          <ContentBreadcrumb path={currentPath} />
+        </div>
+      )}
+
       <div ref={contentRef} className={isSimulator ? 'sim-scope' : undefined}>
         {useConsoleFrame ? (
           <div className="p-4 md:p-6">
@@ -66,6 +80,12 @@ export default function ContentLayout({ children, hideCompletion = false, childP
           children
         )}
       </div>
+
+      {showNav && (
+        <div className={`${navContainer} pb-12`}>
+          <ContentFooterNav path={currentPath} />
+        </div>
+      )}
 
       <div className="fixed bottom-8 right-8 flex flex-col items-end gap-3">
         {!isRoadmapPage && !isSimulator && !isForumPage && (

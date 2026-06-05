@@ -14,6 +14,20 @@ How Uber connects millions of drivers and passengers in real-time globally
 
 </Metrics>
 
+## Origin Story
+
+Uber began with a frustration shared by millions: in December 2008, Garrett Camp and Travis Kalanick couldn't get a cab on a snowy night in Paris. Camp, who had just sold StumbleUpon, became obsessed with the idea of tapping a button to summon a black car. The two launched UberCab in San Francisco in 2010 — initially a premium on-demand car service that felt like magic: your driver appeared on a map and rolled up minutes later.
+
+Regulators were less enchanted. After cease-and-desist orders, the company dropped "Cab" from its name in 2011, and in 2012 launched UberX, opening the platform to everyday drivers in their own cars. That move turned a luxury app into a global marketplace and ignited years of regulatory and labor battles in nearly every city it entered.
+
+Hyper-growth came with turbulence: a series of crises led to Travis Kalanick stepping down as CEO in 2017, with Dara Khosrowshahi taking over and steering the company to its 2019 IPO. Underneath the headlines, Uber built one of the hardest real-time systems anywhere — matching riders and drivers in milliseconds — and open-sourced the tools it needed, including the H3 hexagonal geospatial index.
+
+<Callout type="info" title="💡 Born From a Missed Cab">
+
+The idea for Uber was sparked on a single night in Paris when the founders couldn't find a taxi. The "press a button, get a ride" concept it produced reshaped urban transportation worldwide.
+
+</Callout>
+
 ## System Requirements
 
 <Card title="Functional Requirements" accent="slate">
@@ -44,13 +58,21 @@ How Uber connects millions of drivers and passengers in real-time globally
 
 Overview of Uber's distributed architecture, showing the main components and their interactions.
 
-Apps (Passenger, Driver) → API Gateway → Matching Service / Location Service / Trip Service / Payment Service / Analytics → PostgreSQL (Data) / Redis (Cache) / Kafka (Events)
+<Architecture
+  layers={[
+    { name: 'Apps', accent: 'slate', nodes: ['Passenger', 'Driver'] },
+    { name: 'Gateway', accent: 'slate', nodes: ['API Gateway'] },
+    { name: 'Services', accent: 'slate', nodes: ['Matching', 'Location', 'Trip', 'Payment', 'Analytics'] },
+    { name: 'Storage', accent: 'slate', nodes: ['PostgreSQL', 'Redis', 'Kafka'] },
+  ]}
+  caption="Rider and driver apps hit the gateway, which fans out to specialized services backed by PostgreSQL, Redis, and a Kafka event bus."
+/>
 
 ### Matching Flow
 
 Matching flow between passengers and drivers, demonstrating the process from request to match.
 
-Request → Processing → Driver Selection → Match
+<Flow accent="slate" steps={['Ride request', 'Geospatial processing', 'Driver selection', 'Match confirmed']} caption="Each request is resolved to a nearby driver in milliseconds using geospatial indexing and batching." />
 
 ### 1. Matching System
 
@@ -156,25 +178,15 @@ Handling events and peak hours. Solution: Auto-scaling and surge pricing.
 
 ## Architecture Evolution
 
-### 2009 — Initial MVP
-
-Ruby on Rails monolith, manual matching.
-
-### 2011-2012 — First Scale
-
-Automatic matching, Redis for dispatch.
-
-### 2014-2015 — Microservices
-
-Decomposition into services, Kafka for events.
-
-### 2016-2018 — Global Scale
-
-Multi-region, geographic optimization.
-
-### 2019-Present — ML and Optimization
-
-Machine learning for matching, demand prediction.
+<Timeline
+  items={[
+    { year: '2009', title: 'Initial MVP', body: 'A Ruby on Rails monolith with manual matching.', accent: 'slate' },
+    { year: '2011–2012', title: 'First scale', body: 'Automatic matching introduced; Redis powers dispatch.', accent: 'slate' },
+    { year: '2014–2015', title: 'Microservices', body: 'Decomposition into services with Kafka for events.', accent: 'slate' },
+    { year: '2016–2018', title: 'Global scale', body: 'Multi-region deployment and geographic optimization.', accent: 'slate' },
+    { year: '2019–Present', title: 'ML & optimization', body: 'Machine learning for matching and demand prediction.', accent: 'slate' },
+  ]}
+/>
 
 ## References
 

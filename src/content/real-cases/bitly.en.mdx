@@ -14,6 +14,20 @@ How Bit.ly manages billions of redirects and URL shortening at global scale
 
 </Metrics>
 
+## Origin Story
+
+Bit.ly was created in 2008 inside Betaworks, a New York startup studio led by John Borthwick. Its purpose was almost mundane: Twitter had just popularized 140-character messages, and long URLs ate up precious space. Bit.ly turned any link into a handful of characters — and, crucially, recorded a click every time someone followed one.
+
+Its breakout moment came in 2009, when Bit.ly became Twitter's default URL shortener. Overnight, a side project became core plumbing of the social web, shortening hundreds of millions of links and accumulating one of the richest real-time datasets about what the internet was clicking on. When Twitter launched its own shortener (t.co) in 2011, Bit.ly pivoted from consumer utility to an enterprise link-management and analytics platform.
+
+Bit.ly later spun out of Betaworks as an independent company, with Spectrum Equity acquiring a majority stake in 2017. For system-design students it remains the canonical example: a deceptively simple service — hash a URL, store it, redirect fast — that becomes a serious distributed-systems problem at billions of links and sub-50ms latency.
+
+<Callout type="info" title="💡 From Side Project to Social-Web Plumbing">
+
+When Twitter made Bit.ly its default link shortener in 2009, a small Betaworks experiment suddenly handled hundreds of millions of links — and a textbook system-design problem became a real one.
+
+</Callout>
+
 ## System Requirements
 
 <Card title="Functional Requirements" accent="brand">
@@ -44,13 +58,22 @@ How Bit.ly manages billions of redirects and URL shortening at global scale
 
 Overview of Bit.ly's distributed architecture, showing the main components and their interactions.
 
-Clients (Web, Mobile, API) → CDN and Edge Cache → Load Balancer → Shortening Service / Redirect Service / Analytics Service → MySQL (Metadata) / Redis (Cache) / Cassandra (Analytics)
+<Architecture
+  layers={[
+    { name: 'Clients', accent: 'slate', nodes: ['Web', 'Mobile', 'API'] },
+    { name: 'Edge', accent: 'brand', nodes: ['CDN & Edge Cache'] },
+    { name: 'Balancer', accent: 'brand', nodes: ['Load Balancer'] },
+    { name: 'Services', accent: 'brand', nodes: ['Shortening', 'Redirect', 'Analytics'] },
+    { name: 'Storage', accent: 'slate', nodes: ['MySQL · Mapping', 'Redis · Cache', 'Cassandra · Analytics'] },
+  ]}
+  caption="Redirects are served hot from cache/CDN for sub-50ms latency; the MySQL mapping is the source of truth and analytics land asynchronously in Cassandra."
+/>
 
 ### URL Flow
 
 URL processing flow, from submission to short URL generation.
 
-Original URL → Hash Generation → Storage → Short URL
+<Flow accent="brand" steps={['Original URL', 'Base62 hash', 'Store mapping', 'Short URL']} caption="A long URL is hashed to a short Base62 key, the mapping is persisted, and the short link is returned." />
 
 ### 1. Shortening System
 
@@ -159,25 +182,15 @@ Detection and prevention of malicious URLs. Solution: ML and distributed rate li
 
 ## Architecture Evolution
 
-### 2008 — Launch
-
-Python monolith with MySQL.
-
-### 2010-2011 — First Scale
-
-Introduction of cache and CDN.
-
-### 2012-2013 — Enterprise Focus
-
-Advanced analytics, enterprise APIs.
-
-### 2015-2016 — Microservices
-
-Decomposition into smaller services.
-
-### 2018-Present — Modern Stack
-
-Kubernetes, ML for security, modern APIs.
+<Timeline
+  items={[
+    { year: '2008', title: 'Launch', body: 'A Python monolith with MySQL, incubated at Betaworks.', accent: 'brand' },
+    { year: '2010–2011', title: 'First scale', body: 'Cache and CDN introduced as Twitter traffic explodes.', accent: 'brand' },
+    { year: '2012–2013', title: 'Enterprise focus', body: 'Advanced analytics and enterprise-grade APIs.', accent: 'brand' },
+    { year: '2015–2016', title: 'Microservices', body: 'Decomposition into smaller, independent services.', accent: 'brand' },
+    { year: '2018–Present', title: 'Modern stack', body: 'Kubernetes, ML for abuse detection, and modern APIs.', accent: 'brand' },
+  ]}
+/>
 
 ## References
 

@@ -14,6 +14,20 @@ Como o Uber conecta milhões de motoristas e passageiros em tempo real globalmen
 
 </Metrics>
 
+## A História da Empresa
+
+O Uber nasceu de uma frustração compartilhada por milhões: em dezembro de 2008, Garrett Camp e Travis Kalanick não conseguiram um táxi em uma noite de neve em Paris. Camp, que havia acabado de vender o StumbleUpon, ficou obcecado pela ideia de apertar um botão e chamar um carro preto. Os dois lançaram a UberCab em São Francisco em 2010 — inicialmente um serviço premium de carros sob demanda que parecia mágica: o motorista aparecia em um mapa e chegava em minutos.
+
+Os reguladores ficaram menos encantados. Após ordens de cessar e desistir, a empresa removeu o "Cab" do nome em 2011 e, em 2012, lançou o UberX, abrindo a plataforma para motoristas comuns com seus próprios carros. Esse movimento transformou um app de luxo em um marketplace global e desencadeou anos de batalhas regulatórias e trabalhistas em quase todas as cidades onde entrou.
+
+O hipercrescimento veio com turbulência: uma série de crises levou Travis Kalanick a deixar o cargo de CEO em 2017, com Dara Khosrowshahi assumindo e conduzindo a empresa ao IPO em 2019. Por baixo das manchetes, o Uber construiu um dos sistemas em tempo real mais difíceis que existem — combinando passageiros e motoristas em milissegundos — e abriu o código das ferramentas de que precisava, incluindo o índice geoespacial hexagonal H3.
+
+<Callout type="info" title="💡 Nascido de um Táxi Que Não Veio">
+
+A ideia do Uber surgiu em uma única noite em Paris, quando os fundadores não conseguiram um táxi. O conceito de "aperte um botão, ganhe uma corrida" que dali surgiu remodelou o transporte urbano no mundo todo.
+
+</Callout>
+
 ## Requisitos do Sistema
 
 <Card title="Requisitos Funcionais" accent="slate">
@@ -44,13 +58,21 @@ Como o Uber conecta milhões de motoristas e passageiros em tempo real globalmen
 
 Visão geral da arquitetura distribuída do Uber, mostrando os principais componentes e suas interações.
 
-Apps (Passageiro, Motorista) → API Gateway → Serviço de Matching / Serviço de Localização / Serviço de Viagens / Serviço de Pagamentos / Analytics → PostgreSQL (Dados) / Redis (Cache) / Kafka (Eventos)
+<Architecture
+  layers={[
+    { name: 'Apps', accent: 'slate', nodes: ['Passageiro', 'Motorista'] },
+    { name: 'Gateway', accent: 'slate', nodes: ['API Gateway'] },
+    { name: 'Serviços', accent: 'slate', nodes: ['Matching', 'Localização', 'Viagens', 'Pagamentos', 'Analytics'] },
+    { name: 'Armazenamento', accent: 'slate', nodes: ['PostgreSQL', 'Redis', 'Kafka'] },
+  ]}
+  caption="Os apps de passageiro e motorista acessam o gateway, que distribui para serviços especializados apoiados por PostgreSQL, Redis e um barramento de eventos Kafka."
+/>
 
 ### Fluxo de Matching
 
 Fluxo de matching entre passageiros e motoristas, demonstrando o processo desde a solicitação até o match.
 
-Solicitação → Processamento → Seleção Motorista → Match
+<Flow accent="slate" steps={['Solicitação de corrida', 'Processamento geoespacial', 'Seleção do motorista', 'Match confirmado']} caption="Cada solicitação é resolvida para um motorista próximo em milissegundos usando indexação geoespacial e batching." />
 
 ### 1. Sistema de Matching
 
@@ -156,25 +178,15 @@ Handling de eventos e horários de pico. Solução: Auto-scaling e surge pricing
 
 ## Evolução da Arquitetura
 
-### 2009 — MVP Inicial
-
-Monolito Ruby on Rails, matching manual.
-
-### 2011-2012 — Primeira Escala
-
-Matching automático, Redis para dispatch.
-
-### 2014-2015 — Microsserviços
-
-Decomposição em serviços, Kafka para eventos.
-
-### 2016-2018 — Escala Global
-
-Multi-região, otimização geográfica.
-
-### 2019-Presente — ML e Otimização
-
-Machine learning para matching, predição de demanda.
+<Timeline
+  items={[
+    { year: '2009', title: 'MVP inicial', body: 'Um monólito em Ruby on Rails com matching manual.', accent: 'slate' },
+    { year: '2011–2012', title: 'Primeira escala', body: 'Matching automático introduzido; o Redis passa a alimentar o dispatch.', accent: 'slate' },
+    { year: '2014–2015', title: 'Microsserviços', body: 'Decomposição em serviços com Kafka para eventos.', accent: 'slate' },
+    { year: '2016–2018', title: 'Escala global', body: 'Implantação multi-região e otimização geográfica.', accent: 'slate' },
+    { year: '2019–Presente', title: 'ML & otimização', body: 'Machine learning para matching e predição de demanda.', accent: 'slate' },
+  ]}
+/>
 
 ## Referências
 

@@ -14,6 +14,20 @@ How WhatsApp manages billions of real-time messages with end-to-end encryption
 
 </Metrics>
 
+## Origin Story
+
+WhatsApp was founded in 2009 by Jan Koum and Brian Acton, two former Yahoo engineers. Koum's story is improbable: an immigrant from Ukraine who grew up partly on food stamps in California, he taught himself networking from used manuals. Famously, both founders had been *rejected* for jobs at Facebook before starting the company that Facebook would later pay a fortune to own.
+
+The first version of the app was nearly a failure — it was meant to show status messages next to contacts, not send messages at all. The turning point came when Apple introduced push notifications: people started pinging each other through status updates, and Koum realized he had accidentally built a messenger. By routing messages over data instead of paid SMS, WhatsApp undercut the carriers and spread virally across borders.
+
+In 2014, Facebook acquired WhatsApp for roughly $19 billion — one of the largest tech acquisitions ever — while the app was still run by a famously tiny team. End-to-end encryption using the Signal protocol arrived in 2016. The engineering legend endures: a few dozen engineers, the Erlang language, and FreeBSD servers carrying hundreds of millions of users.
+
+<Callout type="info" title="💡 Rejected by Facebook, Bought by Facebook">
+
+Both founders were turned down for jobs at Facebook. Five years later, Facebook bought their company for about $19 billion — and a handful of engineers were serving roughly 900 million users on Erlang.
+
+</Callout>
+
 ## System Requirements
 
 <Card title="Functional Requirements" accent="green">
@@ -44,13 +58,21 @@ How WhatsApp manages billions of real-time messages with end-to-end encryption
 
 Overview of WhatsApp's distributed architecture, showing the main components and their interactions.
 
-Clients (Mobile, Web, Desktop) → Load Balancer → Chat Servers / Presence Servers / Media Servers / Authentication / Key Management → Cassandra (Messages) / Redis (Cache) / S3 (Media)
+<Architecture
+  layers={[
+    { name: 'Clients', accent: 'slate', nodes: ['Mobile', 'Web', 'Desktop'] },
+    { name: 'Edge', accent: 'green', nodes: ['Load Balancer'] },
+    { name: 'Servers', accent: 'green', nodes: ['Chat', 'Presence', 'Media', 'Auth', 'Key Mgmt'] },
+    { name: 'Storage', accent: 'slate', nodes: ['Cassandra · Messages', 'Redis · Cache', 'S3 · Media'] },
+  ]}
+  caption="Persistent client connections terminate at the load balancer and fan out to Erlang-based servers; messages and media land in Cassandra, Redis, and S3."
+/>
 
 ### Message Flow
 
 Encrypted message flow, demonstrating the process from sending to delivery.
 
-Sender → Chat Server → Message Queue → Receiver (1. Encrypt → 2. Queue → 3. Deliver)
+<Flow accent="green" steps={['Sender', 'Encrypt (E2EE)', 'Chat server', 'Message queue', 'Deliver to receiver']} caption="Messages are encrypted on the sender's device, queued server-side only until delivery, then removed." />
 
 ### 1. Messaging System
 
@@ -156,25 +178,15 @@ Managing groups with thousands of members. Solution: Broadcast optimization and 
 
 ## Architecture Evolution
 
-### 2009 — Initial Version
-
-Simple iOS app, focused on status.
-
-### 2011-2012 — Basic Messaging
-
-Chat implementation, modified XMPP.
-
-### 2014 — Facebook Acquisition
-
-Massive scale, infrastructure migration.
-
-### 2016 — E2E Encryption
-
-Signal protocol implementation.
-
-### 2019-Present — Multi-Device
-
-Native multi-device support, new sync architecture.
+<Timeline
+  items={[
+    { year: '2009', title: 'Initial version', body: 'A simple iOS app focused on status messages.', accent: 'green' },
+    { year: '2011–2012', title: 'Basic messaging', body: 'Chat implemented over a modified XMPP protocol.', accent: 'green' },
+    { year: '2014', title: 'Facebook acquisition', body: 'Massive scale and infrastructure migration follow the ~$19B deal.', accent: 'green' },
+    { year: '2016', title: 'End-to-end encryption', body: 'The Signal protocol is rolled out to all chats.', accent: 'green' },
+    { year: '2019–Present', title: 'Multi-device', body: 'Native multi-device support with a new sync architecture.', accent: 'green' },
+  ]}
+/>
 
 ## References
 

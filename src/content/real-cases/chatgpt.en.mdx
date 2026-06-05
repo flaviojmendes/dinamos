@@ -14,6 +14,20 @@ How an LLM assistant serves hundreds of millions of users with token-by-token st
 
 </Metrics>
 
+## Origin Story
+
+ChatGPT is the consumer face of OpenAI, a lab founded in December 2015 by Sam Altman, Elon Musk, Greg Brockman, Ilya Sutskever, and others — originally as a non-profit with the mission of ensuring artificial general intelligence benefits humanity. The research lineage is what matters technically: GPT-1 (2018), GPT-2 (2019), and GPT-3 (2020) steadily showed that scaling up transformer language models produced startlingly general capabilities.
+
+ChatGPT itself launched on November 30, 2022, built on a fine-tuned GPT-3.5. OpenAI framed it as a "low-key research preview," expecting modest interest. Instead it reached one million users in five days and around 100 million monthly users within two months — the fastest-growing consumer application in history at the time, and the moment generative AI went mainstream.
+
+That overnight demand turned a research artifact into one of the hardest serving problems in the industry: streaming tokens to hundreds of millions of users from a finite, expensive GPU fleet. The architecture on this page exists because the product succeeded far faster than anyone had planned for.
+
+<Callout type="info" title="💡 A 'Low-Key Research Preview'">
+
+OpenAI expected ChatGPT to attract modest interest. It hit roughly 100 million monthly users in about two months — making it the fastest-growing consumer app in history at the time and kicking off the generative-AI era.
+
+</Callout>
+
 ## System Requirements
 
 <Card title="Functional Requirements" accent="brand">
@@ -37,7 +51,17 @@ How an LLM assistant serves hundreds of millions of users with token-by-token st
 
 ## Architecture at a Glance
 
-Clients (web, mobile, API) → Edge / Load Balancer → API + Auth → Orchestrator → Inference Servers (GPU, continuous batching) → Tools (retrieval, code, browsing) and Conversation Store.
+<Architecture
+  layers={[
+    { name: 'Clients', accent: 'slate', nodes: ['Web', 'Mobile', 'API'] },
+    { name: 'Edge', accent: 'brand', nodes: ['Load Balancer'] },
+    { name: 'API', accent: 'brand', nodes: ['API + Auth'] },
+    { name: 'Control', accent: 'purple', nodes: ['Orchestrator'] },
+    { name: 'Inference', accent: 'purple', nodes: ['GPU servers (continuous batching)'] },
+    { name: 'Backends', accent: 'slate', nodes: ['Tools (retrieval/code/browse)', 'Conversation store'] },
+  ]}
+  caption="The orchestrator drives GPU inference servers that stream tokens back, calling out to tools and the conversation store as needed."
+/>
 
 ## Key Design Challenges
 

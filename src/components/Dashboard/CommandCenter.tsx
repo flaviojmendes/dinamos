@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { useContentProgress } from '../../hooks/useContentProgress';
 import { contentManifest } from '../../config/contentManifest';
+import { MODULES, type ModuleDef, type Tier } from '../../config/contentRegistry';
 import { getTopics, ForumTopic } from '../../services/forumService';
 import { openCommandPalette } from '../Common/CommandPalette';
 import {
@@ -18,37 +19,16 @@ import {
   type StatusVariant,
 } from '../tactical';
 
-type Tier = 'FOUNDATIONAL' | 'CORE' | 'ADVANCED' | 'APPLIED';
-
-interface ModuleDef {
-  id: string;
-  label: string;
-  tier: Tier;
-  /** Index/landing path for the module. */
-  base: string;
-  /** Explicit lesson paths (for modules without a shared prefix). */
-  paths?: string[];
-}
-
-// Modules are derived from contentManifest path prefixes (URLs stay unchanged).
-const MODULES: ModuleDef[] = [
-  { id: 'fundamentals', label: 'Fundamentals', tier: 'FOUNDATIONAL', base: '/intro', paths: ['/intro', '/sistemas-distribuidos-101', '/system-design-101'] },
-  { id: 'theory', label: 'Theoretical Foundations', tier: 'FOUNDATIONAL', base: '/theoretical-foundations' },
-  { id: 'components', label: 'System Components', tier: 'CORE', base: '/componentes' },
-  { id: 'design', label: 'Design Principles', tier: 'CORE', base: '/principios-design' },
-  { id: 'consistency', label: 'Consistency Strategies', tier: 'ADVANCED', base: '/estrategias-de-consistencia' },
-  { id: 'security', label: 'Security', tier: 'ADVANCED', base: '/seguranca' },
-  { id: 'monitoring', label: 'Monitoring & Maintenance', tier: 'ADVANCED', base: '/monitoramento-e-manutencao' },
-  { id: 'ai-systems', label: 'AI & LLM Systems', tier: 'APPLIED', base: '/sistemas-ia' },
-  { id: 'data-storage', label: 'Data & Storage', tier: 'CORE', base: '/dados-armazenamento' },
-  { id: 'cases', label: 'Real-World Cases', tier: 'APPLIED', base: '/casos-reais' },
-];
+// Learning modules come from the shared content registry (single source of
+// truth). Tool/community destinations are excluded from the mission table.
+const MODULE_ROWS: ModuleDef[] = MODULES.filter((m) => m.tier !== 'TOOLS');
 
 const tierColor: Record<Tier, string> = {
   FOUNDATIONAL: 'text-signal-cyan',
   CORE: 'text-signal-green',
   ADVANCED: 'text-signal-amber',
   APPLIED: 'text-signal-red',
+  TOOLS: 'text-slate-400 dark:text-tactical-label',
 };
 
 function lessonLabel(path: string): string {
@@ -96,7 +76,7 @@ export default function CommandCenter() {
   }, []);
 
   const rows: ModuleRow[] = useMemo(() => {
-    return MODULES.map((m) => {
+    return MODULE_ROWS.map((m) => {
       const lessons = (m.paths ?? contentManifest.filter((e) => e.path.startsWith(m.base)).map((e) => e.path));
       const uniqueLessons = Array.from(new Set(lessons));
       const total = uniqueLessons.length;
