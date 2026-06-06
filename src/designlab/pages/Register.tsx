@@ -76,7 +76,7 @@ export default function Register() {
       setLoading(true);
       await loginWithGoogle();
       trackSignup('google');
-      navigate('/home');
+      navigate('/design-lab');
     } catch (err: any) {
       setError('Falha ao criar conta com Google. Tente novamente.');
     } finally {
@@ -90,7 +90,7 @@ export default function Register() {
       setLoading(true);
       await loginWithGithub();
       trackSignup('github');
-      navigate('/home');
+      navigate('/design-lab');
     } catch (err: any) {
       console.error("GitHub signup error:", err);
       if (err.code === 'auth/account-exists-with-different-credential') {

@@ -14,7 +14,7 @@ export default function Landing() {
   // Redirect if already logged in
   useEffect(() => {
     if (currentUser) {
-      navigate('/home');
+      navigate('/design-lab');
     }
   }, [currentUser, navigate]);
 
@@ -37,7 +37,7 @@ export default function Landing() {
       setError('');
       setLoading(true);
       await loginWithGoogle();
-      navigate('/home');
+      navigate('/design-lab');
     } catch (err: any) {
       setError('Falha ao fazer login com Google. Tente novamente.');
     } finally {
@@ -50,7 +50,7 @@ export default function Landing() {
       setError('');
       setLoading(true);
       await loginWithGithub();
-      navigate('/home');
+      navigate('/design-lab');
     } catch (err: any) {
       console.error("GitHub login error:", err);
       if (err.code === 'auth/account-exists-with-different-credential') {

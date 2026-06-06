@@ -30,7 +30,7 @@ export default function Login() {
       setLoading(true);
       await loginWithEmail(email, password);
       trackLogin('email');
-      navigate('/home');
+      navigate('/design-lab');
     } catch (err: any) {
       console.error("Email login error:", err);
       if (err.code === 'auth/user-not-found') {
@@ -57,7 +57,7 @@ export default function Login() {
       setLoading(true);
       await loginWithGoogle();
       trackLogin('google');
-      navigate('/home');
+      navigate('/design-lab');
     } catch (err: any) {
       setError('Falha ao fazer login com Google. Tente novamente.');
     } finally {
@@ -71,7 +71,7 @@ export default function Login() {
       setLoading(true);
       await loginWithGithub();
       trackLogin('github');
-      navigate('/home');
+      navigate('/design-lab');
     } catch (err: any) {
       console.error("GitHub login error:", err);
       if (err.code === 'auth/account-exists-with-different-credential') {

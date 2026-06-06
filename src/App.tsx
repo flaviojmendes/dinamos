@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
   Routes,
   Route,
+  Navigate,
   NavLink,
   Link,
   useLocation,
@@ -1176,7 +1177,7 @@ const createMenuItems = (t: any): MenuItem[] => [
     ),
   },
   {
-    path: "/home",
+    path: "/design-lab",
     name: t('menu.design_lab.name'),
     description: t('menu.design_lab.description'),
     icon: (
@@ -2380,8 +2381,10 @@ export default function App() {
             />
 
             {/* --- designLab: challenges, feedback, quizzes, ranking, profile --- */}
+            {/* Legacy alias: old /home links redirect to the canonical /design-lab. */}
+            <Route path="/home" element={<Navigate to="/design-lab" replace />} />
             <Route
-              path="/home"
+              path="/design-lab"
               element={
                 <DLProtectedRoute requireSubscription={false}>
                   <DLHome />

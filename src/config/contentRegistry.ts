@@ -58,8 +58,8 @@ export const MODULES: ModuleDef[] = [
     id: 'practice',
     label: 'Practice Arena',
     tier: 'TOOLS',
-    base: '/home',
-    paths: ['/home', '/quizzes', '/ranking', '/forum', '/profile', '/notifications'],
+    base: '/design-lab',
+    paths: ['/design-lab', '/quizzes', '/ranking', '/forum', '/profile', '/notifications'],
   },
 ];
 
@@ -181,7 +181,7 @@ const TOOL_PATHS: string[] = ['/editor', '/roadmap'];
 // ranking, forum, profile, notifications). Registered so they are searchable in
 // the command palette and browsable on /explore alongside lessons & simulators.
 const PRACTICE_PATHS: { path: string; free: boolean }[] = [
-  { path: '/home', free: true },
+  { path: '/design-lab', free: true },
   { path: '/quizzes', free: true },
   { path: '/ranking', free: true },
   { path: '/forum', free: true },

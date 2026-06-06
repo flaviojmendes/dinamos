@@ -646,7 +646,7 @@ function Challenge() {
           <p className="text-slate-600 dark:text-tactical-dim mb-8 leading-relaxed">
             Para garantir a melhor experiência desenhando diagramas de arquitetura e escrevendo requisitos, este desafio deve ser realizado em um computador (desktop ou notebook).
           </p>
-          <TacticalButton variant="primary" onClick={() => navigate('/home')} className="w-full dark:rounded-none">
+          <TacticalButton variant="primary" onClick={() => navigate('/design-lab')} className="w-full dark:rounded-none">
             Voltar para o Início
           </TacticalButton>
         </div>
@@ -661,7 +661,7 @@ function Challenge() {
           <div className="text-signal-red text-5xl mb-4">⚠️</div>
           <h2 className="text-2xl font-mono uppercase tracking-wider font-bold text-slate-900 dark:text-tactical-text mb-2">Erro</h2>
           <p className="text-slate-600 dark:text-tactical-dim mb-6">{error}</p>
-          <TacticalButton variant="primary" onClick={() => navigate('/home')} className="dark:rounded-none">
+          <TacticalButton variant="primary" onClick={() => navigate('/design-lab')} className="dark:rounded-none">
             Voltar para o Início
           </TacticalButton>
         </div>
@@ -685,7 +685,7 @@ function Challenge() {
           <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <button
-                      onClick={() => navigate('/home')}
+                      onClick={() => navigate('/design-lab')}
                       className="text-slate-600 dark:text-tactical-dim hover:text-slate-900 dark:hover:text-tactical-text transition-colors duration-200 font-mono uppercase tracking-wider text-sm"
                     >
                       ← Voltar

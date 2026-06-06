@@ -22,7 +22,7 @@ export default function VerifyEmail() {
 
     // If already verified, redirect to home
     if (isEmailVerified) {
-      navigate('/home');
+      navigate('/design-lab');
       return;
     }
 
@@ -30,7 +30,7 @@ export default function VerifyEmail() {
     const interval = setInterval(async () => {
       const verified = await reloadUser();
       if (verified) {
-        navigate('/home');
+        navigate('/design-lab');
       }
     }, 3000);
 
@@ -71,7 +71,7 @@ export default function VerifyEmail() {
       setError('');
       const verified = await reloadUser();
       if (verified) {
-        navigate('/home');
+        navigate('/design-lab');
       } else {
         setError('Email ainda não verificado. Por favor, clique no link enviado para seu email.');
       }

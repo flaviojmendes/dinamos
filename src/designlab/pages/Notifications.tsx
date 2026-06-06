@@ -253,7 +253,7 @@ export default function Notifications() {
           {/* Header */}
           <div className="mb-8">
             <Link
-              to="/home"
+              to="/design-lab"
               className="inline-flex items-center font-mono uppercase tracking-wider text-xs text-slate-500 hover:text-slate-700 dark:text-tactical-dim dark:hover:text-tactical-text mb-4"
             >
               <ArrowLeft className="h-4 w-4 mr-1" />

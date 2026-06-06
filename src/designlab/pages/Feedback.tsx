@@ -16,7 +16,7 @@ function Feedback() {
   useEffect(() => {
     // Redirecionar se não houver feedback
     if (!feedback) {
-      navigate('/home')
+      navigate('/design-lab')
     }
   }, [feedback, navigate])
 
@@ -133,7 +133,7 @@ function Feedback() {
           <TacticalButton
             variant="secondary"
             size="lg"
-            onClick={() => navigate('/home')}
+            onClick={() => navigate('/design-lab')}
             className="flex-1 dark:rounded-none"
           >
             Voltar aos Desafios

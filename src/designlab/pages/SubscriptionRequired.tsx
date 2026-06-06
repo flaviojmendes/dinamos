@@ -14,7 +14,7 @@ export default function SubscriptionRequired() {
   };
 
   const handleGoHome = () => {
-    navigate('/home');
+    navigate('/design-lab');
   };
 
   return (

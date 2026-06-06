@@ -44,7 +44,7 @@ interface PracticeLink {
 
 const PRACTICE_LINKS: PracticeLink[] = [
   {
-    path: '/home',
+    path: '/design-lab',
     nameKey: 'menu.home.name',
     name: 'Design Lab',
     descKey: 'menu.home.description',

@@ -73,7 +73,7 @@ function AdminQuizzes() {
   // Check admin access
   useEffect(() => {
     if (!authLoading && appUser && !['Admin', 'Tutor'].includes(appUser.role || '')) {
-      navigate('/home')
+      navigate('/design-lab')
     }
   }, [appUser, authLoading, navigate])
 

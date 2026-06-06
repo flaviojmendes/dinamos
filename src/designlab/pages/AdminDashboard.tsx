@@ -551,7 +551,7 @@ function AdminDashboard() {
 
   useEffect(() => {
     if (!authLoading && appUser && !['Admin', 'Tutor'].includes(appUser.role || '')) {
-      navigate('/home')
+      navigate('/design-lab')
     }
   }, [appUser, authLoading, navigate])
 
