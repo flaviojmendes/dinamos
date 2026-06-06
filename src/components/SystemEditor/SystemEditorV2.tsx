@@ -18,7 +18,7 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { useTranslation } from 'react-i18next';
-import { Play, Pause, SkipForward, RotateCcw, Download, Upload, Settings2, Copy, Unplug, Zap, Trash2, ArrowDownUp, ArrowLeftRight, Undo2, Redo2, type LucideIcon } from 'lucide-react';
+import { Play, Pause, SkipForward, RotateCcw, Download, Upload, Settings2, Copy, Unplug, Zap, Trash2, ArrowDownUp, ArrowLeftRight, Undo2, Redo2, Plus, SlidersHorizontal, Boxes, type LucideIcon } from 'lucide-react';
 
 import {
   NodeConfig,
@@ -50,6 +50,10 @@ import {
 } from './engine/scoring';
 import GameBanner from './game/GameBanner';
 import GameLeaderboard from './game/GameLeaderboard';
+import { useIsTouchLayout } from './ui/useIsTouchLayout';
+import BottomSheet from './ui/BottomSheet';
+import MobilePalette from './ui/MobilePalette';
+import SelectionActionBar from './ui/SelectionActionBar';
 
 type RFNode = Node<SimNodeData>;
 
@@ -126,6 +130,12 @@ function EditorInner({ gameId }: { gameId?: string }) {
 
   const [menu, setMenu] = useState<{ kind: 'node' | 'edge' | 'pane'; id: string; x: number; y: number } | null>(null);
   const [showBill, setShowBill] = useState(false);
+
+  // --- Touch / mobile layout state ---
+  const isTouch = useIsTouchLayout();
+  type MobileSheet = 'palette' | 'scenario' | 'tools' | 'inspector' | null;
+  const [sheet, setSheet] = useState<MobileSheet>(null);
+  const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
 
   const simRef = useRef<Simulator | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -533,6 +543,8 @@ function EditorInner({ gameId }: { gameId?: string }) {
 
   const openMenuAt = useCallback((kind: 'node' | 'edge' | 'pane', id: string, event: React.MouseEvent) => {
     event.preventDefault();
+    // On touch we replace context menus with the SelectionActionBar / tools sheet.
+    if (isTouch) return;
     const bounds = canvasRef.current?.getBoundingClientRect();
     setMenu({
       kind,
@@ -540,7 +552,7 @@ function EditorInner({ gameId }: { gameId?: string }) {
       x: event.clientX - (bounds?.left ?? 0),
       y: event.clientY - (bounds?.top ?? 0),
     });
-  }, []);
+  }, [isTouch]);
 
   const onNodeContextMenu = useCallback(
     (event: React.MouseEvent, node: Node) => {
@@ -640,20 +652,42 @@ function EditorInner({ gameId }: { gameId?: string }) {
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
+  // Shared node creation used by both desktop drag-drop and touch tap-to-add.
+  const addNodeAt = useCallback(
+    (kind: NodeKind, position: { x: number; y: number }) => {
+      takeSnapshot();
+      const id = `n${Date.now()}`;
+      const count = nodesRef.current.filter((n) => n.data.config.kind === kind).length + 1;
+      const config = defaultsForKind(kind, id, `${t(`editor.kinds.${kind}`, { defaultValue: KIND_DEFAULT_LABEL[kind] })} ${count}`);
+      const newNode: RFNode = { id, type: kind, position, data: { config } };
+      setNodes((nds) => nds.concat(newNode));
+      return id;
+    },
+    [setNodes, t, takeSnapshot],
+  );
+
   const onDrop = useCallback(
     (event: React.DragEvent) => {
       event.preventDefault();
       const kind = event.dataTransfer.getData('application/dinamos') as NodeKind;
       if (!kind) return;
-      takeSnapshot();
-      const position = rf.screenToFlowPosition({ x: event.clientX, y: event.clientY });
-      const id = `n${Date.now()}`;
-      const count = nodes.filter((n) => n.data.config.kind === kind).length + 1;
-      const config = defaultsForKind(kind, id, `${t(`editor.kinds.${kind}`, { defaultValue: KIND_DEFAULT_LABEL[kind] })} ${count}`);
-      const newNode: RFNode = { id, type: kind, position, data: { config } };
-      setNodes((nds) => nds.concat(newNode));
+      addNodeAt(kind, rf.screenToFlowPosition({ x: event.clientX, y: event.clientY }));
     },
-    [rf, nodes, setNodes, t, takeSnapshot],
+    [rf, addNodeAt],
+  );
+
+  // Touch tap-to-add: drop the node at the centre of the visible canvas.
+  const addNodeOfKind = useCallback(
+    (kind: NodeKind) => {
+      const bounds = canvasRef.current?.getBoundingClientRect();
+      const screen = bounds
+        ? { x: bounds.left + bounds.width / 2, y: bounds.top + bounds.height / 2 }
+        : { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+      const id = addNodeAt(kind, rf.screenToFlowPosition(screen));
+      setSelectedId(id);
+      setSheet(null);
+    },
+    [rf, addNodeAt],
   );
 
   // --- Presets / persistence ---
@@ -737,8 +771,8 @@ function EditorInner({ gameId }: { gameId?: string }) {
   const selectedConfig = nodes.find((n) => n.id === selectedId)?.data.config ?? null;
   const nodeOptions = nodes.map((n) => ({ id: n.id, label: n.data.config.label }));
 
-  const btn = 'px-3 py-2 font-mono text-sm uppercase tracking-wider border transition-colors flex items-center gap-2';
-  const iconBtn = 'p-2 border transition-colors flex items-center justify-center';
+  const btn = `px-3 ${isTouch ? 'py-2.5 min-h-[44px]' : 'py-2'} font-mono text-sm uppercase tracking-wider border transition-colors flex items-center gap-2 whitespace-nowrap shrink-0`;
+  const iconBtn = `${isTouch ? 'p-2.5 min-h-[44px] min-w-[44px]' : 'p-2'} border transition-colors flex items-center justify-center shrink-0`;
 
   return (
     <MetricsContext.Provider value={{ metrics, running, selectedId }}>
@@ -752,7 +786,7 @@ function EditorInner({ gameId }: { gameId?: string }) {
         {gameActive && <GameBanner />}
 
         {/* Toolbar */}
-        <div className="flex flex-wrap items-center gap-2 mb-3">
+        <div className={`flex items-center gap-2 mb-3 ${isTouch ? 'overflow-x-auto pb-1' : 'flex-wrap'}`}>
           {!gameActive && (
             <>
               <button
@@ -769,7 +803,7 @@ function EditorInner({ gameId }: { gameId?: string }) {
                 <RotateCcw className="w-4 h-4" /> {t('editor.buttons.reset', { defaultValue: 'Reset' })}
               </button>
 
-              <div className="border-l border-tactical-line h-8 mx-1" />
+              <div className="border-l border-tactical-line h-8 mx-1 shrink-0" />
             </>
           )}
 
@@ -792,28 +826,33 @@ function EditorInner({ gameId }: { gameId?: string }) {
             <Redo2 className="w-4 h-4" />
           </button>
 
-          <div className="border-l border-tactical-line h-8 mx-1" />
-
-          <button
-            onClick={() => applyLayout('vertical')}
-            title={t('editor.buttons.arrange_vertical', { defaultValue: 'Arrange vertically' })}
-            aria-label={t('editor.buttons.arrange_vertical', { defaultValue: 'Arrange vertically' })}
-            className={`${iconBtn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}
-          >
-            <ArrowDownUp className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => applyLayout('horizontal')}
-            title={t('editor.buttons.arrange_horizontal', { defaultValue: 'Arrange horizontally' })}
-            aria-label={t('editor.buttons.arrange_horizontal', { defaultValue: 'Arrange horizontally' })}
-            className={`${iconBtn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}
-          >
-            <ArrowLeftRight className="w-4 h-4" />
-          </button>
-
-          {!gameActive && (
+          {/* Arrange: inline on desktop; folded into the Tools sheet on touch. */}
+          {!isTouch && (
             <>
-              <div className="border-l border-tactical-line h-8 mx-1" />
+              <div className="border-l border-tactical-line h-8 mx-1 shrink-0" />
+              <button
+                onClick={() => applyLayout('vertical')}
+                title={t('editor.buttons.arrange_vertical', { defaultValue: 'Arrange vertically' })}
+                aria-label={t('editor.buttons.arrange_vertical', { defaultValue: 'Arrange vertically' })}
+                className={`${iconBtn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}
+              >
+                <ArrowDownUp className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => applyLayout('horizontal')}
+                title={t('editor.buttons.arrange_horizontal', { defaultValue: 'Arrange horizontally' })}
+                aria-label={t('editor.buttons.arrange_horizontal', { defaultValue: 'Arrange horizontally' })}
+                className={`${iconBtn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}
+              >
+                <ArrowLeftRight className="w-4 h-4" />
+              </button>
+            </>
+          )}
+
+          {/* Desktop advanced inline controls (speed / seed / export / import). */}
+          {!gameActive && !isTouch && (
+            <>
+              <div className="border-l border-tactical-line h-8 mx-1 shrink-0" />
 
               <label className="flex items-center gap-2 font-mono text-xs text-tactical-dim">
                 {t('editor.labels.speed', { defaultValue: 'Speed' })}
@@ -830,7 +869,7 @@ function EditorInner({ gameId }: { gameId?: string }) {
                 />
               </label>
 
-              <div className="border-l border-tactical-line h-8 mx-1" />
+              <div className="border-l border-tactical-line h-8 mx-1 shrink-0" />
 
               <button onClick={exportDesign} className={`${btn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}>
                 <Download className="w-4 h-4" /> {t('editor.buttons.export', { defaultValue: 'Export' })}
@@ -838,8 +877,30 @@ function EditorInner({ gameId }: { gameId?: string }) {
               <button onClick={() => fileInputRef.current?.click()} className={`${btn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}>
                 <Upload className="w-4 h-4" /> {t('editor.buttons.import', { defaultValue: 'Import' })}
               </button>
-              <input type="file" ref={fileInputRef} accept=".din" className="hidden" onChange={importDesign} />
             </>
+          )}
+
+          {/* Touch quick-access: open the components / scenario / tools sheets. */}
+          {isTouch && (
+            <>
+              <div className="border-l border-tactical-line h-8 mx-1 shrink-0" />
+              <button onClick={() => setSheet('palette')} className={`${btn} border-signal-cyan text-signal-cyan hover:bg-signal-cyan/10`}>
+                <Plus className="w-4 h-4" /> {t('editor.labels.components', { defaultValue: 'Components' })}
+              </button>
+              {!gameActive && (
+                <button onClick={() => setSheet('scenario')} className={`${btn} border-tactical-border text-tactical-dim`}>
+                  <Boxes className="w-4 h-4" /> {t('editor.mobile.scenario', { defaultValue: 'Scenario' })}
+                </button>
+              )}
+              <button onClick={() => setSheet('tools')} className={`${btn} border-tactical-border text-tactical-dim`}>
+                <SlidersHorizontal className="w-4 h-4" /> {t('editor.mobile.tools', { defaultValue: 'Tools' })}
+              </button>
+            </>
+          )}
+
+          {/* Hidden file input shared by desktop toolbar and the Tools sheet. */}
+          {!gameActive && (
+            <input type="file" ref={fileInputRef} accept=".din" className="hidden" onChange={importDesign} />
           )}
         </div>
 
@@ -847,8 +908,9 @@ function EditorInner({ gameId }: { gameId?: string }) {
           <div className="bg-signal-red/10 border border-signal-red p-3 text-signal-red font-mono text-sm mb-3">{importError}</div>
         )}
 
-        {/* Scenario controls (admin-driven in game mode, so hidden for players) */}
-        {!gameActive && (
+        {/* Scenario controls (admin-driven in game mode, so hidden for players;
+            on touch they live in the Scenario bottom sheet). */}
+        {!gameActive && !isTouch && (
           <div className="tactical-panel p-3 mb-4">
             <ScenarioBar
               profileType={profileType}
@@ -866,8 +928,17 @@ function EditorInner({ gameId }: { gameId?: string }) {
         )}
 
         {/* Canvas + inspector */}
-        <div className="flex gap-0 tactical-panel" style={{ height: 560 }}>
-          <div className="flex-1 relative" ref={canvasRef}>
+        <div
+          className="flex gap-0 tactical-panel"
+          style={{ height: isTouch ? '60vh' : 560, minHeight: isTouch ? 380 : undefined }}
+        >
+          <div className={`flex-1 relative ${isTouch ? 'rf-touch' : ''}`} ref={canvasRef}>
+            {isTouch && (
+              <style>{`
+                .rf-controls-touch .react-flow__controls-button{width:34px;height:34px;}
+                .rf-touch .react-flow__handle{width:16px;height:16px;}
+              `}</style>
+            )}
             <ReactFlow
               nodes={nodes}
               edges={edges}
@@ -882,12 +953,12 @@ function EditorInner({ gameId }: { gameId?: string }) {
               onSelectionDragStart={onNodeDragStart}
               onDragOver={onDragOver}
               onDrop={onDrop}
-              onNodeClick={(_, node) => { setSelectedId(node.id); setShowBill(false); closeMenu(); }}
+              onNodeClick={(_, node) => { setSelectedId(node.id); setSelectedEdgeId(null); setShowBill(false); closeMenu(); }}
               onNodeContextMenu={onNodeContextMenu}
               onEdgeContextMenu={onEdgeContextMenu}
               onPaneContextMenu={onPaneContextMenu}
-              onEdgeClick={closeMenu}
-              onPaneClick={() => { setSelectedId(null); closeMenu(); }}
+              onEdgeClick={(_, edge) => { closeMenu(); if (isTouch) { setSelectedId(null); setSelectedEdgeId(edge.id); } }}
+              onPaneClick={() => { setSelectedId(null); setSelectedEdgeId(null); closeMenu(); }}
               onMoveStart={closeMenu}
               nodeTypes={nodeTypes}
               deleteKeyCode={['Backspace', 'Delete']}
@@ -896,36 +967,61 @@ function EditorInner({ gameId }: { gameId?: string }) {
               minZoom={0.2}
               maxZoom={1.5}
             >
-              <Panel position="top-left" className="bg-white/95 dark:bg-tactical-surface/95 border border-slate-200 dark:border-tactical-border p-3 backdrop-blur-sm max-h-[520px] overflow-y-auto">
-                <div className="label-mono text-signal-amber mb-2">{t('editor.labels.components', { defaultValue: 'Components' })}</div>
-                <div className="grid grid-cols-2 gap-1.5">
-                  {PALETTE_ORDER.map((kind) => {
-                    const entry = NODE_CATALOG[kind];
-                    const Icon = entry.icon;
-                    return (
-                      <div
-                        key={kind}
-                        draggable
-                        onDragStart={(e) => onDragStart(e, kind)}
-                        title={t(`editor.descriptions.${kind}`)}
-                        className={`px-2 py-1.5 bg-slate-50 dark:bg-tactical-raised cursor-move hover:bg-slate-100 dark:hover:bg-tactical-line border-l-2 ${entry.accent} font-mono text-[11px] text-slate-700 dark:text-tactical-text flex items-center gap-1.5`}
-                      >
-                        <Icon className="w-3.5 h-3.5" />
-                        {t(`editor.kinds.${kind}`, { defaultValue: KIND_DEFAULT_LABEL[kind] })}
-                      </div>
-                    );
-                  })}
-                </div>
-              </Panel>
-              {gameActive && game && (
+              {/* Desktop drag-and-drop palette. On touch this is replaced by the
+                  tap-to-add MobilePalette in a bottom sheet. */}
+              {!isTouch && (
+                <Panel position="top-left" className="bg-white/95 dark:bg-tactical-surface/95 border border-slate-200 dark:border-tactical-border p-3 backdrop-blur-sm max-h-[520px] overflow-y-auto">
+                  <div className="label-mono text-signal-amber mb-2">{t('editor.labels.components', { defaultValue: 'Components' })}</div>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {PALETTE_ORDER.map((kind) => {
+                      const entry = NODE_CATALOG[kind];
+                      const Icon = entry.icon;
+                      return (
+                        <div
+                          key={kind}
+                          draggable
+                          onDragStart={(e) => onDragStart(e, kind)}
+                          title={t(`editor.descriptions.${kind}`)}
+                          className={`px-2 py-1.5 bg-slate-50 dark:bg-tactical-raised cursor-move hover:bg-slate-100 dark:hover:bg-tactical-line border-l-2 ${entry.accent} font-mono text-[11px] text-slate-700 dark:text-tactical-text flex items-center gap-1.5`}
+                        >
+                          <Icon className="w-3.5 h-3.5" />
+                          {t(`editor.kinds.${kind}`, { defaultValue: KIND_DEFAULT_LABEL[kind] })}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </Panel>
+              )}
+              {gameActive && game && !isTouch && (
                 <Panel position="top-right" className="w-60">
                   <GameLeaderboard entries={game.leaderboard} currentUserId={user?.uid} />
                 </Panel>
               )}
-              <Controls />
-              <MiniMap nodeColor={(n) => NODE_CATALOG[(n.type as NodeKind) ?? 'server']?.hex ?? '#64748b'} />
+              <Controls className={isTouch ? 'rf-controls-touch' : undefined} showInteractive={!isTouch} />
+              {!isTouch && <MiniMap nodeColor={(n) => NODE_CATALOG[(n.type as NodeKind) ?? 'server']?.hex ?? '#64748b'} />}
               <Background variant={BackgroundVariant.Dots} gap={14} size={1} />
             </ReactFlow>
+
+            {/* Touch: floating action bar replaces right-click context menus. */}
+            {isTouch && selectedId && (
+              <SelectionActionBar
+                mode="node"
+                canDelete={!isNodeLocked(selectedId)}
+                onEdit={() => { setShowBill(false); setSheet('inspector'); }}
+                onDuplicate={() => duplicateNode(selectedId)}
+                onDisconnect={() => disconnectNode(selectedId)}
+                onKill={() => killNode(selectedId)}
+                onDelete={() => { deleteNode(selectedId); setSelectedId(null); }}
+                onClose={() => setSelectedId(null)}
+              />
+            )}
+            {isTouch && selectedEdgeId && (
+              <SelectionActionBar
+                mode="edge"
+                onDelete={() => { deleteEdge(selectedEdgeId); setSelectedEdgeId(null); }}
+                onClose={() => setSelectedEdgeId(null)}
+              />
+            )}
 
             {menu && (
               <div
@@ -958,25 +1054,138 @@ function EditorInner({ gameId }: { gameId?: string }) {
             )}
           </div>
 
-          <div className="w-80 shrink-0 border-l border-slate-200 dark:border-tactical-border bg-white dark:bg-tactical-surface">
-            {showBill ? (
-              <CostPanel
-                nodes={nodes.map((n) => ({ id: n.id, config: n.data.config }))}
-                metrics={metrics}
-                provider={provider}
-                totalCost={totalCost}
-                onClose={() => setShowBill(false)}
-              />
-            ) : (
-              <InspectorPanel config={selectedConfig} onChange={patchSelected} onDelete={deleteSelected} canDelete={!selectedConfig?.locked} />
-            )}
-          </div>
+          {/* Desktop side panel. On touch this content moves into a bottom sheet. */}
+          {!isTouch && (
+            <div className="w-80 shrink-0 border-l border-slate-200 dark:border-tactical-border bg-white dark:bg-tactical-surface">
+              {showBill ? (
+                <CostPanel
+                  nodes={nodes.map((n) => ({ id: n.id, config: n.data.config }))}
+                  metrics={metrics}
+                  provider={provider}
+                  totalCost={totalCost}
+                  onClose={() => setShowBill(false)}
+                />
+              ) : (
+                <InspectorPanel config={selectedConfig} onChange={patchSelected} onDelete={deleteSelected} canDelete={!selectedConfig?.locked} />
+              )}
+            </div>
+          )}
         </div>
 
         {/* Dashboard */}
         <div className="mt-4">
-          <Dashboard history={history} totalCost={totalCost} provider={provider} warnings={warnings} onCostClick={() => setShowBill(true)} />
+          <Dashboard
+            history={history}
+            totalCost={totalCost}
+            provider={provider}
+            warnings={warnings}
+            onCostClick={() => { setShowBill(true); if (isTouch) setSheet('inspector'); }}
+          />
         </div>
+
+        {/* ===================== Touch bottom sheets ===================== */}
+        {isTouch && (
+          <>
+            <BottomSheet
+              open={sheet === 'palette'}
+              onClose={() => setSheet(null)}
+              title={t('editor.labels.components', { defaultValue: 'Components' })}
+            >
+              <MobilePalette onAdd={addNodeOfKind} />
+            </BottomSheet>
+
+            <BottomSheet
+              open={sheet === 'inspector'}
+              onClose={() => { setSheet(null); setShowBill(false); }}
+              title={showBill ? t('editor.bill.title', { defaultValue: 'Cost breakdown' }) : t('editor.inspector.title', { defaultValue: 'Inspector' })}
+            >
+              {showBill ? (
+                <CostPanel
+                  nodes={nodes.map((n) => ({ id: n.id, config: n.data.config }))}
+                  metrics={metrics}
+                  provider={provider}
+                  totalCost={totalCost}
+                  onClose={() => { setShowBill(false); setSheet(null); }}
+                />
+              ) : (
+                <InspectorPanel config={selectedConfig} onChange={patchSelected} onDelete={() => { deleteSelected(); setSheet(null); }} canDelete={!selectedConfig?.locked} />
+              )}
+            </BottomSheet>
+
+            {!gameActive && (
+              <>
+                <BottomSheet
+                  open={sheet === 'scenario'}
+                  onClose={() => setSheet(null)}
+                  title={t('editor.mobile.scenario', { defaultValue: 'Scenario' })}
+                >
+                  <div className="p-3">
+                    <ScenarioBar
+                      profileType={profileType}
+                      onProfileChange={setProfileType}
+                      onLoadPreset={loadPreset}
+                      nodeOptions={nodeOptions}
+                      chaos={chaos}
+                      onAddChaos={(ev) => setChaos((c) => [...c, ev])}
+                      onRemoveChaos={(id) => setChaos((c) => c.filter((e) => e.id !== id))}
+                      provider={provider}
+                      onProviderChange={setProvider}
+                      currentTime={simRef.current?.currentTime ?? 0}
+                    />
+                  </div>
+                </BottomSheet>
+
+                <BottomSheet
+                  open={sheet === 'tools'}
+                  onClose={() => setSheet(null)}
+                  title={t('editor.mobile.tools', { defaultValue: 'Tools' })}
+                  maxHeightVh={60}
+                >
+                  <div className="p-4 space-y-4">
+                    <div>
+                      <div className="label-mono text-tactical-label mb-2">{t('editor.menu.arrange_vertical', { defaultValue: 'Arrange' })}</div>
+                      <div className="flex gap-2">
+                        <button onClick={() => { applyLayout('vertical'); setSheet(null); }} className={`${btn} flex-1 justify-center border-tactical-border text-tactical-dim`}>
+                          <ArrowDownUp className="w-4 h-4" /> {t('editor.buttons.arrange_vertical', { defaultValue: 'Vertical' })}
+                        </button>
+                        <button onClick={() => { applyLayout('horizontal'); setSheet(null); }} className={`${btn} flex-1 justify-center border-tactical-border text-tactical-dim`}>
+                          <ArrowLeftRight className="w-4 h-4" /> {t('editor.buttons.arrange_horizontal', { defaultValue: 'Horizontal' })}
+                        </button>
+                      </div>
+                    </div>
+
+                    <label className="block">
+                      <div className="flex justify-between font-mono text-xs text-tactical-dim mb-1">
+                        <span>{t('editor.labels.speed', { defaultValue: 'Speed' })}</span>
+                        <span className="text-tactical-text">{speed}x</span>
+                      </div>
+                      <input type="range" min={1} max={10} value={speed} onChange={(e) => setSpeed(Number(e.target.value))} className="w-full accent-signal-cyan" />
+                    </label>
+
+                    <label className="block">
+                      <div className="font-mono text-xs text-tactical-dim mb-1">{t('editor.labels.seed', { defaultValue: 'Seed' })}</div>
+                      <input
+                        type="number"
+                        value={seed}
+                        onChange={(e) => setSeed(Number(e.target.value))}
+                        className="w-full bg-tactical-raised border border-tactical-border px-2 py-2 font-mono text-sm text-tactical-text"
+                      />
+                    </label>
+
+                    <div className="flex gap-2">
+                      <button onClick={() => { exportDesign(); setSheet(null); }} className={`${btn} flex-1 justify-center border-tactical-border text-tactical-dim`}>
+                        <Download className="w-4 h-4" /> {t('editor.buttons.export', { defaultValue: 'Export' })}
+                      </button>
+                      <button onClick={() => fileInputRef.current?.click()} className={`${btn} flex-1 justify-center border-tactical-border text-tactical-dim`}>
+                        <Upload className="w-4 h-4" /> {t('editor.buttons.import', { defaultValue: 'Import' })}
+                      </button>
+                    </div>
+                  </div>
+                </BottomSheet>
+              </>
+            )}
+          </>
+        )}
       </div>
     </MetricsContext.Provider>
   );
