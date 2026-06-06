@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
 import ReactFlow, {
   Background,
   BackgroundVariant,
@@ -38,6 +39,17 @@ import Dashboard from './ui/Dashboard';
 import ScenarioBar from './ui/ScenarioBar';
 import { parseDesign, serializeDesign, SerializedNode } from './ui/persistence';
 import { layoutGraph, LayoutDirection } from './ui/autoLayout';
+import { useGameContext } from './game/GameContext';
+import { architectureToRF, rfToArchitecture } from './game/architecture';
+import {
+  frameScore,
+  normalizeScoring,
+  emptyAccumulator,
+  accumulate,
+  type ScoreAccumulator,
+} from './engine/scoring';
+import GameBanner from './game/GameBanner';
+import GameLeaderboard from './game/GameLeaderboard';
 
 type RFNode = Node<SimNodeData>;
 
@@ -86,8 +98,12 @@ function ContextItem({
   );
 }
 
-function EditorInner() {
+function EditorInner({ gameId }: { gameId?: string }) {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const game = useGameContext();
+  const gameState = game?.state ?? null;
+  const gameActive = !!gameId && !!game;
   const initial = useMemo(() => presetToRF('three-tier'), []);
 
   const [nodes, setNodes, onNodesChange] = useNodesState<SimNodeData>(initial.nodes);
@@ -115,6 +131,25 @@ function EditorInner() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const rf = useReactFlow();
+
+  // --- Game mode state (only used when gameId is set) ---
+  // Live refs so the synced run loop / score submitter read fresh values
+  // without re-subscribing on every poll.
+  const gameRef = useRef(game);
+  gameRef.current = game;
+  const gameStateRef = useRef(gameState);
+  gameStateRef.current = gameState;
+  const scoreRef = useRef<ScoreAccumulator>(emptyAccumulator());
+  const lastFrameRef = useRef<SimulationFrame | null>(null);
+  const seededKeyRef = useRef<string | null>(null);
+  const finalSubmittedRef = useRef<string | null>(null);
+
+  const isNodeLocked = useCallback(
+    (id: string | null) =>
+      !!id && nodesRef.current.some((n) => n.id === id && n.data.config.locked),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
   // --- Undo / redo history (graph snapshots) ---
   // We keep stacks of {nodes, edges} snapshots. `takeSnapshot` is called at the
@@ -265,6 +300,154 @@ function EditorInner() {
     setWarnings([]);
   }, [seed]);
 
+  // ===================== Game mode wiring =====================
+  // Seed the graph from the match's starting (or the player's saved) architecture
+  // once per match start, applying the admin's lock rules. Guarded so polling
+  // never clobbers the player's in-progress edits.
+  useEffect(() => {
+    if (!gameActive || !gameState) return;
+    // Wait until we've joined so we resume the player's saved build on rejoin
+    // rather than the pristine starting architecture.
+    if (!gameState.joined) return;
+    const arch = gameState.my_architecture ?? gameState.starting_architecture;
+    if (!arch) return;
+    const key = `${gameState.code}:${gameState.started_at ?? gameState.starts_at ?? 'lobby'}`;
+    if (seededKeyRef.current === key) return;
+    seededKeyRef.current = key;
+
+    const { nodes: gn, edges: ge } = architectureToRF(
+      arch,
+      gameState.locked_node_ids ?? [],
+      gameState.allow_delete_starting ?? true,
+    );
+    setRunning(false);
+    setNodes(gn);
+    setEdges(ge);
+    setSeed(gameState.seed);
+    setSelectedId(null);
+    simRef.current?.reset(gameState.seed);
+    setProfileType((gameState.load_profile?.type ?? 'constant') as LoadProfileType);
+    setChaos(gameState.chaos_events ?? []);
+    scoreRef.current = emptyAccumulator();
+    lastFrameRef.current = null;
+    setMetrics({});
+    setHistory([]);
+    setTotalCost(0);
+    pastRef.current = [];
+    futureRef.current = [];
+  }, [gameActive, gameState, setNodes, setEdges]);
+
+  // Live-sync the broadcast traffic profile (admin can change it mid-match).
+  useEffect(() => {
+    if (!gameActive || !gameState) return;
+    setProfileType((gameState.load_profile?.type ?? 'constant') as LoadProfileType);
+  }, [gameActive, gameState?.load_profile?.type]);
+
+  // Live-sync the broadcast chaos timeline (admin injections appear here).
+  const chaosKey = gameActive ? JSON.stringify(gameState?.chaos_events ?? []) : '';
+  useEffect(() => {
+    if (!gameActive) return;
+    try {
+      setChaos(JSON.parse(chaosKey || '[]'));
+    } catch {
+      /* ignore */
+    }
+  }, [gameActive, chaosKey]);
+
+  // Synced run loop: drive the deterministic sim by wall-clock match-time so all
+  // players experience the same traffic/chaos at the same simulated second.
+  useEffect(() => {
+    if (!gameActive) return;
+    if (gameState?.status !== 'running' || !gameState.started_at) return;
+    const startedMs = new Date(gameState.started_at).getTime();
+    const id = setInterval(() => {
+      const g = gameRef.current;
+      const gs = gameStateRef.current;
+      if (!g || !gs) return;
+      const offset = g.serverOffsetMs ?? 0;
+      let target = Math.floor((Date.now() + offset - startedMs) / 1000);
+      if (gs.ends_at) {
+        const endTick = Math.floor((new Date(gs.ends_at).getTime() - startedMs) / 1000);
+        if (target > endTick) target = endTick;
+      }
+      const scoringCfg = normalizeScoring(gs.scoring_config);
+      let guard = 0;
+      let last = lastFrameRef.current;
+      while ((simRef.current?.currentTime ?? 0) < target && guard < 600) {
+        const frame = simRef.current?.tick();
+        if (frame) {
+          last = frame;
+          scoreRef.current = accumulate(
+            scoreRef.current,
+            frameScore(frame.system, scoringCfg),
+          );
+        }
+        guard++;
+      }
+      if (last && last !== lastFrameRef.current) {
+        lastFrameRef.current = last;
+        applyFrame(last);
+      }
+    }, 1000);
+    return () => clearInterval(id);
+  }, [gameActive, gameState?.status, gameState?.started_at, applyFrame]);
+
+  // Snapshot the latest "golden signals" from the most recent sim frame.
+  const gameMetrics = useCallback(() => {
+    const frame = lastFrameRef.current;
+    if (!frame) return undefined;
+    const sys = frame.system;
+    let saturation = 0;
+    for (const m of Object.values(frame.nodeMetrics)) {
+      if (m.utilization > saturation) saturation = m.utilization;
+    }
+    return {
+      throughput: sys.totalThroughput,
+      offered_load: sys.offeredLoad,
+      error_rate: sys.errorRate,
+      p50: sys.p50,
+      p95: sys.p95,
+      p99: sys.p99,
+      saturation,
+      cost_per_hour: sys.costPerHour,
+    };
+  }, []);
+
+  // Periodically push the player's architecture + accumulated score.
+  useEffect(() => {
+    if (!gameActive) return;
+    const status = gameState?.status;
+    if (status !== 'running' && status !== 'paused') return;
+    const submit = () => {
+      const g = gameRef.current;
+      if (!g) return;
+      g.submitScore({
+        architecture: rfToArchitecture(nodesRef.current, edgesRef.current),
+        score: Math.round(scoreRef.current.total),
+        score_breakdown: scoreRef.current,
+        metrics: gameMetrics(),
+      });
+    };
+    submit();
+    const id = setInterval(submit, 4000);
+    return () => clearInterval(id);
+  }, [gameActive, gameState?.status, gameMetrics]);
+
+  // Submit a final score once when the match ends.
+  useEffect(() => {
+    if (!gameActive || gameState?.status !== 'ended' || !gameState.code) return;
+    if (finalSubmittedRef.current === gameState.code) return;
+    finalSubmittedRef.current = gameState.code;
+    const g = gameRef.current;
+    if (!g) return;
+    g.submitScore({
+      architecture: rfToArchitecture(nodesRef.current, edgesRef.current),
+      score: Math.round(scoreRef.current.total),
+      score_breakdown: scoreRef.current,
+      metrics: gameMetrics(),
+    });
+  }, [gameActive, gameState?.status, gameState?.code, gameMetrics]);
+
   // --- Node editing ---
   const patchSelected = useCallback(
     (patch: Partial<NodeConfig>) => {
@@ -281,22 +464,23 @@ function EditorInner() {
   );
 
   const deleteSelected = useCallback(() => {
-    if (!selectedId) return;
+    if (!selectedId || isNodeLocked(selectedId)) return;
     takeSnapshot();
     setNodes((nds) => nds.filter((n) => n.id !== selectedId));
     setEdges((eds) => eds.filter((e) => e.source !== selectedId && e.target !== selectedId));
     setSelectedId(null);
-  }, [selectedId, setNodes, setEdges, takeSnapshot]);
+  }, [selectedId, setNodes, setEdges, takeSnapshot, isNodeLocked]);
 
   // --- Context-menu actions (operate on an explicit node id) ---
   const deleteNode = useCallback(
     (id: string) => {
+      if (isNodeLocked(id)) return;
       takeSnapshot();
       setNodes((nds) => nds.filter((n) => n.id !== id));
       setEdges((eds) => eds.filter((e) => e.source !== id && e.target !== id));
       setSelectedId((cur) => (cur === id ? null : cur));
     },
-    [setNodes, setEdges, takeSnapshot],
+    [setNodes, setEdges, takeSnapshot, isNodeLocked],
   );
 
   const duplicateNode = useCallback(
@@ -564,23 +748,30 @@ function EditorInner() {
           {t('editor.title', { defaultValue: 'Distributed Systems Simulator' })}
         </h1>
 
+        {/* Game-mode status bar (replaces manual sim controls when in a match) */}
+        {gameActive && <GameBanner />}
+
         {/* Toolbar */}
         <div className="flex flex-wrap items-center gap-2 mb-3">
-          <button
-            onClick={() => setRunning((r) => !r)}
-            className={`${btn} ${running ? 'border-signal-red text-signal-red hover:bg-signal-red/10' : 'border-signal-green text-signal-green hover:bg-signal-green/10'}`}
-          >
-            {running ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-            {running ? t('editor.buttons.stop', { defaultValue: 'Pause' }) : t('editor.buttons.start', { defaultValue: 'Run' })}
-          </button>
-          <button onClick={step} className={`${btn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}>
-            <SkipForward className="w-4 h-4" /> {t('editor.buttons.step', { defaultValue: 'Step' })}
-          </button>
-          <button onClick={reset} className={`${btn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}>
-            <RotateCcw className="w-4 h-4" /> {t('editor.buttons.reset', { defaultValue: 'Reset' })}
-          </button>
+          {!gameActive && (
+            <>
+              <button
+                onClick={() => setRunning((r) => !r)}
+                className={`${btn} ${running ? 'border-signal-red text-signal-red hover:bg-signal-red/10' : 'border-signal-green text-signal-green hover:bg-signal-green/10'}`}
+              >
+                {running ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                {running ? t('editor.buttons.stop', { defaultValue: 'Pause' }) : t('editor.buttons.start', { defaultValue: 'Run' })}
+              </button>
+              <button onClick={step} className={`${btn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}>
+                <SkipForward className="w-4 h-4" /> {t('editor.buttons.step', { defaultValue: 'Step' })}
+              </button>
+              <button onClick={reset} className={`${btn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}>
+                <RotateCcw className="w-4 h-4" /> {t('editor.buttons.reset', { defaultValue: 'Reset' })}
+              </button>
 
-          <div className="border-l border-tactical-line h-8 mx-1" />
+              <div className="border-l border-tactical-line h-8 mx-1" />
+            </>
+          )}
 
           <button
             onClick={undo}
@@ -620,53 +811,59 @@ function EditorInner() {
             <ArrowLeftRight className="w-4 h-4" />
           </button>
 
-          <div className="border-l border-tactical-line h-8 mx-1" />
+          {!gameActive && (
+            <>
+              <div className="border-l border-tactical-line h-8 mx-1" />
 
-          <label className="flex items-center gap-2 font-mono text-xs text-tactical-dim">
-            {t('editor.labels.speed', { defaultValue: 'Speed' })}
-            <input type="range" min={1} max={10} value={speed} onChange={(e) => setSpeed(Number(e.target.value))} className="accent-signal-cyan" />
-            <span className="text-tactical-text">{speed}x</span>
-          </label>
-          <label className="flex items-center gap-2 font-mono text-xs text-tactical-dim">
-            {t('editor.labels.seed', { defaultValue: 'Seed' })}
-            <input
-              type="number"
-              value={seed}
-              onChange={(e) => setSeed(Number(e.target.value))}
-              className="w-20 bg-tactical-raised border border-tactical-border px-2 py-1 font-mono text-xs text-tactical-text"
-            />
-          </label>
+              <label className="flex items-center gap-2 font-mono text-xs text-tactical-dim">
+                {t('editor.labels.speed', { defaultValue: 'Speed' })}
+                <input type="range" min={1} max={10} value={speed} onChange={(e) => setSpeed(Number(e.target.value))} className="accent-signal-cyan" />
+                <span className="text-tactical-text">{speed}x</span>
+              </label>
+              <label className="flex items-center gap-2 font-mono text-xs text-tactical-dim">
+                {t('editor.labels.seed', { defaultValue: 'Seed' })}
+                <input
+                  type="number"
+                  value={seed}
+                  onChange={(e) => setSeed(Number(e.target.value))}
+                  className="w-20 bg-tactical-raised border border-tactical-border px-2 py-1 font-mono text-xs text-tactical-text"
+                />
+              </label>
 
-          <div className="border-l border-tactical-line h-8 mx-1" />
+              <div className="border-l border-tactical-line h-8 mx-1" />
 
-          <button onClick={exportDesign} className={`${btn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}>
-            <Download className="w-4 h-4" /> {t('editor.buttons.export', { defaultValue: 'Export' })}
-          </button>
-          <button onClick={() => fileInputRef.current?.click()} className={`${btn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}>
-            <Upload className="w-4 h-4" /> {t('editor.buttons.import', { defaultValue: 'Import' })}
-          </button>
-          <input type="file" ref={fileInputRef} accept=".din" className="hidden" onChange={importDesign} />
+              <button onClick={exportDesign} className={`${btn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}>
+                <Download className="w-4 h-4" /> {t('editor.buttons.export', { defaultValue: 'Export' })}
+              </button>
+              <button onClick={() => fileInputRef.current?.click()} className={`${btn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}>
+                <Upload className="w-4 h-4" /> {t('editor.buttons.import', { defaultValue: 'Import' })}
+              </button>
+              <input type="file" ref={fileInputRef} accept=".din" className="hidden" onChange={importDesign} />
+            </>
+          )}
         </div>
 
         {importError && (
           <div className="bg-signal-red/10 border border-signal-red p-3 text-signal-red font-mono text-sm mb-3">{importError}</div>
         )}
 
-        {/* Scenario controls */}
-        <div className="tactical-panel p-3 mb-4">
-          <ScenarioBar
-            profileType={profileType}
-            onProfileChange={setProfileType}
-            onLoadPreset={loadPreset}
-            nodeOptions={nodeOptions}
-            chaos={chaos}
-            onAddChaos={(ev) => setChaos((c) => [...c, ev])}
-            onRemoveChaos={(id) => setChaos((c) => c.filter((e) => e.id !== id))}
-            provider={provider}
-            onProviderChange={setProvider}
-            currentTime={simRef.current?.currentTime ?? 0}
-          />
-        </div>
+        {/* Scenario controls (admin-driven in game mode, so hidden for players) */}
+        {!gameActive && (
+          <div className="tactical-panel p-3 mb-4">
+            <ScenarioBar
+              profileType={profileType}
+              onProfileChange={setProfileType}
+              onLoadPreset={loadPreset}
+              nodeOptions={nodeOptions}
+              chaos={chaos}
+              onAddChaos={(ev) => setChaos((c) => [...c, ev])}
+              onRemoveChaos={(id) => setChaos((c) => c.filter((e) => e.id !== id))}
+              provider={provider}
+              onProviderChange={setProvider}
+              currentTime={simRef.current?.currentTime ?? 0}
+            />
+          </div>
+        )}
 
         {/* Canvas + inspector */}
         <div className="flex gap-0 tactical-panel" style={{ height: 560 }}>
@@ -720,6 +917,11 @@ function EditorInner() {
                   })}
                 </div>
               </Panel>
+              {gameActive && game && (
+                <Panel position="top-right" className="w-60">
+                  <GameLeaderboard entries={game.leaderboard} currentUserId={user?.uid} />
+                </Panel>
+              )}
               <Controls />
               <MiniMap nodeColor={(n) => NODE_CATALOG[(n.type as NodeKind) ?? 'server']?.hex ?? '#64748b'} />
               <Background variant={BackgroundVariant.Dots} gap={14} size={1} />
@@ -737,8 +939,12 @@ function EditorInner() {
                     <ContextItem icon={Copy} label={t('editor.menu.duplicate')} onClick={() => { duplicateNode(menu.id); closeMenu(); }} />
                     <ContextItem icon={Unplug} label={t('editor.menu.disconnect')} onClick={() => { disconnectNode(menu.id); closeMenu(); }} />
                     <ContextItem icon={Zap} label={t('editor.menu.kill')} tone="text-signal-amber" onClick={() => { killNode(menu.id); closeMenu(); }} />
-                    <div className="my-1 border-t border-slate-200 dark:border-tactical-border" />
-                    <ContextItem icon={Trash2} label={t('editor.menu.delete')} tone="text-signal-red" onClick={() => { deleteNode(menu.id); closeMenu(); }} />
+                    {!isNodeLocked(menu.id) && (
+                      <>
+                        <div className="my-1 border-t border-slate-200 dark:border-tactical-border" />
+                        <ContextItem icon={Trash2} label={t('editor.menu.delete')} tone="text-signal-red" onClick={() => { deleteNode(menu.id); closeMenu(); }} />
+                      </>
+                    )}
                   </>
                 ) : menu.kind === 'edge' ? (
                   <ContextItem icon={Trash2} label={t('editor.menu.delete_edge')} tone="text-signal-red" onClick={() => { deleteEdge(menu.id); closeMenu(); }} />
@@ -762,7 +968,7 @@ function EditorInner() {
                 onClose={() => setShowBill(false)}
               />
             ) : (
-              <InspectorPanel config={selectedConfig} onChange={patchSelected} onDelete={deleteSelected} />
+              <InspectorPanel config={selectedConfig} onChange={patchSelected} onDelete={deleteSelected} canDelete={!selectedConfig?.locked} />
             )}
           </div>
         </div>
@@ -776,10 +982,10 @@ function EditorInner() {
   );
 }
 
-export default function SystemEditorV2() {
+export default function SystemEditorV2({ gameId }: { gameId?: string } = {}) {
   return (
     <ReactFlowProvider>
-      <EditorInner />
+      <EditorInner gameId={gameId} />
     </ReactFlowProvider>
   );
 }

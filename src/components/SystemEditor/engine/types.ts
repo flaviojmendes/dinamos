@@ -45,6 +45,12 @@ export interface NodeConfig {
   kind: NodeKind;
   label: string;
 
+  // --- Game mode (ignored by the engine and the normal editor) ---
+  /** When true the component cannot be deleted by players (admin-locked seed). */
+  locked?: boolean;
+  /** Whether the node came from the match's starting architecture or a player. */
+  origin?: 'seed' | 'player';
+
   // --- Capacity model (M/M/c) ---
   /** Mean service time per request on a single server, in milliseconds. */
   serviceTimeMs: number;
