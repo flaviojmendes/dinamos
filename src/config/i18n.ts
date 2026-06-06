@@ -2269,7 +2269,12 @@ const resources = {
             'read-heavy-cache': 'Read-Heavy + Cache',
             'event-driven': 'Event-Driven + Queue',
             'sharded-store': 'Sharded Datastore',
-            'microservice-mesh': 'Microservice Mesh'
+            'microservice-mesh': 'Microservice Mesh',
+            'url-shortener': 'URL Shortener',
+            'ticket-booking': 'Ticket Booking Site',
+            'chat-messaging': 'Chat / Messaging (WhatsApp)',
+            'social-feed': 'Social News Feed',
+            'video-streaming': 'Video Streaming'
           }
         },
         node: {
@@ -8501,7 +8506,12 @@ const resources = {
             'read-heavy-cache': 'Leitura Intensa + Cache',
             'event-driven': 'Orientado a Eventos + Fila',
             'sharded-store': 'Armazenamento Particionado',
-            'microservice-mesh': 'Malha de Microsserviços'
+            'microservice-mesh': 'Malha de Microsserviços',
+            'url-shortener': 'Encurtador de URL',
+            'ticket-booking': 'Site de Venda de Ingressos',
+            'chat-messaging': 'Chat / Mensagens (WhatsApp)',
+            'social-feed': 'Feed de Rede Social',
+            'video-streaming': 'Streaming de Vídeo'
           }
         },
         node: {

@@ -179,12 +179,139 @@ function microserviceMesh(): Preset {
   };
 }
 
+/** URL shortener: extremely read-heavy redirect path fronted by a hot cache. */
+function urlShortener(): Preset {
+  return {
+    id: 'url-shortener',
+    name: 'URL Shortener',
+    seed: 6,
+    nodes: [
+      node('client', 'c1', 'Users', 400, 0, { baseRate: 500 }),
+      node('apiGateway', 'gw', 'API Gateway', 400, 140, { rateLimit: 1500 }),
+      node('cache', 'cache', 'Redirect Cache', 400, 280, { hitRate: 0.92, ttlSeconds: 300 }),
+      node('autoScaler', 'app', 'Redirect Service', 400, 420, { targetUtilization: 0.7, serviceTimeMs: 12 }),
+      node('replicatedDb', 'db', 'Key-Value Store', 400, 560, { replicaCount: 3, consistency: 'eventual', writeFraction: 0.05 }),
+    ],
+    edges: [edge('c1', 'gw'), edge('gw', 'cache'), edge('cache', 'app'), edge('app', 'db')],
+  };
+}
+
+/** Ticket booking: spiky on-sale traffic, a waiting-room queue and payments. */
+function ticketBooking(): Preset {
+  return {
+    id: 'ticket-booking',
+    name: 'Ticket Booking Site',
+    seed: 7,
+    nodes: [
+      node('client', 'c1', 'Fans', 400, 0, { baseRate: 600 }),
+      node('loadBalancer', 'lb', 'Load Balancer', 400, 130),
+      node('apiGateway', 'gw', 'API Gateway', 400, 270, { rateLimit: 400 }),
+      node('messageQueue', 'q', 'Waiting Room', 400, 410, { maxQueue: 5000, dequeueRate: 200 }),
+      node('server', 'app', 'Booking Service', 400, 550, { replicas: 3, serviceTimeMs: 35 }),
+      node('database', 'db', 'Inventory DB', 200, 700, { writeFraction: 0.6, serviceTimeMs: 18 }),
+      node('externalDependency', 'pay', 'Payment Gateway', 600, 700, { failureRate: 0.03, serviceTimeMs: 120 }),
+    ],
+    edges: [
+      edge('c1', 'lb'),
+      edge('lb', 'gw'),
+      edge('gw', 'q'),
+      edge('q', 'app'),
+      edge('app', 'db'),
+      edge('app', 'pay'),
+    ],
+  };
+}
+
+/** WhatsApp-style chat: persistent connections, fan-out bus and sharded store. */
+function chatMessaging(): Preset {
+  return {
+    id: 'chat-messaging',
+    name: 'Chat / Messaging (WhatsApp)',
+    seed: 8,
+    nodes: [
+      node('client', 'c1', 'Devices', 400, 0, { baseRate: 450 }),
+      node('loadBalancer', 'lb', 'Edge LB', 400, 130),
+      node('autoScaler', 'gw', 'Chat Gateway', 400, 270, { targetUtilization: 0.65, serviceTimeMs: 8 }),
+      node('cache', 'presence', 'Presence Cache', 130, 410, { hitRate: 0.8 }),
+      node('messageQueue', 'q', 'Message Bus', 430, 410, { maxQueue: 10000, dequeueRate: 400 }),
+      node('server', 'fan', 'Fan-out Workers', 430, 550, { replicas: 4, serviceTimeMs: 15 }),
+      node('shardRouter', 'sr', 'Message Router', 430, 690, { shardCount: 6, skew: 0.15 }),
+      node('replicatedDb', 'db', 'Message Store', 430, 830, { replicaCount: 3, consistency: 'eventual' }),
+    ],
+    edges: [
+      edge('c1', 'lb'),
+      edge('lb', 'gw'),
+      edge('gw', 'presence'),
+      edge('gw', 'q'),
+      edge('q', 'fan'),
+      edge('fan', 'sr'),
+      edge('sr', 'db'),
+    ],
+  };
+}
+
+/** Social feed: fan-out on write plus a cache-fronted read path. */
+function socialFeed(): Preset {
+  return {
+    id: 'social-feed',
+    name: 'Social News Feed',
+    seed: 9,
+    nodes: [
+      node('client', 'c1', 'Users', 400, 0, { baseRate: 400 }),
+      node('apiGateway', 'gw', 'API Gateway', 400, 130, { rateLimit: 800 }),
+      node('cache', 'feed', 'Feed Cache', 180, 290, { hitRate: 0.85 }),
+      node('autoScaler', 'app', 'Feed Service', 620, 290, { targetUtilization: 0.7 }),
+      node('messageQueue', 'q', 'Fan-out Queue', 620, 440, { maxQueue: 5000, dequeueRate: 250 }),
+      node('server', 'w', 'Timeline Workers', 620, 590, { replicas: 3, serviceTimeMs: 25 }),
+      node('replicatedDb', 'db', 'Posts DB', 400, 740, { replicaCount: 3, consistency: 'eventual' }),
+    ],
+    edges: [
+      edge('c1', 'gw'),
+      edge('gw', 'feed'),
+      edge('gw', 'app'),
+      edge('app', 'q'),
+      edge('q', 'w'),
+      edge('w', 'db'),
+      edge('feed', 'db'),
+    ],
+  };
+}
+
+/** Video streaming: CDN edge cache, metadata service and object storage. */
+function videoStreaming(): Preset {
+  return {
+    id: 'video-streaming',
+    name: 'Video Streaming',
+    seed: 10,
+    nodes: [
+      node('client', 'c1', 'Viewers', 400, 0, { baseRate: 700 }),
+      node('cache', 'cdn', 'CDN Edge', 400, 130, { hitRate: 0.95, ttlSeconds: 600 }),
+      node('apiGateway', 'gw', 'API Gateway', 400, 280, { rateLimit: 1200 }),
+      node('autoScaler', 'app', 'Streaming Service', 400, 420, { targetUtilization: 0.7 }),
+      node('replicatedDb', 'meta', 'Metadata DB', 200, 570, { replicaCount: 3, consistency: 'eventual' }),
+      node('externalDependency', 'store', 'Object Storage', 600, 570, { serviceTimeMs: 60, failureRate: 0.005 }),
+    ],
+    edges: [
+      edge('c1', 'cdn'),
+      edge('cdn', 'gw'),
+      edge('gw', 'app'),
+      edge('app', 'meta'),
+      edge('app', 'store'),
+    ],
+  };
+}
+
 export const PRESETS: Preset[] = [
   threeTier(),
   readHeavyCache(),
   eventDriven(),
   shardedStore(),
   microserviceMesh(),
+  urlShortener(),
+  ticketBooking(),
+  chatMessaging(),
+  socialFeed(),
+  videoStreaming(),
 ];
 
 export function getPreset(id: string): Preset | undefined {
