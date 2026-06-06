@@ -11,6 +11,7 @@ import { quizzesRouter } from './routes/quizzes';
 import { leaderboardRouter } from './routes/leaderboard';
 import { subscriptionRouter } from './routes/subscription';
 import { adminRouter } from './routes/admin';
+import { gameRouter } from './routes/game';
 
 const app = new Hono<{ Variables: AppVariables }>();
 
@@ -39,6 +40,7 @@ app.route('/', notificationsRouter);
 app.route('/', quizzesRouter);
 app.route('/', leaderboardRouter);
 app.route('/', adminRouter);
+app.route('/', gameRouter);
 
 // FastAPI-compatible error shape: { detail: string }
 app.onError((err, c) => {

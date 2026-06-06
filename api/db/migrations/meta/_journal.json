@@ -8,6 +8,27 @@
       "when": 1780680185916,
       "tag": "0000_init",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1780755836162,
+      "tag": "0001_heavy_sauron",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1780762549881,
+      "tag": "0002_bent_the_anarchist",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1780762834145,
+      "tag": "0003_cloudy_betty_brant",
+      "breakpoints": true
     }
   ]
 }

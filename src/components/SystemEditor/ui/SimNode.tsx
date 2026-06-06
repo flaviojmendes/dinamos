@@ -5,7 +5,7 @@
 import { memo, useEffect, useRef, useState } from 'react';
 import { Handle, Position, NodeProps } from 'reactflow';
 import { useTranslation } from 'react-i18next';
-import { ArrowUp, ArrowDown, Layers } from 'lucide-react';
+import { ArrowUp, ArrowDown, Layers, Lock } from 'lucide-react';
 import { NodeConfig, NodeMetrics } from '../engine/types';
 import { NODE_CATALOG } from './nodeCatalog';
 import { useNodeMetrics } from './MetricsContext';
@@ -253,6 +253,12 @@ function SimNodeImpl({ id, data, isConnectable, selected }: NodeProps<SimNodeDat
 
       <div className="flex items-center gap-2 font-mono font-bold text-white tracking-tight text-sm">
         <Icon className="w-4 h-4 shrink-0" />
+        {config.locked && (
+          <Lock
+            className="w-3 h-3 shrink-0 text-signal-amber"
+            aria-label={t('editor.node.locked', { defaultValue: 'Locked component' })}
+          />
+        )}
         <span className="truncate">{config.label}</span>
         {replicaCount > 1 && (
           <span

@@ -120,6 +120,8 @@ import Logs from "./components/MonitoringMaintenance/Logs";
 import SynchronizationAlgorithms from './components/ConsistencyStrategies/SynchronizationAlgorithms';
 import SynchronizationSimulator from "./components/ConsistencyStrategies/SynchronizationSimulator";
 import SimpleSystemEditorPage from "./pages/SimpleSystemEditorPage";
+const GameEditorPage = React.lazy(() => import("./pages/GameEditorPage"));
+const AdminGameConsole = React.lazy(() => import("./pages/AdminGameConsole"));
 import PollingWebhooks from "./components/SystemComponents/PollingWebhooks";
 import { LanguageSwitcher, CouponModal } from './components/Common';
 import ThemeToggle from "./components/Common/ThemeToggle";
@@ -1957,6 +1959,7 @@ export default function App() {
               } 
             />
             <Route path="/editor" element={<SimpleSystemEditorPage />} />
+            <Route path="/editor/game/:code" element={<GameEditorPage />} />
             
             {/* Preferences routes */}
             <Route 
@@ -2510,6 +2513,14 @@ export default function App() {
               element={
                 <DLProtectedRoute>
                   <DLAdminQuizzes />
+                </DLProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/game"
+              element={
+                <DLProtectedRoute>
+                  <AdminGameConsole />
                 </DLProtectedRoute>
               }
             />

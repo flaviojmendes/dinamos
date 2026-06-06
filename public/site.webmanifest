@@ -1,0 +1,13 @@
+{
+  "name": "Dinamos",
+  "short_name": "Dinamos",
+  "description": "Aprenda de uma vez por todas sobre Sistemas Distribuídos.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f172a",
+  "icons": [
+    { "src": "/favicon.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/favicon.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

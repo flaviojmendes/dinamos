@@ -12,8 +12,10 @@ export default defineConfig({
   ],
   server: {
     proxy: {
+      // Point at a locally-running API (npm run dev:api) by setting
+      // API_PROXY_TARGET=http://localhost:8787; defaults to the deployed backend.
       '/api': {
-        target: 'https://designlab-392139337985.us-east1.run.app',
+        target: process.env.API_PROXY_TARGET || 'https://designlab-392139337985.us-east1.run.app',
         changeOrigin: true,
         secure: false,
       }

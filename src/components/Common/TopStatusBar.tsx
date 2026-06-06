@@ -13,6 +13,7 @@ const ADMIN_LINKS: { to: string; key: string; fallback: string }[] = [
   { to: '/admin/roles', key: 'admin.nav.roles', fallback: 'Roles' },
   { to: '/admin/challenges', key: 'admin.nav.challenges', fallback: 'Challenges' },
   { to: '/admin/quizzes', key: 'admin.nav.quizzes', fallback: 'Quizzes' },
+  { to: '/admin/game', key: 'admin.nav.game', fallback: 'Game Mode' },
   { to: '/admin/forum/categories', key: 'admin.nav.categories', fallback: 'Categories' },
   { to: '/admin/notifications', key: 'admin.nav.notifications', fallback: 'Notifications' },
   { to: '/admin/settings', key: 'admin.nav.settings', fallback: 'Settings' },

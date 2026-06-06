@@ -7,6 +7,9 @@ import {
   boolean,
   timestamp,
   primaryKey,
+  jsonb,
+  doublePrecision,
+  unique,
 } from 'drizzle-orm/pg-core';
 
 // ==================== Roles & Permissions ====================
@@ -266,3 +269,65 @@ export const appSettings = pgTable('app_settings', {
   value: text('value'),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 });
+
+// ==================== Editor Game Mode ====================
+// A "match" of the /editor game: the admin defines a starting architecture,
+// lock rules, a load/chaos timeline and a countdown. Every logged-in player
+// gets their own copy of the architecture (game_players) and is ranked by the
+// score they compute locally from the deterministic simulator.
+
+export const gameSessions = pgTable('game_sessions', {
+  id: serial('id').primaryKey(),
+  // Short shareable slug used in the match URL (/editor/game/:code).
+  code: varchar('code', { length: 20 }).notNull().unique(),
+  name: varchar('name', { length: 120 }),
+  status: varchar('status', { length: 20 }).notNull().default('lobby'),
+  seed: integer('seed').notNull().default(1),
+  // Countdown target; players wait in the lobby until this time.
+  startsAt: timestamp('starts_at', { withTimezone: true }),
+  // { nodes: [{ id, position, config }], edges: [{ id, source, target, ... }] }
+  startingArchitecture: jsonb('starting_architecture'),
+  // Ids of starting components players are not allowed to delete.
+  lockedNodeIds: jsonb('locked_node_ids'),
+  allowDeleteStarting: boolean('allow_delete_starting').default(true),
+  // Broadcast traffic profile: { type: LoadProfileType }
+  loadProfile: jsonb('load_profile'),
+  // Broadcast chaos timeline (match-time scheduled events).
+  chaosEvents: jsonb('chaos_events'),
+  // Weights/targets used to turn metrics into a score.
+  scoringConfig: jsonb('scoring_config'),
+  budget: jsonb('budget'),
+  durationSec: integer('duration_sec'),
+  startedAt: timestamp('started_at', { withTimezone: true }),
+  endsAt: timestamp('ends_at', { withTimezone: true }),
+  // Latest admin broadcast shown to all players in the match.
+  announcement: text('announcement'),
+  announcementAt: timestamp('announcement_at', { withTimezone: true }),
+  createdBy: varchar('created_by', { length: 255 }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+});
+
+export const gamePlayers = pgTable(
+  'game_players',
+  {
+    id: serial('id').primaryKey(),
+    sessionId: integer('session_id')
+      .notNull()
+      .references(() => gameSessions.id, { onDelete: 'cascade' }),
+    userId: varchar('user_id', { length: 255 }).notNull(),
+    joinedAt: timestamp('joined_at', { withTimezone: true }).defaultNow(),
+    architecture: jsonb('architecture'),
+    score: doublePrecision('score').default(0),
+    scoreBreakdown: jsonb('score_breakdown'),
+    // Latest "golden signals" snapshot: latency, traffic, errors, saturation.
+    metrics: jsonb('metrics'),
+    lastSubmittedAt: timestamp('last_submitted_at', { withTimezone: true }),
+  },
+  (t) => ({
+    sessionUser: unique('game_players_session_user_unique').on(
+      t.sessionId,
+      t.userId
+    ),
+  })
+);

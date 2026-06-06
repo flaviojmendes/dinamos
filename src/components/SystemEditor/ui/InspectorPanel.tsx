@@ -52,6 +52,8 @@ interface Props {
   config: NodeConfig | null;
   onChange: (patch: Partial<NodeConfig>) => void;
   onDelete: () => void;
+  /** When false (locked game component) the delete button is hidden. */
+  canDelete?: boolean;
 }
 
 function Num({
@@ -126,7 +128,7 @@ function Select<T extends string>({
   );
 }
 
-export default function InspectorPanel({ config, onChange, onDelete }: Props) {
+export default function InspectorPanel({ config, onChange, onDelete, canDelete = true }: Props) {
   const { t } = useTranslation();
   if (!config) {
     return (
@@ -148,13 +150,15 @@ export default function InspectorPanel({ config, onChange, onDelete }: Props) {
           <Icon className="w-4 h-4" />
           {t(`editor.kinds.${config.kind}`)}
         </div>
-        <button
-          onClick={onDelete}
-          className="text-tactical-label hover:text-signal-red transition-colors"
-          aria-label="Delete node"
-        >
-          <Trash2 className="w-4 h-4" />
-        </button>
+        {canDelete && (
+          <button
+            onClick={onDelete}
+            className="text-tactical-label hover:text-signal-red transition-colors"
+            aria-label="Delete node"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        )}
       </div>
 
       <div className="mb-4 border-l-2 border-signal-cyan/60 bg-signal-cyan/5 px-3 py-2">
