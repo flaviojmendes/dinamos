@@ -2109,7 +2109,11 @@ const resources = {
           reset: 'Reset',
           export: 'Export (.din)',
           import: 'Import (.din)',
-          remove_edge: 'Remove Connection'
+          remove_edge: 'Remove Connection',
+          arrange_vertical: 'Arrange vertically',
+          arrange_horizontal: 'Arrange horizontally',
+          undo: 'Undo (Ctrl/Cmd+Z)',
+          redo: 'Redo (Ctrl/Cmd+Shift+Z)'
         },
         kinds: {
           client: 'Client',
@@ -2133,7 +2137,9 @@ const resources = {
           disconnect: 'Disconnect edges',
           kill: 'Kill node (chaos)',
           delete: 'Delete',
-          delete_edge: 'Delete connection'
+          delete_edge: 'Delete connection',
+          arrange_vertical: 'Arrange vertically',
+          arrange_horizontal: 'Arrange horizontally'
         },
         descriptions: {
           client: 'Generates the offered load (requests/s) that drives the whole system. Connect its output to your first tier (API gateway, load balancer or server). Tune "Base rate" to set how many requests per second enter the system.',
@@ -2236,7 +2242,18 @@ const resources = {
           chart_throughput: 'Throughput vs Offered (req/s)',
           chart_latency: 'Latency percentiles (ms)',
           chart_success: 'Success rate (%) & in-flight',
-          accumulated_cost: 'Accumulated cost this run:'
+          accumulated_cost: 'Accumulated cost this run:',
+          golden_title: 'Four Golden Signals',
+          golden: {
+            latency: 'Latency',
+            latency_hint: 'How long requests take',
+            traffic: 'Traffic',
+            traffic_hint: 'Demand on the system',
+            errors: 'Errors',
+            errors_hint: 'Failed requests',
+            saturation: 'Saturation',
+            saturation_hint: 'Busiest resource load'
+          }
         },
         scenario: {
           preset: 'Preset',
@@ -8324,7 +8341,11 @@ const resources = {
           reset: 'Reiniciar',
           export: 'Exportar (.din)',
           import: 'Importar (.din)',
-          remove_edge: 'Remover Conexão'
+          remove_edge: 'Remover Conexão',
+          arrange_vertical: 'Organizar verticalmente',
+          arrange_horizontal: 'Organizar horizontalmente',
+          undo: 'Desfazer (Ctrl/Cmd+Z)',
+          redo: 'Refazer (Ctrl/Cmd+Shift+Z)'
         },
         kinds: {
           client: 'Cliente',
@@ -8348,7 +8369,9 @@ const resources = {
           disconnect: 'Desconectar arestas',
           kill: 'Matar nó (caos)',
           delete: 'Excluir',
-          delete_edge: 'Excluir conexão'
+          delete_edge: 'Excluir conexão',
+          arrange_vertical: 'Organizar verticalmente',
+          arrange_horizontal: 'Organizar horizontalmente'
         },
         descriptions: {
           client: 'Gera a carga ofertada (requisições/s) que move todo o sistema. Conecte a saída dele à primeira camada (API gateway, balanceador ou servidor). Ajuste a "Taxa base" para definir quantas requisições por segundo entram no sistema.',
@@ -8451,7 +8474,18 @@ const resources = {
           chart_throughput: 'Vazão vs Ofertado (req/s)',
           chart_latency: 'Percentis de latência (ms)',
           chart_success: 'Taxa de sucesso (%) e em andamento',
-          accumulated_cost: 'Custo acumulado nesta execução:'
+          accumulated_cost: 'Custo acumulado nesta execução:',
+          golden_title: 'Quatro Sinais de Ouro',
+          golden: {
+            latency: 'Latência',
+            latency_hint: 'Quanto tempo as requisições levam',
+            traffic: 'Tráfego',
+            traffic_hint: 'Demanda sobre o sistema',
+            errors: 'Erros',
+            errors_hint: 'Requisições com falha',
+            saturation: 'Saturação',
+            saturation_hint: 'Carga do recurso mais ocupado'
+          }
         },
         scenario: {
           preset: 'Predefinição',

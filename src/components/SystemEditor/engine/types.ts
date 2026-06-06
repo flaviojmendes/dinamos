@@ -123,6 +123,9 @@ export interface EdgeSpec {
   id: string;
   source: string;
   target: string;
+  /** Optional handle anchors (which side of each box the edge attaches to). Ignored by the engine. */
+  sourceHandle?: string | null;
+  targetHandle?: string | null;
 }
 
 export type CircuitState = 'closed' | 'open' | 'halfOpen';
@@ -251,7 +254,7 @@ export function defaultsForKind(kind: NodeKind, id: string, label: string): Node
         ...base,
         serviceTimeMs: 30,
         concurrency: 4,
-        replicas: 2,
+        replicas: 1,
         targetUtilization: 0.7,
         minReplicas: 1,
         maxReplicas: 20,

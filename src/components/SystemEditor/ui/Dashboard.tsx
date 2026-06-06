@@ -40,6 +40,44 @@ function Stat({ label, value, tone, onClick, title }: { label: string; value: st
   );
 }
 
+function GoldenSignal({
+  label,
+  value,
+  unit,
+  hint,
+  tone,
+  accent,
+  series,
+  dataKey,
+}: {
+  label: string;
+  value: string;
+  unit: string;
+  hint: string;
+  tone: string;
+  accent: string;
+  series: Array<Record<string, number>>;
+  dataKey: string;
+}) {
+  return (
+    <div className="border border-tactical-border bg-tactical-raised px-3 py-2.5">
+      <div className="font-mono text-[10px] uppercase tracking-wider text-tactical-label">{label}</div>
+      <div className={`font-mono font-bold leading-none mt-1 ${tone}`}>
+        <span className="text-2xl">{value}</span>
+        <span className="text-xs text-tactical-label ml-1">{unit}</span>
+      </div>
+      <div className="font-mono text-[10px] text-tactical-label mt-1">{hint}</div>
+      <div style={{ width: '100%', height: 36 }} className="mt-2">
+        <ResponsiveContainer>
+          <AreaChart data={series} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
+            <Area type="monotone" dataKey={dataKey} stroke={accent} fill={`${accent}22`} strokeWidth={1.5} dot={false} isAnimationActive={false} />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}
+
 const axis = { stroke: '#475569', fontSize: 10, fontFamily: 'monospace' };
 const gridStroke = '#1f2937';
 
@@ -51,24 +89,89 @@ function formatWarning(w: string, t: (k: string, o?: Record<string, unknown>) =>
 export default function Dashboard({ history, totalCost, provider, warnings, onCostClick }: Props) {
   const { t } = useTranslation();
   const latest = history[history.length - 1]?.system;
-  const data = history.map((f) => ({
-    t: Math.round(f.time),
-    offered: Math.round(f.system.offeredLoad),
-    throughput: Math.round(f.system.totalThroughput),
-    p50: Math.round(f.system.p50),
-    p95: Math.round(f.system.p95),
-    p99: Math.round(f.system.p99),
-    success: Math.round(f.system.successRate * 1000) / 10,
-    inFlight: Math.round(f.system.inFlightTotal),
-    cost: Math.round(f.system.costPerHour * 100) / 100,
-  }));
+  const data = history.map((f) => {
+    // Saturation = how full the busiest resource is (max node utilization).
+    const utils = Object.values(f.nodeMetrics).map((m) => m.utilization || 0);
+    const saturation = utils.length ? Math.max(...utils) : 0;
+    return {
+      t: Math.round(f.time),
+      offered: Math.round(f.system.offeredLoad),
+      throughput: Math.round(f.system.totalThroughput),
+      p50: Math.round(f.system.p50),
+      p95: Math.round(f.system.p95),
+      p99: Math.round(f.system.p99),
+      success: Math.round(f.system.successRate * 1000) / 10,
+      inFlight: Math.round(f.system.inFlightTotal),
+      cost: Math.round(f.system.costPerHour * 100) / 100,
+      errors: Math.round(f.system.errorRate),
+      saturation: Math.round(saturation * 100),
+    };
+  });
 
   const successTone = (latest?.successRate ?? 1) >= SLO_SUCCESS ? 'text-signal-green' : 'text-signal-red';
   const p95Tone = (latest?.p95 ?? 0) <= SLO_P95_MS ? 'text-signal-green' : 'text-signal-amber';
   const errorBudgetUsed = latest ? Math.min(100, ((1 - latest.successRate) / (1 - SLO_SUCCESS)) * 100) : 0;
 
+  // --- Four Golden Signals (Google SRE) ---
+  const latency = Math.round(latest?.p95 ?? 0);
+  const traffic = Math.round(latest?.totalThroughput ?? 0);
+  const errors = Math.round(latest?.errorRate ?? 0);
+  const saturationPct = data[data.length - 1]?.saturation ?? 0;
+
+  const errorTone = (latest?.successRate ?? 1) >= SLO_SUCCESS ? 'text-signal-green' : 'text-signal-red';
+  const saturationTone = saturationPct >= 100 ? 'text-signal-red' : saturationPct >= 80 ? 'text-signal-amber' : 'text-signal-green';
+
   return (
     <div className="space-y-4">
+      {/* Four Golden Signals (Google SRE) */}
+      <div>
+        <div className="font-mono text-[10px] uppercase tracking-wider text-signal-amber mb-2">
+          {t('editor.dashboard.golden_title', { defaultValue: 'Four Golden Signals' })}
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+          <GoldenSignal
+            label={t('editor.dashboard.golden.latency', { defaultValue: 'Latency' })}
+            value={`${latency}`}
+            unit="ms p95"
+            hint={t('editor.dashboard.golden.latency_hint', { defaultValue: 'How long requests take' })}
+            tone={p95Tone}
+            accent="#eab308"
+            series={data}
+            dataKey="p95"
+          />
+          <GoldenSignal
+            label={t('editor.dashboard.golden.traffic', { defaultValue: 'Traffic' })}
+            value={`${traffic}`}
+            unit="req/s"
+            hint={t('editor.dashboard.golden.traffic_hint', { defaultValue: 'Demand on the system' })}
+            tone="text-signal-cyan"
+            accent="#06b6d4"
+            series={data}
+            dataKey="throughput"
+          />
+          <GoldenSignal
+            label={t('editor.dashboard.golden.errors', { defaultValue: 'Errors' })}
+            value={`${errors}`}
+            unit="/s"
+            hint={t('editor.dashboard.golden.errors_hint', { defaultValue: 'Failed requests' })}
+            tone={errorTone}
+            accent="#ef4444"
+            series={data}
+            dataKey="errors"
+          />
+          <GoldenSignal
+            label={t('editor.dashboard.golden.saturation', { defaultValue: 'Saturation' })}
+            value={`${saturationPct}`}
+            unit="%"
+            hint={t('editor.dashboard.golden.saturation_hint', { defaultValue: 'Busiest resource load' })}
+            tone={saturationTone}
+            accent="#a855f7"
+            series={data}
+            dataKey="saturation"
+          />
+        </div>
+      </div>
+
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
         <Stat label={t('editor.dashboard.offered')} value={`${Math.round(latest?.offeredLoad ?? 0)}/s`} />
         <Stat label={t('editor.dashboard.throughput')} value={`${Math.round(latest?.totalThroughput ?? 0)}/s`} tone="text-signal-green" />

@@ -11,12 +11,13 @@ import ReactFlow, {
   useNodesState,
   useReactFlow,
   Connection,
+  ConnectionMode,
   Edge,
   Node,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { useTranslation } from 'react-i18next';
-import { Play, Pause, SkipForward, RotateCcw, Download, Upload, Settings2, Copy, Unplug, Zap, Trash2, type LucideIcon } from 'lucide-react';
+import { Play, Pause, SkipForward, RotateCcw, Download, Upload, Settings2, Copy, Unplug, Zap, Trash2, ArrowDownUp, ArrowLeftRight, Undo2, Redo2, type LucideIcon } from 'lucide-react';
 
 import {
   NodeConfig,
@@ -36,6 +37,7 @@ import CostPanel from './ui/CostPanel';
 import Dashboard from './ui/Dashboard';
 import ScenarioBar from './ui/ScenarioBar';
 import { parseDesign, serializeDesign, SerializedNode } from './ui/persistence';
+import { layoutGraph, LayoutDirection } from './ui/autoLayout';
 
 type RFNode = Node<SimNodeData>;
 
@@ -51,7 +53,15 @@ function presetToRF(presetId: string): { nodes: RFNode[]; edges: Edge[]; seed: n
     position: n.position,
     data: { config: n.config },
   }));
-  const edges: Edge[] = preset.edges.map((e) => ({ id: e.id, source: e.source, target: e.target, animated: true, style: { strokeWidth: 2.5 } }));
+  const edges: Edge[] = preset.edges.map((e) => ({
+    id: e.id,
+    source: e.source,
+    target: e.target,
+    sourceHandle: e.sourceHandle ?? 'bottom',
+    targetHandle: e.targetHandle ?? 'top',
+    animated: true,
+    style: { strokeWidth: 2.5 },
+  }));
   return { nodes, edges, seed: preset.seed };
 }
 
@@ -98,13 +108,87 @@ function EditorInner() {
   const [chaos, setChaos] = useState<ChaosEvent[]>([]);
   const [importError, setImportError] = useState<string | null>(null);
 
-  const [menu, setMenu] = useState<{ kind: 'node' | 'edge'; id: string; x: number; y: number } | null>(null);
+  const [menu, setMenu] = useState<{ kind: 'node' | 'edge' | 'pane'; id: string; x: number; y: number } | null>(null);
   const [showBill, setShowBill] = useState(false);
 
   const simRef = useRef<Simulator | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const rf = useReactFlow();
+
+  // --- Undo / redo history (graph snapshots) ---
+  // We keep stacks of {nodes, edges} snapshots. `takeSnapshot` is called at the
+  // start of every mutating action to record the pre-change state; undo/redo
+  // then swap the current graph with the neighbouring snapshot.
+  const nodesRef = useRef(nodes);
+  const edgesRef = useRef(edges);
+  nodesRef.current = nodes;
+  edgesRef.current = edges;
+
+  const pastRef = useRef<{ nodes: RFNode[]; edges: Edge[] }[]>([]);
+  const futureRef = useRef<{ nodes: RFNode[]; edges: Edge[] }[]>([]);
+  const [, setHistoryVersion] = useState(0);
+  const snapshotGuardRef = useRef(false);
+  const lastPatchAtRef = useRef(0);
+  const MAX_HISTORY = 100;
+
+  const takeSnapshot = useCallback(() => {
+    // Coalesce multiple snapshots fired within the same gesture (e.g. deleting a
+    // node also deletes its edges, firing two callbacks synchronously).
+    if (snapshotGuardRef.current) return;
+    snapshotGuardRef.current = true;
+    queueMicrotask(() => {
+      snapshotGuardRef.current = false;
+    });
+    pastRef.current.push({ nodes: nodesRef.current, edges: edgesRef.current });
+    if (pastRef.current.length > MAX_HISTORY) pastRef.current.shift();
+    futureRef.current = [];
+    setHistoryVersion((v) => v + 1);
+  }, []);
+
+  const undo = useCallback(() => {
+    const previous = pastRef.current.pop();
+    if (!previous) return;
+    futureRef.current.push({ nodes: nodesRef.current, edges: edgesRef.current });
+    setNodes(previous.nodes);
+    setEdges(previous.edges);
+    setSelectedId(null);
+    setHistoryVersion((v) => v + 1);
+  }, [setNodes, setEdges]);
+
+  const redo = useCallback(() => {
+    const next = futureRef.current.pop();
+    if (!next) return;
+    pastRef.current.push({ nodes: nodesRef.current, edges: edgesRef.current });
+    setNodes(next.nodes);
+    setEdges(next.edges);
+    setSelectedId(null);
+    setHistoryVersion((v) => v + 1);
+  }, [setNodes, setEdges]);
+
+  const canUndo = pastRef.current.length > 0;
+  const canRedo = futureRef.current.length > 0;
+
+  // Keyboard shortcuts: Cmd/Ctrl+Z = undo, Cmd/Ctrl+Shift+Z or Ctrl+Y = redo.
+  // Ignored while typing in form fields so native text undo keeps working.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (!(e.metaKey || e.ctrlKey)) return;
+      const target = e.target as HTMLElement | null;
+      const tag = target?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target?.isContentEditable) return;
+      const key = e.key.toLowerCase();
+      if (key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        undo();
+      } else if ((key === 'z' && e.shiftKey) || key === 'y') {
+        e.preventDefault();
+        redo();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [undo, redo]);
 
   // Map ReactFlow graph -> engine config.
   const buildConfig = useCallback(
@@ -185,34 +269,41 @@ function EditorInner() {
   const patchSelected = useCallback(
     (patch: Partial<NodeConfig>) => {
       if (!selectedId) return;
+      // Coalesce rapid edits (e.g. dragging a slider) into one history entry.
+      const now = Date.now();
+      if (now - lastPatchAtRef.current > 600) takeSnapshot();
+      lastPatchAtRef.current = now;
       setNodes((nds) =>
         nds.map((n) => (n.id === selectedId ? { ...n, data: { config: { ...n.data.config, ...patch } } } : n)),
       );
     },
-    [selectedId, setNodes],
+    [selectedId, setNodes, takeSnapshot],
   );
 
   const deleteSelected = useCallback(() => {
     if (!selectedId) return;
+    takeSnapshot();
     setNodes((nds) => nds.filter((n) => n.id !== selectedId));
     setEdges((eds) => eds.filter((e) => e.source !== selectedId && e.target !== selectedId));
     setSelectedId(null);
-  }, [selectedId, setNodes, setEdges]);
+  }, [selectedId, setNodes, setEdges, takeSnapshot]);
 
   // --- Context-menu actions (operate on an explicit node id) ---
   const deleteNode = useCallback(
     (id: string) => {
+      takeSnapshot();
       setNodes((nds) => nds.filter((n) => n.id !== id));
       setEdges((eds) => eds.filter((e) => e.source !== id && e.target !== id));
       setSelectedId((cur) => (cur === id ? null : cur));
     },
-    [setNodes, setEdges],
+    [setNodes, setEdges, takeSnapshot],
   );
 
   const duplicateNode = useCallback(
     (id: string) => {
       const src = nodes.find((n) => n.id === id);
       if (!src) return;
+      takeSnapshot();
       const newId = `n${Date.now()}`;
       const config: NodeConfig = { ...src.data.config, id: newId, label: `${src.data.config.label} (copy)` };
       const newNode: RFNode = {
@@ -224,14 +315,15 @@ function EditorInner() {
       setNodes((nds) => nds.concat(newNode));
       setSelectedId(newId);
     },
-    [nodes, setNodes],
+    [nodes, setNodes, takeSnapshot],
   );
 
   const disconnectNode = useCallback(
     (id: string) => {
+      takeSnapshot();
       setEdges((eds) => eds.filter((e) => e.source !== id && e.target !== id));
     },
-    [setEdges],
+    [setEdges, takeSnapshot],
   );
 
   const killNode = useCallback((id: string) => {
@@ -249,12 +341,13 @@ function EditorInner() {
 
   const deleteEdge = useCallback(
     (id: string) => {
+      takeSnapshot();
       setEdges((eds) => eds.filter((e) => e.id !== id));
     },
-    [setEdges],
+    [setEdges, takeSnapshot],
   );
 
-  const openMenuAt = useCallback((kind: 'node' | 'edge', id: string, event: React.MouseEvent) => {
+  const openMenuAt = useCallback((kind: 'node' | 'edge' | 'pane', id: string, event: React.MouseEvent) => {
     event.preventDefault();
     const bounds = canvasRef.current?.getBoundingClientRect();
     setMenu({
@@ -282,6 +375,15 @@ function EditorInner() {
     [openMenuAt],
   );
 
+  const onPaneContextMenu = useCallback(
+    (event: React.MouseEvent | MouseEvent) => {
+      setSelectedId(null);
+      setShowBill(false);
+      openMenuAt('pane', '', event as React.MouseEvent);
+    },
+    [openMenuAt],
+  );
+
   const closeMenu = useCallback(() => setMenu(null), []);
 
   useEffect(() => {
@@ -297,17 +399,52 @@ function EditorInner() {
   }, [menu]);
 
   const onConnect = useCallback(
-    (params: Connection | Edge) => setEdges((eds) => addEdge({ ...params, id: `e-${(params as Edge).source}-${(params as Edge).target}-${Date.now()}`, animated: true, style: { strokeWidth: 2.5 } }, eds)),
-    [setEdges],
+    (params: Connection | Edge) => {
+      takeSnapshot();
+      setEdges((eds) => addEdge({ ...params, id: `e-${(params as Edge).source}-${(params as Edge).target}-${Date.now()}`, animated: true, style: { strokeWidth: 2.5 } }, eds));
+    },
+    [setEdges, takeSnapshot],
+  );
+
+  // Direction is enforced here (not by handle type) so any side of a box can be
+  // wired up: a connection is only valid from a node that emits traffic into a
+  // node that accepts it, and self-loops are rejected.
+  const isValidConnection = useCallback(
+    (conn: Connection) => {
+      if (!conn.source || !conn.target || conn.source === conn.target) return false;
+      const srcKind = nodes.find((n) => n.id === conn.source)?.data.config.kind;
+      const tgtKind = nodes.find((n) => n.id === conn.target)?.data.config.kind;
+      if (!srcKind || !tgtKind) return false;
+      return !!NODE_CATALOG[srcKind]?.hasSource && !!NODE_CATALOG[tgtKind]?.hasTarget;
+    },
+    [nodes],
+  );
+
+  // Auto-arrange the whole graph into clean ranks and re-fit the viewport.
+  const applyLayout = useCallback(
+    (direction: LayoutDirection) => {
+      takeSnapshot();
+      const { nodes: laidOut, edges: rewired } = layoutGraph(nodes, edges, direction);
+      setNodes(laidOut);
+      setEdges(rewired);
+      window.requestAnimationFrame(() => rf.fitView({ padding: 0.3, duration: 400 }));
+    },
+    [nodes, edges, setNodes, setEdges, rf, takeSnapshot],
   );
 
   const onNodesDelete = useCallback(
     (deleted: Node[]) => {
+      takeSnapshot();
       setEdges((eds) => eds.filter((e) => !deleted.some((n) => n.id === e.source || n.id === e.target)));
       if (deleted.some((n) => n.id === selectedId)) setSelectedId(null);
     },
-    [setEdges, selectedId],
+    [setEdges, selectedId, takeSnapshot],
   );
+
+  // Snapshot before edges are removed (keyboard delete) and before a node drag
+  // starts, so both are individually undoable.
+  const onEdgesDelete = useCallback(() => takeSnapshot(), [takeSnapshot]);
+  const onNodeDragStart = useCallback(() => takeSnapshot(), [takeSnapshot]);
 
   const onDragStart = (event: React.DragEvent, kind: NodeKind) => {
     event.dataTransfer.setData('application/dinamos', kind);
@@ -324,6 +461,7 @@ function EditorInner() {
       event.preventDefault();
       const kind = event.dataTransfer.getData('application/dinamos') as NodeKind;
       if (!kind) return;
+      takeSnapshot();
       const position = rf.screenToFlowPosition({ x: event.clientX, y: event.clientY });
       const id = `n${Date.now()}`;
       const count = nodes.filter((n) => n.data.config.kind === kind).length + 1;
@@ -331,12 +469,13 @@ function EditorInner() {
       const newNode: RFNode = { id, type: kind, position, data: { config } };
       setNodes((nds) => nds.concat(newNode));
     },
-    [rf, nodes, setNodes, t],
+    [rf, nodes, setNodes, t, takeSnapshot],
   );
 
   // --- Presets / persistence ---
   const loadPreset = useCallback(
     (id: string) => {
+      takeSnapshot();
       const { nodes: pn, edges: pe, seed: ps } = presetToRF(id);
       setRunning(false);
       setNodes(pn);
@@ -349,7 +488,7 @@ function EditorInner() {
       setHistory([]);
       setTotalCost(0);
     },
-    [setNodes, setEdges],
+    [setNodes, setEdges, takeSnapshot],
   );
 
   const exportDesign = useCallback(() => {
@@ -357,7 +496,7 @@ function EditorInner() {
     const sNodes: SerializedNode[] = nodes.map((n) => ({ id: n.id, position: n.position, config: n.data.config }));
     const json = serializeDesign(
       sNodes,
-      edges.map((e) => ({ id: e.id, source: e.source, target: e.target })),
+      edges.map((e) => ({ id: e.id, source: e.source, target: e.target, sourceHandle: e.sourceHandle, targetHandle: e.targetHandle })),
       seed,
       profileType,
       chaos,
@@ -383,6 +522,7 @@ function EditorInner() {
       reader.onload = (e) => {
         try {
           const design = parseDesign(e.target?.result as string);
+          takeSnapshot();
           const rfNodes: RFNode[] = design.nodes.map((n) => ({
             id: n.id,
             type: n.config.kind,
@@ -390,7 +530,7 @@ function EditorInner() {
             data: { config: n.config },
           }));
           setNodes(rfNodes);
-          setEdges(design.edges.map((ed) => ({ id: ed.id, source: ed.source, target: ed.target, animated: true, style: { strokeWidth: 2.5 } })));
+          setEdges(design.edges.map((ed) => ({ id: ed.id, source: ed.source, target: ed.target, sourceHandle: ed.sourceHandle ?? 'bottom', targetHandle: ed.targetHandle ?? 'top', animated: true, style: { strokeWidth: 2.5 } })));
           setSeed(design.seed);
           setProfileType(design.profileType);
           setChaos(design.chaos);
@@ -407,13 +547,14 @@ function EditorInner() {
       reader.onerror = () => setImportError(t('editor.errors.read_error', { defaultValue: 'Could not read file.' }));
       reader.readAsText(file);
     },
-    [setNodes, setEdges, t],
+    [setNodes, setEdges, t, takeSnapshot],
   );
 
   const selectedConfig = nodes.find((n) => n.id === selectedId)?.data.config ?? null;
   const nodeOptions = nodes.map((n) => ({ id: n.id, label: n.data.config.label }));
 
   const btn = 'px-3 py-2 font-mono text-sm uppercase tracking-wider border transition-colors flex items-center gap-2';
+  const iconBtn = 'p-2 border transition-colors flex items-center justify-center';
 
   return (
     <MetricsContext.Provider value={{ metrics, running, selectedId }}>
@@ -437,6 +578,46 @@ function EditorInner() {
           </button>
           <button onClick={reset} className={`${btn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}>
             <RotateCcw className="w-4 h-4" /> {t('editor.buttons.reset', { defaultValue: 'Reset' })}
+          </button>
+
+          <div className="border-l border-tactical-line h-8 mx-1" />
+
+          <button
+            onClick={undo}
+            disabled={!canUndo}
+            title={t('editor.buttons.undo', { defaultValue: 'Undo' })}
+            aria-label={t('editor.buttons.undo', { defaultValue: 'Undo' })}
+            className={`${iconBtn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-tactical-border disabled:hover:text-tactical-dim`}
+          >
+            <Undo2 className="w-4 h-4" />
+          </button>
+          <button
+            onClick={redo}
+            disabled={!canRedo}
+            title={t('editor.buttons.redo', { defaultValue: 'Redo' })}
+            aria-label={t('editor.buttons.redo', { defaultValue: 'Redo' })}
+            className={`${iconBtn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-tactical-border disabled:hover:text-tactical-dim`}
+          >
+            <Redo2 className="w-4 h-4" />
+          </button>
+
+          <div className="border-l border-tactical-line h-8 mx-1" />
+
+          <button
+            onClick={() => applyLayout('vertical')}
+            title={t('editor.buttons.arrange_vertical', { defaultValue: 'Arrange vertically' })}
+            aria-label={t('editor.buttons.arrange_vertical', { defaultValue: 'Arrange vertically' })}
+            className={`${iconBtn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}
+          >
+            <ArrowDownUp className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => applyLayout('horizontal')}
+            title={t('editor.buttons.arrange_horizontal', { defaultValue: 'Arrange horizontally' })}
+            aria-label={t('editor.buttons.arrange_horizontal', { defaultValue: 'Arrange horizontally' })}
+            className={`${iconBtn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}
+          >
+            <ArrowLeftRight className="w-4 h-4" />
           </button>
 
           <div className="border-l border-tactical-line h-8 mx-1" />
@@ -496,12 +677,18 @@ function EditorInner() {
               onNodesChange={onNodesChange}
               onEdgesChange={onEdgesChange}
               onConnect={onConnect}
+              isValidConnection={isValidConnection}
+              connectionMode={ConnectionMode.Loose}
               onNodesDelete={onNodesDelete}
+              onEdgesDelete={onEdgesDelete}
+              onNodeDragStart={onNodeDragStart}
+              onSelectionDragStart={onNodeDragStart}
               onDragOver={onDragOver}
               onDrop={onDrop}
               onNodeClick={(_, node) => { setSelectedId(node.id); setShowBill(false); closeMenu(); }}
               onNodeContextMenu={onNodeContextMenu}
               onEdgeContextMenu={onEdgeContextMenu}
+              onPaneContextMenu={onPaneContextMenu}
               onEdgeClick={closeMenu}
               onPaneClick={() => { setSelectedId(null); closeMenu(); }}
               onMoveStart={closeMenu}
@@ -553,8 +740,13 @@ function EditorInner() {
                     <div className="my-1 border-t border-slate-200 dark:border-tactical-border" />
                     <ContextItem icon={Trash2} label={t('editor.menu.delete')} tone="text-signal-red" onClick={() => { deleteNode(menu.id); closeMenu(); }} />
                   </>
-                ) : (
+                ) : menu.kind === 'edge' ? (
                   <ContextItem icon={Trash2} label={t('editor.menu.delete_edge')} tone="text-signal-red" onClick={() => { deleteEdge(menu.id); closeMenu(); }} />
+                ) : (
+                  <>
+                    <ContextItem icon={ArrowDownUp} label={t('editor.menu.arrange_vertical', { defaultValue: 'Arrange vertically' })} onClick={() => { applyLayout('vertical'); closeMenu(); }} />
+                    <ContextItem icon={ArrowLeftRight} label={t('editor.menu.arrange_horizontal', { defaultValue: 'Arrange horizontally' })} onClick={() => { applyLayout('horizontal'); closeMenu(); }} />
+                  </>
                 )}
               </div>
             )}

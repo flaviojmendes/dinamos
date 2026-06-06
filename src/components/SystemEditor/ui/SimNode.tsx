@@ -5,7 +5,7 @@
 import { memo, useEffect, useRef, useState } from 'react';
 import { Handle, Position, NodeProps } from 'reactflow';
 import { useTranslation } from 'react-i18next';
-import { ArrowUp, ArrowDown } from 'lucide-react';
+import { ArrowUp, ArrowDown, Layers } from 'lucide-react';
 import { NodeConfig, NodeMetrics } from '../engine/types';
 import { NODE_CATALOG } from './nodeCatalog';
 import { useNodeMetrics } from './MetricsContext';
@@ -16,6 +16,27 @@ export interface SimNodeData {
 
 /** Kinds whose replica count can scale at runtime (auto-scaler driven). */
 const SCALABLE_KINDS = new Set(['autoScaler']);
+
+/**
+ * Connection anchors on every side of a box. They are all rendered as `source`
+ * handles and ReactFlow runs in `ConnectionMode.Loose`, so any side can act as
+ * either end of an edge — direction validity is enforced in the editor via
+ * `isValidConnection`. Ids stay stable so saved/imported edges re-anchor.
+ */
+const HANDLE_SIDES: { id: string; position: Position }[] = [
+  { id: 'top', position: Position.Top },
+  { id: 'right', position: Position.Right },
+  { id: 'bottom', position: Position.Bottom },
+  { id: 'left', position: Position.Left },
+];
+
+const handleStyle = {
+  width: 10,
+  height: 10,
+  borderRadius: 9999,
+  background: '#64748b',
+  border: '2px solid #0f172a',
+};
 
 function utilColor(util: number): string {
   if (util >= 1) return '#ef4444';
@@ -192,18 +213,55 @@ function SimNodeImpl({ id, data, isConnectable, selected }: NodeProps<SimNodeDat
   const Icon = entry.icon;
   const util = metrics?.utilization ?? 0;
 
+  // Effective replica count: live for auto-scaled tiers, configured otherwise.
+  const replicaCount = Math.max(
+    1,
+    Math.round(SCALABLE_KINDS.has(config.kind) ? metrics?.replicas ?? config.replicas : config.replicas),
+  );
+  // How many "stacked card" layers to draw behind the box (capped for sanity).
+  const stackLayers = Math.min(3, Math.max(0, replicaCount - 1));
+
   return (
-    <div
-      className={`px-3 py-2 border-2 ${entry.accent} bg-tactical-surface min-w-[190px] ${
-        selected ? 'ring-2 ring-signal-cyan' : ''
-      }`}
-    >
-      {entry.hasTarget && <Handle type="target" position={Position.Top} isConnectable={isConnectable} />}
-      {entry.hasSource && <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />}
+    <div className="relative" style={{ minWidth: 190 }}>
+      {/* Stacked cards behind the box visualise multiple replicas. Rendered
+          before the main card so they paint underneath, offset to the corner. */}
+      {Array.from({ length: stackLayers }).map((_, i) => (
+        <div
+          key={i}
+          aria-hidden
+          className={`absolute inset-0 border-2 ${entry.accent} bg-tactical-surface opacity-60`}
+          style={{ transform: `translate(${(i + 1) * 4}px, ${(i + 1) * 4}px)` }}
+        />
+      ))}
+
+      <div
+        className={`relative px-3 py-2 border-2 ${entry.accent} bg-tactical-surface ${
+          selected ? 'ring-2 ring-signal-cyan' : ''
+        }`}
+      >
+      {HANDLE_SIDES.map(({ id: handleId, position }) => (
+        <Handle
+          key={handleId}
+          id={handleId}
+          type="source"
+          position={position}
+          isConnectable={isConnectable}
+          style={handleStyle}
+          className="transition-colors hover:!bg-signal-cyan"
+        />
+      ))}
 
       <div className="flex items-center gap-2 font-mono font-bold text-white tracking-tight text-sm">
-        <Icon className="w-4 h-4" />
-        {config.label}
+        <Icon className="w-4 h-4 shrink-0" />
+        <span className="truncate">{config.label}</span>
+        {replicaCount > 1 && (
+          <span
+            title={t('editor.node.replicas')}
+            className="ml-auto flex items-center gap-0.5 px-1 py-0.5 bg-tactical-line text-cyan-300 text-[10px] font-bold rounded-sm"
+          >
+            <Layers className="w-3 h-3" />×{replicaCount}
+          </span>
+        )}
       </div>
 
       {metrics ? (
@@ -225,6 +283,7 @@ function SimNodeImpl({ id, data, isConnectable, selected }: NodeProps<SimNodeDat
           <div className="h-full transition-all duration-300" style={{ width: `${Math.min(100, util * 100)}%`, backgroundColor: utilColor(util) }} />
         </div>
       )}
+      </div>
     </div>
   );
 }
