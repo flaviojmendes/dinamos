@@ -9,7 +9,6 @@ import { getTopics, ForumTopic } from '../../services/forumService';
 import { openCommandPalette } from '../Common/CommandPalette';
 import {
   Panel,
-  Stat,
   StatusBadge,
   SegmentBar,
   DataTable,
@@ -281,40 +280,32 @@ export default function CommandCenter() {
         </TacticalButton>
       </div>
 
-      {/* Metrics + Activity */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <Panel title={t('command_center.metrics_title')} className="lg:col-span-2" bodyClassName="p-4">
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <Stat value={totals.modulesDone} label={t('command_center.modules_cleared')} color="green" sub={t('command_center.stat_of', { count: rows.length })} />
-            <Stat value={totals.done} label={t('command_center.lessons_done')} color="cyan" sub={t('command_center.stat_of', { count: totals.total })} />
-            <Stat value={`${totals.pct}%`} label={t('command_center.readiness')} color="amber" />
-          </div>
-        </Panel>
-
-        <Panel title={t('command_center.operation_activity')} accent="cyan">
-          {recommended ? (
-            <div className="space-y-4">
-              <div>
-                <span className="label-mono">{t('command_center.recommended_next')}</span>
-                <p className="mt-1 font-sans text-sm font-medium text-slate-900 dark:text-tactical-text">
-                  {lessonLabel(recommended.path)}
-                </p>
-                <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim">
-                  {t(`command_center.modules.${recommended.id}`, { defaultValue: recommended.module })}
-                </p>
-              </div>
-              <SegmentBar value={totals.done} max={totals.total || 1} color="cyan" caption={`${totals.pct}%`} />
-              <TacticalButton variant="primary" className="w-full" onClick={() => navigate(recommended.path)}>
+      {/* Up next */}
+      <Panel title={t('command_center.operation_activity')} accent="cyan">
+        {recommended ? (
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
+              <span className="label-mono">{t('command_center.recommended_next')}</span>
+              <p className="mt-1 font-sans text-sm font-medium text-slate-900 dark:text-tactical-text">
+                {lessonLabel(recommended.path)}
+              </p>
+              <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim">
+                {t(`command_center.modules.${recommended.id}`, { defaultValue: recommended.module })}
+              </p>
+            </div>
+            <div className="flex items-center gap-4 sm:w-1/2 sm:shrink-0">
+              <SegmentBar value={totals.done} max={totals.total || 1} color="cyan" caption={`${totals.pct}%`} className="flex-1" />
+              <TacticalButton variant="primary" onClick={() => navigate(recommended.path)}>
                 {t('command_center.deploy')}
               </TacticalButton>
             </div>
-          ) : (
-            <div className="py-6 text-center font-sans text-sm text-emerald-600 dark:text-signal-green">
-              {t('command_center.all_cleared')}
-            </div>
-          )}
-        </Panel>
-      </div>
+          </div>
+        ) : (
+          <div className="py-6 text-center font-sans text-sm text-emerald-600 dark:text-signal-green">
+            {t('command_center.all_cleared')}
+          </div>
+        )}
+      </Panel>
 
       {/* Practice Arena: merged designLab destinations */}
       <div className="mt-4">
