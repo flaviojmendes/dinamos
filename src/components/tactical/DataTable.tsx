@@ -59,9 +59,9 @@ export function DataTable<T>({
             <tr>
               <td
                 colSpan={columns.length}
-                className="px-3 py-10 text-center font-mono text-sm text-slate-500 dark:text-tactical-dim"
+                className="px-3 py-10 text-center font-sans text-sm text-slate-500 dark:text-tactical-dim"
               >
-                {empty ?? 'NO RECORDS'}
+                {empty ?? 'No records'}
               </td>
             </tr>
           )}
@@ -82,7 +82,7 @@ export function DataTable<T>({
                     <td
                       key={col.key}
                       className={cn(
-                        'px-3 py-3 font-mono text-slate-800 dark:text-tactical-text align-middle',
+                        'px-3 py-3 font-sans text-slate-800 dark:text-tactical-text align-middle',
                         alignClass[col.align ?? 'left'],
                         col.className,
                       )}

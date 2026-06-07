@@ -254,15 +254,15 @@ export default function PollingWebhooks() {
   return (
     <div className="space-y-6">
       <div className="max-w-3xl">
-        <div className="label-mono text-signal-cyan mb-2">
-          [ {t('simulators.polling_webhooks.title')} ]
-        </div>
-        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
+        <h2 className="font-sans text-lg font-semibold text-slate-900 dark:text-tactical-text mb-2">
+          {t('simulators.polling_webhooks.title')}
+        </h2>
+        <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
           {t('simulators.polling_webhooks.subtitle')}
         </p>
         <Link
           to="/componentes/polling-webhooks"
-          className="inline-flex items-center gap-2 mt-4 font-mono text-xs uppercase tracking-wider text-signal-cyan hover:text-signal-green transition-colors"
+          className="inline-flex items-center gap-2 mt-4 font-sans text-xs text-signal-cyan hover:text-signal-green transition-colors"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -289,21 +289,21 @@ export default function PollingWebhooks() {
       <Panel title={t('components.common.simulator_title')} accent="cyan">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div>
-            <label className="block label-mono text-slate-500 dark:text-tactical-label mb-2">
+            <label className="block font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">
               {t('simulators.polling_webhooks.config.polling_interval')}
             </label>
             <input type="range" min="1000" max="10000" step="500" value={config.pollingInterval} onChange={(e) => setConfig(prev => ({ ...prev, pollingInterval: parseInt(e.target.value) }))} className={rangeClass} disabled={isRunning} />
             <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{config.pollingInterval / 1000}s</span>
           </div>
           <div>
-            <label className="block label-mono text-slate-500 dark:text-tactical-label mb-2">
+            <label className="block font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">
               {t('simulators.polling_webhooks.config.data_generation')}
             </label>
             <input type="range" min="3000" max="15000" step="1000" value={config.dataGenerationInterval} onChange={(e) => setConfig(prev => ({ ...prev, dataGenerationInterval: parseInt(e.target.value) }))} className={rangeClass} disabled={isRunning} />
             <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{config.dataGenerationInterval / 1000}s</span>
           </div>
           <div>
-            <label className="block label-mono text-slate-500 dark:text-tactical-label mb-2">
+            <label className="block font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">
               {t('simulators.polling_webhooks.config.network_latency')}
             </label>
             <input type="range" min="50" max="1000" step="50" value={config.networkLatency} onChange={(e) => setConfig(prev => ({ ...prev, networkLatency: parseInt(e.target.value) }))} className={rangeClass} disabled={isRunning} />
@@ -320,12 +320,12 @@ export default function PollingWebhooks() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div>
-            <div className="label-mono text-signal-cyan mb-3">{t('simulators.polling_webhooks.flow.title')}</div>
-            <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-6 h-80 relative">
-              <div className="absolute top-4 left-4 border border-signal-cyan/40 bg-signal-cyan/10 px-3 py-1.5 font-mono text-xs text-signal-cyan">
+            <div className="font-sans text-sm font-semibold text-signal-cyan mb-3">{t('simulators.polling_webhooks.flow.title')}</div>
+            <div className="rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-6 h-80 relative">
+              <div className="absolute top-4 left-4 rounded-full border border-signal-cyan/40 bg-signal-cyan/10 px-3 py-1.5 font-sans text-xs text-signal-cyan">
                 {t('simulators.polling_webhooks.flow.client')}
               </div>
-              <div className="absolute top-4 right-4 border border-signal-green/40 bg-signal-green/10 px-3 py-1.5 font-mono text-xs text-signal-green">
+              <div className="absolute top-4 right-4 rounded-full border border-signal-green/40 bg-signal-green/10 px-3 py-1.5 font-sans text-xs text-signal-green">
                 {t('simulators.polling_webhooks.flow.server')}
               </div>
               <div className="absolute top-8 left-20 right-20 h-px bg-slate-300 dark:bg-tactical-line mt-2" />
@@ -368,36 +368,36 @@ export default function PollingWebhooks() {
           </div>
 
           <div>
-            <div className="label-mono text-signal-cyan mb-3">{t('simulators.polling_webhooks.stats.title')}</div>
+            <div className="font-sans text-sm font-semibold text-signal-cyan mb-3">{t('simulators.polling_webhooks.stats.title')}</div>
             <div className="grid grid-cols-2 gap-3 mb-4">
-              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+              <div className="rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border px-3 py-3">
                 <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">{stats.totalRequests}</div>
-                <div className="label-mono mt-2">{t('simulators.polling_webhooks.stats.total_requests')}</div>
+                <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.polling_webhooks.stats.total_requests')}</div>
               </div>
-              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+              <div className="rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border px-3 py-3">
                 <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-amber">{stats.emptyResponses}</div>
-                <div className="label-mono mt-2">{t('simulators.polling_webhooks.stats.empty_responses')}</div>
+                <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.polling_webhooks.stats.empty_responses')}</div>
               </div>
-              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+              <div className="rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border px-3 py-3">
                 <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green">{stats.dataTransfers}</div>
-                <div className="label-mono mt-2">{t('simulators.polling_webhooks.stats.data_transfers')}</div>
+                <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.polling_webhooks.stats.data_transfers')}</div>
               </div>
-              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+              <div className="rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border px-3 py-3">
                 <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">{stats.webhookNotifications}</div>
-                <div className="label-mono mt-2">{t('simulators.polling_webhooks.stats.webhooks_sent')}</div>
+                <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.polling_webhooks.stats.webhooks_sent')}</div>
               </div>
-              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 col-span-2">
+              <div className="rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border px-3 py-3 col-span-2">
                 <div className="font-mono text-2xl font-bold tabular-nums leading-none text-signal-amber">
                   {(stats.totalBandwidth / 1000).toFixed(1)}k
                 </div>
-                <div className="label-mono mt-2">{t('simulators.polling_webhooks.stats.total_bandwidth_bits')}</div>
+                <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.polling_webhooks.stats.total_bandwidth_bits')}</div>
               </div>
             </div>
 
-            <div className="tactical-panel border-l-2 border-l-signal-cyan p-4 mb-4">
-              <h4 className="label-mono text-signal-cyan mb-2">{t('simulators.polling_webhooks.stats.efficiency')}</h4>
+            <div className="tactical-panel rounded-lg dark:rounded-none border-l-2 border-l-signal-cyan p-4 mb-4">
+              <h4 className="font-sans text-sm font-semibold text-signal-cyan mb-2">{t('simulators.polling_webhooks.stats.efficiency')}</h4>
               {stats.totalRequests > 0 && (
-                <div className="space-y-2 font-mono text-sm text-slate-600 dark:text-tactical-dim">
+                <div className="space-y-2 font-sans text-sm text-slate-600 dark:text-tactical-dim">
                   <div className="flex justify-between">
                     <span>{t('simulators.polling_webhooks.stats.success_rate')}:</span>
                     <span className="text-signal-green">{((stats.dataTransfers / stats.totalRequests) * 100).toFixed(1)}%</span>
@@ -410,8 +410,8 @@ export default function PollingWebhooks() {
               )}
             </div>
 
-            <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4">
-              <h4 className="label-mono mb-2">{t('simulators.polling_webhooks.queue.pending_data', { count: pendingData.length })}</h4>
+            <div className="rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4">
+              <h4 className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t('simulators.polling_webhooks.queue.pending_data', { count: pendingData.length })}</h4>
               <div className="space-y-1 max-h-20 overflow-y-auto">
                 {pendingData.slice(0, 3).map((dataItem) => (
                   <div key={dataItem.id} className="font-mono text-xs text-signal-amber border border-signal-amber/30 bg-signal-amber/5 p-1">
@@ -430,7 +430,7 @@ export default function PollingWebhooks() {
         </div>
 
         <div className="mt-6">
-          <div className="label-mono text-signal-cyan mb-3">{t('simulators.polling_webhooks.log.title')}</div>
+          <div className="font-sans text-sm font-semibold text-signal-cyan mb-3">{t('simulators.polling_webhooks.log.title')}</div>
           <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 max-h-60 overflow-y-auto">
             <AnimatePresence>
               {messages.slice(-15).reverse().map((message) => (
@@ -461,7 +461,7 @@ export default function PollingWebhooks() {
             {t('simulators.polling_webhooks.ctas.back_to_theory')}
           </TacticalButton>
         </Link>
-        <Link to="/componentes" className="font-mono text-xs uppercase tracking-wider text-signal-cyan hover:text-signal-green transition-colors">
+        <Link to="/componentes" className="font-sans text-xs text-signal-cyan hover:text-signal-green transition-colors">
           ← {t('simulators.polling_webhooks.ctas.back_to_components')}
         </Link>
       </div>

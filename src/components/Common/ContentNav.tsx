@@ -34,7 +34,7 @@ export function ContentBreadcrumb({ path }: { path: string }) {
   return (
     <nav
       aria-label="Breadcrumb"
-      className="flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-wider text-slate-500 dark:text-tactical-label"
+      className="flex flex-wrap items-center gap-2 font-sans text-[11px] text-slate-500 dark:text-tactical-label"
     >
       <Link to="/" className="hover:text-slate-900 dark:hover:text-tactical-text">
         {t('nav.breadcrumb_home', { defaultValue: 'Home' })}
@@ -94,7 +94,7 @@ export function ContentFooterNav({ path }: { path: string }) {
               className="tactical-panel group flex flex-col px-4 py-3 hover:border-slate-400 dark:hover:border-signal-green"
             >
               <span className="label-mono">‹ {t('nav.prev', { defaultValue: 'Previous' })}</span>
-              <span className="mt-1 truncate font-mono text-sm text-slate-900 dark:text-tactical-text">
+              <span className="mt-1 truncate font-sans text-sm text-slate-900 dark:text-tactical-text">
                 {label(prev.path)}
               </span>
             </Link>
@@ -107,7 +107,7 @@ export function ContentFooterNav({ path }: { path: string }) {
               className="tactical-panel group flex flex-col items-end px-4 py-3 text-right hover:border-slate-400 dark:hover:border-signal-green"
             >
               <span className="label-mono">{t('nav.next', { defaultValue: 'Next' })} ›</span>
-              <span className="mt-1 truncate font-mono text-sm text-slate-900 dark:text-tactical-text">
+              <span className="mt-1 truncate font-sans text-sm text-slate-900 dark:text-tactical-text">
                 {label(next.path)}
               </span>
             </Link>
@@ -127,7 +127,7 @@ export function ContentFooterNav({ path }: { path: string }) {
               <Link
                 key={r.path}
                 to={r.path}
-                className="cursor-pointer border border-slate-200 px-2.5 py-1 font-mono text-xs text-slate-600 transition-colors hover:border-brand-500 hover:text-slate-900 dark:border-tactical-border dark:text-tactical-dim dark:hover:border-signal-green dark:hover:text-tactical-text"
+                className="cursor-pointer rounded-full border border-slate-200 px-2.5 py-1 font-sans text-xs text-slate-600 transition-colors hover:border-brand-500 hover:text-slate-900 dark:border-tactical-border dark:text-tactical-dim dark:hover:border-signal-green dark:hover:text-tactical-text"
               >
                 {label(r.path)}
               </Link>

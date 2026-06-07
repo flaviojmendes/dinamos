@@ -125,18 +125,18 @@ export default function ConsistentHashingSimulator() {
           </div>
         }
       >
-        <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
+        <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
 
         <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label className="block label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.controls.vnodes`)}</label>
+            <label className="block font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.vnodes`)}</label>
             <div className="flex items-center gap-2">
               <input type="range" min="1" max="40" value={vnodes} onChange={e => setVnodes(Number(e.target.value))} className={rangeClass} />
               <span className="font-mono text-sm w-10 text-right text-signal-cyan tabular-nums">{vnodes}</span>
             </div>
           </div>
           <div className="space-y-2">
-            <label className="block label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.controls.keys`)}</label>
+            <label className="block font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.keys`)}</label>
             <div className="flex items-center gap-2">
               <input type="range" min="10" max="200" step="10" value={keyCount} onChange={e => setKeyCount(Number(e.target.value))} className={rangeClass} />
               <span className="font-mono text-sm w-10 text-right text-signal-cyan tabular-nums">{keyCount}</span>
@@ -187,9 +187,9 @@ export default function ConsistentHashingSimulator() {
             {Array.from({ length: nodeCount }).map((_, n) => {
               const load = Array.from(owners.values()).filter(o => o === n).length;
               return (
-                <div key={n} className="flex items-center gap-2 border border-slate-200 dark:border-tactical-border px-3 py-1.5">
+                <div key={n} className="flex items-center gap-2 rounded-md dark:rounded-none border border-slate-200 dark:border-tactical-border px-3 py-1.5">
                   <span className="h-3 w-3 rounded-full" style={{ backgroundColor: PALETTE[n] }} />
-                  <span className="font-mono text-xs text-slate-700 dark:text-tactical-text">{t(`${base}.labels.node`)} {n}</span>
+                  <span className="font-sans text-xs text-slate-700 dark:text-tactical-text">{t(`${base}.labels.node`)} {n}</span>
                   <span className="font-mono text-[11px] text-slate-500 dark:text-tactical-dim tabular-nums">{load}</span>
                 </div>
               );
@@ -206,7 +206,7 @@ export default function ConsistentHashingSimulator() {
           <AnimatedMetric value={movedPct} suffix="%" label={t(`${base}.metrics.moved`)} color={movedPct > 40 ? 'red' : 'amber'} pulse={movedSet.size > 0} />
           <AnimatedMetric value={imbalance} suffix="%" label={t(`${base}.metrics.imbalance`)} color={imbalance > 50 ? 'red' : 'green'} />
         </div>
-        <p className="mt-3 font-mono text-[11px] text-slate-500 dark:text-tactical-dim">{t(`${base}.labels.hint`)}</p>
+        <p className="mt-3 font-sans text-[11px] text-slate-500 dark:text-tactical-dim">{t(`${base}.labels.hint`)}</p>
       </Panel>
     </div>
   );

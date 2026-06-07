@@ -7,7 +7,7 @@ import { trackLogin } from '../utils/analytics';
 import { Panel, TacticalButton } from '../components/tactical';
 
 const inputClass =
-  'w-full px-4 py-3 border border-slate-300 dark:border-tactical-border rounded-lg dark:rounded-none bg-white dark:bg-tactical-surface text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-signal-green focus:border-transparent transition-colors duration-200';
+  'w-full px-4 py-3 border border-slate-300 dark:border-tactical-border rounded-lg dark:rounded-none bg-white dark:bg-tactical-surface text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-brand-500 focus:border-transparent transition-colors duration-200';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -94,7 +94,7 @@ export default function Login() {
       <div className="max-w-md w-full space-y-8">
         <div className="flex flex-col items-center">
           <Logo size="large" showSubtitle={true} className="mb-8" />
-          <h2 className="mt-2 text-center text-3xl font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-tactical-text">
+          <h2 className="mt-2 text-center text-3xl font-sans font-bold text-slate-900 dark:text-tactical-text">
             Bem-vindo ao Lab
           </h2>
           <p className="mt-2 text-center text-sm text-slate-600 dark:text-tactical-dim max-w-sm">
@@ -104,7 +104,7 @@ export default function Login() {
 
         <Panel padded={false} bodyClassName="py-8 px-6" className="rounded-xl dark:rounded-none shadow-xl dark:shadow-none transition-colors duration-200">
           {error && (
-            <div className="mb-6 border border-signal-red/40 text-signal-red bg-signal-red/10 px-4 py-3 text-sm font-mono dark:rounded-none">
+            <div className="mb-6 border border-signal-red/40 text-signal-red bg-signal-red/10 px-4 py-3 text-sm font-sans rounded-lg dark:rounded-none">
               {error}
             </div>
           )}
@@ -112,7 +112,7 @@ export default function Login() {
           {/* Email/Password Form */}
           <form onSubmit={handleEmailLogin} className="space-y-4 mb-6">
             <div>
-              <label htmlFor="email" className="label-mono block mb-1">
+              <label htmlFor="email" className="block mb-1 text-sm font-medium text-slate-700 dark:text-tactical-label">
                 Email
               </label>
               <input
@@ -126,7 +126,7 @@ export default function Login() {
               />
             </div>
             <div>
-              <label htmlFor="password" className="label-mono block mb-1">
+              <label htmlFor="password" className="block mb-1 text-sm font-medium text-slate-700 dark:text-tactical-label">
                 Senha
               </label>
               <input
@@ -142,7 +142,7 @@ export default function Login() {
             <div className="flex items-center justify-end">
               <Link 
                 to="/forgot-password" 
-                className="text-sm font-mono uppercase tracking-wider text-brand-600 dark:text-signal-cyan hover:text-brand-700 dark:hover:text-signal-cyan/80 transition-colors"
+                className="text-sm font-sans font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors"
               >
                 Esqueceu a senha?
               </Link>
@@ -164,7 +164,7 @@ export default function Login() {
               <div className="w-full border-t border-slate-300 dark:border-tactical-line"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 font-mono uppercase tracking-wider text-xs bg-white dark:bg-tactical-surface text-slate-500 dark:text-tactical-label">
+              <span className="px-4 font-sans text-xs bg-white dark:bg-tactical-surface text-slate-500 dark:text-tactical-label">
                 ou continue com
               </span>
             </div>
@@ -222,7 +222,7 @@ export default function Login() {
               Não tem uma conta?{' '}
               <Link 
                 to="/register" 
-                className="font-mono uppercase tracking-wider font-medium text-brand-600 dark:text-signal-green hover:text-brand-700 dark:hover:text-signal-green/80 transition-colors"
+                className="font-sans font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors"
               >
                 Criar conta
               </Link>

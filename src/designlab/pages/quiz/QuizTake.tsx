@@ -214,7 +214,7 @@ function QuizTake() {
         <div className="min-h-screen bg-canvas-paper dark:bg-canvas-dark flex items-center justify-center">
           <div className="text-center p-8 tactical-panel max-w-md dark:rounded-none">
             <div className="text-signal-red text-4xl mb-4">⚠️</div>
-            <h2 className="text-xl font-bold font-mono uppercase tracking-wider text-slate-900 dark:text-tactical-text mb-2">
+            <h2 className="text-xl font-bold font-sans text-slate-900 dark:text-tactical-text mb-2">
               {error || 'Quiz não encontrado'}
             </h2>
             <TacticalButton variant="primary" onClick={() => navigate('/quizzes')} className="mt-4">
@@ -283,8 +283,8 @@ function QuizTake() {
 
             {/* Answers Review */}
             <div className="tactical-panel p-6 dark:rounded-none">
-              <h3 className="text-lg font-bold font-mono uppercase tracking-wider text-slate-900 dark:text-tactical-text mb-6 flex items-center gap-2 before:content-[''] before:h-5 before:w-1 before:bg-signal-amber">
-                Revisão das Respostas
+              <h3 className="text-lg font-bold font-sans text-slate-900 dark:text-tactical-text mb-6">
+                Revisão das respostas
               </h3>
 
               <div className="space-y-6">
@@ -309,7 +309,7 @@ function QuizTake() {
                           </p>
                           {!isCorrect && (
                             <p className="text-sm text-signal-green mt-2">
-                              <span className="font-mono uppercase tracking-wider text-xs">Resposta correta:</span> {correctOption?.option_text}
+                              <span className="text-xs font-medium text-slate-500 dark:text-tactical-label">Resposta correta:</span> {correctOption?.option_text}
                             </p>
                           )}
                           {question.explanation && (
@@ -342,7 +342,7 @@ function QuizTake() {
           {/* Header */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <h1 className="text-xl font-bold font-mono uppercase tracking-wider text-slate-900 dark:text-tactical-text">
+              <h1 className="text-xl font-bold font-sans text-slate-900 dark:text-tactical-text">
                 {quiz.title}
               </h1>
               <span className="text-sm font-mono tabular-nums text-slate-500 dark:text-tactical-label">
@@ -361,7 +361,7 @@ function QuizTake() {
 
           {/* Timer */}
           <div className="flex justify-center mb-8">
-            <div className={`px-6 py-3 border font-mono tabular-nums text-2xl font-bold flex items-center gap-2 transition-colors dark:rounded-none ${getTimerBgColor()} ${getTimerColor()}`}>
+            <div className={`px-6 py-3 border rounded-lg font-mono tabular-nums text-2xl font-bold flex items-center gap-2 transition-colors dark:rounded-none ${getTimerBgColor()} ${getTimerColor()}`}>
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -386,13 +386,13 @@ function QuizTake() {
                     key={option.id}
                     onClick={() => handleSelectOption(option.id)}
                     disabled={selectedOption !== null || submitting}
-                    className={`w-full p-4 border-2 text-left transition-all duration-200 flex items-center gap-4 dark:rounded-none ${
+                    className={`w-full p-4 border-2 rounded-lg text-left transition-all duration-200 flex items-center gap-4 dark:rounded-none ${
                       isSelected
                         ? 'border-signal-green bg-signal-green/10 dark:bg-signal-green/10'
                         : 'border-slate-200 dark:border-tactical-border hover:border-signal-green/50 bg-white dark:bg-tactical-surface'
                     } ${selectedOption !== null && !isSelected ? 'opacity-50' : ''}`}
                   >
-                    <span className={`flex-shrink-0 w-10 h-10 flex items-center justify-center font-bold text-lg font-mono dark:rounded-none ${
+                    <span className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg font-sans dark:rounded-none ${
                       isSelected
                         ? 'bg-slate-900 dark:bg-white text-white dark:text-black'
                         : 'bg-slate-100 dark:bg-tactical-raised text-slate-600 dark:text-tactical-dim'
@@ -410,7 +410,7 @@ function QuizTake() {
 
           {/* Submitting indicator */}
           {submitting && (
-            <div className="flex items-center justify-center gap-3 text-slate-600 dark:text-tactical-dim font-mono uppercase tracking-wider text-xs">
+            <div className="flex items-center justify-center gap-3 text-slate-600 dark:text-tactical-dim text-sm">
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-brand-600 dark:border-signal-green"></div>
               Enviando respostas...
             </div>

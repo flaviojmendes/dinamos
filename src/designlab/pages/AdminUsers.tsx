@@ -396,7 +396,7 @@ const MessageComposer = ({ user, onClose, onSent }: MessageComposerProps) => {
             <button
               onClick={handleSend}
               disabled={sending || !title.trim() || !message.trim()}
-              className="inline-flex items-center gap-2 px-5 py-2 bg-slate-900 text-white dark:bg-white dark:text-black hover:bg-slate-700 dark:hover:bg-slate-200 font-mono uppercase tracking-wider dark:rounded-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-slate-900 text-white dark:bg-white dark:text-black hover:bg-slate-700 dark:hover:bg-slate-200 font-sans font-medium dark:rounded-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {sending ? (
                 <>
@@ -599,8 +599,8 @@ const AdminUsers = () => {
       <main className="flex-1 py-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <div className="flex justify-between items-center mb-6 md:mb-8">
-            <h1 className="text-2xl md:text-3xl font-mono uppercase tracking-wider font-bold text-slate-900 dark:text-tactical-text flex items-center gap-3 before:content-[''] before:h-6 before:w-1 before:bg-signal-amber before:shrink-0">
-              Gerenciamento de Usuários
+            <h1 className="text-2xl md:text-3xl font-sans font-bold tracking-tight text-slate-900 dark:text-tactical-text">
+              Gerenciamento de usuários
             </h1>
           </div>
           
@@ -615,7 +615,7 @@ const AdminUsers = () => {
                   placeholder="Buscar por nome ou email..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="block w-full bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-4 py-2"
+                  className="block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-4 py-2"
                 />
               </div>
               <div className="w-full sm:w-48">
@@ -624,7 +624,7 @@ const AdminUsers = () => {
                   id="role-filter"
                   value={roleFilter}
                   onChange={(e) => setRoleFilter(e.target.value)}
-                  className="block w-full bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2"
+                  className="block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2"
                 >
                   <option value="all">Todos os Papéis</option>
                   {availableRoles.map(role => (
@@ -638,7 +638,7 @@ const AdminUsers = () => {
                   id="status-filter"
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="block w-full bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2"
+                  className="block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2"
                 >
                   <option value="all">Todos os Status</option>
                   <option value="active">Inscrito</option>
@@ -674,7 +674,7 @@ const AdminUsers = () => {
                     value={minTokens}
                     onChange={(e) => setMinTokens(e.target.value)}
                     placeholder="0"
-                    className="block w-full bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2"
+                    className="block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2"
                   />
                 </div>
                 <div>
@@ -688,7 +688,7 @@ const AdminUsers = () => {
                     value={maxTokens}
                     onChange={(e) => setMaxTokens(e.target.value)}
                     placeholder="Sem limite"
-                    className="block w-full bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2"
+                    className="block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2"
                   />
                 </div>
                 <div>
@@ -703,7 +703,7 @@ const AdminUsers = () => {
                     value={minQuizAvg}
                     onChange={(e) => setMinQuizAvg(e.target.value)}
                     placeholder="0"
-                    className="block w-full bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2"
+                    className="block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2"
                   />
                 </div>
                 <div>
@@ -718,7 +718,7 @@ const AdminUsers = () => {
                     value={maxQuizAvg}
                     onChange={(e) => setMaxQuizAvg(e.target.value)}
                     placeholder="100"
-                    className="block w-full bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2"
+                    className="block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2"
                   />
                 </div>
               </div>
@@ -832,7 +832,7 @@ const AdminUsers = () => {
                       <div className="flex gap-2 mt-3">
                         <button
                           onClick={() => setMessageUser(user)}
-                          className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-slate-900 text-white dark:bg-white dark:text-black hover:bg-slate-700 dark:hover:bg-slate-200 text-sm font-mono uppercase tracking-wider dark:rounded-none transition-all"
+                          className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-slate-900 text-white dark:bg-white dark:text-black hover:bg-slate-700 dark:hover:bg-slate-200 text-sm font-sans font-medium dark:rounded-none transition-all"
                         >
                           <Mail className="h-4 w-4" />
                           Mensagem
@@ -859,7 +859,7 @@ const AdminUsers = () => {
                       <tr>
                         <th 
                           scope="col" 
-                          className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-tactical-label uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                          className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-tactical-label cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
                           onClick={() => handleSort('nickname')}
                         >
                           <div className="flex items-center">
@@ -868,7 +868,7 @@ const AdminUsers = () => {
                         </th>
                         <th 
                           scope="col" 
-                          className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-tactical-label uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                          className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-tactical-label cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
                           onClick={() => handleSort('role')}
                         >
                           <div className="flex items-center">
@@ -877,7 +877,7 @@ const AdminUsers = () => {
                         </th>
                         <th 
                           scope="col" 
-                          className="px-4 py-3 text-center text-xs font-medium text-slate-500 dark:text-tactical-label uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                          className="px-4 py-3 text-center text-xs font-medium text-slate-500 dark:text-tactical-label cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
                           onClick={() => handleSort('tokens')}
                         >
                           <div className="flex items-center justify-center gap-1">
@@ -887,7 +887,7 @@ const AdminUsers = () => {
                         </th>
                         <th 
                           scope="col" 
-                          className="px-4 py-3 text-center text-xs font-medium text-slate-500 dark:text-tactical-label uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                          className="px-4 py-3 text-center text-xs font-medium text-slate-500 dark:text-tactical-label cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
                           onClick={() => handleSort('avg_quiz_score')}
                         >
                           <div className="flex items-center justify-center gap-1">
@@ -897,7 +897,7 @@ const AdminUsers = () => {
                         </th>
                         <th 
                           scope="col" 
-                          className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-tactical-label uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                          className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-tactical-label cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
                           onClick={() => handleSort('is_subscribed')}
                         >
                           <div className="flex items-center">
@@ -906,14 +906,14 @@ const AdminUsers = () => {
                         </th>
                         <th 
                           scope="col" 
-                          className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-tactical-label uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                          className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-tactical-label cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
                           onClick={() => handleSort('created_at')}
                         >
                           <div className="flex items-center">
                             Entrou em <SortIcon column="created_at" />
                           </div>
                         </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-tactical-label uppercase tracking-wider">
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-tactical-label">
                           Ações
                         </th>
                       </tr>

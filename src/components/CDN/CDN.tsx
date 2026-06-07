@@ -173,9 +173,9 @@ export default function CDN() {
   return (
     <div className="space-y-6">
       <div className="max-w-3xl">
-        <div className="label-mono text-signal-cyan mb-2">
-          [ {t('simulators.cdn.title')} ]
-        </div>
+        <span className="inline-block text-xs font-medium text-slate-600 dark:text-tactical-label bg-slate-100 dark:bg-tactical-raised px-2.5 py-1 rounded-full mb-2">
+          {t('simulators.cdn.title')}
+        </span>
       </div>
 
       <Panel
@@ -193,10 +193,10 @@ export default function CDN() {
         }
       >
         {isConfigOpen && (
-          <div className="mb-6 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 space-y-4">
-            <h3 className="label-mono text-signal-cyan">{t('simulators.cdn.config.title')}</h3>
+          <div className="mb-6 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 space-y-4 rounded-lg dark:rounded-none">
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-tactical-text">{t('simulators.cdn.config.title')}</h3>
             <div>
-              <label className="block label-mono text-slate-500 dark:text-tactical-label mb-1">
+              <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">
                 {t('simulators.cdn.config.base_latency_multiplier')}
               </label>
               <input
@@ -217,7 +217,7 @@ export default function CDN() {
             </div>
             
             <div>
-              <label className="block label-mono text-slate-500 dark:text-tactical-label mb-1">
+              <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">
                 {t('simulators.cdn.config.cache_latency_multiplier')}
               </label>
               <input
@@ -238,7 +238,7 @@ export default function CDN() {
             </div>
 
             <div>
-              <label className="block label-mono text-slate-500 dark:text-tactical-label mb-1">
+              <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">
                 {t('simulators.cdn.config.max_logs')}
               </label>
               <input
@@ -277,7 +277,7 @@ export default function CDN() {
         </div>
 
         {isRequesting && (
-          <div className="mb-6 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 flex items-center justify-center">
+          <div className="mb-6 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 flex items-center justify-center rounded-lg dark:rounded-none">
             <motion.div
               className="flex items-center gap-2"
               initial={{ opacity: 0 }}
@@ -286,7 +286,7 @@ export default function CDN() {
               <div className="w-2 h-2 bg-signal-cyan animate-bounce" />
               <div className="w-2 h-2 bg-signal-cyan animate-bounce [animation-delay:0.2s]" />
               <div className="w-2 h-2 bg-signal-cyan animate-bounce [animation-delay:0.4s]" />
-              <span className="ml-2 font-mono text-sm text-slate-600 dark:text-tactical-dim">{t('simulators.cdn.messages.processing')}</span>
+              <span className="ml-2 font-sans text-sm text-slate-600 dark:text-tactical-dim">{t('simulators.cdn.messages.processing')}</span>
             </motion.div>
           </div>
         )}
@@ -297,14 +297,14 @@ export default function CDN() {
           {datacenters.map((dc) => (
             <div
               key={dc.id}
-              className={`p-3 border ${
+              className={`p-3 border rounded-lg dark:rounded-none ${
                 nearestDatacenter === dc.id
                   ? 'border-signal-cyan bg-signal-cyan/5'
                   : 'border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised'
               }`}
             >
-              <div className="font-mono text-sm font-medium text-slate-900 dark:text-tactical-text">{t(`simulators.cdn.datacenters.${dc.id}.name`, { defaultValue: dc.name })}</div>
-              <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim mt-0.5">{t(`simulators.cdn.datacenters.${dc.id}.location`, { defaultValue: dc.location })}</div>
+              <div className="font-sans text-sm font-medium text-slate-900 dark:text-tactical-text">{t(`simulators.cdn.datacenters.${dc.id}.name`, { defaultValue: dc.name })}</div>
+              <div className="font-sans text-xs text-slate-500 dark:text-tactical-dim mt-0.5">{t(`simulators.cdn.datacenters.${dc.id}.location`, { defaultValue: dc.location })}</div>
               {dc.hasCache && (
                 <div className="mt-2">
                   <StatusBadge variant="active" label={t('simulators.cdn.labels.cache_badge')} />
@@ -326,7 +326,7 @@ export default function CDN() {
             {requestLogs.map((log) => (
               <div
                 key={log.id}
-                className="p-3 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised flex items-center justify-between"
+                className="p-3 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised flex items-center justify-between rounded-lg dark:rounded-none"
               >
                 <div>
                   <div className="font-mono text-sm text-slate-900 dark:text-tactical-text">
@@ -349,14 +349,14 @@ export default function CDN() {
         </Panel>
       )}
 
-      <div className="tactical-panel border-l-2 border-l-signal-cyan p-5">
-        <h3 className="label-mono text-signal-cyan mb-3">{t('simulators.cdn.info.title')}</h3>
-        <ul className="space-y-1.5 font-mono text-sm text-slate-600 dark:text-tactical-dim">
-          <li className="flex gap-2"><span className="text-signal-cyan">›</span>{t('simulators.cdn.info.i1')}</li>
-          <li className="flex gap-2"><span className="text-signal-cyan">›</span>{t('simulators.cdn.info.i2')}</li>
-          <li className="flex gap-2"><span className="text-signal-cyan">›</span>{t('simulators.cdn.info.i3', { base: config.baseLatencyMultiplier })}</li>
-          <li className="flex gap-2"><span className="text-signal-cyan">›</span>{t('simulators.cdn.info.i4', { cache: config.cacheLatencyMultiplier })}</li>
-          <li className="flex gap-2"><span className="text-signal-cyan">›</span>{t('simulators.cdn.info.i5')}</li>
+      <div className="bg-slate-50 dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-xl dark:rounded-none p-5">
+        <h3 className="text-sm font-semibold text-slate-900 dark:text-tactical-text mb-3">{t('simulators.cdn.info.title')}</h3>
+        <ul className="space-y-1.5 font-sans text-sm text-slate-600 dark:text-tactical-dim list-disc list-inside">
+          <li>{t('simulators.cdn.info.i1')}</li>
+          <li>{t('simulators.cdn.info.i2')}</li>
+          <li>{t('simulators.cdn.info.i3', { base: config.baseLatencyMultiplier })}</li>
+          <li>{t('simulators.cdn.info.i4', { cache: config.cacheLatencyMultiplier })}</li>
+          <li>{t('simulators.cdn.info.i5')}</li>
         </ul>
       </div>
     </div>

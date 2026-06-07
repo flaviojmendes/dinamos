@@ -64,8 +64,8 @@ function Leaderboard() {
               <div>
                 <div className="flex items-center gap-3 mb-2">
                   <Trophy className="h-10 w-10 text-signal-amber" />
-                  <h1 className="flex items-center gap-2 before:content-[''] before:h-8 before:w-1 before:bg-signal-amber before:shrink-0 text-4xl font-mono uppercase tracking-wider font-bold text-slate-900 dark:text-tactical-text pl-2">
-                    Ranking Global
+                  <h1 className="text-4xl font-bold tracking-tight text-slate-900 dark:text-tactical-text">
+                    Ranking global
                   </h1>
                 </div>
                 <p className="mt-2 text-lg text-slate-600 dark:text-tactical-dim flex items-center gap-2">
@@ -76,13 +76,13 @@ function Leaderboard() {
 
               {/* User's Position Card */}
               {myRanking && myRanking.rank && (
-                <div className="tactical-panel dark:rounded-none p-4">
+                <div className="tactical-panel rounded-xl dark:rounded-none p-4">
                   <div className="label-mono mb-2 flex items-center gap-1">
                     <TrendingUp className="h-3.5 w-3.5" />
                     Sua Posição
                   </div>
                   <div className="flex items-center gap-4">
-                    <div className="flex items-center justify-center w-14 h-14 dark:rounded-none border border-signal-amber/40 bg-signal-amber/10 text-signal-amber font-mono font-bold text-2xl tabular-nums">
+                    <div className="flex items-center justify-center w-14 h-14 rounded-lg dark:rounded-none border border-signal-amber/40 bg-signal-amber/10 text-signal-amber font-mono font-bold text-2xl tabular-nums">
                       #{myRanking.rank}
                     </div>
                     <div className="flex flex-col">
@@ -114,9 +114,9 @@ function Leaderboard() {
               <div className="animate-spin rounded-full h-12 w-12 border-2 border-brand-600 dark:border-signal-green border-t-transparent"></div>
             </div>
           ) : error ? (
-            <div className="text-center p-12 border border-dashed border-signal-red/40 dark:rounded-none bg-signal-red/5">
+            <div className="text-center p-12 border border-dashed border-signal-red/40 rounded-xl dark:rounded-none bg-signal-red/5">
               <div className="text-signal-red text-4xl mb-4">⚠️</div>
-              <h2 className="font-mono uppercase tracking-wider text-xl font-bold text-slate-900 dark:text-tactical-text mb-2">Erro ao carregar</h2>
+              <h2 className="font-sans text-xl font-bold text-slate-900 dark:text-tactical-text mb-2">Erro ao carregar</h2>
               <p className="text-slate-600 dark:text-tactical-dim mb-6">{error}</p>
               <TacticalButton variant="primary" onClick={fetchLeaderboard} className="dark:rounded-none">
                 Tentar Novamente
@@ -125,7 +125,7 @@ function Leaderboard() {
           ) : leaderboard.length === 0 ? (
             <div className="text-center py-16">
               <div className="text-6xl mb-4">🏆</div>
-              <h3 className="font-mono uppercase tracking-wider text-xl font-bold text-slate-900 dark:text-tactical-text mb-2">
+              <h3 className="font-sans text-xl font-bold text-slate-900 dark:text-tactical-text mb-2">
                 Nenhum participante ainda
               </h3>
               <p className="text-slate-600 dark:text-tactical-dim">
@@ -159,7 +159,7 @@ function Leaderboard() {
                             )}
                           </div>
                           <div className="mt-2 text-center">
-                            <div className="font-mono font-bold text-slate-900 dark:text-white truncate max-w-[100px] sm:max-w-[120px] text-sm sm:text-base">
+                            <div className="font-sans font-bold text-slate-900 dark:text-white truncate max-w-[100px] sm:max-w-[120px] text-sm sm:text-base">
                               {secondPlace.nickname || 'Anônimo'}
                             </div>
                             <div className="font-mono font-bold tabular-nums text-brand-600 dark:text-signal-green mt-0.5 text-xs">
@@ -209,7 +209,7 @@ function Leaderboard() {
                             )}
                           </div>
                           <div className="mt-2 text-center">
-                            <div className="font-mono font-bold text-slate-900 dark:text-white truncate max-w-[100px] sm:max-w-[120px] text-base sm:text-lg">
+                            <div className="font-sans font-bold text-slate-900 dark:text-white truncate max-w-[100px] sm:max-w-[120px] text-base sm:text-lg">
                               {firstPlace.nickname || 'Anônimo'}
                             </div>
                             <div className="font-mono font-bold tabular-nums text-signal-amber mt-0.5 text-sm">
@@ -229,7 +229,7 @@ function Leaderboard() {
                         </div>
                         <div className="w-24 sm:w-28 h-28 bg-signal-amber/80 dark:bg-signal-amber/40 dark:rounded-none border border-signal-amber/50 flex items-center justify-center relative">
                           <span className="text-white/30 text-4xl sm:text-5xl font-mono font-bold tabular-nums">1</span>
-                          <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 text-xs font-mono uppercase tracking-wider font-bold border border-signal-amber/40 bg-signal-amber/20 text-signal-amber dark:rounded-none">
+                          <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 text-xs font-sans font-bold rounded-full border border-signal-amber/40 bg-signal-amber/20 text-signal-amber dark:rounded-none">
                             #1
                           </div>
                         </div>
@@ -256,7 +256,7 @@ function Leaderboard() {
                             )}
                           </div>
                           <div className="mt-2 text-center">
-                            <div className="font-mono font-bold text-slate-900 dark:text-white truncate max-w-[100px] sm:max-w-[120px] text-sm sm:text-base">
+                            <div className="font-sans font-bold text-slate-900 dark:text-white truncate max-w-[100px] sm:max-w-[120px] text-sm sm:text-base">
                               {thirdPlace.nickname || 'Anônimo'}
                             </div>
                             <div className="font-mono font-bold tabular-nums text-brand-600 dark:text-signal-green mt-0.5 text-xs">
@@ -287,7 +287,7 @@ function Leaderboard() {
               )}
 
               {/* Score Formula Explanation */}
-              <div className="mb-8 p-4 tactical-panel dark:rounded-none border-signal-cyan/20">
+              <div className="mb-8 p-4 tactical-panel rounded-xl dark:rounded-none border-signal-cyan/20">
                 <div className="flex items-center gap-2 label-mono text-brand-600 dark:text-signal-cyan mb-2">
                   <Target className="h-4 w-4" />
                   Como o ranking é calculado
@@ -302,7 +302,7 @@ function Leaderboard() {
 
               {/* Rest of Leaderboard */}
               {restOfLeaderboard.length > 0 && (
-                <div className="tactical-panel dark:rounded-none overflow-hidden">
+                <div className="tactical-panel rounded-xl dark:rounded-none overflow-hidden">
                   {/* Header */}
                   <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-slate-50 dark:bg-tactical-surface border-b border-slate-200 dark:border-tactical-border label-mono sticky top-0 z-10">
                     <div className="col-span-1">#</div>
@@ -327,7 +327,7 @@ function Leaderboard() {
                         >
                           {/* Rank */}
                           <div className="col-span-1">
-                            <span className={`inline-flex items-center justify-center w-8 h-8 dark:rounded-none text-sm font-mono font-bold tabular-nums border ${
+                            <span className={`inline-flex items-center justify-center w-8 h-8 rounded-lg dark:rounded-none text-sm font-mono font-bold tabular-nums border ${
                               entry.rank <= 10 
                                 ? 'border-signal-green/40 bg-signal-green/10 text-signal-green' 
                                 : 'border-slate-200 dark:border-tactical-line bg-slate-100 dark:bg-tactical-raised text-slate-600 dark:text-tactical-dim'
@@ -351,7 +351,7 @@ function Leaderboard() {
                                 </span>
                               </div>
                             )}
-                            <span className={`font-mono font-medium truncate ${isCurrentUser ? 'text-brand-600 dark:text-signal-green' : 'text-slate-900 dark:text-tactical-text'}`}>
+                            <span className={`font-sans font-medium truncate ${isCurrentUser ? 'text-brand-600 dark:text-signal-green' : 'text-slate-900 dark:text-tactical-text'}`}>
                               {entry.nickname || 'Anônimo'}
                               {isCurrentUser && <span className="ml-1 text-xs">(você)</span>}
                             </span>

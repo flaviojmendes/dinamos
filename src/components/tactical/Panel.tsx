@@ -1,15 +1,8 @@
 import React from 'react';
 import { cn } from './cn';
 
+// Accent is accepted for API compatibility but no longer renders a loud bar.
 type AccentKey = 'amber' | 'green' | 'red' | 'cyan' | 'none';
-
-const accentBar: Record<AccentKey, string> = {
-  amber: 'bg-signal-amber',
-  green: 'bg-signal-green',
-  red: 'bg-signal-red',
-  cyan: 'bg-signal-cyan',
-  none: 'hidden',
-};
 
 interface PanelHeaderProps {
   title: React.ReactNode;
@@ -18,11 +11,8 @@ interface PanelHeaderProps {
   className?: string;
 }
 
-/**
- * Section header with a left accent bar and an uppercase mono title, mirroring
- * the reference "OPERATION REQUIRES APPROVAL" header. `action` renders on the right.
- */
-export function PanelHeader({ title, accent = 'amber', action, className }: PanelHeaderProps) {
+/** Clean section header with a sans title. `action` renders on the right. */
+export function PanelHeader({ title, action, className }: PanelHeaderProps) {
   return (
     <div
       className={cn(
@@ -30,12 +20,9 @@ export function PanelHeader({ title, accent = 'amber', action, className }: Pane
         className,
       )}
     >
-      <div className="flex items-center gap-2.5 min-w-0">
-        <span className={cn('h-3.5 w-1 shrink-0', accentBar[accent])} aria-hidden />
-        <h2 className="font-mono uppercase tracking-wider text-sm font-semibold text-slate-900 dark:text-tactical-text truncate">
-          {title}
-        </h2>
-      </div>
+      <h2 className="min-w-0 truncate font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text">
+        {title}
+      </h2>
       {action && <div className="shrink-0 text-xs">{action}</div>}
     </div>
   );

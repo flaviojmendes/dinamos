@@ -257,10 +257,10 @@ export default function ReplicationSimulator() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <div className="label-mono text-signal-cyan mb-2">
-            [ Simulador de Replicação e Failover ]
-          </div>
-          <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
+          <h2 className="text-base font-semibold tracking-tight text-slate-900 dark:text-tactical-text mb-2">
+            Simulador de replicação e failover
+          </h2>
+          <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
             Explore como a replicação de dados e o failover automático funcionam em um 
             ambiente distribuído.
           </p>
@@ -270,8 +270,8 @@ export default function ReplicationSimulator() {
       <Panel title="Controles" accent="cyan">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
           <div>
-            <label className="block label-mono mb-2">
-              Taxa de Escrita (por segundo)
+            <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">
+              Taxa de escrita (por segundo)
             </label>
             <input
               type="range"
@@ -288,8 +288,8 @@ export default function ReplicationSimulator() {
             <span className="font-mono text-sm text-slate-500 dark:text-tactical-dim">{config.writeRate}/s</span>
           </div>
           <div>
-            <label className="block label-mono mb-2">
-              Taxa de Leitura (por segundo)
+            <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">
+              Taxa de leitura (por segundo)
             </label>
             <input
               type="range"
@@ -306,8 +306,8 @@ export default function ReplicationSimulator() {
             <span className="font-mono text-sm text-slate-500 dark:text-tactical-dim">{config.readRate}/s</span>
           </div>
           <div>
-            <label className="block label-mono mb-2">
-              Modo de Replicação
+            <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">
+              Modo de replicação
             </label>
             <select
               value={config.replicationMode}
@@ -331,7 +331,7 @@ export default function ReplicationSimulator() {
               }))}
               className="rounded"
             />
-            <label className="font-mono text-sm text-slate-600 dark:text-tactical-dim">Auto Failover</label>
+            <label className="font-sans text-sm text-slate-600 dark:text-tactical-dim">Failover automático</label>
           </div>
           <div className="flex items-end">
             <TacticalButton
@@ -339,7 +339,7 @@ export default function ReplicationSimulator() {
               className="w-full"
               onClick={() => setIsRunning(!isRunning)}
             >
-              {isRunning ? 'Parar Simulação' : 'Iniciar Simulação'}
+              {isRunning ? 'Parar simulação' : 'Iniciar simulação'}
             </TacticalButton>
           </div>
         </div>
@@ -354,7 +354,7 @@ export default function ReplicationSimulator() {
           >
             <Panel title={server.name} accent={server.role === 'primary' ? 'green' : 'cyan'}>
               <div className="flex justify-between items-start mb-4">
-                <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{server.region}</p>
+                <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim">{server.region}</p>
                 <div className="flex flex-col items-end gap-1">
                   <StatusBadge
                     variant={serverStatusVariant(server.status)}
@@ -366,9 +366,9 @@ export default function ReplicationSimulator() {
                         : 'Offline'
                     }
                   />
-                  <span className={`font-mono text-xs ${
+                  <span className={`font-sans text-xs ${
                     server.role === 'primary' 
-                      ? 'text-signal-green' 
+                      ? 'text-emerald-600 dark:text-signal-green' 
                       : 'text-slate-500 dark:text-tactical-label'
                   }`}>
                     {server.role === 'primary' ? 'Primário' : 'Secundário'}
@@ -378,9 +378,9 @@ export default function ReplicationSimulator() {
 
               <div className="space-y-4">
                 <div>
-                  <div className="flex justify-between font-mono text-xs mb-1 text-slate-600 dark:text-tactical-dim">
-                    <span>Carga</span>
-                    <span>{server.load} transações</span>
+                  <div className="flex justify-between text-xs mb-1 text-slate-600 dark:text-tactical-dim">
+                    <span className="font-sans">Carga</span>
+                    <span className="font-mono tabular-nums">{server.load} transações</span>
                   </div>
                   <div className="h-2 bg-slate-100 dark:bg-tactical-raised overflow-hidden">
                     <motion.div
@@ -393,9 +393,9 @@ export default function ReplicationSimulator() {
 
                 {server.role === 'secondary' && (
                   <div>
-                    <div className="flex justify-between font-mono text-xs mb-1 text-slate-600 dark:text-tactical-dim">
-                      <span>Lag de Replicação</span>
-                      <span>{Math.round(server.replicationLag)}ms</span>
+                    <div className="flex justify-between text-xs mb-1 text-slate-600 dark:text-tactical-dim">
+                      <span className="font-sans">Lag de replicação</span>
+                      <span className="font-mono tabular-nums">{Math.round(server.replicationLag)}ms</span>
                     </div>
                     <div className="h-2 bg-slate-100 dark:bg-tactical-raised overflow-hidden">
                       <motion.div
@@ -414,7 +414,7 @@ export default function ReplicationSimulator() {
                     className="w-full"
                     onClick={() => simulateServerFailure(server.id)}
                   >
-                    Simular Falha
+                    Simular falha
                   </TacticalButton>
                 ) : (
                   <TacticalButton
@@ -439,14 +439,14 @@ export default function ReplicationSimulator() {
         >
           <Panel title="Estatísticas" accent="green">
             <div className="grid grid-cols-1 gap-4">
-              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
-                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">{stats.total}</div>
-                <div className="label-mono mt-2">Total de Transações</div>
+              <div className="border border-slate-200 dark:border-tactical-border rounded-lg dark:rounded-none px-3 py-3">
+                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-slate-900 dark:text-tactical-text">{stats.total}</div>
+                <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">Total de transações</div>
               </div>
               <div>
-                <div className="flex justify-between font-mono text-xs mb-1 text-slate-600 dark:text-tactical-dim">
-                  <span>Taxa de Sucesso</span>
-                  <span>
+                <div className="flex justify-between text-xs mb-1 text-slate-600 dark:text-tactical-dim">
+                  <span className="font-sans">Taxa de sucesso</span>
+                  <span className="font-mono tabular-nums">
                     {stats.total > 0 
                       ? `${Math.round((stats.successful / stats.total) * 100)}%`
                       : '0%'}
@@ -465,9 +465,9 @@ export default function ReplicationSimulator() {
                 </div>
               </div>
               <div>
-                <div className="flex justify-between font-mono text-xs mb-1 text-slate-600 dark:text-tactical-dim">
-                  <span>Lag Médio de Replicação</span>
-                  <span>{Math.round(stats.avgReplicationLag)}ms</span>
+                <div className="flex justify-between text-xs mb-1 text-slate-600 dark:text-tactical-dim">
+                  <span className="font-sans">Lag médio de replicação</span>
+                  <span className="font-mono tabular-nums">{Math.round(stats.avgReplicationLag)}ms</span>
                 </div>
                 <div className="h-2 bg-slate-100 dark:bg-tactical-raised overflow-hidden">
                   <motion.div
@@ -494,7 +494,7 @@ export default function ReplicationSimulator() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
-                    className="flex items-center justify-between border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2.5"
+                    className="flex items-center justify-between border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg dark:rounded-none px-3 py-2.5"
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <StatusBadge
@@ -510,13 +510,13 @@ export default function ReplicationSimulator() {
                         }
                       />
                       <div className="flex flex-col min-w-0">
-                        <span className="font-mono text-xs text-slate-900 dark:text-tactical-text truncate">
+                        <span className="font-sans text-xs text-slate-900 dark:text-tactical-text truncate">
                           {servers.find(s => s.id === transaction.server)?.name}
                         </span>
-                        <span className={`font-mono text-[11px] ${
+                        <span className={`font-sans text-[11px] ${
                           transaction.type === 'write' 
-                            ? 'text-signal-cyan' 
-                            : 'text-signal-green'
+                            ? 'text-slate-600 dark:text-slate-300' 
+                            : 'text-emerald-600 dark:text-signal-green'
                         }`}>
                           {transaction.type === 'write' ? 'Escrita' : 'Leitura'}
                         </span>

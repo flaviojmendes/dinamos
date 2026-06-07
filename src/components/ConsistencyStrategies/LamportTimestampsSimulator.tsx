@@ -125,16 +125,16 @@ export default function LamportTimestampsSimulator() {
   return (
     <div className="space-y-6">
       <div className="max-w-3xl">
-        <div className="label-mono text-signal-cyan mb-2">
-          [ {t('design_principles.consistency_strategies.lamport_timestamps_simulator.title')} ]
-        </div>
-        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
+        <h2 className="font-sans text-lg font-semibold tracking-tight text-slate-900 dark:text-tactical-text mb-2">
+          {t('design_principles.consistency_strategies.lamport_timestamps_simulator.title')}
+        </h2>
+        <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
           {t('design_principles.consistency_strategies.lamport_timestamps_simulator.subtitle')}
         </p>
       </div>
 
       <div className="tactical-panel border-l-2 border-l-signal-cyan p-5">
-        <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim">
+        <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim">
           {t('design_principles.consistency_strategies.lamport_timestamps_simulator.info')}
         </p>
       </div>
@@ -149,7 +149,7 @@ export default function LamportTimestampsSimulator() {
         {processes.map((process) => (
           <div key={process.id} className="flex flex-col">
             <Panel title={process.name} accent="cyan" action={
-              <span className="font-mono text-sm text-signal-cyan tabular-nums">
+              <span className="font-mono text-sm text-slate-700 dark:text-tactical-text tabular-nums">
                 {t('design_principles.consistency_strategies.lamport_timestamps_simulator.timeline.clock_prefix')} {process.clock}
               </span>
             }>
@@ -179,9 +179,9 @@ export default function LamportTimestampsSimulator() {
                       <div className="absolute left-1/2 transform -translate-x-1/2">
                         <div className={`w-3 h-3 md:w-4 md:h-4 ${getEventDot(event.type)}`} />
                       </div>
-                      <div className={`p-2 md:p-3 border ml-4 ${getEventBorder(event.type)}`}>
-                        <div className="flex justify-between items-center font-mono text-xs md:text-sm">
-                          <span className="text-slate-600 dark:text-tactical-dim">
+                      <div className={`p-2 md:p-3 rounded-lg border ml-4 ${getEventBorder(event.type)}`}>
+                        <div className="flex justify-between items-center text-xs md:text-sm">
+                          <span className="font-sans text-slate-600 dark:text-tactical-dim">
                             {event.type === 'local'
                               ? t('design_principles.consistency_strategies.lamport_timestamps_simulator.event_labels.local')
                               : event.type === 'send'
@@ -204,15 +204,15 @@ export default function LamportTimestampsSimulator() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-signal-green"></div>
-            <span className="font-mono text-xs md:text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.lamport_timestamps_simulator.legend.local')}</span>
+            <span className="font-sans text-xs md:text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.lamport_timestamps_simulator.legend.local')}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-signal-cyan"></div>
-            <span className="font-mono text-xs md:text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.lamport_timestamps_simulator.legend.sent')}</span>
+            <span className="font-sans text-xs md:text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.lamport_timestamps_simulator.legend.sent')}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-signal-amber"></div>
-            <span className="font-mono text-xs md:text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.lamport_timestamps_simulator.legend.received')}</span>
+            <span className="font-sans text-xs md:text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.lamport_timestamps_simulator.legend.received')}</span>
           </div>
         </div>
       </Panel>

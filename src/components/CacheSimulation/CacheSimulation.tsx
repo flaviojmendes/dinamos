@@ -169,7 +169,7 @@ export default function CacheSimulation() {
   };
 
   const inputClass =
-    'w-full bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-2 py-1 font-mono text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-signal-green';
+    'w-full bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-2 py-1 font-sans text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-brand-500 rounded-md dark:rounded-none';
 
   const rangeClass =
     'w-full h-2 bg-slate-200 dark:bg-tactical-border appearance-none cursor-pointer accent-signal-green';
@@ -188,26 +188,26 @@ export default function CacheSimulation() {
                 'left-0 opacity-0'}`}
           />
 
-          <div className={`relative z-10 w-16 h-16 border-2 transition-colors duration-300
+          <div className={`relative z-10 w-16 h-16 border-2 transition-colors duration-300 rounded-lg dark:rounded-none
             ${position === 'client' ? 'border-signal-cyan bg-signal-cyan/10' : 'border-slate-300 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised'}
             flex items-center justify-center`}>
-            <span className="font-mono text-xs text-slate-900 dark:text-tactical-text">{t('cache.simulation.client')}</span>
+            <span className="font-sans text-xs text-slate-900 dark:text-tactical-text">{t('cache.simulation.client')}</span>
           </div>
           
-          <div className={`relative z-10 w-16 h-16 border-2 transition-colors duration-300
+          <div className={`relative z-10 w-16 h-16 border-2 transition-colors duration-300 rounded-lg dark:rounded-none
             ${position === 'cache' && config.cacheEnabled ? 
               (cache.has(currentKey) && Date.now() - cache.get(currentKey)!.timestamp <= config.cacheTTL * 1000) ?
                 'border-signal-green bg-signal-green/10' : 'border-signal-amber bg-signal-amber/10'
               : position === 'cache' ? 'border-signal-red bg-signal-red/10' 
               : 'border-slate-300 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised'}
             flex items-center justify-center`}>
-            <span className="font-mono text-xs text-slate-900 dark:text-tactical-text">{t('cache.simulation.cache')}</span>
+            <span className="font-sans text-xs text-slate-900 dark:text-tactical-text">{t('cache.simulation.cache')}</span>
           </div>
 
-          <div className={`relative z-10 w-16 h-16 border-2 transition-colors duration-300
+          <div className={`relative z-10 w-16 h-16 border-2 transition-colors duration-300 rounded-lg dark:rounded-none
             ${position === 'db' ? 'border-signal-red bg-signal-red/10' : 'border-slate-300 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised'}
             flex items-center justify-center`}>
-            <span className="font-mono text-xs text-slate-900 dark:text-tactical-text">{t('cache.simulation.database')}</span>
+            <span className="font-sans text-xs text-slate-900 dark:text-tactical-text">{t('cache.simulation.database')}</span>
           </div>
         </div>
       </Panel>
@@ -236,7 +236,7 @@ export default function CacheSimulation() {
           isConfigOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
         }`}>
           <div className="flex items-center justify-between">
-            <label className="font-mono text-sm text-slate-600 dark:text-tactical-dim flex items-center gap-2">
+            <label className="font-sans text-sm text-slate-600 dark:text-tactical-dim flex items-center gap-2">
               <input
                 type="checkbox"
                 checked={config.cacheEnabled}
@@ -248,7 +248,7 @@ export default function CacheSimulation() {
           </div>
 
           <div>
-            <div className="flex justify-between font-mono text-sm text-slate-600 dark:text-tactical-dim mb-1">
+            <div className="flex justify-between font-sans text-sm text-slate-600 dark:text-tactical-dim mb-1">
               <span>{t('cache.simulation.cache_ttl')}</span>
               <span className="text-signal-cyan tabular-nums">{config.cacheTTL}s</span>
             </div>
@@ -263,7 +263,7 @@ export default function CacheSimulation() {
           </div>
 
           <div>
-            <div className="flex justify-between font-mono text-sm text-slate-600 dark:text-tactical-dim mb-1">
+            <div className="flex justify-between font-sans text-sm text-slate-600 dark:text-tactical-dim mb-1">
               <span>{t('cache.simulation.network_delay')}</span>
               <span className="text-signal-cyan tabular-nums">{config.requestDelay}ms</span>
             </div>
@@ -279,7 +279,7 @@ export default function CacheSimulation() {
           </div>
 
           <div>
-            <div className="flex justify-between font-mono text-sm text-slate-600 dark:text-tactical-dim mb-1">
+            <div className="flex justify-between font-sans text-sm text-slate-600 dark:text-tactical-dim mb-1">
               <span>{t('cache.simulation.database_delay')}</span>
               <span className="text-signal-cyan tabular-nums">{config.dbDelay}ms</span>
             </div>
@@ -330,7 +330,7 @@ export default function CacheSimulation() {
       <Panel title={t('cache.simulation.cache_status')} accent="cyan">
         <div className="space-y-2">
           {Array.from(cache.entries()).map(([key, entry]) => (
-            <div key={key} className="flex flex-col md:flex-row md:justify-between md:items-center border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-3 gap-2 md:gap-0">
+            <div key={key} className="flex flex-col md:flex-row md:justify-between md:items-center border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-3 gap-2 md:gap-0 rounded-lg dark:rounded-none">
               <div className="font-mono text-sm text-slate-900 dark:text-tactical-text break-all">{key}</div>
               <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
                 {t('cache.simulation.expires_in')} {getRemainingTime(entry.timestamp, config.cacheTTL)}s
@@ -338,8 +338,8 @@ export default function CacheSimulation() {
             </div>
           ))}
           {cache.size === 0 && (
-            <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center">
-              <p className="font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">
+            <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center rounded-lg dark:rounded-none">
+              <p className="font-sans text-xs text-slate-400 dark:text-tactical-label">
                 {t('cache.simulation.cache_empty')}
               </p>
             </div>
@@ -352,7 +352,7 @@ export default function CacheSimulation() {
           {logs.map(log => (
             <div
               key={log.id}
-              className="flex flex-col md:flex-row md:justify-between md:items-center border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-3 gap-2 md:gap-0"
+              className="flex flex-col md:flex-row md:justify-between md:items-center border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-3 gap-2 md:gap-0 rounded-lg dark:rounded-none"
             >
               <div className="flex flex-wrap items-center gap-2 md:gap-3">
                 <StatusBadge
@@ -370,8 +370,8 @@ export default function CacheSimulation() {
             </div>
           ))}
           {logs.length === 0 && (
-            <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center">
-              <p className="font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">
+            <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center rounded-lg dark:rounded-none">
+              <p className="font-sans text-xs text-slate-400 dark:text-tactical-label">
                 {t('cache.simulation.no_logs')}
               </p>
             </div>

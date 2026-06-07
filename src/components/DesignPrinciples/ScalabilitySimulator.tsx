@@ -234,17 +234,17 @@ export default function ScalabilitySimulator() {
   return (
     <div className="space-y-6">
       <div className="max-w-3xl">
-        <div className="label-mono text-signal-cyan mb-2">
-          [ {t('simulators.scalability.title')} ]
-        </div>
-        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
+        <span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800 px-3 py-1 text-sm font-sans font-medium text-slate-700 dark:text-slate-300 mb-2">
+          {t('simulators.scalability.title')}
+        </span>
+        <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-slate-400">
           {t('simulators.scalability.intro')}
         </p>
       </div>
 
-      <div className="tactical-panel border-l-2 border-l-signal-cyan p-5">
-        <h3 className="label-mono text-signal-cyan mb-3">{t('simulators.scalability.how_title')}</h3>
-        <ol className="list-decimal list-inside space-y-1.5 font-mono text-sm text-slate-600 dark:text-tactical-dim">
+      <div className="rounded-lg border border-slate-200 dark:border-slate-700 border-l-2 border-l-emerald-500 bg-slate-50 dark:bg-slate-900 dark:rounded-none p-5">
+        <h3 className="text-sm font-sans font-semibold text-slate-900 dark:text-slate-100 mb-3">{t('simulators.scalability.how_title')}</h3>
+        <ol className="list-decimal list-inside space-y-1.5 font-sans text-sm text-slate-600 dark:text-slate-400">
           {(t('simulators.scalability.how_steps', { returnObjects: true }) as string[]).map((s, idx) => (
             <li key={idx}>{s}</li>
           ))}
@@ -254,7 +254,7 @@ export default function ScalabilitySimulator() {
       <Panel title={t('simulators.scalability.config_title')} accent="cyan">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
-            <label className="block label-mono mb-2">{t('simulators.scalability.consistency_mode')}</label>
+            <label className="block text-sm font-sans font-medium text-slate-600 dark:text-slate-400 mb-2">{t('simulators.scalability.consistency_mode')}</label>
             <select
               value={config.consistencyMode}
               onChange={(e) => setConfig(prev => ({ ...prev, consistencyMode: e.target.value as 'strong' | 'eventual' }))}
@@ -265,7 +265,7 @@ export default function ScalabilitySimulator() {
             </select>
           </div>
           <div>
-            <label className="block label-mono mb-2">{t('simulators.scalability.network_latency_ms')}</label>
+            <label className="block text-sm font-sans font-medium text-slate-600 dark:text-slate-400 mb-2">{t('simulators.scalability.network_latency_ms')}</label>
             <input
               type="range"
               min="0"
@@ -277,7 +277,7 @@ export default function ScalabilitySimulator() {
             <span className="font-mono text-sm text-slate-500 dark:text-tactical-dim">{config.networkLatency}ms</span>
           </div>
           <div>
-            <label className="block label-mono mb-2">{t('simulators.scalability.failure_rate')}</label>
+            <label className="block text-sm font-sans font-medium text-slate-600 dark:text-slate-400 mb-2">{t('simulators.scalability.failure_rate')}</label>
             <input
               type="range"
               min="0"
@@ -297,7 +297,7 @@ export default function ScalabilitySimulator() {
                 onChange={(e) => setConfig(prev => ({ ...prev, autoFailover: e.target.checked }))}
                 className="mr-2"
               />
-              <span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{t('simulators.scalability.auto_failover')}</span>
+              <span className="font-sans text-sm text-slate-600 dark:text-slate-400">{t('simulators.scalability.auto_failover')}</span>
             </label>
           </div>
         </div>
@@ -350,7 +350,7 @@ export default function ScalabilitySimulator() {
           >
             <Panel title={server.name} accent={server.role === 'primary' ? 'green' : 'cyan'}>
               <div className="flex justify-between items-center mb-4">
-                <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{server.region}</p>
+                <p className="font-sans text-xs text-slate-500 dark:text-slate-400">{server.region}</p>
                 <StatusBadge
                   variant={serverStatusVariant(server.status)}
                   label={t(`simulators.vertical_scaling.statuses.${server.status}`)}
@@ -359,18 +359,18 @@ export default function ScalabilitySimulator() {
 
               <div className="space-y-4">
                 <div>
-                  <div className="flex justify-between font-mono text-xs mb-1 text-slate-600 dark:text-tactical-dim">
+                  <div className="flex justify-between font-sans text-xs mb-1 text-slate-600 dark:text-slate-400">
                     <span>{t('simulators.scalability.role')}</span>
-                    <span className={server.role === 'primary' ? 'text-signal-green' : 'text-slate-500 dark:text-tactical-label'}>
+                    <span className={`font-mono ${server.role === 'primary' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}`}>
                       {server.role}
                     </span>
                   </div>
                 </div>
 
                 <div>
-                  <div className="flex justify-between font-mono text-xs mb-1 text-slate-600 dark:text-tactical-dim">
+                  <div className="flex justify-between font-sans text-xs mb-1 text-slate-600 dark:text-slate-400">
                     <span>{t('simulators.scalability.latency')}</span>
-                    <span>{server.latency}ms</span>
+                    <span className="font-mono">{server.latency}ms</span>
                   </div>
                   <div className="h-2 bg-slate-100 dark:bg-tactical-raised overflow-hidden">
                     <motion.div
@@ -382,11 +382,11 @@ export default function ScalabilitySimulator() {
                 </div>
 
                 <div>
-                  <div className="flex justify-between font-mono text-xs mb-1 text-slate-600 dark:text-tactical-dim">
+                  <div className="flex justify-between font-sans text-xs mb-1 text-slate-600 dark:text-slate-400">
                     <span>{t('simulators.scalability.data')}</span>
-                    <span>{t('simulators.scalability.keys_label', { count: Object.keys(server.data).length })}</span>
+                    <span className="font-mono">{t('simulators.scalability.keys_label', { count: Object.keys(server.data).length })}</span>
                   </div>
-                  <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-2 max-h-24 overflow-auto font-mono text-xs">
+                  <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-2 max-h-24 overflow-auto font-mono text-xs">
                     {Object.entries(server.data).map(([key, data]) => (
                       <div key={key} className="flex flex-col mb-2">
                         <div className="flex justify-between">
@@ -426,7 +426,7 @@ export default function ScalabilitySimulator() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
-                className="flex items-center justify-between border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2.5"
+                className="flex items-center justify-between rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2.5"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <StatusBadge variant={requestStatusVariant(request.status)} label={request.status} />

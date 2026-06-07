@@ -1333,7 +1333,6 @@ export default function App() {
     const { t } = useTranslation();
     const makeMenuKey = (path: string, field: 'name' | 'description') => `menu.${path.replace(/^\//, '').replace(/\//g, '.')}.${field}`;
     const displayName = t(makeMenuKey(item.path, 'name'), { defaultValue: item.name });
-    const displayDescription = t(makeMenuKey(item.path, 'description'), { defaultValue: item.description });
     
     // Check if current path matches this item or any of its children
     const isActive =
@@ -1363,22 +1362,16 @@ export default function App() {
       return badgeText;
     };
 
-    // Tactical menu item: sharp edges, mono label, left accent on active, bracket tags.
+    // Minimal menu item: rounded hover/active highlight, sans label, no per-item
+    // description, no accent bars or type glyphs.
     const itemBase =
-      'group flex-1 flex flex-col gap-0.5 px-3 py-2.5 border-l-2 transition-colors relative';
+      'group flex-1 flex flex-col gap-0.5 px-3 py-2 rounded-lg dark:rounded-none transition-colors relative';
     const itemInactive =
-      'border-transparent text-slate-600 dark:text-tactical-dim hover:bg-slate-100 dark:hover:bg-tactical-raised hover:text-slate-900 dark:hover:text-tactical-text';
+      'text-slate-600 dark:text-tactical-dim hover:bg-slate-100 dark:hover:bg-tactical-raised hover:text-slate-900 dark:hover:text-tactical-text';
     const itemActive =
-      'border-brand-600 dark:border-signal-green bg-brand-50 dark:bg-tactical-raised text-slate-900 dark:text-tactical-text';
+      'bg-slate-100 dark:bg-tactical-raised text-slate-900 dark:text-tactical-text font-medium';
 
-    const regType = getItem(item.path)?.type;
-    const TypeMarker = () => {
-      if (regType === 'simulator')
-        return <span className="mr-1.5 font-mono text-xs text-signal-amber" aria-hidden>◆</span>;
-      if (regType === 'case')
-        return <span className="mr-1.5 font-mono text-xs text-signal-red" aria-hidden>★</span>;
-      return null;
-    };
+    const TypeMarker = () => null;
 
     const CompletedMark = () => (
       <span className="ml-auto flex-shrink-0 text-signal-green" title="completed">
@@ -1392,8 +1385,8 @@ export default function App() {
       item.badges ? (
         <div className="flex gap-1.5 mt-1">
           {item.badges.map((badge, index) => (
-            <span key={index} className="font-mono text-[10px] uppercase tracking-wider text-signal-green">
-              [{translatedBadge(badge.text)}]
+            <span key={index} className="rounded-full bg-emerald-50 px-1.5 py-0.5 font-sans text-[10px] font-medium text-emerald-700 dark:rounded-sm dark:bg-signal-green/10 dark:text-signal-green">
+              {translatedBadge(badge.text)}
             </span>
           ))}
         </div>
@@ -1403,14 +1396,13 @@ export default function App() {
       <div className="text-slate-900 dark:text-tactical-text">
         <div className="flex items-stretch gap-1">
           {item.disabled ? (
-            <div className="flex-1 flex flex-col gap-0.5 px-3 py-2.5 border-l-2 border-transparent text-slate-400 dark:text-tactical-label/70 relative cursor-not-allowed">
+            <div className="flex-1 flex flex-col gap-0.5 px-3 py-2 rounded-lg dark:rounded-none border-transparent text-slate-400 dark:text-tactical-label/70 relative cursor-not-allowed">
               <div className="flex items-center">
-                <span className="font-mono text-sm tracking-tight mr-2">{item.name}</span>
-                <span className="ml-auto font-mono text-[10px] uppercase tracking-wider text-slate-400 dark:text-tactical-label">
-                  [{t('status.coming_soon')}]
+                <span className="font-sans text-sm mr-2">{item.name}</span>
+                <span className="ml-auto font-sans text-[10px] text-slate-400 dark:text-tactical-label">
+                  {t('status.coming_soon')}
                 </span>
               </div>
-              <span className="font-mono text-xs opacity-70">{item.description}</span>
             </div>
           ) : item.external ? (
             <a
@@ -1426,12 +1418,11 @@ export default function App() {
               }}
             >
               <div className="flex items-center">
-                <span className="font-mono text-sm tracking-tight mr-2">{displayName}</span>
+                <span className="font-sans text-sm mr-2">{displayName}</span>
                 <svg className="w-3.5 h-3.5 ml-auto opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
               </div>
-              <span className="font-mono text-xs opacity-70">{displayDescription}</span>
               <Badges />
             </a>
           ) : (
@@ -1449,10 +1440,9 @@ export default function App() {
             >
               <div className="flex items-center">
                 <TypeMarker />
-                <span className="font-mono text-sm tracking-tight mr-2">{displayName}</span>
+                <span className="font-sans text-sm mr-2">{displayName}</span>
                 {isCompleted(item.path) && <CompletedMark />}
               </div>
-              <span className="font-mono text-xs opacity-70">{displayDescription}</span>
               <Badges />
             </NavLink>
           )}
@@ -1585,12 +1575,12 @@ export default function App() {
                   <div className="flex items-center justify-between mb-5 px-2">
                     <Link to="/" className="flex items-center gap-2">
                       <img src="/logo.png" alt="Logo" className="h-9" />
-                      <span className="font-mono text-sm font-semibold uppercase tracking-widest text-slate-900 dark:text-tactical-text">Dinamos</span>
+                      <span className="font-sans text-base font-semibold tracking-tight text-slate-900 dark:text-tactical-text">Dinamos</span>
                     </Link>
                   </div>
                 )}
                 <div className="flex items-center justify-between mb-4 px-2">
-                  <span className="label-mono">NAV // INDEX</span>
+                  <span className="label-mono">Navigation</span>
                   <div className="flex gap-2">
                     <ThemeToggle />
                     <LanguageSwitcher />
@@ -1612,16 +1602,16 @@ export default function App() {
                 {/* Global search: prominent trigger for the command palette */}
                 <button
                   onClick={() => openCommandPalette()}
-                  className="mb-4 flex w-full cursor-pointer items-center gap-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2 text-left text-slate-500 dark:text-tactical-dim transition-colors hover:border-brand-500 dark:hover:border-signal-green hover:text-slate-900 dark:hover:text-tactical-text"
+                  className="mb-4 flex w-full cursor-pointer items-center gap-2 rounded-lg border border-slate-200 dark:border-tactical-border dark:rounded-none bg-slate-50 dark:bg-tactical-raised px-3 py-2 text-left text-slate-500 dark:text-tactical-dim transition-colors hover:border-brand-500 dark:hover:border-signal-green hover:text-slate-900 dark:hover:text-tactical-text"
                   aria-label={t('command_center.search_aria')}
                 >
                   <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
                   </svg>
-                  <span className="flex-1 truncate font-mono text-xs uppercase tracking-wider">
+                  <span className="flex-1 truncate font-sans text-sm">
                     {t('command_center.search_placeholder')}
                   </span>
-                  <span className="shrink-0 border border-current px-1 font-mono text-[10px] opacity-70">⌘K</span>
+                  <span className="shrink-0 rounded border border-current px-1 font-sans text-[10px] opacity-70 dark:rounded-none">⌘K</span>
                 </button>
 
                 {/* Inline nav filter */}
@@ -1631,14 +1621,14 @@ export default function App() {
                     onChange={(e) => setNavFilter(e.target.value)}
                     placeholder={t('nav.filter_placeholder', { defaultValue: 'Filter navigation…' })}
                     aria-label={t('nav.filter_placeholder', { defaultValue: 'Filter navigation' })}
-                    className="w-full border border-slate-200 bg-slate-50 px-3 py-1.5 font-mono text-xs text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none dark:border-tactical-border dark:bg-tactical-raised dark:text-tactical-text dark:placeholder:text-tactical-label dark:focus:border-signal-green"
+                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 font-sans text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none dark:rounded-none dark:border-tactical-border dark:bg-tactical-raised dark:text-tactical-text dark:placeholder:text-tactical-label dark:focus:border-signal-green"
                   />
                 </div>
 
                 {navFilter.trim() ? (
                   <nav className="space-y-0.5">
                     {filteredNavItems.length === 0 ? (
-                      <p className="px-3 py-4 font-mono text-xs text-slate-400 dark:text-tactical-label">
+                      <p className="px-3 py-4 font-sans text-sm text-slate-400 dark:text-tactical-label">
                         {t('command_center.no_matches')}
                       </p>
                     ) : (
@@ -1648,17 +1638,15 @@ export default function App() {
                           to={i.path}
                           onClick={() => isMobile && setIsSidebarOpen(false)}
                           className={({ isActive }: { isActive: boolean }) =>
-                            `flex items-center gap-2 border-l-2 px-3 py-2 font-mono text-sm tracking-tight transition-colors ${
+                            `flex items-center gap-2 rounded-lg dark:rounded-none px-3 py-2 font-sans text-sm transition-colors ${
                               isActive
-                                ? 'border-brand-600 bg-brand-50 text-slate-900 dark:border-signal-green dark:bg-tactical-raised dark:text-tactical-text'
-                                : 'border-transparent text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-tactical-dim dark:hover:bg-tactical-raised dark:hover:text-tactical-text'
+                                ? 'bg-slate-100 font-medium text-slate-900 dark:bg-tactical-raised dark:text-tactical-text'
+                                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-tactical-dim dark:hover:bg-tactical-raised dark:hover:text-tactical-text'
                             }`
                           }
                         >
-                          {i.type === 'simulator' && <span className="text-signal-amber" aria-hidden>◆</span>}
-                          {i.type === 'case' && <span className="text-signal-red" aria-hidden>★</span>}
                           <span className="truncate">{i.label}</span>
-                          <span className="ml-auto shrink-0 text-[10px] uppercase tracking-wider text-slate-400 dark:text-tactical-label">
+                          <span className="ml-auto shrink-0 text-[10px] text-slate-400 dark:text-tactical-label">
                             {i.moduleLabel}
                           </span>
                         </NavLink>
@@ -1700,26 +1688,26 @@ export default function App() {
             {/* User profile section */}
             {user && (
               <div className="p-3 border-t border-slate-200 dark:border-tactical-border">
-                <div className="flex items-center gap-3 p-3 tactical-panel bg-slate-100 dark:bg-tactical-raised">
+                <div className="flex items-center gap-3 p-3 tactical-panel bg-slate-50 dark:bg-tactical-raised">
                   {user.photoURL ? (
                     <img
                       src={user.photoURL}
                       alt="Profile"
-                      className="w-10 h-10 rounded-none border border-brand-500 dark:border-signal-green"
+                      className="w-10 h-10 rounded-full border border-slate-200 dark:rounded-none dark:border-signal-green"
                     />
                   ) : (
-                    <div className="w-10 h-10 bg-brand-500 dark:bg-tactical-bg dark:border dark:border-signal-green flex items-center justify-center">
-                      <span className="text-lg font-bold font-mono text-white dark:text-signal-green">
+                    <div className="w-10 h-10 rounded-full bg-brand-500 dark:rounded-none dark:bg-tactical-bg dark:border dark:border-signal-green flex items-center justify-center">
+                      <span className="text-lg font-semibold font-sans text-white dark:text-signal-green">
                         {user.email?.charAt(0).toUpperCase()}
                       </span>
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-mono font-medium text-slate-900 dark:text-tactical-text truncate">
+                    <p className="text-sm font-sans font-medium text-slate-900 dark:text-tactical-text truncate">
                       {user.displayName || user.email}
                     </p>
                     <p className="label-mono truncate">
-                      {isSubscribed ? 'ACCESS: FREE-TIER-1' : 'ACCESS: GUEST'}
+                      {isSubscribed ? 'Free tier' : 'Guest'}
                     </p>
                   </div>
                   <button

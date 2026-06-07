@@ -147,9 +147,9 @@ export default function TimeoutSimulator() {
       <div className="max-w-3xl">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <div className="label-mono text-signal-cyan mb-2">
-              [ {t('simulators.timeout.title')} ]
-            </div>
+            <span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800 px-3 py-1 text-sm font-sans font-medium text-slate-700 dark:text-slate-300 mb-2">
+              {t('simulators.timeout.title')}
+            </span>
           </div>
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -292,7 +292,7 @@ export default function TimeoutSimulator() {
                 key={request.id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2.5"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2.5"
               >
                 <div className="flex justify-between items-center gap-2">
                   <div className="flex items-center gap-2">
@@ -323,8 +323,8 @@ export default function TimeoutSimulator() {
               </motion.div>
             ))}
             {requests.length === 0 && (
-              <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center">
-                <p className="font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">
+              <div className="rounded-lg border border-dashed border-slate-300 dark:border-slate-700 px-4 py-10 text-center">
+                <p className="font-sans text-sm text-slate-400 dark:text-slate-500">
                   —
                 </p>
               </div>
@@ -335,25 +335,25 @@ export default function TimeoutSimulator() {
         <div className="space-y-6">
           <Panel title={t('simulators.timeout.stats.title')} accent="green">
             <div className="grid grid-cols-2 gap-3">
-              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+              <div className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-3">
                 <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">{nextRequestId.current - 1}</div>
-                <div className="label-mono mt-2">{t('simulators.timeout.stats.total')}</div>
+                <div className="text-xs font-sans font-medium text-slate-500 dark:text-slate-400 mt-2">{t('simulators.timeout.stats.total')}</div>
               </div>
-              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+              <div className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-3">
                 <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-amber">
                   {requests.filter(r => r.status === 'timeout').length}
                 </div>
-                <div className="label-mono mt-2">{t('simulators.timeout.stats.timeouts')}</div>
+                <div className="text-xs font-sans font-medium text-slate-500 dark:text-slate-400 mt-2">{t('simulators.timeout.stats.timeouts')}</div>
               </div>
             </div>
           </Panel>
 
-          <div className="tactical-panel border-l-2 border-l-signal-cyan p-5">
-            <h3 className="label-mono text-signal-cyan mb-3">{t('simulators.timeout.info.title')}</h3>
-            <div className="space-y-1.5 font-mono text-sm text-slate-600 dark:text-tactical-dim">
-              <p className="flex gap-2"><span className="text-signal-cyan">›</span>{t('simulators.timeout.info.p1')}</p>
-              <p className="flex gap-2"><span className="text-signal-cyan">›</span>{t('simulators.timeout.info.p2')}</p>
-              <p className="flex gap-2"><span className="text-signal-cyan">›</span>{t('simulators.timeout.info.p3')}</p>
+          <div className="rounded-lg border border-slate-200 dark:border-slate-700 border-l-2 border-l-emerald-500 bg-slate-50 dark:bg-slate-900 dark:rounded-none p-5">
+            <h3 className="text-sm font-sans font-semibold text-slate-900 dark:text-slate-100 mb-3">{t('simulators.timeout.info.title')}</h3>
+            <div className="space-y-1.5 font-sans text-sm text-slate-600 dark:text-slate-400">
+              <p className="flex gap-2"><span className="text-emerald-600 dark:text-emerald-400">•</span>{t('simulators.timeout.info.p1')}</p>
+              <p className="flex gap-2"><span className="text-emerald-600 dark:text-emerald-400">•</span>{t('simulators.timeout.info.p2')}</p>
+              <p className="flex gap-2"><span className="text-emerald-600 dark:text-emerald-400">•</span>{t('simulators.timeout.info.p3')}</p>
             </div>
           </div>
         </div>

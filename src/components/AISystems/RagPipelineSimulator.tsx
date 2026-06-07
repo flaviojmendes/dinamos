@@ -119,25 +119,25 @@ export default function RagPipelineSimulator() {
           </div>
         }
       >
-        <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
+        <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
 
         <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="space-y-2">
-            <label className="block label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.controls.chunk_size`)}</label>
+            <label className="block font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.chunk_size`)}</label>
             <div className="flex items-center gap-2">
               <input type="range" min="100" max="800" step="50" value={chunkSize} onChange={e => setChunkSize(Number(e.target.value))} className={rangeClass} />
               <span className="font-mono text-sm w-10 text-right text-signal-cyan tabular-nums">{chunkSize}</span>
             </div>
           </div>
           <div className="space-y-2">
-            <label className="block label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.controls.top_k`)}</label>
+            <label className="block font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.top_k`)}</label>
             <div className="flex items-center gap-2">
               <input type="range" min="1" max="12" value={topK} onChange={e => setTopK(Number(e.target.value))} className={rangeClass} />
               <span className="font-mono text-sm w-10 text-right text-signal-cyan tabular-nums">{topK}</span>
             </div>
           </div>
           <div className="space-y-2">
-            <label className="block label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.controls.rerank`)}</label>
+            <label className="block font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.rerank`)}</label>
             <TacticalButton size="sm" variant={rerank ? 'secondary' : 'ghost'} onClick={() => setRerank(!rerank)}>
               {rerank ? t(`${base}.buttons.on`) : t(`${base}.buttons.off`)}
             </TacticalButton>
@@ -166,16 +166,16 @@ export default function RagPipelineSimulator() {
                     borderColor: active ? 'rgb(34 211 238)' : undefined,
                   }}
                   transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-                  className="relative border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-3 flex flex-col gap-2"
+                  className="relative rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-3 flex flex-col gap-2"
                 >
                   {active && (
                     <motion.div
                       layoutId="rag-packet"
-                      className="absolute -top-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rounded-full bg-signal-cyan shadow-[0_0_10px_rgba(34,211,238,0.9)]"
+                      className="absolute -top-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rounded-full bg-signal-cyan"
                       transition={{ type: 'spring', stiffness: 260, damping: 24 }}
                     />
                   )}
-                  <span className="label-mono text-slate-500 dark:text-tactical-label">{i + 1}. {t(`${base}.stages.${stage}`)}</span>
+                  <span className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{i + 1}. {t(`${base}.stages.${stage}`)}</span>
                   <StatusBadge variant={status} label={stage === 'rerank' && !rerank ? t(`${base}.labels.disabled`) : undefined} />
                 </motion.div>
               );
@@ -184,7 +184,7 @@ export default function RagPipelineSimulator() {
         </div>
 
         {activeStage < 0 && (
-          <div className="mt-4 border border-dashed border-slate-300 dark:border-tactical-border px-4 py-8 text-center font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">
+          <div className="mt-4 rounded-lg dark:rounded-none border border-dashed border-slate-300 dark:border-tactical-border px-4 py-8 text-center font-sans text-xs text-slate-400 dark:text-tactical-label">
             {t(`${base}.labels.idle`)}
           </div>
         )}
@@ -200,9 +200,9 @@ export default function RagPipelineSimulator() {
                   initial={{ opacity: 0, x: -24 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.08, type: 'spring', stiffness: 320, damping: 26 }}
-                  className="flex items-center gap-3 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
+                  className="flex items-center gap-3 rounded-md dark:rounded-none border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
                 >
-                  <span className="font-mono text-xs text-slate-700 dark:text-tactical-text w-16">{t(`${base}.labels.chunk`)} #{c.id}</span>
+                  <span className="font-sans text-xs text-slate-700 dark:text-tactical-text w-16">{t(`${base}.labels.chunk`)} {c.id}</span>
                   <SegmentBar value={c.score * 100} max={100} color={c.relevant ? 'green' : 'amber'} />
                   <span className="font-mono text-[11px] text-slate-500 dark:text-tactical-dim tabular-nums w-20 text-right">{t(`${base}.labels.score`)} {c.score}</span>
                 </motion.div>

@@ -95,7 +95,7 @@ function ContextItem({
   return (
     <button
       onClick={onClick}
-      className={`w-full flex items-center gap-2 px-3 py-1.5 font-mono text-xs text-left hover:bg-slate-100 dark:hover:bg-tactical-line ${tone ?? 'text-slate-700 dark:text-tactical-text'}`}
+      className={`w-full flex items-center gap-2 px-3 py-1.5 font-sans text-xs text-left hover:bg-slate-100 dark:hover:bg-tactical-line ${tone ?? 'text-slate-700 dark:text-tactical-text'}`}
     >
       <Icon className="w-3.5 h-3.5 shrink-0" /> {label}
     </button>
@@ -771,14 +771,14 @@ function EditorInner({ gameId }: { gameId?: string }) {
   const selectedConfig = nodes.find((n) => n.id === selectedId)?.data.config ?? null;
   const nodeOptions = nodes.map((n) => ({ id: n.id, label: n.data.config.label }));
 
-  const btn = `px-3 ${isTouch ? 'py-2.5 min-h-[44px]' : 'py-2'} font-mono text-sm uppercase tracking-wider border transition-colors flex items-center gap-2 whitespace-nowrap shrink-0`;
-  const iconBtn = `${isTouch ? 'p-2.5 min-h-[44px] min-w-[44px]' : 'p-2'} border transition-colors flex items-center justify-center shrink-0`;
+  const btn = `px-3 ${isTouch ? 'py-2.5 min-h-[44px]' : 'py-2'} font-sans text-sm rounded-md border transition-colors flex items-center gap-2 whitespace-nowrap shrink-0`;
+  const iconBtn = `${isTouch ? 'p-2.5 min-h-[44px] min-w-[44px]' : 'p-2'} rounded-md border transition-colors flex items-center justify-center shrink-0`;
 
   return (
     <MetricsContext.Provider value={{ metrics, running, selectedId }}>
       <div className="p-4 md:p-6 max-w-[1600px] mx-auto">
-        <div className="label-mono text-signal-amber mb-1">[ SYSTEM DESIGN ] // {t('editor.engine_tagline', { defaultValue: 'SIMULATION ENGINE V2' })}</div>
-        <h1 className="text-2xl md:text-3xl font-mono font-bold mb-4 tracking-tight text-slate-900 dark:text-tactical-text">
+        <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1">{t('editor.engine_tagline', { defaultValue: 'Simulation engine v2' })}</div>
+        <h1 className="text-2xl md:text-3xl font-sans font-bold mb-4 tracking-tight text-slate-900 dark:text-tactical-text">
           {t('editor.title', { defaultValue: 'Distributed Systems Simulator' })}
         </h1>
 
@@ -854,12 +854,12 @@ function EditorInner({ gameId }: { gameId?: string }) {
             <>
               <div className="border-l border-tactical-line h-8 mx-1 shrink-0" />
 
-              <label className="flex items-center gap-2 font-mono text-xs text-tactical-dim">
+              <label className="flex items-center gap-2 font-sans text-xs text-tactical-dim">
                 {t('editor.labels.speed', { defaultValue: 'Speed' })}
                 <input type="range" min={1} max={10} value={speed} onChange={(e) => setSpeed(Number(e.target.value))} className="accent-signal-cyan" />
-                <span className="text-tactical-text">{speed}x</span>
+                <span className="font-mono text-tactical-text">{speed}x</span>
               </label>
-              <label className="flex items-center gap-2 font-mono text-xs text-tactical-dim">
+              <label className="flex items-center gap-2 font-sans text-xs text-tactical-dim">
                 {t('editor.labels.seed', { defaultValue: 'Seed' })}
                 <input
                   type="number"
@@ -905,7 +905,7 @@ function EditorInner({ gameId }: { gameId?: string }) {
         </div>
 
         {importError && (
-          <div className="bg-signal-red/10 border border-signal-red p-3 text-signal-red font-mono text-sm mb-3">{importError}</div>
+          <div className="bg-signal-red/10 border border-signal-red rounded-lg p-3 text-signal-red font-sans text-sm mb-3">{importError}</div>
         )}
 
         {/* Scenario controls (admin-driven in game mode, so hidden for players;
@@ -970,8 +970,8 @@ function EditorInner({ gameId }: { gameId?: string }) {
               {/* Desktop drag-and-drop palette. On touch this is replaced by the
                   tap-to-add MobilePalette in a bottom sheet. */}
               {!isTouch && (
-                <Panel position="top-left" className="bg-white/95 dark:bg-tactical-surface/95 border border-slate-200 dark:border-tactical-border p-3 backdrop-blur-sm max-h-[520px] overflow-y-auto">
-                  <div className="label-mono text-signal-amber mb-2">{t('editor.labels.components', { defaultValue: 'Components' })}</div>
+                <Panel position="top-left" className="bg-white/95 dark:bg-tactical-surface/95 border border-slate-200 dark:border-tactical-border rounded-lg p-3 backdrop-blur-sm max-h-[520px] overflow-y-auto">
+                  <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-2">{t('editor.labels.components', { defaultValue: 'Components' })}</div>
                   <div className="grid grid-cols-2 gap-1.5">
                     {PALETTE_ORDER.map((kind) => {
                       const entry = NODE_CATALOG[kind];
@@ -982,7 +982,7 @@ function EditorInner({ gameId }: { gameId?: string }) {
                           draggable
                           onDragStart={(e) => onDragStart(e, kind)}
                           title={t(`editor.descriptions.${kind}`)}
-                          className={`px-2 py-1.5 bg-slate-50 dark:bg-tactical-raised cursor-move hover:bg-slate-100 dark:hover:bg-tactical-line border-l-2 ${entry.accent} font-mono text-[11px] text-slate-700 dark:text-tactical-text flex items-center gap-1.5`}
+                          className={`px-2 py-1.5 rounded-md bg-slate-50 dark:bg-tactical-raised cursor-move hover:bg-slate-100 dark:hover:bg-tactical-line border-l-2 ${entry.accent} font-sans text-[11px] text-slate-700 dark:text-tactical-text flex items-center gap-1.5`}
                         >
                           <Icon className="w-3.5 h-3.5" />
                           {t(`editor.kinds.${kind}`, { defaultValue: KIND_DEFAULT_LABEL[kind] })}
@@ -1025,7 +1025,7 @@ function EditorInner({ gameId }: { gameId?: string }) {
 
             {menu && (
               <div
-                className="absolute z-50 min-w-[180px] bg-white dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border shadow-lg py-1"
+                className="absolute z-50 min-w-[180px] bg-white dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-lg shadow-lg py-1"
                 style={{ left: Math.min(menu.x, (canvasRef.current?.clientWidth ?? 9999) - 190), top: menu.y }}
                 onClick={(e) => e.stopPropagation()}
               >
@@ -1143,7 +1143,7 @@ function EditorInner({ gameId }: { gameId?: string }) {
                 >
                   <div className="p-4 space-y-4">
                     <div>
-                      <div className="label-mono text-tactical-label mb-2">{t('editor.menu.arrange_vertical', { defaultValue: 'Arrange' })}</div>
+                      <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-2">{t('editor.menu.arrange_vertical', { defaultValue: 'Arrange' })}</div>
                       <div className="flex gap-2">
                         <button onClick={() => { applyLayout('vertical'); setSheet(null); }} className={`${btn} flex-1 justify-center border-tactical-border text-tactical-dim`}>
                           <ArrowDownUp className="w-4 h-4" /> {t('editor.buttons.arrange_vertical', { defaultValue: 'Vertical' })}
@@ -1155,15 +1155,15 @@ function EditorInner({ gameId }: { gameId?: string }) {
                     </div>
 
                     <label className="block">
-                      <div className="flex justify-between font-mono text-xs text-tactical-dim mb-1">
+                      <div className="flex justify-between font-sans text-xs text-tactical-dim mb-1">
                         <span>{t('editor.labels.speed', { defaultValue: 'Speed' })}</span>
-                        <span className="text-tactical-text">{speed}x</span>
+                        <span className="font-mono text-tactical-text">{speed}x</span>
                       </div>
                       <input type="range" min={1} max={10} value={speed} onChange={(e) => setSpeed(Number(e.target.value))} className="w-full accent-signal-cyan" />
                     </label>
 
                     <label className="block">
-                      <div className="font-mono text-xs text-tactical-dim mb-1">{t('editor.labels.seed', { defaultValue: 'Seed' })}</div>
+                      <div className="font-sans text-xs text-tactical-dim mb-1">{t('editor.labels.seed', { defaultValue: 'Seed' })}</div>
                       <input
                         type="number"
                         value={seed}

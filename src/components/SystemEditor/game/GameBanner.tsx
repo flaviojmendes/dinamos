@@ -63,14 +63,14 @@ export default function GameBanner() {
   return (
     <>
     <GameAnnouncement />
-    <div className="tactical-panel p-3 mb-3 flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-xs">
-      <div className="flex items-center gap-2 text-signal-cyan font-bold uppercase tracking-wider">
+    <div className="tactical-panel p-3 mb-3 flex flex-wrap items-center gap-x-6 gap-y-2 font-sans text-xs">
+      <div className="flex items-center gap-2 text-signal-cyan font-semibold">
         <Gamepad2 className="w-4 h-4" />
-        {t('editor.game.mode', { defaultValue: 'Game Mode' })}
-        {st.name && <span className="text-tactical-text normal-case">· {st.name}</span>}
+        {t('editor.game.mode', { defaultValue: 'Game mode' })}
+        {st.name && <span className="text-tactical-text font-normal">· {st.name}</span>}
       </div>
 
-      <div className={`flex items-center gap-1.5 px-2 py-0.5 border ${statusTone} uppercase tracking-wider`}>
+      <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full border ${statusTone} capitalize`}>
         {st.status === 'ended' ? <Flag className="w-3.5 h-3.5" /> : <Activity className="w-3.5 h-3.5" />}
         {st.status}
       </div>
@@ -90,7 +90,7 @@ export default function GameBanner() {
       <div className="flex items-center gap-1.5 text-tactical-dim">
         <Users className="w-3.5 h-3.5" />
         <span className="text-tactical-text">{st.player_count}</span>
-        <span className="text-tactical-label">{t('editor.game.players', { defaultValue: 'players' })}</span>
+        <span className="text-tactical-label">{t('editor.game.players', { defaultValue: 'Players' })}</span>
       </div>
 
       <div className="flex items-center gap-1.5 ml-auto text-tactical-dim">

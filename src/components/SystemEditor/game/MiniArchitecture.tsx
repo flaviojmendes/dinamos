@@ -52,10 +52,10 @@ export default function MiniArchitecture({
   if (!model) {
     return (
       <div
-        className={`flex items-center justify-center border border-tactical-border bg-tactical-raised/40 ${className}`}
+        className={`flex items-center justify-center border border-tactical-border bg-tactical-raised/40 rounded-lg ${className}`}
         style={{ height }}
       >
-        <span className="font-mono text-[10px] text-tactical-label">no components</span>
+        <span className="font-sans text-[10px] text-tactical-label">No components</span>
       </div>
     );
   }
@@ -64,7 +64,7 @@ export default function MiniArchitecture({
     <svg
       viewBox={`${model.vbX} ${model.vbY} ${model.vbW} ${model.vbH}`}
       preserveAspectRatio="xMidYMid meet"
-      className={`block w-full border border-tactical-border bg-tactical-raised/40 ${className}`}
+      className={`block w-full border border-tactical-border bg-tactical-raised/40 rounded-lg ${className}`}
       style={{ height }}
     >
       {model.edges.map((e) => {

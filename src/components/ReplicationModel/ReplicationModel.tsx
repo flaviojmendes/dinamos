@@ -175,7 +175,7 @@ export default function ReplicationModel() {
   };
 
   const rangeClass = 'w-full h-2 bg-slate-200 dark:bg-tactical-raised appearance-none cursor-pointer accent-signal-green';
-  const inputClass = 'w-full bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-3 py-2 font-mono text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-signal-green';
+  const inputClass = 'w-full bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-3 py-2 font-sans text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-brand-500 rounded-md dark:rounded-none';
 
   const opStatusVariant = (status: Operation['status']) => {
     switch (status) {
@@ -188,16 +188,16 @@ export default function ReplicationModel() {
   return (
     <div className="space-y-6">
       <div className="max-w-3xl">
-        <div className="label-mono text-signal-cyan mb-2">
-          [ MODELO DE REPLICAÇÃO ]
-        </div>
-        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
+        <span className="inline-block text-xs font-medium text-slate-600 dark:text-tactical-label bg-slate-100 dark:bg-tactical-raised px-2.5 py-1 rounded-full mb-2">
+          Modelo de replicação
+        </span>
+        <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
           Visualize consistência forte, eventual e causal entre nós distribuídos.
         </p>
       </div>
 
       <Panel title="Topologia de Nós" accent="cyan" padded={false} bodyClassName="p-4">
-        <div className="relative bg-slate-50 dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border" style={{ height: config.circleRadius * 2 + 100 }}>
+        <div className="relative bg-slate-50 dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-lg dark:rounded-none" style={{ height: config.circleRadius * 2 + 100 }}>
           <svg className="absolute inset-0" width="100%" height="100%">
             {nodes.map((source) => 
               nodes
@@ -226,7 +226,7 @@ export default function ReplicationModel() {
               }`}
               style={{ left: node.position.x, top: node.position.y }}
             >
-              <div className={`p-4 border-2 transition-colors duration-300 ${
+              <div className={`p-4 border-2 transition-colors duration-300 rounded-lg dark:rounded-none ${
                 !node.isActive 
                   ? 'border-slate-300 dark:border-tactical-line bg-slate-100 dark:bg-tactical-raised' 
                   : node.id === selectedNode
@@ -234,7 +234,7 @@ export default function ReplicationModel() {
                   : 'border-slate-300 dark:border-tactical-border bg-white dark:bg-tactical-surface'
               }`}>
                 <div className="flex flex-col items-center space-y-2">
-                  <span className="font-mono text-sm text-slate-900 dark:text-tactical-text">Nó {node.id}</span>
+                  <span className="font-sans text-sm text-slate-900 dark:text-tactical-text">Nó {node.id}</span>
                   <span className="font-mono text-2xl font-bold text-slate-900 dark:text-tactical-text">{node.value}</span>
                   <div className="flex space-x-2">
                     <TacticalButton
@@ -327,43 +327,43 @@ export default function ReplicationModel() {
           isConfigOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
         }`}>
           <div>
-            <div className="flex justify-between font-mono text-sm text-slate-600 dark:text-tactical-dim mb-1">
-              <span>Número de Nós</span>
+            <div className="flex justify-between font-sans text-sm text-slate-600 dark:text-tactical-dim mb-1">
+              <span>Número de nós</span>
               <span className="text-signal-cyan">{config.nodeCount}</span>
             </div>
             <input type="range" min="3" max="7" value={config.nodeCount} onChange={(e) => setConfig(c => ({ ...c, nodeCount: parseInt(e.target.value) }))} className={rangeClass} />
           </div>
           <div>
-            <div className="flex justify-between font-mono text-sm text-slate-600 dark:text-tactical-dim mb-1">
-              <span>Latência Base (ms)</span>
+            <div className="flex justify-between font-sans text-sm text-slate-600 dark:text-tactical-dim mb-1">
+              <span>Latência base (ms)</span>
               <span className="text-signal-cyan">{config.baseLatency}ms</span>
             </div>
             <input type="range" min="50" max="500" step="50" value={config.baseLatency} onChange={(e) => setConfig(c => ({ ...c, baseLatency: parseInt(e.target.value) }))} className={rangeClass} />
           </div>
           <div>
-            <div className="flex justify-between font-mono text-sm text-slate-600 dark:text-tactical-dim mb-1">
-              <span>Variação de Latência (Jitter)</span>
+            <div className="flex justify-between font-sans text-sm text-slate-600 dark:text-tactical-dim mb-1">
+              <span>Variação de latência (jitter)</span>
               <span className="text-signal-cyan">{config.networkJitter}ms</span>
             </div>
             <input type="range" min="0" max="200" step="10" value={config.networkJitter} onChange={(e) => setConfig(c => ({ ...c, networkJitter: parseInt(e.target.value) }))} className={rangeClass} />
           </div>
           <div>
-            <div className="flex justify-between font-mono text-sm text-slate-600 dark:text-tactical-dim mb-1">
-              <span>Confiabilidade da Rede</span>
+            <div className="flex justify-between font-sans text-sm text-slate-600 dark:text-tactical-dim mb-1">
+              <span>Confiabilidade da rede</span>
               <span className="text-signal-cyan">{Math.round(config.networkReliability * 100)}%</span>
             </div>
             <input type="range" min="50" max="100" value={Math.round(config.networkReliability * 100)} onChange={(e) => setConfig(c => ({ ...c, networkReliability: parseInt(e.target.value) / 100 }))} className={rangeClass} />
           </div>
           <div>
-            <div className="flex justify-between font-mono text-sm text-slate-600 dark:text-tactical-dim mb-1">
-              <span>Atraso de Replicação</span>
+            <div className="flex justify-between font-sans text-sm text-slate-600 dark:text-tactical-dim mb-1">
+              <span>Atraso de replicação</span>
               <span className="text-signal-cyan">{config.replicationDelay}ms</span>
             </div>
             <input type="range" min="100" max="2000" step="100" value={config.replicationDelay} onChange={(e) => setConfig(c => ({ ...c, replicationDelay: parseInt(e.target.value) }))} className={rangeClass} />
           </div>
           <div>
-            <div className="flex justify-between font-mono text-sm text-slate-600 dark:text-tactical-dim mb-1">
-              <span>Tamanho do Diagrama</span>
+            <div className="flex justify-between font-sans text-sm text-slate-600 dark:text-tactical-dim mb-1">
+              <span>Tamanho do diagrama</span>
               <span className="text-signal-cyan">{config.circleRadius * 2}px</span>
             </div>
             <input type="range" min="100" max="300" step="50" value={config.circleRadius} onChange={(e) => setConfig(c => ({ ...c, circleRadius: parseInt(e.target.value) }))} className={rangeClass} />
@@ -376,7 +376,7 @@ export default function ReplicationModel() {
           {operations.map((op) => (
             <div
               key={op.id}
-              className="flex justify-between items-center border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-3"
+              className="flex justify-between items-center border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-3 rounded-lg dark:rounded-none"
             >
               <div className="flex items-center space-x-3">
                 <StatusBadge
@@ -400,8 +400,8 @@ export default function ReplicationModel() {
             </div>
           ))}
           {operations.length === 0 && (
-            <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center">
-              <p className="font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">
+            <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center rounded-lg dark:rounded-none">
+              <p className="font-sans text-xs text-slate-400 dark:text-tactical-label">
                 Nenhuma operação realizada
               </p>
             </div>

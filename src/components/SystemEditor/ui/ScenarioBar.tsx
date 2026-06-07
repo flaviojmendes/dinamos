@@ -22,7 +22,7 @@ const PROFILE_VALUES: LoadProfileType[] = ['constant', 'ramp', 'spike', 'diurnal
 const CHAOS_VALUES: ChaosType[] = ['killNode', 'latencyInjection', 'partition'];
 
 const selectCls =
-  'bg-tactical-raised border border-tactical-border px-2 py-1 font-mono text-xs text-tactical-text';
+  'bg-tactical-raised border border-tactical-border rounded-md px-2 py-1 font-sans text-xs text-tactical-text';
 
 export default function ScenarioBar({
   profileType,
@@ -58,7 +58,7 @@ export default function ScenarioBar({
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap items-end gap-3">
         <div>
-          <div className="label-mono mb-1">{t('editor.scenario.preset')}</div>
+          <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1">{t('editor.scenario.preset')}</div>
           <div className="flex gap-1">
             <select value={presetId} onChange={(e) => setPresetId(e.target.value)} className={selectCls}>
               {PRESETS.map((p) => (
@@ -69,7 +69,7 @@ export default function ScenarioBar({
             </select>
             <button
               onClick={() => onLoadPreset(presetId)}
-              className="border border-signal-cyan text-signal-cyan px-3 py-1 font-mono text-xs uppercase tracking-wider hover:bg-signal-cyan/10"
+              className="border border-signal-cyan text-signal-cyan rounded-md px-3 py-1 font-sans text-xs hover:bg-signal-cyan/10"
             >
               {t('editor.scenario.load')}
             </button>
@@ -77,7 +77,7 @@ export default function ScenarioBar({
         </div>
 
         <div>
-          <div className="label-mono mb-1">{t('editor.scenario.load_profile')}</div>
+          <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1">{t('editor.scenario.load_profile')}</div>
           <select value={profileType} onChange={(e) => onProfileChange(e.target.value as LoadProfileType)} className={selectCls}>
             {PROFILE_VALUES.map((p) => (
               <option key={p} value={p}>
@@ -88,7 +88,7 @@ export default function ScenarioBar({
         </div>
 
         <div>
-          <div className="label-mono mb-1">{t('editor.scenario.cloud')}</div>
+          <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1">{t('editor.scenario.cloud')}</div>
           <select value={provider} onChange={(e) => onProviderChange(e.target.value as CloudProvider)} className={selectCls}>
             <option value="aws">AWS</option>
             <option value="gcp">Google Cloud</option>
@@ -96,7 +96,7 @@ export default function ScenarioBar({
         </div>
 
         <div>
-          <div className="label-mono mb-1">{t('editor.scenario.chaos')}</div>
+          <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1">{t('editor.scenario.chaos')}</div>
           <div className="flex gap-1">
             <select value={chaosType} onChange={(e) => setChaosType(e.target.value as ChaosType)} className={selectCls}>
               {CHAOS_VALUES.map((c) => (
@@ -114,7 +114,7 @@ export default function ScenarioBar({
             </select>
             <button
               onClick={addChaos}
-              className="border border-signal-red text-signal-red px-3 py-1 font-mono text-xs uppercase tracking-wider hover:bg-signal-red/10"
+              className="border border-signal-red text-signal-red rounded-md px-3 py-1 font-sans text-xs hover:bg-signal-red/10"
             >
               {t('editor.scenario.inject')}
             </button>
@@ -129,7 +129,7 @@ export default function ScenarioBar({
             return (
               <span
                 key={ev.id}
-                className="flex items-center gap-2 border border-signal-red/50 bg-signal-red/10 px-2 py-1 font-mono text-[11px] text-signal-red"
+                className="flex items-center gap-2 border border-signal-red/50 bg-signal-red/10 rounded-full px-2 py-1 font-sans text-[11px] text-signal-red"
               >
                 {ev.type} · {label} · t={ev.startSec}s+{ev.durationSec}s
                 <button onClick={() => onRemoveChaos(ev.id)} className="hover:text-white">

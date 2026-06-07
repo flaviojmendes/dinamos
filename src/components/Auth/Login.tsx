@@ -49,15 +49,15 @@ export default function Login() {
           <div className="flex items-center justify-between border-b border-slate-200 dark:border-tactical-border px-5 py-3">
             <div className="flex items-center gap-2.5">
               <span className="h-3.5 w-1 bg-signal-amber" aria-hidden />
-              <h2 className="font-mono uppercase tracking-wider text-sm font-semibold">
+              <h2 className="font-sans text-sm font-semibold">
                 {t('auth.welcome_title')}
               </h2>
             </div>
-            <span className="font-mono text-[11px] uppercase tracking-wider text-signal-red">[ACCESS REQUEST]</span>
+            <span className="rounded-full bg-slate-100 px-2 py-0.5 font-sans text-[11px] text-slate-500 dark:bg-tactical-raised dark:text-tactical-dim">Sign in</span>
           </div>
 
           <div className="p-6">
-            <p className="text-slate-500 dark:text-tactical-dim text-center font-mono text-sm mb-8">
+            <p className="text-slate-500 dark:text-tactical-dim text-center font-sans text-sm mb-8">
               {t('auth.welcome_subtitle')}
             </p>
 
@@ -67,7 +67,7 @@ export default function Login() {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="bg-signal-red/10 border border-signal-red/50 text-signal-red p-3 mb-4 font-mono text-sm text-center"
+                  className="bg-signal-red/10 border border-signal-red/50 text-signal-red p-3 mb-4 font-sans text-sm text-center rounded-lg"
                 >
                   {error}
                 </motion.div>
@@ -78,7 +78,7 @@ export default function Login() {
               <button
                 onClick={handleGoogleLogin}
                 disabled={isLoading}
-                className="w-full bg-slate-900 dark:bg-white text-white dark:text-black py-3 px-4 font-mono text-sm uppercase tracking-wider font-medium hover:bg-slate-700 dark:hover:bg-slate-200 transition-colors flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full rounded-lg bg-slate-900 dark:bg-white text-white dark:text-black py-3 px-4 font-sans text-sm font-medium hover:bg-slate-700 dark:hover:bg-slate-200 transition-colors flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? (
                   <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
@@ -96,7 +96,7 @@ export default function Login() {
               <button
                 onClick={handleGithubLogin}
                 disabled={isLoading}
-                className="w-full bg-transparent border border-slate-300 dark:border-tactical-line text-slate-900 dark:text-tactical-text py-3 px-4 font-mono text-sm uppercase tracking-wider font-medium hover:border-slate-900 dark:hover:border-signal-green hover:bg-slate-100 dark:hover:bg-tactical-raised transition-colors flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full rounded-lg bg-transparent border border-slate-300 dark:border-tactical-line text-slate-900 dark:text-tactical-text py-3 px-4 font-sans text-sm font-medium hover:border-slate-900 dark:hover:border-signal-green hover:bg-slate-100 dark:hover:bg-tactical-raised transition-colors flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? (
                   <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
@@ -112,7 +112,7 @@ export default function Login() {
               </button>
             </div>
 
-            <p className="font-mono text-[11px] text-slate-400 dark:text-tactical-label text-center mt-8">
+            <p className="font-sans text-[11px] text-slate-400 dark:text-tactical-label text-center mt-8">
               {t('auth.terms_notice')}
             </p>
           </div>

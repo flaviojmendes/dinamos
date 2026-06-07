@@ -34,11 +34,13 @@ module.exports = {
           dim: '#aab0bb',      // secondary text
           text: '#e5e7eb',     // primary text
         },
+        // Muted accent palette. Calmer than neon so the UI reads minimal, not
+        // like an alarm panel; still distinct enough to carry semantic meaning.
         signal: {
-          green: '#4ade80', // online / success / completed
-          amber: '#f59e0b', // section accent / warning / in-progress
-          red: '#ef4444',   // classified / danger
-          cyan: '#22d3ee',  // info / assessment
+          green: '#34d399', // online / success / completed
+          amber: '#d9a441', // section accent / warning / in-progress
+          red: '#e5645f',   // classified / danger
+          cyan: '#56b6c8',  // info / assessment
         },
       },
       fontFamily: {

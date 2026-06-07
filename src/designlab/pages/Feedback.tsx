@@ -30,8 +30,8 @@ function Feedback() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-mono uppercase tracking-wider font-bold text-slate-900 dark:text-tactical-text">
-                Feedback da Solução
+              <h1 className="text-2xl font-sans font-bold tracking-tight text-slate-900 dark:text-tactical-text">
+                Feedback da solução
               </h1>
               <p className="text-slate-600 dark:text-tactical-dim mt-1">{challenge?.title}</p>
             </div>
@@ -40,9 +40,9 @@ function Feedback() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="tactical-panel dark:rounded-none card-shadow dark:shadow-none p-8 mb-8 text-center transition-colors duration-200">
-          <h2 className="text-3xl font-mono uppercase tracking-wider font-bold mb-2 text-brand-600 dark:text-signal-green">
-            Análise Concluída!
+        <div className="tactical-panel rounded-xl dark:rounded-none card-shadow dark:shadow-none p-8 mb-8 text-center transition-colors duration-200">
+          <h2 className="text-3xl font-sans font-bold tracking-tight mb-2 text-brand-600 dark:text-signal-green">
+            Análise concluída
           </h2>
           <p className="text-slate-600 dark:text-tactical-dim">
             Sua solução demonstra {feedback.strengths.length} pontos fortes
@@ -50,9 +50,9 @@ function Feedback() {
         </div>
 
         {feedback.strengths.length > 0 && (
-          <div className="tactical-panel dark:rounded-none card-shadow dark:shadow-none p-6 mb-6 transition-colors duration-200">
+          <div className="tactical-panel rounded-xl dark:rounded-none card-shadow dark:shadow-none p-6 mb-6 transition-colors duration-200">
             <div className="flex items-center mb-4">
-              <div className="border border-signal-green/40 bg-signal-green/10 p-2 mr-3 transition-colors duration-200">
+              <div className="border border-signal-green/40 bg-signal-green/10 rounded-lg p-2 mr-3 transition-colors duration-200">
                 <svg
                   className="w-6 h-6 text-signal-green"
                   fill="none"
@@ -67,17 +67,17 @@ function Feedback() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-mono uppercase tracking-wider font-bold text-slate-900 dark:text-tactical-text">
-                Pontos Fortes
+              <h3 className="text-xl font-sans font-bold text-slate-900 dark:text-tactical-text">
+                Pontos fortes
               </h3>
             </div>
             <ul className="space-y-3">
               {feedback.strengths.map((strength, index) => (
                 <li
                   key={index}
-                  className="flex items-start p-3 border border-signal-green/40 bg-signal-green/10 transition-colors duration-200"
+                  className="flex items-start p-3 rounded-lg border border-signal-green/40 bg-signal-green/10 transition-colors duration-200"
                 >
-                  <span className="text-signal-green mr-2 mt-0.5 font-mono">✓</span>
+                  <span className="text-signal-green mr-2 mt-0.5 font-sans">✓</span>
                   <span className="text-slate-700 dark:text-tactical-dim">{strength}</span>
                 </li>
               ))}
@@ -86,9 +86,9 @@ function Feedback() {
         )}
 
         {feedback.suggestions.length > 0 && (
-          <div className="tactical-panel dark:rounded-none card-shadow dark:shadow-none p-6 mb-6 transition-colors duration-200">
+          <div className="tactical-panel rounded-xl dark:rounded-none card-shadow dark:shadow-none p-6 mb-6 transition-colors duration-200">
             <div className="flex items-center mb-4">
-              <div className="border border-signal-cyan/40 bg-signal-cyan/10 p-2 mr-3 transition-colors duration-200">
+              <div className="border border-signal-cyan/40 bg-signal-cyan/10 rounded-lg p-2 mr-3 transition-colors duration-200">
                 <svg
                   className="w-6 h-6 text-brand-600 dark:text-signal-cyan"
                   fill="none"
@@ -103,17 +103,17 @@ function Feedback() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-mono uppercase tracking-wider font-bold text-slate-900 dark:text-tactical-text">
-                Sugestões de Melhoria
+              <h3 className="text-xl font-sans font-bold text-slate-900 dark:text-tactical-text">
+                Sugestões de melhoria
               </h3>
             </div>
             <ul className="space-y-3">
               {feedback.suggestions.map((suggestion, index) => (
                 <li
                   key={index}
-                  className="flex items-start p-3 border border-signal-cyan/40 bg-signal-cyan/10 transition-colors duration-200"
+                  className="flex items-start p-3 rounded-lg border border-signal-cyan/40 bg-signal-cyan/10 transition-colors duration-200"
                 >
-                  <span className="text-brand-600 dark:text-signal-cyan mr-2 mt-0.5 font-mono">→</span>
+                  <span className="text-brand-600 dark:text-signal-cyan mr-2 mt-0.5 font-sans">→</span>
                   <span className="text-slate-700 dark:text-tactical-dim">{suggestion}</span>
                 </li>
               ))}
@@ -136,13 +136,13 @@ function Feedback() {
             onClick={() => navigate('/design-lab')}
             className="flex-1 dark:rounded-none"
           >
-            Voltar aos Desafios
+            Voltar aos desafios
           </TacticalButton>
         </div>
 
-        <div className="mt-8 border border-signal-cyan/40 bg-signal-cyan/10 dark:bg-signal-cyan/5 p-6 transition-colors duration-200">
-          <h3 className="text-lg font-mono uppercase tracking-wider font-bold text-slate-900 dark:text-tactical-text mb-3">
-            Dicas para Melhorar
+        <div className="mt-8 border border-signal-cyan/40 bg-signal-cyan/10 dark:bg-signal-cyan/5 rounded-xl p-6 transition-colors duration-200">
+          <h3 className="text-lg font-sans font-bold text-slate-900 dark:text-tactical-text mb-3">
+            Dicas para melhorar
           </h3>
           <ul className="space-y-2 text-sm text-slate-700 dark:text-tactical-dim">
             <li>• Considere todos os requisitos não-funcionais (escalabilidade, disponibilidade, latência)</li>

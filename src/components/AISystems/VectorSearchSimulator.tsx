@@ -176,25 +176,25 @@ export default function VectorSearchSimulator() {
           </div>
         }
       >
-        <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
+        <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="space-y-2">
-            <label className="block label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.controls.ef_search`)}</label>
+            <label className="block font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.ef_search`)}</label>
             <div className="flex items-center gap-2">
               <input type="range" min="10" max="200" step="2" value={efSearch} onChange={e => setEfSearch(Number(e.target.value))} className={rangeClass} />
               <span className="font-mono text-sm w-10 text-right text-signal-cyan tabular-nums">{efSearch}</span>
             </div>
           </div>
           <div className="space-y-2">
-            <label className="block label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.controls.m_links`)}</label>
+            <label className="block font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.m_links`)}</label>
             <div className="flex items-center gap-2">
               <input type="range" min="4" max="48" step="2" value={m} onChange={e => setM(Number(e.target.value))} className={rangeClass} />
               <span className="font-mono text-sm w-10 text-right text-signal-cyan tabular-nums">{m}</span>
             </div>
           </div>
           <div className="space-y-2">
-            <label className="block label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.controls.dataset`)}</label>
+            <label className="block font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.dataset`)}</label>
             <div className="flex items-center gap-2">
               <input type="range" min="0" max="3" value={datasetIdx} onChange={e => setDatasetIdx(Number(e.target.value))} className={rangeClass} />
               <span className="font-mono text-sm w-10 text-right text-signal-cyan tabular-nums">{datasetLabel}</span>
@@ -286,7 +286,7 @@ export default function VectorSearchSimulator() {
               );
             })}
           </svg>
-          <div className="flex flex-wrap items-center gap-4 border-t border-slate-200 dark:border-tactical-border px-4 py-2 font-mono text-[11px] text-slate-500 dark:text-tactical-dim">
+          <div className="flex flex-wrap items-center gap-4 border-t border-slate-200 dark:border-tactical-border px-4 py-2 font-sans text-[11px] text-slate-500 dark:text-tactical-dim">
             <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-signal-amber" />{t(`${base}.buttons.search`)}</span>
             <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-signal-cyan" />{t(`${base}.metrics.comparisons`)}</span>
             <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-signal-green" />{t(`${base}.labels.approx`)}</span>
@@ -295,7 +295,7 @@ export default function VectorSearchSimulator() {
       </Panel>
 
       {!result && (
-        <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-8 text-center font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">
+        <div className="rounded-lg dark:rounded-none border border-dashed border-slate-300 dark:border-tactical-border px-4 py-8 text-center font-sans text-xs text-slate-400 dark:text-tactical-label">
           {t(`${base}.labels.idle`)}
         </div>
       )}
@@ -315,14 +315,14 @@ export default function VectorSearchSimulator() {
             <div className="space-y-4">
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.labels.exact`)}</span>
+                  <span className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.labels.exact`)}</span>
                   <span className="font-mono text-xs text-signal-red tabular-nums">{result.exactLatency}ms</span>
                 </div>
                 <SegmentBar value={result.exactLatency} max={Math.max(result.exactLatency, result.latency)} color="red" />
               </div>
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.labels.approx`)}</span>
+                  <span className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.labels.approx`)}</span>
                   <span className="font-mono text-xs text-signal-green tabular-nums">{result.latency}ms</span>
                 </div>
                 <SegmentBar value={result.latency} max={Math.max(result.exactLatency, result.latency)} color="green" />
@@ -331,7 +331,7 @@ export default function VectorSearchSimulator() {
                 <div className="font-mono text-2xl font-bold tabular-nums leading-none text-signal-cyan">
                   <AnimatedMetricInline value={result.speedup} suffix="×" />
                 </div>
-                <div className="label-mono mt-2">{t(`${base}.labels.approx`)} / {t(`${base}.labels.exact`)}</div>
+                <div className="font-sans text-[11px] font-medium mt-2 text-slate-500 dark:text-tactical-label">{t(`${base}.labels.approx`)} / {t(`${base}.labels.exact`)}</div>
               </div>
             </div>
           </Panel>

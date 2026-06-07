@@ -14,7 +14,7 @@ interface Fork {
 }
 
 const inputClass =
-  'w-full bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-3 py-2 font-mono text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-signal-green';
+  'w-full rounded-lg bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-3 py-2 font-sans text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-emerald-500 dark:focus:border-signal-green';
 
 export default function PhilosophersSimulator() {
   const [philosophers, setPhilosophers] = useState<Philosopher[]>([
@@ -211,9 +211,9 @@ export default function PhilosophersSimulator() {
   return (
     <div className="space-y-6">
       <div className="max-w-3xl">
-        <div className="label-mono text-signal-cyan mb-2">
-          [ Simulador do Jantar dos Filósofos ]
-        </div>
+        <h2 className="font-sans text-lg font-semibold tracking-tight text-slate-900 dark:text-tactical-text mb-2">
+          Simulador do jantar dos filósofos
+        </h2>
       </div>
 
       <Panel title="Controles" accent="amber">
@@ -249,7 +249,7 @@ export default function PhilosophersSimulator() {
 
       <Panel title="Visualização" accent="green">
         <div className="relative aspect-square max-w-xl mx-auto p-8">
-          <div className="absolute inset-[15%] border-2 border-slate-300 dark:border-tactical-border" />
+          <div className="absolute inset-[15%] rounded-full border-2 border-slate-300 dark:border-tactical-border" />
           
           {philosophers.map((philosopher, index) => {
             const angle = (index * 2 * Math.PI) / 5;
@@ -260,7 +260,7 @@ export default function PhilosophersSimulator() {
             return (
               <motion.div
                 key={philosopher.id}
-                className={`absolute w-24 h-24 -ml-12 -mt-12 border flex flex-col items-center justify-center p-2 font-mono text-xs ${getStateBorder(philosopher.state)}`}
+                className={`absolute w-24 h-24 -ml-12 -mt-12 rounded-lg border flex flex-col items-center justify-center p-2 font-sans text-xs ${getStateBorder(philosopher.state)}`}
                 style={{
                   left: `${x}%`,
                   top: `${y}%`,
@@ -301,8 +301,8 @@ export default function PhilosophersSimulator() {
                   }`}
                 />
                 {fork.heldBy !== null && (
-                  <div className="absolute -top-6 left-1/2 -translate-x-1/2 border border-signal-amber/40 text-signal-amber font-mono text-[10px] px-2 py-0.5 whitespace-nowrap">
-                    Garfo {fork.id}
+                  <div className="absolute -top-6 left-1/2 -translate-x-1/2 rounded-full border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised text-slate-600 dark:text-tactical-dim font-sans text-[10px] px-2 py-0.5 whitespace-nowrap">
+                    Garfo <span className="font-mono tabular-nums">{fork.id}</span>
                   </div>
                 )}
               </motion.div>
@@ -319,7 +319,7 @@ export default function PhilosophersSimulator() {
             </div>
           ))}
           {logs.length === 0 && (
-            <div className="font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label text-center py-8">
+            <div className="font-sans text-xs text-slate-400 dark:text-tactical-label text-center py-8">
               Aguardando eventos…
             </div>
           )}

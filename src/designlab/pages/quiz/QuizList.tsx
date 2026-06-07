@@ -80,7 +80,7 @@ function QuizList() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
               <div>
-                <h1 className="text-4xl font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-tactical-text flex items-center gap-3 before:content-[''] before:h-8 before:w-1 before:bg-signal-amber">
+                <h1 className="text-4xl font-sans font-bold tracking-tight text-slate-900 dark:text-tactical-text">
                   🧠 Quizzes
                 </h1>
                 <p className="mt-2 text-lg text-slate-600 dark:text-tactical-dim">
@@ -96,7 +96,7 @@ function QuizList() {
                       <div className="text-2xl font-bold font-mono tabular-nums text-brand-600 dark:text-signal-cyan">
                         {stats.quizzes_completed}
                       </div>
-                      <div className="text-xs font-mono uppercase tracking-wider text-slate-500 dark:text-tactical-label">
+                      <div className="text-xs font-medium text-slate-500 dark:text-tactical-label">
                         Quizzes
                       </div>
                     </div>
@@ -105,7 +105,7 @@ function QuizList() {
                       <div className="text-2xl font-bold font-mono tabular-nums text-signal-green">
                         {stats.average_percentage}%
                       </div>
-                      <div className="text-xs font-mono uppercase tracking-wider text-slate-500 dark:text-tactical-label">
+                      <div className="text-xs font-medium text-slate-500 dark:text-tactical-label">
                         Média
                       </div>
                     </div>
@@ -114,7 +114,7 @@ function QuizList() {
                       <div className="text-2xl font-bold font-mono tabular-nums text-signal-amber">
                         {stats.total_correct_answers}
                       </div>
-                      <div className="text-xs font-mono uppercase tracking-wider text-slate-500 dark:text-tactical-label">
+                      <div className="text-xs font-medium text-slate-500 dark:text-tactical-label">
                         Acertos
                       </div>
                     </div>
@@ -131,10 +131,10 @@ function QuizList() {
             <div className="mb-8 flex flex-wrap gap-2">
               <button
                 onClick={() => setSelectedTheme('')}
-                className={`px-4 py-2 text-xs font-mono uppercase tracking-wider transition-colors border dark:rounded-none ${
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors border dark:rounded-none ${
                   selectedTheme === ''
-                    ? 'border-signal-green/40 text-signal-green bg-signal-green/10'
-                    : 'bg-white dark:bg-tactical-surface text-slate-700 dark:text-tactical-dim border-slate-200 dark:border-tactical-line hover:border-signal-green/40'
+                    ? 'border-emerald-300 text-emerald-700 bg-emerald-50'
+                    : 'bg-white dark:bg-tactical-surface text-slate-700 dark:text-tactical-dim border-slate-200 dark:border-tactical-line hover:border-emerald-300'
                 }`}
               >
                 Todos
@@ -143,10 +143,10 @@ function QuizList() {
                 <button
                   key={theme}
                   onClick={() => setSelectedTheme(theme)}
-                  className={`px-4 py-2 text-xs font-mono uppercase tracking-wider transition-colors border dark:rounded-none ${
+                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors border dark:rounded-none ${
                     selectedTheme === theme
-                      ? 'border-signal-green/40 text-signal-green bg-signal-green/10'
-                      : 'bg-white dark:bg-tactical-surface text-slate-700 dark:text-tactical-dim border-slate-200 dark:border-tactical-line hover:border-signal-green/40'
+                      ? 'border-emerald-300 text-emerald-700 bg-emerald-50'
+                      : 'bg-white dark:bg-tactical-surface text-slate-700 dark:text-tactical-dim border-slate-200 dark:border-tactical-line hover:border-emerald-300'
                   }`}
                 >
                   {theme}
@@ -163,7 +163,7 @@ function QuizList() {
           ) : error ? (
             <div className="text-center p-12 border-2 border-dashed border-signal-red/40 dark:border-signal-red/30 bg-signal-red/5 dark:bg-signal-red/10 dark:rounded-none">
               <div className="text-signal-red text-4xl mb-4">⚠️</div>
-              <h2 className="text-xl font-bold font-mono uppercase tracking-wider text-slate-900 dark:text-tactical-text mb-2">Erro ao carregar</h2>
+              <h2 className="text-xl font-bold font-sans text-slate-900 dark:text-tactical-text mb-2">Erro ao carregar</h2>
               <p className="text-slate-600 dark:text-tactical-dim mb-6">{error}</p>
               <TacticalButton variant="primary" onClick={fetchQuizzes}>
                 Tentar Novamente
@@ -172,7 +172,7 @@ function QuizList() {
           ) : quizzes.length === 0 ? (
             <div className="text-center py-16">
               <div className="text-6xl mb-4">📝</div>
-              <h3 className="text-xl font-bold font-mono uppercase tracking-wider text-slate-900 dark:text-tactical-text mb-2">
+              <h3 className="text-xl font-bold font-sans text-slate-900 dark:text-tactical-text mb-2">
                 Nenhum quiz disponível
               </h3>
               <p className="text-slate-600 dark:text-tactical-dim">
@@ -190,15 +190,15 @@ function QuizList() {
                       <div className="w-16 h-16 mx-auto mb-6 border border-signal-cyan/40 bg-signal-cyan/10 rounded-full flex items-center justify-center">
                         <span className="text-3xl">🧠</span>
                       </div>
-                      <h3 className="text-2xl font-bold font-mono uppercase tracking-wider text-slate-900 dark:text-tactical-text mb-3">
-                        Quizzes Restritos
+                      <h3 className="text-2xl font-bold font-sans text-slate-900 dark:text-tactical-text mb-3">
+                        Acesso restrito
                       </h3>
                       <p className="text-slate-600 dark:text-tactical-dim mb-6">
                         Este conteúdo não está disponível no momento. Entre em contato com o administrador para obter acesso.
                       </p>
                       <Link
                         to="/subscription-required"
-                        className="inline-flex items-center justify-center gap-2 w-full px-6 py-3 font-mono uppercase tracking-wider font-medium transition-colors bg-slate-900 dark:bg-white text-white dark:text-black hover:bg-slate-700 dark:hover:bg-slate-200 dark:rounded-none"
+                        className="inline-flex items-center justify-center gap-2 w-full px-6 py-3 font-sans font-medium rounded-lg transition-colors bg-slate-900 dark:bg-white text-white dark:text-black hover:bg-slate-700 dark:hover:bg-slate-200 dark:rounded-none"
                       >
                         Mais Informações
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -221,13 +221,13 @@ function QuizList() {
                       <div className="flex items-start justify-between mb-3">
                         <Tag color="cyan">{quiz.theme}</Tag>
                         {quiz.user_best_percentage !== null && quiz.user_best_percentage !== undefined && (
-                          <div className={`px-3 py-1 border text-xs font-mono tabular-nums font-bold uppercase tracking-wider ${getScoreBg(quiz.user_best_percentage)} ${getScoreColor(quiz.user_best_percentage)}`}>
+                          <div className={`px-3 py-1 rounded-full text-xs font-mono tabular-nums font-semibold ${getScoreBg(quiz.user_best_percentage)} ${getScoreColor(quiz.user_best_percentage)}`}>
                             {quiz.user_best_percentage}%
                           </div>
                         )}
                       </div>
 
-                      <h3 className="text-lg font-bold font-mono text-slate-900 dark:text-tactical-text group-hover:text-brand-600 dark:group-hover:text-signal-green transition-colors mb-2">
+                      <h3 className="text-lg font-bold font-sans text-slate-900 dark:text-tactical-text group-hover:text-brand-600 dark:group-hover:text-signal-green transition-colors mb-2">
                         {quiz.title}
                       </h3>
 
@@ -237,7 +237,7 @@ function QuizList() {
                         </p>
                       )}
 
-                      <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-tactical-label font-mono">
+                      <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-tactical-label">
                         <div className="flex items-center gap-1">
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -260,7 +260,7 @@ function QuizList() {
                     </div>
 
                     <div className="px-6 py-4 bg-slate-50 dark:bg-tactical-raised border-t border-slate-100 dark:border-tactical-border flex items-center justify-between group-hover:bg-signal-green/5 transition-colors">
-                      <span className="text-xs font-mono uppercase tracking-wider text-slate-500 dark:text-tactical-label">
+                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label">
                         {quiz.user_best_percentage !== null ? 'Refazer quiz' : 'Iniciar quiz'}
                       </span>
                       <span className="text-brand-600 dark:text-signal-green transform group-hover:translate-x-1 transition-transform">

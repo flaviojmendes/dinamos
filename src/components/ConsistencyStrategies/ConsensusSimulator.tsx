@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Panel, SegmentBar, TacticalButton } from '../tactical';
 
 const inputClass =
-  'bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-3 py-2 font-mono text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-signal-green';
+  'rounded-lg bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-3 py-2 font-sans text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-emerald-500 dark:focus:border-signal-green';
 
 interface Node {
   id: number;
@@ -280,7 +280,7 @@ export default function ConsensusSimulator() {
             {t('design_principles.consistency_strategies.consensus_simulator.controls.restart')}
           </TacticalButton>
           <div className="flex items-center gap-2">
-            <label className="label-mono text-slate-500 dark:text-tactical-label">{t('design_principles.consistency_strategies.consensus_simulator.controls.speed_label')}</label>
+            <label className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label">{t('design_principles.consistency_strategies.consensus_simulator.controls.speed_label')}</label>
             <select
               value={speed}
               onChange={(e) => setSpeed(Number(e.target.value))}
@@ -306,10 +306,10 @@ export default function ConsensusSimulator() {
             exit={{ opacity: 0, y: -20 }}
             className="tactical-panel border-l-2 border-l-signal-cyan p-5"
           >
-            <h3 className="label-mono text-signal-cyan mb-2">
+            <h3 className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text mb-2">
               {t('design_principles.consistency_strategies.consensus_simulator.step_prefix')} {step + 1}: {protocolSteps[protocol][step].title}
             </h3>
-            <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{protocolSteps[protocol][step].description}</p>
+            <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{protocolSteps[protocol][step].description}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -340,7 +340,7 @@ export default function ConsensusSimulator() {
             return (
               <motion.div
                 key={node.id}
-                className={`absolute w-32 h-32 -translate-x-1/2 -translate-y-1/2 ${getNodeColor(node.role)} p-4 flex flex-col items-center justify-center font-mono text-xs ${node.active ? 'opacity-100' : 'opacity-50'}`}
+                className={`absolute w-32 h-32 -translate-x-1/2 -translate-y-1/2 rounded-lg ${getNodeColor(node.role)} p-4 flex flex-col items-center justify-center font-sans text-xs ${node.active ? 'opacity-100' : 'opacity-50'}`}
                 style={{ left: position.x, top: position.y }}
                 animate={{
                   scale: node.role === 'leader' || node.role === 'proposer' ? 1.1 : 1,
@@ -348,28 +348,28 @@ export default function ConsensusSimulator() {
                 }}
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
               >
-                <div className="text-lg font-medium">{t('design_principles.consistency_strategies.consensus_simulator.labels.node_label')} {node.id}</div>
+                <div className="text-lg font-medium">{t('design_principles.consistency_strategies.consensus_simulator.labels.node_label')} <span className="font-mono tabular-nums">{node.id}</span></div>
                 <div className="text-sm capitalize">{getRoleName(node.role)}</div>
                 {protocol === 'raft' && (
                   <>
-                    <div className="text-xs">{t('design_principles.consistency_strategies.consensus_simulator.labels.term_label')} {node.term}</div>
-                    <div className="text-xs">{t('design_principles.consistency_strategies.consensus_simulator.labels.log_label')}: {node.log.length}</div>
+                    <div className="text-xs font-mono tabular-nums">{t('design_principles.consistency_strategies.consensus_simulator.labels.term_label')} {node.term}</div>
+                    <div className="text-xs font-mono tabular-nums">{t('design_principles.consistency_strategies.consensus_simulator.labels.log_label')}: {node.log.length}</div>
                   </>
                 )}
                 {protocol === 'paxos' && (
                   <>
                     {node.role === 'proposer' && (
-                      <div className="text-xs">{t('design_principles.consistency_strategies.consensus_simulator.labels.proposal_label')}: n=1</div>
+                      <div className="text-xs font-mono tabular-nums">{t('design_principles.consistency_strategies.consensus_simulator.labels.proposal_label')}: n=1</div>
                     )}
                     {node.role === 'acceptor' && (
                       <>
-                        <div className="text-xs">{t('design_principles.consistency_strategies.consensus_simulator.labels.promised_label')}: {node.promisedProposal}</div>
-                        <div className="text-xs">{t('design_principles.consistency_strategies.consensus_simulator.labels.accepted_label')}: {node.acceptedProposal}</div>
-                        {node.value && <div className="text-xs">{t('design_principles.consistency_strategies.consensus_simulator.labels.value_label')}: {node.value}</div>}
+                        <div className="text-xs font-mono tabular-nums">{t('design_principles.consistency_strategies.consensus_simulator.labels.promised_label')}: {node.promisedProposal}</div>
+                        <div className="text-xs font-mono tabular-nums">{t('design_principles.consistency_strategies.consensus_simulator.labels.accepted_label')}: {node.acceptedProposal}</div>
+                        {node.value && <div className="text-xs font-mono">{t('design_principles.consistency_strategies.consensus_simulator.labels.value_label')}: {node.value}</div>}
                       </>
                     )}
                     {node.role === 'learner' && node.value && (
-                      <div className="text-xs">{t('design_principles.consistency_strategies.consensus_simulator.labels.learned_value_label')}: {node.value}</div>
+                      <div className="text-xs font-mono">{t('design_principles.consistency_strategies.consensus_simulator.labels.learned_value_label')}: {node.value}</div>
                     )}
                   </>
                 )}
@@ -377,8 +377,8 @@ export default function ConsensusSimulator() {
                   <>
                     {(node.role === 'leader' || node.role === 'follower') && (
                       <>
-                        <div className="text-xs">{t('design_principles.consistency_strategies.consensus_simulator.labels.zxid_label')}: {node.term}</div>
-                        <div className="text-xs">{t('design_principles.consistency_strategies.consensus_simulator.labels.data_label')}: {node.log.length}</div>
+                        <div className="text-xs font-mono tabular-nums">{t('design_principles.consistency_strategies.consensus_simulator.labels.zxid_label')}: {node.term}</div>
+                        <div className="text-xs font-mono tabular-nums">{t('design_principles.consistency_strategies.consensus_simulator.labels.data_label')}: {node.log.length}</div>
                       </>
                     )}
                     {node.role === 'participant' && (
@@ -391,7 +391,7 @@ export default function ConsensusSimulator() {
                 )}
                 {(node.role === 'leader' || node.role === 'proposer') && (
                   <motion.div
-                    className="absolute inset-0 border-2 border-signal-green/50"
+                    className="absolute inset-0 rounded-lg border-2 border-emerald-300/50 dark:border-signal-green/50"
                     initial={false}
                     animate={{ scale: [1, 1.05, 1], opacity: [0.5, 0.8, 0.5] }}
                     transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
@@ -415,54 +415,54 @@ export default function ConsensusSimulator() {
       <Panel title={t('design_principles.consistency_strategies.consensus_simulator.legend.legend_title')} accent="amber">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <h4 className="label-mono text-slate-500 dark:text-tactical-label mb-2">{t('design_principles.consistency_strategies.consensus_simulator.legend.node_states_title')}</h4>
+            <h4 className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t('design_principles.consistency_strategies.consensus_simulator.legend.node_states_title')}</h4>
             <div className="grid gap-2">
               {protocol === 'raft' && (
                 <>
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-tactical-raised border border-tactical-border"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{roles.follower}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-amber"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{roles.candidate}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-green"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{roles.leader}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-tactical-raised border border-tactical-border"></div><span className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{roles.follower}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-amber"></div><span className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{roles.candidate}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-green"></div><span className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{roles.leader}</span></div>
                 </>
               )}
               {protocol === 'paxos' && (
                 <>
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-cyan"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{roles.proposer}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-tactical-raised border border-tactical-border"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{roles.acceptor}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-cyan/60"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{roles.learner}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-cyan"></div><span className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{roles.proposer}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-tactical-raised border border-tactical-border"></div><span className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{roles.acceptor}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-cyan/60"></div><span className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{roles.learner}</span></div>
                 </>
               )}
               {protocol === 'zookeeper' && (
                 <>
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-green"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{roles.leader}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-tactical-raised border border-tactical-border"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{roles.follower}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-amber"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{roles.participant}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-green"></div><span className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{roles.leader}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-tactical-raised border border-tactical-border"></div><span className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{roles.follower}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-amber"></div><span className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{roles.participant}</span></div>
                 </>
               )}
             </div>
           </div>
           <div>
-            <h4 className="label-mono text-slate-500 dark:text-tactical-label mb-2">{t('design_principles.consistency_strategies.consensus_simulator.legend.message_types_title')}</h4>
+            <h4 className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t('design_principles.consistency_strategies.consensus_simulator.legend.message_types_title')}</h4>
             <div className="grid gap-2">
               {protocol === 'raft' && (
                 <>
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-amber"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.vote_request')}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-green"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.vote_response')}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-cyan"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.log_replication')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-amber"></div><span className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.vote_request')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-green"></div><span className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.vote_response')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-cyan"></div><span className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.log_replication')}</span></div>
                 </>
               )}
               {protocol === 'paxos' && (
                 <>
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-amber"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.prepare')}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-green"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.promise')}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-cyan"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.propose')}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-cyan/60"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.accept')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-amber"></div><span className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.prepare')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-green"></div><span className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.promise')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-cyan"></div><span className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.propose')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-cyan/60"></div><span className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.accept')}</span></div>
                 </>
               )}
               {protocol === 'zookeeper' && (
                 <>
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-amber"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.watch')}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-cyan"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.replication')}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-red"></div><span className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.notification')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-amber"></div><span className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.watch')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-cyan"></div><span className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.replication')}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 bg-signal-red"></div><span className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{t('design_principles.consistency_strategies.consensus_simulator.messages.notification')}</span></div>
                 </>
               )}
             </div>

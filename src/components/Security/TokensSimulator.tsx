@@ -115,10 +115,10 @@ export default function TokensSimulator() {
   return (
     <div className="space-y-6">
       <div className="max-w-3xl">
-        <div className="label-mono text-signal-cyan mb-2">
-          [ {t(`${base}.title`)} ]
-        </div>
-        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
+        <h2 className="font-sans text-lg font-semibold text-slate-900 dark:text-tactical-text mb-2">
+          {t(`${base}.title`)}
+        </h2>
+        <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
           {t(`${base}.subtitle`)}
         </p>
       </div>
@@ -127,7 +127,7 @@ export default function TokensSimulator() {
         <Panel title={t(`${base}.token_configuration_title`)} accent="cyan">
           <div className="space-y-6">
             <div className="space-y-4">
-              <div className="label-mono text-signal-cyan">{t(`${base}.user_information_title`)}</div>
+              <div className="font-sans text-sm font-semibold text-signal-cyan">{t(`${base}.user_information_title`)}</div>
               <div className="grid gap-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
@@ -169,7 +169,7 @@ export default function TokensSimulator() {
             </div>
 
             <div className="space-y-4">
-              <div className="label-mono text-signal-cyan">{t(`${base}.token_settings_title`)}</div>
+              <div className="font-sans text-sm font-semibold text-signal-cyan">{t(`${base}.token_settings_title`)}</div>
               <div className="grid gap-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
@@ -201,7 +201,7 @@ export default function TokensSimulator() {
             </div>
 
             <div className="space-y-4">
-              <div className="label-mono text-signal-cyan">{t(`${base}.custom_claims_title`)}</div>
+              <div className="font-sans text-sm font-semibold text-signal-cyan">{t(`${base}.custom_claims_title`)}</div>
 
               {Object.keys(customClaims).length > 0 && (
                 <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4">
@@ -271,7 +271,7 @@ export default function TokensSimulator() {
                 </TacticalButton>
               </div>
             ) : (
-              <p className="font-mono text-sm text-slate-400 dark:text-tactical-label">
+              <p className="font-sans text-sm text-slate-400 dark:text-tactical-label">
                 {t(`${base}.no_token_message`)}
               </p>
             )}
@@ -281,7 +281,7 @@ export default function TokensSimulator() {
             <Panel title={t(`${base}.decoded_token_title`)} accent="amber">
               <div className="space-y-4">
                 <div>
-                  <div className="label-mono text-signal-cyan mb-2">{t(`${base}.header_title`)}</div>
+                  <div className="font-sans text-xs font-medium text-signal-cyan mb-2">{t(`${base}.header_title`)}</div>
                   <div className="bg-slate-50 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border p-4">
                     <pre className="text-slate-600 dark:text-tactical-dim text-sm font-mono">
                       {JSON.stringify(decodedToken.header, null, 2)}
@@ -289,7 +289,7 @@ export default function TokensSimulator() {
                   </div>
                 </div>
                 <div>
-                  <div className="label-mono text-signal-green mb-2">{t(`${base}.payload_title`)}</div>
+                  <div className="font-sans text-xs font-medium text-signal-green mb-2">{t(`${base}.payload_title`)}</div>
                   <div className="bg-slate-50 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border p-4">
                     <pre className="text-slate-600 dark:text-tactical-dim text-sm font-mono">
                       {JSON.stringify(decodedToken.payload, null, 2)}
@@ -297,7 +297,7 @@ export default function TokensSimulator() {
                   </div>
                 </div>
                 <div>
-                  <div className="label-mono text-signal-amber mb-2">{t(`${base}.signature_title`)}</div>
+                  <div className="font-sans text-xs font-medium text-signal-amber mb-2">{t(`${base}.signature_title`)}</div>
                   <div className="bg-slate-50 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border p-4">
                     <p className="text-slate-600 dark:text-tactical-dim font-mono text-sm break-all">
                       {decodedToken.signature}
@@ -316,7 +316,7 @@ export default function TokensSimulator() {
                 <StatusBadge variant={verificationResult.isValid ? 'active' : 'classified'} />
               }
             >
-              <p className={`font-mono text-sm ${verificationResult.isValid ? 'text-signal-green' : 'text-signal-red'}`}>
+              <p className={`font-sans text-sm ${verificationResult.isValid ? 'text-signal-green' : 'text-signal-red'}`}>
                 {verificationResult.message}
               </p>
             </Panel>
@@ -324,14 +324,11 @@ export default function TokensSimulator() {
         </div>
       </div>
 
-      <div className="tactical-panel border-l-2 border-l-signal-cyan p-5">
-        <h3 className="label-mono text-signal-cyan mb-3">{t(`${base}.how_to_use_title`)}</h3>
-        <ul className="space-y-1.5 font-mono text-sm text-slate-600 dark:text-tactical-dim">
+      <div className="tactical-panel rounded-lg dark:rounded-none border-l-2 border-l-signal-cyan p-5">
+        <h3 className="font-sans text-sm font-semibold text-signal-cyan mb-3">{t(`${base}.how_to_use_title`)}</h3>
+        <ul className="space-y-1.5 font-sans text-sm text-slate-600 dark:text-tactical-dim list-decimal list-inside">
           {instructions.map((instruction, index) => (
-            <li key={index} className="flex gap-2">
-              <span className="text-signal-cyan">{index + 1}.</span>
-              {instruction}
-            </li>
+            <li key={index}>{instruction}</li>
           ))}
         </ul>
       </div>

@@ -105,11 +105,11 @@ export default function DeliverySemanticsSimulator() {
           </div>
         }
       >
-        <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
+        <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
 
         <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="space-y-2">
-            <label className="block label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.controls.mode`)}</label>
+            <label className="block font-sans text-xs font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.mode`)}</label>
             <div className="flex flex-wrap gap-2">
               {(['at_most_once', 'at_least_once', 'exactly_once'] as Mode[]).map(m => (
                 <TacticalButton key={m} size="sm" variant={mode === m ? 'secondary' : 'ghost'} onClick={() => setMode(m)}>
@@ -119,13 +119,13 @@ export default function DeliverySemanticsSimulator() {
             </div>
           </div>
           <div className="space-y-2">
-            <label className="block label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.controls.dedup`)}</label>
+            <label className="block font-sans text-xs font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.dedup`)}</label>
             <TacticalButton size="sm" variant={effectiveDedup ? 'secondary' : 'ghost'} onClick={() => setDedup(d => !d)} disabled={mode === 'exactly_once'}>
               {effectiveDedup ? t(`${base}.buttons.on`) : t(`${base}.buttons.off`)}
             </TacticalButton>
           </div>
           <div className="space-y-2">
-            <label className="block label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.controls.dlq`)}</label>
+            <label className="block font-sans text-xs font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.dlq`)}</label>
             <TacticalButton size="sm" variant={dlq ? 'secondary' : 'ghost'} onClick={() => setDlq(d => !d)} disabled={mode === 'at_most_once'}>
               {dlq ? t(`${base}.buttons.on`) : t(`${base}.buttons.off`)}
             </TacticalButton>
@@ -133,7 +133,7 @@ export default function DeliverySemanticsSimulator() {
         </div>
 
         {/* Recent log */}
-        <div className="label-mono text-slate-500 dark:text-tactical-label mb-2">{t(`${base}.labels.recent`)}</div>
+        <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t(`${base}.labels.recent`)}</div>
         <div className="min-h-[120px] space-y-2">
           <AnimatePresence mode="popLayout">
             {log.map(item => (
@@ -144,15 +144,15 @@ export default function DeliverySemanticsSimulator() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.25 }}
-                className={`flex items-center gap-3 border bg-slate-50 dark:bg-tactical-raised px-3 py-1.5 ${TAG_COLOR[item.tag]}`}
+                className={`flex items-center gap-3 rounded-lg border bg-slate-50 dark:bg-tactical-raised px-3 py-1.5 ${TAG_COLOR[item.tag]}`}
               >
-                <span className="font-mono text-[10px] uppercase tracking-wider w-20">{t(`${base}.tags.${item.tag}`)}</span>
+                <span className="font-sans text-[10px] w-20">{t(`${base}.tags.${item.tag}`)}</span>
                 <span className="font-mono text-[11px] text-slate-500 dark:text-tactical-dim">msg #{item.id}</span>
               </motion.div>
             ))}
           </AnimatePresence>
           {log.length === 0 && (
-            <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-8 text-center font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">
+            <div className="rounded-lg border border-dashed border-slate-300 dark:border-tactical-border px-4 py-8 text-center font-sans text-xs text-slate-400 dark:text-tactical-label">
               {t(`${base}.labels.empty`)}
             </div>
           )}
@@ -168,7 +168,7 @@ export default function DeliverySemanticsSimulator() {
           <AnimatedMetric value={counts.lost} label={t(`${base}.metrics.lost`)} color="red" />
           <AnimatedMetric value={counts.dlq} label={t(`${base}.metrics.dlq`)} color="default" />
         </div>
-        <p className="mt-3 font-mono text-[11px] text-slate-500 dark:text-tactical-dim">{t(`${base}.labels.hint`)}</p>
+        <p className="mt-3 font-sans text-[11px] text-slate-500 dark:text-tactical-dim">{t(`${base}.labels.hint`)}</p>
       </Panel>
     </div>
   );

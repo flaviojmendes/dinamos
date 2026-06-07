@@ -70,8 +70,8 @@ function SignalsPanel({ m }: { m: GoldenSignals }) {
     value: string;
     tone?: string;
   }) => (
-    <div className="border border-tactical-border p-2">
-      <div className="label-mono text-tactical-label flex items-center gap-1">{icon}{label}</div>
+    <div className="border border-tactical-border rounded-lg p-2">
+      <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label flex items-center gap-1">{icon}{label}</div>
       <div className={`font-mono text-sm tabular-nums ${tone}`}>{value}</div>
     </div>
   );
@@ -143,21 +143,21 @@ function PlayerCard({
   return (
     <div
       onClick={onExpand}
-      className="border border-tactical-border bg-tactical-surface/40 p-2 cursor-pointer hover:border-signal-cyan transition-colors group"
+      className="border border-tactical-border bg-tactical-surface/40 rounded-lg p-2 cursor-pointer hover:border-signal-cyan transition-colors group"
     >
       <div className="flex items-center gap-2 mb-1.5">
-        <span className={`font-mono text-xs font-bold ${rankTone}`}>#{p.rank}</span>
+        <span className={`font-mono text-xs font-bold tabular-nums ${rankTone}`}>#{p.rank}</span>
         {p.avatar_image ? (
           <img src={p.avatar_image} alt="" className="w-5 h-5 rounded-full object-cover" />
         ) : (
           <div className="w-5 h-5 rounded-full bg-tactical-raised" />
         )}
-        <span className="font-mono text-xs text-tactical-text truncate flex-1">
+        <span className="font-sans text-xs text-tactical-text truncate flex-1">
           {p.nickname ?? p.user_id.slice(0, 8)}
         </span>
         <span className="inline-flex items-center gap-1">
           <span className="w-2 h-2 rounded-full" style={{ backgroundColor: act.dot }} />
-          <span className={`font-mono text-[10px] ${act.tone}`}>{act.label}</span>
+          <span className={`font-sans text-[10px] ${act.tone}`}>{act.label}</span>
         </span>
         <button
           onClick={(e) => { e.stopPropagation(); onKick(); }}
@@ -203,8 +203,8 @@ function ExpandedPlayer({
   const act = activity(p.last_submitted_at, serverNowMs);
   const bd = (p.score_breakdown ?? {}) as Accumulator;
   const stat = (label: string, value: number) => (
-    <div className="border border-tactical-border p-2">
-      <div className="label-mono text-tactical-label">{label}</div>
+    <div className="border border-tactical-border rounded-lg p-2">
+      <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{label}</div>
       <div className="font-mono text-sm text-tactical-text tabular-nums">{Math.round(value)}</div>
     </div>
   );
@@ -225,17 +225,17 @@ function ExpandedPlayer({
             <div className="w-8 h-8 rounded-full bg-tactical-raised" />
           )}
           <div className="flex-1">
-            <div className="font-mono text-base font-bold text-tactical-text">
+            <div className="font-sans text-base font-bold text-tactical-text">
               <span className="text-tactical-label">#{p.rank}</span> {p.nickname ?? p.user_id.slice(0, 12)}
             </div>
             <div className="inline-flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full" style={{ backgroundColor: act.dot }} />
-              <span className={`font-mono text-[11px] ${act.tone}`}>{act.label}</span>
+              <span className={`font-sans text-[11px] ${act.tone}`}>{act.label}</span>
             </div>
           </div>
           <button
             onClick={onKick}
-            className="px-3 py-1.5 font-mono text-xs uppercase tracking-wider border border-signal-red text-signal-red hover:bg-signal-red/10 transition-colors flex items-center gap-1.5"
+            className="px-3 py-1.5 font-sans text-xs rounded-md border border-signal-red text-signal-red hover:bg-signal-red/10 transition-colors flex items-center gap-1.5"
           >
             <UserX className="w-3.5 h-3.5" /> {t('editor.game.kick', { defaultValue: 'Kick' })}
           </button>
@@ -312,13 +312,13 @@ export default function AdminSpectator({ code }: { code: string }) {
 
   return (
     <div className="mt-4">
-      <div className="flex items-center gap-2 label-mono text-signal-cyan mb-2">
+      <div className="flex items-center gap-2 font-sans text-[11px] font-medium text-signal-cyan mb-2">
         <Users className="w-4 h-4" />
         {t('editor.game.spectate', { defaultValue: 'Live player view' })}
         <span className="text-tactical-label">({players.length})</span>
       </div>
       {players.length === 0 ? (
-        <div className="font-mono text-xs text-tactical-dim border border-dashed border-tactical-border p-4 text-center">
+        <div className="font-sans text-xs text-tactical-dim border border-dashed border-tactical-border rounded-lg p-4 text-center">
           {t('editor.game.no_players', { defaultValue: 'No players have joined yet.' })}
         </div>
       ) : (

@@ -46,7 +46,7 @@ const TimelineView = ({ spans }: { spans: Span[] }) => {
   const startTime = Math.min(...spans.map(s => s.startTime));
 
   return (
-    <div className="relative h-32 bg-slate-100 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border overflow-hidden">
+    <div className="relative h-32 rounded-lg dark:rounded-none bg-slate-100 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border overflow-hidden">
       <div className="absolute inset-0 flex items-center">
         {[0, 25, 50, 75, 100].map((marker) => (
           <div key={marker} className="absolute left-[${marker}%] w-px h-full bg-slate-300 dark:bg-tactical-line">
@@ -68,7 +68,7 @@ const TimelineView = ({ spans }: { spans: Span[] }) => {
             className="absolute h-8 transition-all duration-300 hover:scale-105"
             style={{ left: `${left}%`, width: `${width}%`, top: `${spans.findIndex(s => s.id === span.id) * 32}px` }}
           >
-            <div className={`h-full ${service?.color} flex items-center px-2 font-mono text-xs text-white whitespace-nowrap overflow-hidden`}>
+            <div className={`h-full ${service?.color} flex items-center px-2 font-sans text-xs text-white whitespace-nowrap overflow-hidden`}>
               <span className="truncate">{span.service}</span>
               <span className="ml-auto tabular-nums">{span.duration.toFixed(0)}ms</span>
             </div>
@@ -100,8 +100,8 @@ const SpanView = ({ span, hasChildren, isLast }: { span: Span; hasChildren: bool
 
       <div className={`ml-8 flex items-center gap-2 border border-slate-200 dark:border-tactical-border ${service?.color} text-white px-3 py-2`}>
         <div className="flex flex-col">
-          <span className="font-mono text-sm font-semibold">{span.service}</span>
-          <span className="font-mono text-xs opacity-75">{span.operation}</span>
+          <span className="font-sans text-sm font-semibold">{span.service}</span>
+          <span className="font-sans text-xs opacity-75">{span.operation}</span>
         </div>
         <div className="ml-auto flex items-center gap-2">
           <span className="font-mono text-xs bg-black/20 px-2 py-0.5 tabular-nums">
@@ -188,10 +188,10 @@ export default function TracingSimulator() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="max-w-3xl">
-          <div className="label-mono text-signal-cyan mb-2">
-            [ {t(`${base}.title`)} ]
-          </div>
-          <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
+          <h2 className="font-sans text-lg font-semibold text-slate-900 dark:text-tactical-text mb-2">
+            {t(`${base}.title`)}
+          </h2>
+          <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
             {t(`${base}.intro`)}
           </p>
         </div>
@@ -260,7 +260,7 @@ export default function TracingSimulator() {
 
             {currentRequest.spans.length > 0 && (
               <div className="mb-6">
-                <div className="label-mono text-slate-500 dark:text-tactical-label mb-2">{t(`${base}.timeline_label`)}</div>
+                <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t(`${base}.timeline_label`)}</div>
                 <TimelineView spans={currentRequest.spans} />
               </div>
             )}
@@ -278,7 +278,7 @@ export default function TracingSimulator() {
         <div className="space-y-6">
           {requests.length === 0 ? (
             <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center">
-              <p className="font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">
+              <p className="font-sans text-xs text-slate-400 dark:text-tactical-label">
                 —
               </p>
             </div>
@@ -293,7 +293,7 @@ export default function TracingSimulator() {
                 </div>
 
                 <div className="mb-6">
-                  <div className="label-mono text-slate-500 dark:text-tactical-label mb-2">{t(`${base}.timeline_label`)}</div>
+                  <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t(`${base}.timeline_label`)}</div>
                   <TimelineView spans={request.spans} />
                 </div>
 

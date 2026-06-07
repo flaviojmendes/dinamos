@@ -51,7 +51,7 @@ export default function BottomSheet({ open, onClose, title, maxHeightVh = 80, ch
           <div className="flex-1 flex flex-col items-stretch">
             <div className="mx-auto mb-2 h-1 w-10 rounded-full bg-slate-300 dark:bg-tactical-line" aria-hidden />
             {title && (
-              <div className="label-mono text-signal-amber truncate">{title}</div>
+              <div className="font-sans text-sm font-medium text-slate-900 dark:text-tactical-text truncate">{title}</div>
             )}
           </div>
           <button

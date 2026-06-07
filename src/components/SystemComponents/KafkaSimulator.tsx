@@ -111,7 +111,7 @@ export default function KafkaSimulator() {
           </div>
         }
       >
-        <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
+        <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
 
         <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
@@ -121,7 +121,7 @@ export default function KafkaSimulator() {
             { key: 'consume_rate', value: consumeRate, set: setConsumeRate, min: 1, max: 12 },
           ].map(ctrl => (
             <div key={ctrl.key} className="space-y-2">
-              <label className="block label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.controls.${ctrl.key}`)}</label>
+              <label className="block font-sans text-xs font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.${ctrl.key}`)}</label>
               <div className="flex items-center gap-2">
                 <input type="range" min={ctrl.min} max={ctrl.max} value={ctrl.value} onChange={e => ctrl.set(Number(e.target.value))} className={rangeClass} />
                 <span className="font-mono text-sm w-8 text-right text-signal-cyan tabular-nums">{ctrl.value}</span>
@@ -132,13 +132,13 @@ export default function KafkaSimulator() {
 
         <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr_auto] gap-4 items-center">
           {/* Producer */}
-          <div className="flex lg:flex-col items-center justify-center gap-2 border border-slate-200 dark:border-tactical-border p-3">
+          <div className="flex lg:flex-col items-center justify-center gap-2 rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border p-3">
             <motion.div
               className="h-3 w-3 rounded-full bg-signal-cyan"
               animate={running ? { scale: [1, 1.5, 1], opacity: [0.6, 1, 0.6] } : { scale: 1 }}
               transition={{ duration: TICK_MS / 1000, repeat: Infinity }}
             />
-            <span className="label-mono text-center">{t(`${base}.labels.producer`)}</span>
+            <span className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label text-center">{t(`${base}.labels.producer`)}</span>
           </div>
 
           {/* Partitions */}
@@ -148,7 +148,7 @@ export default function KafkaSimulator() {
               return (
                 <div key={p} className="flex items-center gap-2">
                   <span className="w-16 shrink-0 font-mono text-[11px] text-slate-500 dark:text-tactical-dim">{t(`${base}.labels.partition`)} {p}</span>
-                  <div className="relative flex-1 h-7 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised overflow-hidden flex items-center px-1 gap-0.5">
+                  <div className="relative flex-1 h-7 rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised overflow-hidden flex items-center px-1 gap-0.5">
                     <AnimatePresence mode="popLayout">
                       {Array.from({ length: Math.min(count, MAX_BLOCKS) }).map((_, i) => (
                         <motion.span
@@ -187,12 +187,12 @@ export default function KafkaSimulator() {
 
           {/* Consumer group */}
           <div className="space-y-2">
-            <div className="label-mono">{t(`${base}.labels.consumers`)}</div>
+            <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.labels.consumers`)}</div>
             {Array.from({ length: consumers }).map((_, c) => {
               const owned = buffers.map((_, idx) => idx).filter(idx => idx % consumers === c);
               const idle = owned.length === 0;
               return (
-                <div key={c} className="flex items-center gap-2 border px-3 py-1.5" style={{ borderColor: PALETTE[c] }}>
+                <div key={c} className="flex items-center gap-2 rounded-lg dark:rounded-none border px-3 py-1.5" style={{ borderColor: PALETTE[c] }}>
                   <motion.span
                     className="h-2.5 w-2.5 rounded-full"
                     style={{ backgroundColor: PALETTE[c] }}
@@ -219,7 +219,7 @@ export default function KafkaSimulator() {
         </div>
         <div className="mt-4">
           <SegmentBar value={lagPct} max={100} color={lagGrowing ? 'red' : 'green'} caption={`${t(`${base}.metrics.lag`)}: ${lag}`} />
-          <p className="mt-3 font-mono text-[11px] text-slate-500 dark:text-tactical-dim">{t(`${base}.labels.hint`)}</p>
+          <p className="mt-3 font-sans text-[11px] text-slate-500 dark:text-tactical-dim">{t(`${base}.labels.hint`)}</p>
         </div>
       </Panel>
     </div>

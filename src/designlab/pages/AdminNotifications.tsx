@@ -7,8 +7,8 @@ import UserBadge from '../components/UserBadge';
 import { TacticalButton, StatusBadge, Panel } from '../components/tactical';
 
 const inputClass =
-  'w-full px-4 py-3 bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none';
-const labelClass = 'block label-mono text-slate-600 dark:text-tactical-dim mb-2';
+  'w-full px-4 py-3 rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none';
+const labelClass = 'block text-sm font-medium text-slate-600 dark:text-tactical-dim mb-2';
 import { 
   Send, 
   Loader2, 
@@ -236,8 +236,8 @@ const AdminNotifications = () => {
                 <Megaphone className="h-6 w-6 text-signal-amber" />
               </div>
               <div>
-                <h1 className="text-2xl md:text-3xl font-mono uppercase tracking-wider font-bold text-slate-900 dark:text-tactical-text">
-                  Enviar Notificações
+                <h1 className="text-2xl md:text-3xl font-sans font-bold tracking-tight text-slate-900 dark:text-tactical-text">
+                  Enviar notificações
                 </h1>
                 <p className="text-slate-500 dark:text-tactical-label">
                   Selecione os usuários e envie mensagens personalizadas
@@ -425,9 +425,9 @@ const AdminNotifications = () => {
                             {/* Status */}
                             <div className="flex-shrink-0">
                               {user.is_subscribed ? (
-                                <StatusBadge variant="active" label="ASSINANTE" />
+                                <StatusBadge variant="active" label="Assinante" />
                               ) : (
-                                <StatusBadge variant="offline" label="FREE" />
+                                <StatusBadge variant="offline" label="Gratuito" />
                               )}
                             </div>
                           </label>

@@ -6,8 +6,8 @@ import { TacticalButton } from '../components/tactical';
 import { Role, Permission } from '../types';
 
 const inputClass =
-  'mt-1 block w-full bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2';
-const labelClass = 'block label-mono text-slate-600 dark:text-tactical-dim';
+  'mt-1 block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2';
+const labelClass = 'block text-sm font-medium text-slate-600 dark:text-tactical-dim';
 
 interface RoleFormData {
   name: string;
@@ -135,8 +135,8 @@ const AdminRoles = () => {
       <main className="flex-1 py-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-2xl font-mono uppercase tracking-wider font-bold text-slate-900 dark:text-tactical-text flex items-center gap-3 before:content-[''] before:h-6 before:w-1 before:bg-signal-amber before:shrink-0">
-              Role Management
+            <h1 className="text-2xl font-sans font-bold tracking-tight text-slate-900 dark:text-tactical-text">
+              Gerenciamento de papéis
             </h1>
             <TacticalButton variant="primary" onClick={handleCreate}>
               Create New Role
@@ -145,7 +145,7 @@ const AdminRoles = () => {
 
           {error && (
             <div className="border border-signal-red/40 bg-signal-red/10 p-4 mb-8 dark:rounded-none">
-              <p className="font-mono text-sm text-signal-red">{error}</p>
+              <p className="text-sm text-signal-red">{error}</p>
             </div>
           )}
 
@@ -156,7 +156,7 @@ const AdminRoles = () => {
                 <div className="flex justify-between items-start">
                   <div>
                     <div className="flex items-center gap-3">
-                      <h3 className="font-mono uppercase tracking-wider text-lg font-semibold text-slate-900 dark:text-tactical-text">{role.name}</h3>
+                      <h3 className="font-sans text-lg font-semibold text-slate-900 dark:text-tactical-text">{role.name}</h3>
                       <span 
                         className="w-6 h-6 border border-slate-200 dark:border-tactical-border dark:rounded-none"
                         style={{ backgroundColor: role.color }}
@@ -165,10 +165,10 @@ const AdminRoles = () => {
                     <p className="text-slate-600 dark:text-tactical-dim mt-1">{role.description}</p>
                     
                     <div className="mt-4">
-                      <h4 className="label-mono mb-2">Permissions</h4>
+                      <h4 className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">Permissões</h4>
                       <div className="flex flex-wrap gap-2">
                         {role.permissions.map(permCode => (
-                          <span key={permCode} className="inline-flex items-center px-2 py-0.5 border border-slate-300 dark:border-tactical-line font-mono text-[11px] uppercase tracking-wider text-slate-700 dark:text-tactical-dim bg-slate-50 dark:bg-tactical-raised dark:rounded-none">
+                          <span key={permCode} className="inline-flex items-center px-2.5 py-0.5 rounded-full border border-slate-300 dark:border-tactical-line text-xs font-medium text-slate-700 dark:text-tactical-dim bg-slate-50 dark:bg-tactical-raised dark:rounded-none">
                             {permissions.find(p => p.code === permCode)?.description || permCode}
                           </span>
                         ))}
@@ -199,8 +199,8 @@ const AdminRoles = () => {
             <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
               <div className="tactical-panel max-w-2xl w-full max-h-[90vh] overflow-y-auto dark:rounded-none">
                 <form onSubmit={handleSubmit} className="p-6">
-                  <h2 className="font-mono uppercase tracking-wider text-xl font-bold text-slate-900 dark:text-tactical-text mb-6">
-                    {isCreating ? 'Create New Role' : 'Edit Role'}
+                  <h2 className="font-sans text-xl font-bold text-slate-900 dark:text-tactical-text mb-6">
+                    {isCreating ? 'Criar novo papel' : 'Editar papel'}
                   </h2>
                   
                   <div className="space-y-4">
@@ -250,7 +250,7 @@ const AdminRoles = () => {
                               className="h-4 w-4 accent-signal-green border-slate-300 dark:border-tactical-border dark:rounded-none"
                             />
                             <span className="text-sm text-slate-700 dark:text-tactical-text">
-                              <span className="font-mono text-xs uppercase tracking-wider block">{perm.code}</span>
+                              <span className="font-mono text-xs block">{perm.code}</span>
                               <span className="text-xs text-slate-500 dark:text-tactical-dim">{perm.description}</span>
                             </span>
                           </label>

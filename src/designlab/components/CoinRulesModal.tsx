@@ -7,7 +7,7 @@ interface CoinRulesModalProps {
 }
 
 const coinAmountClass =
-  'font-mono uppercase tracking-wider text-xs font-bold text-signal-amber border border-signal-amber/40 bg-signal-amber/10 px-2 py-1 dark:rounded-none';
+  'font-sans text-xs font-bold text-signal-amber border border-signal-amber/40 bg-signal-amber/10 px-2 py-1 rounded-full dark:rounded-none';
 
 export default function CoinRulesModal({ isOpen, onClose }: CoinRulesModalProps) {
   if (!isOpen) return null;
@@ -21,8 +21,8 @@ export default function CoinRulesModal({ isOpen, onClose }: CoinRulesModalProps)
               <Coins className="h-6 w-6 text-signal-amber" />
             </div>
             <div>
-              <h2 className="font-mono uppercase tracking-wider text-xl font-bold text-slate-900 dark:text-tactical-text">
-                Sistema de DinaCoins
+              <h2 className="font-sans text-xl font-bold text-slate-900 dark:text-tactical-text">
+                DinaCoins
               </h2>
               <p className="text-sm text-slate-600 dark:text-tactical-dim mt-0.5">
                 Ganhe moedas contribuindo com a comunidade
@@ -41,12 +41,12 @@ export default function CoinRulesModal({ isOpen, onClose }: CoinRulesModalProps)
         <div className="p-6 space-y-8">
           <div className="tactical-panel dark:rounded-none p-4 bg-slate-50 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border">
             <p className="text-slate-700 dark:text-tactical-dim leading-relaxed">
-              Os <span className="font-mono uppercase tracking-wider text-signal-amber font-bold">DinaCoins</span> são a moeda da nossa comunidade, projetada para recompensar contribuições de alta qualidade, criação de conteúdo e engajamento construtivo.
+              Os <span className="font-sans text-signal-amber font-bold">DinaCoins</span> são a moeda da nossa comunidade, projetada para recompensar contribuições de alta qualidade, criação de conteúdo e engajamento construtivo.
             </p>
           </div>
 
           <div>
-            <h3 className="flex items-center gap-2 before:content-[''] before:h-6 before:w-1 before:bg-signal-amber before:shrink-0 font-mono uppercase tracking-wider text-lg font-bold text-slate-900 dark:text-tactical-text mb-4 pl-2">
+            <h3 className="flex items-center gap-2 before:content-[''] before:h-6 before:w-1 before:bg-signal-amber before:shrink-0 font-sans text-lg font-bold text-slate-900 dark:text-tactical-text mb-4 pl-2">
               <Coins className="h-5 w-5 text-signal-amber" />
               Como ganhar moedas
             </h3>
@@ -59,7 +59,7 @@ export default function CoinRulesModal({ isOpen, onClose }: CoinRulesModalProps)
                   </div>
                   <span className={coinAmountClass}>+5 moedas</span>
                 </div>
-                <h4 className="font-mono uppercase tracking-wider text-sm font-semibold text-slate-900 dark:text-tactical-text mb-1">Criar Tópico</h4>
+                <h4 className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text mb-1">Criar tópico</h4>
                 <p className="text-sm text-slate-600 dark:text-tactical-dim">Ao criar um novo tópico de discussão.</p>
                 <p className="text-xs text-slate-500 dark:text-tactical-label mt-2">Uma vez por post.</p>
               </div>
@@ -71,7 +71,7 @@ export default function CoinRulesModal({ isOpen, onClose }: CoinRulesModalProps)
                   </div>
                   <span className={coinAmountClass}>+2 moedas</span>
                 </div>
-                <h4 className="font-mono uppercase tracking-wider text-sm font-semibold text-slate-900 dark:text-tactical-text mb-1">Responder Tópico</h4>
+                <h4 className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text mb-1">Responder tópico</h4>
                 <p className="text-sm text-slate-600 dark:text-tactical-dim">Ao comentar em uma discussão.</p>
                 <p className="text-xs text-slate-500 dark:text-tactical-label mt-2">Uma vez por resposta.</p>
               </div>
@@ -83,7 +83,7 @@ export default function CoinRulesModal({ isOpen, onClose }: CoinRulesModalProps)
                   </div>
                   <span className={coinAmountClass}>+3 moedas</span>
                 </div>
-                <h4 className="font-mono uppercase tracking-wider text-sm font-semibold text-slate-900 dark:text-tactical-text mb-1">Upvote no Tópico</h4>
+                <h4 className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text mb-1">Upvote no tópico</h4>
                 <p className="text-sm text-slate-600 dark:text-tactical-dim">Quando seu tópico recebe um voto.</p>
                 <p className="text-xs text-slate-500 dark:text-tactical-label mt-2">Max: 50 votos/dia.</p>
               </div>
@@ -95,7 +95,7 @@ export default function CoinRulesModal({ isOpen, onClose }: CoinRulesModalProps)
                   </div>
                   <span className={coinAmountClass}>+1 moeda</span>
                 </div>
-                <h4 className="font-mono uppercase tracking-wider text-sm font-semibold text-slate-900 dark:text-tactical-text mb-1">Upvote no Comentário</h4>
+                <h4 className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text mb-1">Upvote no comentário</h4>
                 <p className="text-sm text-slate-600 dark:text-tactical-dim">Quando seu comentário recebe um voto.</p>
                 <p className="text-xs text-slate-500 dark:text-tactical-label mt-2">Max: 30 votos/dia.</p>
               </div>
@@ -107,7 +107,7 @@ export default function CoinRulesModal({ isOpen, onClose }: CoinRulesModalProps)
                   </div>
                   <span className={coinAmountClass}>+2 moedas</span>
                 </div>
-                <h4 className="font-mono uppercase tracking-wider text-sm font-semibold text-slate-900 dark:text-tactical-text mb-1">Receber Resposta</h4>
+                <h4 className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text mb-1">Receber resposta</h4>
                 <p className="text-sm text-slate-600 dark:text-tactical-dim">Quando alguém responde ao seu tópico.</p>
                 <p className="text-xs text-slate-500 dark:text-tactical-label mt-2">Max: 100 respostas/dia.</p>
               </div>
@@ -115,9 +115,9 @@ export default function CoinRulesModal({ isOpen, onClose }: CoinRulesModalProps)
           </div>
 
           <div>
-            <h3 className="flex items-center gap-2 before:content-[''] before:h-6 before:w-1 before:bg-signal-amber before:shrink-0 font-mono uppercase tracking-wider text-lg font-bold text-slate-900 dark:text-tactical-text mb-4 pl-2">
+            <h3 className="flex items-center gap-2 before:content-[''] before:h-6 before:w-1 before:bg-signal-amber before:shrink-0 font-sans text-lg font-bold text-slate-900 dark:text-tactical-text mb-4 pl-2">
               <Star className="h-5 w-5 text-signal-amber" />
-              Bônus e Regras
+              Bônus e regras
             </h3>
 
             <div className="space-y-4">
@@ -126,9 +126,9 @@ export default function CoinRulesModal({ isOpen, onClose }: CoinRulesModalProps)
                   <Star className="h-5 w-5 text-signal-amber" />
                 </div>
                 <div>
-                  <h4 className="font-mono uppercase tracking-wider text-sm font-bold text-slate-900 dark:text-tactical-text flex items-center gap-2 flex-wrap">
-                    Bônus de Conteúdo de Alta Qualidade
-                    <span className="font-mono text-xs text-signal-amber border border-signal-amber/40 bg-signal-amber/10 px-2 py-0.5 dark:rounded-none">+20 moedas</span>
+                  <h4 className="font-sans text-sm font-bold text-slate-900 dark:text-tactical-text flex items-center gap-2 flex-wrap">
+                    Bônus de conteúdo de alta qualidade
+                    <span className="font-sans text-xs text-signal-amber border border-signal-amber/40 bg-signal-amber/10 px-2 py-0.5 rounded-full dark:rounded-none">+20 moedas</span>
                   </h4>
                   <p className="text-sm text-slate-600 dark:text-tactical-dim mt-1">
                     Se o seu tópico receber <strong className="text-slate-900 dark:text-tactical-text">10 upvotes</strong> dentro de <strong className="text-slate-900 dark:text-tactical-text">24 horas</strong> após a publicação, você ganha um bônus único.
@@ -141,7 +141,7 @@ export default function CoinRulesModal({ isOpen, onClose }: CoinRulesModalProps)
                   <Clock className="h-5 w-5 text-signal-red" />
                 </div>
                 <div>
-                  <h4 className="font-mono uppercase tracking-wider text-sm font-bold text-slate-900 dark:text-tactical-text">Decaimento por Inatividade</h4>
+                  <h4 className="font-sans text-sm font-bold text-slate-900 dark:text-tactical-text">Decaimento por inatividade</h4>
                   <p className="text-sm text-slate-600 dark:text-tactical-dim mt-1">
                     Tokens só são ganhos em interações (votos/respostas) em postagens com menos de <strong className="text-slate-900 dark:text-tactical-text">90 dias</strong>. Isso incentiva a criação de novos conteúdos e discussões ativas.
                   </p>

@@ -50,11 +50,11 @@ export default function SubscriptionRequired() {
             </div>
 
             <div className="flex justify-center mb-3">
-              <StatusBadge variant="locked" label="ACESSO RESTRITO" />
+              <StatusBadge variant="locked" label="Acesso restrito" />
             </div>
 
             {/* Title */}
-            <h2 className="text-3xl font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-tactical-text mb-2">
+            <h2 className="text-3xl font-sans font-bold text-slate-900 dark:text-tactical-text mb-2">
               Acesso Restrito
             </h2>
             
@@ -64,7 +64,7 @@ export default function SubscriptionRequired() {
             </p>
 
             {/* Description */}
-            <div className="border border-signal-amber/40 bg-signal-amber/10 dark:rounded-none p-4 mb-6 text-left">
+            <div className="border border-signal-amber/40 bg-signal-amber/10 rounded-lg dark:rounded-none p-4 mb-6 text-left">
               <p className="text-sm text-slate-700 dark:text-tactical-dim">
                 O acesso a este conteúdo está temporariamente restrito. 
                 Entre em contato com o administrador da plataforma para mais informações.
@@ -73,7 +73,7 @@ export default function SubscriptionRequired() {
 
             {/* Features that will be available */}
             <div className="text-left mb-8 space-y-3">
-              <h3 className="font-mono uppercase tracking-wider text-sm font-semibold text-slate-900 dark:text-tactical-text text-center mb-3">
+              <h3 className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text text-center mb-3">
                 ✨ Conteúdo disponível com acesso completo:
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -131,7 +131,7 @@ export default function SubscriptionRequired() {
             <div className="mt-6 pt-6 border-t border-slate-200 dark:border-tactical-border">
               <p className="text-xs text-slate-500 dark:text-tactical-label">
                 Precisa de ajuda? Entre em contato:<br />
-                <a href="mailto:flavio@trilha.info" className="text-brand-600 dark:text-signal-cyan hover:text-brand-700 dark:hover:text-signal-cyan/80">
+                <a href="mailto:flavio@trilha.info" className="text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
                   flavio@trilha.info
                 </a>
               </p>

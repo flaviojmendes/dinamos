@@ -440,10 +440,10 @@ export default function ComplexityGraph() {
   return (
     <div className="space-y-6">
       <div className="max-w-3xl">
-        <div className="label-mono text-signal-cyan mb-2">
-          [ VISUALIZAÇÃO DE COMPLEXIDADES ALGORÍTMICAS ]
-        </div>
-        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
+        <span className="inline-block text-xs font-medium text-slate-600 dark:text-tactical-label bg-slate-100 dark:bg-tactical-raised px-2.5 py-1 rounded-full mb-2">
+          Visualização de complexidades algorítmicas
+        </span>
+        <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
           Compare curvas de complexidade temporal entre categorias de algoritmos.
         </p>
       </div>
@@ -557,15 +557,15 @@ export default function ComplexityGraph() {
         <div className="space-y-4">
           {algorithms.map((algorithm, index) => (
             selectedAlgorithms.has(index) && (
-              <div key={index} className="tactical-panel border-l-2 border-l-signal-cyan p-5">
-                <h3 className="label-mono mb-2" style={{ color: algorithm.color }}>
+              <div key={index} className="bg-slate-50 dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-xl dark:rounded-none p-5">
+                <h3 className="text-sm font-semibold mb-2" style={{ color: algorithm.color }}>
                   {algorithm.name}
                 </h3>
-                <div className="space-y-4 font-mono text-sm text-slate-600 dark:text-tactical-dim">
+                <div className="space-y-4 font-sans text-sm text-slate-600 dark:text-tactical-dim">
                   <p>{explanations[categories[selectedCategory].name][index].explanation}</p>
                   <div>
-                    <p className="label-mono text-signal-cyan mb-2">Exemplo:</p>
-                    <pre className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 overflow-x-auto">
+                    <p className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">Exemplo</p>
+                    <pre className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 overflow-x-auto rounded-lg dark:rounded-none">
                       <code className="text-sm whitespace-pre text-slate-900 dark:text-tactical-text">
                         {explanations[categories[selectedCategory].name][index].example}
                       </code>

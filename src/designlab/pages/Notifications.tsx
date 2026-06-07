@@ -42,7 +42,7 @@ const MessageModal = ({ notification, onClose, onDelete, onNavigate }: MessageMo
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={onClose}>
-      <div className="tactical-panel dark:rounded-none w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col bg-white dark:bg-tactical-surface" onClick={e => e.stopPropagation()}>
+      <div className="tactical-panel rounded-xl dark:rounded-none w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col bg-white dark:bg-tactical-surface" onClick={e => e.stopPropagation()}>
         {/* Header */}
         <div className="p-6 border-b border-slate-200 dark:border-tactical-border flex justify-between items-start gap-4">
           <div className="flex items-start gap-4">
@@ -54,7 +54,7 @@ const MessageModal = ({ notification, onClose, onDelete, onNavigate }: MessageMo
               </div>
             )}
             <div>
-              <h2 className="font-mono uppercase tracking-wider text-lg font-bold text-slate-900 dark:text-tactical-text leading-tight">
+              <h2 className="font-sans text-lg font-bold text-slate-900 dark:text-tactical-text leading-tight">
                 {notification.title}
               </h2>
               <div className="flex items-center gap-2 mt-2 text-sm text-slate-500 dark:text-tactical-dim font-mono tabular-nums">
@@ -254,7 +254,7 @@ export default function Notifications() {
           <div className="mb-8">
             <Link
               to="/design-lab"
-              className="inline-flex items-center font-mono uppercase tracking-wider text-xs text-slate-500 hover:text-slate-700 dark:text-tactical-dim dark:hover:text-tactical-text mb-4"
+              className="inline-flex items-center font-sans text-xs text-slate-500 hover:text-slate-700 dark:text-tactical-dim dark:hover:text-tactical-text mb-4"
             >
               <ArrowLeft className="h-4 w-4 mr-1" />
               Voltar
@@ -262,14 +262,14 @@ export default function Notifications() {
             
             <div className="flex items-center justify-between gap-4 flex-wrap">
               <div className="flex items-center gap-3">
-                <div className="p-2 border border-signal-cyan/40 bg-signal-cyan/10 dark:rounded-none">
+                <div className="p-2 border border-signal-cyan/40 bg-signal-cyan/10 rounded-lg dark:rounded-none">
                   <Bell className="h-6 w-6 text-brand-600 dark:text-signal-cyan" />
                 </div>
                 <div>
-                  <h1 className="flex items-center gap-2 before:content-[''] before:h-6 before:w-1 before:bg-signal-amber before:shrink-0 font-mono uppercase tracking-wider text-2xl font-bold text-slate-900 dark:text-tactical-text pl-2">
+                  <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-tactical-text">
                     Notificações
                   </h1>
-                  <p className="text-sm text-slate-500 dark:text-tactical-dim font-mono tabular-nums mt-1">
+                  <p className="text-sm text-slate-500 dark:text-tactical-dim font-sans mt-1">
                     {unreadCount > 0 ? (
                       <span>{unreadCount} não {unreadCount === 1 ? 'lida' : 'lidas'}</span>
                     ) : (
@@ -302,7 +302,7 @@ export default function Notifications() {
           <div className="mb-6 flex gap-2">
             <button
               onClick={() => setShowUnreadOnly(false)}
-              className={`px-4 py-2 dark:rounded-none text-xs font-mono uppercase tracking-wider font-medium transition-colors border ${
+              className={`px-4 py-2 rounded-lg dark:rounded-none text-xs font-sans font-medium transition-colors border ${
                 !showUnreadOnly
                   ? 'bg-slate-900 dark:bg-white text-white dark:text-black border-transparent'
                   : 'bg-transparent text-slate-600 dark:text-tactical-dim border-slate-300 dark:border-tactical-line hover:border-slate-900 dark:hover:border-signal-green'
@@ -312,7 +312,7 @@ export default function Notifications() {
             </button>
             <button
               onClick={() => setShowUnreadOnly(true)}
-              className={`px-4 py-2 dark:rounded-none text-xs font-mono uppercase tracking-wider font-medium transition-colors border ${
+              className={`px-4 py-2 rounded-lg dark:rounded-none text-xs font-sans font-medium transition-colors border ${
                 showUnreadOnly
                   ? 'bg-slate-900 dark:bg-white text-white dark:text-black border-transparent'
                   : 'bg-transparent text-slate-600 dark:text-tactical-dim border-slate-300 dark:border-tactical-line hover:border-slate-900 dark:hover:border-signal-green'
@@ -333,9 +333,9 @@ export default function Notifications() {
               <p className="text-slate-500 dark:text-tactical-dim">{error}</p>
             </div>
           ) : notifications.length === 0 ? (
-            <div className="text-center py-16 tactical-panel dark:rounded-none">
+            <div className="text-center py-16 tactical-panel rounded-xl dark:rounded-none">
               <Bell className="h-12 w-12 text-slate-300 dark:text-tactical-label mx-auto mb-4" />
-              <p className="font-mono uppercase tracking-wider text-sm text-slate-500 dark:text-tactical-dim">
+              <p className="font-sans text-sm text-slate-500 dark:text-tactical-dim">
                 {showUnreadOnly ? 'Nenhuma notificação não lida' : 'Nenhuma notificação'}
               </p>
               <p className="text-sm text-slate-500 dark:text-tactical-label mt-1">
@@ -348,7 +348,7 @@ export default function Notifications() {
                 <div
                   key={notification.id}
                   onClick={() => handleNotificationClick(notification)}
-                  className={`group relative p-4 dark:rounded-none border transition-all cursor-pointer tactical-panel ${
+                  className={`group relative p-4 rounded-xl dark:rounded-none border transition-all cursor-pointer tactical-panel ${
                     notification.is_read
                       ? 'bg-white dark:bg-tactical-surface border-slate-200 dark:border-tactical-border hover:border-slate-300 dark:hover:border-tactical-line'
                       : 'bg-brand-50 dark:bg-signal-green/5 border-brand-200 dark:border-signal-green/30 hover:border-brand-300 dark:hover:border-signal-green/50'
@@ -365,7 +365,7 @@ export default function Notifications() {
                         />
                       ) : notification.actor_nickname ? (
                         <div className="h-10 w-10 rounded-full bg-slate-700 dark:bg-tactical-raised flex items-center justify-center border border-slate-200 dark:border-tactical-border">
-                          <span className="text-sm font-bold font-mono text-white dark:text-tactical-text">
+                          <span className="text-sm font-bold font-sans text-white dark:text-tactical-text">
                             {notification.actor_nickname.charAt(0).toUpperCase()}
                           </span>
                         </div>
@@ -379,7 +379,7 @@ export default function Notifications() {
                     {/* Content */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2">
-                        <p className={`text-sm font-mono uppercase tracking-wider font-medium ${
+                        <p className={`text-sm font-sans font-medium ${
                           notification.is_read
                             ? 'text-slate-900 dark:text-tactical-text'
                             : 'text-slate-900 dark:text-signal-green'
@@ -405,7 +405,7 @@ export default function Notifications() {
                       
                       {/* Action hint */}
                       {getNotificationLink(notification) && (
-                        <p className="mt-2 text-xs text-brand-600 dark:text-signal-cyan font-mono uppercase tracking-wider">
+                        <p className="mt-2 text-xs text-brand-600 dark:text-signal-cyan font-sans">
                           Clique para ver →
                         </p>
                       )}

@@ -55,14 +55,14 @@ export default function Fallback() {
   const [resources, setResources] = useState<Resource[]>([
     {
       id: 'primary',
-      name: 'Recurso Principal',
+      name: 'Recurso principal',
       status: 'healthy',
       latency: 100,
       failureRate: 0
     },
     {
       id: 'secondary',
-      name: 'Recurso Secundário',
+      name: 'Recurso secundário',
       status: 'healthy',
       latency: 200,
       failureRate: 0
@@ -216,17 +216,17 @@ export default function Fallback() {
   return (
     <div className="space-y-6">
       <div className="max-w-3xl">
-        <div className="label-mono text-signal-cyan mb-2">
-          [ MECANISMO DE FALLBACK ]
-        </div>
-        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
-          Simulação de fallback entre recurso principal e secundário com taxa de falha configurável.
+        <span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800 px-3 py-1 text-sm font-sans font-medium text-slate-700 dark:text-slate-300 mb-2">
+          Mecanismo de fallback
+        </span>
+        <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+          Simula fallback entre recurso principal e secundário com taxa de falha configurável.
         </p>
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
         <TacticalButton size="sm" variant="ghost" onClick={() => setIsConfigOpen(!isConfigOpen)}>
-          {isConfigOpen ? 'Fechar Config' : 'Configurar'}
+          {isConfigOpen ? 'Fechar configuração' : 'Configurar'}
         </TacticalButton>
         <TacticalButton size="sm" variant={isRunning ? 'danger' : 'primary'} onClick={() => setIsRunning(!isRunning)}>
           {isRunning ? 'Parar' : 'Iniciar'}
@@ -240,8 +240,8 @@ export default function Fallback() {
         <Panel title="Configuração" accent="cyan">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
-              <label className="block label-mono text-slate-500 dark:text-tactical-label">
-                Requisições por Segundo
+              <label className="block text-sm font-sans font-medium text-slate-600 dark:text-slate-400">
+                Requisições por segundo
               </label>
               <div className="flex items-center gap-2">
                 <input type="range" min="1" max="20" value={requestsPerSecond} onChange={e => setRequestsPerSecond(Number(e.target.value))} className={rangeClass} />
@@ -250,8 +250,8 @@ export default function Fallback() {
             </div>
             {resources.map(resource => (
               <div key={resource.id} className="space-y-2">
-                <label className="block label-mono text-slate-500 dark:text-tactical-label">
-                  Taxa de Falha - {resource.name}
+                <label className="block text-sm font-sans font-medium text-slate-600 dark:text-slate-400">
+                  Taxa de falha — {resource.name}
                 </label>
                 <div className="flex items-center gap-2">
                   <input type="range" min="0" max="100" value={resource.failureRate} onChange={e => {
@@ -268,22 +268,22 @@ export default function Fallback() {
         </Panel>
       )}
 
-      <Panel title="Fluxo de Requisições" accent="amber">
+      <Panel title="Fluxo de requisições" accent="amber">
         <div className="relative h-[400px] flex flex-col items-center">
-          <div className="w-40 h-24 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised flex items-center justify-center">
+          <div className="w-40 h-24 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
             <div className="text-center">
-              <div className="font-mono text-sm font-medium text-slate-900 dark:text-tactical-text">Cliente</div>
+              <div className="font-sans text-sm font-medium text-slate-900 dark:text-slate-100">Cliente</div>
               <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim mt-1">{requestsPerSecond} req/s</div>
             </div>
           </div>
           <div className="mt-20">
-            <div className={`w-40 h-24 border bg-slate-50 dark:bg-tactical-raised flex items-center justify-center transition-colors ${
-              resources[0].status === 'healthy' ? 'border-signal-green/50' :
-              resources[0].status === 'degraded' ? 'border-signal-amber/50' :
-              'border-signal-red/50'
+            <div className={`w-40 h-24 rounded-lg border bg-slate-50 dark:bg-slate-900 flex items-center justify-center transition-colors ${
+              resources[0].status === 'healthy' ? 'border-emerald-300 dark:border-emerald-700/50' :
+              resources[0].status === 'degraded' ? 'border-amber-300 dark:border-amber-700/50' :
+              'border-red-300 dark:border-red-700/50'
             }`}>
               <div className="text-center">
-                <div className="font-mono text-sm font-medium text-slate-900 dark:text-tactical-text">Principal</div>
+                <div className="font-sans text-sm font-medium text-slate-900 dark:text-slate-100">Principal</div>
                 <StatusBadge
                   variant={resourceStatusVariant(resources[0].status)}
                   label={resources[0].status === 'healthy' ? 'Saudável' : resources[0].status === 'degraded' ? 'Degradado' : 'Falho'}
@@ -292,13 +292,13 @@ export default function Fallback() {
             </div>
           </div>
           <div className="mt-20">
-            <div className={`w-40 h-24 border bg-slate-50 dark:bg-tactical-raised flex items-center justify-center transition-colors ${
-              resources[1].status === 'healthy' ? 'border-signal-green/50' :
-              resources[1].status === 'degraded' ? 'border-signal-amber/50' :
-              'border-signal-red/50'
+            <div className={`w-40 h-24 rounded-lg border bg-slate-50 dark:bg-slate-900 flex items-center justify-center transition-colors ${
+              resources[1].status === 'healthy' ? 'border-emerald-300 dark:border-emerald-700/50' :
+              resources[1].status === 'degraded' ? 'border-amber-300 dark:border-amber-700/50' :
+              'border-red-300 dark:border-red-700/50'
             }`}>
               <div className="text-center">
-                <div className="font-mono text-sm font-medium text-slate-900 dark:text-tactical-text">Secundário</div>
+                <div className="font-sans text-sm font-medium text-slate-900 dark:text-slate-100">Secundário</div>
                 <StatusBadge
                   variant={resourceStatusVariant(resources[1].status)}
                   label={resources[1].status === 'healthy' ? 'Saudável' : resources[1].status === 'degraded' ? 'Degradado' : 'Falho'}
@@ -323,23 +323,23 @@ export default function Fallback() {
           <div className="absolute top-4 right-4 space-y-2">
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-signal-green" />
-              <span className="font-mono text-xs text-slate-600 dark:text-tactical-dim">Requisição Principal</span>
+              <span className="font-sans text-xs text-slate-600 dark:text-slate-400">Requisição principal</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-signal-amber" />
-              <span className="font-mono text-xs text-slate-600 dark:text-tactical-dim">Requisição Fallback</span>
+              <div className="w-3 h-3 rounded-full bg-amber-500" />
+              <span className="font-sans text-xs text-slate-600 dark:text-slate-400">Requisição de fallback</span>
             </div>
           </div>
         </div>
       </Panel>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Panel title="Status dos Recursos" accent="green">
+        <Panel title="Status dos recursos" accent="green">
           <div className="space-y-4">
             {resources.map(resource => (
               <div key={resource.id} className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <span className="font-mono text-sm text-slate-900 dark:text-tactical-text">{resource.name}</span>
+                  <span className="font-sans text-sm text-slate-900 dark:text-slate-100">{resource.name}</span>
                   <StatusBadge
                     variant={resourceStatusVariant(resource.status)}
                     label={resource.status === 'healthy' ? 'Saudável' : resource.status === 'degraded' ? 'Degradado' : 'Falho'}
@@ -355,8 +355,8 @@ export default function Fallback() {
                     style={{ width: `${100 - resource.failureRate}%` }}
                   />
                 </div>
-                <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
-                  Taxa de Falha: {resource.failureRate}% | Latência: {resource.latency}ms
+                <div className="font-mono text-xs text-slate-500 dark:text-slate-400">
+                  Taxa de falha: {resource.failureRate}% | Latência: {resource.latency}ms
                 </div>
               </div>
             ))}
@@ -364,23 +364,23 @@ export default function Fallback() {
         </Panel>
 
         <Panel
-          title="Últimas Requisições"
+          title="Últimas requisições"
           accent="cyan"
-          action={<span className="font-mono text-xs text-slate-500 dark:text-tactical-dim">Taxa: {requestsPerSecond} req/s</span>}
+          action={<span className="font-mono text-xs text-slate-500 dark:text-slate-400">Taxa: {requestsPerSecond} req/s</span>}
         >
           <div className="space-y-2">
             {requests.map(request => (
               <div
                 key={request.id}
-                className="flex items-center gap-2 p-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised"
+                className="flex items-center gap-2 rounded-lg p-2 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
               >
                 <StatusBadge variant={requestStatusVariant(request.status)} dot={false} label={
                   request.status === 'success' ? '✓' : request.status === 'fallback' ? '⚠' : '✗'
                 } />
-                <span className="flex-1 font-mono text-sm text-slate-900 dark:text-tactical-text">
-                  {request.status === 'success' ? 'Sucesso (Principal)' :
-                   request.status === 'fallback' ? 'Sucesso (Secundário)' :
-                   'Falha Total'}
+                <span className="flex-1 font-sans text-sm text-slate-900 dark:text-slate-100">
+                  {request.status === 'success' ? 'Sucesso (principal)' :
+                   request.status === 'fallback' ? 'Sucesso (secundário)' :
+                   'Falha total'}
                 </span>
                 <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
                   {request.status !== 'error' ? `${Math.round(request.latency)}ms` : '-'}
@@ -388,8 +388,8 @@ export default function Fallback() {
               </div>
             ))}
             {requests.length === 0 && (
-              <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center">
-                <p className="font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">
+              <div className="rounded-lg border border-dashed border-slate-300 dark:border-slate-700 px-4 py-10 text-center">
+                <p className="font-sans text-sm text-slate-400 dark:text-slate-500">
                   Nenhuma requisição ainda
                 </p>
               </div>
@@ -399,36 +399,36 @@ export default function Fallback() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+        <div className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-3">
           <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">{metrics.totalRequests}</div>
-          <div className="label-mono mt-2">Total de Requisições</div>
+          <div className="text-xs font-sans font-medium text-slate-500 dark:text-slate-400 mt-2">Total de requisições</div>
         </div>
-        <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+        <div className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-3">
           <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green">
             {metrics.successfulRequests}
-            <span className="text-sm text-slate-500 dark:text-tactical-dim ml-1">
+            <span className="text-sm text-slate-500 dark:text-slate-400 ml-1">
               ({metrics.totalRequests > 0 ? Math.round((metrics.successfulRequests / metrics.totalRequests) * 100) : 0}%)
             </span>
           </div>
-          <div className="label-mono mt-2">Sucesso (Principal)</div>
+          <div className="text-xs font-sans font-medium text-slate-500 dark:text-slate-400 mt-2">Sucesso (principal)</div>
         </div>
-        <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+        <div className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-3">
           <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-amber">
             {metrics.fallbackRequests}
-            <span className="text-sm text-slate-500 dark:text-tactical-dim ml-1">
+            <span className="text-sm text-slate-500 dark:text-slate-400 ml-1">
               ({metrics.totalRequests > 0 ? Math.round((metrics.fallbackRequests / metrics.totalRequests) * 100) : 0}%)
             </span>
           </div>
-          <div className="label-mono mt-2">Fallback (Secundário)</div>
+          <div className="text-xs font-sans font-medium text-slate-500 dark:text-slate-400 mt-2">Fallback (secundário)</div>
         </div>
-        <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+        <div className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-3">
           <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-red">
             {metrics.failedRequests}
-            <span className="text-sm text-slate-500 dark:text-tactical-dim ml-1">
+            <span className="text-sm text-slate-500 dark:text-slate-400 ml-1">
               ({metrics.totalRequests > 0 ? Math.round((metrics.failedRequests / metrics.totalRequests) * 100) : 0}%)
             </span>
           </div>
-          <div className="label-mono mt-2">Falhas Totais</div>
+          <div className="text-xs font-sans font-medium text-slate-500 dark:text-slate-400 mt-2">Falhas totais</div>
         </div>
       </div>
     </div>

@@ -143,7 +143,7 @@ function KindExtras({ kind, config, metrics, t }: { kind: string; config: NodeCo
   if (kind === 'circuitBreaker' && metrics) {
     const state = metrics.circuitState ?? 'closed';
     const tone = state === 'open' ? 'text-red-400' : state === 'halfOpen' ? 'text-yellow-300' : 'text-green-400';
-    return <MetricRow label={t('editor.node.breaker')} value={state.toUpperCase()} tone={tone} />;
+    return <MetricRow label={t('editor.node.breaker')} value={state === 'halfOpen' ? 'Half-open' : state.charAt(0).toUpperCase() + state.slice(1)} tone={tone} />;
   }
   if (kind === 'apiGateway' && metrics) {
     return <MetricRow label={t('editor.node.dropped_s')} value={`${metrics.droppedRate}`} tone="text-orange-300" />;
@@ -251,7 +251,7 @@ function SimNodeImpl({ id, data, isConnectable, selected }: NodeProps<SimNodeDat
         />
       ))}
 
-      <div className="flex items-center gap-2 font-mono font-bold text-white tracking-tight text-sm">
+      <div className="flex items-center gap-2 font-sans font-bold text-white tracking-tight text-sm">
         <Icon className="w-4 h-4 shrink-0" />
         {config.locked && (
           <Lock
@@ -281,7 +281,7 @@ function SimNodeImpl({ id, data, isConnectable, selected }: NodeProps<SimNodeDat
           {SCALABLE_KINDS.has(config.kind) && <ReplicaStack count={metrics.replicas} label={t('editor.node.replicas')} />}
         </div>
       ) : (
-        <div className="mt-2 text-[11px] font-mono text-tactical-label">{t('editor.node.idle')} · {t(`editor.kinds.${config.kind}`)}</div>
+        <div className="mt-2 text-[11px] font-sans text-tactical-label">{t('editor.node.idle')} · {t(`editor.kinds.${config.kind}`)}</div>
       )}
 
       {config.kind !== 'client' && (

@@ -38,7 +38,7 @@ function HintIcon({ hint }: { hint?: string }) {
       </button>
       {open && (
         <div
-          className="absolute z-50 left-4 top-0 w-56 normal-case tracking-normal bg-white dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border shadow-lg p-2 font-mono text-[11px] leading-relaxed text-slate-700 dark:text-tactical-text"
+          className="absolute z-50 left-4 top-0 w-56 normal-case tracking-normal bg-white dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-lg shadow-lg p-2 font-sans text-[11px] leading-relaxed text-slate-700 dark:text-tactical-text"
           onClick={(e) => e.stopPropagation()}
         >
           {hint}
@@ -77,7 +77,7 @@ function Num({
 }) {
   return (
     <label className="block mb-3">
-      <div className="flex justify-between font-mono text-[11px] uppercase tracking-wider text-tactical-label mb-1">
+      <div className="flex justify-between font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1">
         <span className="flex items-center gap-1">{label}<HintIcon hint={hint} /></span>
         <span className="text-tactical-text">
           {value}
@@ -112,11 +112,11 @@ function Select<T extends string>({
 }) {
   return (
     <label className="block mb-3">
-      <div className="flex items-center gap-1 font-mono text-[11px] uppercase tracking-wider text-tactical-label mb-1">{label}<HintIcon hint={hint} /></div>
+      <div className="flex items-center gap-1 font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1">{label}<HintIcon hint={hint} /></div>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value as T)}
-        className="w-full bg-tactical-raised border border-tactical-border px-2 py-1 font-mono text-sm text-tactical-text"
+        className="w-full bg-tactical-raised border border-tactical-border rounded-md px-2 py-1 font-sans text-sm text-tactical-text"
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>
@@ -132,8 +132,8 @@ export default function InspectorPanel({ config, onChange, onDelete, canDelete =
   const { t } = useTranslation();
   if (!config) {
     return (
-      <div className="p-4 font-mono text-xs text-tactical-label">
-        <div className="label-mono text-signal-amber mb-2">{t('editor.inspector.title', { defaultValue: 'Inspector' }).toUpperCase()}</div>
+      <div className="p-4 font-sans text-xs text-tactical-label">
+        <div className="font-sans text-[11px] font-medium text-slate-600 dark:text-signal-amber mb-2">{t('editor.inspector.title', { defaultValue: 'Inspector' })}</div>
         {t('editor.inspector.empty', { defaultValue: 'Select a node to edit its configuration.' })}
       </div>
     );
@@ -146,7 +146,7 @@ export default function InspectorPanel({ config, onChange, onDelete, canDelete =
   return (
     <div className="p-4 overflow-y-auto h-full">
       <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2 font-mono text-sm font-bold text-tactical-text">
+        <div className="flex items-center gap-2 font-sans text-sm font-bold text-tactical-text">
           <Icon className="w-4 h-4" />
           {t(`editor.kinds.${config.kind}`)}
         </div>
@@ -161,19 +161,19 @@ export default function InspectorPanel({ config, onChange, onDelete, canDelete =
         )}
       </div>
 
-      <div className="mb-4 border-l-2 border-signal-cyan/60 bg-signal-cyan/5 px-3 py-2">
-        <div className="label-mono text-signal-cyan mb-1">{t('editor.how_to_use')}</div>
-        <p className="font-mono text-[11px] leading-relaxed text-tactical-dim">
+      <div className="mb-4 border-l-2 border-signal-cyan/60 bg-signal-cyan/5 rounded-r-md px-3 py-2">
+        <div className="font-sans text-[11px] font-medium text-signal-cyan mb-1">{t('editor.how_to_use')}</div>
+        <p className="font-sans text-[11px] leading-relaxed text-tactical-dim">
           {t(`editor.descriptions.${config.kind}`)}
         </p>
       </div>
 
       <label className="block mb-3">
-        <div className="flex items-center gap-1 font-mono text-[11px] uppercase tracking-wider text-tactical-label mb-1">{t('editor.inspector.label')}<HintIcon hint={t('editor.hints.label')} /></div>
+        <div className="flex items-center gap-1 font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1">{t('editor.inspector.label')}<HintIcon hint={t('editor.hints.label')} /></div>
         <input
           value={config.label}
           onChange={(e) => onChange({ label: e.target.value })}
-          className="w-full bg-tactical-raised border border-tactical-border px-2 py-1 font-mono text-sm text-tactical-text"
+          className="w-full bg-tactical-raised border border-tactical-border rounded-md px-2 py-1 font-sans text-sm text-tactical-text"
         />
       </label>
 
@@ -188,7 +188,7 @@ export default function InspectorPanel({ config, onChange, onDelete, canDelete =
           {config.kind !== 'autoScaler' && config.kind !== 'replicatedDb' && (
             <Num label={t('editor.inspector.replicas')} hint={t('editor.hints.replicas')} value={config.replicas} min={1} max={50} onChange={(v) => onChange({ replicas: v })} />
           )}
-          <div className="font-mono text-[10px] text-tactical-label mb-3">
+          <div className="font-sans text-[10px] text-slate-500 dark:text-tactical-label mb-3">
             {t('editor.inspector.capacity_approx', { value: isFinite(capacity) ? `${Math.round(capacity)} req/s` : '∞' })}
           </div>
         </>
@@ -198,13 +198,13 @@ export default function InspectorPanel({ config, onChange, onDelete, canDelete =
       {renderKindControls(config, onChange, t)}
 
       {/* Reliability */}
-      <div className="label-mono text-signal-amber mt-2 mb-2">{t('editor.inspector.reliability').toUpperCase()}</div>
+      <div className="font-sans text-[11px] font-medium text-slate-600 dark:text-signal-amber mt-2 mb-2">{t('editor.inspector.reliability')}</div>
       <Num label={t('editor.inspector.failure_rate')} hint={t('editor.hints.failure_rate')} value={Math.round(config.failureRate * 100)} min={0} max={100} unit="%" onChange={(v) => onChange({ failureRate: v / 100 })} />
       <Num label={t('editor.inspector.timeout')} hint={t('editor.hints.timeout')} value={config.timeoutMs} min={50} max={10000} step={50} unit="ms" onChange={(v) => onChange({ timeoutMs: v })} />
       <Num label={t('editor.inspector.max_retries')} hint={t('editor.hints.max_retries')} value={config.retry?.maxRetries ?? 0} min={0} max={6} onChange={(v) => onChange({ retry: { maxRetries: v, backoffBaseMs: config.retry?.backoffBaseMs ?? 50, jitter: config.retry?.jitter ?? true } })} />
 
       {/* Latency shape */}
-      <div className="label-mono text-signal-amber mt-2 mb-2">{t('editor.inspector.latency_shape').toUpperCase()}</div>
+      <div className="font-sans text-[11px] font-medium text-slate-600 dark:text-signal-amber mt-2 mb-2">{t('editor.inspector.latency_shape')}</div>
       <Select
         label={t('editor.inspector.distribution')}
         hint={t('editor.hints.distribution')}

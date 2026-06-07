@@ -132,7 +132,7 @@ export default function AsyncSync() {
 
   return (
     <div className="space-y-6">
-      <Panel title="CONTROLS" accent="cyan">
+      <Panel title="Controles" accent="cyan">
         <div className="flex flex-col gap-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-2">
@@ -172,15 +172,15 @@ export default function AsyncSync() {
             </div>
           </div>
           {communicationType === 'sync' && isButtonDisabled && (
-            <StatusBadge variant="in-progress" label="BLOQUEANTE" />
+            <StatusBadge variant="in-progress" label="Bloqueante" />
           )}
         </div>
       </Panel>
 
-      <Panel title="VISUALIZAÇÃO" accent="green">
+      <Panel title="Visualização" accent="green">
         <div className="relative h-[300px]">
           <div className="absolute inset-0 flex flex-col">
-            <div className="flex h-8 label-mono text-slate-500 dark:text-tactical-label border-b border-slate-200 dark:border-tactical-border">
+            <div className="flex h-8 text-xs font-medium text-slate-500 dark:text-tactical-label border-b border-slate-200 dark:border-tactical-border">
               <div className="w-1/3 text-center">Cliente</div>
               <div className="w-1/3 text-center border-l border-slate-200 dark:border-tactical-border">Servidor</div>
               <div className="w-1/3 text-center border-l border-slate-200 dark:border-tactical-border">DB</div>
@@ -226,12 +226,12 @@ export default function AsyncSync() {
 
                     {request.type === 'sync' && request.status !== 'served' && (
                       <motion.div
-                        className="absolute h-6 bg-signal-red/10 border border-signal-red/30 left-[2%] w-[29%]"
+                        className="absolute h-6 bg-signal-red/10 border border-signal-red/30 left-[2%] w-[29%] rounded-md dark:rounded-none"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                       >
-                        <div className="absolute inset-0 flex items-center justify-center font-mono text-signal-red text-xs">
+                        <div className="absolute inset-0 flex items-center justify-center font-sans text-signal-red text-xs rounded-md dark:rounded-none">
                           Aguardando...
                         </div>
                       </motion.div>
@@ -270,7 +270,7 @@ export default function AsyncSync() {
           </div>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-6 mt-4 font-mono text-xs text-slate-500 dark:text-tactical-dim">
+        <div className="flex flex-wrap justify-center gap-6 mt-4 font-sans text-xs text-slate-500 dark:text-tactical-dim">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-signal-cyan"></div>
             <span>Síncrono (Bloqueante)</span>
@@ -288,9 +288,9 @@ export default function AsyncSync() {
         </div>
       </Panel>
 
-      <div className="tactical-panel border-l-2 border-l-signal-cyan p-5">
-        <h3 className="label-mono text-signal-cyan mb-3">INFO</h3>
-        <div className="space-y-1.5 font-mono text-sm text-slate-600 dark:text-tactical-dim">
+      <div className="bg-slate-50 dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-xl dark:rounded-none p-5">
+        <h3 className="text-sm font-semibold text-slate-900 dark:text-tactical-text mb-3">Sobre o simulador</h3>
+        <div className="space-y-1.5 font-sans text-sm text-slate-600 dark:text-tactical-dim">
           <p><strong>Síncrono:</strong> A mensagem é enviada e o cliente espera a resposta.</p>
           <p><strong>Assíncrono:</strong> A mensagem é enviada e o cliente não espera a resposta.</p>
         </div>

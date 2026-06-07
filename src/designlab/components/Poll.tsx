@@ -112,13 +112,13 @@ const Poll = ({ poll, onPollUpdate, isSubscribed, canManage = false }: PollProps
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-2">
-          <div className="p-2 border border-signal-cyan/40 bg-signal-cyan/10 dark:rounded-none">
+          <div className="p-2 rounded-lg border border-signal-cyan/40 bg-signal-cyan/10 dark:rounded-none">
             <svg className="w-5 h-5 text-brand-600 dark:text-signal-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
           </div>
           <div>
-            <span className="font-mono text-xs uppercase tracking-wider text-brand-600 dark:text-signal-cyan">
+            <span className="font-sans text-xs text-brand-600 dark:text-signal-cyan">
               Enquete
             </span>
             {localPoll.allow_multiple && (
@@ -132,17 +132,17 @@ const Poll = ({ poll, onPollUpdate, isSubscribed, canManage = false }: PollProps
         {/* Status badges */}
         <div className="flex items-center gap-2">
           {localPoll.is_closed && (
-            <span className="border border-slate-300 dark:border-tactical-line px-2 py-0.5 text-slate-500 dark:text-tactical-label text-xs font-mono uppercase tracking-wider">
+            <span className="rounded-full border border-slate-300 dark:border-tactical-line px-2 py-0.5 text-slate-500 dark:text-tactical-label text-xs font-sans">
               Encerrada
             </span>
           )}
           {hasEnded && !localPoll.is_closed && (
-            <span className="border border-signal-amber/40 text-signal-amber bg-signal-amber/10 px-2 py-0.5 text-xs font-mono uppercase tracking-wider">
+            <span className="rounded-full border border-signal-amber/40 text-signal-amber bg-signal-amber/10 px-2 py-0.5 text-xs font-sans">
               Expirada
             </span>
           )}
           {!localPoll.is_closed && !hasEnded && localPoll.ends_at && (
-            <span className="border border-signal-cyan/40 text-signal-cyan bg-signal-cyan/10 px-2 py-0.5 text-xs font-mono uppercase tracking-wider">
+            <span className="rounded-full border border-signal-cyan/40 text-signal-cyan bg-signal-cyan/10 px-2 py-0.5 text-xs font-sans">
               ⏱ {formatTimeRemaining()}
             </span>
           )}
@@ -167,7 +167,7 @@ const Poll = ({ poll, onPollUpdate, isSubscribed, canManage = false }: PollProps
               onClick={() => handleOptionClick(option.id)}
               disabled={!canVote}
               className={`
-                w-full text-left p-4 border-2 transition-all relative overflow-hidden dark:rounded-none
+                w-full text-left p-4 rounded-lg border-2 transition-all relative overflow-hidden dark:rounded-none
                 ${canVote ? 'cursor-pointer hover:border-signal-green/60' : 'cursor-default'}
                 ${isSelected 
                   ? 'border-signal-green bg-signal-green/10 dark:bg-signal-green/10' 
@@ -210,7 +210,7 @@ const Poll = ({ poll, onPollUpdate, isSubscribed, canManage = false }: PollProps
                   </span>
                   
                   {isUserVote && (
-                    <span className="text-xs text-brand-600 dark:text-signal-green font-mono uppercase tracking-wider">
+                    <span className="text-xs text-brand-600 dark:text-signal-green font-sans">
                       (seu voto)
                     </span>
                   )}
@@ -257,7 +257,7 @@ const Poll = ({ poll, onPollUpdate, isSubscribed, canManage = false }: PollProps
                   Votando...
                 </>
               ) : hasVoted ? (
-                'Atualizar Voto'
+                'Atualizar voto'
               ) : (
                 'Votar'
               )}
@@ -272,7 +272,7 @@ const Poll = ({ poll, onPollUpdate, isSubscribed, canManage = false }: PollProps
               onClick={handleClosePoll}
               disabled={isClosing}
             >
-              {isClosing ? 'Encerrando...' : 'Encerrar Enquete'}
+              {isClosing ? 'Encerrando...' : 'Encerrar enquete'}
             </TacticalButton>
           )}
         </div>
@@ -280,7 +280,7 @@ const Poll = ({ poll, onPollUpdate, isSubscribed, canManage = false }: PollProps
       
       {/* Non-subscribed message */}
       {!isSubscribed && !localPoll.is_closed && !hasEnded && (
-        <p className="mt-3 text-sm text-signal-amber text-center font-mono uppercase tracking-wider">
+        <p className="mt-3 text-sm text-signal-amber text-center font-sans">
           Apenas assinantes podem votar em enquetes.
         </p>
       )}

@@ -2,7 +2,7 @@ export default function Footer() {
   return (
     <footer className="w-full py-6 mt-auto border-t border-slate-200 dark:border-tactical-border bg-white/80 dark:bg-tactical-surface/90 backdrop-blur-sm">
       <div className="container mx-auto px-4 flex flex-col items-center justify-center gap-2 text-center">
-        <p className="font-mono text-xs uppercase tracking-wider text-slate-500 dark:text-tactical-label">
+        <p className="font-sans text-xs text-slate-500 dark:text-tactical-label">
           Feito com 💜 e ☕️ por{' '}
           <span className="font-semibold text-slate-900 dark:text-tactical-text">
             Flávio Mendes
@@ -12,7 +12,7 @@ export default function Footer() {
           href="https://instagram.com/trilhainfo"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-brand-600 dark:text-signal-cyan hover:text-brand-700 dark:hover:text-signal-green transition-colors duration-200"
+          className="inline-flex items-center gap-2 font-sans text-xs text-brand-600 dark:text-signal-cyan hover:text-brand-700 dark:hover:text-signal-green transition-colors duration-200"
         >
           <svg
             className="w-5 h-5"

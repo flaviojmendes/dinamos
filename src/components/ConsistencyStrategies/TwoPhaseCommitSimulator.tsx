@@ -22,7 +22,7 @@ interface Message {
 }
 
 const inputClass =
-  'bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-3 py-2 font-mono text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-signal-green';
+  'rounded-lg bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-3 py-2 font-sans text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-emerald-500 dark:focus:border-signal-green';
 
 export default function TwoPhaseCommitSimulator() {
   const { t } = useTranslation();
@@ -187,10 +187,10 @@ export default function TwoPhaseCommitSimulator() {
   return (
     <div className="space-y-6">
       <div className="max-w-3xl">
-        <div className="label-mono text-signal-cyan mb-2">
-          [ {t('design_principles.two_phase_commit_simulator.title')} ]
-        </div>
-        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
+        <h2 className="font-sans text-lg font-semibold tracking-tight text-slate-900 dark:text-tactical-text mb-2">
+          {t('design_principles.two_phase_commit_simulator.title')}
+        </h2>
+        <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
           {t('design_principles.two_phase_commit_simulator.intro')}
         </p>
       </div>
@@ -209,7 +209,7 @@ export default function TwoPhaseCommitSimulator() {
             {t('design_principles.two_phase_commit_simulator.controls.reset')}
           </TacticalButton>
           <div className="flex items-center gap-2">
-            <label className="label-mono text-slate-500 dark:text-tactical-label">{t('design_principles.two_phase_commit_simulator.controls.speed_label')}</label>
+            <label className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label">{t('design_principles.two_phase_commit_simulator.controls.speed_label')}</label>
             <select
               value={speed}
               onChange={(e) => setSpeed(Number(e.target.value))}
@@ -228,19 +228,19 @@ export default function TwoPhaseCommitSimulator() {
           {nodes.map((node) => (
             <motion.div
               key={node.id}
-              className={`p-4 border ${getNodeBorder(node.state)} transition-colors`}
+              className={`p-4 rounded-lg border ${getNodeBorder(node.state)} transition-colors`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
               <div className="flex items-start justify-between gap-2 mb-2">
-                <h4 className="font-mono text-sm font-semibold text-slate-900 dark:text-tactical-text">{node.name}</h4>
+                <h4 className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text">{node.name}</h4>
                 <StatusBadge variant={getStateBadge(node.state)} label={t('design_principles.two_phase_commit_simulator.node_states.' + node.state, node.state)} />
               </div>
-              <div className="font-mono text-xs text-slate-600 dark:text-tactical-dim">
+              <div className="font-sans text-xs text-slate-600 dark:text-tactical-dim">
                 {node.response && <div>{t('design_principles.two_phase_commit_simulator.responses.' + node.response)}</div>}
                 {node.type === 'participant' && step === 0 && (
                   <div className="mt-3 space-y-2">
-                    <div className="label-mono">{t('design_principles.two_phase_commit_simulator.config.configure_response')}</div>
+                    <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label">{t('design_principles.two_phase_commit_simulator.config.configure_response')}</div>
                     <div className="flex gap-2">
                       <TacticalButton
                         size="sm"
@@ -289,8 +289,8 @@ export default function TwoPhaseCommitSimulator() {
       </Panel>
 
       <div className="tactical-panel border-l-2 border-l-signal-cyan p-5">
-        <h4 className="label-mono text-signal-cyan mb-2">{t('design_principles.two_phase_commit_simulator.steps.current_phase')}</h4>
-        <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim">
+        <h4 className="font-sans text-xs font-medium text-slate-600 dark:text-tactical-label mb-2">{t('design_principles.two_phase_commit_simulator.steps.current_phase')}</h4>
+        <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim">
           {step === 0 && t('design_principles.two_phase_commit_simulator.steps.s0')}
           {step === 1 && t('design_principles.two_phase_commit_simulator.steps.s1')}
           {step === 2 && t('design_principles.two_phase_commit_simulator.steps.s2')}

@@ -21,10 +21,10 @@ import { trackForumTopicView, trackForumReply } from '../../utils/analytics';
 import { TacticalButton } from '../../components/tactical';
 
 const inputClass =
-  'w-full px-3 py-2 bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none';
-const labelClass = 'block text-xs font-mono uppercase tracking-wider text-slate-700 dark:text-tactical-dim mb-1';
+  'w-full px-3 py-2 rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none';
+const labelClass = 'block text-xs font-sans text-slate-700 dark:text-tactical-dim mb-1';
 const sectionTitleClass =
-  'text-lg font-mono uppercase tracking-wider font-medium text-slate-900 dark:text-tactical-text flex items-center gap-2 before:content-[\'\'] before:h-5 before:w-1 before:bg-signal-amber';
+  'text-lg font-sans font-medium text-slate-900 dark:text-tactical-text flex items-center gap-2 before:content-[\'\'] before:h-5 before:w-1 before:bg-signal-amber';
 
 // Markdown components defined outside to prevent recreation
 const MarkdownComponents: any = {
@@ -284,7 +284,7 @@ const MessageComponent = memo(({
               <button
                 type="button"
                 onClick={() => setIsReplying(!isReplying)}
-                className="text-sm font-mono uppercase tracking-wider text-brand-600 dark:text-signal-green hover:opacity-80"
+                className="text-sm font-sans text-brand-600 dark:text-signal-green hover:opacity-80"
               >
                 Responder
               </button>
@@ -699,10 +699,10 @@ const TopicView = () => {
     }
     // Fallback to default colors
     switch (categoryName) {
-      case 'Dúvida': return { className: 'border border-signal-amber/40 text-signal-amber bg-signal-amber/10 font-mono uppercase tracking-wider text-xs' };
-      case 'Brainstorm': return { className: 'border border-signal-green/40 text-signal-green bg-signal-green/10 font-mono uppercase tracking-wider text-xs' };
-      case 'Ajuda': return { className: 'border border-signal-red/40 text-signal-red bg-signal-red/10 font-mono uppercase tracking-wider text-xs' };
-      default: return { className: 'border border-signal-cyan/40 text-signal-cyan bg-signal-cyan/10 font-mono uppercase tracking-wider text-xs' };
+      case 'Dúvida': return { className: 'rounded-full border border-signal-amber/40 text-signal-amber bg-signal-amber/10 font-sans text-xs' };
+      case 'Brainstorm': return { className: 'rounded-full border border-signal-green/40 text-signal-green bg-signal-green/10 font-sans text-xs' };
+      case 'Ajuda': return { className: 'rounded-full border border-signal-red/40 text-signal-red bg-signal-red/10 font-sans text-xs' };
+      default: return { className: 'rounded-full border border-signal-cyan/40 text-signal-cyan bg-signal-cyan/10 font-sans text-xs' };
     }
   };
 
@@ -712,7 +712,7 @@ const TopicView = () => {
       <div className="min-h-screen bg-canvas-paper dark:bg-canvas-dark flex flex-col">
         <Navbar />
         <div className="flex-1 flex items-center justify-center">
-          <p className="text-slate-500 dark:text-tactical-dim font-mono uppercase tracking-wider text-xs">Carregando tópico...</p>
+          <p className="text-slate-500 dark:text-tactical-dim font-sans text-xs">Carregando tópico...</p>
         </div>
       </div>
     );
@@ -724,7 +724,7 @@ const TopicView = () => {
         <Navbar />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <h2 className="text-2xl font-bold font-mono uppercase tracking-wider text-slate-900 dark:text-tactical-text mb-2">Tópico não encontrado</h2>
+            <h2 className="text-2xl font-bold font-sans text-slate-900 dark:text-tactical-text mb-2">Tópico não encontrado</h2>
             <Link to="/forum" className="text-brand-600 dark:text-signal-cyan hover:opacity-80">Voltar para o fórum</Link>
           </div>
         </div>
@@ -739,7 +739,7 @@ const TopicView = () => {
       <main className="flex-1 py-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           {/* Breadcrumb */}
-          <div className="mb-6 text-sm text-slate-500 dark:text-tactical-dim font-mono">
+          <div className="mb-6 text-sm text-slate-500 dark:text-tactical-dim font-sans">
             <Link to="/forum" className="text-brand-600 dark:text-signal-cyan hover:opacity-80">Fórum</Link>
             <span className="mx-2">/</span>
             <span>{topic.title}</span>
@@ -786,7 +786,7 @@ const TopicView = () => {
                           ))}
                         </select>
                         {changingCategory && (
-                          <span className="text-xs text-slate-500 dark:text-tactical-dim animate-pulse font-mono">
+                          <span className="text-xs text-slate-500 dark:text-tactical-dim animate-pulse font-sans">
                             <svg className="inline-block h-3 w-3 animate-spin mr-1" fill="none" viewBox="0 0 24 24">
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -946,12 +946,12 @@ const TopicView = () => {
               {messages.length} {messages.length === 1 ? 'Comentário' : 'Comentários'}
             </h3>
             <div className="flex items-center">
-              <label htmlFor="sort-messages" className="mr-2 text-xs font-mono uppercase tracking-wider text-slate-500 dark:text-tactical-label">Ordenar:</label>
+              <label htmlFor="sort-messages" className="mr-2 text-xs font-sans text-slate-500 dark:text-tactical-label">Ordenar:</label>
               <select
                 id="sort-messages"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="block w-full pl-3 pr-10 py-1 text-sm bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:outline-none focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none"
+                className="block w-full pl-3 pr-10 py-1 rounded-md text-sm bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:outline-none focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none"
               >
                 <option value="top">Mais Votados</option>
                 <option value="oldest">Mais Antigos</option>
@@ -998,7 +998,7 @@ const TopicView = () => {
                 <button
                   type="button"
                   onClick={() => setShowExcalidraw(!showExcalidraw)}
-                  className="text-sm font-mono uppercase tracking-wider text-brand-600 dark:text-signal-cyan hover:opacity-80 flex items-center"
+                  className="text-sm font-sans text-brand-600 dark:text-signal-cyan hover:opacity-80 flex items-center"
                 >
                   <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />

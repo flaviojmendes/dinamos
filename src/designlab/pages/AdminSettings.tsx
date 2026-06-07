@@ -76,8 +76,8 @@ const AdminSettings = () => {
       
       <main className="flex-1 py-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-2xl font-mono uppercase tracking-wider font-bold text-slate-900 dark:text-tactical-text mb-8 flex items-center gap-3 before:content-[''] before:h-6 before:w-1 before:bg-signal-amber before:shrink-0">
-            Configurações do Sistema
+          <h1 className="text-2xl font-sans font-bold tracking-tight text-slate-900 dark:text-tactical-text mb-8">
+            Configurações do sistema
           </h1>
 
           {error && (
@@ -125,7 +125,7 @@ const AdminSettings = () => {
                         </div>
                         <StatusBadge
                           variant={freeAccessStatus?.enabled ? 'active' : 'offline'}
-                          label={freeAccessStatus?.enabled ? 'ATIVO' : 'INATIVO'}
+                          label={freeAccessStatus?.enabled ? 'Ativo' : 'Inativo'}
                         />
                       </div>
                       
@@ -139,7 +139,7 @@ const AdminSettings = () => {
                             <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                           </svg>
                           <div className="ml-3">
-                            <h3 className="label-mono text-signal-amber">Nota Importante</h3>
+                            <h3 className="text-sm font-medium text-amber-600 dark:text-amber-400">Nota importante</h3>
                             <p className="mt-1 text-sm text-slate-700 dark:text-tactical-dim">
                               Quando ativado, <strong>todos os usuários</strong> terão acesso completo a todo o conteúdo sem necessidade de assinatura.
                               Isso <strong>não</strong> modifica os dados de assinatura no banco de dados.
@@ -177,10 +177,10 @@ const AdminSettings = () => {
 
                 <div className="px-6 py-4 bg-slate-50 dark:bg-tactical-raised border-t border-slate-200 dark:border-tactical-border">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="label-mono">
-                      Status Atual:
+                    <span className="text-sm font-medium text-slate-500 dark:text-tactical-label">
+                      Status atual:
                     </span>
-                    <span className={`font-mono text-sm ${freeAccessStatus?.enabled ? 'text-signal-green' : 'text-slate-600 dark:text-tactical-dim'}`}>
+                    <span className={`text-sm ${freeAccessStatus?.enabled ? 'text-emerald-600 dark:text-signal-green' : 'text-slate-600 dark:text-tactical-dim'}`}>
                       {freeAccessStatus?.enabled 
                         ? '✓ Todos os usuários têm acesso completo' 
                         : '✗ Acesso restrito por assinatura'

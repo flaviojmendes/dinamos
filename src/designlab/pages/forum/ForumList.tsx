@@ -115,7 +115,7 @@ const ForumList = () => {
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
             <div>
-              <h1 className="text-3xl font-bold font-mono uppercase tracking-wider text-slate-900 dark:text-tactical-text flex items-center gap-3 before:content-[''] before:h-6 before:w-1 before:bg-signal-amber">
+              <h1 className="text-3xl font-bold font-sans text-slate-900 dark:text-tactical-text flex items-center gap-3 before:content-[''] before:h-6 before:w-1 before:bg-signal-amber">
                 Fórum de Discussão
               </h1>
               <p className="mt-1 text-slate-600 dark:text-tactical-dim">Compartilhe dúvidas, ideias e colabore com a comunidade.</p>
@@ -124,12 +124,12 @@ const ForumList = () => {
             {isSubscribed && (
             <Link
               to="/forum/new"
-              className="inline-flex items-center justify-center gap-2 px-4 py-2 font-mono uppercase tracking-wider font-medium transition-colors bg-slate-900 dark:bg-white text-white dark:text-black hover:bg-slate-700 dark:hover:bg-slate-200 dark:rounded-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 dark:focus-visible:ring-signal-green"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-sans font-medium transition-colors bg-slate-900 dark:bg-white text-white dark:text-black hover:bg-slate-700 dark:hover:bg-slate-200 dark:rounded-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 dark:focus-visible:ring-signal-green"
             >
               <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
               </svg>
-              Novo Tópico
+              Novo tópico
             </Link>
             )}
           </div>
@@ -139,7 +139,7 @@ const ForumList = () => {
             <div className="flex space-x-2 overflow-x-auto pb-2 sm:pb-0">
               <button
                 onClick={() => setCategoryFilter('')}
-                className={`px-4 py-2 text-xs font-mono uppercase tracking-wider transition-colors whitespace-nowrap border dark:rounded-none ${
+                className={`px-4 py-2 rounded-lg text-xs font-sans transition-colors whitespace-nowrap border dark:rounded-none ${
                   categoryFilter === '' 
                     ? 'border-signal-green/40 text-signal-green bg-signal-green/10' 
                     : 'border-slate-200 dark:border-tactical-line bg-white dark:bg-tactical-surface text-slate-600 dark:text-tactical-dim hover:border-signal-green/40'
@@ -151,7 +151,7 @@ const ForumList = () => {
                 <button
                   key={cat.id}
                   onClick={() => setCategoryFilter(cat.name)}
-                  className={`px-4 py-2 text-xs font-mono uppercase tracking-wider transition-colors whitespace-nowrap border dark:rounded-none ${
+                  className={`px-4 py-2 rounded-lg text-xs font-sans transition-colors whitespace-nowrap border dark:rounded-none ${
                     categoryFilter === cat.name
                       ? 'border-signal-green/40 text-signal-green bg-signal-green/10'
                       : 'border-slate-200 dark:border-tactical-line bg-white dark:bg-tactical-surface text-slate-600 dark:text-tactical-dim hover:border-signal-green/40'
@@ -163,12 +163,12 @@ const ForumList = () => {
             </div>
 
             <div className="flex items-center">
-              <label htmlFor="sort" className="mr-2 text-xs font-mono uppercase tracking-wider text-slate-500 dark:text-tactical-label">Ordenar por:</label>
+              <label htmlFor="sort" className="mr-2 text-xs font-sans text-slate-500 dark:text-tactical-label">Ordenar por:</label>
               <select
                 id="sort"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="block w-full pl-3 pr-10 py-2 text-sm bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:outline-none focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none"
+                className="block w-full pl-3 pr-10 py-2 rounded-md text-sm bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:outline-none focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none"
               >
                 <option value="top">Mais Votados</option>
                 <option value="recent">Mais Recentes</option>
@@ -180,14 +180,14 @@ const ForumList = () => {
           {loading ? (
             <div className="text-center py-12">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-brand-600 dark:border-signal-green"></div>
-              <p className="mt-2 text-slate-500 dark:text-tactical-dim font-mono uppercase tracking-wider text-xs">Carregando tópicos...</p>
+              <p className="mt-2 text-slate-500 dark:text-tactical-dim font-sans text-xs">Carregando tópicos...</p>
             </div>
           ) : topics.length === 0 ? (
             <div className="text-center py-12 tactical-panel p-8 dark:rounded-none">
               <svg className="mx-auto h-12 w-12 text-slate-400 dark:text-tactical-label" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
-              <h3 className="mt-2 text-sm font-mono uppercase tracking-wider font-medium text-slate-900 dark:text-tactical-text">Nenhum tópico encontrado</h3>
+              <h3 className="mt-2 text-sm font-sans font-medium text-slate-900 dark:text-tactical-text">Nenhum tópico encontrado</h3>
               <p className="mt-1 text-sm text-slate-500 dark:text-tactical-dim">Comece uma nova discussão clicando no botão acima.</p>
             </div>
           ) : (
@@ -235,7 +235,7 @@ const ForumList = () => {
                             initialHasVoted={topic.has_voted} 
                           />
                           
-                          <span className="text-xs text-slate-500 dark:text-tactical-label flex items-center font-mono">
+                          <span className="text-xs text-slate-500 dark:text-tactical-label flex items-center font-sans">
                             <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                             </svg>

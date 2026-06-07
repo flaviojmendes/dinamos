@@ -111,11 +111,11 @@ export default function SagaSimulator() {
           </div>
         }
       >
-        <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
+        <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
 
         <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label className="block label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.controls.mode`)}</label>
+            <label className="block font-sans text-xs font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.mode`)}</label>
             <div className="flex gap-2">
               {(['orchestrated', 'choreographed'] as Mode[]).map(m => (
                 <TacticalButton key={m} size="sm" variant={mode === m ? 'secondary' : 'ghost'} onClick={() => setMode(m)} disabled={running}>
@@ -125,7 +125,7 @@ export default function SagaSimulator() {
             </div>
           </div>
           <div className="space-y-2">
-            <label className="block label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.controls.fail_at`)}</label>
+            <label className="block font-sans text-xs font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.fail_at`)}</label>
             <div className="flex flex-wrap gap-2">
               <TacticalButton size="sm" variant={failAt === -1 ? 'secondary' : 'ghost'} onClick={() => setFailAt(-1)} disabled={running}>
                 {t(`${base}.fail_none`)}
@@ -143,7 +143,7 @@ export default function SagaSimulator() {
         {mode === 'orchestrated' && (
           <div className="mb-4 flex justify-center">
             <motion.div
-              className="border border-signal-cyan/60 px-4 py-2 font-mono text-xs uppercase tracking-wider text-signal-cyan"
+              className="rounded-lg border border-slate-200 dark:border-tactical-border px-4 py-2 font-sans text-xs text-slate-700 dark:text-tactical-text"
               animate={running ? { boxShadow: ['0 0 0px rgba(34,211,238,0)', '0 0 14px rgba(34,211,238,0.5)', '0 0 0px rgba(34,211,238,0)'] } : {}}
               transition={{ duration: TICK_MS / 1000, repeat: Infinity }}
             >
@@ -159,18 +159,18 @@ export default function SagaSimulator() {
             return (
               <motion.div
                 key={k}
-                className={`relative border p-3 ${statusColor[s]}`}
+                className={`relative rounded-lg border p-3 ${statusColor[s]}`}
                 animate={active === i ? { scale: [1, 1.06, 1] } : { scale: 1 }}
                 transition={{ duration: 0.5 }}
               >
                 {mode === 'choreographed' && i > 0 && (
-                  <span className="absolute -left-3 top-1/2 hidden -translate-y-1/2 font-mono text-xs text-slate-400 dark:text-tactical-label lg:block">→</span>
+                  <span className="absolute -left-3 top-1/2 hidden -translate-y-1/2 font-sans text-xs text-slate-400 dark:text-tactical-label lg:block">→</span>
                 )}
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-[11px] text-slate-400 dark:text-tactical-label">#{i + 1}</span>
-                  <span className="font-mono text-[10px] uppercase tracking-wider">{t(`${base}.status.${s}`)}</span>
+                  <span className="font-sans text-[10px]">{t(`${base}.status.${s}`)}</span>
                 </div>
-                <div className="mt-2 font-mono text-xs text-slate-700 dark:text-tactical-text">{t(`${base}.steps.${k}`)}</div>
+                <div className="mt-2 font-sans text-xs text-slate-700 dark:text-tactical-text">{t(`${base}.steps.${k}`)}</div>
               </motion.div>
             );
           })}
@@ -181,14 +181,14 @@ export default function SagaSimulator() {
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
           <AnimatedMetric value={committed} label={t(`${base}.metrics.committed`)} color="green" />
           <AnimatedMetric value={compensated} label={t(`${base}.metrics.compensated`)} color="amber" pulse={compensated > 0 && running} />
-          <div className="relative overflow-hidden border border-slate-200 dark:border-tactical-border px-3 py-3">
-            <div className={`font-mono text-lg font-bold leading-none ${outcome === 'committed' ? 'text-signal-green' : outcome === 'rolled_back' ? 'text-signal-red' : 'text-slate-400 dark:text-tactical-label'}`}>
+          <div className="relative overflow-hidden rounded-lg border border-slate-200 dark:border-tactical-border px-3 py-3">
+            <div className={`font-sans text-lg font-bold leading-none ${outcome === 'committed' ? 'text-emerald-600 dark:text-signal-green' : outcome === 'rolled_back' ? 'text-red-600 dark:text-signal-red' : 'text-slate-400 dark:text-tactical-label'}`}>
               {t(`${base}.outcome.${outcome}`)}
             </div>
-            <div className="label-mono mt-2">{t(`${base}.metrics.outcome`)}</div>
+            <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t(`${base}.metrics.outcome`)}</div>
           </div>
         </div>
-        <p className="mt-3 font-mono text-[11px] text-slate-500 dark:text-tactical-dim">{t(`${base}.labels.hint`)}</p>
+        <p className="mt-3 font-sans text-[11px] text-slate-500 dark:text-tactical-dim">{t(`${base}.labels.hint`)}</p>
       </Panel>
     </div>
   );

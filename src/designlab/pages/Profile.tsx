@@ -9,7 +9,7 @@ const inputClass =
   'shadow-sm block w-full sm:text-sm border border-slate-300 dark:border-tactical-border rounded-md dark:rounded-none bg-white dark:bg-tactical-surface text-slate-900 dark:text-tactical-text focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-signal-green focus:border-transparent';
 
 const labelClass =
-  'block text-xs font-mono uppercase tracking-wider text-slate-600 dark:text-tactical-label';
+  'block text-xs font-sans text-slate-600 dark:text-tactical-label';
 
 const Profile = () => {
   const { appUser, refreshUserProfile } = useAuth();
@@ -124,7 +124,7 @@ const Profile = () => {
       <div className="min-h-screen bg-canvas-paper dark:bg-canvas-dark flex flex-col">
         <Navbar />
         <div className="flex-1 flex items-center justify-center">
-          <p className="font-mono uppercase tracking-wider text-sm text-slate-500 dark:text-tactical-dim">Carregando perfil...</p>
+          <p className="font-sans text-sm text-slate-500 dark:text-tactical-dim">Carregando perfil...</p>
         </div>
       </div>
     );
@@ -136,13 +136,13 @@ const Profile = () => {
       
       <main className="flex-1 py-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
-          <h1 className="flex items-center gap-2 before:content-[''] before:h-6 before:w-1 before:bg-signal-amber before:shrink-0 font-mono uppercase tracking-wider text-2xl font-bold text-slate-900 dark:text-tactical-text mb-8 pl-2">
-            Perfil de Usuário
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-tactical-text mb-8">
+            Perfil de usuário
           </h1>
           
-          <Panel className="dark:rounded-none overflow-hidden" padded={false} bodyClassName="p-6 sm:p-8">
+          <Panel className="rounded-xl dark:rounded-none overflow-hidden" padded={false} bodyClassName="p-6 sm:p-8">
               {message.text && (
-                <div className={`mb-6 p-4 border dark:rounded-none ${message.type === 'success' ? 'border-signal-green/40 bg-signal-green/10 text-signal-green' : 'border-signal-red/40 bg-signal-red/10 text-signal-red'}`}>
+                <div className={`mb-6 p-4 border rounded-lg dark:rounded-none ${message.type === 'success' ? 'border-signal-green/40 bg-signal-green/10 text-signal-green' : 'border-signal-red/40 bg-signal-red/10 text-signal-red'}`}>
                   {message.text}
                 </div>
               )}
@@ -183,8 +183,8 @@ const Profile = () => {
                   
                   <div className="flex-1 w-full text-center sm:text-left">
                     <div className="flex items-center justify-center sm:justify-start space-x-4 mb-2">
-                      <h3 className="font-mono uppercase tracking-wider text-sm font-semibold text-slate-900 dark:text-tactical-text">Foto de Perfil</h3>
-                      <span className={`inline-flex items-center px-2.5 py-0.5 dark:rounded-none text-[10px] font-mono uppercase tracking-wider font-medium ${getRoleBadgeColor(appUser.role)}`}>
+                      <h3 className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text">Foto de perfil</h3>
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full dark:rounded-none text-[10px] font-sans font-medium ${getRoleBadgeColor(appUser.role)}`}>
                         {appUser.role}
                       </span>
                     </div>
@@ -203,7 +203,7 @@ const Profile = () => {
                         Usuário do GitHub
                       </label>
                       <div className="mt-1 flex rounded-md dark:rounded-none">
-                        <span className="inline-flex items-center px-3 rounded-l-md dark:rounded-none border border-r-0 border-slate-300 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised text-slate-500 dark:text-tactical-dim sm:text-sm font-mono text-xs uppercase tracking-wider">
+                        <span className="inline-flex items-center px-3 rounded-l-md dark:rounded-none border border-r-0 border-slate-300 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised text-slate-500 dark:text-tactical-dim sm:text-sm font-sans text-xs">
                           github.com/
                         </span>
                         <input

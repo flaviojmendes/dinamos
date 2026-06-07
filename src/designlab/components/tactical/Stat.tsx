@@ -17,7 +17,7 @@ const valueColor: Record<NonNullable<StatProps['color']>, string> = {
   cyan: 'text-signal-cyan',
 };
 
-/** Big-number metric tile. */
+/** Big-number metric tile (GLOBAL MISSION METRICS). */
 export function Stat({ value, label, sub, color = 'default', className }: StatProps) {
   return (
     <div
@@ -26,11 +26,11 @@ export function Stat({ value, label, sub, color = 'default', className }: StatPr
         className,
       )}
     >
-      <div className={cn('font-mono text-3xl font-bold tabular-nums leading-none', valueColor[color])}>
+      <div className={cn('font-sans text-3xl font-semibold tabular-nums leading-none', valueColor[color])}>
         {value}
       </div>
       <div className="label-mono mt-2">{label}</div>
-      {sub && <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim mt-1">{sub}</div>}
+      {sub && <div className="font-sans text-xs text-slate-500 dark:text-tactical-dim mt-1">{sub}</div>}
     </div>
   );
 }

@@ -158,7 +158,7 @@ export default function Backpressure() {
   }, [isRunning, produceMessages, consumeMessages]);
 
   const inputClass =
-    'w-full bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-2 py-1 font-mono text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-signal-green';
+    'w-full bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-2 py-1 font-sans text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-brand-500 rounded-md dark:rounded-none';
 
   const backpressureBarColor =
     metrics.currentBackpressure > 80 ? 'bg-signal-red' :
@@ -168,9 +168,9 @@ export default function Backpressure() {
   return (
     <div className="space-y-6">
       <div className="max-w-3xl">
-        <div className="label-mono text-signal-cyan mb-2">
-          [ {t('simulators.backpressure.title')} ]
-        </div>
+        <span className="inline-block text-xs font-medium text-slate-600 dark:text-tactical-label bg-slate-100 dark:bg-tactical-raised px-2.5 py-1 rounded-full mb-2">
+          {t('simulators.backpressure.title')}
+        </span>
       </div>
 
       <Panel
@@ -182,18 +182,18 @@ export default function Backpressure() {
           </TacticalButton>
         }
       >
-        <details className="mb-4 font-mono text-sm text-slate-600 dark:text-tactical-dim">
-          <summary className="cursor-pointer label-mono text-signal-cyan hover:text-signal-green transition-colors">
-            O que é Backpressure?
+        <details className="mb-4 font-sans text-sm text-slate-600 dark:text-tactical-dim">
+          <summary className="cursor-pointer text-sm font-medium text-slate-700 dark:text-tactical-text hover:text-brand-600 dark:hover:text-signal-green transition-colors">
+            O que é backpressure?
           </summary>
-          <div className="mt-2 tactical-panel border-l-2 border-l-signal-cyan p-4 space-y-3">
+          <div className="mt-2 bg-slate-50 dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-lg dark:rounded-none p-4 space-y-3">
             <p>
               Backpressure é um mecanismo fundamental em sistemas distribuídos que lida com situações onde um componente não consegue processar dados na mesma velocidade em que os recebe. É como uma válvula de pressão que regula o fluxo de dados para evitar sobrecarga.
             </p>
             <p>
               No mundo real, isso acontece quando, por exemplo, um serviço de processamento de pedidos recebe mais requisições do que consegue processar. Sem backpressure, o sistema poderia falhar, perder dados ou consumir memória indefinidamente.
             </p>
-            <h3 className="font-mono text-sm font-semibold text-slate-900 dark:text-tactical-text mt-4 mb-2">Como funciona o simulador:</h3>
+            <h3 className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text mt-4 mb-2">Como funciona o simulador</h3>
             <ul className="list-disc list-inside space-y-2">
               <li>
                 <strong>Produtor:</strong> Gera mensagens em uma taxa configurável (mensagens/segundo)
@@ -220,9 +220,9 @@ export default function Backpressure() {
         </details>
 
         {isConfigOpen && (
-          <div className="mb-4 grid grid-cols-2 gap-4 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4">
+          <div className="mb-4 grid grid-cols-2 gap-4 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 rounded-lg dark:rounded-none">
             <div>
-              <label className="block label-mono text-slate-500 dark:text-tactical-label mb-1">Taxa de Produção (msg/s)</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">Taxa de produção (msg/s)</label>
               <input
                 type="number"
                 value={producers[0].rate}
@@ -231,7 +231,7 @@ export default function Backpressure() {
               />
             </div>
             <div>
-              <label className="block label-mono text-slate-500 dark:text-tactical-label mb-1">Taxa de Consumo (msg/s)</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">Taxa de consumo (msg/s)</label>
               <input
                 type="number"
                 value={consumer.processingRate}
@@ -240,7 +240,7 @@ export default function Backpressure() {
               />
             </div>
             <div>
-              <label className="block label-mono text-slate-500 dark:text-tactical-label mb-1">Tamanho Máximo da Fila</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">Tamanho máximo da fila</label>
               <input
                 type="number"
                 value={consumer.maxQueueSize}
@@ -265,9 +265,9 @@ export default function Backpressure() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
-            <div className="label-mono text-slate-500 dark:text-tactical-label mb-2">{t('simulators.backpressure.title')}</div>
-            <div className="h-2 bg-slate-200 dark:bg-tactical-border overflow-hidden">
+          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg dark:rounded-none">
+            <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t('simulators.backpressure.title')}</div>
+            <div className="h-2 bg-slate-200 dark:bg-tactical-border overflow-hidden rounded-full">
               <div
                 className={`h-full transition-all duration-300 ${backpressureBarColor}`}
                 style={{ width: `${metrics.currentBackpressure}%` }}
@@ -277,8 +277,8 @@ export default function Backpressure() {
               {Math.round(metrics.currentBackpressure)}%
             </div>
           </div>
-          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
-            <div className="label-mono text-slate-500 dark:text-tactical-label mb-2">{t('simulators.backpressure.producer_status.title')}</div>
+          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg dark:rounded-none">
+            <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t('simulators.backpressure.producer_status.title')}</div>
             {producers[0].isThrottled ? (
               <StatusBadge variant="in-progress" label={t('simulators.backpressure.producer_status.throttled')} />
             ) : (
@@ -288,17 +288,17 @@ export default function Backpressure() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg dark:rounded-none">
             <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">{metrics.producedTotal}</div>
-            <div className="label-mono mt-2">{t('simulators.backpressure.labels.produced')}</div>
+            <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.backpressure.labels.produced')}</div>
           </div>
-          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg dark:rounded-none">
             <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green">{metrics.processedTotal}</div>
-            <div className="label-mono mt-2">{t('simulators.backpressure.labels.processed')}</div>
+            <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.backpressure.labels.processed')}</div>
           </div>
-          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg dark:rounded-none">
             <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-red">{metrics.droppedTotal}</div>
-            <div className="label-mono mt-2">{t('simulators.backpressure.labels.dropped')}</div>
+            <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.backpressure.labels.dropped')}</div>
           </div>
         </div>
       </Panel>
@@ -308,16 +308,16 @@ export default function Backpressure() {
           {messages.slice(-5).map(message => (
             <div
               key={message.id}
-              className="flex justify-between items-center border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
+              className="flex justify-between items-center border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2 rounded-md dark:rounded-none"
             >
               <StatusBadge variant={messageStatusVariant(message.status)} label={message.status.toUpperCase()} />
               <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim tabular-nums">{((Date.now() - message.timestamp) / 1000).toFixed(1)}s ago</span>
             </div>
           ))}
           {messages.slice(-5).length === 0 && (
-            <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center">
-              <p className="font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">
-                —
+            <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center rounded-lg dark:rounded-none">
+              <p className="font-sans text-xs text-slate-400 dark:text-tactical-label">
+                Nenhuma mensagem recente
               </p>
             </div>
           )}

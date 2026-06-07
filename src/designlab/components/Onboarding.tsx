@@ -357,7 +357,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
                     {step.icon}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h2 className="font-mono uppercase tracking-wider text-xl font-bold text-slate-900 dark:text-tactical-text mb-2">
+                    <h2 className="font-sans text-xl font-bold text-slate-900 dark:text-tactical-text mb-2">
                       {step.title}
                     </h2>
                     <p className="text-slate-600 dark:text-tactical-dim text-sm leading-relaxed">
@@ -394,7 +394,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
                     <button
                       key={s.id}
                       onClick={() => setCurrentStep(index)}
-                      className={`h-2 dark:rounded-none transition-all duration-300 ${
+                      className={`h-2 rounded-full dark:rounded-none transition-all duration-300 ${
                         index === currentStep
                           ? 'bg-signal-green w-6'
                           : index < currentStep
@@ -437,7 +437,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
                 </div>
 
                 <div className="mt-3 text-center">
-                  <span className="font-mono uppercase tracking-wider text-xs text-slate-500 dark:text-tactical-label">
+                  <span className="font-sans text-xs text-slate-500 dark:text-tactical-label">
                     {currentStep + 1} de {onboardingSteps.length} • Use ← → para navegar
                   </span>
                 </div>

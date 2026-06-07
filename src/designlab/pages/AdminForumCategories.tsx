@@ -6,8 +6,8 @@ import { TacticalButton } from '../components/tactical';
 import type { ForumCategory } from '../types';
 
 const inputClass =
-  'block w-full bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2';
-const labelClass = 'block label-mono text-slate-600 dark:text-tactical-dim mb-1';
+  'block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2';
+const labelClass = 'block text-sm font-medium text-slate-600 dark:text-tactical-dim mb-1';
 
 const AdminForumCategories = () => {
   const { appUser } = useAuth();
@@ -214,8 +214,8 @@ const AdminForumCategories = () => {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="sm:flex sm:items-center sm:justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-mono uppercase tracking-wider font-bold text-slate-900 dark:text-tactical-text flex items-center gap-3 before:content-[''] before:h-6 before:w-1 before:bg-signal-amber before:shrink-0">
-              Gerenciar Categorias do Fórum
+            <h1 className="text-2xl font-sans font-bold tracking-tight text-slate-900 dark:text-tactical-text">
+              Gerenciar categorias do fórum
             </h1>
             <p className="mt-2 text-sm text-slate-600 dark:text-tactical-dim">
               Crie e edite categorias para organizar os tópicos do fórum.
@@ -262,14 +262,14 @@ const AdminForumCategories = () => {
         {(isCreating || editingCategory) && (
           <div className="tactical-panel mb-8 p-6 dark:rounded-none">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="font-mono uppercase tracking-wider text-xl font-semibold text-slate-900 dark:text-tactical-text">
+              <h2 className="font-sans text-xl font-semibold text-slate-900 dark:text-tactical-text">
                 {isCreating ? 'Criar Nova Categoria' : 'Editar Categoria'}
               </h2>
               {editingCategory && (
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-slate-500 dark:text-tactical-label">Preview:</span>
                   <span
-                    className="inline-flex items-center px-3 py-1 text-sm font-mono uppercase tracking-wider border dark:rounded-none"
+                    className="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full dark:rounded-none"
                     style={{
                       backgroundColor: `${formData.color}20`,
                       color: formData.color,
@@ -425,16 +425,16 @@ const AdminForumCategories = () => {
                   <table className="min-w-full border-collapse text-sm">
                     <thead className="sticky top-0 z-10 bg-slate-50 dark:bg-tactical-surface">
                       <tr>
-                        <th scope="col" className="label-mono px-6 py-3 text-left border-b border-slate-200 dark:border-tactical-border">
+                        <th scope="col" className="text-xs font-medium text-slate-500 dark:text-tactical-label px-6 py-3 text-left border-b border-slate-200 dark:border-tactical-border">
                           Nome / Cor
                         </th>
-                        <th scope="col" className="label-mono px-6 py-3 text-left border-b border-slate-200 dark:border-tactical-border">
+                        <th scope="col" className="text-xs font-medium text-slate-500 dark:text-tactical-label px-6 py-3 text-left border-b border-slate-200 dark:border-tactical-border">
                           Descrição
                         </th>
-                        <th scope="col" className="label-mono px-6 py-3 text-left border-b border-slate-200 dark:border-tactical-border">
+                        <th scope="col" className="text-xs font-medium text-slate-500 dark:text-tactical-label px-6 py-3 text-left border-b border-slate-200 dark:border-tactical-border">
                           Ordem
                         </th>
-                        <th scope="col" className="label-mono px-6 py-3 text-left border-b border-slate-200 dark:border-tactical-border">
+                        <th scope="col" className="text-xs font-medium text-slate-500 dark:text-tactical-label px-6 py-3 text-left border-b border-slate-200 dark:border-tactical-border">
                           Tópicos
                         </th>
                         <th scope="col" className="relative px-6 py-3">
@@ -549,8 +549,8 @@ const AdminForumCategories = () => {
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm overflow-y-auto h-full w-full z-50" onClick={handleDeleteCancel}>
             <div className="relative top-20 mx-auto p-5 w-96 tactical-panel dark:rounded-none" onClick={(e) => e.stopPropagation()}>
               <div className="mt-3">
-                <h3 className="font-mono uppercase tracking-wider text-lg font-medium text-slate-900 dark:text-tactical-text mb-4">
-                  Excluir Categoria
+                <h3 className="font-sans text-lg font-medium text-slate-900 dark:text-tactical-text mb-4">
+                  Excluir categoria
                 </h3>
                 
                 <div className="mb-4">

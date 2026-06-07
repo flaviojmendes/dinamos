@@ -101,9 +101,9 @@ const STRINGS: Record<Lang, Strings> = {
       'O guardrail mais forte é não ter o segredo no contexto (menor privilégio / isolamento).',
     ],
     outcome: {
-      leaked: 'SEGREDO VAZADO',
-      blocked: 'ATAQUE BLOQUEADO',
-      safe: 'ATAQUE NEUTRALIZADO',
+      leaked: 'Segredo vazado',
+      blocked: 'Ataque bloqueado',
+      safe: 'Ataque neutralizado',
     },
     outcomeNote: {
       leaked: 'Nenhuma camada ativa parou este ataque.',
@@ -222,9 +222,9 @@ const STRINGS: Record<Lang, Strings> = {
       'The strongest guardrail is keeping the secret out of the context entirely (least privilege).',
     ],
     outcome: {
-      leaked: 'SECRET LEAKED',
-      blocked: 'ATTACK BLOCKED',
-      safe: 'ATTACK NEUTRALIZED',
+      leaked: 'Secret leaked',
+      blocked: 'Attack blocked',
+      safe: 'Attack neutralized',
     },
     outcomeNote: {
       leaked: 'No active layer stopped this attack.',
@@ -404,25 +404,25 @@ const STATUS_STYLE: Record<StageStatus, { box: string; chip: string; dot: string
     box: 'border-signal-amber/50',
     chip: 'text-signal-amber border-signal-amber/40',
     dot: 'bg-signal-amber',
-    label: () => 'BLOCK',
+    label: () => 'Blocked',
   },
   pass: {
     box: 'border-signal-green/40',
     chip: 'text-signal-green border-signal-green/40',
     dot: 'bg-signal-green',
-    label: () => 'PASS',
+    label: () => 'Pass',
   },
   danger: {
     box: 'border-signal-red/50',
     chip: 'text-signal-red border-signal-red/50',
     dot: 'bg-signal-red',
-    label: () => 'COMPLY',
+    label: () => 'Complied',
   },
   off: {
     box: 'border-slate-300 dark:border-tactical-line',
     chip: 'text-slate-400 dark:text-tactical-label border-slate-300 dark:border-tactical-line',
     dot: 'bg-slate-400 dark:bg-tactical-label',
-    label: (s) => s.stageOff.toUpperCase(),
+    label: (s) => s.stageOff,
   },
 };
 
@@ -453,7 +453,7 @@ export default function PromptInjectionSimulator() {
         <nav className="mb-8">
           <Link
             to="/seguranca/prompt-injection"
-            className="inline-flex items-center text-slate-500 dark:text-slate-400 hover:text-white transition-colors font-mono text-sm"
+            className="inline-flex items-center text-slate-500 dark:text-slate-400 hover:text-white transition-colors font-sans text-sm"
           >
             <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -480,7 +480,7 @@ export default function PromptInjectionSimulator() {
                 {s.systemPrompt}
               </p>
               <div className="mt-3 flex items-center gap-2 border border-signal-red/40 px-3 py-2">
-                <span className="font-mono text-[11px] uppercase tracking-wider text-signal-red">
+                <span className="font-sans text-xs font-medium text-signal-red">
                   {s.secretLabel}
                 </span>
                 <AnimatePresence mode="wait" initial={false}>
@@ -499,7 +499,7 @@ export default function PromptInjectionSimulator() {
             </Panel>
 
             <Panel title={s.attacksTitle} accent="red">
-              <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim mb-3">{s.attacksHint}</p>
+              <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim mb-3">{s.attacksHint}</p>
               <div className="space-y-2">
                 {ATTACK_ORDER.map((id) => {
                   const a = s.attacks[id];
@@ -517,14 +517,14 @@ export default function PromptInjectionSimulator() {
                       }`}
                     >
                       <div className="flex items-center justify-between gap-2">
-                        <span className="font-mono text-sm font-medium text-slate-900 dark:text-tactical-text">
+                        <span className="font-sans text-sm font-medium text-slate-900 dark:text-tactical-text">
                           {a.label}
                         </span>
-                        <span className="font-mono text-[10px] uppercase tracking-wider text-slate-500 dark:text-tactical-label border border-slate-300 dark:border-tactical-line px-1.5 py-0.5">
+                        <span className="font-sans text-[10px] text-slate-500 dark:text-tactical-label rounded-full border border-slate-300 dark:border-tactical-line px-2 py-0.5">
                           {a.category}
                         </span>
                       </div>
-                      <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim mt-1">{a.desc}</p>
+                      <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim mt-1">{a.desc}</p>
                     </motion.button>
                   );
                 })}
@@ -532,7 +532,7 @@ export default function PromptInjectionSimulator() {
             </Panel>
 
             <Panel title={s.defensesTitle} accent="green">
-              <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim mb-3">{s.defensesHint}</p>
+              <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim mb-3">{s.defensesHint}</p>
               <div className="space-y-2">
                 {DEFENSE_ORDER.map((id) => {
                   const d = s.defenses[id];
@@ -571,10 +571,10 @@ export default function PromptInjectionSimulator() {
                         )}
                       </motion.span>
                       <span>
-                        <span className="font-mono text-sm font-medium text-slate-900 dark:text-tactical-text block">
+                        <span className="font-sans text-sm font-medium text-slate-900 dark:text-tactical-text block">
                           {d.label}
                         </span>
-                        <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{d.desc}</span>
+                        <span className="font-sans text-xs text-slate-500 dark:text-tactical-dim">{d.desc}</span>
                       </span>
                     </motion.button>
                   );
@@ -587,7 +587,7 @@ export default function PromptInjectionSimulator() {
           <div className="space-y-6">
             <Panel title={s.payloadTitle} accent="amber">
               <div className="mb-2">
-                <span className="font-mono text-[11px] uppercase tracking-wider text-slate-500 dark:text-tactical-label border border-slate-300 dark:border-tactical-line px-1.5 py-0.5">
+                <span className="font-sans text-xs text-slate-500 dark:text-tactical-label rounded-full border border-slate-300 dark:border-tactical-line px-2 py-0.5">
                   {current.channel === 'doc' ? s.channelDoc : s.channelUser}
                 </span>
               </div>
@@ -638,7 +638,7 @@ export default function PromptInjectionSimulator() {
                           style={{ originY: 0 }}
                         />
                         <div className="flex items-center justify-between gap-2">
-                          <span className="flex items-center gap-2 font-mono text-sm font-medium text-slate-900 dark:text-tactical-text">
+                          <span className="flex items-center gap-2 font-sans text-sm font-medium text-slate-900 dark:text-tactical-text">
                             <motion.span
                               className={`w-2 h-2 rounded-full ${st.dot}`}
                               animate={isStop ? { scale: [1, 1.6, 1] } : {}}
@@ -647,7 +647,7 @@ export default function PromptInjectionSimulator() {
                             {s.stageNames[stage.id]}
                           </span>
                           <motion.span
-                            className={`font-mono text-[10px] uppercase tracking-wider border px-1.5 py-0.5 ${st.chip}`}
+                            className={`font-sans text-[10px] rounded-full border px-2 py-0.5 ${st.chip}`}
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: idx * 0.18 + 0.2 }}
@@ -655,7 +655,7 @@ export default function PromptInjectionSimulator() {
                             {st.label(s)}
                           </motion.span>
                         </div>
-                        <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim mt-1">{stage.note}</p>
+                        <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim mt-1">{stage.note}</p>
                       </motion.div>
                       {idx < result.stages.length - 1 && (
                         <motion.div
@@ -701,15 +701,15 @@ export default function PromptInjectionSimulator() {
                     transition={{ repeat: isLeak ? Infinity : 0, duration: 0.9 }}
                   />
                   <h3
-                    className={`font-mono uppercase tracking-wider text-sm font-semibold ${
+                    className={`font-sans text-sm font-semibold ${
                       isLeak ? 'text-signal-red' : 'text-signal-green'
                     }`}
                   >
                     {s.outcome[result.outcome]}
                   </h3>
                 </div>
-                <p className="font-mono text-xs text-slate-600 dark:text-tactical-dim mb-3">{result.outcomeNote}</p>
-                <div className="text-xs font-mono uppercase tracking-wider text-slate-500 dark:text-tactical-label mb-1">
+                <p className="font-sans text-xs text-slate-600 dark:text-tactical-dim mb-3">{result.outcomeNote}</p>
+                <div className="text-xs font-sans font-medium text-slate-500 dark:text-tactical-label mb-1">
                   {s.responseTitle}
                 </div>
                 <p
@@ -730,7 +730,7 @@ export default function PromptInjectionSimulator() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -6 }}
                   transition={{ duration: 0.25 }}
-                  className="font-mono text-sm text-slate-700 dark:text-tactical-text"
+                  className="font-sans text-sm text-slate-700 dark:text-tactical-text"
                 >
                   {s.explain[result.outcome]}
                 </motion.p>
@@ -743,8 +743,8 @@ export default function PromptInjectionSimulator() {
           <Panel title={s.takeawaysTitle} accent="green">
             <ul className="space-y-2">
               {s.takeaways.map((t, i) => (
-                <li key={i} className="flex items-start gap-3 font-mono text-sm text-slate-700 dark:text-tactical-text">
-                  <span className="shrink-0 w-5 h-5 border border-signal-green/40 text-signal-green flex items-center justify-center text-xs">
+                <li key={i} className="flex items-start gap-3 font-sans text-sm text-slate-700 dark:text-tactical-text">
+                  <span className="shrink-0 w-5 h-5 rounded-full border border-signal-green/40 text-signal-green flex items-center justify-center text-xs">
                     {i + 1}
                   </span>
                   <span>{t}</span>

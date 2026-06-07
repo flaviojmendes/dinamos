@@ -22,7 +22,7 @@ export default function Landing() {
   if (authLoading) {
     return (
       <div className="min-h-screen bg-grid bg-canvas-paper dark:bg-canvas-dark flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-600 dark:border-signal-green"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-600 dark:border-brand-400"></div>
       </div>
     );
   }
@@ -86,9 +86,9 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-28">
           <div className="text-center mb-12">
             <Logo size="large" showSubtitle={true} className="mb-8 justify-center" />
-            <h1 className="text-5xl md:text-7xl font-mono font-bold text-slate-900 dark:text-tactical-text mb-8 tracking-tight">
+            <h1 className="text-5xl md:text-7xl font-sans font-bold text-slate-900 dark:text-tactical-text mb-8 tracking-tight">
               Pratique System Design
-              <span className="block text-brand-600 dark:text-signal-green mt-2">
+              <span className="block text-brand-600 dark:text-emerald-400 mt-2">
                 Como um Expert
               </span>
             </h1>
@@ -97,24 +97,24 @@ export default function Landing() {
             </p>
             
             <div className="mb-12">
-              <Tag color="green">100% GRATUITO</Tag>
+              <Tag color="green">100% gratuito</Tag>
             </div>
 
             {/* Login Buttons */}
             <div className="max-w-md mx-auto">
               {error && (
-                <div className="mb-6 border border-signal-red/40 bg-signal-red/10 text-signal-red px-4 py-3 text-sm font-mono uppercase tracking-wider">
+                <div className="mb-6 border border-signal-red/40 bg-signal-red/10 text-signal-red px-4 py-3 text-sm font-sans rounded-lg">
                   {error}
                 </div>
               )}
 
-              <div className="tactical-panel dark:rounded-none card-shadow dark:shadow-none py-8 px-6 transition-colors duration-200">
+              <div className="tactical-panel rounded-xl dark:rounded-none card-shadow dark:shadow-none py-8 px-6 transition-colors duration-200">
                 <div className="space-y-4">
                   {/* Google Login */}
                   <button
                     onClick={handleGoogleLogin}
                     disabled={loading}
-                    className="w-full flex justify-center items-center gap-3 py-3 px-4 border border-slate-300 dark:border-tactical-border bg-white dark:bg-tactical-surface text-sm font-mono uppercase tracking-wider font-medium text-slate-700 dark:text-tactical-text hover:bg-slate-50 dark:hover:bg-tactical-raised focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                    className="w-full flex justify-center items-center gap-3 py-3 px-4 border border-slate-300 dark:border-tactical-border rounded-lg bg-white dark:bg-tactical-surface text-sm font-sans font-medium text-slate-700 dark:text-tactical-text hover:bg-slate-50 dark:hover:bg-tactical-raised focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 dark:focus:ring-brand-500 dark:rounded-none disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                   >
                     <svg className="w-5 h-5" viewBox="0 0 24 24">
                       <path
@@ -141,7 +141,7 @@ export default function Landing() {
                   <button
                     onClick={handleGithubLogin}
                     disabled={loading}
-                    className="w-full flex justify-center items-center gap-3 py-3 px-4 border border-transparent bg-slate-900 dark:bg-white text-sm font-mono uppercase tracking-wider font-medium text-white dark:text-black hover:bg-slate-700 dark:hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                    className="w-full flex justify-center items-center gap-3 py-3 px-4 border border-transparent rounded-lg bg-slate-900 dark:bg-white text-sm font-sans font-medium text-white dark:text-black hover:bg-slate-700 dark:hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 dark:focus:ring-brand-500 dark:rounded-none disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                   >
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                       <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
@@ -165,7 +165,7 @@ export default function Landing() {
         {/* Features Section */}
         <div className="mb-24">
           <div className="text-center mb-16">
-            <h2 className="flex items-center justify-center gap-3 font-mono uppercase tracking-wider text-3xl md:text-4xl font-bold text-slate-900 dark:text-tactical-text mb-4 before:content-[''] before:h-6 before:w-1 before:bg-signal-amber before:shrink-0">
+            <h2 className="text-3xl md:text-4xl font-sans font-bold text-slate-900 dark:text-tactical-text mb-4">
               Por que escolher o Design Lab?
             </h2>
             <p className="text-lg text-slate-600 dark:text-tactical-dim max-w-2xl mx-auto">
@@ -231,11 +231,11 @@ export default function Landing() {
                 color: ''
               }
             ].map((feature, i) => (
-              <div key={i} className="tactical-panel dark:rounded-none card-shadow dark:shadow-none p-8 transition-colors">
-                <div className="w-16 h-16 bg-slate-900 dark:bg-tactical-raised text-white dark:text-signal-green border dark:border-tactical-border flex items-center justify-center mb-6">
+              <div key={i} className="tactical-panel rounded-xl dark:rounded-none card-shadow dark:shadow-none p-8 transition-colors">
+                <div className="w-16 h-16 rounded-xl bg-slate-900 dark:bg-tactical-raised text-white dark:text-emerald-400 border dark:border-tactical-border flex items-center justify-center mb-6">
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-mono uppercase tracking-wider font-bold text-slate-900 dark:text-tactical-text mb-3">
+                <h3 className="text-xl font-sans font-bold text-slate-900 dark:text-tactical-text mb-3">
                   {feature.title}
                 </h3>
                 <p className="text-slate-600 dark:text-tactical-dim leading-relaxed">
@@ -249,8 +249,8 @@ export default function Landing() {
         {/* How it Works Section */}
         <div className="border-t border-slate-200 dark:border-tactical-border pt-16">
           <div className="text-center mb-16">
-            <h3 className="flex items-center justify-center gap-3 font-mono uppercase tracking-wider text-3xl md:text-4xl font-bold text-slate-900 dark:text-tactical-text mb-4 before:content-[''] before:h-6 before:w-1 before:bg-signal-amber before:shrink-0">
-              Como Funciona
+            <h3 className="text-3xl md:text-4xl font-sans font-bold text-slate-900 dark:text-tactical-text mb-4">
+              Como funciona
             </h3>
             <p className="text-lg text-slate-600 dark:text-tactical-dim max-w-2xl mx-auto">
               Um fluxo simples e eficiente para desenvolver suas habilidades
@@ -279,11 +279,11 @@ export default function Landing() {
                   desc: 'Obtenha análise automática da sua solução com recomendações de melhoria.'
                 }
               ].map((step, i) => (
-                <div key={i} className="tactical-panel dark:rounded-none card-shadow dark:shadow-none p-8 text-center">
-                  <div className="text-4xl font-mono font-bold text-brand-600 dark:text-signal-green mb-4">
+                <div key={i} className="tactical-panel rounded-xl dark:rounded-none card-shadow dark:shadow-none p-8 text-center">
+                  <div className="text-4xl font-mono font-bold text-brand-600 dark:text-emerald-400 mb-4">
                     {step.step}
                   </div>
-                  <h4 className="text-xl font-mono uppercase tracking-wider font-bold text-slate-900 dark:text-tactical-text mb-3">
+                  <h4 className="text-xl font-sans font-bold text-slate-900 dark:text-tactical-text mb-3">
                     {step.title}
                   </h4>
                   <p className="text-slate-600 dark:text-tactical-dim">
@@ -296,11 +296,11 @@ export default function Landing() {
         </div>
 
         {/* CTA Section */}
-        <div className="mt-24 tactical-panel dark:rounded-none border-signal-amber/30 p-12 text-center card-shadow dark:shadow-none">
+        <div className="mt-24 tactical-panel rounded-xl dark:rounded-none border-slate-200 dark:border-tactical-border p-12 text-center card-shadow dark:shadow-none">
           <div className="mb-6">
-            <Tag color="green">100% GRATUITO</Tag>
+            <Tag color="green">100% gratuito</Tag>
           </div>
-          <h3 className="text-3xl md:text-4xl font-mono uppercase tracking-wider font-bold text-slate-900 dark:text-tactical-text mb-4">
+          <h3 className="text-3xl md:text-4xl font-sans font-bold text-slate-900 dark:text-tactical-text mb-4">
             Pronto para começar?
           </h3>
           <p className="text-xl text-slate-600 dark:text-tactical-dim mb-8 max-w-2xl mx-auto">
@@ -310,14 +310,14 @@ export default function Landing() {
             <button
               onClick={handleGoogleLogin}
               disabled={loading}
-              className="px-8 py-3 bg-slate-900 text-white font-mono uppercase tracking-wider font-medium hover:bg-slate-700 dark:bg-white dark:text-black dark:hover:bg-slate-200 dark:rounded-none focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 dark:focus:ring-signal-green disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-8 py-3 rounded-lg bg-slate-900 text-white font-sans font-medium hover:bg-slate-700 dark:bg-white dark:text-black dark:hover:bg-slate-200 dark:rounded-none focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 dark:focus:ring-brand-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Entrar com Google
             </button>
             <button
               onClick={handleGithubLogin}
               disabled={loading}
-              className="px-8 py-3 bg-transparent text-slate-900 dark:text-tactical-text font-mono uppercase tracking-wider font-medium border border-slate-300 dark:border-tactical-line hover:border-slate-900 dark:hover:border-signal-green dark:rounded-none focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 dark:focus:ring-signal-green disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-8 py-3 rounded-lg bg-transparent text-slate-900 dark:text-tactical-text font-sans font-medium border border-slate-300 dark:border-tactical-line hover:border-slate-900 dark:hover:border-brand-400 dark:rounded-none focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 dark:focus:ring-brand-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Entrar com GitHub
             </button>

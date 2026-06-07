@@ -186,10 +186,10 @@ export default function VerticalScalingSimulator() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <div className="label-mono text-signal-cyan mb-2">
-          [ {t('simulators.vertical_scaling.title')} ]
-        </div>
-        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
+        <span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800 px-3 py-1 text-sm font-sans font-medium text-slate-700 dark:text-slate-300 mb-2">
+          {t('simulators.vertical_scaling.title')}
+        </span>
+        <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-slate-400">
           {t('simulators.vertical_scaling.intro')}
         </p>
       </motion.div>
@@ -224,15 +224,15 @@ export default function VerticalScalingSimulator() {
               </div>
             }
           >
-            <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim mb-6">
+            <p className="font-sans text-xs text-slate-500 dark:text-slate-400 mb-6">
               {t('simulators.vertical_scaling.level_of_total', { current: currentTier + 1, total: SERVER_TIERS.length })}
             </p>
 
             <div className="space-y-4 mb-6">
               <div>
-                <div className="flex justify-between font-mono text-xs mb-1 text-slate-600 dark:text-tactical-dim">
+                <div className="flex justify-between font-sans text-xs mb-1 text-slate-600 dark:text-slate-400">
                   <span>{t('simulators.vertical_scaling.resources.cpu', { cores: currentServer.cpu })}</span>
-                  <span>{Math.round(serverLoad)}%</span>
+                  <span className="font-mono">{Math.round(serverLoad)}%</span>
                 </div>
                 <div className="h-2 bg-slate-100 dark:bg-tactical-raised overflow-hidden">
                   <motion.div
@@ -244,9 +244,9 @@ export default function VerticalScalingSimulator() {
                 </div>
               </div>
               <div>
-                <div className="flex justify-between font-mono text-xs mb-1 text-slate-600 dark:text-tactical-dim">
+                <div className="flex justify-between font-sans text-xs mb-1 text-slate-600 dark:text-slate-400">
                   <span>{t('simulators.vertical_scaling.resources.memory', { gb: currentServer.memory })}</span>
-                  <span>{Math.round(serverLoad)}%</span>
+                  <span className="font-mono">{Math.round(serverLoad)}%</span>
                 </div>
                 <div className="h-2 bg-slate-100 dark:bg-tactical-raised overflow-hidden">
                   <motion.div
@@ -258,9 +258,9 @@ export default function VerticalScalingSimulator() {
                 </div>
               </div>
               <div>
-                <div className="flex justify-between font-mono text-xs mb-1 text-slate-600 dark:text-tactical-dim">
+                <div className="flex justify-between font-sans text-xs mb-1 text-slate-600 dark:text-slate-400">
                   <span>{t('simulators.vertical_scaling.resources.storage', { gb: currentServer.storage })}</span>
-                  <span>{Math.round(serverLoad)}%</span>
+                  <span className="font-mono">{Math.round(serverLoad)}%</span>
                 </div>
                 <div className="h-2 bg-slate-100 dark:bg-tactical-raised overflow-hidden">
                   <motion.div
@@ -273,8 +273,8 @@ export default function VerticalScalingSimulator() {
               </div>
             </div>
 
-            <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4">
-              <h3 className="label-mono mb-3">{t('simulators.vertical_scaling.queue_title')}</h3>
+            <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4">
+              <h3 className="text-sm font-sans font-semibold text-slate-900 dark:text-slate-100 mb-3">{t('simulators.vertical_scaling.queue_title')}</h3>
               <div className="flex gap-2 flex-wrap">
                 {requests
                   .filter(r => r.status === 'queued' || r.status === 'processing')
@@ -304,7 +304,7 @@ export default function VerticalScalingSimulator() {
           <Panel title={t('simulators.vertical_scaling.controls_title')} accent="amber" className="mb-6">
             <div className="space-y-4">
               <div>
-                <label className="block label-mono mb-2">
+                <label className="block text-sm font-sans font-medium text-slate-600 dark:text-slate-400 mb-2">
                   {t('simulators.vertical_scaling.request_rate', { rate: requestRate })}
                 </label>
                 <input
@@ -328,32 +328,32 @@ export default function VerticalScalingSimulator() {
 
           <Panel title={t('simulators.vertical_scaling.stats_title')} accent="green">
             <div className="grid grid-cols-2 gap-3">
-              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+              <div className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-3">
                 <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green">{stats.processed}</div>
-                <div className="label-mono mt-2">{t('simulators.vertical_scaling.processed')}</div>
+                <div className="text-xs font-sans font-medium text-slate-500 dark:text-slate-400 mt-2">{t('simulators.vertical_scaling.processed')}</div>
               </div>
-              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+              <div className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-3">
                 <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-red">{stats.rejected}</div>
-                <div className="label-mono mt-2">{t('simulators.vertical_scaling.rejected')}</div>
+                <div className="text-xs font-sans font-medium text-slate-500 dark:text-slate-400 mt-2">{t('simulators.vertical_scaling.rejected')}</div>
               </div>
-              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+              <div className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-3">
                 <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">
                   {stats.processed + stats.rejected === 0 
                     ? '0' 
                     : Math.round((stats.processed / (stats.processed + stats.rejected)) * 100)
                   }%
                 </div>
-                <div className="label-mono mt-2">{t('simulators.vertical_scaling.success_rate')}</div>
+                <div className="text-xs font-sans font-medium text-slate-500 dark:text-slate-400 mt-2">{t('simulators.vertical_scaling.success_rate')}</div>
               </div>
-              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
-                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-slate-900 dark:text-tactical-text">{Math.floor(stats.uptime)}s</div>
-                <div className="label-mono mt-2">{t('simulators.vertical_scaling.uptime')}</div>
+              <div className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-3">
+                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-slate-900 dark:text-slate-100">{Math.floor(stats.uptime)}s</div>
+                <div className="text-xs font-sans font-medium text-slate-500 dark:text-slate-400 mt-2">{t('simulators.vertical_scaling.uptime')}</div>
               </div>
-              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+              <div className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-3">
                 <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-amber">R${stats.totalCost.toFixed(4)}</div>
-                <div className="label-mono mt-2">{t('simulators.vertical_scaling.total_cost')}</div>
+                <div className="text-xs font-sans font-medium text-slate-500 dark:text-slate-400 mt-2">{t('simulators.vertical_scaling.total_cost')}</div>
               </div>
-              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+              <div className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-3">
                 <div className={`font-mono text-3xl font-bold tabular-nums leading-none ${
                   serverLoad > 90 
                     ? 'text-signal-red' 
@@ -363,7 +363,7 @@ export default function VerticalScalingSimulator() {
                 }`}>
                   {Math.round(serverLoad)}%
                 </div>
-                <div className="label-mono mt-2">{t('simulators.vertical_scaling.current_load')}</div>
+                <div className="text-xs font-sans font-medium text-slate-500 dark:text-slate-400 mt-2">{t('simulators.vertical_scaling.current_load')}</div>
               </div>
             </div>
           </Panel>
@@ -382,10 +382,10 @@ export default function VerticalScalingSimulator() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="tactical-panel p-6 w-full max-w-lg"
+              className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 dark:rounded-none p-6 w-full max-w-lg"
             >
-              <h2 className="font-mono text-lg font-bold mb-4 text-slate-900 dark:text-tactical-text">{t('simulators.vertical_scaling.upgrade_modal.title')}</h2>
-              <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim mb-6">
+              <h2 className="font-sans text-lg font-semibold tracking-tight mb-4 text-slate-900 dark:text-slate-100">{t('simulators.vertical_scaling.upgrade_modal.title')}</h2>
+              <p className="font-sans text-sm text-slate-600 dark:text-slate-400 mb-6">
                 {t('simulators.vertical_scaling.upgrade_modal.text', { tier: SERVER_TIERS[currentTier + 1]?.name, cost: SERVER_TIERS[currentTier + 1]?.cost })}
               </p>
               <div className="flex justify-end gap-3">

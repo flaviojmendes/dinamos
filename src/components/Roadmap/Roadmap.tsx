@@ -125,12 +125,12 @@ export default function Roadmap() {
         {/* Header */}
         <div className="mb-6">
           <div className="flex items-center gap-3">
-            <h1 className="font-mono text-2xl font-bold uppercase tracking-wider text-slate-900 dark:text-tactical-text">
+            <h1 className="font-sans text-2xl font-bold tracking-tight text-slate-900 dark:text-tactical-text">
               {t('roadmap.title')}
             </h1>
             <Tag color="amber">{t('roadmap.ops_map')}</Tag>
           </div>
-          <p className="mt-1 max-w-3xl font-mono text-sm text-slate-500 dark:text-tactical-dim">
+          <p className="mt-1 max-w-3xl font-sans text-sm text-slate-500 dark:text-tactical-dim">
             {t('roadmap.description_1')} {t('roadmap.description_2')}
           </p>
         </div>
@@ -186,7 +186,7 @@ export default function Roadmap() {
                             ? 'border-signal-amber/50 text-signal-amber'
                             : 'border-slate-200 text-slate-500 dark:border-tactical-border dark:text-tactical-dim'
                       }`}>
-                        <span className="font-mono text-[9px] uppercase leading-none tracking-wider opacity-70">{t('roadmap.phase')}</span>
+                        <span className="font-sans text-[9px] leading-none opacity-70">{t('roadmap.phase')}</span>
                         <span className="font-mono text-lg font-bold leading-none tabular-nums">{String(index + 1).padStart(2, '0')}</span>
                       </div>
                     </div>
@@ -194,10 +194,10 @@ export default function Roadmap() {
                     {/* Main */}
                     <div className="min-w-0 flex-1">
                       <div className="mb-1 flex flex-wrap items-center gap-3">
-                        <h3 className="font-mono text-lg font-semibold text-slate-900 dark:text-tactical-text">{displayName}</h3>
+                        <h3 className="font-sans text-lg font-semibold text-slate-900 dark:text-tactical-text">{displayName}</h3>
                         <StatusBadge variant={status} label={statusLabel(status)} />
                       </div>
-                      <p className="mb-3 font-mono text-xs text-slate-500 dark:text-tactical-dim">{displayDescription}</p>
+                      <p className="mb-3 font-sans text-xs text-slate-500 dark:text-tactical-dim">{displayDescription}</p>
                       <div className="max-w-md">
                         <SegmentBar value={done} max={total || 1} color={status === 'completed' ? 'green' : status === 'in-progress' ? 'amber' : 'cyan'} caption={`${done}/${total}`} />
                       </div>
@@ -236,7 +236,7 @@ export default function Roadmap() {
                           <div className="label-mono mb-1.5">{t('roadmap.prerequisites')}</div>
                           <div className="flex flex-wrap gap-1.5">
                             {item.prerequisites.map(p => (
-                              <span key={p} className="border border-slate-200 px-2 py-0.5 font-mono text-[11px] text-slate-600 dark:border-tactical-border dark:text-tactical-dim">{p}</span>
+                              <span key={p} className="rounded-full border border-slate-200 px-2 py-0.5 font-sans text-[11px] text-slate-600 dark:border-tactical-border dark:text-tactical-dim">{p}</span>
                             ))}
                           </div>
                         </div>
@@ -246,7 +246,7 @@ export default function Roadmap() {
                           <div className="label-mono mb-1.5">{t('roadmap.skills')}</div>
                           <div className="flex flex-wrap gap-1.5">
                             {item.skills.map(s => (
-                              <span key={s} className="border border-slate-200 px-2 py-0.5 font-mono text-[11px] text-slate-600 dark:border-tactical-border dark:text-tactical-dim">{s}</span>
+                              <span key={s} className="rounded-full border border-slate-200 px-2 py-0.5 font-sans text-[11px] text-slate-600 dark:border-tactical-border dark:text-tactical-dim">{s}</span>
                             ))}
                           </div>
                         </div>
@@ -269,10 +269,10 @@ export default function Roadmap() {
                             <Link
                               key={child.path}
                               to={child.path}
-                              className="flex items-center gap-2 px-2 py-1.5 font-mono text-xs text-slate-600 transition-colors hover:bg-slate-100 dark:text-tactical-dim dark:hover:bg-tactical-surface"
+                              className="flex items-center gap-2 rounded-md px-2 py-1.5 font-sans text-xs text-slate-600 transition-colors hover:bg-slate-100 dark:text-tactical-dim dark:hover:bg-tactical-surface"
                             >
-                              <span className={childDone ? 'text-signal-green' : 'text-slate-400 dark:text-tactical-label'}>
-                                {childDone ? '[x]' : '[ ]'}
+                              <span className={childDone ? 'text-emerald-600 dark:text-signal-green' : 'text-slate-400 dark:text-tactical-label'} aria-hidden>
+                                {childDone ? '✓' : '○'}
                               </span>
                               {childName}
                             </Link>

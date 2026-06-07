@@ -136,7 +136,7 @@ export default function LlmGatewaySimulator() {
           </div>
         }
       >
-        <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
+        <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <Slider label={t(`${base}.controls.cache_rate`)} value={cacheRate} min={0} max={90} onChange={setCacheRate} cls={rangeClass} suffix="%" />
@@ -154,12 +154,12 @@ export default function LlmGatewaySimulator() {
           {/* Source node */}
           <div className="absolute left-[6%] top-1/2 -translate-y-1/2 -translate-x-0">
             <motion.div
-              className="border border-signal-cyan/60 bg-slate-50 dark:bg-tactical-raised px-3 py-3 text-center"
-              animate={isRunning ? { boxShadow: ['0 0 0px rgba(34,211,238,0)', '0 0 14px rgba(34,211,238,0.5)', '0 0 0px rgba(34,211,238,0)'] } : {}}
+              className="rounded-lg dark:rounded-none border border-signal-cyan/60 bg-slate-50 dark:bg-tactical-raised px-3 py-3 text-center"
+              animate={isRunning ? { scale: [1, 1.02, 1] } : {}}
               transition={{ duration: 1.6, repeat: Infinity }}
             >
-              <div className="font-mono text-lg font-bold text-signal-cyan">⇉</div>
-              <div className="label-mono mt-1">req/s {arrivalRate}</div>
+              <div className="font-sans text-lg font-bold text-signal-cyan">⇉</div>
+              <div className="font-sans text-[11px] font-medium mt-1 text-slate-500 dark:text-tactical-label">req/s <span className="font-mono tabular-nums">{arrivalRate}</span></div>
             </motion.div>
           </div>
 
@@ -170,7 +170,7 @@ export default function LlmGatewaySimulator() {
               className="absolute right-[5%] flex -translate-y-1/2 items-center"
               style={{ top: laneTop[route] }}
             >
-              <div className={`border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider ${routeText[route]}`}>
+              <div className={`rounded-md dark:rounded-none border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-1.5 font-sans text-[11px] font-medium ${routeText[route]}`}>
                 {t(`${base}.routes.${route}`)}
               </div>
             </div>
@@ -207,7 +207,7 @@ export default function LlmGatewaySimulator() {
         <Panel title={t(`${base}.labels.recent`)} accent="amber">
           <div className="space-y-2 min-h-[160px]">
             {logs.length === 0 ? (
-              <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">
+              <div className="rounded-lg dark:rounded-none border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center font-sans text-xs text-slate-400 dark:text-tactical-label">
                 {t(`${base}.labels.empty`)}
               </div>
             ) : (
@@ -220,9 +220,9 @@ export default function LlmGatewaySimulator() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ type: 'spring', stiffness: 420, damping: 32 }}
-                    className="flex items-center gap-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
+                    className="flex items-center gap-2 rounded-md dark:rounded-none border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
                   >
-                    <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim w-12 tabular-nums">#{log.id}</span>
+                    <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim w-12 tabular-nums">{log.id}</span>
                     <StatusBadge variant={routeVariant[log.route]} label={t(`${base}.routes.${log.route}`)} />
                     <span className="flex-1 text-right font-mono text-[11px] text-slate-500 dark:text-tactical-dim tabular-nums">
                       {log.cost > 0 ? `$${log.cost.toFixed(3)}` : '—'}
@@ -241,7 +241,7 @@ export default function LlmGatewaySimulator() {
 function Slider({ label, value, min, max, onChange, cls, suffix }: { label: string; value: number; min: number; max: number; onChange: (v: number) => void; cls: string; suffix?: string }) {
   return (
     <div className="space-y-2">
-      <label className="block label-mono text-slate-500 dark:text-tactical-label">{label}</label>
+      <label className="block font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{label}</label>
       <div className="flex items-center gap-2">
         <input type="range" min={min} max={max} value={value} onChange={e => onChange(Number(e.target.value))} className={cls} />
         <span className="font-mono text-sm w-12 text-right text-signal-cyan tabular-nums">{value}{suffix ?? ''}</span>

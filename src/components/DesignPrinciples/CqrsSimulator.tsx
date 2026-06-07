@@ -67,10 +67,10 @@ export default function CqrsSimulator() {
         accent="cyan"
         action={<TacticalButton size="sm" variant="ghost" onClick={reset}>{t(`${base}.buttons.reset`)}</TacticalButton>}
       >
-        <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
+        <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
 
         <div className="mb-6 space-y-2 max-w-md">
-          <label className="block label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.controls.lag`)}</label>
+          <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.lag`)}</label>
           <div className="flex items-center gap-2">
             <input type="range" min="100" max="2000" step="100" value={lag} onChange={e => setLag(Number(e.target.value))} className={rangeClass} />
             <span className="font-mono text-sm w-16 text-right text-signal-cyan tabular-nums">{lag}ms</span>
@@ -80,7 +80,7 @@ export default function CqrsSimulator() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Command side */}
           <div>
-            <div className="label-mono text-slate-500 dark:text-tactical-label mb-2">{t(`${base}.panels.command`)}</div>
+            <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t(`${base}.panels.command`)}</div>
             <div className="flex flex-col gap-2">
               <TacticalButton size="sm" variant="secondary" onClick={() => emit('created')}>{t(`${base}.commands.create`)}</TacticalButton>
               <TacticalButton size="sm" variant="secondary" onClick={() => emit('item_added')} disabled={!created}>{t(`${base}.commands.add_item`)}</TacticalButton>
@@ -91,8 +91,8 @@ export default function CqrsSimulator() {
 
           {/* Event log */}
           <div>
-            <div className="label-mono text-slate-500 dark:text-tactical-label mb-2">{t(`${base}.panels.log`)}</div>
-            <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-2 min-h-[160px] max-h-[220px] overflow-y-auto space-y-1">
+            <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t(`${base}.panels.log`)}</div>
+            <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg dark:rounded-none p-2 min-h-[160px] max-h-[220px] overflow-y-auto space-y-1">
               <AnimatePresence initial={false}>
                 {log.map((e, i) => {
                   const isApplied = i < applied;
@@ -102,29 +102,29 @@ export default function CqrsSimulator() {
                       layout
                       initial={{ opacity: 0, x: 16 }}
                       animate={{ opacity: isApplied ? 1 : 0.5 }}
-                      className={`flex items-center justify-between border px-2 py-1 ${eventColor[e.type]}`}
+                      className={`flex items-center justify-between border rounded-md dark:rounded-none px-2 py-1 ${eventColor[e.type]}`}
                     >
-                      <span className="font-mono text-[10px] uppercase tracking-wider">{t(`${base}.events.${e.type}`)}</span>
+                      <span className="font-sans text-[10px]">{t(`${base}.events.${e.type}`)}</span>
                       <span className="font-mono text-[10px] text-slate-400 dark:text-tactical-label">{isApplied ? '✓' : '…'}</span>
                     </motion.div>
                   );
                 })}
               </AnimatePresence>
               {log.length === 0 && (
-                <div className="px-3 py-8 text-center font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">{t(`${base}.labels.log_empty`)}</div>
+                <div className="px-3 py-8 text-center font-sans text-xs text-slate-400 dark:text-tactical-label">{t(`${base}.labels.log_empty`)}</div>
               )}
             </div>
           </div>
 
           {/* Read models */}
           <div>
-            <div className="label-mono text-slate-500 dark:text-tactical-label mb-2">{t(`${base}.panels.read`)}</div>
+            <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t(`${base}.panels.read`)}</div>
             <div className="space-y-3">
-              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
-                <motion.div key={status} initial={{ scale: 1.1 }} animate={{ scale: 1 }} className="font-mono text-lg font-bold text-slate-900 dark:text-tactical-text">
+              <div className="border border-slate-200 dark:border-tactical-border rounded-lg dark:rounded-none px-3 py-3">
+                <motion.div key={status} initial={{ scale: 1.1 }} animate={{ scale: 1 }} className="font-sans text-lg font-semibold tracking-tight text-slate-900 dark:text-tactical-text">
                   {t(`${base}.status_values.${status}`)}
                 </motion.div>
-                <div className="label-mono mt-1">{t(`${base}.read.status`)}</div>
+                <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-1">{t(`${base}.read.status`)}</div>
               </div>
               <AnimatedMetric value={items} label={t(`${base}.read.items`)} color="cyan" />
             </div>
@@ -139,7 +139,7 @@ export default function CqrsSimulator() {
           <AnimatedMetric value={pending} label={t(`${base}.read.pending`)} color={pending > 0 ? 'amber' : 'default'} pulse={pending > 0} />
         </div>
         <SegmentBar value={catchupPct} max={100} color={pending > 0 ? 'amber' : 'green'} caption={t(`${base}.labels.lag_caption`, { pct: catchupPct })} />
-        <p className="mt-3 font-mono text-[11px] text-slate-500 dark:text-tactical-dim">{t(`${base}.labels.hint`)}</p>
+        <p className="mt-3 font-sans text-[11px] text-slate-500 dark:text-tactical-dim">{t(`${base}.labels.hint`)}</p>
       </Panel>
     </div>
   );

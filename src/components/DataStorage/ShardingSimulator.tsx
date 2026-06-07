@@ -101,18 +101,18 @@ export default function ShardingSimulator() {
           </div>
         }
       >
-        <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
+        <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
 
         <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="space-y-2">
-            <label className="block label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.controls.shards`)}</label>
+            <label className="block font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.shards`)}</label>
             <div className="flex items-center gap-2">
               <input type="range" min="2" max="8" value={shards} onChange={e => setShards(Number(e.target.value))} className={rangeClass} />
               <span className="font-mono text-sm w-10 text-right text-signal-cyan tabular-nums">{shards}</span>
             </div>
           </div>
           <div className="space-y-2">
-            <label className="block label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.controls.strategy`)}</label>
+            <label className="block font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.strategy`)}</label>
             <div className="flex gap-2">
               {(['hash', 'range'] as Strategy[]).map(s => (
                 <TacticalButton key={s} size="sm" variant={strategy === s ? 'secondary' : 'ghost'} onClick={() => setStrategy(s)}>
@@ -122,7 +122,7 @@ export default function ShardingSimulator() {
             </div>
           </div>
           <div className="space-y-2">
-            <label className="block label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.controls.skew`)}</label>
+            <label className="block font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.skew`)}</label>
             <div className="flex items-center gap-2">
               <input type="range" min="0" max="100" value={skew} onChange={e => setSkew(Number(e.target.value))} className={rangeClass} />
               <span className="font-mono text-sm w-10 text-right text-signal-cyan tabular-nums">{skew}%</span>
@@ -136,7 +136,7 @@ export default function ShardingSimulator() {
             const isHot = total > 0 && i === hotShard && imbalance > 50;
             const pct = Math.round((l / maxLoad) * 100);
             return (
-              <div key={i} className={`relative border ${isHot ? 'border-signal-red' : 'border-slate-200 dark:border-tactical-border'} bg-slate-50 dark:bg-tactical-raised p-3 flex flex-col justify-end min-h-[150px] overflow-hidden`}>
+              <div key={i} className={`relative rounded-lg dark:rounded-none border ${isHot ? 'border-signal-red' : 'border-slate-200 dark:border-tactical-border'} bg-slate-50 dark:bg-tactical-raised p-3 flex flex-col justify-end min-h-[150px] overflow-hidden`}>
                 <AnimatePresence>
                   {particles.filter(p => p.shard === i).slice(-1).map(p => (
                     <motion.span
@@ -157,7 +157,7 @@ export default function ShardingSimulator() {
                 />
                 <div className="mt-2 text-center">
                   <div className="font-mono text-xs text-slate-700 dark:text-tactical-text tabular-nums">{l}</div>
-                  <div className="label-mono">{t(`${base}.labels.shard`)} {i}</div>
+                  <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.labels.shard`)} {i}</div>
                 </div>
               </div>
             );
@@ -174,10 +174,10 @@ export default function ShardingSimulator() {
         </div>
         <div className="mt-4">
           <div className="flex items-center justify-between mb-1">
-            <span className="label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.metrics.imbalance`)}</span>
+            <span className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.metrics.imbalance`)}</span>
           </div>
           <SegmentBar value={imbalance} max={100} color={imbalance > 50 ? 'red' : 'green'} caption={`${imbalance}%`} />
-          <p className="mt-3 font-mono text-[11px] text-slate-500 dark:text-tactical-dim">{t(`${base}.labels.hint`)}</p>
+          <p className="mt-3 font-sans text-[11px] text-slate-500 dark:text-tactical-dim">{t(`${base}.labels.hint`)}</p>
         </div>
       </Panel>
     </div>

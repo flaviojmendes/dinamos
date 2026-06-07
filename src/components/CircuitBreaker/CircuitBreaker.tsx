@@ -123,14 +123,14 @@ export default function CircuitBreaker() {
   }, [circuitState, resetCountdown]);
 
   const inputClass =
-    'w-full bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-2 py-1 font-mono text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-signal-green';
+    'w-full bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-2 py-1 font-sans text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-brand-500 rounded-md dark:rounded-none';
 
   return (
     <div className="space-y-6">
       <div className="max-w-3xl">
-        <div className="label-mono text-signal-cyan mb-2">
-          [ {t('simulators.circuit_breaker.title')} ]
-        </div>
+        <span className="inline-block text-xs font-medium text-slate-600 dark:text-tactical-label bg-slate-100 dark:bg-tactical-raised px-2.5 py-1 rounded-full mb-2">
+          {t('simulators.circuit_breaker.title')}
+        </span>
       </div>
 
       <Panel
@@ -143,9 +143,9 @@ export default function CircuitBreaker() {
         }
       >
         {isConfigOpen && (
-          <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 gap-4 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4">
+          <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 gap-4 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 rounded-lg dark:rounded-none">
             <div>
-              <label className="block label-mono text-slate-500 dark:text-tactical-label mb-1">Limite de Falhas</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">Limite de falhas</label>
               <input
                 type="number"
                 value={config.failureThreshold}
@@ -154,7 +154,7 @@ export default function CircuitBreaker() {
               />
             </div>
             <div>
-              <label className="block label-mono text-slate-500 dark:text-tactical-label mb-1">Timeout de Reset (ms)</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">Timeout de reset (ms)</label>
               <input
                 type="number"
                 value={config.resetTimeout}
@@ -163,7 +163,7 @@ export default function CircuitBreaker() {
               />
             </div>
             <div>
-              <label className="block label-mono text-slate-500 dark:text-tactical-label mb-1">Taxa de Erro (%)</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">Taxa de erro (%)</label>
               <input
                 type="number"
                 value={config.errorRate}
@@ -194,7 +194,7 @@ export default function CircuitBreaker() {
             {t('simulators.circuit_breaker.buttons.reset')}
           </TacticalButton>
           <div className="flex items-center gap-2 w-full sm:w-auto sm:ml-auto">
-            <label className="label-mono whitespace-nowrap">{t('simulators.circuit_breaker.labels.rps')}</label>
+            <label className="text-xs font-medium text-slate-500 dark:text-tactical-label whitespace-nowrap">{t('simulators.circuit_breaker.labels.rps')}</label>
             <input
               type="number"
               value={requestsPerSecond}
@@ -205,21 +205,21 @@ export default function CircuitBreaker() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg dark:rounded-none">
             <div className="flex flex-wrap items-center gap-4 mb-4">
               <StatusBadge variant={circuitStateVariant(circuitState)} label={circuitState} />
               {circuitState === 'OPEN' && resetCountdown > 0 && (
                 <div>
-                  <div className="label-mono text-slate-500 dark:text-tactical-label">{t('simulators.circuit_breaker.labels.reset_in')}</div>
+                  <div className="text-xs font-medium text-slate-500 dark:text-tactical-label">{t('simulators.circuit_breaker.labels.reset_in')}</div>
                   <div className="font-mono text-sm font-medium text-slate-900 dark:text-tactical-text tabular-nums">{resetCountdown}s</div>
                 </div>
               )}
             </div>
-            <div className="label-mono text-slate-500 dark:text-tactical-label">{t('simulators.circuit_breaker.labels.consecutive_failures')}</div>
+            <div className="text-xs font-medium text-slate-500 dark:text-tactical-label">{t('simulators.circuit_breaker.labels.consecutive_failures')}</div>
             <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-amber">{consecutiveFailures}</div>
           </div>
-          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
-            <div className="label-mono text-slate-500 dark:text-tactical-label mb-2">{t('simulators.circuit_breaker.labels.error_status')}</div>
+          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg dark:rounded-none">
+            <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t('simulators.circuit_breaker.labels.error_status')}</div>
             {errorsEnabled ? (
               <StatusBadge
                 variant="classified"
@@ -237,7 +237,7 @@ export default function CircuitBreaker() {
           {requests.map(request => (
             <div
               key={request.id}
-              className="flex flex-wrap justify-between gap-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2.5"
+              className="flex flex-wrap justify-between gap-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2.5 rounded-md dark:rounded-none"
             >
               <div className="flex items-center gap-2">
                 <StatusBadge
@@ -249,8 +249,8 @@ export default function CircuitBreaker() {
             </div>
           ))}
           {requests.length === 0 && (
-            <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center">
-              <p className="font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">
+            <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center rounded-lg dark:rounded-none">
+              <p className="font-sans text-xs text-slate-400 dark:text-tactical-label">
                 {t('simulators.circuit_breaker.labels.no_requests')}
               </p>
             </div>

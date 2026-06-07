@@ -8,7 +8,7 @@ export default function CanaryDeployment() {
   
   return (
     <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
-      <div className="prose prose-invert prose-lg max-w-none mb-12">
+      <div className="prose prose-lg dark:prose-invert max-w-none mb-12">
         <motion.h1 
           className="text-4xl font-bold mb-4 text-brand-600 dark:text-brand-400"
           initial={{ opacity: 0, y: -20 }}
@@ -319,7 +319,7 @@ export default function CanaryDeployment() {
       >
         <Link
           to="/principios-design/canary-deployment/simulator"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="inline-flex items-center gap-2 font-sans px-6 py-3 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />

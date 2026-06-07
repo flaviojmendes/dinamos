@@ -151,7 +151,7 @@ interface ModuleRow extends ModuleDef {
 export default function CommandCenter() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { user, isSubscribed } = useAuth();
+  const { user } = useAuth();
   const { isCompleted, updateTrigger } = useContentProgress();
 
   const [topics, setTopics] = useState<ForumTopic[]>([]);
@@ -266,12 +266,12 @@ export default function CommandCenter() {
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="font-mono text-2xl font-bold uppercase tracking-wider text-slate-900 dark:text-tactical-text">
+            <h1 className="font-sans text-2xl font-bold tracking-tight text-slate-900 dark:text-tactical-text">
               {t('command_center.title')}
             </h1>
             <Tag color="green">{t('command_center.session_active')}</Tag>
           </div>
-          <p className="mt-1 font-mono text-sm text-slate-500 dark:text-tactical-dim">
+          <p className="mt-1 font-sans text-sm text-slate-500 dark:text-tactical-dim">
             {t('command_center.operator')} <span className="text-slate-900 dark:text-tactical-text">{greeting}</span> {t('command_center.readiness_suffix', { pct: totals.pct })}
           </p>
         </div>
@@ -284,11 +284,10 @@ export default function CommandCenter() {
       {/* Metrics + Activity */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Panel title={t('command_center.metrics_title')} className="lg:col-span-2" bodyClassName="p-4">
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <Stat value={totals.modulesDone} label={t('command_center.modules_cleared')} color="green" sub={t('command_center.stat_of', { count: rows.length })} />
             <Stat value={totals.done} label={t('command_center.lessons_done')} color="cyan" sub={t('command_center.stat_of', { count: totals.total })} />
             <Stat value={`${totals.pct}%`} label={t('command_center.readiness')} color="amber" />
-            <Stat value={isSubscribed ? 'FREE-TIER-1' : t('command_center.guest')} label={t('command_center.clearance')} />
           </div>
         </Panel>
 
@@ -297,10 +296,10 @@ export default function CommandCenter() {
             <div className="space-y-4">
               <div>
                 <span className="label-mono">{t('command_center.recommended_next')}</span>
-                <p className="mt-1 font-mono text-sm text-slate-900 dark:text-tactical-text">
+                <p className="mt-1 font-sans text-sm font-medium text-slate-900 dark:text-tactical-text">
                   {lessonLabel(recommended.path)}
                 </p>
-                <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
+                <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim">
                   {t(`command_center.modules.${recommended.id}`, { defaultValue: recommended.module })}
                 </p>
               </div>
@@ -310,7 +309,7 @@ export default function CommandCenter() {
               </TacticalButton>
             </div>
           ) : (
-            <div className="py-6 text-center font-mono text-sm text-signal-green">
+            <div className="py-6 text-center font-sans text-sm text-emerald-600 dark:text-signal-green">
               {t('command_center.all_cleared')}
             </div>
           )}
@@ -329,14 +328,14 @@ export default function CommandCenter() {
               <button
                 key={p.path}
                 onClick={() => navigate(p.path)}
-                className="group flex cursor-pointer items-start gap-3 border border-slate-200 bg-white p-3 text-left transition-colors hover:border-brand-500 dark:border-tactical-border dark:bg-tactical-surface dark:hover:border-signal-green"
+                className="group flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-white p-3 text-left transition-colors hover:border-brand-500 dark:rounded-none dark:border-tactical-border dark:bg-tactical-surface dark:hover:border-signal-green"
               >
                 <span className={`mt-0.5 shrink-0 ${p.color}`}>{p.icon}</span>
                 <span className="min-w-0">
-                  <span className="block font-mono text-sm font-semibold uppercase tracking-wider text-slate-900 dark:text-tactical-text">
+                  <span className="block font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text">
                     {t(p.nameKey, { defaultValue: p.name })}
                   </span>
-                  <span className="mt-0.5 block font-mono text-xs text-slate-500 dark:text-tactical-dim">
+                  <span className="mt-0.5 block font-sans text-xs text-slate-500 dark:text-tactical-dim">
                     {t(p.descKey, { defaultValue: p.desc })}
                   </span>
                 </span>
@@ -365,10 +364,10 @@ export default function CommandCenter() {
                     <button
                       key={p}
                       onClick={() => navigate(p)}
-                      className="flex items-center gap-2 px-2 py-1.5 text-left font-mono text-xs text-slate-600 hover:bg-slate-100 dark:text-tactical-dim dark:hover:bg-tactical-surface"
+                      className="flex items-center gap-2 rounded-md px-2 py-1.5 text-left font-sans text-xs text-slate-600 hover:bg-slate-100 dark:rounded-none dark:text-tactical-dim dark:hover:bg-tactical-surface"
                     >
-                      <span className={isCompleted(p) ? 'text-signal-green' : 'text-slate-400 dark:text-tactical-label'}>
-                        {isCompleted(p) ? '[x]' : '[ ]'}
+                      <span className={isCompleted(p) ? 'text-emerald-600 dark:text-signal-green' : 'text-slate-300 dark:text-tactical-label'}>
+                        {isCompleted(p) ? '✓' : '○'}
                       </span>
                       {lessonLabel(p)}
                     </button>
@@ -379,24 +378,24 @@ export default function CommandCenter() {
           />
         </Panel>
 
-        <Panel title={t('command_center.activity_feed')} accent="green" action={<button onClick={() => navigate('/forum')} className="font-mono uppercase tracking-wider text-slate-500 hover:text-slate-900 dark:text-tactical-dim dark:hover:text-tactical-text">{t('command_center.view_all')} ›</button>}>
+        <Panel title={t('command_center.activity_feed')} accent="green" action={<button onClick={() => navigate('/forum')} className="font-sans text-slate-500 hover:text-slate-900 dark:text-tactical-dim dark:hover:text-tactical-text">{t('command_center.view_all')} ›</button>}>
           {topics.length === 0 ? (
-            <p className="py-6 text-center font-mono text-xs text-slate-500 dark:text-tactical-dim">{t('command_center.no_transmissions')}</p>
+            <p className="py-6 text-center font-sans text-xs text-slate-500 dark:text-tactical-dim">{t('command_center.no_transmissions')}</p>
           ) : (
             <ul className="space-y-2">
               {topics.map((tp) => (
                 <li key={tp.id}>
                   <button
                     onClick={() => navigate(`/forum/topic/${tp.id}`)}
-                    className="w-full border border-transparent px-2 py-2 text-left hover:border-slate-200 hover:bg-slate-50 dark:hover:border-tactical-border dark:hover:bg-tactical-raised"
+                    className="w-full rounded-lg border border-transparent px-2 py-2 text-left hover:bg-slate-50 dark:rounded-none dark:hover:border-tactical-border dark:hover:bg-tactical-raised"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="truncate font-mono text-xs text-slate-900 dark:text-tactical-text">{tp.title}</span>
-                      <span className="shrink-0 font-mono text-[10px] text-slate-400 dark:text-tactical-label">{formatRelativeTime(tp.created_at, t('command_center.time_now'))}</span>
+                      <span className="truncate font-sans text-sm text-slate-900 dark:text-tactical-text">{tp.title}</span>
+                      <span className="shrink-0 font-sans text-[10px] text-slate-400 dark:text-tactical-label">{formatRelativeTime(tp.created_at, t('command_center.time_now'))}</span>
                     </div>
                     <div className="mt-1 flex items-center gap-2">
                       <Tag color="cyan">{tp.category}</Tag>
-                      <span className="font-mono text-[10px] text-slate-400 dark:text-tactical-label">{t('command_center.replies', { count: tp.comment_count ?? 0 })}</span>
+                      <span className="font-sans text-[10px] text-slate-400 dark:text-tactical-label">{t('command_center.replies', { count: tp.comment_count ?? 0 })}</span>
                     </div>
                   </button>
                 </li>

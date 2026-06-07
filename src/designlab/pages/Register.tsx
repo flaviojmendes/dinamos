@@ -7,7 +7,7 @@ import { trackSignup } from '../utils/analytics';
 import { Panel, TacticalButton } from '../components/tactical';
 
 const inputClass =
-  'w-full px-4 py-3 border border-slate-300 dark:border-tactical-border rounded-lg dark:rounded-none bg-white dark:bg-tactical-surface text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-signal-green focus:border-transparent transition-colors duration-200';
+  'w-full px-4 py-3 border border-slate-300 dark:border-tactical-border rounded-lg dark:rounded-none bg-white dark:bg-tactical-surface text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-brand-500 focus:border-transparent transition-colors duration-200';
 
 export default function Register() {
   const [email, setEmail] = useState('');
@@ -130,7 +130,7 @@ export default function Register() {
       <div className="max-w-md w-full space-y-8">
         <div className="flex flex-col items-center">
           <Logo size="large" showSubtitle={true} className="mb-8" />
-          <h2 className="mt-2 text-center text-3xl font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-tactical-text">
+          <h2 className="mt-2 text-center text-3xl font-sans font-bold text-slate-900 dark:text-tactical-text">
             Criar sua conta
           </h2>
           <p className="mt-2 text-center text-sm text-slate-600 dark:text-tactical-dim max-w-sm">
@@ -140,7 +140,7 @@ export default function Register() {
 
         <Panel padded={false} bodyClassName="py-8 px-6" className="rounded-xl dark:rounded-none shadow-xl dark:shadow-none transition-colors duration-200">
           {error && (
-            <div className="mb-6 border border-signal-red/40 text-signal-red bg-signal-red/10 px-4 py-3 text-sm font-mono dark:rounded-none">
+            <div className="mb-6 border border-signal-red/40 text-signal-red bg-signal-red/10 px-4 py-3 text-sm font-sans rounded-lg dark:rounded-none">
               {error}
             </div>
           )}
@@ -148,7 +148,7 @@ export default function Register() {
           {/* Email/Password Form */}
           <form onSubmit={handleEmailSignUp} className="space-y-4 mb-6">
             <div>
-              <label htmlFor="email" className="label-mono block mb-1">
+              <label htmlFor="email" className="block mb-1 text-sm font-medium text-slate-700 dark:text-tactical-label">
                 Email
               </label>
               <input
@@ -162,7 +162,7 @@ export default function Register() {
               />
             </div>
             <div>
-              <label htmlFor="password" className="label-mono block mb-1">
+              <label htmlFor="password" className="block mb-1 text-sm font-medium text-slate-700 dark:text-tactical-label">
                 Senha
               </label>
               <input
@@ -176,7 +176,7 @@ export default function Register() {
               />
               {/* Password requirements */}
               <div className="mt-3 p-3 bg-slate-50 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border rounded-lg dark:rounded-none space-y-1.5">
-                <p className="label-mono mb-2">Requisitos da senha:</p>
+                <p className="mb-2 text-sm font-medium text-slate-700 dark:text-tactical-label">Requisitos da senha:</p>
                 <PasswordCheck valid={passwordChecks.hasMinLength} label="Mínimo de 6 caracteres" />
                 <PasswordCheck valid={passwordChecks.hasUppercase} label="Caractere maiúsculo (A-Z)" />
                 <PasswordCheck valid={passwordChecks.hasLowercase} label="Caractere minúsculo (a-z)" />
@@ -185,7 +185,7 @@ export default function Register() {
               </div>
             </div>
             <div>
-              <label htmlFor="confirmPassword" className="label-mono block mb-1">
+              <label htmlFor="confirmPassword" className="block mb-1 text-sm font-medium text-slate-700 dark:text-tactical-label">
                 Confirmar Senha
               </label>
               <input
@@ -198,7 +198,7 @@ export default function Register() {
                 disabled={loading}
               />
               {confirmPassword && password !== confirmPassword && (
-                <p className="mt-1 text-xs font-mono text-signal-red">As senhas não coincidem</p>
+                <p className="mt-1 text-xs font-sans text-signal-red">As senhas não coincidem</p>
               )}
               {confirmPassword && password === confirmPassword && (
                 <p className="mt-1 text-xs text-signal-green flex items-center gap-1">
@@ -226,7 +226,7 @@ export default function Register() {
               <div className="w-full border-t border-slate-300 dark:border-tactical-line"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 font-mono uppercase tracking-wider text-xs bg-white dark:bg-tactical-surface text-slate-500 dark:text-tactical-label">
+              <span className="px-4 font-sans text-xs bg-white dark:bg-tactical-surface text-slate-500 dark:text-tactical-label">
                 ou continue com
               </span>
             </div>
@@ -284,7 +284,7 @@ export default function Register() {
               Já tem uma conta?{' '}
               <Link 
                 to="/login" 
-                className="font-mono uppercase tracking-wider font-medium text-brand-600 dark:text-signal-green hover:text-brand-700 dark:hover:text-signal-green/80 transition-colors"
+                className="font-sans font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors"
               >
                 Entrar
               </Link>

@@ -159,10 +159,10 @@ export default function LogSimulator() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="max-w-3xl">
-          <div className="label-mono text-signal-cyan mb-2">
-            [ {t(`${base}.title`)} ]
-          </div>
-          <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
+          <h2 className="font-sans text-lg font-semibold text-slate-900 dark:text-tactical-text mb-2">
+            {t(`${base}.title`)}
+          </h2>
+          <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
             {t(`${base}.intro`)}
           </p>
         </div>
@@ -194,7 +194,7 @@ export default function LogSimulator() {
             <Panel title={t(`${base}.settings_title`)} accent="cyan">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="flex items-center gap-2 font-mono text-sm text-slate-600 dark:text-tactical-dim">
+                  <label className="flex items-center gap-2 font-sans text-sm text-slate-600 dark:text-tactical-dim">
                     <input
                       type="checkbox"
                       checked={config.autoAvancar}
@@ -205,7 +205,7 @@ export default function LogSimulator() {
                   </label>
                 </div>
                 <div>
-                  <label className="block label-mono text-slate-500 dark:text-tactical-label mb-2">
+                  <label className="block font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">
                     {t(`${base}.settings.delay_label`, { ms: config.delayEventos })}
                   </label>
                   <input
@@ -260,7 +260,7 @@ export default function LogSimulator() {
       <Panel title={t(`${base}.viewer_title`)} accent="green">
         <div className="bg-slate-50 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border p-4 h-[400px] overflow-y-auto font-mono text-sm">
           {logs.length === 0 ? (
-            <p className="text-slate-400 dark:text-tactical-label text-xs uppercase tracking-wider text-center py-10">—</p>
+            <p className="text-slate-400 dark:text-tactical-label text-xs text-center py-10">—</p>
           ) : (
             logs.map((log, index) => {
               const isGood = Boolean(
@@ -291,25 +291,19 @@ export default function LogSimulator() {
       </Panel>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="tactical-panel border-l-2 border-l-signal-green p-5">
-          <h2 className="label-mono text-signal-green mb-3">{t(`${base}.best_practices_title`)}</h2>
-          <ul className="space-y-1.5 font-mono text-sm text-slate-600 dark:text-tactical-dim">
+        <div className="tactical-panel rounded-lg dark:rounded-none border-l-2 border-l-signal-green p-5">
+          <h2 className="font-sans text-sm font-semibold text-signal-green mb-3">{t(`${base}.best_practices_title`)}</h2>
+          <ul className="space-y-1.5 font-sans text-sm text-slate-600 dark:text-tactical-dim list-disc list-inside">
             {(t(`${base}.best_practices_items`, { returnObjects: true }) as string[]).map((item, idx) => (
-              <li key={idx} className="flex gap-2">
-                <span className="text-signal-green">›</span>
-                {item}
-              </li>
+              <li key={idx}>{item}</li>
             ))}
           </ul>
         </div>
-        <div className="tactical-panel border-l-2 border-l-signal-red p-5">
-          <h2 className="label-mono text-signal-red mb-3">{t(`${base}.bad_practices_title`)}</h2>
-          <ul className="space-y-1.5 font-mono text-sm text-slate-600 dark:text-tactical-dim">
+        <div className="tactical-panel rounded-lg dark:rounded-none border-l-2 border-l-signal-red p-5">
+          <h2 className="font-sans text-sm font-semibold text-signal-red mb-3">{t(`${base}.bad_practices_title`)}</h2>
+          <ul className="space-y-1.5 font-sans text-sm text-slate-600 dark:text-tactical-dim list-disc list-inside">
             {(t(`${base}.bad_practices_items`, { returnObjects: true }) as string[]).map((item, idx) => (
-              <li key={idx} className="flex gap-2">
-                <span className="text-signal-red">›</span>
-                {item}
-              </li>
+              <li key={idx}>{item}</li>
             ))}
           </ul>
         </div>

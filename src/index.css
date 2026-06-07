@@ -15,7 +15,7 @@
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-mono tracking-tight;
+    @apply font-sans tracking-tight;
   }
 }
 
@@ -33,35 +33,30 @@
   }
 
   .card-shadow {
-    box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.1);
+    /* Soft, subtle elevation instead of the old brutalist offset shadow. */
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 2px 8px rgba(15, 23, 42, 0.06);
   }
 
   .dark .card-shadow {
-    /* Tactical look uses hairline borders, not drop shadows. */
+    /* Dark surfaces rely on hairline borders, not drop shadows. */
     box-shadow: none;
   }
 
-  /* ---- Tactical command-center utilities ---- */
+  /* ---- Shared surface utilities ---- */
 
-  /* Bordered panel. Dark = near-black surface + hairline border. */
+  /* Bordered panel. Light = soft rounded card; dark = near-black hairline surface. */
   .tactical-panel {
-    @apply bg-white dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border;
+    @apply bg-white dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-xl dark:rounded-none;
   }
 
-  /* Uppercase mono micro-label (MISSION NAME, PRIORITY, ...). */
+  /* Quiet eyebrow micro-label. Sans + light tracking reads calm, not military. */
   .label-mono {
-    @apply font-mono uppercase tracking-wider text-[11px] leading-tight text-slate-500 dark:text-tactical-label;
+    @apply font-sans uppercase tracking-wide text-[11px] font-medium leading-tight text-slate-400 dark:text-tactical-label;
   }
 
-  /* Segmented / dithered progress bar fill (the 84/112 + RISK LEVEL bars). */
+  /* Progress bar fill: clean solid color. */
   .seg-bar {
-    background-image: repeating-linear-gradient(
-      to right,
-      currentColor 0,
-      currentColor 4px,
-      transparent 4px,
-      transparent 7px
-    );
+    background-color: currentColor;
   }
 
   /* Faint scanline overlay for hero / live-feed panels. */
@@ -99,59 +94,20 @@
 }
 
 /*
- * Scoped tactical treatment for interactive simulators (BOTH themes).
- * Applied via the `.sim-scope` wrapper added by ContentLayout, this gives all
- * ~40 bespoke simulators a consistent command-console look without editing each
- * file. The STRUCTURAL language (sharp corners, flat shadows, hairline borders,
- * mono headings, signal-accented controls) applies in light AND dark; only the
- * surface/text colour remap is theme-specific (light keeps clean white panels,
- * dark switches to the near-black tactical palette).
+ * Scoped treatment for interactive simulators. Applied via the `.sim-scope`
+ * wrapper added by ContentLayout. The previous "command-console" styling
+ * (forced sharp corners, flat shadows, monospace headings/buttons, neon-green
+ * controls) has been removed so simulators inherit the clean default look.
+ * Only the dark-mode surface/text colour remap below remains theme-specific.
  */
 
-/* ---- Structural treatment: both themes ---- */
-
-/* Sharpen card corners (leave pills/avatars `rounded-full` alone). */
-.sim-scope .rounded,
-.sim-scope .rounded-md,
-.sim-scope .rounded-lg,
-.sim-scope .rounded-xl,
-.sim-scope .rounded-2xl,
-.sim-scope .rounded-3xl {
-  border-radius: 0 !important;
-}
-
-/* Flat command-console surfaces: drop drop-shadows for hairline edges. */
-.sim-scope .shadow-sm,
-.sim-scope .shadow,
-.sim-scope .shadow-md,
-.sim-scope .shadow-lg,
-.sim-scope .shadow-xl,
-.sim-scope .shadow-2xl {
-  box-shadow: none !important;
-}
-
-/* Headings inside simulators read as mono command labels. */
-.sim-scope h1,
-.sim-scope h2,
-.sim-scope h3,
-.sim-scope h4 {
-  font-family: theme('fontFamily.mono');
-  letter-spacing: 0.01em;
-}
-
-/* Buttons become sharp mono command keys (colours preserved per simulator). */
-.sim-scope button {
-  font-family: theme('fontFamily.mono');
-  letter-spacing: 0.02em;
-}
-
-/* Tactical accent on native form controls used by simulators. */
+/* Native form controls pick up the brand accent instead of neon green. */
 .sim-scope input[type='range'],
 .sim-scope input[type='checkbox'],
 .sim-scope input[type='radio'],
 .sim-scope select,
 .sim-scope progress {
-  accent-color: theme('colors.signal.green');
+  accent-color: theme('colors.brand.500');
 }
 
 /* ---- Dark theme: near-black tactical palette ---- */

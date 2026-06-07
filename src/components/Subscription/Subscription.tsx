@@ -138,7 +138,7 @@ export default function Subscription() {
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-signal-red/10 border border-signal-red/50 text-signal-red p-4 mb-8 text-center font-mono"
+            className="bg-signal-red/10 border border-signal-red/50 text-signal-red p-4 mb-8 text-center font-sans rounded-lg"
           >
             {error}
           </motion.div>
@@ -148,14 +148,14 @@ export default function Subscription() {
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-3 font-mono text-[11px] uppercase tracking-widest text-signal-amber"
+            className="mb-3 inline-flex rounded-full bg-brand-50 px-3 py-1 font-sans text-[11px] text-brand-700 dark:bg-tactical-raised dark:text-signal-amber"
           >
-            [CLEARANCE UPGRADE]
+            Premium access
           </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl font-mono font-bold uppercase tracking-wider mb-6 text-slate-900 dark:text-tactical-text"
+            className="text-4xl md:text-5xl font-sans font-bold tracking-tight mb-6 text-slate-900 dark:text-tactical-text"
           >
             {t('subscription.title')}
           </motion.h1>
@@ -183,7 +183,7 @@ export default function Subscription() {
             <select
               value={selectedCurrency}
               onChange={(e) => setSelectedCurrency(e.target.value)}
-              className="bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border px-4 py-2 font-mono text-slate-900 dark:text-tactical-text focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-signal-green"
+              className="rounded-lg bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border px-4 py-2 font-sans text-slate-900 dark:text-tactical-text focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-signal-green"
             >
               {availableCurrencies.map((curr) => (
                 <option key={curr.key} value={curr.key}>
@@ -200,10 +200,10 @@ export default function Subscription() {
             transition={{ delay: 0.2 }}
             className="flex justify-center mb-8"
           >
-            <div className="border border-slate-200 dark:border-tactical-border bg-white dark:bg-tactical-surface p-1 inline-flex flex-wrap justify-center gap-1">
+            <div className="rounded-lg border border-slate-200 dark:border-tactical-border bg-white dark:bg-tactical-surface p-1 inline-flex flex-wrap justify-center gap-1">
               <button
                 onClick={() => setSelectedPlan('monthly')}
-                className={`px-6 py-2 font-mono text-sm uppercase tracking-wider transition-all ${
+                className={`rounded-md px-6 py-2 font-sans text-sm transition-all ${
                   selectedPlan === 'monthly'
                     ? 'bg-slate-900 dark:bg-white text-white dark:text-black'
                     : 'text-slate-500 dark:text-tactical-dim hover:text-slate-900 dark:hover:text-tactical-text'
@@ -213,7 +213,7 @@ export default function Subscription() {
               </button>
               <button
                 onClick={() => setSelectedPlan('yearly')}
-                className={`px-6 py-2 font-mono text-sm uppercase tracking-wider transition-all flex items-center gap-2 ${
+                className={`rounded-md px-6 py-2 font-sans text-sm transition-all flex items-center gap-2 ${
                   selectedPlan === 'yearly'
                     ? 'bg-slate-900 dark:bg-white text-white dark:text-black'
                     : 'text-slate-500 dark:text-tactical-dim hover:text-slate-900 dark:hover:text-tactical-text'
@@ -227,7 +227,7 @@ export default function Subscription() {
               {hasLifetimePrice && (
                 <button
                   onClick={() => setSelectedPlan('lifetime')}
-                  className={`px-6 py-2 font-mono text-sm uppercase tracking-wider transition-all flex items-center gap-2 ${
+                  className={`rounded-md px-6 py-2 font-sans text-sm transition-all flex items-center gap-2 ${
                     selectedPlan === 'lifetime'
                       ? 'bg-signal-amber text-black'
                       : 'text-slate-500 dark:text-tactical-dim hover:text-slate-900 dark:hover:text-tactical-text'
@@ -257,7 +257,7 @@ export default function Subscription() {
               }`}
             >
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-mono uppercase tracking-wider text-sm font-semibold text-slate-900 dark:text-tactical-text">
+                <h3 className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text">
                   {t('subscription.monthly_plan')}
                 </h3>
                 <div className={`w-5 h-5 border-2 flex items-center justify-center ${
@@ -274,7 +274,7 @@ export default function Subscription() {
                 <span className="text-3xl font-mono font-bold text-slate-900 dark:text-tactical-text">
                   {formatPrice(pricingData.monthlyPrice, pricingData)}
                 </span>
-                <span className="text-slate-400 dark:text-tactical-label ml-2 font-mono">/ {t('common.month')}</span>
+                <span className="text-slate-400 dark:text-tactical-label ml-2 font-sans">/ {t('common.month')}</span>
               </div>
               <p className="label-mono">
                 {t('subscription.billed_monthly')}
@@ -295,13 +295,13 @@ export default function Subscription() {
             >
               {/* Best Value Badge */}
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                <span className="bg-signal-green text-black text-[11px] font-mono uppercase tracking-wider font-bold px-3 py-1 whitespace-nowrap">
+                <span className="rounded-full bg-emerald-500 text-white text-[11px] font-sans font-semibold px-3 py-1 whitespace-nowrap">
                   {t('subscription.best_value')}
                 </span>
               </div>
 
               <div className="flex items-center justify-between mb-4 mt-2">
-                <h3 className="font-mono uppercase tracking-wider text-sm font-semibold text-slate-900 dark:text-tactical-text">
+                <h3 className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text">
                   {t('subscription.yearly_plan')}
                 </h3>
                 <div className={`w-5 h-5 border-2 flex items-center justify-center ${
@@ -318,13 +318,13 @@ export default function Subscription() {
                 <span className="text-3xl font-mono font-bold text-slate-900 dark:text-tactical-text">
                   {formatPrice(pricingData.yearlyPrice, pricingData)}
                 </span>
-                <span className="text-slate-400 dark:text-tactical-label ml-2 font-mono">/ {t('common.year')}</span>
+                <span className="text-slate-400 dark:text-tactical-label ml-2 font-sans">/ {t('common.year')}</span>
               </div>
               <div className="flex items-center gap-2">
-                <p className="text-sm text-slate-400 dark:text-tactical-label line-through font-mono">
+                <p className="text-sm text-slate-400 dark:text-tactical-label line-through font-sans">
                   {formatPrice(pricingData.monthlyPrice * 12, pricingData)}
                 </p>
-                <span className="text-signal-green text-xs font-mono font-semibold">
+                <span className="text-emerald-600 dark:text-signal-green text-xs font-sans font-semibold">
                   {t('subscription.save')} {yearlySavings}%
                 </span>
               </div>
@@ -342,13 +342,13 @@ export default function Subscription() {
                 }`}
               >
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-signal-amber text-black text-[11px] font-mono uppercase tracking-wider font-bold px-3 py-1 whitespace-nowrap">
+                  <span className="rounded-full bg-amber-100 text-amber-800 text-[11px] font-sans font-semibold px-3 py-1 whitespace-nowrap dark:bg-signal-amber/20 dark:text-signal-amber">
                     {t('subscription.one_time')}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between mb-4 mt-2">
-                  <h3 className="font-mono uppercase tracking-wider text-sm font-semibold text-slate-900 dark:text-tactical-text">
+                  <h3 className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text">
                     {t('subscription.lifetime_plan')}
                   </h3>
                   <div className={`w-5 h-5 border-2 flex items-center justify-center ${
@@ -370,10 +370,10 @@ export default function Subscription() {
                   {t('subscription.lifetime_description')}
                 </p>
                 <div className="mt-4 flex flex-col items-center gap-2">
-                  <span className="text-signal-amber text-xs font-mono uppercase tracking-wider font-semibold whitespace-nowrap">
-                    [{t('subscription.lifetime_access_label')}]
+                  <span className="rounded-full bg-amber-50 px-2 py-0.5 text-amber-700 text-xs font-sans font-medium whitespace-nowrap dark:bg-signal-amber/10 dark:text-signal-amber">
+                    {t('subscription.lifetime_access_label')}
                   </span>
-                  <span className="text-slate-500 dark:text-tactical-dim text-xs font-mono whitespace-nowrap">
+                  <span className="text-slate-500 dark:text-tactical-dim text-xs font-sans whitespace-nowrap">
                     {t('subscription.pay_once')}
                   </span>
                 </div>
@@ -390,7 +390,7 @@ export default function Subscription() {
           >
             <ul className="space-y-4 mb-8">
               {features.map((feature) => (
-                <li key={feature} className="flex items-center gap-3 font-mono text-sm text-slate-600 dark:text-tactical-dim">
+                <li key={feature} className="flex items-center gap-3 font-sans text-sm text-slate-600 dark:text-tactical-dim">
                   <svg className="w-5 h-5 text-signal-green flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
@@ -402,7 +402,7 @@ export default function Subscription() {
             <button
               onClick={handlePayment}
               disabled={isLoading}
-              className="w-full bg-slate-900 dark:bg-white hover:bg-slate-700 dark:hover:bg-slate-200 text-white dark:text-black px-6 py-4 font-mono uppercase tracking-wider font-medium text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full rounded-lg bg-slate-900 dark:bg-white hover:bg-slate-700 dark:hover:bg-slate-200 text-white dark:text-black px-6 py-4 font-sans font-medium text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center">
@@ -426,7 +426,7 @@ export default function Subscription() {
               )}
             </button>
             
-            <p className="text-center font-mono text-xs text-slate-500 dark:text-tactical-label mt-4">
+            <p className="text-center font-sans text-xs text-slate-500 dark:text-tactical-label mt-4">
               {selectedPlan === 'lifetime' ? t('subscription.lifetime_note') : t('subscription.cancel_anytime')}
             </p>
           </motion.div>
@@ -439,7 +439,7 @@ export default function Subscription() {
           transition={{ delay: 0.4 }}
           className="mt-16 text-center max-w-2xl mx-auto"
         >
-          <h3 className="text-2xl font-mono font-bold uppercase tracking-wider mb-4">{t('subscription.why_buy_title')}</h3>
+          <h3 className="text-2xl font-sans font-bold tracking-tight mb-4">{t('subscription.why_buy_title')}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left mt-8">
             <div className="tactical-panel p-6">
               <h4 className="label-mono mb-2 text-brand-600 dark:text-signal-cyan">{t('subscription.why_practical_title')}</h4>

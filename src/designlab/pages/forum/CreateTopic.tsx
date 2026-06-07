@@ -9,8 +9,8 @@ import { ForumCategory } from '../../types';
 import { TacticalButton } from '../../components/tactical';
 
 const inputClass =
-  'mt-1 block w-full bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm py-2 px-3';
-const labelClass = 'block text-xs font-mono uppercase tracking-wider text-slate-700 dark:text-tactical-dim';
+  'mt-1 block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm py-2 px-3';
+const labelClass = 'block text-xs font-sans text-slate-700 dark:text-tactical-dim';
 
 interface PollDraft {
   question: string;
@@ -142,8 +142,8 @@ const CreateTopic = () => {
       
       <main className="flex-1 py-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
-          <h1 className="text-2xl font-bold font-mono uppercase tracking-wider text-slate-900 dark:text-tactical-text mb-8 flex items-center gap-3 before:content-[''] before:h-6 before:w-1 before:bg-signal-amber">
-            Criar Novo Tópico
+          <h1 className="text-2xl font-bold font-sans text-slate-900 dark:text-tactical-text mb-8 flex items-center gap-3 before:content-[''] before:h-6 before:w-1 before:bg-signal-amber">
+            Criar novo tópico
           </h1>
           
           <form onSubmit={handleSubmit} className="space-y-6 tactical-panel p-6 dark:rounded-none">
@@ -201,17 +201,17 @@ const CreateTopic = () => {
                 <button
                   type="button"
                   onClick={() => setShowPoll(!showPoll)}
-                  className="flex items-center gap-2 text-sm font-mono uppercase tracking-wider text-brand-600 dark:text-signal-cyan hover:opacity-80"
+                  className="flex items-center gap-2 text-sm font-sans text-brand-600 dark:text-signal-cyan hover:opacity-80"
                 >
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
-                  {showPoll ? 'Remover Enquete' : 'Adicionar Enquete'}
+                  {showPoll ? 'Remover enquete' : 'Adicionar enquete'}
                 </button>
               </div>
 
               {showPoll && (
-                <div className="border border-signal-cyan/30 bg-signal-cyan/5 dark:bg-tactical-raised p-5 space-y-4 dark:rounded-none">
+                <div className="rounded-lg border border-signal-cyan/30 bg-signal-cyan/5 dark:bg-tactical-raised p-5 space-y-4 dark:rounded-none">
                   <div>
                     <label className={`${labelClass} mb-1`}>
                       Pergunta da Enquete
@@ -260,7 +260,7 @@ const CreateTopic = () => {
                       <button
                         type="button"
                         onClick={addPollOption}
-                        className="mt-2 text-sm font-mono uppercase tracking-wider text-brand-600 dark:text-signal-cyan hover:opacity-80 flex items-center gap-1"
+                        className="mt-2 text-sm font-sans text-brand-600 dark:text-signal-cyan hover:opacity-80 flex items-center gap-1"
                       >
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -324,7 +324,7 @@ const CreateTopic = () => {
                 disabled={loading}
                 className={loading ? 'opacity-75 cursor-wait' : ''}
               >
-                {loading ? 'Publicando...' : 'Publicar Tópico'}
+                {loading ? 'Publicando...' : 'Publicar tópico'}
               </TacticalButton>
             </div>
           </form>

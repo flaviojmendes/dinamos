@@ -318,17 +318,17 @@ export default function ReplicacaoSimulator() {
   return (
     <div className="space-y-6">
       <div className="max-w-3xl">
-        <div className="label-mono text-signal-cyan mb-2">
-          [ {t('simulators_extra.replication.title')} ]
-        </div>
-        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
+        <h2 className="text-base font-semibold tracking-tight text-slate-900 dark:text-tactical-text mb-2">
+          {t('simulators_extra.replication.title')}
+        </h2>
+        <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
           {t('simulators_extra.replication.intro')}
         </p>
       </div>
 
-      <div className="tactical-panel border-l-2 border-l-signal-cyan p-5">
-        <h3 className="label-mono text-signal-cyan mb-3">{t('simulators_extra.replication.how_title')}</h3>
-        <ol className="list-decimal list-inside space-y-1.5 font-mono text-sm text-slate-600 dark:text-tactical-dim">
+      <div className="rounded-xl border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised dark:rounded-none p-5">
+        <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">{t('simulators_extra.replication.how_title')}</h3>
+        <ol className="list-decimal list-inside space-y-1.5 font-sans text-sm text-slate-600 dark:text-tactical-dim">
           {(t('simulators_extra.replication.steps', { returnObjects: true }) as string[]).map((s, idx) => (
             <li key={idx}>{s}</li>
           ))}
@@ -338,7 +338,7 @@ export default function ReplicacaoSimulator() {
       <Panel title={t('simulators_extra.replication.config_title')} accent="cyan">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
-            <label className="block label-mono mb-2">{t('simulators_extra.replication.replication_type')}</label>
+            <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t('simulators_extra.replication.replication_type')}</label>
             <select
               value={config.replicationType}
               onChange={(e) => setConfig(prev => ({ ...prev, replicationType: e.target.value as 'sync' | 'async' | 'semi-sync' }))}
@@ -350,17 +350,17 @@ export default function ReplicacaoSimulator() {
             </select>
           </div>
           <div>
-            <label className="block label-mono mb-2">{t('simulators_extra.replication.network_latency_ms')}</label>
+            <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t('simulators_extra.replication.network_latency_ms')}</label>
             <input type="range" min="0" max="2000" value={config.networkLatency} onChange={(e) => setConfig(prev => ({ ...prev, networkLatency: Number(e.target.value) }))} className="w-full" />
             <span className="font-mono text-sm text-slate-500 dark:text-tactical-dim">{config.networkLatency}ms</span>
           </div>
           <div>
-            <label className="block label-mono mb-2">{t('simulators_extra.replication.failure_rate')}</label>
+            <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t('simulators_extra.replication.failure_rate')}</label>
             <input type="range" min="0" max="0.5" step="0.05" value={config.failureRate} onChange={(e) => setConfig(prev => ({ ...prev, failureRate: Number(e.target.value) }))} className="w-full" />
             <span className="font-mono text-sm text-slate-500 dark:text-tactical-dim">{Math.round(config.failureRate * 100)}%</span>
           </div>
           <div>
-            <label className="block label-mono mb-2">{t('simulators_extra.replication.replica_count')}</label>
+            <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t('simulators_extra.replication.replica_count')}</label>
             <input type="range" min="1" max="3" value={config.replicaCount} onChange={(e) => setConfig(prev => ({ ...prev, replicaCount: Number(e.target.value) }))} className="w-full" />
             <span className="font-mono text-sm text-slate-500 dark:text-tactical-dim">{config.replicaCount} {t('simulators_extra.replication.keys_label', { count: config.replicaCount }).split(' ')[1]}</span>
           </div>
@@ -385,7 +385,7 @@ export default function ReplicacaoSimulator() {
           <motion.div key={region.id} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}>
             <Panel title={region.name} accent={region.role === 'primary' ? 'green' : 'cyan'}>
               <div className="flex justify-between items-center mb-4">
-                <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{region.location}</p>
+                <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim">{region.location}</p>
                 <StatusBadge
                   variant={regionStatusVariant(region.status)}
                   label={t(`simulators.vertical_scaling.statuses.${region.status}`)}
@@ -394,18 +394,18 @@ export default function ReplicacaoSimulator() {
 
               <div className="space-y-4">
                 <div>
-                  <div className="flex justify-between font-mono text-xs mb-1 text-slate-600 dark:text-tactical-dim">
-                    <span>{t('simulators_extra.replication.statuses.role')}</span>
-                    <span className={region.role === 'primary' ? 'text-signal-green' : 'text-slate-500 dark:text-tactical-label'}>
+                  <div className="flex justify-between text-xs mb-1 text-slate-600 dark:text-tactical-dim">
+                    <span className="font-sans">{t('simulators_extra.replication.statuses.role')}</span>
+                    <span className={`font-sans ${region.role === 'primary' ? 'text-emerald-600 dark:text-signal-green' : 'text-slate-500 dark:text-tactical-label'}`}>
                       {region.role}
                     </span>
                   </div>
                 </div>
 
                 <div>
-                  <div className="flex justify-between font-mono text-xs mb-1 text-slate-600 dark:text-tactical-dim">
-                    <span>{t('simulators_extra.replication.statuses.latency')}</span>
-                    <span>{region.latency + config.networkLatency}ms</span>
+                  <div className="flex justify-between text-xs mb-1 text-slate-600 dark:text-tactical-dim">
+                    <span className="font-sans">{t('simulators_extra.replication.statuses.latency')}</span>
+                    <span className="font-mono tabular-nums">{region.latency + config.networkLatency}ms</span>
                   </div>
                   <div className="h-2 bg-slate-100 dark:bg-tactical-raised overflow-hidden">
                     <motion.div className="h-full bg-signal-cyan" initial={{ width: 0 }} animate={{ width: `${((region.latency + config.networkLatency) / 2000) * 100}%` }} />
@@ -413,11 +413,11 @@ export default function ReplicacaoSimulator() {
                 </div>
 
                 <div>
-                  <div className="flex justify-between font-mono text-xs mb-1 text-slate-600 dark:text-tactical-dim">
-                    <span>{t('simulators_extra.replication.statuses.data')}</span>
-                    <span>{t('simulators_extra.replication.statuses.keys_label', { count: Object.keys(region.data).length })}</span>
+                  <div className="flex justify-between text-xs mb-1 text-slate-600 dark:text-tactical-dim">
+                    <span className="font-sans">{t('simulators_extra.replication.statuses.data')}</span>
+                    <span className="font-mono tabular-nums">{t('simulators_extra.replication.statuses.keys_label', { count: Object.keys(region.data).length })}</span>
                   </div>
-                  <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-2 max-h-24 overflow-auto font-mono text-xs">
+                  <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg dark:rounded-none p-2 max-h-24 overflow-auto font-mono text-xs">
                     {Object.entries(region.data).map(([key, data]) => (
                       <div key={key} className="flex flex-col mb-2">
                         <div className="flex justify-between">
@@ -452,11 +452,11 @@ export default function ReplicacaoSimulator() {
         <div className="space-y-2">
           <AnimatePresence>
             {operations.slice(-5).map((operation) => (
-              <motion.div key={operation.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2.5">
+              <motion.div key={operation.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg dark:rounded-none px-3 py-2.5">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
                     <StatusBadge variant={operationStatusVariant(operation.status)} label={operation.status} />
-                    <span className="font-mono text-xs text-slate-900 dark:text-tactical-text truncate">
+                    <span className="font-sans text-xs text-slate-900 dark:text-tactical-text truncate">
                       {t(`simulators_extra.replication.${operation.type === 'write' ? 'write_label' : 'read_label'}`)} - {t('simulators_extra.replication.key_placeholder')}: {operation.key}
                       {operation.value && ` ${t('simulators_extra.replication.value_placeholder')}: ${operation.value}`}
                     </span>

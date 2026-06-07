@@ -76,7 +76,7 @@ function CopyButton({ text }: { text: string }) {
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
       }}
-      className="inline-flex items-center gap-1.5 px-2 py-1 border border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan font-mono text-xs transition-colors"
+      className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md border border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan font-sans text-xs transition-colors"
     >
       {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
       {copied ? 'Copied' : 'Copy URL'}
@@ -132,12 +132,12 @@ function CreateMatch({ onCreated }: { onCreated: () => void }) {
     }
   };
 
-  const field = 'w-full bg-tactical-raised border border-tactical-border px-2 py-1.5 font-mono text-xs text-tactical-text';
-  const lbl = 'label-mono text-tactical-label mb-1 block';
+  const field = 'w-full bg-tactical-raised border border-tactical-border rounded-md px-2 py-1.5 font-sans text-xs text-tactical-text';
+  const lbl = 'font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1 block';
 
   return (
     <div className="tactical-panel p-5 mb-8">
-      <div className="flex items-center gap-2 label-mono text-signal-amber mb-4">
+      <div className="flex items-center gap-2 font-sans text-[11px] font-medium text-slate-600 dark:text-signal-amber mb-4">
         <Plus className="w-4 h-4" /> {t('editor.game.create_match', { defaultValue: 'Create Match' })}
       </div>
 
@@ -185,19 +185,19 @@ function CreateMatch({ onCreated }: { onCreated: () => void }) {
       </div>
 
       <div className="mt-4">
-        <label className="flex items-center gap-2 font-mono text-xs text-tactical-text">
+        <label className="flex items-center gap-2 font-sans text-xs text-tactical-text">
           <input type="checkbox" checked={allowDelete} onChange={(e) => setAllowDelete(e.target.checked)} className="accent-signal-cyan" />
           {t('editor.game.allow_delete', { defaultValue: 'Allow players to delete starting components' })}
         </label>
 
         {allowDelete && (
           <div className="mt-3 border border-tactical-border p-3">
-            <div className="label-mono text-tactical-label mb-2">
+            <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-2">
               {t('editor.game.lock_specific', { defaultValue: 'Lock specific components (optional)' })}
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5">
               {preset.nodes.map((n) => (
-                <label key={n.config.id} className="flex items-center gap-1.5 font-mono text-[11px] text-tactical-dim">
+                <label key={n.config.id} className="flex items-center gap-1.5 font-sans text-[11px] text-tactical-dim">
                   <input type="checkbox" checked={lockedIds.includes(n.config.id)} onChange={() => toggleLocked(n.config.id)} className="accent-signal-cyan" />
                   {n.config.label}
                 </label>
@@ -207,12 +207,12 @@ function CreateMatch({ onCreated }: { onCreated: () => void }) {
         )}
       </div>
 
-      {error && <div className="mt-3 text-signal-red font-mono text-xs">{error}</div>}
+      {error && <div className="mt-3 text-signal-red font-sans text-xs">{error}</div>}
 
       <button
         onClick={create}
         disabled={submitting}
-        className="mt-4 px-4 py-2 font-mono text-sm uppercase tracking-wider border border-signal-green text-signal-green hover:bg-signal-green/10 transition-colors flex items-center gap-2 disabled:opacity-50"
+        className="mt-4 px-4 py-2 font-sans text-sm rounded-md border border-signal-green text-signal-green hover:bg-signal-green/10 transition-colors flex items-center gap-2 disabled:opacity-50"
       >
         <Gamepad2 className="w-4 h-4" /> {t('editor.game.create', { defaultValue: 'Create Match' })}
       </button>
@@ -281,7 +281,7 @@ function ManageMatch({ code }: { code: string }) {
   if (!session) return null;
   const nodes = session.starting_architecture?.nodes ?? [];
   const status = session.status;
-  const btn = 'px-3 py-1.5 font-mono text-xs uppercase tracking-wider border transition-colors flex items-center gap-1.5';
+  const btn = 'px-3 py-1.5 font-sans text-xs rounded-md border transition-colors flex items-center gap-1.5';
 
   const serverNow = now + offsetRef.current;
   const startsMs = session.starts_at ? new Date(session.starts_at).getTime() : null;
@@ -296,7 +296,7 @@ function ManageMatch({ code }: { code: string }) {
     patch({ starts_at: new Date(next).toISOString() });
   };
 
-  const tinyBtn = 'px-2 py-1 font-mono text-[11px] border border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan transition-colors inline-flex items-center gap-1';
+  const tinyBtn = 'px-2 py-1 font-sans text-[11px] rounded-md border border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan transition-colors inline-flex items-center gap-1';
 
   return (
     <div className="mt-3 border-t border-tactical-border pt-3">
@@ -319,12 +319,12 @@ function ManageMatch({ code }: { code: string }) {
 
         <div className="border-l border-tactical-line h-6 mx-1" />
 
-        <label className="flex items-center gap-2 font-mono text-xs text-tactical-dim">
+        <label className="flex items-center gap-2 font-sans text-xs text-tactical-dim">
           {t('editor.game.traffic', { defaultValue: 'Traffic' })}
           <select
             value={session.load_profile?.type ?? 'constant'}
             onChange={(e) => patch({ load_profile: { type: e.target.value } })}
-            className="bg-tactical-raised border border-tactical-border px-2 py-1 font-mono text-xs text-tactical-text"
+            className="bg-tactical-raised border border-tactical-border rounded-md px-2 py-1 font-sans text-xs text-tactical-text"
           >
             {LOAD_PROFILES.map((p) => (
               <option key={p} value={p}>{p}</option>
@@ -334,16 +334,16 @@ function ManageMatch({ code }: { code: string }) {
       </div>
 
       {/* Time controls: live countdown / time-left + fine adjustments */}
-      <div className="flex flex-wrap items-center gap-3 mb-4 bg-tactical-raised/40 border border-tactical-border p-3">
+      <div className="flex flex-wrap items-center gap-3 mb-4 bg-tactical-raised/40 border border-tactical-border rounded-lg p-3">
         <div className="inline-flex items-center gap-2">
           <Clock className="w-4 h-4 text-signal-cyan" />
           {status === 'lobby' && countdownSec !== null ? (
-            <span className="font-mono text-sm text-tactical-text">
+            <span className="font-sans text-sm text-tactical-text">
               {t('editor.game.starts_in', { defaultValue: 'Starts in' })}{' '}
               <span className="font-bold text-signal-green tabular-nums">{fmtClock(countdownSec)}</span>
             </span>
           ) : status === 'running' ? (
-            <span className="font-mono text-sm text-tactical-text">
+            <span className="font-sans text-sm text-tactical-text">
               {timeLeftSec !== null ? (
                 <>
                   {t('editor.game.time_left', { defaultValue: 'Time left' })}{' '}
@@ -354,7 +354,7 @@ function ManageMatch({ code }: { code: string }) {
               )}
             </span>
           ) : (
-            <span className="font-mono text-sm text-tactical-dim uppercase">{status}</span>
+            <span className="font-sans text-sm text-tactical-dim capitalize">{status}</span>
           )}
         </div>
 
@@ -370,7 +370,7 @@ function ManageMatch({ code }: { code: string }) {
           )}
           {status === 'running' && (
             <>
-              <span className="font-mono text-[11px] text-tactical-label">{t('editor.game.adjust_time', { defaultValue: 'Adjust' })}</span>
+              <span className="font-sans text-[11px] text-tactical-label">{t('editor.game.adjust_time', { defaultValue: 'Adjust' })}</span>
               <button onClick={() => patch({ add_sec: -60 })} className={tinyBtn}><Minus className="w-3 h-3" />1m</button>
               <button onClick={() => patch({ add_sec: 60 })} className={tinyBtn}><Plus className="w-3 h-3" />1m</button>
               <button onClick={() => patch({ add_sec: 300 })} className={tinyBtn}><Plus className="w-3 h-3" />5m</button>
@@ -380,26 +380,26 @@ function ManageMatch({ code }: { code: string }) {
       </div>
 
       {/* Chaos injection */}
-      <div className="flex flex-wrap items-end gap-2 mb-4 bg-tactical-raised/40 border border-tactical-border p-3">
+      <div className="flex flex-wrap items-end gap-2 mb-4 bg-tactical-raised/40 border border-tactical-border rounded-lg p-3">
         <div>
-          <label className="label-mono text-tactical-label mb-1 block">{t('editor.game.chaos_type', { defaultValue: 'Chaos' })}</label>
-          <select value={chaosType} onChange={(e) => setChaosType(e.target.value as typeof chaosType)} className="bg-tactical-raised border border-tactical-border px-2 py-1 font-mono text-xs text-tactical-text">
+          <label className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1 block">{t('editor.game.chaos_type', { defaultValue: 'Chaos' })}</label>
+          <select value={chaosType} onChange={(e) => setChaosType(e.target.value as typeof chaosType)} className="bg-tactical-raised border border-tactical-border rounded-md px-2 py-1 font-sans text-xs text-tactical-text">
             {CHAOS_TYPES.map((c) => (
               <option key={c} value={c}>{c}</option>
             ))}
           </select>
         </div>
         <div>
-          <label className="label-mono text-tactical-label mb-1 block">{t('editor.game.target', { defaultValue: 'Target' })}</label>
-          <select value={chaosTarget} onChange={(e) => setChaosTarget(e.target.value)} className="bg-tactical-raised border border-tactical-border px-2 py-1 font-mono text-xs text-tactical-text">
+          <label className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1 block">{t('editor.game.target', { defaultValue: 'Target' })}</label>
+          <select value={chaosTarget} onChange={(e) => setChaosTarget(e.target.value)} className="bg-tactical-raised border border-tactical-border rounded-md px-2 py-1 font-sans text-xs text-tactical-text">
             {nodes.map((n) => (
               <option key={n.id} value={n.id}>{n.config.label}</option>
             ))}
           </select>
         </div>
         <div>
-          <label className="label-mono text-tactical-label mb-1 block">{t('editor.game.duration_sec', { defaultValue: 'Sec' })}</label>
-          <input type="number" min={1} value={chaosDuration} onChange={(e) => setChaosDuration(Number(e.target.value))} className="w-16 bg-tactical-raised border border-tactical-border px-2 py-1 font-mono text-xs text-tactical-text" />
+          <label className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1 block">{t('editor.game.duration_sec', { defaultValue: 'Sec' })}</label>
+          <input type="number" min={1} value={chaosDuration} onChange={(e) => setChaosDuration(Number(e.target.value))} className="w-16 bg-tactical-raised border border-tactical-border rounded-md px-2 py-1 font-mono text-xs text-tactical-text" />
         </div>
         <button onClick={injectChaos} disabled={status !== 'running'} className={`${btn} border-signal-amber text-signal-amber hover:bg-signal-amber/10 disabled:opacity-40`}>
           <Zap className="w-3.5 h-3.5" /> {t('editor.game.inject', { defaultValue: 'Inject' })}
@@ -407,8 +407,8 @@ function ManageMatch({ code }: { code: string }) {
       </div>
 
       {/* Broadcast announcement to all players */}
-      <div className="mb-4 bg-tactical-raised/40 border border-tactical-border p-3">
-        <div className="flex items-center gap-2 label-mono text-signal-amber mb-2">
+      <div className="mb-4 bg-tactical-raised/40 border border-tactical-border rounded-lg p-3">
+        <div className="flex items-center gap-2 font-sans text-[11px] font-medium text-slate-600 dark:text-signal-amber mb-2">
           <Megaphone className="w-3.5 h-3.5" />
           {t('editor.game.broadcast', { defaultValue: 'Broadcast to players' })}
         </div>
@@ -423,7 +423,7 @@ function ManageMatch({ code }: { code: string }) {
               }
             }}
             placeholder={t('editor.game.broadcast_ph', { defaultValue: 'Message shown to every player…' })}
-            className="flex-1 min-w-[200px] bg-tactical-raised border border-tactical-border px-2 py-1.5 font-mono text-xs text-tactical-text"
+            className="flex-1 min-w-[200px] bg-tactical-raised border border-tactical-border rounded-md px-2 py-1.5 font-sans text-xs text-tactical-text"
           />
           <button
             onClick={() => { if (announceMsg.trim()) { sendAnnouncement(announceMsg.trim()); setAnnounceMsg(''); } }}
@@ -442,7 +442,7 @@ function ManageMatch({ code }: { code: string }) {
           )}
         </div>
         {session.announcement && (
-          <div className="mt-2 font-mono text-[11px] text-tactical-dim">
+          <div className="mt-2 font-sans text-[11px] text-tactical-dim">
             {t('editor.game.current_broadcast', { defaultValue: 'Live:' })}{' '}
             <span className="text-tactical-text">{session.announcement}</span>
           </div>
@@ -476,23 +476,23 @@ function MatchRow({ session, onChanged }: { session: AdminSession; onChanged: ()
   return (
     <div className="tactical-panel p-4 mb-3">
       <div className="flex flex-wrap items-center gap-3">
-        <div className="font-mono text-sm font-bold text-tactical-text">
+        <div className="font-sans text-sm font-bold text-tactical-text">
           {session.name || 'Untitled'}{' '}
           <span className="text-tactical-label">#{session.code}</span>
         </div>
-        <span className={`font-mono text-xs uppercase tracking-wider ${statusTone}`}>{session.status}</span>
-        <span className="font-mono text-xs text-tactical-dim">{session.starting_architecture?.nodes?.length ?? 0} parts</span>
+        <span className={`font-sans text-xs capitalize ${statusTone}`}>{session.status}</span>
+        <span className="font-sans text-xs text-tactical-dim">{session.starting_architecture?.nodes?.length ?? 0} parts</span>
         <div className="ml-auto flex items-center gap-2">
           <CopyButton text={matchUrl(session.code)} />
-          <button onClick={() => setOpen((o) => !o)} className="inline-flex items-center gap-1.5 px-2 py-1 border border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan font-mono text-xs transition-colors">
+          <button onClick={() => setOpen((o) => !o)} className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md border border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan font-sans text-xs transition-colors">
             <Settings2 className="w-3.5 h-3.5" /> Manage
           </button>
-          <button onClick={remove} className="inline-flex items-center gap-1.5 px-2 py-1 border border-tactical-border text-tactical-dim hover:border-signal-red hover:text-signal-red font-mono text-xs transition-colors">
+          <button onClick={remove} className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md border border-tactical-border text-tactical-dim hover:border-signal-red hover:text-signal-red font-sans text-xs transition-colors">
             <Trash2 className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
-      <div className="mt-1 font-mono text-[11px] text-tactical-label break-all">{matchUrl(session.code)}</div>
+      <div className="mt-1 font-sans text-[11px] text-tactical-label break-all">{matchUrl(session.code)}</div>
       {open && <ManageMatch code={session.code} />}
     </div>
   );
@@ -523,7 +523,7 @@ export default function AdminGameConsole() {
 
   if (appUser && appUser.role !== 'Admin') {
     return (
-      <div className="max-w-md mx-auto p-10 text-center font-mono text-tactical-dim">
+      <div className="max-w-md mx-auto p-10 text-center font-sans text-tactical-dim">
         {t('editor.game.admin_only', { defaultValue: 'Admin privileges required.' })}
       </div>
     );
@@ -532,15 +532,15 @@ export default function AdminGameConsole() {
   return (
     <div className="min-h-screen bg-canvas-paper dark:bg-tactical-bg">
       <div className="max-w-5xl mx-auto p-4 md:p-8">
-        <div className="label-mono text-signal-amber mb-1">[ ADMIN ] // {t('editor.game.console', { defaultValue: 'GAME CONSOLE' })}</div>
-        <h1 className="text-2xl md:text-3xl font-mono font-bold mb-6 tracking-tight text-slate-900 dark:text-tactical-text flex items-center gap-3">
+        <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1">{t('editor.game.console', { defaultValue: 'Game console' })}</div>
+        <h1 className="text-2xl md:text-3xl font-sans font-bold mb-6 tracking-tight text-slate-900 dark:text-tactical-text flex items-center gap-3">
           <Gamepad2 className="w-7 h-7 text-signal-cyan" />
           {t('editor.game.console_title', { defaultValue: 'Editor Game Console' })}
         </h1>
 
         <CreateMatch onCreated={fetchSessions} />
 
-        <div className="flex items-center gap-2 label-mono text-signal-amber mb-3">
+        <div className="flex items-center gap-2 font-sans text-[11px] font-medium text-slate-600 dark:text-signal-amber mb-3">
           {t('editor.game.matches', { defaultValue: 'Matches' })}
           <button onClick={fetchSessions} className="text-tactical-dim hover:text-signal-cyan transition-colors">
             <RefreshCw className="w-3.5 h-3.5" />
@@ -548,9 +548,9 @@ export default function AdminGameConsole() {
         </div>
 
         {loading ? (
-          <div className="font-mono text-sm text-tactical-dim">Loading…</div>
+          <div className="font-sans text-sm text-tactical-dim">Loading…</div>
         ) : sessions.length === 0 ? (
-          <div className="font-mono text-sm text-tactical-dim">{t('editor.game.no_matches', { defaultValue: 'No matches yet. Create one above.' })}</div>
+          <div className="font-sans text-sm text-tactical-dim">{t('editor.game.no_matches', { defaultValue: 'No matches yet. Create one above.' })}</div>
         ) : (
           sessions.map((s) => <MatchRow key={s.code} session={s} onChanged={fetchSessions} />)
         )}

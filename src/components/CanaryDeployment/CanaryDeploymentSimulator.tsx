@@ -255,9 +255,9 @@ export default function CanaryDeploymentSimulator() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="max-w-3xl">
-          <div className="label-mono text-signal-cyan mb-2">
-            [ {t('simulators.canary.title')} ]
-          </div>
+          <span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800 px-3 py-1 text-sm font-sans font-medium text-slate-700 dark:text-slate-300 mb-2">
+            {t('simulators.canary.title')}
+          </span>
         </div>
         <TacticalButton size="sm" variant="ghost" onClick={() => setShowSettings(!showSettings)}>
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -274,25 +274,25 @@ export default function CanaryDeploymentSimulator() {
             <Panel title={t('simulators.canary.settings.title')} accent="cyan">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div>
-                  <label className="block label-mono text-slate-500 dark:text-tactical-label mb-2">
+                  <label className="block text-sm font-sans font-medium text-slate-600 dark:text-slate-400 mb-2">
                     {t('simulators.canary.settings.canary_traffic', { percent: config.canaryPercentage })}
                   </label>
                   <input type="range" min="5" max="100" step="5" value={config.canaryPercentage} onChange={(e) => setConfig(prev => ({ ...prev, canaryPercentage: Number(e.target.value) }))} className={rangeClass} disabled={isRunning} />
                 </div>
                 <div>
-                  <label className="block label-mono text-slate-500 dark:text-tactical-label mb-2">
+                  <label className="block text-sm font-sans font-medium text-slate-600 dark:text-slate-400 mb-2">
                     {t('simulators.canary.settings.canary_error_rate', { percent: config.canaryErrorRate })}
                   </label>
                   <input type="range" min="0" max="50" value={config.canaryErrorRate} onChange={(e) => setConfig(prev => ({ ...prev, canaryErrorRate: Number(e.target.value) }))} className={rangeClass} />
                 </div>
                 <div>
-                  <label className="block label-mono text-slate-500 dark:text-tactical-label mb-2">
+                  <label className="block text-sm font-sans font-medium text-slate-600 dark:text-slate-400 mb-2">
                     {t('simulators.canary.settings.rps', { value: config.requestsPerSecond })}
                   </label>
                   <input type="range" min="1" max="20" value={config.requestsPerSecond} onChange={(e) => setConfig(prev => ({ ...prev, requestsPerSecond: Number(e.target.value) }))} className={rangeClass} />
                 </div>
                 <div>
-                  <label className="block label-mono text-slate-500 dark:text-tactical-label mb-2">
+                  <label className="block text-sm font-sans font-medium text-slate-600 dark:text-slate-400 mb-2">
                     {t('simulators.canary.settings.rollback_threshold', { percent: config.autoRollbackThreshold })}
                   </label>
                   <input type="range" min="5" max="50" value={config.autoRollbackThreshold} onChange={(e) => setConfig(prev => ({ ...prev, autoRollbackThreshold: Number(e.target.value) }))} className={rangeClass} />
@@ -358,7 +358,7 @@ export default function CanaryDeploymentSimulator() {
               {servers.map(server => (
                 <motion.div
                   key={server.id}
-                  className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4"
+                  className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4"
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                 >
@@ -392,7 +392,7 @@ export default function CanaryDeploymentSimulator() {
                     {canaryServers.map(server => (
                       <motion.div
                         key={server.id}
-                        className="border border-signal-amber/30 bg-signal-amber/5 p-4"
+                        className="rounded-lg border border-amber-200 dark:border-amber-800/40 bg-amber-50 dark:bg-amber-950/20 p-4"
                         layout
                       >
                         <div className="flex items-center justify-between mb-2">
@@ -413,25 +413,25 @@ export default function CanaryDeploymentSimulator() {
 
           <Panel title={t('simulators.canary.labels.metrics')} accent="cyan">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+              <div className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-3">
                 <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">{totalRequests}</div>
-                <div className="label-mono mt-2">{t('simulators.canary.labels.total_requests')}</div>
+                <div className="text-xs font-sans font-medium text-slate-500 dark:text-slate-400 mt-2">{t('simulators.canary.labels.total_requests')}</div>
               </div>
-              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+              <div className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-3">
                 <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-amber">{totalCanaryRequests}</div>
-                <div className="label-mono mt-2">{t('simulators.canary.labels.canary_requests')}</div>
+                <div className="text-xs font-sans font-medium text-slate-500 dark:text-slate-400 mt-2">{t('simulators.canary.labels.canary_requests')}</div>
               </div>
-              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+              <div className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-3">
                 <div className={`font-mono text-3xl font-bold tabular-nums leading-none ${
                   canaryErrorRate > 15 ? 'text-signal-red' : canaryErrorRate > 5 ? 'text-signal-amber' : 'text-signal-green'
                 }`}>
                   {canaryErrorRate.toFixed(1)}%
                 </div>
-                <div className="label-mono mt-2">{t('simulators.canary.labels.canary_error_rate')}</div>
+                <div className="text-xs font-sans font-medium text-slate-500 dark:text-slate-400 mt-2">{t('simulators.canary.labels.canary_error_rate')}</div>
               </div>
-              <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+              <div className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-3">
                 <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green">{stableErrorRate.toFixed(1)}%</div>
-                <div className="label-mono mt-2">{t('simulators.canary.labels.stable_error_rate')}</div>
+                <div className="text-xs font-sans font-medium text-slate-500 dark:text-slate-400 mt-2">{t('simulators.canary.labels.stable_error_rate')}</div>
               </div>
             </div>
           </Panel>
@@ -445,7 +445,7 @@ export default function CanaryDeploymentSimulator() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
-                    className="flex items-center justify-between p-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised"
+                    className="flex items-center justify-between rounded-lg p-2 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
                   >
                     <div className="flex items-center gap-2">
                       <StatusBadge
@@ -455,7 +455,7 @@ export default function CanaryDeploymentSimulator() {
                       <StatusBadge
                         variant={request.status === 'success' ? 'completed' : 'classified'}
                         dot={false}
-                        label={request.status === 'success' ? 'OK' : 'ERR'}
+                        label={request.status === 'success' ? 'Ok' : 'Error'}
                       />
                     </div>
                     <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
@@ -465,8 +465,8 @@ export default function CanaryDeploymentSimulator() {
                 ))}
               </AnimatePresence>
               {requests.length === 0 && (
-                <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center">
-                  <p className="font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">
+                <div className="rounded-lg border border-dashed border-slate-300 dark:border-slate-700 px-4 py-10 text-center">
+                  <p className="font-sans text-sm text-slate-400 dark:text-slate-500">
                     {t('simulators.canary.labels.no_requests')}
                   </p>
                 </div>
@@ -476,39 +476,39 @@ export default function CanaryDeploymentSimulator() {
         </div>
 
         <Panel title={t('simulators.canary.labels.event_log')} accent="green" bodyClassName="p-0">
-          <div className="border-t border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 h-96 overflow-y-auto font-mono text-sm">
+          <div className="border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4 h-96 overflow-y-auto font-mono text-sm">
             {logs.map((log, index) => (
-              <div key={index} className="text-signal-green mb-1">{log}</div>
+              <div key={index} className="text-emerald-600 dark:text-emerald-400 mb-1">{log}</div>
             ))}
             {logs.length === 0 && (
-              <div className="text-slate-500 dark:text-tactical-label">{t('simulators.canary.labels.waiting_logs')}</div>
+              <div className="font-sans text-sm text-slate-500 dark:text-slate-400">{t('simulators.canary.labels.waiting_logs')}</div>
             )}
           </div>
         </Panel>
       </div>
 
-      <div className="tactical-panel border-l-2 border-l-signal-cyan p-5">
-        <h3 className="label-mono text-signal-cyan mb-4">{t('simulators.canary.info.title')}</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-mono text-sm text-slate-600 dark:text-tactical-dim">
+      <div className="rounded-lg border border-slate-200 dark:border-slate-700 border-l-2 border-l-emerald-500 bg-slate-50 dark:bg-slate-900 dark:rounded-none p-5">
+        <h3 className="text-sm font-sans font-semibold text-slate-900 dark:text-slate-100 mb-4">{t('simulators.canary.info.title')}</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-sans text-sm text-slate-600 dark:text-slate-400">
           <div>
-            <h4 className="label-mono text-signal-cyan mb-2">{t('simulators.canary.info.try_this.title')}</h4>
+            <h4 className="text-sm font-sans font-semibold text-slate-900 dark:text-slate-100 mb-2">{t('simulators.canary.info.try_this.title')}</h4>
             <ul className="space-y-1.5">
-              <li className="flex gap-2"><span className="text-signal-cyan">›</span>{t('simulators.canary.info.try_this.item1')}</li>
-              <li className="flex gap-2"><span className="text-signal-cyan">›</span>{t('simulators.canary.info.try_this.item2')}</li>
-              <li className="flex gap-2"><span className="text-signal-cyan">›</span>{t('simulators.canary.info.try_this.item3')}</li>
-              <li className="flex gap-2"><span className="text-signal-cyan">›</span>{t('simulators.canary.info.try_this.item4')}</li>
+              <li className="flex gap-2"><span className="text-emerald-600 dark:text-emerald-400">•</span>{t('simulators.canary.info.try_this.item1')}</li>
+              <li className="flex gap-2"><span className="text-emerald-600 dark:text-emerald-400">•</span>{t('simulators.canary.info.try_this.item2')}</li>
+              <li className="flex gap-2"><span className="text-emerald-600 dark:text-emerald-400">•</span>{t('simulators.canary.info.try_this.item3')}</li>
+              <li className="flex gap-2"><span className="text-emerald-600 dark:text-emerald-400">•</span>{t('simulators.canary.info.try_this.item4')}</li>
             </ul>
           </div>
           <div>
-            <h4 className="label-mono text-signal-cyan mb-2">{t('simulators.canary.info.observe.title')}</h4>
+            <h4 className="text-sm font-sans font-semibold text-slate-900 dark:text-slate-100 mb-2">{t('simulators.canary.info.observe.title')}</h4>
             <ul className="space-y-1.5">
-              <li className="flex gap-2"><span className="text-signal-cyan">›</span>{t('simulators.canary.info.observe.item1')}</li>
-              <li className="flex gap-2"><span className="text-signal-cyan">›</span>{t('simulators.canary.info.observe.item2')}</li>
-              <li className="flex gap-2"><span className="text-signal-cyan">›</span>{t('simulators.canary.info.observe.item3')}</li>
+              <li className="flex gap-2"><span className="text-emerald-600 dark:text-emerald-400">•</span>{t('simulators.canary.info.observe.item1')}</li>
+              <li className="flex gap-2"><span className="text-emerald-600 dark:text-emerald-400">•</span>{t('simulators.canary.info.observe.item2')}</li>
+              <li className="flex gap-2"><span className="text-emerald-600 dark:text-emerald-400">•</span>{t('simulators.canary.info.observe.item3')}</li>
             </ul>
           </div>
           <div>
-            <h4 className="label-mono text-signal-cyan mb-2">{t('simulators.canary.info.real_world.title')}</h4>
+            <h4 className="text-sm font-sans font-semibold text-slate-900 dark:text-slate-100 mb-2">{t('simulators.canary.info.real_world.title')}</h4>
             <p>{t('simulators.canary.info.real_world.text')}</p>
           </div>
         </div>

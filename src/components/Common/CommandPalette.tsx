@@ -182,7 +182,9 @@ export default function CommandPalette() {
     >
       <div className="w-full max-w-xl tactical-panel shadow-2xl" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-2 border-b border-slate-200 px-4 py-3 dark:border-tactical-border">
-          <span className="font-mono text-signal-green">›</span>
+          <svg className="h-4 w-4 shrink-0 text-slate-400 dark:text-tactical-label" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+          </svg>
           <input
             ref={inputRef}
             value={query}
@@ -190,13 +192,13 @@ export default function CommandPalette() {
             onKeyDown={onInputKeyDown}
             placeholder={t('command_center.search_placeholder')}
             aria-label={t('command_center.search_aria')}
-            className="flex-1 bg-transparent font-mono text-sm uppercase tracking-wider text-slate-900 placeholder:text-slate-400 focus:outline-none dark:text-tactical-text dark:placeholder:text-tactical-label"
+            className="flex-1 bg-transparent font-sans text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none dark:text-tactical-text dark:placeholder:text-tactical-label"
           />
-          <span className="font-mono text-[10px] text-slate-400 dark:text-tactical-label">ESC</span>
+          <span className="font-sans text-[10px] text-slate-400 dark:text-tactical-label">Esc</span>
         </div>
         <ul ref={listRef} className="max-h-[60vh] overflow-y-auto py-1">
           {filtered.length === 0 && (
-            <li className="px-4 py-6 text-center font-mono text-xs text-slate-500 dark:text-tactical-dim">
+            <li className="px-4 py-6 text-center font-sans text-xs text-slate-500 dark:text-tactical-dim">
               {t('command_center.no_matches')}
             </li>
           )}
@@ -208,7 +210,7 @@ export default function CommandPalette() {
             return (
               <li key={`${l.group}:${l.path}`}>
                 {showHeader && (
-                  <div className="px-4 pb-1 pt-2 font-mono text-[10px] uppercase tracking-widest text-slate-400 dark:text-tactical-label">
+                  <div className="px-4 pb-1 pt-2 font-sans text-[10px] font-medium text-slate-400 dark:text-tactical-label">
                     {t(`command_palette.group_${l.group}`, {
                       defaultValue: { nav: 'Navigate', lesson: 'Lessons', simulator: 'Simulators', case: 'Cases', tool: 'Tools' }[l.group],
                     })}
@@ -218,7 +220,7 @@ export default function CommandPalette() {
                   data-idx={idx}
                   onMouseMove={() => setActiveIndex(idx)}
                   onClick={() => go(l.path)}
-                  className={`flex w-full cursor-pointer items-center justify-between gap-3 px-4 py-2 text-left font-mono text-sm transition-colors ${
+                  className={`flex w-full cursor-pointer items-center justify-between gap-3 px-4 py-2 text-left font-sans text-sm transition-colors ${
                     isActive
                       ? 'bg-slate-100 text-slate-900 dark:bg-tactical-raised dark:text-tactical-text'
                       : 'text-slate-700 dark:text-tactical-dim'
@@ -228,7 +230,7 @@ export default function CommandPalette() {
                     <span className={marker.color} aria-hidden>{marker.symbol}</span>
                     <span className="truncate text-slate-900 dark:text-tactical-text">{l.label}</span>
                   </span>
-                  <span className="shrink-0 text-[10px] uppercase tracking-wider text-slate-400 dark:text-tactical-label">
+                  <span className="shrink-0 text-[10px] text-slate-400 dark:text-tactical-label">
                     {l.moduleLabel}
                   </span>
                 </button>
@@ -236,7 +238,7 @@ export default function CommandPalette() {
             );
           })}
         </ul>
-        <div className="flex items-center gap-4 border-t border-slate-200 px-4 py-2 font-mono text-[10px] uppercase tracking-wider text-slate-400 dark:border-tactical-border dark:text-tactical-label">
+        <div className="flex items-center gap-4 border-t border-slate-200 px-4 py-2 font-sans text-[10px] text-slate-400 dark:border-tactical-border dark:text-tactical-label">
           <span>↑↓ {t('command_palette.hint_move', { defaultValue: 'Move' })}</span>
           <span>↵ {t('command_palette.hint_open', { defaultValue: 'Open' })}</span>
           <span>{t('command_palette.result_count', { defaultValue: '{{count}} results', count: filtered.length })}</span>

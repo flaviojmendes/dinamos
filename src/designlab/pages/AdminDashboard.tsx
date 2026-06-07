@@ -238,11 +238,11 @@ const ActivityChart = ({ data }: { data: DashboardData['activity_timeline'] }) =
       <div className="flex justify-center gap-6 mt-2">
         <div className="flex items-center gap-2 text-xs">
           <div className="w-3 h-0.5 bg-signal-green" />
-          <span className="label-mono text-slate-600 dark:text-tactical-dim">Soluções</span>
+          <span className="text-xs font-medium text-slate-600 dark:text-tactical-dim">Soluções</span>
         </div>
         <div className="flex items-center gap-2 text-xs">
           <div className="w-3 h-0.5 bg-brand-600 dark:bg-signal-cyan" />
-          <span className="label-mono text-slate-600 dark:text-tactical-dim">Quizzes</span>
+          <span className="text-xs font-medium text-slate-600 dark:text-tactical-dim">Quizzes</span>
         </div>
       </div>
     </div>
@@ -363,7 +363,7 @@ const UserGrowthChart = () => {
   return (
     <Panel title="Novos Usuários" accent="green" padded={false} bodyClassName="p-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4 px-6 pt-4">
-        <h2 className="font-mono uppercase tracking-wider text-sm font-bold text-slate-900 dark:text-tactical-text flex items-center gap-2 sr-only">
+        <h2 className="font-sans text-sm font-bold text-slate-900 dark:text-tactical-text flex items-center gap-2 sr-only">
           <svg className="w-5 h-5 text-signal-green" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
           </svg>
@@ -377,12 +377,12 @@ const UserGrowthChart = () => {
         
         {/* Date Range Controls */}
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex overflow-hidden border border-slate-200 dark:border-tactical-border dark:rounded-none">
+          <div className="flex overflow-hidden rounded-lg border border-slate-200 dark:border-tactical-border dark:rounded-none">
             {(['7d', '30d', '90d', 'custom'] as const).map((range) => (
               <button
                 key={range}
                 onClick={() => setDateRange(range)}
-                className={`px-3 py-1.5 text-xs font-mono uppercase tracking-wider transition-colors ${
+                className={`px-3 py-1.5 text-xs font-medium transition-colors ${
                   dateRange === range
                     ? 'bg-slate-900 text-white dark:bg-white dark:text-black'
                     : 'bg-white dark:bg-tactical-raised text-slate-600 dark:text-tactical-dim hover:bg-slate-50 dark:hover:bg-tactical-surface'
@@ -399,14 +399,14 @@ const UserGrowthChart = () => {
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="px-2 py-1.5 text-xs border border-slate-300 dark:border-tactical-border bg-white dark:bg-tactical-surface text-slate-900 dark:text-tactical-text font-mono dark:rounded-none focus:ring-brand-500 dark:focus:ring-signal-green"
+                className="px-2 py-1.5 text-xs rounded-md border border-slate-300 dark:border-tactical-border bg-white dark:bg-tactical-surface text-slate-900 dark:text-tactical-text dark:rounded-none focus:ring-brand-500 dark:focus:ring-signal-green"
               />
               <span className="text-slate-400 text-xs">até</span>
               <input
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="px-2 py-1.5 text-xs border border-slate-300 dark:border-tactical-border bg-white dark:bg-tactical-surface text-slate-900 dark:text-tactical-text font-mono dark:rounded-none focus:ring-brand-500 dark:focus:ring-signal-green"
+                className="px-2 py-1.5 text-xs rounded-md border border-slate-300 dark:border-tactical-border bg-white dark:bg-tactical-surface text-slate-900 dark:text-tactical-text dark:rounded-none focus:ring-brand-500 dark:focus:ring-signal-green"
               />
             </div>
           )}
@@ -521,19 +521,19 @@ const UserGrowthChart = () => {
         <div className="flex gap-4 mt-4 pt-4 px-6 pb-4 border-t border-slate-200 dark:border-tactical-border">
           <div className="flex-1 text-center">
             <div className="text-xl font-mono font-bold tabular-nums text-signal-green">{totalNewUsers}</div>
-            <div className="label-mono mt-1">Total de novos usuários</div>
+            <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-1">Total de novos usuários</div>
           </div>
           <div className="flex-1 text-center">
             <div className="text-xl font-mono font-bold tabular-nums text-slate-900 dark:text-tactical-text">
               {(totalNewUsers / data.length).toFixed(1)}
             </div>
-            <div className="label-mono mt-1">Média por dia</div>
+            <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-1">Média por dia</div>
           </div>
           <div className="flex-1 text-center">
             <div className="text-xl font-mono font-bold tabular-nums text-slate-900 dark:text-tactical-text">
               {Math.max(...data.map(d => d.count))}
             </div>
-            <div className="label-mono mt-1">Pico diário</div>
+            <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-1">Pico diário</div>
           </div>
         </div>
       )}
@@ -594,8 +594,8 @@ function AdminDashboard() {
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-2xl font-mono uppercase tracking-wider font-bold text-slate-900 dark:text-tactical-text flex items-center gap-3 before:content-[''] before:h-6 before:w-1 before:bg-signal-amber before:shrink-0">
-              Dashboard Administrativo
+            <h1 className="text-2xl font-sans font-bold tracking-tight text-slate-900 dark:text-tactical-text">
+              Dashboard administrativo
             </h1>
             <p className="text-slate-500 dark:text-tactical-label mt-1">
               Visão geral da plataforma e métricas de engajamento
@@ -608,7 +608,7 @@ function AdminDashboard() {
             </div>
           ) : error ? (
             <div className="text-center p-12 border border-signal-red/40 bg-signal-red/10 dark:rounded-none">
-              <p className="font-mono text-signal-red">{error}</p>
+              <p className="text-signal-red">{error}</p>
               <TacticalButton variant="danger" onClick={fetchDashboard} className="mt-4">
                 Tentar novamente
               </TacticalButton>
@@ -689,14 +689,14 @@ function AdminDashboard() {
                   <div className="flex gap-4 mb-4">
                     <div className="flex-1 bg-slate-50 dark:bg-tactical-raised p-3 text-center dark:rounded-none">
                       <div className="text-2xl font-mono font-bold tabular-nums text-slate-900 dark:text-tactical-text">{data.forum.total_topics}</div>
-                      <div className="label-mono mt-1">Tópicos</div>
+                      <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-1">Tópicos</div>
                     </div>
                     <div className="flex-1 bg-slate-50 dark:bg-tactical-raised p-3 text-center dark:rounded-none">
                       <div className="text-2xl font-mono font-bold tabular-nums text-slate-900 dark:text-tactical-text">{data.forum.total_messages}</div>
-                      <div className="label-mono mt-1">Mensagens</div>
+                      <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-1">Mensagens</div>
                     </div>
                   </div>
-                  <h3 className="label-mono mb-2">Por Categoria</h3>
+                  <h3 className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">Por categoria</h3>
                   <DonutChart 
                     data={data.forum.categories}
                     labelKey="category"
@@ -719,11 +719,11 @@ function AdminDashboard() {
                   <div className="mt-4 pt-4 border-t border-slate-200 dark:border-tactical-border grid grid-cols-2 gap-2 text-center">
                     <div>
                       <div className="text-xl font-mono font-bold tabular-nums text-slate-900 dark:text-tactical-text">{data.quizzes.published}</div>
-                      <div className="label-mono mt-1">Publicados</div>
+                      <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-1">Publicados</div>
                     </div>
                     <div>
                       <div className="text-xl font-mono font-bold tabular-nums text-slate-900 dark:text-tactical-text">{data.quizzes.unique_takers}</div>
-                      <div className="label-mono mt-1">Jogadores únicos</div>
+                      <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-1">Participantes únicos</div>
                     </div>
                   </div>
                 </Panel>
@@ -743,19 +743,19 @@ function AdminDashboard() {
                     <table className="w-full border-collapse text-sm">
                       <thead className="bg-slate-50 dark:bg-tactical-surface">
                         <tr>
-                          <th className="label-mono pb-3 px-3 text-left border-b border-slate-200 dark:border-tactical-border">Quiz</th>
-                          <th className="label-mono pb-3 px-3 text-left border-b border-slate-200 dark:border-tactical-border">Tema</th>
-                          <th className="label-mono pb-3 px-3 text-center border-b border-slate-200 dark:border-tactical-border">Tentativas</th>
-                          <th className="label-mono pb-3 px-3 text-center border-b border-slate-200 dark:border-tactical-border">Usuários</th>
-                          <th className="label-mono pb-3 px-3 text-right border-b border-slate-200 dark:border-tactical-border">Média</th>
+                          <th className="text-xs font-medium text-slate-500 dark:text-tactical-label pb-3 px-3 text-left border-b border-slate-200 dark:border-tactical-border">Quiz</th>
+                          <th className="text-xs font-medium text-slate-500 dark:text-tactical-label pb-3 px-3 text-left border-b border-slate-200 dark:border-tactical-border">Tema</th>
+                          <th className="text-xs font-medium text-slate-500 dark:text-tactical-label pb-3 px-3 text-center border-b border-slate-200 dark:border-tactical-border">Tentativas</th>
+                          <th className="text-xs font-medium text-slate-500 dark:text-tactical-label pb-3 px-3 text-center border-b border-slate-200 dark:border-tactical-border">Usuários</th>
+                          <th className="text-xs font-medium text-slate-500 dark:text-tactical-label pb-3 px-3 text-right border-b border-slate-200 dark:border-tactical-border">Média</th>
                         </tr>
                       </thead>
                       <tbody>
                         {data.quizzes.quiz_stats.slice(0, 6).map((quiz) => (
                           <tr key={quiz.id} className="border-b border-slate-100 dark:border-tactical-border/60 hover:bg-slate-50 dark:hover:bg-tactical-raised">
-                            <td className="py-3 px-3 font-mono text-slate-800 dark:text-tactical-text">{quiz.title}</td>
+                            <td className="py-3 px-3 text-slate-800 dark:text-tactical-text">{quiz.title}</td>
                             <td className="py-3 px-3">
-                              <span className="px-2 py-0.5 text-[11px] font-mono uppercase tracking-wider border border-signal-cyan/40 text-signal-cyan bg-signal-cyan/10 dark:rounded-none">
+                              <span className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-brand-50 text-brand-700 border border-brand-200 dark:rounded-none">
                                 {quiz.theme}
                               </span>
                             </td>
@@ -788,11 +788,11 @@ function AdminDashboard() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-slate-900 dark:text-tactical-text">
-                            <span className="font-mono font-medium">{activity.user_nickname || 'Usuário'}</span>
+                            <span className="font-medium">{activity.user_nickname || 'Usuário'}</span>
                             {' completou '}
-                            <span className="font-mono font-medium">{activity.challenge_title}</span>
+                            <span className="font-medium">{activity.challenge_title}</span>
                           </p>
-                          <p className="text-xs font-mono text-slate-500 dark:text-tactical-label">
+                          <p className="text-xs text-slate-500 dark:text-tactical-label">
                             {activity.created_at ? new Date(activity.created_at).toLocaleDateString('pt-BR', {
                               day: '2-digit',
                               month: 'short',
@@ -804,7 +804,7 @@ function AdminDashboard() {
                       </div>
                     ))}
                     {data.recent_activity.length === 0 && (
-                      <p className="font-mono text-slate-500 dark:text-tactical-label text-sm text-center py-4">
+                      <p className="text-slate-500 dark:text-tactical-label text-sm text-center py-4">
                         Nenhuma atividade recente
                       </p>
                     )}

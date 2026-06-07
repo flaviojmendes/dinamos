@@ -135,25 +135,25 @@ export default function InferenceBatchingSimulator() {
           </div>
         }
       >
-        <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
+        <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
 
         <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="space-y-2">
-            <label className="block label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.controls.arrival_rate`)}</label>
+            <label className="block font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.arrival_rate`)}</label>
             <div className="flex items-center gap-2">
               <input type="range" min="1" max="20" value={arrivalRate} onChange={e => setArrivalRate(Number(e.target.value))} className={rangeClass} />
               <span className="font-mono text-sm w-8 text-right text-signal-cyan tabular-nums">{arrivalRate}</span>
             </div>
           </div>
           <div className="space-y-2">
-            <label className="block label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.controls.batch_capacity`)}</label>
+            <label className="block font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.batch_capacity`)}</label>
             <div className="flex items-center gap-2">
               <input type="range" min="1" max="12" value={batchCapacity} onChange={e => setBatchCapacity(Number(e.target.value))} className={rangeClass} />
               <span className="font-mono text-sm w-8 text-right text-signal-cyan tabular-nums">{batchCapacity}</span>
             </div>
           </div>
           <div className="space-y-2">
-            <label className="block label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.controls.output_tokens`)}</label>
+            <label className="block font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.output_tokens`)}</label>
             <div className="flex items-center gap-2">
               <input type="range" min="8" max="60" value={avgTokens} onChange={e => setAvgTokens(Number(e.target.value))} className={rangeClass} />
               <span className="font-mono text-sm w-8 text-right text-signal-cyan tabular-nums">{avgTokens}</span>
@@ -163,9 +163,9 @@ export default function InferenceBatchingSimulator() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Running batch */}
-          <div className="border border-slate-200 dark:border-tactical-border">
+          <div className="rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border">
             <div className="border-b border-slate-200 dark:border-tactical-border px-3 py-2 flex items-center justify-between">
-              <div className="label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.panels.batch`)}</div>
+              <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.panels.batch`)}</div>
               <div className="font-mono text-xs text-signal-cyan tabular-nums">{batch.length}/{batchCapacity}</div>
             </div>
             <div className="p-3 space-y-2 min-h-[180px]">
@@ -179,7 +179,7 @@ export default function InferenceBatchingSimulator() {
                         layout
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="border border-dashed border-slate-300 dark:border-tactical-border px-3 py-2 font-mono text-[11px] uppercase tracking-wider text-slate-400 dark:text-tactical-label"
+                        className="rounded-md dark:rounded-none border border-dashed border-slate-300 dark:border-tactical-border px-3 py-2 font-sans text-[11px] text-slate-400 dark:text-tactical-label"
                       >
                         {t(`${base}.labels.slot_free`)}
                       </motion.div>
@@ -195,16 +195,16 @@ export default function InferenceBatchingSimulator() {
                       animate={{ opacity: 1, x: 0, scale: 1 }}
                       exit={{ opacity: 0, scale: 1.08, backgroundColor: 'rgba(34,197,94,0.25)' }}
                       transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                      className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
+                      className="rounded-md dark:rounded-none border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
                     >
                       <div className="flex items-center justify-between mb-1.5">
-                        <span className="font-mono text-xs text-slate-700 dark:text-tactical-text flex items-center gap-1.5">
+                        <span className="font-sans text-xs text-slate-700 dark:text-tactical-text flex items-center gap-1.5">
                           <motion.span
                             className={`inline-block h-1.5 w-1.5 rounded-full ${almost ? 'bg-signal-green' : 'bg-signal-cyan'}`}
                             animate={{ opacity: [1, 0.3, 1] }}
                             transition={{ duration: 0.7, repeat: Infinity }}
                           />
-                          {t(`${base}.labels.request`)} #{r.id}
+                          {t(`${base}.labels.request`)} {r.id}
                         </span>
                         <span className="font-mono text-[11px] text-slate-500 dark:text-tactical-dim tabular-nums">{r.done}/{r.totalTokens} {t(`${base}.labels.tokens`)}</span>
                       </div>
@@ -223,14 +223,14 @@ export default function InferenceBatchingSimulator() {
           </div>
 
           {/* Queue */}
-          <div className="border border-slate-200 dark:border-tactical-border">
+          <div className="rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border">
             <div className="border-b border-slate-200 dark:border-tactical-border px-3 py-2 flex items-center justify-between">
-              <div className="label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.panels.queue`)}</div>
+              <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.panels.queue`)}</div>
               <div className="font-mono text-xs text-signal-amber tabular-nums">{queue.length} {t(`${base}.labels.waiting`)}</div>
             </div>
             <div className="p-3 min-h-[180px]">
               {queue.length === 0 ? (
-                <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label">
+                <div className="rounded-md dark:rounded-none border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center font-sans text-xs text-slate-400 dark:text-tactical-label">
                   {t(`${base}.labels.queue_empty`)}
                 </div>
               ) : (
@@ -244,16 +244,16 @@ export default function InferenceBatchingSimulator() {
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.4, x: -12 }}
                         transition={{ type: 'spring', stiffness: 500, damping: 32 }}
-                        className="border border-signal-amber/40 text-signal-amber px-2 py-1 font-mono text-[11px] tabular-nums"
+                        className="rounded-md dark:rounded-none border border-signal-amber/40 text-signal-amber px-2 py-1 font-mono text-[11px] tabular-nums"
                       >
-                        #{r.id}
+                        {r.id}
                       </motion.span>
                     ))}
                   </AnimatePresence>
                 </div>
               )}
               {batch.length === 0 && queue.length === 0 && (
-                <p className="mt-4 font-mono text-[11px] text-slate-400 dark:text-tactical-label">{t(`${base}.labels.batch_empty`)}</p>
+                <p className="mt-4 font-sans text-[11px] text-slate-400 dark:text-tactical-label">{t(`${base}.labels.batch_empty`)}</p>
               )}
             </div>
           </div>
@@ -271,7 +271,7 @@ export default function InferenceBatchingSimulator() {
         </div>
         <div className="mt-4">
           <div className="flex items-center justify-between mb-1">
-            <span className="label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.metrics.utilization`)}</span>
+            <span className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.metrics.utilization`)}</span>
             <StatusBadge variant={isRunning ? 'active' : 'offline'} />
           </div>
           <SegmentBar value={utilization} max={100} color={utilization > 90 ? 'green' : 'amber'} caption={`${utilization}%`} />

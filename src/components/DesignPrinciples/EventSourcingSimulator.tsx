@@ -191,9 +191,9 @@ export default function EventSourcingSimulator() {
     <div className="space-y-6">
       <div className="max-w-3xl">
         <div className="flex items-center justify-between gap-4 mb-2">
-          <div className="label-mono text-signal-cyan">
-            [ {t('simulators.event_sourcing.title')} ]
-          </div>
+          <h2 className="text-base font-semibold tracking-tight text-slate-900 dark:text-tactical-text">
+            {t('simulators.event_sourcing.title')}
+          </h2>
           <div className="flex gap-2">
             <TacticalButton size="sm" variant="ghost" onClick={() => setShowSettings(!showSettings)}>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -210,7 +210,7 @@ export default function EventSourcingSimulator() {
             </TacticalButton>
           </div>
         </div>
-        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
+        <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
           {t('simulators.event_sourcing.intro')}
         </p>
       </div>
@@ -226,7 +226,7 @@ export default function EventSourcingSimulator() {
             <Panel title={t('simulators.event_sourcing.settings.title')} accent="cyan">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="flex items-center gap-2 font-mono text-sm text-slate-600 dark:text-tactical-dim">
+                  <label className="flex items-center gap-2 font-sans text-sm text-slate-600 dark:text-tactical-dim">
                     <input
                       type="checkbox"
                       checked={config.autoAdvance}
@@ -251,7 +251,7 @@ export default function EventSourcingSimulator() {
                   />
                 </div>
                 <div>
-                  <label className="flex items-center gap-2 font-mono text-sm text-slate-600 dark:text-tactical-dim">
+                  <label className="flex items-center gap-2 font-sans text-sm text-slate-600 dark:text-tactical-dim">
                     <input
                       type="checkbox"
                       checked={config.showEventData}
@@ -294,22 +294,22 @@ export default function EventSourcingSimulator() {
                 <button
                   key={product.name}
                   onClick={() => handleItemSelection(product.name)}
-                  className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2.5 hover:border-signal-green transition-colors text-left"
+                  className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg dark:rounded-none px-3 py-2.5 hover:border-emerald-400 dark:hover:border-signal-green transition-colors text-left"
                 >
-                  <div className="font-mono text-sm text-slate-900 dark:text-tactical-text">{product.name}</div>
-                  <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">R$ {product.price}</div>
+                  <div className="font-sans text-sm text-slate-900 dark:text-tactical-text">{product.name}</div>
+                  <div className="font-mono text-xs tabular-nums text-slate-500 dark:text-tactical-dim">R$ {product.price}</div>
                 </button>
               ))}
             </div>
             {selectedItems.length > 0 && (
-              <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-3 mb-4">
-                <h3 className="label-mono mb-2">{t('simulators.event_sourcing.create_order.selected_items')}</h3>
+              <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg dark:rounded-none px-3 py-3 mb-4">
+                <h3 className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t('simulators.event_sourcing.create_order.selected_items')}</h3>
                 {selectedItems.map(item => (
-                  <div key={item.name} className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
+                  <div key={item.name} className="font-sans text-xs text-slate-500 dark:text-tactical-dim">
                     {item.name} x{item.quantity}
                   </div>
                 ))}
-                <div className="mt-2 font-mono text-sm text-slate-900 dark:text-tactical-text">
+                <div className="mt-2 font-mono text-sm tabular-nums text-slate-900 dark:text-tactical-text">
                   {t('simulators.event_sourcing.create_order.total', { amount: calculateTotal(selectedItems) })}
                 </div>
               </div>
@@ -407,8 +407,8 @@ export default function EventSourcingSimulator() {
                 transition={{ duration: config.animationDuration }}
               >
                 <Panel title={t('simulators.event_sourcing.state.title')} accent="cyan">
-                  <div className="space-y-2 font-mono text-sm text-slate-600 dark:text-tactical-dim">
-                    <div className="text-slate-900 dark:text-tactical-text">{t('simulators.event_sourcing.state.order', { id: currentState.orderId })}</div>
+                  <div className="space-y-2 font-sans text-sm text-slate-600 dark:text-tactical-dim">
+                    <div className="font-mono text-slate-900 dark:text-tactical-text">{t('simulators.event_sourcing.state.order', { id: currentState.orderId })}</div>
                     <motion.div
                       key={currentState.status}
                       initial={{ color: '#60A5FA' }}
@@ -437,7 +437,7 @@ export default function EventSourcingSimulator() {
                       </motion.div>
                     )}
                     <div className="mt-4">
-                      <div className="label-mono mb-2">{t('simulators.event_sourcing.state.items')}</div>
+                      <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t('simulators.event_sourcing.state.items')}</div>
                       {currentState.items.map(item => (
                         <div key={item.name} className="text-xs text-slate-500 dark:text-tactical-dim">
                           {item.name} x{item.quantity}
@@ -457,7 +457,7 @@ export default function EventSourcingSimulator() {
               events.length > 0 ? (
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2">
-                    <label className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{t('simulators.event_sourcing.events.speed')}</label>
+                    <label className="font-sans text-xs text-slate-500 dark:text-tactical-dim">{t('simulators.event_sourcing.events.speed')}</label>
                     <select
                       value={replaySpeed}
                       onChange={(e) => setReplaySpeed(Number(e.target.value))}
@@ -493,15 +493,15 @@ export default function EventSourcingSimulator() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ duration: config.animationDuration }}
-                    className={`border px-3 py-2.5 ${
+                    className={`border rounded-lg dark:rounded-none px-3 py-2.5 ${
                       isReplayMode && index === replayIndex - 1
-                        ? 'border-signal-cyan bg-signal-cyan/5 dark:bg-signal-cyan/10'
+                        ? 'border-slate-300 bg-slate-100 dark:border-signal-cyan dark:bg-signal-cyan/10'
                         : 'border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised'
                     }`}
                   >
                     <div className="flex justify-between font-mono text-xs">
                       <span className="text-slate-900 dark:text-tactical-text">{event.type}</span>
-                      <span className="text-slate-500 dark:text-tactical-dim">
+                      <span className="tabular-nums text-slate-500 dark:text-tactical-dim">
                         {new Date(event.timestamp).toLocaleTimeString()}
                       </span>
                     </div>

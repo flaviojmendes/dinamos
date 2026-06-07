@@ -4,8 +4,8 @@ import Navbar from '../components/Navbar'
 import { TacticalButton, StatusBadge } from '../components/tactical'
 
 const inputClass =
-  'w-full px-4 py-2 bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none'
-const labelClass = 'block label-mono text-slate-600 dark:text-tactical-dim mb-1'
+  'w-full px-4 py-2 rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none'
+const labelClass = 'block text-sm font-medium text-slate-600 dark:text-tactical-dim mb-1'
 import api from '../utils/api'
 import type { Quiz } from '../types'
 import { useAuth } from '../contexts/AuthContext'
@@ -253,8 +253,8 @@ function AdminQuizzes() {
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-2xl font-mono uppercase tracking-wider font-bold text-slate-900 dark:text-tactical-text flex items-center gap-3 before:content-[''] before:h-6 before:w-1 before:bg-signal-amber before:shrink-0">
-                Gerenciar Quizzes
+              <h1 className="text-2xl font-sans font-bold tracking-tight text-slate-900 dark:text-tactical-text">
+                Gerenciar quizzes
               </h1>
               <p className="text-slate-500 dark:text-tactical-label mt-1">
                 Crie e gerencie quizzes para os alunos
@@ -295,22 +295,22 @@ function AdminQuizzes() {
               <table className="w-full border-collapse text-sm">
                 <thead className="sticky top-0 z-10 bg-slate-50 dark:bg-tactical-surface">
                   <tr>
-                    <th className="label-mono px-6 py-3 text-left border-b border-slate-200 dark:border-tactical-border">
+                    <th className="text-xs font-medium text-slate-500 dark:text-tactical-label px-6 py-3 text-left border-b border-slate-200 dark:border-tactical-border">
                       Quiz
                     </th>
-                    <th className="label-mono px-6 py-3 text-left border-b border-slate-200 dark:border-tactical-border">
+                    <th className="text-xs font-medium text-slate-500 dark:text-tactical-label px-6 py-3 text-left border-b border-slate-200 dark:border-tactical-border">
                       Tema
                     </th>
-                    <th className="label-mono px-6 py-3 text-center border-b border-slate-200 dark:border-tactical-border">
+                    <th className="text-xs font-medium text-slate-500 dark:text-tactical-label px-6 py-3 text-center border-b border-slate-200 dark:border-tactical-border">
                       Questões
                     </th>
-                    <th className="label-mono px-6 py-3 text-center border-b border-slate-200 dark:border-tactical-border">
+                    <th className="text-xs font-medium text-slate-500 dark:text-tactical-label px-6 py-3 text-center border-b border-slate-200 dark:border-tactical-border">
                       Tempo
                     </th>
-                    <th className="label-mono px-6 py-3 text-center border-b border-slate-200 dark:border-tactical-border">
+                    <th className="text-xs font-medium text-slate-500 dark:text-tactical-label px-6 py-3 text-center border-b border-slate-200 dark:border-tactical-border">
                       Status
                     </th>
-                    <th className="label-mono px-6 py-3 text-right border-b border-slate-200 dark:border-tactical-border">
+                    <th className="text-xs font-medium text-slate-500 dark:text-tactical-label px-6 py-3 text-right border-b border-slate-200 dark:border-tactical-border">
                       Ações
                     </th>
                   </tr>
@@ -318,7 +318,7 @@ function AdminQuizzes() {
                 <tbody>
                   {quizzes.map((quiz) => (
                     <tr key={quiz.id} className="border-b border-slate-100 dark:border-tactical-border/60 hover:bg-slate-50 dark:hover:bg-tactical-raised">
-                      <td className="px-6 py-4 font-mono text-slate-800 dark:text-tactical-text">
+                      <td className="px-6 py-4 text-slate-800 dark:text-tactical-text">
                         <div>
                           <div className="font-medium">
                             {quiz.title}
@@ -331,7 +331,7 @@ function AdminQuizzes() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="px-2 py-0.5 text-[11px] font-mono uppercase tracking-wider border border-signal-cyan/40 text-signal-cyan bg-signal-cyan/10 dark:rounded-none">
+                        <span className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-brand-50 text-brand-700 border border-brand-200 dark:rounded-none">
                           {quiz.theme}
                         </span>
                       </td>
@@ -345,7 +345,7 @@ function AdminQuizzes() {
                         <button type="button" onClick={() => togglePublish(quiz)} className="inline-block">
                           <StatusBadge
                             variant={quiz.is_published ? 'active' : 'pending'}
-                            label={quiz.is_published ? 'PUBLICADO' : 'RASCUNHO'}
+                            label={quiz.is_published ? 'Publicado' : 'Rascunho'}
                           />
                         </button>
                       </td>
@@ -412,7 +412,7 @@ function AdminQuizzes() {
             <div className="relative tactical-panel max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col dark:rounded-none">
               {/* Modal Header */}
               <div className="px-6 py-4 border-b border-slate-200 dark:border-tactical-border flex items-center justify-between">
-                <h2 className="font-mono uppercase tracking-wider text-xl font-bold text-slate-900 dark:text-tactical-text">
+                <h2 className="font-sans text-xl font-bold text-slate-900 dark:text-tactical-text">
                   {editingQuiz ? 'Editar Quiz' : 'Novo Quiz'}
                 </h2>
                 <button
@@ -431,8 +431,8 @@ function AdminQuizzes() {
                   onClick={() => setCurrentStep('info')}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                     currentStep === 'info'
-                      ? 'border border-signal-cyan/40 text-signal-cyan bg-signal-cyan/10 font-mono uppercase tracking-wider text-xs'
-                      : 'text-slate-500 hover:text-slate-700 dark:text-tactical-dim font-mono uppercase tracking-wider text-xs'
+                      ? 'border border-brand-300 text-brand-700 bg-brand-50 text-sm font-medium'
+                      : 'text-slate-500 hover:text-slate-700 dark:text-tactical-dim text-sm font-medium'
                   }`}
                 >
                   1. Informações
@@ -441,8 +441,8 @@ function AdminQuizzes() {
                   onClick={() => setCurrentStep('questions')}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                     currentStep === 'questions'
-                      ? 'border border-signal-cyan/40 text-signal-cyan bg-signal-cyan/10 font-mono uppercase tracking-wider text-xs'
-                      : 'text-slate-500 hover:text-slate-700 dark:text-tactical-dim font-mono uppercase tracking-wider text-xs'
+                      ? 'border border-brand-300 text-brand-700 bg-brand-50 text-sm font-medium'
+                      : 'text-slate-500 hover:text-slate-700 dark:text-tactical-dim text-sm font-medium'
                   }`}
                 >
                   2. Questões ({quizForm.questions.length})

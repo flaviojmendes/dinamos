@@ -14,14 +14,14 @@ export default function HorizontalScaling() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="label-mono text-signal-cyan mb-2">
-            [ {t('design_principles.scalability.horizontal.title')} ]
-          </div>
+          <span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800 px-3 py-1 text-sm font-sans font-medium text-slate-700 dark:text-slate-300 mb-2">
+            {t('design_principles.scalability.horizontal.title')}
+          </span>
           <motion.p
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim"
+            className="font-sans text-sm leading-relaxed text-slate-600 dark:text-slate-400"
           >
             {t('design_principles.scalability.horizontal.intro')}
           </motion.p>
@@ -36,12 +36,12 @@ export default function HorizontalScaling() {
           className="space-y-6"
         >
           <Panel title={t('design_principles.scalability.horizontal.how_title')} accent="cyan">
-            <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim mb-4">
+            <p className="font-sans text-sm text-slate-600 dark:text-slate-400 mb-4">
               {t('design_principles.scalability.horizontal.how_p')}
             </p>
-            <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4">
-              <h3 className="label-mono mb-2">{t('design_principles.scalability.horizontal.example_title')}</h3>
-              <p className="font-mono text-sm text-slate-500 dark:text-tactical-dim">
+            <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4">
+              <h3 className="text-sm font-sans font-semibold text-slate-900 dark:text-slate-100 mb-2">{t('design_principles.scalability.horizontal.example_title')}</h3>
+              <p className="font-sans text-sm text-slate-500 dark:text-slate-400">
                 {t('design_principles.scalability.horizontal.example_p')}
               </p>
             </div>
@@ -61,8 +61,8 @@ export default function HorizontalScaling() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <div>
-                    <h3 className="font-mono text-sm font-semibold text-slate-900 dark:text-tactical-text">{li.split(':')[0]}</h3>
-                    <p className="font-mono text-sm text-slate-500 dark:text-tactical-dim">{li.split(':').slice(1).join(':').trim()}</p>
+                    <h3 className="font-sans text-sm font-semibold text-slate-900 dark:text-slate-100">{li.split(':')[0]}</h3>
+                    <p className="font-sans text-sm text-slate-500 dark:text-slate-400">{li.split(':').slice(1).join(':').trim()}</p>
                   </div>
                 </motion.li>
               ))}
@@ -79,9 +79,9 @@ export default function HorizontalScaling() {
           <Panel title={t('design_principles.scalability.horizontal.considerations_title')} accent="amber">
             <div className="space-y-3">
               {(t('design_principles.scalability.horizontal.considerations', { returnObjects: true }) as string[]).map((li, idx) => (
-                <div key={idx} className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4">
-                  <h3 className="font-mono text-sm font-semibold text-slate-900 dark:text-tactical-text mb-2">{li.split(':')[0]}</h3>
-                  <p className="font-mono text-sm text-slate-500 dark:text-tactical-dim">{li.split(':').slice(1).join(':').trim()}</p>
+                <div key={idx} className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4">
+                  <h3 className="font-sans text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">{li.split(':')[0]}</h3>
+                  <p className="font-sans text-sm text-slate-500 dark:text-slate-400">{li.split(':').slice(1).join(':').trim()}</p>
                 </div>
               ))}
             </div>
@@ -90,9 +90,9 @@ export default function HorizontalScaling() {
           <Panel title={t('design_principles.scalability.horizontal.best_practices_title')} accent="cyan">
             <div className="space-y-3">
               {(t('design_principles.scalability.horizontal.best_practices', { returnObjects: true }) as string[]).map((li, idx) => (
-                <div key={idx} className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4">
-                  <h3 className="font-mono text-sm font-semibold text-slate-900 dark:text-tactical-text mb-2">{li.split(':')[0]}</h3>
-                  <p className="font-mono text-sm text-slate-500 dark:text-tactical-dim">{li.split(':').slice(1).join(':').trim()}</p>
+                <div key={idx} className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4">
+                  <h3 className="font-sans text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">{li.split(':')[0]}</h3>
+                  <p className="font-sans text-sm text-slate-500 dark:text-slate-400">{li.split(':').slice(1).join(':').trim()}</p>
                 </div>
               ))}
             </div>
@@ -108,7 +108,7 @@ export default function HorizontalScaling() {
       >
         <Link
           to="/principios-design/escalabilidade/simulator"
-          className="inline-flex items-center justify-center gap-2 font-mono uppercase tracking-wider font-medium transition-colors px-6 py-3 bg-slate-900 dark:bg-white text-white dark:text-black hover:bg-slate-700 dark:hover:bg-slate-200 border border-transparent"
+          className="inline-flex items-center justify-center gap-2 font-sans font-medium transition-colors px-6 py-3 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-black hover:bg-slate-700 dark:hover:bg-slate-200 border border-transparent"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />

@@ -66,14 +66,14 @@ export default function CostPanel({ nodes, metrics, provider, totalCost, onClose
   return (
     <div className="p-4 overflow-y-auto h-full">
       <div className="flex items-center justify-between mb-3">
-        <div className="label-mono text-signal-cyan">{t('editor.bill.title', { provider: providerLabel(provider) })}</div>
+        <div className="font-sans text-[11px] font-medium text-signal-cyan">{t('editor.bill.title', { provider: providerLabel(provider) })}</div>
         <button onClick={onClose} className="text-tactical-label hover:text-signal-red transition-colors" aria-label={t('editor.bill.close')}>
           <X className="w-4 h-4" />
         </button>
       </div>
 
       {lines.length === 0 ? (
-        <div className="font-mono text-xs text-tactical-label">{t('editor.bill.empty')}</div>
+        <div className="font-sans text-xs text-tactical-label">{t('editor.bill.empty')}</div>
       ) : (
         <div className="space-y-1.5">
           {lines.map((l) => {
@@ -82,8 +82,8 @@ export default function CostPanel({ nodes, metrics, provider, totalCost, onClose
             return (
               <div key={l.product} className="flex items-center justify-between border-b border-tactical-line pb-1.5">
                 <div className="min-w-0">
-                  <div className="font-mono text-xs text-tactical-text truncate">{l.product}</div>
-                  <div className="font-mono text-[10px] text-tactical-label">{t('editor.bill.units', { count: l.count })}</div>
+                  <div className="font-sans text-xs text-tactical-text truncate">{l.product}</div>
+                  <div className="font-sans text-[10px] text-slate-500 dark:text-tactical-label">{t('editor.bill.units', { count: l.count })}</div>
                 </div>
                 <div className={`flex items-center gap-1 font-mono text-xs ${dirTone}`}>
                   {dir === 'up' && <ArrowUp className="w-3 h-3" />}
@@ -97,13 +97,13 @@ export default function CostPanel({ nodes, metrics, provider, totalCost, onClose
         </div>
       )}
 
-      <div className="mt-3 pt-2 border-t border-tactical-border flex items-center justify-between font-mono text-xs">
-        <span className="label-mono text-signal-amber">{t('editor.bill.total')}</span>
+      <div className="mt-3 pt-2 border-t border-tactical-border flex items-center justify-between font-sans text-xs">
+        <span className="font-sans text-[11px] font-medium text-slate-600 dark:text-signal-amber">{t('editor.bill.total')}</span>
         <span className="text-signal-cyan font-bold">${total.toFixed(4)}/h</span>
       </div>
-      <div className="mt-1 flex items-center justify-between font-mono text-[11px] text-tactical-label">
+      <div className="mt-1 flex items-center justify-between font-sans text-[11px] text-tactical-label">
         <span>{t('editor.bill.accumulated')}</span>
-        <span className="text-signal-cyan">${totalCost.toFixed(4)}</span>
+        <span className="font-mono text-signal-cyan">${totalCost.toFixed(4)}</span>
       </div>
     </div>
   );

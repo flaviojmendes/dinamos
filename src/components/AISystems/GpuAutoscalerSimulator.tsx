@@ -130,7 +130,7 @@ export default function GpuAutoscalerSimulator() {
           </div>
         }
       >
-        <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
+        <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Slider label={t(`${base}.controls.arrival_rate`)} value={arrivalRate} min={1} max={24} onChange={setArrivalRate} cls={rangeClass} />
           <Slider label={t(`${base}.controls.scale_threshold`)} value={scaleThreshold} min={1} max={20} onChange={setScaleThreshold} cls={rangeClass} />
@@ -146,7 +146,7 @@ export default function GpuAutoscalerSimulator() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center font-mono text-xs uppercase tracking-wider text-slate-400 dark:text-tactical-label"
+              className="rounded-lg dark:rounded-none border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center font-sans text-xs text-slate-400 dark:text-tactical-label"
             >
               {t(`${base}.labels.scale_to_zero`)}
             </motion.div>
@@ -163,7 +163,7 @@ export default function GpuAutoscalerSimulator() {
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.4, y: -12 }}
                       transition={{ type: 'spring', stiffness: 360, damping: 26 }}
-                      className="relative border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-3 flex flex-col gap-2 overflow-hidden"
+                      className="relative rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-3 flex flex-col gap-2 overflow-hidden"
                     >
                       <div className="flex items-center gap-2">
                         {r.state === 'warming' ? (
@@ -179,7 +179,7 @@ export default function GpuAutoscalerSimulator() {
                             transition={{ duration: 1.6, repeat: Infinity }}
                           />
                         )}
-                        <span className="font-mono text-xs text-slate-700 dark:text-tactical-text">GPU #{r.id}</span>
+                        <span className="font-sans text-xs text-slate-700 dark:text-tactical-text">GPU {r.id}</span>
                       </div>
                       <StatusBadge
                         variant={r.state === 'ready' ? 'active' : 'in-progress'}
@@ -209,7 +209,7 @@ export default function GpuAutoscalerSimulator() {
       <Panel title={t(`${base}.metrics.queue`)} accent="cyan">
         <div className="flex flex-wrap items-center gap-1.5 min-h-[2.5rem]">
           {queueLen === 0 ? (
-            <span className="font-mono text-[11px] uppercase tracking-wider text-slate-400 dark:text-tactical-label">—</span>
+            <span className="font-sans text-[11px] text-slate-400 dark:text-tactical-label">—</span>
           ) : (
             <AnimatePresence mode="popLayout" initial={false}>
               {Array.from({ length: Math.min(queueLen, 40) }).map((_, i) => (
@@ -234,7 +234,7 @@ export default function GpuAutoscalerSimulator() {
             <div className="font-mono text-2xl font-bold tabular-nums leading-none text-signal-green">
               <AnimatedNumber value={readyCount} />/<AnimatedNumber value={replicas.length} />
             </div>
-            <div className="label-mono mt-2">{t(`${base}.metrics.replicas`)}</div>
+            <div className="font-sans text-[11px] font-medium mt-2 text-slate-500 dark:text-tactical-label">{t(`${base}.metrics.replicas`)}</div>
           </div>
           <AnimatedMetric value={queueLen} label={t(`${base}.metrics.queue`)} color={queueLen > scaleThreshold ? 'red' : 'default'} />
           <AnimatedMetric value={avgLatency} suffix="ms" label={t(`${base}.metrics.latency`)} color={avgLatency > 3000 ? 'red' : 'default'} />
@@ -243,7 +243,7 @@ export default function GpuAutoscalerSimulator() {
         </div>
         <div className="mt-4">
           <div className="flex items-center justify-between mb-1">
-            <span className="label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.metrics.queue`)}</span>
+            <span className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.metrics.queue`)}</span>
           </div>
           <SegmentBar value={queueLen} max={Math.max(scaleThreshold * 2, 10)} color={queueLen > scaleThreshold ? 'red' : 'green'} caption={`${queueLen}`} />
         </div>
@@ -255,7 +255,7 @@ export default function GpuAutoscalerSimulator() {
 function Slider({ label, value, min, max, onChange, cls, suffix }: { label: string; value: number; min: number; max: number; onChange: (v: number) => void; cls: string; suffix?: string }) {
   return (
     <div className="space-y-2">
-      <label className="block label-mono text-slate-500 dark:text-tactical-label">{label}</label>
+      <label className="block font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{label}</label>
       <div className="flex items-center gap-2">
         <input type="range" min={min} max={max} value={value} onChange={e => onChange(Number(e.target.value))} className={cls} />
         <span className="font-mono text-sm w-10 text-right text-signal-cyan tabular-nums">{value}{suffix ?? ''}</span>

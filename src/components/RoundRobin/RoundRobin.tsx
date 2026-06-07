@@ -149,7 +149,7 @@ export default function RoundRobin() {
   }, [isRunning, config.requestsPerSecond, config.serverCount, config.serverCapacity, config.strategy]);
 
   const selectClass =
-    'p-2 bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border font-mono text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-signal-green w-full sm:w-auto';
+    'p-2 bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border font-sans text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-brand-500 w-full sm:w-auto rounded-md dark:rounded-none';
 
   const rangeClass =
     'w-full h-2 bg-slate-200 dark:bg-tactical-border appearance-none cursor-pointer accent-signal-green';
@@ -157,9 +157,9 @@ export default function RoundRobin() {
   return (
     <div className="space-y-6">
       <div className="max-w-3xl">
-        <div className="label-mono text-signal-cyan mb-2">
-          [ {t('simulators.round_robin.title')} ]
-        </div>
+        <span className="inline-block text-xs font-medium text-slate-600 dark:text-tactical-label bg-slate-100 dark:bg-tactical-raised px-2.5 py-1 rounded-full mb-2">
+          {t('simulators.round_robin.title')}
+        </span>
       </div>
 
       <Panel
@@ -177,7 +177,7 @@ export default function RoundRobin() {
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block label-mono text-slate-500 dark:text-tactical-label mb-2">
+            <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">
               {t('simulators.round_robin.config.strategy')}
             </label>
             <select
@@ -198,7 +198,7 @@ export default function RoundRobin() {
 
           <div className="space-y-4">
             <div>
-              <div className="flex justify-between font-mono text-sm text-slate-600 dark:text-tactical-dim mb-1">
+              <div className="flex justify-between font-sans text-sm text-slate-600 dark:text-tactical-dim mb-1">
                 <span>{t('simulators.round_robin.config.server_count')}</span>
                 <span className="text-signal-cyan tabular-nums">{config.serverCount}</span>
               </div>
@@ -218,7 +218,7 @@ export default function RoundRobin() {
             </div>
 
             <div>
-              <div className="flex justify-between font-mono text-sm text-slate-600 dark:text-tactical-dim mb-1">
+              <div className="flex justify-between font-sans text-sm text-slate-600 dark:text-tactical-dim mb-1">
                 <span>{t('simulators.round_robin.config.server_capacity')}</span>
                 <span className="text-signal-cyan tabular-nums">{t('simulators.round_robin.server_card.requests', { current: config.serverCapacity, capacity: '' }).replace('undefined/', '').replace(' requests', '')}</span>
               </div>
@@ -239,7 +239,7 @@ export default function RoundRobin() {
             </div>
 
             <div>
-              <div className="flex justify-between font-mono text-sm text-slate-600 dark:text-tactical-dim mb-1">
+              <div className="flex justify-between font-sans text-sm text-slate-600 dark:text-tactical-dim mb-1">
                 <span>{t('simulators.round_robin.config.rps')}</span>
                 <span className="text-signal-cyan tabular-nums">{config.requestsPerSecond} req/s</span>
               </div>
@@ -260,8 +260,8 @@ export default function RoundRobin() {
           </div>
         </div>
 
-        <div className="mt-4 tactical-panel border-l-2 border-l-signal-cyan p-4">
-          <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim">
+        <div className="mt-4 bg-slate-50 dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-lg dark:rounded-none p-4">
+          <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim">
             {config.strategy === 'roundRobin' && t('simulators.round_robin.strategies.round_robin')}
             {config.strategy === 'leastConnections' && t('simulators.round_robin.strategies.least_conn')}
             {config.strategy === 'random' && t('simulators.round_robin.strategies.random')}
@@ -272,13 +272,13 @@ export default function RoundRobin() {
       <Panel
         title={t('simulators.round_robin.config.server_count')}
         accent="green"
-        action={isRunning ? <StatusBadge variant="active" label="RUNNING" /> : undefined}
+        action={isRunning ? <StatusBadge variant="active" label="Running" /> : undefined}
       >
         <div className="space-y-4">
           {servers.map((server) => (
             <div
               key={server.id}
-              className={`border p-4 ${
+              className={`border p-4 rounded-lg dark:rounded-none ${
                 currentServerIndex === server.id
                   ? 'border-signal-cyan bg-signal-cyan/5'
                   : 'border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised'
@@ -287,11 +287,11 @@ export default function RoundRobin() {
               <div className="flex flex-col space-y-3">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                   <div className="flex items-center gap-4">
-                    <span className="font-mono text-sm font-medium text-slate-900 dark:text-tactical-text">
+                    <span className="font-sans text-sm font-medium text-slate-900 dark:text-tactical-text">
                       {t('simulators.round_robin.server_card.server_label', { id: server.id + 1 })}
                     </span>
                     {currentServerIndex === server.id && isRunning && (
-                      <StatusBadge variant="in-progress" label="ACTIVE" />
+                      <StatusBadge variant="in-progress" label="Active" />
                     )}
                     <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
                       <span>{t('simulators.round_robin.server_card.requests', { current: server.currentLoad, capacity: server.capacity })}</span>
@@ -299,7 +299,7 @@ export default function RoundRobin() {
                     </div>
                   </div>
                   <div className="w-full sm:w-1/3 flex items-center gap-2">
-                    <span className="label-mono whitespace-nowrap">{t('simulators.round_robin.server_card.response_time_label')}</span>
+                    <span className="text-xs font-medium text-slate-500 dark:text-tactical-label whitespace-nowrap">{t('simulators.round_robin.server_card.response_time_label')}</span>
                     <input
                       type="range"
                       min="100"
@@ -312,7 +312,7 @@ export default function RoundRobin() {
                   </div>
                 </div>
 
-                <div className="w-full bg-slate-200 dark:bg-tactical-border h-3">
+                <div className="w-full bg-slate-200 dark:bg-tactical-border h-3 rounded-full overflow-hidden">
                   <div
                     className="h-3 transition-all duration-200"
                     style={{

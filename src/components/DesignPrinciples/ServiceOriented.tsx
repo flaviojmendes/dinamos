@@ -257,7 +257,7 @@ const DiagramModule: React.FC<{
 
   return (
     <motion.div
-      className={`absolute p-4 border-2 bg-slate-50 dark:bg-tactical-raised border-slate-200 dark:border-tactical-border ${
+      className={`absolute p-4 border-2 rounded-lg dark:rounded-none bg-slate-50 dark:bg-tactical-raised border-slate-200 dark:border-tactical-border ${
         !isHighlighted ? 'opacity-50' : 'border-signal-cyan'
       }`}
       style={{
@@ -273,8 +273,8 @@ const DiagramModule: React.FC<{
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}
     >
-      <h4 className="font-mono text-sm font-semibold mb-2 text-slate-900 dark:text-tactical-text">{module.name}</h4>
-      <div className="font-mono text-xs space-y-1 text-slate-600 dark:text-tactical-dim">
+      <h4 className="font-sans text-sm font-semibold mb-2 text-slate-900 dark:text-tactical-text">{module.name}</h4>
+      <div className="font-sans text-xs space-y-1 text-slate-600 dark:text-tactical-dim">
         <div><strong>{t('design_principles.service_oriented.sections.module_labels.deploy')}:</strong> {module.details.deployment}</div>
         <div><strong>{t('design_principles.service_oriented.sections.module_labels.communication')}:</strong> {module.details.communication}</div>
         <div><strong>{t('design_principles.service_oriented.sections.module_labels.database')}:</strong> {module.details.database}</div>
@@ -412,10 +412,10 @@ export default function ServiceOriented() {
   return (
     <div className="space-y-6">
       <div className="max-w-3xl">
-        <div className="label-mono text-signal-cyan mb-2">
-          [ {t('design_principles.service_oriented.title')} ]
-        </div>
-        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim mb-6">
+        <h2 className="text-base font-semibold tracking-tight text-slate-900 dark:text-tactical-text mb-2">
+          {t('design_principles.service_oriented.title')}
+        </h2>
+        <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim mb-6">
           {t('design_principles.service_oriented.intro')}
         </p>
 
@@ -442,11 +442,11 @@ export default function ServiceOriented() {
         className="space-y-6"
       >
         <Panel title={t(`${i18nArchBase}.name`)} accent="cyan">
-          <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim mb-6">{t(`${i18nArchBase}.description`)}</p>
+          <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim mb-6">{t(`${i18nArchBase}.description`)}</p>
 
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h3 className="label-mono text-signal-green mb-3">{t('design_principles.service_oriented.sections.advantages')}</h3>
+              <h3 className="text-sm font-semibold text-emerald-600 dark:text-signal-green mb-3">{t('design_principles.service_oriented.sections.advantages')}</h3>
               <ul className="space-y-2">
                 {(t(`${i18nArchBase}.advantages`, { returnObjects: true }) as string[]).map((advantage, index) => (
                   <motion.li
@@ -454,9 +454,9 @@ export default function ServiceOriented() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="flex items-start gap-2 font-mono text-sm text-slate-600 dark:text-tactical-dim"
+                    className="flex items-start gap-2 font-sans text-sm text-slate-600 dark:text-tactical-dim"
                   >
-                    <svg className="w-4 h-4 text-signal-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-emerald-600 dark:text-signal-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     {advantage}
@@ -466,7 +466,7 @@ export default function ServiceOriented() {
             </div>
 
             <div>
-              <h3 className="label-mono text-signal-red mb-3">{t('design_principles.service_oriented.sections.disadvantages')}</h3>
+              <h3 className="text-sm font-semibold text-red-600 dark:text-signal-red mb-3">{t('design_principles.service_oriented.sections.disadvantages')}</h3>
               <ul className="space-y-2">
                 {(t(`${i18nArchBase}.disadvantages`, { returnObjects: true }) as string[]).map((disadvantage, index) => (
                   <motion.li
@@ -474,9 +474,9 @@ export default function ServiceOriented() {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="flex items-start gap-2 font-mono text-sm text-slate-600 dark:text-tactical-dim"
+                    className="flex items-start gap-2 font-sans text-sm text-slate-600 dark:text-tactical-dim"
                   >
-                    <svg className="w-4 h-4 text-signal-red mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-red-600 dark:text-signal-red mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                     {disadvantage}
@@ -486,9 +486,9 @@ export default function ServiceOriented() {
             </div>
           </div>
 
-          <div className="mt-6 tactical-panel border-l-2 border-l-signal-cyan p-4">
-            <h4 className="label-mono text-signal-cyan mb-2">{t('design_principles.service_oriented.sections.example_title')}</h4>
-            <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{t(`${i18nArchBase}.example`)}</p>
+          <div className="mt-6 rounded-xl border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised dark:rounded-none p-4">
+            <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{t('design_principles.service_oriented.sections.example_title')}</h4>
+            <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{t(`${i18nArchBase}.example`)}</p>
           </div>
         </Panel>
 
@@ -512,7 +512,7 @@ export default function ServiceOriented() {
             />
 
             {/* Legend */}
-            <div className="mt-20 flex justify-center gap-8 font-mono text-xs text-slate-500 dark:text-tactical-dim">
+            <div className="mt-20 flex justify-center gap-8 font-sans text-xs text-slate-500 dark:text-tactical-dim">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-[2px] bg-slate-400 dark:bg-tactical-line"></div>
                 {selectedArch.type === 'monolithic' && t('design_principles.service_oriented.sections.legend.direct_call')}

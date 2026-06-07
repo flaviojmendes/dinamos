@@ -35,8 +35,8 @@ export default function GameLobby({ currentUserId }: { currentUserId?: string | 
 
   return (
     <div className="max-w-4xl mx-auto p-6 md:p-10">
-      <div className="label-mono text-signal-amber mb-1">[ MULTIPLAYER ] // {t('editor.game.lobby', { defaultValue: 'MATCH LOBBY' })}</div>
-      <h1 className="text-2xl md:text-3xl font-mono font-bold mb-6 tracking-tight text-slate-900 dark:text-tactical-text flex items-center gap-3">
+      <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1">{t('editor.game.lobby', { defaultValue: 'Match lobby' })}</div>
+      <h1 className="text-2xl md:text-3xl font-sans font-bold mb-6 tracking-tight text-slate-900 dark:text-tactical-text flex items-center gap-3">
         <Gamepad2 className="w-7 h-7 text-signal-cyan" />
         {st.name || t('editor.game.untitled_match', { defaultValue: 'Distributed Systems Match' })}
       </h1>
@@ -44,7 +44,7 @@ export default function GameLobby({ currentUserId }: { currentUserId?: string | 
       <GameAnnouncement />
 
       <div className="tactical-panel p-6 mb-6 text-center">
-        <div className="label-mono text-tactical-label mb-2">
+        <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-2">
           {st.status === 'lobby'
             ? t('editor.game.starts_in', { defaultValue: 'Starts in' })
             : t('editor.game.status', { defaultValue: 'Status' })}
@@ -54,11 +54,11 @@ export default function GameLobby({ currentUserId }: { currentUserId?: string | 
             {fmtCountdown(remaining)}
           </div>
         ) : (
-          <div className="text-2xl font-mono font-bold text-signal-amber">
+          <div className="text-2xl font-sans font-bold text-signal-amber">
             {t('editor.game.waiting_host', { defaultValue: 'Waiting for the host to start…' })}
           </div>
         )}
-        <div className="mt-3 font-mono text-xs text-tactical-dim">
+        <div className="mt-3 font-sans text-xs text-tactical-dim">
           {t('editor.game.lobby_hint', {
             defaultValue:
               'The match begins automatically. Build and optimize your system to climb the leaderboard.',
@@ -70,27 +70,27 @@ export default function GameLobby({ currentUserId }: { currentUserId?: string | 
         <div className="tactical-panel p-4 flex items-center gap-3">
           <Users className="w-5 h-5 text-signal-cyan" />
           <div>
-            <div className="font-mono text-xl font-bold text-tactical-text">{st.player_count}</div>
-            <div className="label-mono text-tactical-label">{t('editor.game.players', { defaultValue: 'players' })}</div>
+            <div className="font-mono text-xl font-bold text-tactical-text tabular-nums">{st.player_count}</div>
+            <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t('editor.game.players', { defaultValue: 'Players' })}</div>
           </div>
         </div>
         <div className="tactical-panel p-4 flex items-center gap-3">
           <Activity className="w-5 h-5 text-signal-amber" />
           <div>
-            <div className="font-mono text-xl font-bold text-tactical-text capitalize">{st.load_profile?.type ?? 'constant'}</div>
-            <div className="label-mono text-tactical-label">{t('editor.game.traffic', { defaultValue: 'traffic' })}</div>
+            <div className="font-sans text-xl font-bold text-tactical-text capitalize">{st.load_profile?.type ?? 'constant'}</div>
+            <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t('editor.game.traffic', { defaultValue: 'Traffic' })}</div>
           </div>
         </div>
         <div className="tactical-panel p-4 flex items-center gap-3">
           <Lock className="w-5 h-5 text-signal-red" />
           <div>
-            <div className="font-mono text-xl font-bold text-tactical-text">{lockedCount}/{nodeCount}</div>
-            <div className="label-mono text-tactical-label">{t('editor.game.locked_components', { defaultValue: 'locked parts' })}</div>
+            <div className="font-mono text-xl font-bold text-tactical-text tabular-nums">{lockedCount}/{nodeCount}</div>
+            <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t('editor.game.locked_components', { defaultValue: 'Locked parts' })}</div>
           </div>
         </div>
       </div>
 
-      <div className="flex items-center gap-2 mb-2 font-mono text-xs text-tactical-dim">
+      <div className="flex items-center gap-2 mb-2 font-sans text-xs text-tactical-dim">
         <Clock className="w-3.5 h-3.5" />
         {t('editor.game.joined_players', { defaultValue: 'Players in the lobby' })}
       </div>

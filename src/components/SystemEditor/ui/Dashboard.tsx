@@ -32,9 +32,9 @@ function Stat({ label, value, tone, onClick, title }: { label: string; value: st
     <div
       onClick={onClick}
       title={title}
-      className={`border border-tactical-border bg-tactical-raised px-3 py-2 ${onClick ? 'cursor-pointer hover:border-signal-cyan transition-colors' : ''}`}
+      className={`border border-tactical-border bg-tactical-raised rounded-lg px-3 py-2 ${onClick ? 'cursor-pointer hover:border-signal-cyan transition-colors' : ''}`}
     >
-      <div className="font-mono text-[10px] uppercase tracking-wider text-tactical-label">{label}</div>
+      <div className="font-sans text-[10px] font-medium text-slate-500 dark:text-tactical-label">{label}</div>
       <div className={`font-mono text-lg font-bold ${tone ?? 'text-tactical-text'}`}>{value}</div>
     </div>
   );
@@ -60,13 +60,13 @@ function GoldenSignal({
   dataKey: string;
 }) {
   return (
-    <div className="border border-tactical-border bg-tactical-raised px-3 py-2.5">
-      <div className="font-mono text-[10px] uppercase tracking-wider text-tactical-label">{label}</div>
+    <div className="border border-tactical-border bg-tactical-raised rounded-lg px-3 py-2.5">
+      <div className="font-sans text-[10px] font-medium text-slate-500 dark:text-tactical-label">{label}</div>
       <div className={`font-mono font-bold leading-none mt-1 ${tone}`}>
         <span className="text-2xl">{value}</span>
         <span className="text-xs text-tactical-label ml-1">{unit}</span>
       </div>
-      <div className="font-mono text-[10px] text-tactical-label mt-1">{hint}</div>
+      <div className="font-sans text-[10px] text-slate-500 dark:text-tactical-label mt-1">{hint}</div>
       <div style={{ width: '100%', height: 36 }} className="mt-2">
         <ResponsiveContainer>
           <AreaChart data={series} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
@@ -125,7 +125,7 @@ export default function Dashboard({ history, totalCost, provider, warnings, onCo
     <div className="space-y-4">
       {/* Four Golden Signals (Google SRE) */}
       <div>
-        <div className="font-mono text-[10px] uppercase tracking-wider text-signal-amber mb-2">
+        <div className="font-sans text-[11px] font-medium text-slate-600 dark:text-signal-amber mb-2">
           {t('editor.dashboard.golden_title', { defaultValue: 'Four Golden Signals' })}
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
@@ -183,7 +183,7 @@ export default function Dashboard({ history, totalCost, provider, warnings, onCo
 
       {/* Error budget bar */}
       <div>
-        <div className="flex justify-between font-mono text-[10px] uppercase tracking-wider text-tactical-label mb-1">
+        <div className="flex justify-between font-sans text-[10px] font-medium text-slate-500 dark:text-tactical-label mb-1">
           <span>{t('editor.dashboard.error_budget', { slo: SLO_SUCCESS * 100 })}</span>
           <span>{errorBudgetUsed.toFixed(0)}%</span>
         </div>
@@ -196,7 +196,7 @@ export default function Dashboard({ history, totalCost, provider, warnings, onCo
       </div>
 
       {warnings.length > 0 && (
-        <div className="border border-signal-amber/50 bg-signal-amber/10 p-2 font-mono text-[11px] text-signal-amber space-y-0.5">
+        <div className="border border-signal-amber/50 bg-signal-amber/10 rounded-lg p-2 font-sans text-[11px] text-signal-amber space-y-0.5">
           {warnings.slice(0, 6).map((w) => (
             <div key={w}>⚠ {formatWarning(w, t)}</div>
           ))}
@@ -240,8 +240,8 @@ export default function Dashboard({ history, totalCost, provider, warnings, onCo
         </ChartCard>
       </div>
 
-      <div className="font-mono text-[11px] text-tactical-label">
-        {t('editor.dashboard.accumulated_cost')} <span className="text-signal-cyan">${totalCost.toFixed(4)}</span>
+      <div className="font-sans text-[11px] text-slate-500 dark:text-tactical-label">
+        {t('editor.dashboard.accumulated_cost')} <span className="font-mono text-signal-cyan">${totalCost.toFixed(4)}</span>
       </div>
     </div>
   );
@@ -256,8 +256,8 @@ const tooltipStyle = {
 
 function ChartCard({ title, children }: { title: string; children: React.ReactElement }) {
   return (
-    <div className="border border-tactical-border bg-tactical-surface p-2">
-      <div className="font-mono text-[10px] uppercase tracking-wider text-tactical-label mb-1">{title}</div>
+    <div className="border border-tactical-border bg-tactical-surface rounded-lg p-2">
+      <div className="font-sans text-[10px] font-medium text-slate-500 dark:text-tactical-label mb-1">{title}</div>
       <div style={{ width: '100%', height: 160 }}>
         <ResponsiveContainer>{children}</ResponsiveContainer>
       </div>

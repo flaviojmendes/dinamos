@@ -109,16 +109,16 @@ export default function SynchronizationAlgorithms() {
         transition={{ duration: 0.5 }}
       >
         <div className="max-w-3xl">
-          <div className="label-mono text-signal-cyan mb-2">
-            [ {t('design_principles.algorithms.title')} ]
-          </div>
-          <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim mb-6">
+          <h2 className="font-sans text-lg font-semibold tracking-tight text-slate-900 dark:text-tactical-text mb-2">
+            {t('design_principles.algorithms.title')}
+          </h2>
+          <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim mb-6">
             {t('design_principles.algorithms.intro')}
           </p>
         </div>
         <div className="tactical-panel border-l-2 border-l-signal-cyan p-5">
-          <div className="label-mono text-signal-cyan mb-2">{t('design_principles.algorithms.key_concept_label')}</div>
-          <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim">
+          <div className="font-sans text-xs font-medium text-slate-600 dark:text-tactical-label mb-2">{t('design_principles.algorithms.key_concept_label')}</div>
+          <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim">
             {t('design_principles.algorithms.key_concept_text')}
           </p>
         </div>
@@ -132,8 +132,8 @@ export default function SynchronizationAlgorithms() {
         <Panel title={t('design_principles.algorithms.bakery.title')} accent="cyan">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
-              <div className="label-mono text-signal-cyan mb-3">{t('design_principles.algorithms.bakery.concept_title')}</div>
-              <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim mb-4">
+              <div className="font-sans text-xs font-medium text-slate-600 dark:text-tactical-label mb-3">{t('design_principles.algorithms.bakery.concept_title')}</div>
+              <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim mb-4">
                 {t('design_principles.algorithms.bakery.concept_p')}
               </p>
               <div className="flex flex-wrap items-center gap-2 mb-6">
@@ -185,7 +185,7 @@ function enterCriticalSection(process: Process, processes: Process[]) {
             </div>
 
             <div className="tactical-panel border border-slate-200 dark:border-tactical-border p-4">
-              <div className="label-mono text-signal-cyan mb-4">{t('design_principles.algorithms.bakery.demo_title')}</div>
+              <div className="font-sans text-xs font-medium text-slate-600 dark:text-tactical-label mb-4">{t('design_principles.algorithms.bakery.demo_title')}</div>
               <div className="space-y-4">
                 {bakeryProcesses.map(process => (
                   <div 
@@ -193,7 +193,7 @@ function enterCriticalSection(process: Process, processes: Process[]) {
                     className="flex items-center gap-4"
                   >
                     <motion.div 
-                      className={`w-32 h-12 border flex items-center justify-center font-mono text-sm ${getProcessBorder(process.state)}`}
+                      className={`w-32 h-12 rounded-lg border flex items-center justify-center font-sans text-sm ${getProcessBorder(process.state)}`}
                       animate={{
                         scale: process.state === 'idle' ? 1 : 1.05,
                         transition: { duration: 0.2 }
@@ -205,9 +205,9 @@ function enterCriticalSection(process: Process, processes: Process[]) {
                       <motion.div
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="border border-signal-cyan/40 px-3 py-1 font-mono text-sm text-signal-cyan"
+                        className="rounded-full border border-slate-200 dark:border-tactical-border px-3 py-1 font-sans text-sm text-slate-700 dark:text-tactical-text"
                       >
-                        {t('design_principles.algorithms.bakery.labels.ticket')}: {process.number}
+                        {t('design_principles.algorithms.bakery.labels.ticket')}: <span className="font-mono tabular-nums">{process.number}</span>
                       </motion.div>
                     )}
                     {process.state === 'idle' && (
@@ -234,8 +234,8 @@ function enterCriticalSection(process: Process, processes: Process[]) {
         <Panel title={t('design_principles.algorithms.token_ring.title')} accent="green">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
-              <div className="label-mono text-signal-green mb-3">{t('design_principles.algorithms.token_ring.concept_title')}</div>
-              <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim mb-4">
+              <div className="font-sans text-xs font-medium text-slate-600 dark:text-tactical-label mb-3">{t('design_principles.algorithms.token_ring.concept_title')}</div>
+              <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim mb-4">
                 {t('design_principles.algorithms.token_ring.concept_p')}
               </p>
               <div className="flex flex-wrap items-center gap-2 mb-6">
@@ -289,7 +289,7 @@ class TokenRing {
             </div>
 
             <div className="tactical-panel border border-slate-200 dark:border-tactical-border p-4">
-              <div className="label-mono text-signal-green mb-4">{t('design_principles.algorithms.token_ring.demo_title')}</div>
+              <div className="font-sans text-xs font-medium text-slate-600 dark:text-tactical-label mb-4">{t('design_principles.algorithms.token_ring.demo_title')}</div>
               <div className="relative aspect-square">
                 {tokenRingProcesses.map((process, index) => {
                   const angle = (index * 2 * Math.PI) / tokenRingProcesses.length;
@@ -300,7 +300,7 @@ class TokenRing {
                   return (
                     <motion.div
                       key={process.id}
-                      className={`absolute w-16 h-16 -ml-8 -mt-8 flex items-center justify-center font-mono text-xs ${
+                      className={`absolute w-16 h-16 -ml-8 -mt-8 rounded-lg flex items-center justify-center font-sans text-xs ${
                         tokenPosition === process.id 
                           ? 'border-2 border-signal-green bg-signal-green/10 text-signal-green'
                           : 'border border-tactical-border bg-tactical-raised text-slate-600 dark:text-tactical-dim'
@@ -337,8 +337,8 @@ class TokenRing {
         <Panel title={t('design_principles.algorithms.ricart_agrawala.title')} accent="amber">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
-              <div className="label-mono text-signal-amber mb-3">{t('design_principles.algorithms.ricart_agrawala.concept_title')}</div>
-              <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim mb-4">
+              <div className="font-sans text-xs font-medium text-slate-600 dark:text-tactical-label mb-3">{t('design_principles.algorithms.ricart_agrawala.concept_title')}</div>
+              <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim mb-4">
                 {t('design_principles.algorithms.ricart_agrawala.concept_p')}
               </p>
               <div className="flex flex-wrap items-center gap-2 mb-6">
@@ -403,7 +403,7 @@ class RicartAgrawala {
             </div>
 
             <div className="tactical-panel border border-slate-200 dark:border-tactical-border p-4">
-              <div className="label-mono text-signal-amber mb-4">{t('design_principles.algorithms.ricart_agrawala.demo_title')}</div>
+              <div className="font-sans text-xs font-medium text-slate-600 dark:text-tactical-label mb-4">{t('design_principles.algorithms.ricart_agrawala.demo_title')}</div>
               <div className="space-y-4">
                 {ricartProcesses.map(process => (
                   <div 
@@ -411,7 +411,7 @@ class RicartAgrawala {
                     className="flex items-center gap-4"
                   >
                     <motion.div 
-                      className={`w-32 h-12 border flex items-center justify-center font-mono text-sm ${getProcessBorder(process.state)}`}
+                      className={`w-32 h-12 rounded-lg border flex items-center justify-center font-sans text-sm ${getProcessBorder(process.state)}`}
                       animate={{
                         scale: process.state === 'idle' ? 1 : 1.05,
                         transition: { duration: 0.2 }
@@ -423,7 +423,7 @@ class RicartAgrawala {
                       <motion.div
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="border border-signal-amber/40 px-3 py-1 font-mono text-sm text-signal-amber"
+                        className="rounded-full border border-slate-200 dark:border-tactical-border px-3 py-1 font-mono text-sm text-slate-700 dark:text-tactical-text"
                       >
                         {t('design_principles.algorithms.ricart_agrawala.labels.ts_prefix')}: {process.timestamp}
                       </motion.div>
@@ -452,58 +452,58 @@ class RicartAgrawala {
         <Panel title={t('design_principles.algorithms.comparison.title')} accent="cyan">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <div className="label-mono text-signal-cyan mb-4">{t('design_principles.algorithms.comparison.bakery_title')}</div>
+              <div className="font-sans text-xs font-medium text-slate-600 dark:text-tactical-label mb-4">{t('design_principles.algorithms.comparison.bakery_title')}</div>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
                   <span className="text-signal-green font-mono mt-0.5">✓</span>
                   <div>
-                    <span className="font-mono text-sm text-slate-900 dark:text-tactical-text">{t('design_principles.algorithms.comparison.advantages')}</span>
-                    <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{t('design_principles.algorithms.comparison.bakery.pros')}</p>
+                    <span className="font-sans text-sm text-slate-900 dark:text-tactical-text">{t('design_principles.algorithms.comparison.advantages')}</span>
+                    <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim">{t('design_principles.algorithms.comparison.bakery.pros')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-signal-red font-mono mt-0.5">✗</span>
                   <div>
-                    <span className="font-mono text-sm text-slate-900 dark:text-tactical-text">{t('design_principles.algorithms.comparison.disadvantages')}</span>
-                    <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{t('design_principles.algorithms.comparison.bakery.cons')}</p>
+                    <span className="font-sans text-sm text-slate-900 dark:text-tactical-text">{t('design_principles.algorithms.comparison.disadvantages')}</span>
+                    <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim">{t('design_principles.algorithms.comparison.bakery.cons')}</p>
                   </div>
                 </li>
               </ul>
             </div>
             <div>
-              <div className="label-mono text-signal-green mb-4">{t('design_principles.algorithms.comparison.token_ring_title')}</div>
+              <div className="font-sans text-xs font-medium text-slate-600 dark:text-tactical-label mb-4">{t('design_principles.algorithms.comparison.token_ring_title')}</div>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
                   <span className="text-signal-green font-mono mt-0.5">✓</span>
                   <div>
-                    <span className="font-mono text-sm text-slate-900 dark:text-tactical-text">{t('design_principles.algorithms.comparison.advantages')}</span>
-                    <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{t('design_principles.algorithms.comparison.token_ring.pros')}</p>
+                    <span className="font-sans text-sm text-slate-900 dark:text-tactical-text">{t('design_principles.algorithms.comparison.advantages')}</span>
+                    <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim">{t('design_principles.algorithms.comparison.token_ring.pros')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-signal-red font-mono mt-0.5">✗</span>
                   <div>
-                    <span className="font-mono text-sm text-slate-900 dark:text-tactical-text">{t('design_principles.algorithms.comparison.disadvantages')}</span>
-                    <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{t('design_principles.algorithms.comparison.token_ring.cons')}</p>
+                    <span className="font-sans text-sm text-slate-900 dark:text-tactical-text">{t('design_principles.algorithms.comparison.disadvantages')}</span>
+                    <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim">{t('design_principles.algorithms.comparison.token_ring.cons')}</p>
                   </div>
                 </li>
               </ul>
             </div>
             <div>
-              <div className="label-mono text-signal-amber mb-4">{t('design_principles.algorithms.comparison.ricart_title')}</div>
+              <div className="font-sans text-xs font-medium text-slate-600 dark:text-tactical-label mb-4">{t('design_principles.algorithms.comparison.ricart_title')}</div>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
                   <span className="text-signal-green font-mono mt-0.5">✓</span>
                   <div>
-                    <span className="font-mono text-sm text-slate-900 dark:text-tactical-text">{t('design_principles.algorithms.comparison.advantages')}</span>
-                    <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{t('design_principles.algorithms.comparison.ricart.pros')}</p>
+                    <span className="font-sans text-sm text-slate-900 dark:text-tactical-text">{t('design_principles.algorithms.comparison.advantages')}</span>
+                    <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim">{t('design_principles.algorithms.comparison.ricart.pros')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-signal-red font-mono mt-0.5">✗</span>
                   <div>
-                    <span className="font-mono text-sm text-slate-900 dark:text-tactical-text">{t('design_principles.algorithms.comparison.disadvantages')}</span>
-                    <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{t('design_principles.algorithms.comparison.ricart.cons')}</p>
+                    <span className="font-sans text-sm text-slate-900 dark:text-tactical-text">{t('design_principles.algorithms.comparison.disadvantages')}</span>
+                    <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim">{t('design_principles.algorithms.comparison.ricart.cons')}</p>
                   </div>
                 </li>
               </ul>

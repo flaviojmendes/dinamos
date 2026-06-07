@@ -174,10 +174,10 @@ export default function APIGatewaySimulator() {
   return (
     <div className="space-y-6">
       <div className="max-w-3xl">
-        <div className="label-mono text-signal-cyan mb-2">
-          [ {t('simulators.gateway.title')} ]
-        </div>
-        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
+        <h2 className="font-sans text-lg font-semibold text-slate-900 dark:text-tactical-text mb-2">
+          {t('simulators.gateway.title')}
+        </h2>
+        <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
           {t('simulators.gateway.description')}
         </p>
       </div>
@@ -203,7 +203,7 @@ export default function APIGatewaySimulator() {
         <TacticalButton size="sm" variant="secondary" onClick={resetSimulation}>
           {t('simulators.gateway.buttons.reset')}
         </TacticalButton>
-        {isSimulationRunning && <StatusBadge variant="active" label="LIVE" />}
+        {isSimulationRunning && <StatusBadge variant="active" label="Running" />}
       </div>
 
       {showConfig && (
@@ -218,25 +218,25 @@ export default function APIGatewaySimulator() {
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block label-mono text-slate-500 dark:text-tactical-label mb-2">
+              <label className="block font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">
                 {t('simulators.gateway.config.rps', { value: config.requestsPerSecond })}
               </label>
               <input type="range" min="0.1" max="2" step="0.1" value={config.requestsPerSecond} onChange={(e) => setConfig(prev => ({ ...prev, requestsPerSecond: parseFloat(e.target.value) }))} className={rangeClass} />
             </div>
             <div>
-              <label className="block label-mono text-slate-500 dark:text-tactical-label mb-2">
+              <label className="block font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">
                 {t('simulators.gateway.config.routing_delay', { ms: config.routingDelay })}
               </label>
               <input type="range" min="500" max="2000" step="100" value={config.routingDelay} onChange={(e) => setConfig(prev => ({ ...prev, routingDelay: parseInt(e.target.value) }))} className={rangeClass} />
             </div>
             <div>
-              <label className="block label-mono text-slate-500 dark:text-tactical-label mb-2">
+              <label className="block font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">
                 {t('simulators.gateway.config.extra_error_rate', { percent: (config.errorRate * 100).toFixed(1) })}
               </label>
               <input type="range" min="0" max="0.3" step="0.01" value={config.errorRate} onChange={(e) => setConfig(prev => ({ ...prev, errorRate: parseFloat(e.target.value) }))} className={rangeClass} />
             </div>
             <div>
-              <label className="block label-mono text-slate-500 dark:text-tactical-label mb-2">
+              <label className="block font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">
                 {t('simulators.gateway.config.removal_delay', { ms: config.removeDelay })}
               </label>
               <input type="range" min="2000" max="8000" step="500" value={config.removeDelay} onChange={(e) => setConfig(prev => ({ ...prev, removeDelay: parseInt(e.target.value) }))} className={rangeClass} />
@@ -246,17 +246,17 @@ export default function APIGatewaySimulator() {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+        <div className="rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border px-3 py-3">
           <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">{stats.totalRequests}</div>
-          <div className="label-mono mt-2">{t('simulators.gateway.stats.total')}</div>
+          <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.gateway.stats.total')}</div>
         </div>
-        <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+        <div className="rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border px-3 py-3">
           <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green">{stats.successfulRequests}</div>
-          <div className="label-mono mt-2">{t('simulators.gateway.stats.success')}</div>
+          <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.gateway.stats.success')}</div>
         </div>
-        <div className="border border-slate-200 dark:border-tactical-border px-3 py-3">
+        <div className="rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border px-3 py-3">
           <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-red">{stats.failedRequests}</div>
-          <div className="label-mono mt-2">{t('simulators.gateway.stats.error')}</div>
+          <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.gateway.stats.error')}</div>
         </div>
       </div>
 
@@ -311,8 +311,8 @@ export default function APIGatewaySimulator() {
           <div className="space-y-4">
             {services.map(service => (
               <div key={service.type} className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-3">
-                <div className="font-mono text-sm font-medium text-slate-900 dark:text-tactical-text mb-1">{service.name}</div>
-                <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{service.description}</div>
+                <div className="font-sans text-sm font-medium text-slate-900 dark:text-tactical-text mb-1">{service.name}</div>
+                <div className="font-sans text-xs text-slate-500 dark:text-tactical-dim">{service.description}</div>
                 <div className="font-mono text-xs text-slate-500 dark:text-tactical-label mt-1">
                   {t('simulators.gateway.items.processing_time', { ms: service.processingTime })}
                   <br />

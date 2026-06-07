@@ -14,7 +14,7 @@ export default function MobilePalette({ onAdd }: Props) {
   const { t } = useTranslation();
   return (
     <div className="p-3">
-      <p className="font-mono text-[11px] text-tactical-dim mb-3">
+      <p className="font-sans text-[11px] text-tactical-dim mb-3">
         {t('editor.mobile.palette_hint', {
           defaultValue: 'Tap a component to drop it onto the canvas.',
         })}
@@ -29,7 +29,7 @@ export default function MobilePalette({ onAdd }: Props) {
               type="button"
               onClick={() => onAdd(kind)}
               title={t(`editor.descriptions.${kind}`)}
-              className={`min-h-[52px] px-3 py-2 bg-slate-50 dark:bg-tactical-raised active:bg-slate-100 dark:active:bg-tactical-line border-l-2 ${entry.accent} font-mono text-xs text-slate-700 dark:text-tactical-text flex items-center gap-2 text-left transition-colors`}
+              className={`min-h-[52px] px-3 py-2 rounded-lg bg-slate-50 dark:bg-tactical-raised active:bg-slate-100 dark:active:bg-tactical-line border-l-2 ${entry.accent} font-sans text-xs text-slate-700 dark:text-tactical-text flex items-center gap-2 text-left transition-colors`}
             >
               <Icon className="w-4 h-4 shrink-0" />
               <span className="truncate">

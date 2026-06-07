@@ -22,14 +22,14 @@ export default function GameLeaderboard({
   const { t } = useTranslation();
 
   return (
-    <div className="bg-white/95 dark:bg-tactical-surface/95 border border-slate-200 dark:border-tactical-border backdrop-blur-sm">
-      <div className="flex items-center gap-2 px-3 py-2 border-b border-slate-200 dark:border-tactical-border label-mono text-signal-amber">
+    <div className="bg-white/95 dark:bg-tactical-surface/95 border border-slate-200 dark:border-tactical-border rounded-lg backdrop-blur-sm">
+      <div className="flex items-center gap-2 px-3 py-2 border-b border-slate-200 dark:border-tactical-border font-sans text-[11px] font-medium text-slate-600 dark:text-signal-amber">
         <Trophy className="w-3.5 h-3.5" />
         {t('editor.game.leaderboard', { defaultValue: 'Leaderboard' })}
       </div>
       <div className={`${compact ? 'max-h-64' : 'max-h-80'} overflow-y-auto`}>
         {entries.length === 0 ? (
-          <div className="px-3 py-3 font-mono text-[11px] text-tactical-label">
+          <div className="px-3 py-3 font-sans text-[11px] text-tactical-label">
             {t('editor.game.no_players', { defaultValue: 'No players yet.' })}
           </div>
         ) : (
@@ -38,7 +38,7 @@ export default function GameLeaderboard({
             return (
               <div
                 key={e.user_id}
-                className={`flex items-center gap-2 px-3 py-1.5 font-mono text-[11px] border-b border-slate-100 dark:border-tactical-line/50 ${
+                className={`flex items-center gap-2 px-3 py-1.5 font-sans text-[11px] border-b border-slate-100 dark:border-tactical-line/50 ${
                   isMe ? 'bg-signal-cyan/10' : ''
                 }`}
               >
@@ -54,7 +54,7 @@ export default function GameLeaderboard({
                   {e.nickname ?? t('editor.game.anon', { defaultValue: 'Anonymous' })}
                   {isMe && <span className="text-signal-cyan"> ({t('editor.game.you', { defaultValue: 'you' })})</span>}
                 </span>
-                <span className="text-signal-green font-bold tabular-nums">{Math.round(e.score)}</span>
+                <span className="font-mono text-signal-green font-bold tabular-nums">{Math.round(e.score)}</span>
               </div>
             );
           })

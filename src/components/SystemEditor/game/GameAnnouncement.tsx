@@ -22,10 +22,10 @@ export default function GameAnnouncement() {
   if (!message || !at || dismissedAt === at) return null;
 
   return (
-    <div className="tactical-panel border-l-2 border-signal-amber p-3 mb-3 flex items-start gap-3 font-mono text-xs">
+    <div className="tactical-panel border-l-2 border-signal-amber p-3 mb-3 flex items-start gap-3 font-sans text-xs">
       <Megaphone className="w-4 h-4 text-signal-amber shrink-0 mt-0.5" />
       <div className="flex-1">
-        <div className="label-mono text-signal-amber mb-0.5">[ HOST ]</div>
+        <div className="inline-block rounded-full bg-amber-100 dark:bg-signal-amber/10 px-2 py-0.5 text-[10px] font-medium text-signal-amber mb-1">Host</div>
         <div className="text-tactical-text whitespace-pre-wrap break-words">{message}</div>
       </div>
       <button

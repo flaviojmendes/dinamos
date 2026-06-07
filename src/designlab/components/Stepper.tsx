@@ -11,7 +11,7 @@ export default function Stepper({ steps, currentStep }: StepperProps) {
           <div key={index} className="flex items-center flex-1">
             <div className="flex flex-col items-center">
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center font-mono font-semibold transition-colors duration-200 ${
+                className={`w-10 h-10 rounded-full flex items-center justify-center font-sans font-semibold transition-colors duration-200 ${
                   index < currentStep
                     ? 'bg-signal-green text-black'
                     : index === currentStep
@@ -22,7 +22,7 @@ export default function Stepper({ steps, currentStep }: StepperProps) {
                 {index < currentStep ? '✓' : index + 1}
               </div>
               <span
-                className={`text-xs mt-2 text-center max-w-[100px] font-mono uppercase tracking-wider transition-colors duration-200 ${
+                className={`text-xs mt-2 text-center max-w-[100px] font-sans transition-colors duration-200 ${
                   index === currentStep
                     ? 'font-semibold text-slate-900 dark:text-signal-green'
                     : 'text-slate-600 dark:text-tactical-dim'

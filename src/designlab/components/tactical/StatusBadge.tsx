@@ -1,3 +1,4 @@
+import React from 'react';
 import { cn } from './cn';
 
 export type StatusVariant =
@@ -13,43 +14,43 @@ export type StatusVariant =
 const variants: Record<StatusVariant, { dot: string; box: string; label: string }> = {
   online: {
     dot: 'bg-signal-green',
-    box: 'border-signal-green/40 text-signal-green',
-    label: 'ONLINE',
+    box: 'border-signal-green/40 text-emerald-700 dark:text-signal-green',
+    label: 'Online',
   },
   active: {
     dot: 'bg-signal-green',
-    box: 'border-signal-green/40 text-signal-green',
-    label: 'ACTIVE',
+    box: 'border-signal-green/40 text-emerald-700 dark:text-signal-green',
+    label: 'Active',
   },
   completed: {
     dot: 'bg-signal-green',
-    box: 'border-signal-green/40 text-signal-green',
-    label: 'COMPLETED',
+    box: 'border-signal-green/40 text-emerald-700 dark:text-signal-green',
+    label: 'Completed',
   },
   'in-progress': {
     dot: 'bg-signal-amber',
-    box: 'border-signal-amber/40 text-signal-amber',
-    label: 'IN-PROGRESS',
+    box: 'border-signal-amber/40 text-amber-700 dark:text-signal-amber',
+    label: 'In progress',
   },
   pending: {
     dot: 'bg-signal-amber',
-    box: 'border-signal-amber/40 text-signal-amber',
-    label: 'PENDING',
+    box: 'border-signal-amber/40 text-amber-700 dark:text-signal-amber',
+    label: 'Pending',
   },
   locked: {
     dot: 'bg-tactical-label',
     box: 'border-slate-300 dark:border-tactical-line text-slate-500 dark:text-tactical-label',
-    label: 'LOCKED',
+    label: 'Locked',
   },
   offline: {
     dot: 'bg-tactical-label',
     box: 'border-slate-300 dark:border-tactical-line text-slate-500 dark:text-tactical-label',
-    label: 'OFFLINE',
+    label: 'Offline',
   },
   classified: {
     dot: 'bg-signal-red',
-    box: 'border-signal-red/50 text-signal-red',
-    label: 'CLASSIFIED',
+    box: 'border-signal-red/50 text-red-700 dark:text-signal-red',
+    label: 'Classified',
   },
 };
 
@@ -67,7 +68,7 @@ export function StatusBadge({ variant, label, dot = true, className }: StatusBad
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 border px-2 py-0.5 font-mono text-[11px] uppercase tracking-wider',
+        'inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 font-sans text-[11px] font-medium dark:rounded-sm',
         v.box,
         className,
       )}

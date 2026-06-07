@@ -100,10 +100,10 @@ export default function CryptographySimulator() {
   return (
     <div className="space-y-6">
       <div className="max-w-3xl">
-        <div className="label-mono text-signal-cyan mb-2">
-          [ {t(`${base}.title`)} ]
-        </div>
-        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
+        <h2 className="font-sans text-lg font-semibold text-slate-900 dark:text-tactical-text mb-2">
+          {t(`${base}.title`)}
+        </h2>
+        <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
           {t(`${base}.subtitle`)}
         </p>
       </div>
@@ -167,27 +167,27 @@ export default function CryptographySimulator() {
           </div>
 
           <div className="space-y-4">
-            <div className="label-mono text-signal-cyan">{t(`${base}.results_title`)}</div>
+            <div className="font-sans text-sm font-semibold text-signal-cyan">{t(`${base}.results_title`)}</div>
             {results.length === 0 ? (
-              <p className="font-mono text-sm text-slate-400 dark:text-tactical-label">
+              <p className="font-sans text-sm text-slate-400 dark:text-tactical-label">
                 {t(`${base}.no_results`)}
               </p>
             ) : (
               <div className="space-y-3">
                 {results.map((result, index) => (
-                  <div key={index} className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4">
+                  <div key={index} className="rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4">
                     <div className="grid gap-2 font-mono text-sm">
                       <div>
-                        <span className="label-mono text-slate-500 dark:text-tactical-label">{resultLabels.input}</span>
+                        <span className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label">{resultLabels.input}</span>
                         <p className="text-slate-600 dark:text-tactical-dim break-all mt-1">{result.input}</p>
                       </div>
                       <div>
-                        <span className="label-mono text-signal-green">{resultLabels.output}</span>
+                        <span className="font-sans text-xs font-medium text-signal-green">{resultLabels.output}</span>
                         <p className="text-slate-900 dark:text-tactical-text break-all mt-1">{result.output}</p>
                       </div>
                       {result.details && (
                         <div>
-                          <span className="label-mono text-signal-cyan">{resultLabels.details}</span>
+                          <span className="font-sans text-xs font-medium text-signal-cyan">{resultLabels.details}</span>
                           <p className="text-slate-600 dark:text-tactical-dim mt-1">{result.details}</p>
                         </div>
                       )}
@@ -200,24 +200,18 @@ export default function CryptographySimulator() {
         </div>
       </Panel>
 
-      <div className="tactical-panel border-l-2 border-l-signal-cyan p-5">
-        <h3 className="label-mono text-signal-cyan mb-3">{t(`${base}.instructions_title`)}</h3>
-        <ul className="space-y-1.5 font-mono text-sm text-slate-600 dark:text-tactical-dim mb-6">
+      <div className="tactical-panel rounded-lg dark:rounded-none border-l-2 border-l-signal-cyan p-5">
+        <h3 className="font-sans text-sm font-semibold text-signal-cyan mb-3">{t(`${base}.instructions_title`)}</h3>
+        <ul className="space-y-1.5 font-sans text-sm text-slate-600 dark:text-tactical-dim mb-6 list-decimal list-inside">
           {instructions.map((instruction, index) => (
-            <li key={index} className="flex gap-2">
-              <span className="text-signal-cyan">{index + 1}.</span>
-              {instruction}
-            </li>
+            <li key={index}>{instruction}</li>
           ))}
         </ul>
 
-        <h4 className="label-mono text-signal-amber mb-2">{t(`${base}.important_notes_title`)}</h4>
-        <ul className="space-y-1.5 font-mono text-sm text-slate-600 dark:text-tactical-dim">
+        <h4 className="font-sans text-sm font-semibold text-signal-amber mb-2">{t(`${base}.important_notes_title`)}</h4>
+        <ul className="space-y-1.5 font-sans text-sm text-slate-600 dark:text-tactical-dim list-disc list-inside">
           {importantNotes.map((note, index) => (
-            <li key={index} className="flex gap-2">
-              <span className="text-signal-amber">›</span>
-              {note}
-            </li>
+            <li key={index}>{note}</li>
           ))}
         </ul>
       </div>

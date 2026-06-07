@@ -164,7 +164,7 @@ export default function AttackSimulator() {
       <Panel
         title={attackType === 'ddos' ? t(`${base}.ddos_attack_button`) : t(`${base}.mitm_attack_button`)}
         accent="red"
-        action={isPlaying ? <StatusBadge variant="in-progress" label="LIVE" /> : undefined}
+        action={isPlaying ? <StatusBadge variant="in-progress" label="Running" /> : undefined}
       >
         <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
           <div className="flex flex-wrap gap-2">
@@ -186,7 +186,7 @@ export default function AttackSimulator() {
 
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center gap-2">
-              <label className="label-mono text-slate-500 dark:text-tactical-label">{t(`${base}.speed_label`)}</label>
+              <label className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.speed_label`)}</label>
               <select
                 className={selectClass}
                 value={speed}
@@ -208,7 +208,7 @@ export default function AttackSimulator() {
           </div>
         </div>
 
-        <div className="relative w-full h-[600px] bg-slate-950 border border-slate-800 dark:border-tactical-border overflow-hidden">
+        <div className="relative w-full h-[600px] rounded-lg dark:rounded-none bg-slate-950 border border-slate-800 dark:border-tactical-border overflow-hidden">
           <svg
             className="absolute inset-0 w-full h-full pointer-events-none"
             style={{ zIndex: 0 }}
@@ -318,11 +318,11 @@ export default function AttackSimulator() {
         </div>
       </Panel>
 
-      <div className="tactical-panel border-l-2 border-l-signal-red p-5">
-        <h3 className="label-mono text-signal-red mb-2">
+      <div className="tactical-panel rounded-lg dark:rounded-none border-l-2 border-l-signal-red p-5">
+        <h3 className="font-sans text-sm font-semibold text-signal-red mb-2">
           {attackType === 'ddos' ? t(`${base}.ddos_simulation_title`) : t(`${base}.mitm_simulation_title`)}
         </h3>
-        <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim mb-4">
+        <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim mb-4">
           {attackType === 'ddos'
             ? t(`${base}.ddos_simulation_description`)
             : t(`${base}.mitm_simulation_description`)}
@@ -330,11 +330,11 @@ export default function AttackSimulator() {
         <div className="flex flex-wrap items-center gap-6">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-signal-green" />
-            <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{t(`${base}.legitimate_traffic`)}</span>
+            <span className="font-sans text-xs text-slate-500 dark:text-tactical-dim">{t(`${base}.legitimate_traffic`)}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-signal-red" />
-            <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{t(`${base}.malicious_traffic`)}</span>
+            <span className="font-sans text-xs text-slate-500 dark:text-tactical-dim">{t(`${base}.malicious_traffic`)}</span>
           </div>
         </div>
       </div>

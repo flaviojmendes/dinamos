@@ -289,10 +289,10 @@ export default function ServiceArchitectureSimulator() {
   return (
     <div className="space-y-6">
       <div className="max-w-3xl">
-        <div className="label-mono text-signal-cyan mb-2">
-          [ Simulador de Arquiteturas de Serviços ]
-        </div>
-        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim mb-6">
+        <h2 className="text-base font-semibold tracking-tight text-slate-900 dark:text-tactical-text mb-2">
+          Simulador de arquiteturas de serviços
+        </h2>
+        <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim mb-6">
           Compare as diferentes abordagens de organização de código e suas implicações.
         </p>
 
@@ -322,7 +322,7 @@ export default function ServiceArchitectureSimulator() {
         transition={{ duration: 0.3 }}
       >
         <Panel title={selectedArch.name} accent="cyan" className="mb-6">
-          <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{selectedArch.description}</p>
+          <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{selectedArch.description}</p>
         </Panel>
 
         {/* Modules Visualization */}
@@ -340,7 +340,7 @@ export default function ServiceArchitectureSimulator() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3 }}
-                className={`p-4 border relative bg-slate-50 dark:bg-tactical-raised border-slate-200 dark:border-tactical-border ${
+                className={`p-4 border rounded-lg dark:rounded-none relative bg-slate-50 dark:bg-tactical-raised border-slate-200 dark:border-tactical-border ${
                   hoveredModule && hoveredModule !== module.id && !module.dependencies?.includes(hoveredModule)
                     ? 'opacity-30'
                     : hoveredModule === module.id ? 'border-signal-cyan' : ''
@@ -348,40 +348,40 @@ export default function ServiceArchitectureSimulator() {
                 onMouseEnter={() => setHoveredModule(module.id)}
                 onMouseLeave={() => setHoveredModule(null)}
               >
-                <h3 className="font-mono text-sm font-semibold mb-3 text-slate-900 dark:text-tactical-text">{module.name}</h3>
+                <h3 className="font-sans text-sm font-semibold mb-3 text-slate-900 dark:text-tactical-text">{module.name}</h3>
                 
                 {/* Module Details - Always Visible */}
                 {module.details && (
-                  <div className="font-mono text-xs text-slate-600 dark:text-tactical-dim space-y-2">
+                  <div className="font-sans text-xs text-slate-600 dark:text-tactical-dim space-y-2">
                     <div className="flex items-start gap-2">
-                      <span className="label-mono min-w-[100px] shrink-0">Deploy:</span>
+                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label min-w-[100px] shrink-0">Deploy:</span>
                       <span>{module.details.deployment}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="label-mono min-w-[100px] shrink-0">Comunicação:</span>
+                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label min-w-[100px] shrink-0">Comunicação:</span>
                       <span>{module.details.communication}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="label-mono min-w-[100px] shrink-0">Banco:</span>
+                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label min-w-[100px] shrink-0">Banco:</span>
                       <span>{module.details.database}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="label-mono min-w-[100px] shrink-0">Escala:</span>
+                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label min-w-[100px] shrink-0">Escala:</span>
                       <span>{module.details.scaling}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="label-mono min-w-[100px] shrink-0">Dev:</span>
+                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label min-w-[100px] shrink-0">Desenvolvimento:</span>
                       <span>{module.details.development}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="label-mono min-w-[100px] shrink-0">Manutenção:</span>
+                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label min-w-[100px] shrink-0">Manutenção:</span>
                       <span>{module.details.maintenance}</span>
                     </div>
                   </div>
                 )}
 
                 {module.dependencies && (
-                  <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim mt-4 pt-4 border-t border-slate-200 dark:border-tactical-border">
+                  <div className="font-sans text-xs text-slate-500 dark:text-tactical-dim mt-4 pt-4 border-t border-slate-200 dark:border-tactical-border">
                     Depende de: {module.dependencies.map(dep => {
                       const depModule = selectedArch.modules.find(m => m.id === dep);
                       return depModule?.name;
@@ -394,8 +394,8 @@ export default function ServiceArchitectureSimulator() {
           </div>
         </div>
 
-        <div className="tactical-panel border-l-2 border-l-signal-cyan p-5 text-center">
-          <p className="font-mono text-sm text-slate-600 dark:text-tactical-dim">
+        <div className="rounded-xl border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised dark:rounded-none p-5 text-center">
+          <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim">
             Passe o mouse sobre os módulos para visualizar suas dependências.
           </p>
         </div>

@@ -14,7 +14,7 @@ function Spinner({ label }: { label: string }) {
     <div className="min-h-screen flex items-center justify-center">
       <div className="inline-flex items-center space-x-3">
         <div className="animate-spin rounded-full h-8 w-8 border-2 border-brand-600 dark:border-signal-green border-t-transparent" aria-hidden />
-        <span className="font-mono uppercase tracking-wider text-sm text-slate-600 dark:text-tactical-dim">
+        <span className="font-sans text-sm text-slate-600 dark:text-tactical-dim">
           {label}
         </span>
       </div>
@@ -33,15 +33,15 @@ function GameEditorContent({ code }: { code: string }) {
     return (
       <div className="max-w-md mx-auto p-10 text-center">
         <AlertTriangle className="w-10 h-10 text-signal-amber mx-auto mb-4" />
-        <h1 className="font-mono text-xl font-bold text-tactical-text mb-2">
+        <h1 className="font-sans text-xl font-bold text-tactical-text mb-2">
           {t('editor.game.not_found', { defaultValue: 'Match not found' })}
         </h1>
-        <p className="font-mono text-sm text-tactical-dim mb-6">
+        <p className="font-sans text-sm text-tactical-dim mb-6">
           {t('editor.game.not_found_hint', {
             defaultValue: 'This match may have ended or the link is incorrect.',
           })}
         </p>
-        <Link to="/editor" className="font-mono text-sm text-signal-cyan underline">
+        <Link to="/editor" className="font-sans text-sm text-signal-cyan underline">
           {t('editor.game.go_editor', { defaultValue: 'Go to the editor' })}
         </Link>
       </div>

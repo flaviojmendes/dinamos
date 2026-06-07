@@ -155,10 +155,10 @@ export default function AvailabilityZonesSimulator() {
   return (
     <div className="space-y-6">
       <div className="max-w-3xl">
-        <div className="label-mono text-signal-cyan mb-2">
-          [ {tStr('design_principles.availability.availability_zones_simulator.title')} ]
-        </div>
-        <p className="font-mono text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
+        <h2 className="text-base font-semibold tracking-tight text-slate-900 dark:text-tactical-text mb-2">
+          {tStr('design_principles.availability.availability_zones_simulator.title')}
+        </h2>
+        <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
           {tStr('design_principles.availability.availability_zones_simulator.intro')}
         </p>
       </div>
@@ -202,7 +202,7 @@ export default function AvailabilityZonesSimulator() {
               onChange={e => setConfig(prev => ({ ...prev, autoFailover: e.target.checked }))}
               className="rounded border-slate-300 dark:border-tactical-border"
             />
-            <label className="font-mono text-sm text-slate-600 dark:text-tactical-dim">{tStr('design_principles.availability.availability_zones_simulator.controls.auto_failover_label')}</label>
+            <label className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{tStr('design_principles.availability.availability_zones_simulator.controls.auto_failover_label')}</label>
           </div>
           <div>
             <TacticalButton
@@ -246,9 +246,9 @@ export default function AvailabilityZonesSimulator() {
             >
               <div className="space-y-4">
                 <div>
-                  <div className="flex justify-between font-mono text-xs text-slate-500 dark:text-tactical-dim mb-1">
-                    <span>{tStr('design_principles.availability.availability_zones_simulator.zone_info.load')}</span>
-                    <span>{Math.round((zone.load / zone.servers) * 100)}%</span>
+                  <div className="flex justify-between text-xs text-slate-500 dark:text-tactical-dim mb-1">
+                    <span className="font-sans">{tStr('design_principles.availability.availability_zones_simulator.zone_info.load')}</span>
+                    <span className="font-mono tabular-nums">{Math.round((zone.load / zone.servers) * 100)}%</span>
                   </div>
                   <div className="h-1.5 bg-slate-100 dark:bg-tactical-raised overflow-hidden">
                     <motion.div
@@ -266,9 +266,9 @@ export default function AvailabilityZonesSimulator() {
                 </div>
 
                 <div>
-                  <div className="flex justify-between font-mono text-xs text-slate-500 dark:text-tactical-dim mb-1">
-                    <span>{tStr('design_principles.availability.availability_zones_simulator.zone_info.active_servers')}</span>
-                    <span>{zone.servers}</span>
+                  <div className="flex justify-between text-xs text-slate-500 dark:text-tactical-dim mb-1">
+                    <span className="font-sans">{tStr('design_principles.availability.availability_zones_simulator.zone_info.active_servers')}</span>
+                    <span className="font-mono tabular-nums">{zone.servers}</span>
                   </div>
                   <div className="flex space-x-1">
                     {Array.from({ length: zone.servers }).map((_, i) => (
@@ -281,9 +281,9 @@ export default function AvailabilityZonesSimulator() {
                 </div>
 
                 {config.showLatency && (
-                  <div className="font-mono text-xs">
-                    <span className="text-slate-500 dark:text-tactical-dim">{tStr('design_principles.availability.availability_zones_simulator.zone_info.latency')}: </span>
-                    <span className="text-slate-900 dark:text-tactical-text">{zone.latency}ms</span>
+                  <div className="text-xs">
+                    <span className="font-sans text-slate-500 dark:text-tactical-dim">{tStr('design_principles.availability.availability_zones_simulator.zone_info.latency')}: </span>
+                    <span className="font-mono tabular-nums text-slate-900 dark:text-tactical-text">{zone.latency}ms</span>
                   </div>
                 )}
 
@@ -318,18 +318,18 @@ export default function AvailabilityZonesSimulator() {
         <Panel title={tStr('design_principles.availability.availability_zones_simulator.statistics.title')} accent="green">
           <div className="space-y-4">
             <div>
-              <div className="flex justify-between font-mono text-xs text-slate-500 dark:text-tactical-dim mb-1">
-                <span>{tStr('design_principles.availability.availability_zones_simulator.statistics.total_requests')}</span>
-                <span className="text-signal-cyan">{stats.total}</span>
+              <div className="flex justify-between text-xs text-slate-500 dark:text-tactical-dim mb-1">
+                <span className="font-sans">{tStr('design_principles.availability.availability_zones_simulator.statistics.total_requests')}</span>
+                <span className="font-mono tabular-nums text-slate-900 dark:text-tactical-text">{stats.total}</span>
               </div>
               <div className="h-1.5 bg-slate-100 dark:bg-tactical-raised">
                 <div className="h-full bg-signal-cyan" style={{ width: '100%' }} />
               </div>
             </div>
             <div>
-              <div className="flex justify-between font-mono text-xs text-slate-500 dark:text-tactical-dim mb-1">
-                <span>{tStr('design_principles.availability.availability_zones_simulator.statistics.success_rate')}</span>
-                <span className="text-signal-green">
+              <div className="flex justify-between text-xs text-slate-500 dark:text-tactical-dim mb-1">
+                <span className="font-sans">{tStr('design_principles.availability.availability_zones_simulator.statistics.success_rate')}</span>
+                <span className="font-mono tabular-nums text-emerald-600 dark:text-signal-green">
                   {stats.total > 0 
                     ? `${Math.round((stats.successful / stats.total) * 100)}%`
                     : '0%'}
@@ -359,10 +359,10 @@ export default function AvailabilityZonesSimulator() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
-                  className="flex items-center justify-between border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2.5"
+                  className="flex items-center justify-between border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg dark:rounded-none px-3 py-2.5"
                 >
                   <div className="flex items-center space-x-3">
-                    <span className="font-mono text-xs text-slate-900 dark:text-tactical-text">
+                    <span className="font-sans text-xs text-slate-900 dark:text-tactical-text">
                       {zones.find(z => z.id === request.zone)?.name}
                     </span>
                   </div>
