@@ -46,7 +46,7 @@ function jsonLit(val: unknown): string {
 async function main() {
   const modules = await sql`SELECT key, label, tier, base, paths, order_index FROM content_modules ORDER BY order_index, key`;
   const pages = await sql`
-    SELECT slug, path, module_id, requires_subscription, order_index, simulator_key,
+    SELECT slug, path, module_id, order_index, simulator_key,
            published, title_en, title_pt, body_en, body_pt
     FROM content_pages ORDER BY module_id NULLS FIRST, order_index, slug`;
 
@@ -79,18 +79,18 @@ async function main() {
     const rows = pages
       .map(
         (p: any) =>
-          `  (${lit(p.slug)}, ${lit(p.path)}, ${lit(p.module_id)}, ${boolLit(
-            p.requires_subscription
-          )}, ${intLit(p.order_index)}, ${lit(p.simulator_key)}, ${boolLit(p.published)}, ${lit(
+          `  (${lit(p.slug)}, ${lit(p.path)}, ${lit(p.module_id)}, ${intLit(
+            p.order_index
+          )}, ${lit(p.simulator_key)}, ${boolLit(p.published)}, ${lit(
             p.title_en
           )}, ${lit(p.title_pt)}, ${dollar(p.body_en)}, ${dollar(p.body_pt)})`
       )
       .join(',\n');
     parts.push(
-      `INSERT INTO "content_pages" ("slug", "path", "module_id", "requires_subscription", "order_index", "simulator_key", "published", "title_en", "title_pt", "body_en", "body_pt") VALUES\n${rows}\n` +
+      `INSERT INTO "content_pages" ("slug", "path", "module_id", "order_index", "simulator_key", "published", "title_en", "title_pt", "body_en", "body_pt") VALUES\n${rows}\n` +
         `ON CONFLICT ("slug") DO UPDATE SET ` +
         `"path" = EXCLUDED."path", "module_id" = EXCLUDED."module_id", ` +
-        `"requires_subscription" = EXCLUDED."requires_subscription", "order_index" = EXCLUDED."order_index", ` +
+        `"order_index" = EXCLUDED."order_index", ` +
         `"simulator_key" = EXCLUDED."simulator_key", "published" = EXCLUDED."published", ` +
         `"title_en" = EXCLUDED."title_en", "title_pt" = EXCLUDED."title_pt", ` +
         `"body_en" = EXCLUDED."body_en", "body_pt" = EXCLUDED."body_pt", "updated_at" = now();`

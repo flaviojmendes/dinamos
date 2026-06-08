@@ -5,11 +5,9 @@ import { db } from '../db/client.js';
 import { solutions, users } from '../db/schema.js';
 import {
   authRequired,
-  subscriptionRequired,
   type AppVariables,
 } from '../middleware/auth.js';
 import { createUser, getUserContext, getUserRow } from '../db/repo.js';
-import { isFreeAccessEnabled } from '../lib/freeAccess.js';
 import { userToDict, solutionToDict } from '../db/serializers.js';
 
 export const usersRouter = new Hono<{ Variables: AppVariables }>();
@@ -17,8 +15,7 @@ export const usersRouter = new Hono<{ Variables: AppVariables }>();
 async function serializeCurrentUser(userId: string) {
   const ctx = await getUserContext(userId);
   if (!ctx) return null;
-  const free = await isFreeAccessEnabled();
-  return userToDict(ctx.user, ctx.role, ctx.permissionCodes, free);
+  return userToDict(ctx.user, ctx.role, ctx.permissionCodes);
 }
 
 usersRouter.get('/api/users/me', authRequired, async (c) => {
@@ -76,7 +73,7 @@ usersRouter.put('/api/users/me', authRequired, async (c) => {
   return c.json(result);
 });
 
-usersRouter.get('/api/user/solutions', subscriptionRequired, async (c) => {
+usersRouter.get('/api/user/solutions', authRequired, async (c) => {
   const user = c.get('user');
   const rows = await db
     .select()
@@ -86,7 +83,7 @@ usersRouter.get('/api/user/solutions', subscriptionRequired, async (c) => {
   return c.json({ solutions: rows.map(solutionToDict) });
 });
 
-usersRouter.get('/api/user/solutions/:id', subscriptionRequired, async (c) => {
+usersRouter.get('/api/user/solutions/:id', authRequired, async (c) => {
   const user = c.get('user');
   const id = Number(c.req.param('id'));
   const rows = await db

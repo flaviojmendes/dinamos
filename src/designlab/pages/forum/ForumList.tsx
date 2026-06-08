@@ -19,7 +19,7 @@ const categoryTagColor = (name: string): 'amber' | 'green' | 'red' | 'cyan' => {
 };
 
 const ForumList = () => {
-  const { appUser, isSubscribed } = useAuth();
+  const { appUser } = useAuth();
   const [topics, setTopics] = useState<ForumTopic[]>([]);
   const [categories, setCategories] = useState<ForumCategory[]>([]);
   const [loading, setLoading] = useState(true);
@@ -121,7 +121,7 @@ const ForumList = () => {
               <p className="mt-1 text-slate-600 dark:text-tactical-dim">Compartilhe dúvidas, ideias e colabore com a comunidade.</p>
             </div>
             
-            {isSubscribed && (
+            {appUser && (
             <Link
               to="/forum/new"
               className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-sans font-medium transition-colors bg-slate-900 dark:bg-white text-white dark:text-black hover:bg-slate-700 dark:hover:bg-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 dark:focus-visible:ring-signal-green"

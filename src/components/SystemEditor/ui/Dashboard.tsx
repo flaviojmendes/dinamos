@@ -19,9 +19,22 @@ import { providerLabel, CloudProvider } from '../engine/costModel';
 interface Props {
   history: SimulationFrame[];
   totalCost: number;
+  /** Live per-hour cost that reacts to config edits even when idle. */
+  costPerHour?: number;
+  /** Cumulative successful requests over the run. */
+  successCount?: number;
+  /** Cumulative failed requests over the run. */
+  failedCount?: number;
   provider: CloudProvider;
   warnings: string[];
   onCostClick?: () => void;
+}
+
+/** Compact human-readable count (e.g. 12.3k, 4.1M). */
+function fmtCount(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}k`;
+  return `${Math.round(n)}`;
 }
 
 const SLO_P95_MS = 250;
@@ -86,9 +99,10 @@ function formatWarning(w: string, t: (k: string, o?: Record<string, unknown>) =>
   return t(`editor.warnings.${code}`, { name: name ?? '', defaultValue: w.replace(/_/g, ' ') });
 }
 
-export default function Dashboard({ history, totalCost, provider, warnings, onCostClick }: Props) {
+export default function Dashboard({ history, totalCost, costPerHour, successCount = 0, failedCount = 0, provider, warnings, onCostClick }: Props) {
   const { t } = useTranslation();
   const latest = history[history.length - 1]?.system;
+  const displayCostPerHour = costPerHour ?? latest?.costPerHour ?? 0;
   const data = history.map((f) => {
     // Saturation = how full the busiest resource is (max node utilization).
     const utils = Object.values(f.nodeMetrics).map((m) => m.utilization || 0);
@@ -103,7 +117,7 @@ export default function Dashboard({ history, totalCost, provider, warnings, onCo
       success: Math.round(f.system.successRate * 1000) / 10,
       inFlight: Math.round(f.system.inFlightTotal),
       cost: Math.round(f.system.costPerHour * 100) / 100,
-      errors: Math.round(f.system.errorRate),
+      errors: Math.round(f.system.failedRate),
       saturation: Math.round(saturation * 100),
     };
   });
@@ -115,7 +129,7 @@ export default function Dashboard({ history, totalCost, provider, warnings, onCo
   // --- Four Golden Signals (Google SRE) ---
   const latency = Math.round(latest?.p95 ?? 0);
   const traffic = Math.round(latest?.totalThroughput ?? 0);
-  const errors = Math.round(latest?.errorRate ?? 0);
+  const errors = Math.round(latest?.failedRate ?? 0);
   const saturationPct = data[data.length - 1]?.saturation ?? 0;
 
   const errorTone = (latest?.successRate ?? 1) >= SLO_SUCCESS ? 'text-signal-green' : 'text-signal-red';
@@ -172,13 +186,15 @@ export default function Dashboard({ history, totalCost, provider, warnings, onCo
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-2">
         <Stat label={t('editor.dashboard.offered')} value={`${Math.round(latest?.offeredLoad ?? 0)}/s`} />
         <Stat label={t('editor.dashboard.throughput')} value={`${Math.round(latest?.totalThroughput ?? 0)}/s`} tone="text-signal-green" />
         <Stat label={t('editor.dashboard.success')} value={`${((latest?.successRate ?? 1) * 100).toFixed(1)}%`} tone={successTone} />
         <Stat label={t('editor.dashboard.p95')} value={`${Math.round(latest?.p95 ?? 0)}ms`} tone={p95Tone} />
+        <Stat label={t('editor.dashboard.success_total', { defaultValue: 'Successful reqs' })} value={fmtCount(successCount)} tone="text-signal-green" title={t('editor.dashboard.success_total_hint', { defaultValue: 'Total requests served OK this run' })} />
+        <Stat label={t('editor.dashboard.failed_total', { defaultValue: 'Failed reqs' })} value={fmtCount(failedCount)} tone={failedCount >= 1 ? 'text-signal-red' : 'text-tactical-text'} title={t('editor.dashboard.failed_total_hint', { defaultValue: 'Total requests failed/dropped this run' })} />
         <Stat label={t('editor.dashboard.in_flight')} value={`${Math.round(latest?.inFlightTotal ?? 0)}`} />
-        <Stat label={t('editor.dashboard.cost', { provider: providerLabel(provider) })} value={`$${(latest?.costPerHour ?? 0).toFixed(2)}/h`} tone="text-signal-cyan" onClick={onCostClick} title={t('editor.bill.open_hint')} />
+        <Stat label={t('editor.dashboard.cost', { provider: providerLabel(provider) })} value={`$${displayCostPerHour.toFixed(2)}/h`} tone="text-signal-cyan" onClick={onCostClick} title={t('editor.bill.open_hint')} />
       </div>
 
       {/* Error budget bar */}

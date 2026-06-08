@@ -6,7 +6,6 @@ import {
   Minus,
   Play,
   Pause,
-  Square,
   Zap,
   Copy,
   Check,
@@ -14,9 +13,12 @@ import {
   RefreshCw,
   Settings2,
   Clock,
-  Rocket,
   Megaphone,
   Send,
+  Layers,
+  Hammer,
+  SkipForward,
+  Flag,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import api, { apiClient } from '../designlab/utils/api';
@@ -40,6 +42,28 @@ function fmtClock(totalSec: number): string {
 const LOAD_PROFILES = ['constant', 'ramp', 'spike', 'diurnal', 'step'] as const;
 const CHAOS_TYPES = ['killNode', 'latencyInjection', 'partition'] as const;
 
+interface RoundConfig {
+  name?: string;
+  intervalSec: number;
+  durationSec: number;
+  loadProfile: { type: string; multiplier?: number };
+  chaosEvents: unknown[];
+  scoringConfig: typeof DEFAULT_SCORING;
+  weight: number;
+}
+
+function defaultRound(idx: number): RoundConfig {
+  return {
+    name: `Round ${idx + 1}`,
+    intervalSec: 60,
+    durationSec: 120,
+    loadProfile: { type: 'constant', multiplier: 1 },
+    chaosEvents: [],
+    scoringConfig: { ...DEFAULT_SCORING },
+    weight: 1,
+  };
+}
+
 interface AdminSession {
   id: number;
   code: string;
@@ -55,9 +79,15 @@ interface AdminSession {
   } | null;
   locked_node_ids: string[];
   allow_delete_starting: boolean;
-  load_profile: { type: string };
+  load_profile: { type: string; multiplier?: number };
   chaos_events: unknown[];
   scoring_config: typeof DEFAULT_SCORING;
+  rounds?: RoundConfig[];
+  phase?: string;
+  current_round?: number;
+  total_rounds?: number;
+  round_started_at?: string | null;
+  round_ends_at?: string | null;
   leaderboard?: LeaderboardEntry[];
   announcement?: string | null;
   server_time?: string;
@@ -90,13 +120,10 @@ function CreateMatch({ onCreated }: { onCreated: () => void }) {
   const { t } = useTranslation();
   const [name, setName] = useState('');
   const [presetId, setPresetId] = useState(PRESETS[0].id);
-  const [allowDelete, setAllowDelete] = useState(false);
+  const [allowDelete, setAllowDelete] = useState(true);
   const [lockedIds, setLockedIds] = useState<string[]>([]);
-  const [loadType, setLoadType] = useState<(typeof LOAD_PROFILES)[number]>('constant');
   const [startInMin, setStartInMin] = useState(2);
-  const [durationMin, setDurationMin] = useState(10);
-  const [latencyTarget, setLatencyTarget] = useState(DEFAULT_SCORING.latencyTargetMs);
-  const [budget, setBudget] = useState(0);
+  const [rounds, setRounds] = useState<RoundConfig[]>([defaultRound(0)]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
@@ -104,6 +131,16 @@ function CreateMatch({ onCreated }: { onCreated: () => void }) {
 
   const toggleLocked = (id: string) =>
     setLockedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+
+  const patchRound = (idx: number, patch: Partial<RoundConfig>) =>
+    setRounds((prev) => prev.map((r, i) => (i === idx ? { ...r, ...patch } : r)));
+  const patchRoundScoring = (idx: number, patch: Partial<typeof DEFAULT_SCORING>) =>
+    setRounds((prev) =>
+      prev.map((r, i) => (i === idx ? { ...r, scoringConfig: { ...r.scoringConfig, ...patch } } : r))
+    );
+  const addRound = () => setRounds((prev) => [...prev, defaultRound(prev.length)]);
+  const removeRound = (idx: number) =>
+    setRounds((prev) => (prev.length <= 1 ? prev : prev.filter((_, i) => i !== idx)));
 
   const create = async () => {
     setSubmitting(true);
@@ -118,13 +155,14 @@ function CreateMatch({ onCreated }: { onCreated: () => void }) {
         starting_architecture: architecture,
         allow_delete_starting: allowDelete,
         locked_node_ids: allowDelete ? lockedIds : architecture.nodes.map((n) => n.id),
-        load_profile: { type: loadType },
-        scoring_config: { ...DEFAULT_SCORING, latencyTargetMs: latencyTarget, budgetPerHour: budget },
-        duration_sec: durationMin > 0 ? durationMin * 60 : null,
+        rounds,
+        // Keep the legacy column populated with the first round's length.
+        duration_sec: rounds[0]?.durationSec ?? null,
         starts_at: startsAt,
       });
       onCreated();
       setName('');
+      setRounds([defaultRound(0)]);
     } catch (err: any) {
       setError(err?.response?.data?.detail ?? 'Failed to create match');
     } finally {
@@ -134,6 +172,7 @@ function CreateMatch({ onCreated }: { onCreated: () => void }) {
 
   const field = 'w-full bg-tactical-raised border border-tactical-border rounded-md px-2 py-1.5 font-sans text-xs text-tactical-text';
   const lbl = 'font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1 block';
+  const totalWeight = rounds.reduce((s, r) => s + (r.weight || 0), 0);
 
   return (
     <div className="tactical-panel p-5 mb-8">
@@ -155,32 +194,90 @@ function CreateMatch({ onCreated }: { onCreated: () => void }) {
           </select>
         </div>
         <div>
-          <label className={lbl}>{t('editor.game.traffic', { defaultValue: 'Traffic profile' })}</label>
-          <select className={field} value={loadType} onChange={(e) => setLoadType(e.target.value as typeof loadType)}>
-            {LOAD_PROFILES.map((p) => (
-              <option key={p} value={p}>{p}</option>
-            ))}
-          </select>
+          <label className={lbl}>{t('editor.game.start_in_min', { defaultValue: 'Open lobby in (min)' })}</label>
+          <input type="number" min={0} className={field} value={startInMin} onChange={(e) => setStartInMin(Number(e.target.value))} />
         </div>
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className={lbl}>{t('editor.game.start_in_min', { defaultValue: 'Start in (min)' })}</label>
-            <input type="number" min={0} className={field} value={startInMin} onChange={(e) => setStartInMin(Number(e.target.value))} />
+      </div>
+
+      {/* Rounds builder */}
+      <div className="mt-5">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2 font-sans text-[11px] font-medium text-slate-600 dark:text-signal-amber">
+            <Layers className="w-4 h-4" /> {t('editor.game.rounds', { defaultValue: 'Rounds' })}
+            <span className="text-tactical-label font-normal">
+              ({rounds.length} · {t('editor.game.total_weight', { defaultValue: 'total weight' })} {totalWeight})
+            </span>
           </div>
-          <div>
-            <label className={lbl}>{t('editor.game.duration_min', { defaultValue: 'Duration (min)' })}</label>
-            <input type="number" min={0} className={field} value={durationMin} onChange={(e) => setDurationMin(Number(e.target.value))} />
-          </div>
+          <button onClick={addRound} className="inline-flex items-center gap-1 px-2 py-1 rounded-md border border-signal-cyan text-signal-cyan hover:bg-signal-cyan/10 font-sans text-xs transition-colors">
+            <Plus className="w-3.5 h-3.5" /> {t('editor.game.add_round', { defaultValue: 'Add round' })}
+          </button>
         </div>
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className={lbl}>{t('editor.game.latency_target', { defaultValue: 'p95 target (ms)' })}</label>
-            <input type="number" min={1} className={field} value={latencyTarget} onChange={(e) => setLatencyTarget(Number(e.target.value))} />
-          </div>
-          <div>
-            <label className={lbl}>{t('editor.game.budget', { defaultValue: 'Budget ($/hr, 0=off)' })}</label>
-            <input type="number" min={0} className={field} value={budget} onChange={(e) => setBudget(Number(e.target.value))} />
-          </div>
+
+        <div className="space-y-3">
+          {rounds.map((r, idx) => (
+            <div key={idx} className="border border-tactical-border rounded-lg p-3 bg-tactical-raised/30">
+              <div className="flex items-center justify-between mb-2">
+                <div className="font-sans text-xs font-bold text-tactical-text">
+                  {t('editor.game.round', { defaultValue: 'Round' })} {idx + 1}
+                </div>
+                {rounds.length > 1 && (
+                  <button onClick={() => removeRound(idx)} className="text-tactical-dim hover:text-signal-red transition-colors" aria-label="Remove round">
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                <div>
+                  <label className={lbl}>{t('editor.game.interval_sec', { defaultValue: 'Build (sec)' })}</label>
+                  <input type="number" min={0} className={field} value={r.intervalSec} onChange={(e) => patchRound(idx, { intervalSec: Number(e.target.value) })} />
+                </div>
+                <div>
+                  <label className={lbl}>{t('editor.game.round_duration_sec', { defaultValue: 'Live (sec)' })}</label>
+                  <input type="number" min={5} className={field} value={r.durationSec} onChange={(e) => patchRound(idx, { durationSec: Number(e.target.value) })} />
+                </div>
+                <div>
+                  <label className={lbl}>{t('editor.game.traffic', { defaultValue: 'Traffic' })}</label>
+                  <select className={field} value={r.loadProfile.type} onChange={(e) => patchRound(idx, { loadProfile: { ...r.loadProfile, type: e.target.value } })}>
+                    {LOAD_PROFILES.map((p) => (
+                      <option key={p} value={p}>{p}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className={lbl}>{t('editor.game.traffic_intensity', { defaultValue: 'Traffic ×' })}</label>
+                  <input type="number" min={0.1} step={0.5} className={field} value={r.loadProfile.multiplier ?? 1} onChange={(e) => patchRound(idx, { loadProfile: { ...r.loadProfile, multiplier: Number(e.target.value) } })} />
+                </div>
+                <div>
+                  <label className={lbl}>{t('editor.game.round_weight', { defaultValue: 'Weight' })}</label>
+                  <input type="number" min={0} step={0.5} className={field} value={r.weight} onChange={(e) => patchRound(idx, { weight: Number(e.target.value) })} />
+                </div>
+                <div>
+                  <label className={lbl}>{t('editor.game.latency_target', { defaultValue: 'p95 target (ms)' })}</label>
+                  <input type="number" min={1} className={field} value={r.scoringConfig.latencyTargetMs} onChange={(e) => patchRoundScoring(idx, { latencyTargetMs: Number(e.target.value) })} />
+                </div>
+                <div>
+                  <label className={lbl}>{t('editor.game.budget', { defaultValue: 'Budget ($/hr)' })}</label>
+                  <input type="number" min={0} className={field} value={r.scoringConfig.budgetPerHour} onChange={(e) => patchRoundScoring(idx, { budgetPerHour: Number(e.target.value) })} />
+                </div>
+                <div>
+                  <label className={lbl}>{t('editor.game.w_throughput', { defaultValue: 'w·throughput' })}</label>
+                  <input type="number" min={0} step={0.5} className={field} value={r.scoringConfig.wThroughput} onChange={(e) => patchRoundScoring(idx, { wThroughput: Number(e.target.value) })} />
+                </div>
+                <div>
+                  <label className={lbl}>{t('editor.game.w_success', { defaultValue: 'w·success' })}</label>
+                  <input type="number" min={0} step={0.5} className={field} value={r.scoringConfig.wSuccess} onChange={(e) => patchRoundScoring(idx, { wSuccess: Number(e.target.value) })} />
+                </div>
+                <div>
+                  <label className={lbl}>{t('editor.game.w_latency', { defaultValue: 'w·latency' })}</label>
+                  <input type="number" min={0} step={0.5} className={field} value={r.scoringConfig.wLatency} onChange={(e) => patchRoundScoring(idx, { wLatency: Number(e.target.value) })} />
+                </div>
+                <div>
+                  <label className={lbl}>{t('editor.game.w_cost', { defaultValue: 'w·cost' })}</label>
+                  <input type="number" min={0} step={0.5} className={field} value={r.scoringConfig.wCost} onChange={(e) => patchRoundScoring(idx, { wCost: Number(e.target.value) })} />
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -281,15 +378,20 @@ function ManageMatch({ code }: { code: string }) {
   if (!session) return null;
   const nodes = session.starting_architecture?.nodes ?? [];
   const status = session.status;
+  const phase = session.phase ?? 'lobby';
+  const totalRounds = session.total_rounds ?? session.rounds?.length ?? 0;
+  const curRound = session.current_round ?? 0;
+  const nextRound = Math.min(totalRounds, curRound + 1);
+  const hasNextRound = curRound < totalRounds;
   const btn = 'px-3 py-1.5 font-sans text-xs rounded-md border transition-colors flex items-center gap-1.5';
 
   const serverNow = now + offsetRef.current;
   const startsMs = session.starts_at ? new Date(session.starts_at).getTime() : null;
-  const endsMs = session.ends_at ? new Date(session.ends_at).getTime() : null;
+  const roundEndsMs = session.round_ends_at ? new Date(session.round_ends_at).getTime() : null;
   const countdownSec = startsMs ? (startsMs - serverNow) / 1000 : null;
-  const timeLeftSec = endsMs ? (endsMs - serverNow) / 1000 : null;
+  const roundLeftSec = roundEndsMs ? (roundEndsMs - serverNow) / 1000 : null;
 
-  // Shift the scheduled start time, never into the past.
+  // Shift the scheduled lobby-open time, never into the past.
   const shiftStart = (deltaSec: number) => {
     const base = startsMs && startsMs > serverNow ? startsMs : serverNow;
     const next = Math.max(serverNow, base + deltaSec * 1000);
@@ -298,22 +400,56 @@ function ManageMatch({ code }: { code: string }) {
 
   const tinyBtn = 'px-2 py-1 font-sans text-[11px] rounded-md border border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan transition-colors inline-flex items-center gap-1';
 
+  const phaseLabel =
+    phase === 'round'
+      ? t('editor.game.round_live', { defaultValue: 'Round {{n}}/{{total}} · Live', n: curRound, total: totalRounds })
+      : phase === 'interval'
+      ? t('editor.game.building', { defaultValue: 'Build phase · Round {{n}} next', n: nextRound })
+      : phase === 'ended'
+      ? t('editor.game.ended', { defaultValue: 'Ended' })
+      : t('editor.game.lobby', { defaultValue: 'Lobby' });
+
   return (
     <div className="mt-3 border-t border-tactical-border pt-3">
+      {/* Phase + round controls */}
       <div className="flex flex-wrap items-center gap-2 mb-3">
-        {(status === 'lobby' || status === 'paused') && (
-          <button onClick={() => patch({ action: status === 'paused' ? 'resume' : 'start' })} className={`${btn} border-signal-green text-signal-green hover:bg-signal-green/10`}>
-            <Play className="w-3.5 h-3.5" /> {status === 'paused' ? t('editor.game.resume', { defaultValue: 'Resume' }) : t('editor.game.start_now', { defaultValue: 'Start now' })}
-          </button>
+        <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full border font-sans text-xs ${phase === 'round' ? 'border-signal-green text-signal-green' : phase === 'ended' ? 'border-signal-red text-signal-red' : 'border-signal-amber text-signal-amber'}`}>
+          <Layers className="w-3.5 h-3.5" /> {phaseLabel}
+        </span>
+
+        {phase !== 'round' && phase !== 'ended' && hasNextRound && (
+          <>
+            {phase === 'lobby' && (
+              <button onClick={() => patch({ action: 'open_interval' })} className={`${btn} border-signal-cyan text-signal-cyan hover:bg-signal-cyan/10`}>
+                <Hammer className="w-3.5 h-3.5" /> {t('editor.game.open_build', { defaultValue: 'Open build phase' })}
+              </button>
+            )}
+            <button onClick={() => patch({ action: 'start_round' })} className={`${btn} border-signal-green text-signal-green hover:bg-signal-green/10`}>
+              <Play className="w-3.5 h-3.5" /> {t('editor.game.start_round', { defaultValue: 'Start round {{n}}', n: nextRound })}
+            </button>
+          </>
         )}
-        {status === 'running' && (
-          <button onClick={() => patch({ action: 'pause' })} className={`${btn} border-signal-amber text-signal-amber hover:bg-signal-amber/10`}>
-            <Pause className="w-3.5 h-3.5" /> {t('editor.game.pause', { defaultValue: 'Pause' })}
-          </button>
+
+        {phase === 'round' && (
+          <>
+            {status === 'running' ? (
+              <button onClick={() => patch({ action: 'pause' })} className={`${btn} border-signal-amber text-signal-amber hover:bg-signal-amber/10`}>
+                <Pause className="w-3.5 h-3.5" /> {t('editor.game.pause', { defaultValue: 'Pause' })}
+              </button>
+            ) : (
+              <button onClick={() => patch({ action: 'resume' })} className={`${btn} border-signal-green text-signal-green hover:bg-signal-green/10`}>
+                <Play className="w-3.5 h-3.5" /> {t('editor.game.resume', { defaultValue: 'Resume' })}
+              </button>
+            )}
+            <button onClick={() => patch({ action: 'end_round' })} className={`${btn} border-signal-cyan text-signal-cyan hover:bg-signal-cyan/10`}>
+              <SkipForward className="w-3.5 h-3.5" /> {curRound >= totalRounds ? t('editor.game.finish_match', { defaultValue: 'Finish match' }) : t('editor.game.end_round', { defaultValue: 'End round' })}
+            </button>
+          </>
         )}
-        {status !== 'ended' && (
+
+        {phase !== 'ended' && (
           <button onClick={() => patch({ action: 'end' })} className={`${btn} border-signal-red text-signal-red hover:bg-signal-red/10`}>
-            <Square className="w-3.5 h-3.5" /> {t('editor.game.end', { defaultValue: 'End' })}
+            <Flag className="w-3.5 h-3.5" /> {t('editor.game.end', { defaultValue: 'End match' })}
           </button>
         )}
 
@@ -323,7 +459,7 @@ function ManageMatch({ code }: { code: string }) {
           {t('editor.game.traffic', { defaultValue: 'Traffic' })}
           <select
             value={session.load_profile?.type ?? 'constant'}
-            onChange={(e) => patch({ load_profile: { type: e.target.value } })}
+            onChange={(e) => patch({ load_profile: { ...session.load_profile, type: e.target.value } })}
             className="bg-tactical-raised border border-tactical-border rounded-md px-2 py-1 font-sans text-xs text-tactical-text"
           >
             {LOAD_PROFILES.map((p) => (
@@ -331,53 +467,89 @@ function ManageMatch({ code }: { code: string }) {
             ))}
           </select>
         </label>
+        <label className="flex items-center gap-2 font-sans text-xs text-tactical-dim">
+          {t('editor.game.traffic_intensity', { defaultValue: 'Traffic ×' })}
+          <input
+            type="number"
+            min={0.1}
+            step={0.5}
+            value={session.load_profile?.multiplier ?? 1}
+            onChange={(e) => patch({ load_profile: { ...session.load_profile, multiplier: Number(e.target.value) } })}
+            className="w-16 bg-tactical-raised border border-tactical-border rounded-md px-2 py-1 font-mono text-xs text-tactical-text"
+          />
+        </label>
+        <label className="flex items-center gap-2 font-sans text-xs text-tactical-dim">
+          <input
+            type="checkbox"
+            checked={session.allow_delete_starting ?? true}
+            onChange={(e) => patch({ allow_delete_starting: e.target.checked })}
+            className="accent-signal-cyan"
+          />
+          {t('editor.game.allow_delete_live', { defaultValue: 'Players can delete components' })}
+        </label>
       </div>
 
-      {/* Time controls: live countdown / time-left + fine adjustments */}
+      {/* Time controls: lobby countdown / live round time + fine adjustments */}
       <div className="flex flex-wrap items-center gap-3 mb-4 bg-tactical-raised/40 border border-tactical-border rounded-lg p-3">
         <div className="inline-flex items-center gap-2">
           <Clock className="w-4 h-4 text-signal-cyan" />
-          {status === 'lobby' && countdownSec !== null ? (
+          {phase === 'round' ? (
             <span className="font-sans text-sm text-tactical-text">
-              {t('editor.game.starts_in', { defaultValue: 'Starts in' })}{' '}
-              <span className="font-bold text-signal-green tabular-nums">{fmtClock(countdownSec)}</span>
-            </span>
-          ) : status === 'running' ? (
-            <span className="font-sans text-sm text-tactical-text">
-              {timeLeftSec !== null ? (
+              {roundLeftSec !== null ? (
                 <>
-                  {t('editor.game.time_left', { defaultValue: 'Time left' })}{' '}
-                  <span className="font-bold text-signal-amber tabular-nums">{fmtClock(timeLeftSec)}</span>
+                  {t('editor.game.round_time_left', { defaultValue: 'Round time left' })}{' '}
+                  <span className="font-bold text-signal-amber tabular-nums">{fmtClock(roundLeftSec)}</span>
                 </>
               ) : (
                 t('editor.game.open_ended', { defaultValue: 'Open-ended' })
               )}
             </span>
+          ) : phase === 'lobby' && countdownSec !== null ? (
+            <span className="font-sans text-sm text-tactical-text">
+              {t('editor.game.lobby_opens_in', { defaultValue: 'Lobby opens in' })}{' '}
+              <span className="font-bold text-signal-green tabular-nums">{fmtClock(countdownSec)}</span>
+            </span>
           ) : (
-            <span className="font-sans text-sm text-tactical-dim capitalize">{status}</span>
+            <span className="font-sans text-sm text-tactical-dim capitalize">{phaseLabel}</span>
           )}
         </div>
 
         <div className="ml-auto flex items-center gap-2">
-          {status === 'lobby' && (
+          {phase === 'lobby' && (
             <>
               <button onClick={() => shiftStart(-60)} className={tinyBtn}><Minus className="w-3 h-3" />1m</button>
               <button onClick={() => shiftStart(60)} className={tinyBtn}><Plus className="w-3 h-3" />1m</button>
-              <button onClick={() => patch({ action: 'start' })} className={`${tinyBtn} border-signal-green text-signal-green hover:bg-signal-green/10`}>
-                <Rocket className="w-3 h-3" /> {t('editor.game.start_now', { defaultValue: 'Start now' })}
-              </button>
             </>
           )}
-          {status === 'running' && (
+          {phase === 'round' && (
             <>
-              <span className="font-sans text-[11px] text-tactical-label">{t('editor.game.adjust_time', { defaultValue: 'Adjust' })}</span>
-              <button onClick={() => patch({ add_sec: -60 })} className={tinyBtn}><Minus className="w-3 h-3" />1m</button>
+              <span className="font-sans text-[11px] text-tactical-label">{t('editor.game.adjust_time', { defaultValue: 'Adjust round' })}</span>
+              <button onClick={() => patch({ add_sec: -30 })} className={tinyBtn}><Minus className="w-3 h-3" />30s</button>
+              <button onClick={() => patch({ add_sec: 30 })} className={tinyBtn}><Plus className="w-3 h-3" />30s</button>
               <button onClick={() => patch({ add_sec: 60 })} className={tinyBtn}><Plus className="w-3 h-3" />1m</button>
-              <button onClick={() => patch({ add_sec: 300 })} className={tinyBtn}><Plus className="w-3 h-3" />5m</button>
             </>
           )}
         </div>
       </div>
+
+      {/* Rounds summary */}
+      {(session.rounds?.length ?? 0) > 0 && (
+        <div className="mb-4 bg-tactical-raised/40 border border-tactical-border rounded-lg p-3">
+          <div className="flex items-center gap-2 font-sans text-[11px] font-medium text-slate-600 dark:text-signal-amber mb-2">
+            <Layers className="w-3.5 h-3.5" /> {t('editor.game.rounds', { defaultValue: 'Rounds' })}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {session.rounds!.map((r, i) => (
+              <div
+                key={i}
+                className={`px-2 py-1 rounded-md border font-sans text-[11px] ${i + 1 === curRound && phase === 'round' ? 'border-signal-green text-signal-green' : 'border-tactical-border text-tactical-dim'}`}
+              >
+                R{i + 1}: {r.durationSec}s · {r.loadProfile?.type ?? 'constant'} · ×{r.weight}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Chaos injection */}
       <div className="flex flex-wrap items-end gap-2 mb-4 bg-tactical-raised/40 border border-tactical-border rounded-lg p-3">

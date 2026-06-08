@@ -15,7 +15,6 @@ import { useContent } from '../../contexts/ContentContext';
 import { useContentProgress } from '../../hooks/useContentProgress';
 
 type ProgressFilter = 'done' | 'todo';
-type AccessFilter = 'free' | 'paid';
 
 const TYPE_META: Record<ContentType, { symbol: string; color: string; key: string; fallback: string }> = {
   lesson: { symbol: '▪', color: 'text-signal-green', key: 'explore.type_lesson', fallback: 'Lesson' },
@@ -36,7 +35,6 @@ export default function ExplorePage() {
   const [moduleFilter, setModuleFilter] = useState<string | null>(null);
   const [tierFilter, setTierFilter] = useState<Tier | null>(null);
   const [typeFilter, setTypeFilter] = useState<ContentType | null>(null);
-  const [accessFilter, setAccessFilter] = useState<AccessFilter | null>(null);
   const [progressFilter, setProgressFilter] = useState<ProgressFilter | null>(null);
 
   // Enrich registry items with translated labels for searching/rendering.
@@ -65,15 +63,13 @@ export default function ExplorePage() {
       if (moduleFilter && i.moduleId !== moduleFilter) return false;
       if (tierFilter && i.tier !== tierFilter) return false;
       if (typeFilter && i.type !== typeFilter) return false;
-      if (accessFilter === 'free' && !i.free) return false;
-      if (accessFilter === 'paid' && i.free) return false;
       if (progressFilter === 'done' && !isCompleted(i.path)) return false;
       if (progressFilter === 'todo' && isCompleted(i.path)) return false;
       if (tokens.length && !tokens.every((tok) => i.haystack.includes(tok))) return false;
       return true;
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [enriched, moduleFilter, tierFilter, typeFilter, accessFilter, progressFilter, query, updateTrigger]);
+  }, [enriched, moduleFilter, tierFilter, typeFilter, progressFilter, query, updateTrigger]);
 
   const typeCounts = useMemo(() => {
     const counts: Record<ContentType, number> = { lesson: 0, simulator: 0, case: 0, tool: 0 };
@@ -83,14 +79,13 @@ export default function ExplorePage() {
   }, [contentPages]);
 
   const hasActiveFilters =
-    moduleFilter || tierFilter || typeFilter || accessFilter || progressFilter || query.trim();
+    moduleFilter || tierFilter || typeFilter || progressFilter || query.trim();
 
   const clearAll = () => {
     setQuery('');
     setModuleFilter(null);
     setTierFilter(null);
     setTypeFilter(null);
-    setAccessFilter(null);
     setProgressFilter(null);
   };
 
@@ -170,12 +165,6 @@ export default function ExplorePage() {
         {/* Access + Progress */}
         <div className="flex flex-wrap items-center gap-2">
           <span className="label-mono w-16 shrink-0">{t('explore.filter_other', { defaultValue: 'More' })}</span>
-          <button onClick={() => setAccessFilter((c) => (c === 'free' ? null : 'free'))} className={chip(accessFilter === 'free')}>
-            {t('explore.access_free', { defaultValue: 'Free' })}
-          </button>
-          <button onClick={() => setAccessFilter((c) => (c === 'paid' ? null : 'paid'))} className={chip(accessFilter === 'paid')}>
-            {t('explore.access_paid', { defaultValue: 'Premium' })}
-          </button>
           <button onClick={() => setProgressFilter((c) => (c === 'todo' ? null : 'todo'))} className={chip(progressFilter === 'todo')}>
             {t('explore.progress_todo', { defaultValue: 'Not started' })}
           </button>
@@ -211,15 +200,11 @@ export default function ExplorePage() {
                     <span className={meta.color} aria-hidden>{meta.symbol}</span>
                     {t(meta.key, { defaultValue: meta.fallback })}
                   </span>
-                  {done ? (
+                  {done && (
                     <span className="rounded-full bg-emerald-50 px-2 py-0.5 font-sans text-[10px] text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400">
                       {t('explore.badge_done', { defaultValue: 'Done' })}
                     </span>
-                  ) : i.free ? (
-                    <span className="rounded-full bg-brand-50 px-2 py-0.5 font-sans text-[10px] text-brand-700 dark:bg-tactical-raised dark:text-signal-cyan">
-                      {t('explore.access_free', { defaultValue: 'Free' })}
-                    </span>
-                  ) : null}
+                  )}
                 </div>
                 <span className="font-sans text-sm font-medium text-slate-900 dark:text-tactical-text">
                   {i.label}

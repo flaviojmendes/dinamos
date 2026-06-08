@@ -28,8 +28,6 @@ import CommandCenter from "./components/Dashboard/CommandCenter";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import Login from "./components/Auth/Login";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
-import Subscription from "./components/Subscription/Subscription";
-import PaymentSuccess from "./pages/PaymentSuccess";
 // --- designLab (merged) ---
 import DLProtectedRoute from "./designlab/components/ProtectedRoute";
 const DLHome = React.lazy(() => import("./designlab/pages/Home"));
@@ -41,7 +39,6 @@ const DLLeaderboard = React.lazy(() => import("./designlab/pages/Leaderboard"));
 const DLRegister = React.lazy(() => import("./designlab/pages/Register"));
 const DLForgotPassword = React.lazy(() => import("./designlab/pages/ForgotPassword"));
 const DLVerifyEmail = React.lazy(() => import("./designlab/pages/VerifyEmail"));
-const DLSubscriptionRequired = React.lazy(() => import("./designlab/pages/SubscriptionRequired"));
 const DLForumList = React.lazy(() => import("./designlab/pages/forum/ForumList"));
 const DLCreateTopic = React.lazy(() => import("./designlab/pages/forum/CreateTopic"));
 const DLTopicView = React.lazy(() => import("./designlab/pages/forum/TopicView"));
@@ -103,6 +100,8 @@ import {
   getModule,
   menuKey,
   fallbackLabel,
+  orderRank,
+  titleForPath,
   TIER_ORDER,
   type Tier,
 } from "./config/contentRegistry";
@@ -129,7 +128,7 @@ import SimpleSystemEditorPage from "./pages/SimpleSystemEditorPage";
 const GameEditorPage = React.lazy(() => import("./pages/GameEditorPage"));
 const AdminGameConsole = React.lazy(() => import("./pages/AdminGameConsole"));
 import PollingWebhooks from "./components/SystemComponents/PollingWebhooks";
-import { LanguageSwitcher, CouponModal } from './components/Common';
+import { LanguageSwitcher } from './components/Common';
 import ThemeToggle from "./components/Common/ThemeToggle";
 import TopStatusBar from "./components/Common/TopStatusBar";
 import CommandPalette, { openCommandPalette } from "./components/Common/CommandPalette";
@@ -1238,7 +1237,7 @@ export default function App() {
   });
   const [isMobile, setIsMobile] = useState(false);
   const [navFilter, setNavFilter] = useState('');
-  const { user, signOut, isSubscribed } = useAuth();
+  const { user, signOut } = useAuth();
   const { isCompleted, progress, updateTrigger } = useContentProgress();
   const { t } = useTranslation();
   const { pages: contentPages } = useContent();
@@ -1261,7 +1260,23 @@ export default function App() {
         }
         return acc;
       }, []);
-    return pruneToRegistry(createMenuItems(t));
+    // The static tree only defines structure/icons/links; the DB owns ordering.
+    // Sort every sibling list by (module order_index, page order_index), keeping
+    // the original static position as a stable tiebreaker for items with no DB
+    // row (simulators ride along with their parent lesson, external links, etc.).
+    const sortByDbOrder = (items: MenuItem[]): MenuItem[] =>
+      items
+        .map((item, index) => ({ item, index }))
+        .sort((a, b) => {
+          const ra = orderRank(a.item.path);
+          const rb = orderRank(b.item.path);
+          return ra.module - rb.module || ra.page - rb.page || a.index - b.index;
+        })
+        .map(({ item }) => ({
+          ...item,
+          children: item.children ? sortByDbOrder(item.children) : undefined,
+        }));
+    return sortByDbOrder(pruneToRegistry(createMenuItems(t)));
     // contentPages drives registry rebuilds (via ContentContext), so recompute
     // the pruned menu whenever the DB content index changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1362,9 +1377,17 @@ export default function App() {
     };
     const { pathname } = useLocation();
     const { isCompleted, updateTrigger } = useContentProgress();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const makeMenuKey = (path: string, field: 'name' | 'description') => `menu.${path.replace(/^\//, '').replace(/\//g, '.')}.${field}`;
-    const displayName = t(makeMenuKey(item.path, 'name'), { defaultValue: item.name });
+    // Labels come from the DB (content_pages.title_*) when the page exists there.
+    // Otherwise fall back to the i18n key, then the static tree name — but never
+    // a raw, unresolved key (those start with "menu."): use a prettified label
+    // from the path instead, so DB-less items (e.g. simulators) read cleanly.
+    const staticName =
+      item.name && !item.name.startsWith('menu.') ? item.name : fallbackLabel(item.path);
+    const displayName =
+      titleForPath(item.path, i18n.language) ??
+      t(makeMenuKey(item.path, 'name'), { defaultValue: staticName });
     
     // Check if current path matches this item or any of its children
     const isActive =
@@ -1739,7 +1762,7 @@ export default function App() {
                       {user.displayName || user.email}
                     </p>
                     <p className="label-mono truncate">
-                      {isSubscribed ? 'Free tier' : 'Guest'}
+                      {user ? 'Free tier' : 'Guest'}
                     </p>
                   </div>
                   <button
@@ -1786,12 +1809,12 @@ export default function App() {
             {/* Content-only pages rendered from MDX (src/content/**). One route per
                 manifest entry replaces the ~60 former per-page component routes.
                 Interactive simulators remain as explicit routes below. */}
-            {contentPages.map(({ path, slug, requiresSubscription = true }) => (
+            {contentPages.map(({ path, slug }) => (
               <Route
                 key={path}
                 path={path}
                 element={
-                  <ProtectedRoute requiresSubscription={requiresSubscription}>
+                  <ProtectedRoute>
                     <ContentPage>
                       <MdxPage slug={slug} />
                     </ContentPage>
@@ -1803,7 +1826,7 @@ export default function App() {
                 key. Existing bespoke simulator routes remain declared below. */}
             {contentPages
               .filter((p) => p.simulatorKey && getSimulator(p.simulatorKey))
-              .map(({ path, simulatorKey, requiresSubscription = true }) => {
+              .map(({ path, simulatorKey }) => {
                 const def = getSimulator(simulatorKey)!;
                 const Simulator = def.component;
                 return (
@@ -1811,7 +1834,7 @@ export default function App() {
                     key={`${path}/simulator`}
                     path={`${path}/simulator`}
                     element={
-                      <ProtectedRoute requiresSubscription={requiresSubscription}>
+                      <ProtectedRoute>
                         <ContentPage>
                           <Simulator />
                         </ContentPage>
@@ -1974,7 +1997,7 @@ export default function App() {
             <Route
               path="/explore"
               element={
-                <ProtectedRoute requiresSubscription={false}>
+                <ProtectedRoute>
                   <ExplorePage />
                 </ProtectedRoute>
               }
@@ -1982,22 +2005,6 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/terms-and-conditions" element={<TermsAndConditionsPage />} />
-            <Route 
-              path="/pagamento" 
-              element={
-                <ProtectedRoute requiresSubscription={false}>
-                  <Subscription />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/pagamento/sucesso" 
-              element={
-                <ProtectedRoute requiresSubscription={false}>
-                  <PaymentSuccess />
-                </ProtectedRoute>
-              } 
-            />
             <Route path="/editor" element={<SimpleSystemEditorPage />} />
             <Route path="/editor/game/:code" element={<GameEditorPage />} />
             
@@ -2005,7 +2012,7 @@ export default function App() {
             <Route 
               path="/preferences" 
               element={
-                <ProtectedRoute requiresSubscription={false}>
+                <ProtectedRoute>
                   <Preferences />
                 </ProtectedRoute>
               } 
@@ -2013,7 +2020,7 @@ export default function App() {
             <Route 
               path="/preferences/cookies" 
               element={
-                <ProtectedRoute requiresSubscription={false}>
+                <ProtectedRoute>
                   <CookiePreferencesPage />
                 </ProtectedRoute>
               } 
@@ -2304,7 +2311,7 @@ export default function App() {
             <Route
               path="/roadmap"
               element={
-                <ProtectedRoute requiresSubscription={false}>
+                <ProtectedRoute>
                   <ContentPage>
                     <Roadmap />
                   </ContentPage>
@@ -2397,7 +2404,7 @@ export default function App() {
             <Route
               path="/forum"
               element={
-                <DLProtectedRoute requireSubscription={false}>
+                <DLProtectedRoute>
                   <DLForumList />
                 </DLProtectedRoute>
               }
@@ -2413,7 +2420,7 @@ export default function App() {
             <Route
               path="/forum/topic/:id"
               element={
-                <DLProtectedRoute requireSubscription={false}>
+                <DLProtectedRoute>
                   <DLTopicView />
                 </DLProtectedRoute>
               }
@@ -2425,7 +2432,7 @@ export default function App() {
             <Route
               path="/design-lab"
               element={
-                <DLProtectedRoute requireSubscription={false}>
+                <DLProtectedRoute>
                   <DLHome />
                 </DLProtectedRoute>
               }
@@ -2449,7 +2456,7 @@ export default function App() {
             <Route
               path="/quizzes"
               element={
-                <DLProtectedRoute requireSubscription={false}>
+                <DLProtectedRoute>
                   <DLQuizList />
                 </DLProtectedRoute>
               }
@@ -2465,7 +2472,7 @@ export default function App() {
             <Route
               path="/ranking"
               element={
-                <DLProtectedRoute requireSubscription={false}>
+                <DLProtectedRoute>
                   <DLLeaderboard />
                 </DLProtectedRoute>
               }
@@ -2491,7 +2498,6 @@ export default function App() {
             <Route path="/register" element={<DLRegister />} />
             <Route path="/forgot-password" element={<DLForgotPassword />} />
             <Route path="/verify-email" element={<DLVerifyEmail />} />
-            <Route path="/subscription-required" element={<DLSubscriptionRequired />} />
 
             {/* --- designLab: admin panels (gated by Sub + Admin role) --- */}
             <Route

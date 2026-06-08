@@ -16,7 +16,6 @@ interface ContentPage {
   slug: string;
   path: string;
   module_id: string | null;
-  requires_subscription: boolean;
   order_index: number;
   simulator_key: string | null;
   published: boolean;
@@ -32,7 +31,6 @@ const emptyForm: FormData = {
   slug: '',
   path: '',
   module_id: '',
-  requires_subscription: true,
   order_index: 0,
   simulator_key: '',
   published: true,
@@ -110,7 +108,6 @@ export default function AdminContent() {
         slug: form.slug,
         path: form.path,
         module_id: form.module_id || null,
-        requires_subscription: form.requires_subscription,
         order_index: Number(form.order_index) || 0,
         simulator_key: form.simulator_key || null,
         published: form.published,
@@ -270,16 +267,6 @@ export default function AdminContent() {
                   />
                 </div>
                 <div className="flex items-end gap-6">
-                  <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-tactical-dim">
-                    <input
-                      type="checkbox"
-                      checked={form.requires_subscription}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, requires_subscription: e.target.checked }))
-                      }
-                    />
-                    Requires subscription
-                  </label>
                   <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-tactical-dim">
                     <input
                       type="checkbox"
@@ -464,11 +451,6 @@ export default function AdminContent() {
                           >
                             {page.published ? 'PUBLISHED' : 'DRAFT'}
                           </span>
-                          {page.requires_subscription && (
-                            <span className="inline-flex px-2 py-0.5 text-[10px] font-mono rounded-full text-signal-amber bg-signal-amber/10">
-                              PAID
-                            </span>
-                          )}
                           {page.simulator_key && (
                             <span className="inline-flex px-2 py-0.5 text-[10px] font-mono rounded-full text-signal-cyan bg-signal-cyan/10">
                               SIM

@@ -9,7 +9,6 @@ import { pollsRouter } from './routes/polls.js';
 import { notificationsRouter } from './routes/notifications.js';
 import { quizzesRouter } from './routes/quizzes.js';
 import { leaderboardRouter } from './routes/leaderboard.js';
-import { subscriptionRouter } from './routes/subscription.js';
 import { adminRouter } from './routes/admin.js';
 import { gameRouter } from './routes/game.js';
 import { contentRouter } from './routes/content.js';
@@ -34,7 +33,6 @@ app.get('/api', (c) => c.json({ message: 'Dinamos API', status: 'running' }));
 app.get('/api/health', (c) => c.json({ status: 'ok' }));
 
 // Mount route modules (each declares absolute /api/... paths)
-app.route('/', subscriptionRouter);
 app.route('/', usersRouter);
 app.route('/', challengesRouter);
 app.route('/', forumRouter);

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useContent } from '../../contexts/ContentContext';
+import { titleForPath, fallbackLabel } from '../../config/contentRegistry';
 import { useContentProgress } from '../../hooks/useContentProgress';
 import ContentLayout from '../Common/ContentLayout';
 import { motion } from 'framer-motion';
@@ -56,7 +57,7 @@ export default function Roadmap() {
   const navigate = useNavigate();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [expanded, setExpanded] = useState<string | null>(null);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   // menuItems is published to window.__APP_DATA__ by App.tsx once DB content
   // loads. Re-read it on navigation AND whenever the content index changes, so
@@ -172,7 +173,11 @@ export default function Roadmap() {
         <div className="space-y-4">
           {roadmapItems.map((item, index) => {
             const { total, done, pct, status } = moduleStats(item);
-            const displayName = t(makeMenuKey(item.path, 'name'), { defaultValue: item.name });
+            const staticName =
+              item.name && !item.name.startsWith('menu.') ? item.name : fallbackLabel(item.path);
+            const displayName =
+              titleForPath(item.path, i18n.language) ??
+              t(makeMenuKey(item.path, 'name'), { defaultValue: staticName });
             const displayDescription = t(makeMenuKey(item.path, 'description'), { defaultValue: item.description });
             const isOpen = expanded === item.path;
             const accent = status === 'completed' ? 'green' : status === 'in-progress' ? 'amber' : 'cyan';
@@ -272,7 +277,13 @@ export default function Roadmap() {
                     >
                       <div className="grid grid-cols-1 gap-1 sm:grid-cols-2">
                         {item.children.map(child => {
-                          const childName = t(makeMenuKey(child.path, 'name'), { defaultValue: child.name });
+                          const childStaticName =
+                            child.name && !child.name.startsWith('menu.')
+                              ? child.name
+                              : fallbackLabel(child.path);
+                          const childName =
+                            titleForPath(child.path, i18n.language) ??
+                            t(makeMenuKey(child.path, 'name'), { defaultValue: childStaticName });
                           const childDone = isCompleted(child.path);
                           return (
                             <Link

@@ -35,9 +35,10 @@ interface ApiIndexEntry {
   slug: string;
   path: string;
   moduleId: string | null;
-  requiresSubscription: boolean;
   orderIndex: number;
   simulatorKey: string | null;
+  titleEn: string | null;
+  titlePt: string | null;
 }
 
 interface ApiModuleEntry {
@@ -73,6 +74,7 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
           tier: m.tier,
           base: m.base,
           paths: m.paths,
+          orderIndex: m.orderIndex,
         }));
         setRegistryModules(mods);
         setModules(mods);
@@ -81,9 +83,10 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
           path: p.path,
           slug: p.slug,
           moduleId: p.moduleId,
-          requiresSubscription: p.requiresSubscription,
           simulatorKey: p.simulatorKey,
           orderIndex: p.orderIndex,
+          titleEn: p.titleEn,
+          titlePt: p.titlePt,
         }));
         setRegistryLessons(list);
         setPages(list);

@@ -179,9 +179,14 @@ export interface SystemMetrics {
   /** Simulated time in seconds since the run started. */
   time: number;
   offeredLoad: number;
+  /** Successful requests per second (end-to-end). */
   totalThroughput: number;
+  /** Successful fraction of offered load [0..1]. */
   successRate: number;
+  /** Failed fraction of offered load [0..1]. */
   errorRate: number;
+  /** Failed requests per second (end-to-end) = offered - successful throughput. */
+  failedRate: number;
   inFlightTotal: number;
   /** End-to-end response-time percentiles across all completed traces (ms). */
   p50: number;

@@ -16,8 +16,8 @@ INSERT INTO "content_modules" ("key", "label", "tier", "base", "paths", "order_i
   ('practice', 'Practice Arena', 'TOOLS', '/design-lab', $mdx$["/design-lab","/quizzes","/ranking","/forum","/profile","/notifications"]$mdx$::jsonb, 11)
 ON CONFLICT ("key") DO UPDATE SET "label" = EXCLUDED."label", "tier" = EXCLUDED."tier", "base" = EXCLUDED."base", "paths" = EXCLUDED."paths", "order_index" = EXCLUDED."order_index", "updated_at" = now();
 --> statement-breakpoint
-INSERT INTO "content_pages" ("slug", "path", "module_id", "requires_subscription", "order_index", "simulator_key", "published", "title_en", "title_pt", "body_en", "body_pt") VALUES
-  ('ai-systems/index', '/sistemas-ia', 'ai-systems', true, 74, NULL, true, 'AI & LLM Systems', 'Sistemas de IA e LLMs', $mdx$# AI & LLM Systems
+INSERT INTO "content_pages" ("slug", "path", "module_id", "order_index", "simulator_key", "published", "title_en", "title_pt", "body_en", "body_pt") VALUES
+  ('ai-systems/index', '/sistemas-ia', 'ai-systems', 74, NULL, true, 'AI & LLM Systems', 'Sistemas de IA e LLMs', $mdx$# AI & LLM Systems
 
 Since 2021, large language models (LLMs) moved from research labs into production at massive scale. This changed distributed systems engineering: we now serve stateful, GPU-bound, probabilistic workloads with latency and cost profiles unlike any classic web service.
 
@@ -188,7 +188,7 @@ Esta seção se apoia no restante do curso. Se termos como *cache*, *balanceador
 
 </Callout>
 $mdx$),
-  ('ai-systems/llm-serving-fundamentals', '/sistemas-ia/llm-serving-fundamentals', 'ai-systems', true, 75, NULL, true, 'LLM Serving Fundamentals', 'Fundamentos de Serving de LLM', $mdx$# LLM Serving Fundamentals
+  ('ai-systems/llm-serving-fundamentals', '/sistemas-ia/llm-serving-fundamentals', 'ai-systems', 75, NULL, true, 'LLM Serving Fundamentals', 'Fundamentos de Serving de LLM', $mdx$# LLM Serving Fundamentals
 
 Before you can scale LLM inference, you need to understand what actually happens when a model answers a prompt. Serving an LLM is unlike serving a normal API: the response is generated one token at a time, and memory — not CPU — is usually what runs out first.
 
@@ -477,7 +477,7 @@ Veja como a taxa de chegada, o tamanho do lote e o KV cache interagem — e obse
 
 </Cards>
 $mdx$),
-  ('ai-systems/rag', '/sistemas-ia/rag', 'ai-systems', true, 76, NULL, true, 'Retrieval-Augmented Generation (RAG)', 'Geração Aumentada por Recuperação (RAG)', $mdx$# Retrieval-Augmented Generation (RAG)
+  ('ai-systems/rag', '/sistemas-ia/rag', 'ai-systems', 76, NULL, true, 'Retrieval-Augmented Generation (RAG)', 'Geração Aumentada por Recuperação (RAG)', $mdx$# Retrieval-Augmented Generation (RAG)
 
 LLMs are trained on a frozen snapshot of data and have no access to your private documents. **RAG** fixes this by retrieving relevant context at query time and feeding it into the prompt — so the model answers from *your* data instead of its memory.
 
@@ -786,7 +786,7 @@ Acompanhe uma consulta fluindo por embeddar → busca vetorial → reordenar →
 
 </Cards>
 $mdx$),
-  ('ai-systems/vector-search', '/sistemas-ia/vector-search', 'ai-systems', true, 77, NULL, true, 'Vector Search', 'Busca Vetorial', $mdx$# Vector Search
+  ('ai-systems/vector-search', '/sistemas-ia/vector-search', 'ai-systems', 77, NULL, true, 'Vector Search', 'Busca Vetorial', $mdx$# Vector Search
 
 RAG and semantic search depend on one operation: given a query vector, find the most similar vectors in a huge collection. Doing this *exactly* is too slow at scale, so we use **Approximate Nearest Neighbor (ANN)** search to trade a little accuracy for enormous speed.
 
@@ -1041,7 +1041,7 @@ Sonde um índice HNSW e veja como `efSearch`, `M` e o tamanho do dataset equilib
 
 </Cards>
 $mdx$),
-  ('ai-systems/llm-gateway', '/sistemas-ia/llm-gateway', 'ai-systems', true, 78, NULL, true, 'LLM Gateway', 'Gateway de LLM', $mdx$# LLM Gateway
+  ('ai-systems/llm-gateway', '/sistemas-ia/llm-gateway', 'ai-systems', 78, NULL, true, 'LLM Gateway', 'Gateway de LLM', $mdx$# LLM Gateway
 
 Once more than one service calls an LLM, you don't want each one talking directly to a provider. An **LLM gateway** is a smart proxy that sits between your applications and the models — the API gateway pattern, specialized for the realities of LLM traffic.
 
@@ -1282,7 +1282,7 @@ Envie tráfego por um gateway e ajuste a taxa de acerto do cache, o limite de ta
 
 </Cards>
 $mdx$),
-  ('ai-systems/gpu-autoscaling', '/sistemas-ia/gpu-autoscaling', 'ai-systems', true, 79, NULL, true, 'GPU Serving & Autoscaling', 'Serving de GPU e Autoescalonamento', $mdx$# GPU Serving & Autoscaling
+  ('ai-systems/gpu-autoscaling', '/sistemas-ia/gpu-autoscaling', 'ai-systems', 79, NULL, true, 'GPU Serving & Autoscaling', 'Serving de GPU e Autoescalonamento', $mdx$# GPU Serving & Autoscaling
 
 Scaling a stateless web service is easy: add more pods behind a load balancer. Scaling **GPU inference** is hard — GPUs are expensive, scarce, and slow to start. Getting autoscaling right is the difference between a huge cloud bill and unhappy, queued users.
 
@@ -1539,7 +1539,7 @@ Direcione tráfego em rajadas para um pool de GPUs e ajuste a taxa de chegada, o
 
 </Cards>
 $mdx$),
-  ('ai-systems/agentic-systems', '/sistemas-ia/agentic-systems', 'ai-systems', true, 80, NULL, true, 'Agentic Systems', 'Sistemas com Agentes', $mdx$# Agentic Systems
+  ('ai-systems/agentic-systems', '/sistemas-ia/agentic-systems', 'ai-systems', 80, NULL, true, 'Agentic Systems', 'Sistemas com Agentes', $mdx$# Agentic Systems
 
 An **agent** is an LLM that doesn't just answer — it acts. Given a goal, it reasons about what to do, calls tools, observes the results, and loops until the task is done. This turns a single prediction into a multi-step distributed workflow with new reliability challenges.
 
@@ -1838,7 +1838,7 @@ Veja um agente rodar seu laço raciocinar → agir → observar, chamar ferramen
 
 </Cards>
 $mdx$),
-  ('real-cases/index', '/casos-reais', 'cases', true, 87, NULL, true, 'Learn from the Giants', 'Aprenda com os Gigantes', $mdx$# Learn from the Giants
+  ('real-cases/index', '/casos-reais', 'cases', 87, NULL, true, 'Learn from the Giants', 'Aprenda com os Gigantes', $mdx$# Learn from the Giants
 
 Dive into the architectures and technical decisions of companies that define the future of technology
 
@@ -2045,7 +2045,7 @@ A escolha de consistência forte para URLs curtas enquanto mantém consistência
 
 </Card>
 $mdx$),
-  ('real-cases/youtube', '/casos-reais/youtube', 'cases', true, 88, NULL, true, 'YouTube System Design', 'YouTube System Design', $mdx$# YouTube System Design
+  ('real-cases/youtube', '/casos-reais/youtube', 'cases', 88, NULL, true, 'YouTube System Design', 'YouTube System Design', $mdx$# YouTube System Design
 
 How YouTube processes, stores and distributes billions of videos globally
 
@@ -2654,7 +2654,7 @@ A arquitetura atual reflete anos de evolução e aprendizado:
 - [YouTube Press Statistics](https://www.youtube.com/about/press/)
 - [Statista - YouTube Growth Statistics](https://www.statista.com/statistics/259477/hours-of-video-uploaded-to-youtube-every-minute/)
 $mdx$),
-  ('real-cases/spotify', '/casos-reais/spotify', 'cases', true, 89, NULL, true, 'Spotify System Design', 'Spotify System Design', $mdx$# Spotify System Design
+  ('real-cases/spotify', '/casos-reais/spotify', 'cases', 89, NULL, true, 'Spotify System Design', 'Spotify System Design', $mdx$# Spotify System Design
 
 How Spotify manages, processes and distributes millions of songs in real-time globally
 
@@ -3129,7 +3129,7 @@ Gerenciamento de centenas de microserviços. Solução: Backstage para developer
 - [Backstage - Developer Portal](https://backstage.io/)
 - [Luigi - Workflow Management](https://github.com/spotify/luigi)
 $mdx$),
-  ('real-cases/whatsapp', '/casos-reais/whatsapp', 'cases', true, 90, NULL, true, 'WhatsApp System Design', 'WhatsApp System Design', $mdx$# WhatsApp System Design
+  ('real-cases/whatsapp', '/casos-reais/whatsapp', 'cases', 90, NULL, true, 'WhatsApp System Design', 'WhatsApp System Design', $mdx$# WhatsApp System Design
 
 How WhatsApp manages billions of real-time messages with end-to-end encryption
 
@@ -3556,7 +3556,7 @@ Gerenciamento de grupos com milhares de membros. Solução: Otimização de broa
 - [WhatsApp Privacy Policy](https://www.whatsapp.com/privacy)
 - [End-to-End Encryption Technical Paper](https://scontent.whatsapp.net/v/t39.8562-34/316546300_547692750646518_7299107161331633308_n.pdf?ccb=1-7&_nc_sid=2fbf2a&_nc_ohc=t_1sHkqHzr4AX9QJTP-&_nc_ht=scontent.whatsapp.net&oh=01_AdTz6KJ_MWwjY_lQh6MH1_BPmXiC_1kdpvnNvCXcaHsUxw&oe=65C2F7C1)
 $mdx$),
-  ('real-cases/bitly', '/casos-reais/bitly', 'cases', true, 91, NULL, true, 'Bit.ly System Design', 'Bit.ly System Design', $mdx$# Bit.ly System Design
+  ('real-cases/bitly', '/casos-reais/bitly', 'cases', 91, NULL, true, 'Bit.ly System Design', 'Bit.ly System Design', $mdx$# Bit.ly System Design
 
 How Bit.ly manages billions of redirects and URL shortening at global scale
 
@@ -3991,7 +3991,7 @@ Detecção e prevenção de URLs maliciosas. Solução: ML e rate limiting distr
 - [Official API Clients](https://github.com/bitly/api-clients)
 - [NSQ - Distributed Messaging Platform](https://github.com/bitly/go-nsq)
 $mdx$),
-  ('real-cases/netflix', '/casos-reais/netflix', 'cases', true, 92, NULL, true, 'Netflix System Design', 'Netflix System Design', $mdx$# Netflix System Design
+  ('real-cases/netflix', '/casos-reais/netflix', 'cases', 92, NULL, true, 'Netflix System Design', 'Netflix System Design', $mdx$# Netflix System Design
 
 How Netflix delivers high-quality video streaming to millions of users globally
 
@@ -4408,7 +4408,7 @@ Gerenciamento de centenas de serviços. Solução: Chaos Engineering e resiliên
 - [QCon - Netflix Cloud Architecture](https://www.youtube.com/watch?v=CZ3wIuvmHeM)
 - [AWS re:Invent - Netflix on AWS](https://www.youtube.com/watch?v=uCXv4gl2JT0)
 $mdx$),
-  ('real-cases/uber', '/casos-reais/uber', 'cases', true, 93, NULL, true, 'Uber System Design', 'Uber System Design', $mdx$# Uber System Design
+  ('real-cases/uber', '/casos-reais/uber', 'cases', 93, NULL, true, 'Uber System Design', 'Uber System Design', $mdx$# Uber System Design
 
 How Uber connects millions of drivers and passengers in real-time globally
 
@@ -4837,7 +4837,7 @@ Handling de eventos e horários de pico. Solução: Auto-scaling e surge pricing
 - [QCon - Uber's Marketplace Platform](https://www.youtube.com/watch?v=nuiLcWE8sPA)
 - [StrangeLoop - Uber's Real-time Tech Stack](https://www.youtube.com/watch?v=kb-m2fasdDY)
 $mdx$),
-  ('real-cases/chatgpt', '/casos-reais/chatgpt', 'cases', true, 94, NULL, true, 'ChatGPT System Design', 'System Design do ChatGPT', $mdx$# ChatGPT System Design
+  ('real-cases/chatgpt', '/casos-reais/chatgpt', 'cases', 94, NULL, true, 'ChatGPT System Design', 'System Design do ChatGPT', $mdx$# ChatGPT System Design
 
 How an LLM assistant serves hundreds of millions of users with token-by-token streaming on scarce GPU fleets.
 
@@ -5022,7 +5022,7 @@ A capacidade de GPU é finita e lenta de adicionar. Durante picos, o sistema dep
 
 Este caso conecta [fundamentos de serving de LLM](/sistemas-ia/llm-serving-fundamentals), [batching de inferência](/sistemas-ia/llm-serving-fundamentals/simulator), [autoescalonamento de GPU](/sistemas-ia/gpu-autoscaling), o [gateway de LLM](/sistemas-ia/llm-gateway) e as [defesas contra prompt injection](/seguranca/prompt-injection).
 $mdx$),
-  ('real-cases/perplexity', '/casos-reais/perplexity', 'cases', true, 95, NULL, true, 'Perplexity System Design', 'System Design do Perplexity', $mdx$# Perplexity System Design
+  ('real-cases/perplexity', '/casos-reais/perplexity', 'cases', 95, NULL, true, 'Perplexity System Design', 'System Design do Perplexity', $mdx$# Perplexity System Design
 
 How a RAG-based answer engine combines live web retrieval with LLM generation to return cited, grounded answers.
 
@@ -5193,7 +5193,7 @@ Uma busca vetorial rápida retorna muitos candidatos; um reordenador mais lento 
 
 Este caso é uma aplicação real de [RAG](/sistemas-ia/rag), [busca vetorial](/sistemas-ia/vector-search), do [simulador de pipeline RAG](/sistemas-ia/rag/simulator) e da [observabilidade de LLM](/monitoramento-e-manutencao/llm-observability).
 $mdx$),
-  ('real-cases/github-copilot', '/casos-reais/github-copilot', 'cases', true, 96, NULL, true, 'GitHub Copilot System Design', 'System Design do GitHub Copilot', $mdx$# GitHub Copilot System Design
+  ('real-cases/github-copilot', '/casos-reais/github-copilot', 'cases', 96, NULL, true, 'GitHub Copilot System Design', 'System Design do GitHub Copilot', $mdx$# GitHub Copilot System Design
 
 How an AI pair-programmer delivers inline code completions with the ultra-low latency an editor demands.
 
@@ -5364,7 +5364,7 @@ Com sugestões disparadas o tempo todo, a frota de inferência precisa agrupar d
 
 Este caso aplica [fundamentos de serving de LLM](/sistemas-ia/llm-serving-fundamentals), o [gateway de LLM](/sistemas-ia/llm-gateway), a [observabilidade de LLM](/monitoramento-e-manutencao/llm-observability) e técnicas de latência dos [princípios de design](/principios-design/escalabilidade/latencia).
 $mdx$),
-  ('components/index', '/componentes', 'components', true, 8, NULL, true, 'Basic Components', 'Componentes Básicos', $mdx$# Basic Components
+  ('components/index', '/componentes', 'components', 8, NULL, true, 'Basic Components', 'Componentes Básicos', $mdx$# Basic Components
 
 Explore the fundamental building blocks of distributed systems
 
@@ -5517,7 +5517,7 @@ Cada componente tem um papel específico na construção de sistemas distribuíd
 
 </Cards>
 $mdx$),
-  ('components/database', '/componentes/banco-dados', 'components', true, 9, NULL, true, 'Databases', 'Bancos de Dados', $mdx$# Databases
+  ('components/database', '/componentes/banco-dados', 'components', 9, NULL, true, 'Databases', 'Bancos de Dados', $mdx$# Databases
 
 Databases are among the most important components of any system, responsible for storing, querying, and managing large volumes of data.
 
@@ -5720,7 +5720,7 @@ Um site de notícias em que as atualizações podem ser replicadas com pequeno a
 
 </Callout>
 $mdx$),
-  ('components/cache', '/componentes/cache', 'components', true, 10, NULL, true, 'Cache', 'Cache', $mdx$# Cache
+  ('components/cache', '/componentes/cache', 'components', 10, NULL, true, 'Cache', 'Cache', $mdx$# Cache
 
 Cache is a temporary storage layer used to store frequently accessed data, reducing latency and improving performance.
 
@@ -5843,7 +5843,7 @@ Experimente nossa simulação de cache para entender como o cache impacta a perf
 
 </Callout>
 $mdx$),
-  ('components/load-balancer', '/componentes/load-balancer', 'components', true, 11, NULL, true, 'Load Balancers', 'Balanceadores de Carga', $mdx$# Load Balancers
+  ('components/load-balancer', '/componentes/load-balancer', 'components', 11, NULL, true, 'Load Balancers', 'Balanceadores de Carga', $mdx$# Load Balancers
 
 Load balancers evenly distribute network traffic or requests across multiple servers, preventing any single server from becoming overloaded. For example, an e-commerce system can use a load balancer to distribute requests.
 
@@ -5934,7 +5934,7 @@ Try our interactive load-balancing simulation to see how different algorithms be
 
 </Callout>
 $mdx$),
-  ('components/message-queue', '/componentes/message-queue', 'components', true, 12, NULL, true, 'Message Queues', 'Filas de Mensagens', $mdx$# Message Queues
+  ('components/message-queue', '/componentes/message-queue', 'components', 12, NULL, true, 'Message Queues', 'Filas de Mensagens', $mdx$# Message Queues
 
 Message queues are systems used for asynchronous communication between different parts of a system, ensuring that messages can be sent and processed reliably.
 
@@ -6001,7 +6001,7 @@ Try our interactive message queue simulation to understand asynchronous communic
 
 </Callout>
 $mdx$),
-  ('components/cdn', '/componentes/cdn', 'components', true, 13, NULL, true, 'CDN (Content Delivery Network)', 'CDN (Content Delivery Network)', $mdx$# CDN (Content Delivery Network)
+  ('components/cdn', '/componentes/cdn', 'components', 13, NULL, true, 'CDN (Content Delivery Network)', 'CDN (Content Delivery Network)', $mdx$# CDN (Content Delivery Network)
 
 ## What is a CDN?
 
@@ -6068,7 +6068,7 @@ Experimente nossa simulação de CDN para entender como a distribuição geográ
 
 </Callout>
 $mdx$),
-  ('components/api-gateway', '/componentes/api-gateway', 'components', true, 14, NULL, true, 'API Gateway', 'API Gateway', $mdx$# API Gateway
+  ('components/api-gateway', '/componentes/api-gateway', 'components', 14, NULL, true, 'API Gateway', 'API Gateway', $mdx$# API Gateway
 
 Imagine a busy restaurant. You, the customer, place your order with the waiter (API Gateway). He ensures everything works perfectly for you, even if the kitchen is complex and has several specialized cooks.
 
@@ -6183,7 +6183,7 @@ Em um aplicativo de comércio eletrônico baseado em microserviços, o API Gatew
 
 </Callout>
 $mdx$),
-  ('components/firewall', '/componentes/firewall', 'components', true, 15, NULL, true, 'Firewall', 'Firewall', $mdx$# Firewall
+  ('components/firewall', '/componentes/firewall', 'components', 15, NULL, true, 'Firewall', 'Firewall', $mdx$# Firewall
 
 ## What is a Firewall?
 
@@ -6270,7 +6270,7 @@ Experimente nosso simulador de Firewall para entender como regras de segurança 
 
 </Callout>
 $mdx$),
-  ('components/polling-webhooks', '/componentes/polling-webhooks', 'components', true, 16, NULL, true, 'Polling vs Webhooks', 'Polling vs Webhooks', $mdx$# Polling vs Webhooks
+  ('components/polling-webhooks', '/componentes/polling-webhooks', 'components', 16, NULL, true, 'Polling vs Webhooks', 'Polling vs Webhooks', $mdx$# Polling vs Webhooks
 
 Understand the fundamental differences between these two communication strategies
 
@@ -6561,7 +6561,7 @@ Agora que você entende os conceitos, experimente nosso simulador interativo par
 
 [Componentes Básicos](/componentes)
 $mdx$),
-  ('components/vector-database', '/componentes/vector-database', 'components', true, 17, NULL, true, 'Vector Database', 'Banco de Dados Vetorial', $mdx$# Vector Database
+  ('components/vector-database', '/componentes/vector-database', 'components', 17, NULL, true, 'Vector Database', 'Banco de Dados Vetorial', $mdx$# Vector Database
 
 A **vector database** stores embeddings — high-dimensional vectors that represent the *meaning* of text, images, or audio — and answers similarity queries over them. It became a first-class system component with the rise of RAG and semantic search.
 
@@ -6752,7 +6752,7 @@ Elasticsearch / OpenSearch — vetores ao lado de busca léxica madura e filtrag
 
 Este componente sustenta o [RAG](/sistemas-ia/rag) e é consultado com as técnicas de [Busca Vetorial](/sistemas-ia/vector-search). Ele complementa, em vez de substituir, o seu [cache](/componentes/cache) e o seu [banco de dados](/componentes/banco-dados).
 $mdx$),
-  ('components/model-gateway', '/componentes/model-gateway', 'components', true, 18, NULL, true, 'Model Gateway', 'Gateway de Modelos', $mdx$# Model Gateway
+  ('components/model-gateway', '/componentes/model-gateway', 'components', 18, NULL, true, 'Model Gateway', 'Gateway de Modelos', $mdx$# Model Gateway
 
 A **model gateway** is the infrastructure component that fronts your LLMs, just as an API gateway fronts your microservices. Every application call to a model goes through it, so it's where you centralize routing, caching, resilience, limits, and cost.
 
@@ -6891,7 +6891,7 @@ Como toda chamada de modelo depende dele, o gateway precisa ser altamente dispon
 
 O gateway de modelos implementa os padrões de [Gateway de LLM](/sistemas-ia/llm-gateway), reaproveita ideias do [API Gateway](/componentes/api-gateway) e se apoia em [circuit breakers](/principios-design/tolerancia-falhas/circuit-breaker) e [limitação de taxa](/componentes/api-gateway) para resiliência.
 $mdx$),
-  ('components/kafka-streaming', '/componentes/kafka', 'components', true, 19, NULL, true, 'Kafka & Event Streaming', 'Kafka e Streaming de Eventos', $mdx$# Kafka & Event Streaming
+  ('components/kafka-streaming', '/componentes/kafka', 'components', 19, NULL, true, 'Kafka & Event Streaming', 'Kafka e Streaming de Eventos', $mdx$# Kafka & Event Streaming
 
 A traditional message queue deletes a message once it's consumed. **Apache Kafka** flips that model: it's a **durable, replayable log**. Events are appended to the end and kept for a retention window, so many consumers can read the same stream at their own pace — even re-reading from the past.
 
@@ -7108,7 +7108,7 @@ Event sourcing, change-data-capture, pipelines de logs/métricas, desacoplamento
 
 </Cards>
 $mdx$),
-  ('components/dns', '/componentes/dns', 'components', true, 20, NULL, true, 'DNS — The Distributed Phone Book', 'DNS — A Lista Telefônica Distribuída', $mdx$# DNS — The Distributed Phone Book
+  ('components/dns', '/componentes/dns', 'components', 20, NULL, true, 'DNS — The Distributed Phone Book', 'DNS — A Lista Telefônica Distribuída', $mdx$# DNS — The Distributed Phone Book
 
 Humans remember `example.com`; machines need `93.184.216.34`. **DNS** (Domain Name System) is the globally distributed, hierarchical database that translates names into addresses — billions of times a second.
 
@@ -7307,7 +7307,7 @@ TTL baixo = failover rápido, mas mais tráfego de DNS e menos benefício de cac
 
 </Cards>
 $mdx$),
-  ('components/reverse-proxy', '/componentes/reverse-proxy', 'components', true, 21, NULL, true, 'Reverse Proxy', 'Reverse Proxy', $mdx$# Reverse Proxy
+  ('components/reverse-proxy', '/componentes/reverse-proxy', 'components', 21, NULL, true, 'Reverse Proxy', 'Reverse Proxy', $mdx$# Reverse Proxy
 
 A **reverse proxy** sits in front of your servers and receives client requests on their behalf. Clients talk to the proxy; the proxy talks to your backends. It's the "front door" of most web systems (nginx, Envoy, HAProxy, cloud load balancers).
 
@@ -7506,7 +7506,7 @@ Tudo passa pelo proxy, então ele precisa ser altamente disponível — rode mú
 
 </Cards>
 $mdx$),
-  ('components/service-discovery', '/componentes/service-discovery', 'components', true, 22, NULL, true, 'Service Discovery', 'Service Discovery', $mdx$# Service Discovery
+  ('components/service-discovery', '/componentes/service-discovery', 'components', 22, NULL, true, 'Service Discovery', 'Service Discovery', $mdx$# Service Discovery
 
 In a static world you hardcode `payments.internal:8080`. In a dynamic world — autoscaling, containers, rolling deploys — instances come and go with **changing IPs** every few minutes. **Service discovery** is how services find each other's current addresses automatically.
 
@@ -7689,7 +7689,7 @@ O registro precisa convergir rápido quando instâncias morrem — senão client
 
 </Cards>
 $mdx$),
-  ('components/service-mesh', '/componentes/service-mesh', 'components', true, 23, NULL, true, 'Service Mesh', 'Service Mesh', $mdx$# Service Mesh
+  ('components/service-mesh', '/componentes/service-mesh', 'components', 23, NULL, true, 'Service Mesh', 'Service Mesh', $mdx$# Service Mesh
 
 As microservices multiply, every service re-implements the same plumbing: retries, timeouts, mTLS, load balancing, tracing. A **service mesh** moves all of that *out of your code* and into a dedicated infrastructure layer of **sidecar proxies**.
 
@@ -7868,7 +7868,7 @@ Um **API gateway** trata o tráfego **norte-sul** (clientes → seu sistema) na 
 
 </Cards>
 $mdx$),
-  ('components/kubernetes', '/componentes/kubernetes', 'components', true, 24, NULL, true, 'Kubernetes', 'Kubernetes', $mdx$# Kubernetes
+  ('components/kubernetes', '/componentes/kubernetes', 'components', 24, NULL, true, 'Kubernetes', 'Kubernetes', $mdx$# Kubernetes
 
 You have containers and a fleet of machines. **Kubernetes** (K8s) is the system that decides *which container runs where*, restarts what crashes, scales what's busy, and keeps the running state matching what you declared — continuously.
 
@@ -8077,7 +8077,7 @@ O Kubernetes é um exemplo vivo de quase tudo neste curso: um store com **consen
 
 </Cards>
 $mdx$),
-  ('consistency-strategies/index', '/estrategias-de-consistencia', 'consistency', true, 47, NULL, true, 'Consistency Strategies', 'Estratégias de Consistência', $mdx$# Consistency Strategies
+  ('consistency-strategies/index', '/estrategias-de-consistencia', 'consistency', 47, NULL, true, 'Consistency Strategies', 'Estratégias de Consistência', $mdx$# Consistency Strategies
 
 Explore different mechanisms to ensure consistency in distributed systems
 
@@ -8166,7 +8166,7 @@ Mais estratégias de consistência serão adicionadas em breve, incluindo:
 - Relógios Vetoriais
 - Consistência Eventual
 $mdx$),
-  ('consistency-strategies/consensus', '/estrategias-de-consistencia/consenso', 'consistency', true, 48, NULL, true, 'Consensus Strategies', 'Estratégias de Consenso', $mdx$# Consensus Strategies
+  ('consistency-strategies/consensus', '/estrategias-de-consistencia/consenso', 'consistency', 48, NULL, true, 'Consensus Strategies', 'Estratégias de Consenso', $mdx$# Consensus Strategies
 
 Understand how distributed systems reach agreement in critical decisions using consensus protocols.
 
@@ -8373,7 +8373,7 @@ Use nosso simulador interativo para entender melhor como os protocolos de consen
 
 [Acessar Simulador](/estrategias-de-consistencia/consenso/simulador)
 $mdx$),
-  ('consistency-strategies/lamport-timestamps', '/estrategias-de-consistencia/lamport-timestamps', 'consistency', true, 49, NULL, true, 'Lamport Logical Clocks', 'Relógios Lógicos de Lamport', $mdx$# Lamport Logical Clocks
+  ('consistency-strategies/lamport-timestamps', '/estrategias-de-consistencia/lamport-timestamps', 'consistency', 49, NULL, true, 'Lamport Logical Clocks', 'Relógios Lógicos de Lamport', $mdx$# Lamport Logical Clocks
 
 Understand how Lamport timestamps establish order among distributed events.
 
@@ -8534,7 +8534,7 @@ Use nosso simulador interativo para entender melhor como os relógios lógicos d
 
 [Acessar Simulador](/estrategias-de-consistencia/lamport-timestamps/simulador)
 $mdx$),
-  ('consistency-strategies/two-phase-commit', '/estrategias-de-consistencia/two-phase-commit', 'consistency', true, 50, NULL, true, 'Two-Phase Commit (2PC)', 'Two-Phase Commit (2PC)', $mdx$# Two-Phase Commit (2PC)
+  ('consistency-strategies/two-phase-commit', '/estrategias-de-consistencia/two-phase-commit', 'consistency', 50, NULL, true, 'Two-Phase Commit (2PC)', 'Two-Phase Commit (2PC)', $mdx$# Two-Phase Commit (2PC)
 
 Understand how the Two-Phase Commit protocol ensures consistency in distributed transactions.
 
@@ -8689,7 +8689,7 @@ Use nosso simulador interativo para entender melhor como o Two-Phase Commit func
 
 [Acessar Simulador](/estrategias-de-consistencia/two-phase-commit/simulador)
 $mdx$),
-  ('consistency-strategies/synchronization', '/estrategias-de-consistencia/sincronizacao', 'consistency', true, 51, NULL, true, 'Synchronization in Distributed Systems', 'Sincronização em Sistemas Distribuídos', $mdx$# Synchronization in Distributed Systems
+  ('consistency-strategies/synchronization', '/estrategias-de-consistencia/sincronizacao', 'consistency', 51, NULL, true, 'Synchronization in Distributed Systems', 'Sincronização em Sistemas Distribuídos', $mdx$# Synchronization in Distributed Systems
 
 Synchronization is one of the fundamental challenges in distributed systems. It ensures that different processes or services coordinate their actions efficiently and safely.
 
@@ -8904,7 +8904,7 @@ Explore diferentes algoritmos de sincronização distribuída e suas aplicaçõe
 
 </Cards>
 $mdx$),
-  ('consistency-strategies/synchronization-fundamentals', '/estrategias-de-consistencia/sincronizacao/fundamentos', 'consistency', true, 52, NULL, true, 'Synchronization Fundamentals', 'Fundamentos da Sincronização', $mdx$# Synchronization Fundamentals
+  ('consistency-strategies/synchronization-fundamentals', '/estrategias-de-consistencia/sincronizacao/fundamentos', 'consistency', 52, NULL, true, 'Synchronization Fundamentals', 'Fundamentos da Sincronização', $mdx$# Synchronization Fundamentals
 
 The Dining Philosophers problem is a classic example illustrating the fundamental challenges of synchronization in distributed systems.
 
@@ -9171,7 +9171,7 @@ Explore diferentes algoritmos de sincronização distribuída e suas aplicaçõe
 
 </Cards>
 $mdx$),
-  ('consistency-strategies/synchronization-deadlocks', '/estrategias-de-consistencia/sincronizacao/deadlocks', 'consistency', true, 53, NULL, true, 'Deadlocks in Distributed Systems', 'Deadlocks em Sistemas Distribuídos', $mdx$# Deadlocks in Distributed Systems
+  ('consistency-strategies/synchronization-deadlocks', '/estrategias-de-consistencia/sincronizacao/deadlocks', 'consistency', 53, NULL, true, 'Deadlocks in Distributed Systems', 'Deadlocks em Sistemas Distribuídos', $mdx$# Deadlocks in Distributed Systems
 
 Understand what deadlocks are, how they occur in distributed systems, and different strategies for prevention and detection.
 
@@ -9376,7 +9376,7 @@ Experimente diferentes estratégias de prevenção de deadlocks.
 
 </Cards>
 $mdx$),
-  ('consistency-strategies/saga', '/estrategias-de-consistencia/saga', 'consistency', true, 54, NULL, true, 'The Saga Pattern', 'O Padrão Saga', $mdx$# The Saga Pattern
+  ('consistency-strategies/saga', '/estrategias-de-consistencia/saga', 'consistency', 54, NULL, true, 'The Saga Pattern', 'O Padrão Saga', $mdx$# The Saga Pattern
 
 A single database transaction gives you all-or-nothing atomicity. But a business process that spans **multiple services** — reserve inventory, charge payment, book shipping — has no shared transaction. The **saga pattern** coordinates these steps and undoes them cleanly when one fails.
 
@@ -9547,7 +9547,7 @@ Rode uma saga de quatro passos, escolha orquestrada ou coreografada, injete uma 
 
 </Cards>
 $mdx$),
-  ('consistency-strategies/delivery-semantics', '/estrategias-de-consistencia/delivery-semantics', 'consistency', true, 55, NULL, true, 'Delivery Semantics', 'Semânticas de Entrega', $mdx$# Delivery Semantics
+  ('consistency-strategies/delivery-semantics', '/estrategias-de-consistencia/delivery-semantics', 'consistency', 55, NULL, true, 'Delivery Semantics', 'Semânticas de Entrega', $mdx$# Delivery Semantics
 
 When a message crosses a network, things go wrong: packets drop, acks get lost, consumers crash mid-process. **Delivery semantics** describe the guarantee a messaging system gives about *how many times* a message is processed: **at-most-once**, **at-least-once**, or **exactly-once**.
 
@@ -9730,7 +9730,7 @@ Alterne entre as três semânticas, ative deduplicação e uma dead-letter queue
 
 </Cards>
 $mdx$),
-  ('consistency-strategies/vector-clocks', '/estrategias-de-consistencia/vector-clocks', 'consistency', true, 56, NULL, true, 'Vector Clocks', 'Relógios Vetoriais', $mdx$# Vector Clocks
+  ('consistency-strategies/vector-clocks', '/estrategias-de-consistencia/vector-clocks', 'consistency', 56, NULL, true, 'Vector Clocks', 'Relógios Vetoriais', $mdx$# Vector Clocks
 
 A Lamport timestamp can tell you that event A *might* have happened before B — but not whether two events were truly **concurrent**. **Vector clocks** fix that: they capture causality precisely, so you can detect when two updates happened independently and *conflict*.
 
@@ -9915,7 +9915,7 @@ Um vetor cresce com o número de nós/clientes que já escreveram, então vetore
 
 </Cards>
 $mdx$),
-  ('data-storage/index', '/dados-armazenamento', 'data-storage', true, 81, NULL, true, 'Data & Storage', 'Dados e Armazenamento', $mdx$# Data & Storage
+  ('data-storage/index', '/dados-armazenamento', 'data-storage', 81, NULL, true, 'Data & Storage', 'Dados e Armazenamento', $mdx$# Data & Storage
 
 Every distributed system is, at its core, a system for **storing and moving data**. This module covers how data is spread across machines, how it is stored durably, and how it is found again quickly.
 
@@ -10030,7 +10030,7 @@ A estrutura de dados por trás da busca textual: mapeie termos para documentos e
 
 Mantenha essas três perguntas em mente ao longo de cada tópico — quase todo design de armazenamento é um conjunto diferente de respostas para elas.
 $mdx$),
-  ('data-storage/consistent-hashing', '/dados-armazenamento/consistent-hashing', 'data-storage', true, 82, NULL, true, 'Consistent Hashing', 'Consistent Hashing', $mdx$# Consistent Hashing
+  ('data-storage/consistent-hashing', '/dados-armazenamento/consistent-hashing', 'data-storage', 82, NULL, true, 'Consistent Hashing', 'Consistent Hashing', $mdx$# Consistent Hashing
 
 You have keys (cache entries, user records) and a set of servers. You need a rule that maps each key to a server. The naive rule — `server = hash(key) % N` — works until `N` changes. Then **almost every key** moves to a different server, and your cache empties out in an instant.
 
@@ -10213,7 +10213,7 @@ Adicione e remova nós, ajuste o número de nós virtuais e veja quais chaves s�
 
 </Cards>
 $mdx$),
-  ('data-storage/sharding-partitioning', '/dados-armazenamento/sharding', 'data-storage', true, 83, NULL, true, 'Sharding & Partitioning', 'Sharding e Particionamento', $mdx$# Sharding & Partitioning
+  ('data-storage/sharding-partitioning', '/dados-armazenamento/sharding', 'data-storage', 83, NULL, true, 'Sharding & Partitioning', 'Sharding e Particionamento', $mdx$# Sharding & Partitioning
 
 When a dataset outgrows a single machine, you split it into **partitions** (a.k.a. **shards**), each living on a different node. The art is choosing *how* to split so that load spreads evenly and queries stay fast.
 
@@ -10398,7 +10398,7 @@ Envie chaves para shards com particionamento por faixa vs hash, aumente a desigu
 
 </Cards>
 $mdx$),
-  ('data-storage/object-storage', '/dados-armazenamento/object-storage', 'data-storage', true, 84, NULL, true, 'Object & Blob Storage', 'Object & Blob Storage', $mdx$# Object & Blob Storage
+  ('data-storage/object-storage', '/dados-armazenamento/object-storage', 'data-storage', 84, NULL, true, 'Object & Blob Storage', 'Object & Blob Storage', $mdx$# Object & Blob Storage
 
 Object storage (Amazon S3, Google Cloud Storage, Azure Blob) is how the modern internet stores **unstructured data at massive scale** — images, videos, backups, logs, data-lake files, and static website assets.
 
@@ -10595,7 +10595,7 @@ Você precisa de armazenamento durável e barato para blobs grandes ou numerosos
 
 </Cards>
 $mdx$),
-  ('data-storage/distributed-file-systems', '/dados-armazenamento/distributed-file-systems', 'data-storage', true, 85, NULL, true, 'Distributed File Systems', 'Sistemas de Arquivos Distribuídos', $mdx$# Distributed File Systems
+  ('data-storage/distributed-file-systems', '/dados-armazenamento/distributed-file-systems', 'data-storage', 85, NULL, true, 'Distributed File Systems', 'Sistemas de Arquivos Distribuídos', $mdx$# Distributed File Systems
 
 A distributed file system (DFS) presents many machines' disks as **one giant file system**. The canonical designs — Google File System (GFS) and its open-source cousin HDFS — were built to store petabyte files and stream them to data-processing jobs.
 
@@ -10820,7 +10820,7 @@ O armazenamento de objetos (S3) substituiu largamente o DFS para armazenamento d
 
 </Cards>
 $mdx$),
-  ('data-storage/search-inverted-index', '/dados-armazenamento/inverted-index', 'data-storage', true, 86, NULL, true, 'Search & the Inverted Index', 'Busca e o Índice Invertido', $mdx$# Search & the Inverted Index
+  ('data-storage/search-inverted-index', '/dados-armazenamento/inverted-index', 'data-storage', 86, NULL, true, 'Search & the Inverted Index', 'Busca e o Índice Invertido', $mdx$# Search & the Inverted Index
 
 How does a search engine find the few documents containing "distributed consensus" among billions — in milliseconds? Not by reading every document. It reads an **inverted index**.
 
@@ -11019,7 +11019,7 @@ Motores de busca como Elasticsearch/Lucene dividem o índice em **shards** (por 
 
 </Cards>
 $mdx$),
-  ('design-principles/index', '/principios-design', 'design', true, 25, NULL, true, 'Design Principles', 'Princípios de Design', $mdx$# Design Principles
+  ('design-principles/index', '/principios-design', 'design', 25, NULL, true, 'Design Principles', 'Princípios de Design', $mdx$# Design Principles
 
 Explore the fundamental principles that guide the creation of distributed systems
 
@@ -11156,7 +11156,7 @@ Zonas de disponibilidade e replicação.
 
 </Cards>
 $mdx$),
-  ('design-principles/event-driven', '/principios-design/eventos', 'design', true, 26, NULL, true, 'Event-Driven Development', 'Desenvolvimento Orientado a Eventos', $mdx$# Event-Driven Development
+  ('design-principles/event-driven', '/principios-design/eventos', 'design', 26, NULL, true, 'Event-Driven Development', 'Desenvolvimento Orientado a Eventos', $mdx$# Event-Driven Development
 
 Event-driven development is an approach where actions and changes in the system are triggered and managed by events. An event is any significant action that occurs in the system, such as a purchase transaction or a database update.
 
@@ -11235,7 +11235,7 @@ Experimente nossa simulação interativa de Event Sourcing para entender melhor 
 
 </Callout>
 $mdx$),
-  ('design-principles/coupling', '/principios-design/acoplamento', 'design', true, 27, NULL, true, 'Coupling in Distributed Systems', 'Acoplamento em Sistemas Distribuídos', $mdx$# Coupling in Distributed Systems
+  ('design-principles/coupling', '/principios-design/acoplamento', 'design', 27, NULL, true, 'Coupling in Distributed Systems', 'Acoplamento em Sistemas Distribuídos', $mdx$# Coupling in Distributed Systems
 
 Coupling measures how tightly components in a system are connected or dependent. In distributed systems, its type and level have a strong impact on flexibility, maintainability, and resilience.
 
@@ -11714,7 +11714,7 @@ spec:
       targetPort: 8080
 ```
 $mdx$),
-  ('design-principles/orchestration-vs-choreography', '/principios-design/orquestracao-vs-coreografia', 'design', true, 28, NULL, true, 'Orchestration vs Choreography', 'Orquestração vs Coreografia', $mdx$# Orchestration vs Choreography
+  ('design-principles/orchestration-vs-choreography', '/principios-design/orquestracao-vs-coreografia', 'design', 28, NULL, true, 'Orchestration vs Choreography', 'Orquestração vs Coreografia', $mdx$# Orchestration vs Choreography
 
 Understand the differences between Orchestration and Choreography patterns in distributed systems.
 
@@ -11901,7 +11901,7 @@ Services interact independently by reacting to events without a central controll
 
 </Cards>
 $mdx$),
-  ('design-principles/canary-deployment', '/principios-design/canary-deployment', 'design', true, 29, NULL, true, 'Canary Deployment', 'Canary Deployment', $mdx$# Canary Deployment
+  ('design-principles/canary-deployment', '/principios-design/canary-deployment', 'design', 29, NULL, true, 'Canary Deployment', 'Canary Deployment', $mdx$# Canary Deployment
 
 A progressive deployment strategy that reduces risk by gradually exposing a new version to a small percentage of users before rolling out to everyone.
 
@@ -12070,7 +12070,7 @@ Mudanças de schema devem ser retrocompatíveis já que ambas versões rodam sim
 
 [Explorar Simulador Canary](/principios-design/canary-deployment/simulator)
 $mdx$),
-  ('design-principles/cqrs', '/principios-design/cqrs', 'design', true, 30, NULL, true, 'CQRS — Command Query Responsibility Segregation', 'CQRS — Command Query Responsibility Segregation', $mdx$# CQRS — Command Query Responsibility Segregation
+  ('design-principles/cqrs', '/principios-design/cqrs', 'design', 30, NULL, true, 'CQRS — Command Query Responsibility Segregation', 'CQRS — Command Query Responsibility Segregation', $mdx$# CQRS — Command Query Responsibility Segregation
 
 Most systems use **one model** for both writing and reading data. **CQRS** splits them: a **command** side optimized for writes and a **query** side optimized for reads, often backed by different data stores kept in sync via events.
 
@@ -12265,7 +12265,7 @@ Emita comandos, veja eventos serem anexados ao log e os read models se atualizar
 
 </Cards>
 $mdx$),
-  ('design-principles/rate-limiting', '/principios-design/rate-limiting', 'design', true, 31, NULL, true, 'Rate Limiting', 'Rate Limiting', $mdx$# Rate Limiting
+  ('design-principles/rate-limiting', '/principios-design/rate-limiting', 'design', 31, NULL, true, 'Rate Limiting', 'Rate Limiting', $mdx$# Rate Limiting
 
 A rate limiter caps how many requests a client can make in a time window. It protects your system from overload, abuse, and runaway costs — and enforces fair sharing among clients. The interesting part is *how* you count.
 
@@ -12456,7 +12456,7 @@ Compare token bucket, leaky bucket e janela deslizante lado a lado — ajuste as
 
 </Cards>
 $mdx$),
-  ('design-principles/backpressure', '/principios-design/backpressure', 'design', true, 32, NULL, true, 'Backpressure', 'Backpressure', $mdx$# Backpressure
+  ('design-principles/backpressure', '/principios-design/backpressure', 'design', 32, NULL, true, 'Backpressure', 'Backpressure', $mdx$# Backpressure
 
 When a fast producer overwhelms a slow consumer, queues grow, memory fills, latency spikes, and eventually something crashes. **Backpressure** is the flow-control mechanism that lets a consumer say "slow down" so the system degrades gracefully instead of falling over.
 
@@ -12633,7 +12633,7 @@ Empurre mensagens mais rápido do que o consumidor aguenta e veja a fila encher 
 
 </Cards>
 $mdx$),
-  ('design-principles/fault-tolerance', '/principios-design/tolerancia-falhas', 'design', true, 33, NULL, true, 'Fault Tolerance', 'Tolerância a Falhas', $mdx$# Fault Tolerance
+  ('design-principles/fault-tolerance', '/principios-design/tolerancia-falhas', 'design', 33, NULL, true, 'Fault Tolerance', 'Tolerância a Falhas', $mdx$# Fault Tolerance
 
 Designing systems that can recover or continue operating in the face of failures is essential to maintain reliability and high availability.
 
@@ -12728,7 +12728,7 @@ Em um aplicativo de mapas, se o GPS falhar, o sistema usa a localização da red
 
 </Cards>
 $mdx$),
-  ('design-principles/retries', '/principios-design/tolerancia-falhas/retries', 'design', true, 34, NULL, true, 'Retries', 'Retries', $mdx$# Retries
+  ('design-principles/retries', '/principios-design/tolerancia-falhas/retries', 'design', 34, NULL, true, 'Retries', 'Retries', $mdx$# Retries
 
 A fundamental strategy to handle transient failures in distributed systems, allowing failed operations to be retried automatically.
 
@@ -12891,7 +12891,7 @@ Muitas retentativas simultâneas podem sobrecarregar o sistema. Use circuit brea
 
 [Explorar Simulador de Retries](/principios-design/tolerancia-falhas/retries/simulator)
 $mdx$),
-  ('design-principles/circuit-breaker', '/principios-design/tolerancia-falhas/circuit-breaker', 'design', true, 35, NULL, true, 'Circuit Breaker (Disjuntor)', 'Circuit Breaker (Disjuntor)', $mdx$# Circuit Breaker (Disjuntor)
+  ('design-principles/circuit-breaker', '/principios-design/tolerancia-falhas/circuit-breaker', 'design', 35, NULL, true, 'Circuit Breaker (Disjuntor)', 'Circuit Breaker (Disjuntor)', $mdx$# Circuit Breaker (Disjuntor)
 
 An essential strategy to prevent cascading failures in distributed systems, working similarly to an electrical circuit breaker.
 
@@ -13022,7 +13022,7 @@ Permite algumas requisições para testar se o sistema se recuperou.
 
 [Explorar Simulador de Circuit Breaker](/principios-design/tolerancia-falhas/circuit-breaker/simulator)
 $mdx$),
-  ('design-principles/timeout', '/principios-design/tolerancia-falhas/timeout', 'design', true, 36, NULL, true, 'Timeout (Tempo Limite)', 'Timeout (Tempo Limite)', $mdx$# Timeout (Tempo Limite)
+  ('design-principles/timeout', '/principios-design/tolerancia-falhas/timeout', 'design', 36, NULL, true, 'Timeout (Tempo Limite)', 'Timeout (Tempo Limite)', $mdx$# Timeout (Tempo Limite)
 
 A fundamental strategy to avoid slow or stuck operations from hurting user experience and overall system health.
 
@@ -13153,7 +13153,7 @@ Combine timeouts com retries para maior resiliência.
 
 [Explorar Simulador de Timeout](/principios-design/tolerancia-falhas/timeout/simulator)
 $mdx$),
-  ('design-principles/fallback', '/principios-design/tolerancia-falhas/fallback', 'design', true, 37, NULL, true, 'Fallback (Plano B)', 'Fallback (Plano B)', $mdx$# Fallback (Plano B)
+  ('design-principles/fallback', '/principios-design/tolerancia-falhas/fallback', 'design', 37, NULL, true, 'Fallback (Plano B)', 'Fallback (Plano B)', $mdx$# Fallback (Plano B)
 
 Uma estratégia essencial para manter a funcionalidade do sistema mesmo quando ocorrem falhas, oferecendo alternativas degradadas mas ainda úteis.
 
@@ -13320,7 +13320,7 @@ Acompanhe o uso de fallbacks para identificar problemas recorrentes
 
 [Explorar Simulador de Fallback](/principios-design/tolerancia-falhas/fallback/simulator)
 $mdx$),
-  ('design-principles/scalability', '/principios-design/escalabilidade', 'design', true, 38, NULL, true, 'Design for Scalability', 'Design para Escalabilidade', $mdx$# Design for Scalability
+  ('design-principles/scalability', '/principios-design/escalabilidade', 'design', 38, NULL, true, 'Design for Scalability', 'Design para Escalabilidade', $mdx$# Design for Scalability
 
 Scalability is the ability of a system to handle increased workload either by adding hardware capacity or distributing the load across multiple instances.
 
@@ -13419,7 +13419,7 @@ Alternativa automática para sistema de backup em caso de falha.
 
 [Explorar Simulador de Escalabilidade](/principios-design/escalabilidade/simulator)
 $mdx$),
-  ('design-principles/horizontal-scaling', '/principios-design/escalabilidade/horizontal', 'design', true, 39, NULL, true, 'Horizontal Scalability (Scale-Out)', 'Escalabilidade Horizontal (Scale-Out)', $mdx$# Horizontal Scalability (Scale-Out)
+  ('design-principles/horizontal-scaling', '/principios-design/escalabilidade/horizontal', 'design', 39, NULL, true, 'Horizontal Scalability (Scale-Out)', 'Escalabilidade Horizontal (Scale-Out)', $mdx$# Horizontal Scalability (Scale-Out)
 
 A method that adds more servers to work together, dividing the workload among them.
 
@@ -13486,7 +13486,7 @@ Uma rede de streaming de vídeos que começou com um único servidor percebe cre
 
 [Explorar Simulador de Escalabilidade](/principios-design/escalabilidade/simulator)
 $mdx$),
-  ('design-principles/vertical-scaling', '/principios-design/escalabilidade/vertical', 'design', true, 40, NULL, true, 'Vertical Scalability (Scale-Up)', 'Escalabilidade Vertical (Scale-Up)', $mdx$# Vertical Scalability (Scale-Up)
+  ('design-principles/vertical-scaling', '/principios-design/escalabilidade/vertical', 'design', 40, NULL, true, 'Vertical Scalability (Scale-Up)', 'Escalabilidade Vertical (Scale-Up)', $mdx$# Vertical Scalability (Scale-Up)
 
 A strategy that improves the performance of a single server by adding more resources such as RAM, storage, or faster processors.
 
@@ -13553,7 +13553,7 @@ Uma loja virtual que usa um servidor básico faz upgrade para um mais potente po
 
 [Explorar Simulador de Escalabilidade](/principios-design/escalabilidade/simulator)
 $mdx$),
-  ('design-principles/data-consistency', '/principios-design/escalabilidade/consistencia', 'design', true, 41, NULL, true, 'Consistência de Dados', 'Consistência de Dados', $mdx$# Consistência de Dados
+  ('design-principles/data-consistency', '/principios-design/escalabilidade/consistencia', 'design', 41, NULL, true, 'Consistência de Dados', 'Consistência de Dados', $mdx$# Consistência de Dados
 
 A consistência de dados significa garantir que todas as cópias de dados em diferentes servidores sejam atualizadas simultaneamente, um desafio crucial em sistemas distribuídos.
 
@@ -13728,7 +13728,7 @@ Defina estratégias claras para resolver conflitos quando ocorrerem atualizaçõ
 
 [Explorar Simulador de Escalabilidade](/principios-design/escalabilidade/simulator)
 $mdx$),
-  ('design-principles/latency', '/principios-design/escalabilidade/latencia', 'design', true, 42, NULL, true, 'Latency', 'Latência', $mdx$# Latency
+  ('design-principles/latency', '/principios-design/escalabilidade/latencia', 'design', 42, NULL, true, 'Latency', 'Latência', $mdx$# Latency
 
 Latency is the delay in delivering data or responses within a system. In distributed systems, especially those across multiple regions, latency can increase due to physical distance or communication complexity.
 
@@ -13795,7 +13795,7 @@ A user in Ireland accessing servers in the US may experience delays due to geogr
 
 [Explorar Simulador de Escalabilidade](/principios-design/escalabilidade/simulator)
 $mdx$),
-  ('design-principles/failover', '/principios-design/escalabilidade/failover', 'design', true, 43, NULL, true, 'Failover in Distributed Systems', 'Failover em Sistemas Distribuídos', $mdx$# Failover in Distributed Systems
+  ('design-principles/failover', '/principios-design/escalabilidade/failover', 'design', 43, NULL, true, 'Failover in Distributed Systems', 'Failover em Sistemas Distribuídos', $mdx$# Failover in Distributed Systems
 
 Failover is a critical strategy to ensure service continuity in case of failures, allowing automatic recovery and minimizing downtime.
 
@@ -13880,7 +13880,7 @@ Experimente diferentes estratégias de failover e veja o impacto na disponibilid
 
 </Callout>
 $mdx$),
-  ('design-principles/availability', '/principios-design/disponibilidade', 'design', true, 44, NULL, true, 'High Availability', 'Alta Disponibilidade', $mdx$# High Availability
+  ('design-principles/availability', '/principios-design/disponibilidade', 'design', 44, NULL, true, 'High Availability', 'Alta Disponibilidade', $mdx$# High Availability
 
 High availability is a system's ability to remain operational and accessible even under failures, ensuring service continuity through redundancy and automatic recovery.
 
@@ -13947,7 +13947,7 @@ Distribua a aplicação em várias zonas para proteger contra falhas localizadas
 
 [Explorar Simulador de Alta Disponibilidade](/principios-design/disponibilidade/simulator)
 $mdx$),
-  ('design-principles/replication', '/principios-design/disponibilidade/replicacao', 'design', true, 45, NULL, true, 'Replication in Distributed Systems', 'Replicação em Sistemas Distribuídos', $mdx$# Replication in Distributed Systems
+  ('design-principles/replication', '/principios-design/disponibilidade/replicacao', 'design', 45, NULL, true, 'Replication in Distributed Systems', 'Replicação em Sistemas Distribuídos', $mdx$# Replication in Distributed Systems
 
 Replication is fundamental to ensure high availability and redundancy.
 
@@ -14032,7 +14032,7 @@ Experimente diferentes estratégias de replicação e veja o impacto na consist�
 
 </Callout>
 $mdx$),
-  ('design-principles/availability-zones', '/principios-design/disponibilidade/zonas', 'design', true, 46, NULL, true, 'Availability Zones', 'Zonas de Disponibilidade', $mdx$# Availability Zones
+  ('design-principles/availability-zones', '/principios-design/disponibilidade/zonas', 'design', 46, NULL, true, 'Availability Zones', 'Zonas de Disponibilidade', $mdx$# Availability Zones
 
 Availability Zones are isolated data centers within a geographic region, designed to provide redundancy and high availability for critical applications.
 
@@ -14201,7 +14201,7 @@ Experimente na prática como as zonas de disponibilidade funcionam e como elas r
 
 </Callout>
 $mdx$),
-  ('intro', '/intro', 'fundamentals', false, 0, NULL, true, 'Introduction', 'Introdução', $mdx$# Introduction
+  ('intro', '/intro', 'fundamentals', 0, NULL, true, 'Introduction', 'Introdução', $mdx$# Introduction
 
 Before diving into the topic, I will briefly introduce my career, the motivation for producing this content, and the goal to be achieved by the end.
 
@@ -14268,7 +14268,7 @@ Com uma visão de mercado, tendo participado de projetos em diferentes estágios
 
 > Você não sairá daqui com uma solução "one size fits all", mas sim com um repertório que te ajudará a tomar melhores decisões e projetar sistemas resilientes, escaláveis, performáticos e com observabilidade.
 $mdx$),
-  ('distributed-systems-101', '/sistemas-distribuidos-101', 'fundamentals', false, 1, NULL, true, 'Distributed Systems 101', 'Sistemas Distribuídos 101', $mdx$# Distributed Systems 101
+  ('distributed-systems-101', '/sistemas-distribuidos-101', 'fundamentals', 1, NULL, true, 'Distributed Systems 101', 'Sistemas Distribuídos 101', $mdx$# Distributed Systems 101
 
 When discussing distributed systems concepts, people often ask: *"But after all, what characterizes a distributed system?"* and *"How do I know if I work with distributed systems?"*
 
@@ -14421,7 +14421,7 @@ Aqui, a hamburgueria exemplifica bem um sistema distribuído complexo:
 
 > Esse modelo ajuda a visualizar como, ao dividir as responsabilidades e distribuir o trabalho entre diferentes "nós", podemos aumentar a eficiência e resiliência de um sistema, seja ele uma hamburgueria ou um sistema computacional.
 $mdx$),
-  ('system-design-101', '/system-design-101', 'fundamentals', false, 2, NULL, true, 'System Design 101', 'System Design 101', $mdx$# System Design 101
+  ('system-design-101', '/system-design-101', 'fundamentals', 2, NULL, true, 'System Design 101', 'System Design 101', $mdx$# System Design 101
 
 ## 1.1 What is System Design?
 
@@ -14512,7 +14512,7 @@ Este material abordará, em detalhes, os seguintes tópicos:
 - **Monitoramento e manutenção:** Boas práticas para monitorar produção, detectar problemas e agir rapidamente.
 - **Entrevistas técnicas de System Design:** Como se preparar para perguntas de design, com exemplos e respostas detalhadas.
 $mdx$),
-  ('monitoring/index', '/monitoramento-e-manutencao', 'monitoring', true, 65, NULL, true, 'Monitoring and Maintenance of Distributed Systems', 'Monitoramento e Manutenção de Sistemas Distribuídos', $mdx$# Monitoring and Maintenance of Distributed Systems
+  ('monitoring/index', '/monitoramento-e-manutencao', 'monitoring', 65, NULL, true, 'Monitoring and Maintenance of Distributed Systems', 'Monitoramento e Manutenção de Sistemas Distribuídos', $mdx$# Monitoring and Maintenance of Distributed Systems
 
 Monitoring and maintenance are critical to ensure the health, performance, and reliability of distributed systems. An effective strategy combines observability with proactive maintenance practices.
 
@@ -14831,7 +14831,7 @@ Service Level Agreement
 
 </Cards>
 $mdx$),
-  ('monitoring/metrics', '/monitoramento-e-manutencao/metricas', 'monitoring', true, 66, NULL, true, 'Metrics and KPIs in Distributed Systems', 'Métricas e KPIs em Sistemas Distribuídos', $mdx$# Metrics and KPIs in Distributed Systems
+  ('monitoring/metrics', '/monitoramento-e-manutencao/metricas', 'monitoring', 66, NULL, true, 'Metrics and KPIs in Distributed Systems', 'Métricas e KPIs em Sistemas Distribuídos', $mdx$# Metrics and KPIs in Distributed Systems
 
 Metrics and KPIs (Key Performance Indicators) are fundamental to understand behavior, performance, and health of distributed systems. They provide quantitative insights for data-driven decisions.
 
@@ -15120,7 +15120,7 @@ Estas métricas podem ser visualizadas em dashboards do Grafana para monitoramen
 
 </Cards>
 $mdx$),
-  ('monitoring/logs', '/monitoramento-e-manutencao/logs', 'monitoring', true, 67, NULL, true, 'Logs and Tracing in Distributed Systems', 'Logs e Tracing em Sistemas Distribuídos', $mdx$# Logs and Tracing in Distributed Systems
+  ('monitoring/logs', '/monitoramento-e-manutencao/logs', 'monitoring', 67, NULL, true, 'Logs and Tracing in Distributed Systems', 'Logs e Tracing em Sistemas Distribuídos', $mdx$# Logs and Tracing in Distributed Systems
 
 In distributed systems, logs and tracing are fundamental for monitoring, debugging, and performance analysis. This section explores best practices and tools to implement a robust observability system.
 
@@ -15477,7 +15477,7 @@ Tracing é uma técnica que permite rastrear o fluxo de uma requisição atravé
 
 </Cards>
 $mdx$),
-  ('monitoring/alerts', '/monitoramento-e-manutencao/alertas', 'monitoring', true, 68, NULL, true, 'Alerts and Notifications in Distributed Systems', 'Alertas e Notificações em Sistemas Distribuídos', $mdx$# Alerts and Notifications in Distributed Systems
+  ('monitoring/alerts', '/monitoramento-e-manutencao/alertas', 'monitoring', 68, NULL, true, 'Alerts and Notifications in Distributed Systems', 'Alertas e Notificações em Sistemas Distribuídos', $mdx$# Alerts and Notifications in Distributed Systems
 
 An effective alert and notification system is crucial to maintain the health and availability of distributed systems. It enables identifying and responding quickly to problems before they significantly affect users.
 
@@ -15802,7 +15802,7 @@ Alertas devem ser acionáveis, relevantes e evitar fadiga de alertas. Um bom sis
 
 </Cards>
 $mdx$),
-  ('monitoring/performance', '/monitoramento-e-manutencao/performance', 'monitoring', true, 69, NULL, true, 'Performance Analysis in Distributed Systems', 'Análise de Performance em Sistemas Distribuídos', $mdx$# Performance Analysis in Distributed Systems
+  ('monitoring/performance', '/monitoramento-e-manutencao/performance', 'monitoring', 69, NULL, true, 'Performance Analysis in Distributed Systems', 'Análise de Performance em Sistemas Distribuídos', $mdx$# Performance Analysis in Distributed Systems
 
 Performance analysis is fundamental to ensure distributed systems meet their performance and scalability requirements. A systematic approach to measurement, analysis and optimization is essential.
 
@@ -16103,7 +16103,7 @@ Performance em sistemas distribuídos é multidimensional, envolvendo latência,
 
 </Cards>
 $mdx$),
-  ('monitoring/health-checks', '/monitoramento-e-manutencao/health-checks', 'monitoring', true, 70, NULL, true, 'Health Checks in Distributed Systems', 'Health Checks em Sistemas Distribuídos', $mdx$# Health Checks in Distributed Systems
+  ('monitoring/health-checks', '/monitoramento-e-manutencao/health-checks', 'monitoring', 70, NULL, true, 'Health Checks in Distributed Systems', 'Health Checks em Sistemas Distribuídos', $mdx$# Health Checks in Distributed Systems
 
 Health checks are fundamental for monitoring the health and availability of services in distributed systems. They enable proactive problem detection, facilitate load balancing and assist in recovery strategies.
 
@@ -16374,7 +16374,7 @@ readinessProbe:
 
 </Cards>
 $mdx$),
-  ('monitoring/llm-observability', '/monitoramento-e-manutencao/llm-observability', 'monitoring', true, 71, NULL, true, 'LLM Observability', 'Observabilidade de LLM', $mdx$# LLM Observability
+  ('monitoring/llm-observability', '/monitoramento-e-manutencao/llm-observability', 'monitoring', 71, NULL, true, 'LLM Observability', 'Observabilidade de LLM', $mdx$# LLM Observability
 
 The three pillars — metrics, logs, traces — still apply to LLM systems, but they're not enough. LLM applications are probabilistic, token-priced, and quality-sensitive, so you need new signals: **token usage, cost, prompt/response traces, and quality evaluations**.
 
@@ -16573,7 +16573,7 @@ Stacks clássicas (Prometheus, Grafana, ELK, Jaeger/OpenTelemetry) seguem carreg
 
 Isto estende os três pilares de [Monitoramento e Manutenção](/monitoramento-e-manutencao), reaproveita as ideias do [simulador de tracing](/monitoramento-e-manutencao/logs/tracing) e é essencial para operar [sistemas com agentes](/sistemas-ia/agentic-systems).
 $mdx$),
-  ('monitoring/distributed-tracing', '/monitoramento-e-manutencao/distributed-tracing', 'monitoring', true, 72, NULL, true, 'Distributed Tracing', 'Distributed Tracing', $mdx$# Distributed Tracing
+  ('monitoring/distributed-tracing', '/monitoramento-e-manutencao/distributed-tracing', 'monitoring', 72, NULL, true, 'Distributed Tracing', 'Distributed Tracing', $mdx$# Distributed Tracing
 
 A single user click can fan out to dozens of services. When it's slow or fails, *which* service was to blame? **Distributed tracing** stitches the whole journey into one timeline so you can see exactly where time went.
 
@@ -16754,7 +16754,7 @@ Tracear toda requisição em volume total é caro. Use **sampling** — head-bas
 
 </Cards>
 $mdx$),
-  ('monitoring/slo-sli-sla', '/monitoramento-e-manutencao/slo-sli-sla', 'monitoring', true, 73, NULL, true, 'SLO, SLI & Error Budgets', 'SLO, SLI e Error Budgets', $mdx$# SLO, SLI & Error Budgets
+  ('monitoring/slo-sli-sla', '/monitoramento-e-manutencao/slo-sli-sla', 'monitoring', 73, NULL, true, 'SLO, SLI & Error Budgets', 'SLO, SLI e Error Budgets', $mdx$# SLO, SLI & Error Budgets
 
 "Is the system reliable enough?" is unanswerable until you make it measurable. **SLIs**, **SLOs**, and **SLAs** turn reliability into numbers — and the **error budget** turns those numbers into a decision-making tool.
 
@@ -16911,7 +16911,7 @@ Ele alinha dev (quer entregar) e ops (quer estabilidade) em torno de um número 
 
 </Cards>
 $mdx$),
-  ('security/index', '/seguranca', 'security', true, 57, NULL, true, 'Security in Distributed Systems', 'Segurança em Sistemas Distribuídos', $mdx$# Security in Distributed Systems
+  ('security/index', '/seguranca', 'security', 57, NULL, true, 'Security in Distributed Systems', 'Segurança em Sistemas Distribuídos', $mdx$# Security in Distributed Systems
 
 Explore the main concepts and practices of security in distributed systems
 
@@ -17046,7 +17046,7 @@ Conheça os ataques mais comuns e aprenda como proteger seus sistemas.
 
 </Cards>
 $mdx$),
-  ('security/authentication', '/seguranca/autenticacao', 'security', true, 58, NULL, true, 'Authentication in Distributed Systems', 'Autenticação em Sistemas Distribuídos', $mdx$# Authentication in Distributed Systems
+  ('security/authentication', '/seguranca/autenticacao', 'security', 58, NULL, true, 'Authentication in Distributed Systems', 'Autenticação em Sistemas Distribuídos', $mdx$# Authentication in Distributed Systems
 
 Understand the concepts, challenges and solutions for authentication in modern distributed systems
 
@@ -17307,7 +17307,7 @@ A implementação de um sistema de autenticação em um ambiente distribuído re
 
 </Cards>
 $mdx$),
-  ('security/authorization', '/seguranca/autorizacao', 'security', true, 59, NULL, true, 'Authorization in Distributed Systems', 'Autorização em Sistemas Distribuídos', $mdx$# Authorization in Distributed Systems
+  ('security/authorization', '/seguranca/autorizacao', 'security', 59, NULL, true, 'Authorization in Distributed Systems', 'Autorização em Sistemas Distribuídos', $mdx$# Authorization in Distributed Systems
 
 Access control, permissions and security policies in distributed environments
 
@@ -17602,7 +17602,7 @@ Controle de acesso baseado em políticas que combinam diferentes aspectos de RBA
 
 </Cards>
 $mdx$),
-  ('security/cryptography', '/seguranca/criptografia', 'security', true, 60, NULL, true, 'Cryptography in Distributed Systems', 'Criptografia em Sistemas Distribuídos', $mdx$# Cryptography in Distributed Systems
+  ('security/cryptography', '/seguranca/criptografia', 'security', 60, NULL, true, 'Cryptography in Distributed Systems', 'Criptografia em Sistemas Distribuídos', $mdx$# Cryptography in Distributed Systems
 
 Data protection, secure communication and key management in distributed environments
 
@@ -17913,7 +17913,7 @@ Ao implementar criptografia em sistemas distribuídos, considere:
 
 </Cards>
 $mdx$),
-  ('security/tokens', '/seguranca/tokens', 'security', true, 61, NULL, true, 'Tokens and JWT in Distributed Systems', 'Tokens e JWT em Sistemas Distribuídos', $mdx$# Tokens and JWT in Distributed Systems
+  ('security/tokens', '/seguranca/tokens', 'security', 61, NULL, true, 'Tokens and JWT in Distributed Systems', 'Tokens e JWT em Sistemas Distribuídos', $mdx$# Tokens and JWT in Distributed Systems
 
 Understand how tokens and JSON Web Tokens (JWT) work in distributed systems
 
@@ -18278,7 +18278,7 @@ Minimize o impacto de tokens comprometidos:
 
 </Callout>
 $mdx$),
-  ('security/ssl-tls', '/seguranca/ssl-tls', 'security', true, 62, NULL, true, 'SSL/TLS in Distributed Systems', 'SSL/TLS em Sistemas Distribuídos', $mdx$# SSL/TLS in Distributed Systems
+  ('security/ssl-tls', '/seguranca/ssl-tls', 'security', 62, NULL, true, 'SSL/TLS in Distributed Systems', 'SSL/TLS em Sistemas Distribuídos', $mdx$# SSL/TLS in Distributed Systems
 
 Security protocols for secure communication in networks and distributed systems
 
@@ -18639,7 +18639,7 @@ Cipher suites são conjuntos de algoritmos que definem como a comunicação ser�
 
 </Cards>
 $mdx$),
-  ('security/common-attacks', '/seguranca/ataques', 'security', true, 63, NULL, true, 'Attacks on Distributed Systems', 'Ataques em Sistemas Distribuídos', $mdx$# Attacks on Distributed Systems
+  ('security/common-attacks', '/seguranca/ataques', 'security', 63, NULL, true, 'Attacks on Distributed Systems', 'Ataques em Sistemas Distribuídos', $mdx$# Attacks on Distributed Systems
 
 Understand the main types of attacks, their impacts and mitigation strategies
 
@@ -19052,7 +19052,7 @@ Uso automatizado de pares de usuário/senha vazados para tentar acesso em múlti
 
 </Cards>
 $mdx$),
-  ('security/prompt-injection', '/seguranca/prompt-injection', 'security', true, 64, NULL, true, 'Prompt Injection & LLM Guardrails', 'Prompt Injection e Guardrails de LLM', $mdx$# Prompt Injection & LLM Guardrails
+  ('security/prompt-injection', '/seguranca/prompt-injection', 'security', 64, NULL, true, 'Prompt Injection & LLM Guardrails', 'Prompt Injection e Guardrails de LLM', $mdx$# Prompt Injection & LLM Guardrails
 
 LLMs don't distinguish between your instructions and the data they read. If untrusted text can reach the model, that text can hijack it. **Prompt injection** is the defining security risk of LLM applications — and it has no complete fix.
 
@@ -19293,7 +19293,7 @@ Prompts elaborados que maximizam tokens para inflar sua conta. Limite tokens e t
 
 Isto espelha os padrões de [Ataques Comuns](/seguranca/ataques), depende de [autorização](/seguranca/autorizacao) e menor privilégio, e é crítico ao construir [sistemas com agentes](/sistemas-ia/agentic-systems) que podem executar ações reais.
 $mdx$),
-  ('theoretical-foundations/index', '/theoretical-foundations', 'theory', false, 3, NULL, true, 'Theoretical Foundations', 'Fundamentos Teóricos', $mdx$# Theoretical Foundations
+  ('theoretical-foundations/index', '/theoretical-foundations', 'theory', 3, NULL, true, 'Theoretical Foundations', 'Fundamentos Teóricos', $mdx$# Theoretical Foundations
 
 Building unshakeable knowledge for distributed systems
 
@@ -19420,7 +19420,7 @@ Em conclusão, fundamentos teóricos em sistemas distribuídos não são apenas 
 
 </Cards>
 $mdx$),
-  ('theoretical-foundations/cap-theorem', '/theoretical-foundations/cap-theorem', 'theory', false, 4, NULL, true, 'CAP Theorem', 'Teorema CAP', $mdx$# CAP Theorem
+  ('theoretical-foundations/cap-theorem', '/theoretical-foundations/cap-theorem', 'theory', 4, NULL, true, 'CAP Theorem', 'Teorema CAP', $mdx$# CAP Theorem
 
 Understanding the fundamental trade-offs in distributed systems.
 
@@ -19799,7 +19799,7 @@ Sistemas tradicionais que sacrificam tolerância a partições.
 
 </Cards>
 $mdx$),
-  ('theoretical-foundations/consistency-models', '/theoretical-foundations/consistency-models', 'theory', false, 5, NULL, true, 'Consistency Models', 'Modelos de Consistência', $mdx$# Consistency Models
+  ('theoretical-foundations/consistency-models', '/theoretical-foundations/consistency-models', 'theory', 5, NULL, true, 'Consistency Models', 'Modelos de Consistência', $mdx$# Consistency Models
 
 Different approaches to managing data consistency in distributed systems
 
@@ -20172,7 +20172,7 @@ Streaming de vídeo ao vivo, jogos online, colaboração em tempo real
 - Projete estratégias de resolução de conflitos antecipadamente
 - Considere abordagens híbridas para aplicações complexas
 $mdx$),
-  ('theoretical-foundations/distributed-challenges', '/theoretical-foundations/distributed-challenges', 'theory', false, 6, NULL, true, 'Distributed Systems Challenges', 'Desafios de Sistemas Distribuídos', $mdx$# Distributed Systems Challenges
+  ('theoretical-foundations/distributed-challenges', '/theoretical-foundations/distributed-challenges', 'theory', 6, NULL, true, 'Distributed Systems Challenges', 'Desafios de Sistemas Distribuídos', $mdx$# Distributed Systems Challenges
 
 Common problems and complexities in distributed computing
 
@@ -20815,7 +20815,7 @@ Essas suposições falsas levam a muitos problemas em sistemas distribuídos
 - Usar operações idempotentes quando possível
 - Projetar para consistência eventual quando apropriado
 $mdx$),
-  ('theoretical-foundations/network-partitions', '/theoretical-foundations/network-partitions', 'theory', false, 7, NULL, true, 'Network Partitions & Failures', 'Partições de Rede e Falhas', $mdx$# Network Partitions & Failures
+  ('theoretical-foundations/network-partitions', '/theoretical-foundations/network-partitions', 'theory', 7, NULL, true, 'Network Partitions & Failures', 'Partições de Rede e Falhas', $mdx$# Network Partitions & Failures
 
 Understanding and handling network splits and node failures in distributed systems
 
@@ -21514,4 +21514,4 @@ Abordagem híbrida: Diferentes serviços podem fazer diferentes trade-offs basea
 - Implementar degradação graciosa ao invés de falha completa do serviço
 - Monitorar métricas de negócio durante cenários de partição
 $mdx$)
-ON CONFLICT ("slug") DO UPDATE SET "path" = EXCLUDED."path", "module_id" = EXCLUDED."module_id", "requires_subscription" = EXCLUDED."requires_subscription", "order_index" = EXCLUDED."order_index", "simulator_key" = EXCLUDED."simulator_key", "published" = EXCLUDED."published", "title_en" = EXCLUDED."title_en", "title_pt" = EXCLUDED."title_pt", "body_en" = EXCLUDED."body_en", "body_pt" = EXCLUDED."body_pt", "updated_at" = now();
+ON CONFLICT ("slug") DO UPDATE SET "path" = EXCLUDED."path", "module_id" = EXCLUDED."module_id", "order_index" = EXCLUDED."order_index", "simulator_key" = EXCLUDED."simulator_key", "published" = EXCLUDED."published", "title_en" = EXCLUDED."title_en", "title_pt" = EXCLUDED."title_pt", "body_en" = EXCLUDED."body_en", "body_pt" = EXCLUDED."body_pt", "updated_at" = now();

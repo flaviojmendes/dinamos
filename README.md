@@ -23,10 +23,6 @@ VITE_FIREBASE_APP_ID=your_app_id
 
 # Firebase Cloud Functions
 VITE_FIREBASE_FUNCTIONS_BASE_URL=https://us-central1-your-project.cloudfunctions.net
-
-# Stripe Configuration
-VITE_STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key
-VITE_ONEOFF_PRICE_ID=price_your_stripe_price_id
 ```
 
 ## Personalização

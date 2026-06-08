@@ -28,7 +28,7 @@ import {
 } from './engine/types';
 import { Simulator } from './engine/simulator';
 import { makeLoadProfile, LoadProfileType, ChaosEvent, getPreset } from './engine/scenarios';
-import { CloudProvider } from './engine/costModel';
+import { CloudProvider, estimateCostFromMetrics } from './engine/costModel';
 
 import SimNode, { SimNodeData } from './ui/SimNode';
 import { NODE_CATALOG, PALETTE_ORDER, KIND_DEFAULT_LABEL } from './ui/nodeCatalog';
@@ -108,6 +108,9 @@ function EditorInner({ gameId }: { gameId?: string }) {
   const game = useGameContext();
   const gameState = game?.state ?? null;
   const gameActive = !!gameId && !!game;
+  // During a live round players are locked out of editing; they build during
+  // intervals (and the lobby). Non-game sessions are always editable.
+  const frozen = gameActive && gameState?.phase === 'round';
   const initial = useMemo(() => presetToRF('three-tier'), []);
 
   const [nodes, setNodes, onNodesChange] = useNodesState<SimNodeData>(initial.nodes);
@@ -121,9 +124,13 @@ function EditorInner({ gameId }: { gameId?: string }) {
   const [metrics, setMetrics] = useState<Record<string, SimulationFrame['nodeMetrics'][string]>>({});
   const [history, setHistory] = useState<SimulationFrame[]>([]);
   const [totalCost, setTotalCost] = useState(0);
+  const [successCount, setSuccessCount] = useState(0);
+  const [failedCount, setFailedCount] = useState(0);
   const [warnings, setWarnings] = useState<string[]>([]);
 
   const [profileType, setProfileType] = useState<LoadProfileType>('constant');
+  // Admin-set traffic intensity (multiplier on top of the profile shape).
+  const [profileMultiplier, setProfileMultiplier] = useState(1);
   const [provider, setProvider] = useState<CloudProvider>('aws');
   const [chaos, setChaos] = useState<ChaosEvent[]>([]);
   const [importError, setImportError] = useState<string | null>(null);
@@ -149,6 +156,13 @@ function EditorInner({ gameId }: { gameId?: string }) {
   gameRef.current = game;
   const gameStateRef = useRef(gameState);
   gameStateRef.current = gameState;
+
+  // Latest-value freeze check for use inside callbacks (avoids re-creating them
+  // on every poll). Editing is blocked only while a round is live.
+  const isFrozen = useCallback(
+    () => gameActive && gameStateRef.current?.phase === 'round',
+    [gameActive],
+  );
   const scoreRef = useRef<ScoreAccumulator>(emptyAccumulator());
   const lastFrameRef = useRef<SimulationFrame | null>(null);
   const seededKeyRef = useRef<string | null>(null);
@@ -192,6 +206,7 @@ function EditorInner({ gameId }: { gameId?: string }) {
   }, []);
 
   const undo = useCallback(() => {
+    if (isFrozen()) return;
     const previous = pastRef.current.pop();
     if (!previous) return;
     futureRef.current.push({ nodes: nodesRef.current, edges: edgesRef.current });
@@ -199,9 +214,10 @@ function EditorInner({ gameId }: { gameId?: string }) {
     setEdges(previous.edges);
     setSelectedId(null);
     setHistoryVersion((v) => v + 1);
-  }, [setNodes, setEdges]);
+  }, [setNodes, setEdges, isFrozen]);
 
   const redo = useCallback(() => {
+    if (isFrozen()) return;
     const next = futureRef.current.pop();
     if (!next) return;
     pastRef.current.push({ nodes: nodesRef.current, edges: edgesRef.current });
@@ -209,10 +225,10 @@ function EditorInner({ gameId }: { gameId?: string }) {
     setEdges(next.edges);
     setSelectedId(null);
     setHistoryVersion((v) => v + 1);
-  }, [setNodes, setEdges]);
+  }, [setNodes, setEdges, isFrozen]);
 
-  const canUndo = pastRef.current.length > 0;
-  const canRedo = futureRef.current.length > 0;
+  const canUndo = pastRef.current.length > 0 && !frozen;
+  const canRedo = futureRef.current.length > 0 && !frozen;
 
   // Keyboard shortcuts: Cmd/Ctrl+Z = undo, Cmd/Ctrl+Shift+Z or Ctrl+Y = redo.
   // Ignored while typing in form fields so native text undo keeps working.
@@ -261,8 +277,14 @@ function EditorInner({ gameId }: { gameId?: string }) {
   }, [nodes, edges]);
 
   useEffect(() => {
-    simRef.current?.setProfile(makeLoadProfile(profileType));
-  }, [profileType]);
+    const base = makeLoadProfile(profileType);
+    const mult = profileMultiplier > 0 ? profileMultiplier : 1;
+    const profile =
+      mult === 1
+        ? base
+        : { ...base, multiplierAt: (tt: number) => base.multiplierAt(tt) * mult };
+    simRef.current?.setProfile(profile);
+  }, [profileType, profileMultiplier]);
 
   useEffect(() => {
     simRef.current?.setChaos(chaos);
@@ -276,6 +298,8 @@ function EditorInner({ gameId }: { gameId?: string }) {
     setMetrics(frame.nodeMetrics);
     setHistory(simRef.current ? [...simRef.current.history] : []);
     setTotalCost(simRef.current?.totalCost ?? 0);
+    setSuccessCount(simRef.current?.totalSuccess ?? 0);
+    setFailedCount(simRef.current?.totalFailed ?? 0);
     setWarnings(frame.system.warnings);
     // Style edges by flow volume and target load.
     setEdges((eds) =>
@@ -306,7 +330,7 @@ function EditorInner({ gameId }: { gameId?: string }) {
     simRef.current?.reset(seed);
     setMetrics({});
     setHistory([]);
-    setTotalCost(0);
+    setTotalCost(0); setSuccessCount(0); setFailedCount(0);
     setWarnings([]);
   }, [seed]);
 
@@ -337,21 +361,45 @@ function EditorInner({ gameId }: { gameId?: string }) {
     setSelectedId(null);
     simRef.current?.reset(gameState.seed);
     setProfileType((gameState.load_profile?.type ?? 'constant') as LoadProfileType);
+    setProfileMultiplier(gameState.load_profile?.multiplier ?? 1);
     setChaos(gameState.chaos_events ?? []);
     scoreRef.current = emptyAccumulator();
     lastFrameRef.current = null;
     setMetrics({});
     setHistory([]);
-    setTotalCost(0);
+    setTotalCost(0); setSuccessCount(0); setFailedCount(0);
     pastRef.current = [];
     futureRef.current = [];
   }, [gameActive, gameState, setNodes, setEdges]);
+
+  // Keep lock state in sync with the admin's rules *after* seeding. The seed
+  // computes `locked` only once, so if the admin enables deletion (or toggles
+  // which components are locked) mid-match, re-apply it to the nodes already on
+  // canvas. We only flip the `locked`/`deletable` flags on existing seed nodes —
+  // never add back deleted nodes or lock player-added ones.
+  const lockedKey = (gameState?.locked_node_ids ?? []).join(',');
+  const allowDelete = gameState?.allow_delete_starting ?? true;
+  useEffect(() => {
+    if (!gameActive) return;
+    const lockSet = new Set(lockedKey ? lockedKey.split(',') : []);
+    const lockAll = !allowDelete;
+    setNodes((nds) =>
+      nds.map((n) => {
+        const cfg = n.data.config;
+        const isSeed = cfg.origin ? cfg.origin === 'seed' : true;
+        const locked = isSeed && (lockAll || lockSet.has(n.id));
+        if (!!cfg.locked === locked && n.deletable === !locked) return n;
+        return { ...n, deletable: !locked, data: { ...n.data, config: { ...cfg, locked } } };
+      }),
+    );
+  }, [gameActive, lockedKey, allowDelete, setNodes]);
 
   // Live-sync the broadcast traffic profile (admin can change it mid-match).
   useEffect(() => {
     if (!gameActive || !gameState) return;
     setProfileType((gameState.load_profile?.type ?? 'constant') as LoadProfileType);
-  }, [gameActive, gameState?.load_profile?.type]);
+    setProfileMultiplier(gameState.load_profile?.multiplier ?? 1);
+  }, [gameActive, gameState?.load_profile?.type, gameState?.load_profile?.multiplier]);
 
   // Live-sync the broadcast chaos timeline (admin injections appear here).
   const chaosKey = gameActive ? JSON.stringify(gameState?.chaos_events ?? []) : '';
@@ -364,20 +412,40 @@ function EditorInner({ gameId }: { gameId?: string }) {
     }
   }, [gameActive, chaosKey]);
 
-  // Synced run loop: drive the deterministic sim by wall-clock match-time so all
-  // players experience the same traffic/chaos at the same simulated second.
+  // When a new round goes live, reset the deterministic sim and the per-round
+  // score accumulator so each round is scored independently (from t=0) against
+  // the player's carried-over architecture.
+  const roundKeyRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!gameActive || !gameState) return;
+    if (gameState.phase !== 'round' || !gameState.round_started_at) return;
+    const key = `${gameState.code}:r${gameState.current_round}:${gameState.round_started_at}`;
+    if (roundKeyRef.current === key) return;
+    roundKeyRef.current = key;
+    simRef.current?.reset(gameState.seed);
+    scoreRef.current = emptyAccumulator();
+    lastFrameRef.current = null;
+    setMetrics({});
+    setHistory([]);
+    setTotalCost(0); setSuccessCount(0); setFailedCount(0);
+  }, [gameActive, gameState?.phase, gameState?.current_round, gameState?.round_started_at]);
+
+  // Synced round loop: drive the deterministic sim by wall-clock round-time so
+  // all players experience the same traffic/chaos at the same simulated second.
+  // Runs only while the round is live (not during build intervals).
   useEffect(() => {
     if (!gameActive) return;
-    if (gameState?.status !== 'running' || !gameState.started_at) return;
-    const startedMs = new Date(gameState.started_at).getTime();
+    if (gameState?.phase !== 'round' || gameState?.status !== 'running' || !gameState.round_started_at)
+      return;
+    const startedMs = new Date(gameState.round_started_at).getTime();
     const id = setInterval(() => {
       const g = gameRef.current;
       const gs = gameStateRef.current;
-      if (!g || !gs) return;
+      if (!g || !gs || gs.phase !== 'round') return;
       const offset = g.serverOffsetMs ?? 0;
       let target = Math.floor((Date.now() + offset - startedMs) / 1000);
-      if (gs.ends_at) {
-        const endTick = Math.floor((new Date(gs.ends_at).getTime() - startedMs) / 1000);
+      if (gs.round_ends_at) {
+        const endTick = Math.floor((new Date(gs.round_ends_at).getTime() - startedMs) / 1000);
         if (target > endTick) target = endTick;
       }
       const scoringCfg = normalizeScoring(gs.scoring_config);
@@ -400,7 +468,7 @@ function EditorInner({ gameId }: { gameId?: string }) {
       }
     }, 1000);
     return () => clearInterval(id);
-  }, [gameActive, gameState?.status, gameState?.started_at, applyFrame]);
+  }, [gameActive, gameState?.phase, gameState?.status, gameState?.round_started_at, applyFrame]);
 
   // Snapshot the latest "golden signals" from the most recent sim frame.
   const gameMetrics = useCallback(() => {
@@ -423,45 +491,82 @@ function EditorInner({ gameId }: { gameId?: string }) {
     };
   }, []);
 
-  // Periodically push the player's architecture + accumulated score.
+  // While a round is live, periodically push the player's per-round score. The
+  // backend records it under the round index and recomputes the weighted total.
   useEffect(() => {
-    if (!gameActive) return;
-    const status = gameState?.status;
-    if (status !== 'running' && status !== 'paused') return;
+    if (!gameActive || gameState?.phase !== 'round') return;
     const submit = () => {
       const g = gameRef.current;
-      if (!g) return;
+      const gs = gameStateRef.current;
+      if (!g || !gs) return;
+      const roundIndex = Math.max(0, (gs.current_round ?? 1) - 1);
+      const roundScore = Math.round(scoreRef.current.total);
       g.submitScore({
         architecture: rfToArchitecture(nodesRef.current, edgesRef.current),
-        score: Math.round(scoreRef.current.total),
+        score: roundScore,
         score_breakdown: scoreRef.current,
         metrics: gameMetrics(),
+        round_index: roundIndex,
+        round_score: roundScore,
+        round_breakdown: scoreRef.current,
       });
     };
     submit();
     const id = setInterval(submit, 4000);
     return () => clearInterval(id);
-  }, [gameActive, gameState?.status, gameMetrics]);
+  }, [gameActive, gameState?.phase, gameState?.current_round, gameMetrics]);
 
-  // Submit a final score once when the match ends.
+  // During build intervals, persist the (carried-over) architecture so it
+  // survives a refresh/rejoin and is visible to the admin spectator.
   useEffect(() => {
-    if (!gameActive || gameState?.status !== 'ended' || !gameState.code) return;
-    if (finalSubmittedRef.current === gameState.code) return;
-    finalSubmittedRef.current = gameState.code;
+    if (!gameActive) return;
+    const phase = gameState?.phase;
+    if (phase !== 'interval' && phase !== 'lobby') return;
+    const submit = () => {
+      const g = gameRef.current;
+      const gs = gameStateRef.current;
+      if (!g) return;
+      g.submitScore({
+        architecture: rfToArchitecture(nodesRef.current, edgesRef.current),
+        score: Math.round(gs?.my_score ?? 0),
+      });
+    };
+    const id = setInterval(submit, 5000);
+    return () => clearInterval(id);
+  }, [gameActive, gameState?.phase]);
+
+  // Submit the final per-round score once when a round ends (transition out of
+  // the 'round' phase), covering both the next interval and the match end.
+  const lastPhaseRef = useRef<string | null>(null);
+  useEffect(() => {
+    const prev = lastPhaseRef.current;
+    const cur = gameState?.phase ?? null;
+    lastPhaseRef.current = cur;
+    if (!gameActive) return;
+    if (prev !== 'round' || cur === 'round') return;
     const g = gameRef.current;
-    if (!g) return;
+    const gs = gameStateRef.current;
+    if (!g || !gs) return;
+    const submitKey = `${gs.code}:r${gs.current_round}`;
+    if (finalSubmittedRef.current === submitKey) return;
+    finalSubmittedRef.current = submitKey;
+    const roundIndex = Math.max(0, (gs.current_round ?? 1) - 1);
+    const roundScore = Math.round(scoreRef.current.total);
     g.submitScore({
       architecture: rfToArchitecture(nodesRef.current, edgesRef.current),
-      score: Math.round(scoreRef.current.total),
+      score: roundScore,
       score_breakdown: scoreRef.current,
       metrics: gameMetrics(),
+      round_index: roundIndex,
+      round_score: roundScore,
+      round_breakdown: scoreRef.current,
     });
-  }, [gameActive, gameState?.status, gameState?.code, gameMetrics]);
+  }, [gameActive, gameState?.phase, gameMetrics]);
 
   // --- Node editing ---
   const patchSelected = useCallback(
     (patch: Partial<NodeConfig>) => {
-      if (!selectedId) return;
+      if (!selectedId || isFrozen()) return;
       // Coalesce rapid edits (e.g. dragging a slider) into one history entry.
       const now = Date.now();
       if (now - lastPatchAtRef.current > 600) takeSnapshot();
@@ -470,31 +575,32 @@ function EditorInner({ gameId }: { gameId?: string }) {
         nds.map((n) => (n.id === selectedId ? { ...n, data: { config: { ...n.data.config, ...patch } } } : n)),
       );
     },
-    [selectedId, setNodes, takeSnapshot],
+    [selectedId, setNodes, takeSnapshot, isFrozen],
   );
 
   const deleteSelected = useCallback(() => {
-    if (!selectedId || isNodeLocked(selectedId)) return;
+    if (!selectedId || isNodeLocked(selectedId) || isFrozen()) return;
     takeSnapshot();
     setNodes((nds) => nds.filter((n) => n.id !== selectedId));
     setEdges((eds) => eds.filter((e) => e.source !== selectedId && e.target !== selectedId));
     setSelectedId(null);
-  }, [selectedId, setNodes, setEdges, takeSnapshot, isNodeLocked]);
+  }, [selectedId, setNodes, setEdges, takeSnapshot, isNodeLocked, isFrozen]);
 
   // --- Context-menu actions (operate on an explicit node id) ---
   const deleteNode = useCallback(
     (id: string) => {
-      if (isNodeLocked(id)) return;
+      if (isNodeLocked(id) || isFrozen()) return;
       takeSnapshot();
       setNodes((nds) => nds.filter((n) => n.id !== id));
       setEdges((eds) => eds.filter((e) => e.source !== id && e.target !== id));
       setSelectedId((cur) => (cur === id ? null : cur));
     },
-    [setNodes, setEdges, takeSnapshot, isNodeLocked],
+    [setNodes, setEdges, takeSnapshot, isNodeLocked, isFrozen],
   );
 
   const duplicateNode = useCallback(
     (id: string) => {
+      if (isFrozen()) return;
       const src = nodes.find((n) => n.id === id);
       if (!src) return;
       takeSnapshot();
@@ -509,18 +615,20 @@ function EditorInner({ gameId }: { gameId?: string }) {
       setNodes((nds) => nds.concat(newNode));
       setSelectedId(newId);
     },
-    [nodes, setNodes, takeSnapshot],
+    [nodes, setNodes, takeSnapshot, isFrozen],
   );
 
   const disconnectNode = useCallback(
     (id: string) => {
+      if (isFrozen()) return;
       takeSnapshot();
       setEdges((eds) => eds.filter((e) => e.source !== id && e.target !== id));
     },
-    [setEdges, takeSnapshot],
+    [setEdges, takeSnapshot, isFrozen],
   );
 
   const killNode = useCallback((id: string) => {
+    if (isFrozen()) return;
     setChaos((c) => [
       ...c,
       {
@@ -531,14 +639,15 @@ function EditorInner({ gameId }: { gameId?: string }) {
         durationSec: 15,
       },
     ]);
-  }, []);
+  }, [isFrozen]);
 
   const deleteEdge = useCallback(
     (id: string) => {
+      if (isFrozen()) return;
       takeSnapshot();
       setEdges((eds) => eds.filter((e) => e.id !== id));
     },
-    [setEdges, takeSnapshot],
+    [setEdges, takeSnapshot, isFrozen],
   );
 
   const openMenuAt = useCallback((kind: 'node' | 'edge' | 'pane', id: string, event: React.MouseEvent) => {
@@ -596,10 +705,11 @@ function EditorInner({ gameId }: { gameId?: string }) {
 
   const onConnect = useCallback(
     (params: Connection | Edge) => {
+      if (isFrozen()) return;
       takeSnapshot();
       setEdges((eds) => addEdge({ ...params, id: `e-${(params as Edge).source}-${(params as Edge).target}-${Date.now()}`, animated: true, style: { strokeWidth: 2.5 } }, eds));
     },
-    [setEdges, takeSnapshot],
+    [setEdges, takeSnapshot, isFrozen],
   );
 
   // Direction is enforced here (not by handle type) so any side of a box can be
@@ -619,13 +729,14 @@ function EditorInner({ gameId }: { gameId?: string }) {
   // Auto-arrange the whole graph into clean ranks and re-fit the viewport.
   const applyLayout = useCallback(
     (direction: LayoutDirection) => {
+      if (isFrozen()) return;
       takeSnapshot();
       const { nodes: laidOut, edges: rewired } = layoutGraph(nodes, edges, direction);
       setNodes(laidOut);
       setEdges(rewired);
       window.requestAnimationFrame(() => rf.fitView({ padding: 0.3, duration: 400 }));
     },
-    [nodes, edges, setNodes, setEdges, rf, takeSnapshot],
+    [nodes, edges, setNodes, setEdges, rf, takeSnapshot, isFrozen],
   );
 
   const onNodesDelete = useCallback(
@@ -655,6 +766,7 @@ function EditorInner({ gameId }: { gameId?: string }) {
   // Shared node creation used by both desktop drag-drop and touch tap-to-add.
   const addNodeAt = useCallback(
     (kind: NodeKind, position: { x: number; y: number }) => {
+      if (isFrozen()) return undefined;
       takeSnapshot();
       const id = `n${Date.now()}`;
       const count = nodesRef.current.filter((n) => n.data.config.kind === kind).length + 1;
@@ -663,7 +775,7 @@ function EditorInner({ gameId }: { gameId?: string }) {
       setNodes((nds) => nds.concat(newNode));
       return id;
     },
-    [setNodes, t, takeSnapshot],
+    [setNodes, t, takeSnapshot, isFrozen],
   );
 
   const onDrop = useCallback(
@@ -684,6 +796,7 @@ function EditorInner({ gameId }: { gameId?: string }) {
         ? { x: bounds.left + bounds.width / 2, y: bounds.top + bounds.height / 2 }
         : { x: window.innerWidth / 2, y: window.innerHeight / 2 };
       const id = addNodeAt(kind, rf.screenToFlowPosition(screen));
+      if (!id) return;
       setSelectedId(id);
       setSheet(null);
     },
@@ -704,7 +817,7 @@ function EditorInner({ gameId }: { gameId?: string }) {
       simRef.current?.reset(ps);
       setMetrics({});
       setHistory([]);
-      setTotalCost(0);
+      setTotalCost(0); setSuccessCount(0); setFailedCount(0);
     },
     [setNodes, setEdges, takeSnapshot],
   );
@@ -756,7 +869,7 @@ function EditorInner({ gameId }: { gameId?: string }) {
           simRef.current?.reset(design.seed);
           setMetrics({});
           setHistory([]);
-          setTotalCost(0);
+          setTotalCost(0); setSuccessCount(0); setFailedCount(0);
         } catch {
           setImportError(t('editor.errors.import_error', { defaultValue: 'Failed to import design file.' }));
         }
@@ -770,6 +883,20 @@ function EditorInner({ gameId }: { gameId?: string }) {
 
   const selectedConfig = nodes.find((n) => n.id === selectedId)?.data.config ?? null;
   const nodeOptions = nodes.map((n) => ({ id: n.id, label: n.data.config.label }));
+
+  // Live cloud cost that reacts to capacity edits (service time, concurrency,
+  // replicas) immediately — even when the sim is idle. Uses live metrics when a
+  // run is in progress, otherwise estimates provisioned compute straight from
+  // each node's config.
+  const liveCostPerHour = useMemo(() => {
+    return nodes.reduce((sum, n) => {
+      const cfg = n.data.config;
+      const m = metrics[n.id];
+      const servers = m?.servers ?? Math.max(1, Math.round(cfg.concurrency * cfg.replicas));
+      const arrival = m?.arrivalRate ?? 0;
+      return sum + estimateCostFromMetrics(cfg.kind, servers, arrival, cfg.replicaCount, provider, cfg.serviceTimeMs);
+    }, 0);
+  }, [nodes, metrics, provider]);
 
   const btn = `px-3 ${isTouch ? 'py-2.5 min-h-[44px]' : 'py-2'} font-sans text-sm rounded-md border transition-colors flex items-center gap-2 whitespace-nowrap shrink-0`;
   const iconBtn = `${isTouch ? 'p-2.5 min-h-[44px] min-w-[44px]' : 'p-2'} rounded-md border transition-colors flex items-center justify-center shrink-0`;
@@ -832,17 +959,19 @@ function EditorInner({ gameId }: { gameId?: string }) {
               <div className="border-l border-tactical-line h-8 mx-1 shrink-0" />
               <button
                 onClick={() => applyLayout('vertical')}
+                disabled={frozen}
                 title={t('editor.buttons.arrange_vertical', { defaultValue: 'Arrange vertically' })}
                 aria-label={t('editor.buttons.arrange_vertical', { defaultValue: 'Arrange vertically' })}
-                className={`${iconBtn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}
+                className={`${iconBtn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan disabled:opacity-40 disabled:cursor-not-allowed`}
               >
                 <ArrowDownUp className="w-4 h-4" />
               </button>
               <button
                 onClick={() => applyLayout('horizontal')}
+                disabled={frozen}
                 title={t('editor.buttons.arrange_horizontal', { defaultValue: 'Arrange horizontally' })}
                 aria-label={t('editor.buttons.arrange_horizontal', { defaultValue: 'Arrange horizontally' })}
-                className={`${iconBtn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}
+                className={`${iconBtn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan disabled:opacity-40 disabled:cursor-not-allowed`}
               >
                 <ArrowLeftRight className="w-4 h-4" />
               </button>
@@ -947,6 +1076,8 @@ function EditorInner({ gameId }: { gameId?: string }) {
               onConnect={onConnect}
               isValidConnection={isValidConnection}
               connectionMode={ConnectionMode.Loose}
+              nodesDraggable={!frozen}
+              nodesConnectable={!frozen}
               onNodesDelete={onNodesDelete}
               onEdgesDelete={onEdgesDelete}
               onNodeDragStart={onNodeDragStart}
@@ -961,7 +1092,7 @@ function EditorInner({ gameId }: { gameId?: string }) {
               onPaneClick={() => { setSelectedId(null); setSelectedEdgeId(null); closeMenu(); }}
               onMoveStart={closeMenu}
               nodeTypes={nodeTypes}
-              deleteKeyCode={['Backspace', 'Delete']}
+              deleteKeyCode={frozen ? null : ['Backspace', 'Delete']}
               fitView
               fitViewOptions={{ padding: 0.4, maxZoom: 1 }}
               minZoom={0.2}
@@ -979,10 +1110,10 @@ function EditorInner({ gameId }: { gameId?: string }) {
                       return (
                         <div
                           key={kind}
-                          draggable
-                          onDragStart={(e) => onDragStart(e, kind)}
+                          draggable={!frozen}
+                          onDragStart={(e) => { if (frozen) { e.preventDefault(); return; } onDragStart(e, kind); }}
                           title={t(`editor.descriptions.${kind}`)}
-                          className={`px-2 py-1.5 rounded-md bg-slate-50 dark:bg-tactical-raised cursor-move hover:bg-slate-100 dark:hover:bg-tactical-line border-l-2 ${entry.accent} font-sans text-[11px] text-slate-700 dark:text-tactical-text flex items-center gap-1.5`}
+                          className={`px-2 py-1.5 rounded-md bg-slate-50 dark:bg-tactical-raised border-l-2 ${entry.accent} font-sans text-[11px] text-slate-700 dark:text-tactical-text flex items-center gap-1.5 ${frozen ? 'opacity-40 cursor-not-allowed' : 'cursor-move hover:bg-slate-100 dark:hover:bg-tactical-line'}`}
                         >
                           <Icon className="w-3.5 h-3.5" />
                           {t(`editor.kinds.${kind}`, { defaultValue: KIND_DEFAULT_LABEL[kind] })}
@@ -1066,7 +1197,7 @@ function EditorInner({ gameId }: { gameId?: string }) {
                   onClose={() => setShowBill(false)}
                 />
               ) : (
-                <InspectorPanel config={selectedConfig} onChange={patchSelected} onDelete={deleteSelected} canDelete={!selectedConfig?.locked} />
+                <InspectorPanel config={selectedConfig} onChange={patchSelected} onDelete={deleteSelected} canDelete={!selectedConfig?.locked} readOnly={gameActive && selectedConfig?.kind === 'client'} gameMode={gameActive} />
               )}
             </div>
           )}
@@ -1077,6 +1208,9 @@ function EditorInner({ gameId }: { gameId?: string }) {
           <Dashboard
             history={history}
             totalCost={totalCost}
+            costPerHour={liveCostPerHour}
+            successCount={successCount}
+            failedCount={failedCount}
             provider={provider}
             warnings={warnings}
             onCostClick={() => { setShowBill(true); if (isTouch) setSheet('inspector'); }}
@@ -1108,7 +1242,7 @@ function EditorInner({ gameId }: { gameId?: string }) {
                   onClose={() => { setShowBill(false); setSheet(null); }}
                 />
               ) : (
-                <InspectorPanel config={selectedConfig} onChange={patchSelected} onDelete={() => { deleteSelected(); setSheet(null); }} canDelete={!selectedConfig?.locked} />
+                <InspectorPanel config={selectedConfig} onChange={patchSelected} onDelete={() => { deleteSelected(); setSheet(null); }} canDelete={!selectedConfig?.locked} readOnly={gameActive && selectedConfig?.kind === 'client'} gameMode={gameActive} />
               )}
             </BottomSheet>
 

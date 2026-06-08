@@ -54,7 +54,6 @@ export interface DecodedUser {
   email: string;
   picture?: string | null;
   name?: string | null;
-  subscribed?: boolean;
 }
 
 /**
@@ -74,41 +73,5 @@ export async function verifyIdToken(token: string): Promise<DecodedUser> {
     email,
     picture: (decoded.picture as string) ?? null,
     name: (decoded.name as string) ?? null,
-    subscribed: Boolean((decoded as any).subscribed),
   };
-}
-
-/**
- * Set custom claims on a Firebase user (used by Stripe webhook to sync
- * subscription status). No-op if Firebase is not configured.
- */
-export async function setSubscriptionClaims(
-  uid: string,
-  isSubscribed: boolean,
-  stripeCustomerId?: string | null
-): Promise<void> {
-  const auth = getFirebaseAuth();
-  if (!auth) return;
-  try {
-    await auth.setCustomUserClaims(uid, {
-      subscribed: isSubscribed,
-      subscribedAt: isSubscribed ? new Date().toISOString() : null,
-      stripeCustomerId: stripeCustomerId ?? null,
-    });
-  } catch (e) {
-    console.error('[firebase] Failed to set custom claims:', e);
-  }
-}
-
-export async function getStripeCustomerIdFromClaims(
-  uid: string
-): Promise<string | null> {
-  const auth = getFirebaseAuth();
-  if (!auth) return null;
-  try {
-    const user = await auth.getUser(uid);
-    return (user.customClaims?.stripeCustomerId as string) ?? null;
-  } catch {
-    return null;
-  }
 }

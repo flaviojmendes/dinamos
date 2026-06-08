@@ -54,6 +54,13 @@ interface Props {
   onDelete: () => void;
   /** When false (locked game component) the delete button is hidden. */
   canDelete?: boolean;
+  /** When true the config is shown but not editable (admin-controlled node). */
+  readOnly?: boolean;
+  /**
+   * In a match, reliability and latency-shape are fixed by the simulation and
+   * can never be tuned by players — these sections render locked.
+   */
+  gameMode?: boolean;
 }
 
 function Num({
@@ -128,8 +135,14 @@ function Select<T extends string>({
   );
 }
 
-export default function InspectorPanel({ config, onChange, onDelete, canDelete = true }: Props) {
+export default function InspectorPanel({ config, onChange, onDelete, canDelete = true, readOnly = false, gameMode = false }: Props) {
   const { t } = useTranslation();
+  // Swallow edits when the node is admin-controlled (e.g. the Users traffic
+  // source); the panel still shows the values for context.
+  const handleChange = readOnly ? () => {} : onChange;
+  // Reliability + latency-shape are never player-editable in a match.
+  const tuningLocked = readOnly || gameMode;
+  const tuningChange = tuningLocked ? () => {} : onChange;
   if (!config) {
     return (
       <div className="p-4 font-sans text-xs text-tactical-label">
@@ -168,57 +181,74 @@ export default function InspectorPanel({ config, onChange, onDelete, canDelete =
         </p>
       </div>
 
-      <label className="block mb-3">
-        <div className="flex items-center gap-1 font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1">{t('editor.inspector.label')}<HintIcon hint={t('editor.hints.label')} /></div>
-        <input
-          value={config.label}
-          onChange={(e) => onChange({ label: e.target.value })}
-          className="w-full bg-tactical-raised border border-tactical-border rounded-md px-2 py-1 font-sans text-sm text-tactical-text"
-        />
-      </label>
-
-      {config.kind === 'client' && (
-        <Num label={t('editor.inspector.base_rate')} hint={t('editor.hints.base_rate')} value={config.baseRate ?? 50} min={1} max={5000} step={10} unit="req/s" onChange={(v) => onChange({ baseRate: v })} />
+      {readOnly && (
+        <div className="mb-4 border-l-2 border-signal-amber/60 bg-signal-amber/5 rounded-r-md px-3 py-2">
+          <p className="font-sans text-[11px] leading-relaxed text-signal-amber">
+            {t('editor.inspector.admin_controlled', { defaultValue: 'Traffic for this node is controlled by the match admin.' })}
+          </p>
+        </div>
       )}
 
-      {config.kind !== 'client' && (
-        <>
-          <Num label={t('editor.inspector.service_time')} hint={t('editor.hints.service_time')} value={config.serviceTimeMs} min={1} max={500} unit="ms" onChange={(v) => onChange({ serviceTimeMs: v })} />
-          <Num label={t('editor.inspector.concurrency')} hint={t('editor.hints.concurrency')} value={config.concurrency} min={1} max={128} unit="srv" onChange={(v) => onChange({ concurrency: v })} />
-          {config.kind !== 'autoScaler' && config.kind !== 'replicatedDb' && (
-            <Num label={t('editor.inspector.replicas')} hint={t('editor.hints.replicas')} value={config.replicas} min={1} max={50} onChange={(v) => onChange({ replicas: v })} />
-          )}
-          <div className="font-sans text-[10px] text-slate-500 dark:text-tactical-label mb-3">
-            {t('editor.inspector.capacity_approx', { value: isFinite(capacity) ? `${Math.round(capacity)} req/s` : '∞' })}
+      <div className={readOnly ? 'pointer-events-none opacity-60 select-none' : undefined}>
+        <label className="block mb-3">
+          <div className="flex items-center gap-1 font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1">{t('editor.inspector.label')}<HintIcon hint={t('editor.hints.label')} /></div>
+          <input
+            value={config.label}
+            readOnly={readOnly}
+            onChange={(e) => handleChange({ label: e.target.value })}
+            className="w-full bg-tactical-raised border border-tactical-border rounded-md px-2 py-1 font-sans text-sm text-tactical-text"
+          />
+        </label>
+
+        {config.kind === 'client' && (
+          <Num label={t('editor.inspector.base_rate')} hint={t('editor.hints.base_rate')} value={config.baseRate ?? 50} min={1} max={5000} step={10} unit="req/s" onChange={(v) => handleChange({ baseRate: v })} />
+        )}
+
+        {config.kind !== 'client' && (
+          <>
+            <Num label={t('editor.inspector.service_time')} hint={t('editor.hints.service_time')} value={config.serviceTimeMs} min={1} max={500} unit="ms" onChange={(v) => handleChange({ serviceTimeMs: v })} />
+            <Num label={t('editor.inspector.concurrency')} hint={t('editor.hints.concurrency')} value={config.concurrency} min={1} max={128} unit="srv" onChange={(v) => handleChange({ concurrency: v })} />
+            {config.kind !== 'autoScaler' && config.kind !== 'replicatedDb' && (
+              <Num label={t('editor.inspector.replicas')} hint={t('editor.hints.replicas')} value={config.replicas} min={1} max={50} onChange={(v) => handleChange({ replicas: v })} />
+            )}
+            <div className="font-sans text-[10px] text-slate-500 dark:text-tactical-label mb-3">
+              {t('editor.inspector.capacity_approx', { value: isFinite(capacity) ? `${Math.round(capacity)} req/s` : '∞' })}
+            </div>
+          </>
+        )}
+
+        {/* Kind-specific controls */}
+        {renderKindControls(config, handleChange, t)}
+
+        {/* Reliability + latency-shape: fixed by the match, never player-tunable */}
+        <div className={gameMode && !readOnly ? 'pointer-events-none opacity-60 select-none' : undefined}>
+          {/* Reliability */}
+          <div className="flex items-center gap-1 font-sans text-[11px] font-medium text-slate-600 dark:text-signal-amber mt-2 mb-2">
+            {t('editor.inspector.reliability')}
+            {tuningLocked && <span className="font-normal text-tactical-label normal-case">· {t('editor.inspector.match_fixed', { defaultValue: 'fixed by match' })}</span>}
           </div>
-        </>
-      )}
+          <Num label={t('editor.inspector.failure_rate')} hint={t('editor.hints.failure_rate')} value={Math.round(config.failureRate * 100)} min={0} max={100} unit="%" onChange={(v) => tuningChange({ failureRate: v / 100 })} />
+          <Num label={t('editor.inspector.timeout')} hint={t('editor.hints.timeout')} value={config.timeoutMs} min={50} max={10000} step={50} unit="ms" onChange={(v) => tuningChange({ timeoutMs: v })} />
+          <Num label={t('editor.inspector.max_retries')} hint={t('editor.hints.max_retries')} value={config.retry?.maxRetries ?? 0} min={0} max={6} onChange={(v) => tuningChange({ retry: { maxRetries: v, backoffBaseMs: config.retry?.backoffBaseMs ?? 50, jitter: config.retry?.jitter ?? true } })} />
 
-      {/* Kind-specific controls */}
-      {renderKindControls(config, onChange, t)}
-
-      {/* Reliability */}
-      <div className="font-sans text-[11px] font-medium text-slate-600 dark:text-signal-amber mt-2 mb-2">{t('editor.inspector.reliability')}</div>
-      <Num label={t('editor.inspector.failure_rate')} hint={t('editor.hints.failure_rate')} value={Math.round(config.failureRate * 100)} min={0} max={100} unit="%" onChange={(v) => onChange({ failureRate: v / 100 })} />
-      <Num label={t('editor.inspector.timeout')} hint={t('editor.hints.timeout')} value={config.timeoutMs} min={50} max={10000} step={50} unit="ms" onChange={(v) => onChange({ timeoutMs: v })} />
-      <Num label={t('editor.inspector.max_retries')} hint={t('editor.hints.max_retries')} value={config.retry?.maxRetries ?? 0} min={0} max={6} onChange={(v) => onChange({ retry: { maxRetries: v, backoffBaseMs: config.retry?.backoffBaseMs ?? 50, jitter: config.retry?.jitter ?? true } })} />
-
-      {/* Latency shape */}
-      <div className="font-sans text-[11px] font-medium text-slate-600 dark:text-signal-amber mt-2 mb-2">{t('editor.inspector.latency_shape')}</div>
-      <Select
-        label={t('editor.inspector.distribution')}
-        hint={t('editor.hints.distribution')}
-        value={config.latencyDistribution}
-        options={[
-          { value: 'lognormal', label: t('editor.inspector.dist.lognormal') },
-          { value: 'exponential', label: t('editor.inspector.dist.exponential') },
-          { value: 'deterministic', label: t('editor.inspector.dist.deterministic') },
-        ]}
-        onChange={(v) => onChange({ latencyDistribution: v })}
-      />
-      {config.latencyDistribution === 'lognormal' && (
-        <Num label={t('editor.inspector.variability')} hint={t('editor.hints.variability')} value={config.latencyCv} min={0.1} max={2} step={0.1} onChange={(v) => onChange({ latencyCv: v })} />
-      )}
+          {/* Latency shape */}
+          <div className="font-sans text-[11px] font-medium text-slate-600 dark:text-signal-amber mt-2 mb-2">{t('editor.inspector.latency_shape')}</div>
+          <Select
+            label={t('editor.inspector.distribution')}
+            hint={t('editor.hints.distribution')}
+            value={config.latencyDistribution}
+            options={[
+              { value: 'lognormal', label: t('editor.inspector.dist.lognormal') },
+              { value: 'exponential', label: t('editor.inspector.dist.exponential') },
+              { value: 'deterministic', label: t('editor.inspector.dist.deterministic') },
+            ]}
+            onChange={(v) => tuningChange({ latencyDistribution: v })}
+          />
+          {config.latencyDistribution === 'lognormal' && (
+            <Num label={t('editor.inspector.variability')} hint={t('editor.hints.variability')} value={config.latencyCv} min={0.1} max={2} step={0.1} onChange={(v) => tuningChange({ latencyCv: v })} />
+          )}
+        </div>
+      </div>
     </div>
   );
 }

@@ -5,7 +5,6 @@ import { db } from '../db/client.js';
 import { polls, pollOptions, pollVotes, forumTopics } from '../db/schema.js';
 import {
   authRequired,
-  subscriptionRequired,
   type AppVariables,
 } from '../middleware/auth.js';
 import { getUserContext } from '../db/repo.js';
@@ -33,7 +32,7 @@ async function getUserPollVotes(pollId: number, userId: string): Promise<number[
 }
 
 // Create poll ---------------------------------------------------------------
-pollsRouter.post('/api/forum/topics/:id/poll', subscriptionRequired, async (c) => {
+pollsRouter.post('/api/forum/topics/:id/poll', authRequired, async (c) => {
   const user = c.get('user');
   const topicId = Number(c.req.param('id'));
   const body = await c.req.json<{
@@ -94,7 +93,7 @@ pollsRouter.get('/api/forum/topics/:id/poll', authRequired, async (c) => {
 });
 
 // Vote on poll --------------------------------------------------------------
-pollsRouter.post('/api/forum/polls/:id/vote', subscriptionRequired, async (c) => {
+pollsRouter.post('/api/forum/polls/:id/vote', authRequired, async (c) => {
   const user = c.get('user');
   const pollId = Number(c.req.param('id'));
   const body = await c.req.json<{ option_ids: number[] }>();

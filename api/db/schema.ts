@@ -56,9 +56,6 @@ export const users = pgTable('users', {
   roleId: integer('role_id').references(() => roles.id),
   avatarImage: text('avatar_image'),
   githubUsername: varchar('github_username', { length: 255 }),
-  isSubscribed: boolean('is_subscribed').default(false),
-  subscribedAt: timestamp('subscribed_at', { withTimezone: true }),
-  stripeCustomerId: varchar('stripe_customer_id', { length: 255 }),
   tokens: integer('tokens').default(0),
   onboardingCompleted: boolean('onboarding_completed').default(false),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
@@ -262,8 +259,8 @@ export const pollVotes = pgTable('poll_votes', {
 });
 
 // ==================== App Settings ====================
-// New table (not in the Python backend): persists runtime config such as
-// FREE_ACCESS_MODE, since serverless functions are stateless across invocations.
+// New table (not in the Python backend): persists runtime config as key/value
+// pairs, since serverless functions are stateless across invocations.
 
 export const appSettings = pgTable('app_settings', {
   key: varchar('key', { length: 100 }).primaryKey(),
@@ -299,6 +296,17 @@ export const gameSessions = pgTable('game_sessions', {
   scoringConfig: jsonb('scoring_config'),
   budget: jsonb('budget'),
   durationSec: integer('duration_sec'),
+  // Round-based play. `rounds` is an array of per-round config:
+  // { name?, intervalSec, durationSec, loadProfile, chaosEvents, scoringConfig, weight }
+  // The active round's loadProfile/chaosEvents/scoringConfig are mirrored into
+  // the live columns above so the existing client engine keeps working.
+  rounds: jsonb('rounds'),
+  // Round lifecycle phase: 'lobby' | 'interval' | 'round' | 'ended'.
+  phase: varchar('phase', { length: 20 }).notNull().default('lobby'),
+  // 1-based index of the active/last round (0 = no round started yet).
+  currentRound: integer('current_round').notNull().default(0),
+  roundStartedAt: timestamp('round_started_at', { withTimezone: true }),
+  roundEndsAt: timestamp('round_ends_at', { withTimezone: true }),
   startedAt: timestamp('started_at', { withTimezone: true }),
   endsAt: timestamp('ends_at', { withTimezone: true }),
   // Latest admin broadcast shown to all players in the match.
@@ -319,8 +327,12 @@ export const gamePlayers = pgTable(
     userId: varchar('user_id', { length: 255 }).notNull(),
     joinedAt: timestamp('joined_at', { withTimezone: true }).defaultNow(),
     architecture: jsonb('architecture'),
+    // Server-computed weighted aggregate across rounds.
     score: doublePrecision('score').default(0),
     scoreBreakdown: jsonb('score_breakdown'),
+    // Per-round results keyed by round index:
+    // { [roundIndex]: { score, breakdown, metrics } }
+    roundScores: jsonb('round_scores'),
     // Latest "golden signals" snapshot: latency, traffic, errors, saturation.
     metrics: jsonb('metrics'),
     lastSubmittedAt: timestamp('last_submitted_at', { withTimezone: true }),
@@ -364,7 +376,6 @@ export const contentPages = pgTable('content_pages', {
   path: varchar('path', { length: 255 }).notNull().unique(),
   // Registry module id (e.g. "components", "design"); drives sidebar/search.
   moduleId: varchar('module_id', { length: 50 }),
-  requiresSubscription: boolean('requires_subscription').notNull().default(true),
   orderIndex: integer('order_index').notNull().default(0),
   // Optional key into the frontend SIMULATOR_REGISTRY to attach an interactive
   // simulator at <path>/simulator.

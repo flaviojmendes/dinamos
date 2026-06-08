@@ -6,7 +6,6 @@ import { db } from '../db/client.js';
 import { challenges, solutions } from '../db/schema.js';
 import {
   authRequired,
-  subscriptionRequired,
   type AppVariables,
 } from '../middleware/auth.js';
 import { challengeToDict, solutionToDict } from '../db/serializers.js';
@@ -47,7 +46,7 @@ challengesRouter.get('/api/challenges', authRequired, async (c) => {
   return c.json({ challenges: result });
 });
 
-challengesRouter.get('/api/challenges/:id', subscriptionRequired, async (c) => {
+challengesRouter.get('/api/challenges/:id', authRequired, async (c) => {
   const id = c.req.param('id');
   const rows = await db.select().from(challenges).where(eq(challenges.id, id)).limit(1);
   if (!rows[0]) throw new HTTPException(404, { message: 'Challenge not found' });
@@ -86,7 +85,7 @@ challengesRouter.post('/api/transcribe-audio', authRequired, async (c) => {
   }
 });
 
-challengesRouter.post('/api/feedback', subscriptionRequired, async (c) => {
+challengesRouter.post('/api/feedback', authRequired, async (c) => {
   const user = c.get('user');
   const userId = user.uid;
   let userEmail = user.email || `${userId}@email.com`;
@@ -148,7 +147,7 @@ challengesRouter.post('/api/feedback', subscriptionRequired, async (c) => {
   return c.json({ strengths: allStrengths, suggestions: allSuggestions });
 });
 
-challengesRouter.post('/api/challenges/:id/progress', subscriptionRequired, async (c) => {
+challengesRouter.post('/api/challenges/:id/progress', authRequired, async (c) => {
   const user = c.get('user');
   const challengeId = c.req.param('id');
   const userEmail = user.email || `${user.uid}@email.com`;
@@ -219,7 +218,7 @@ challengesRouter.post('/api/challenges/:id/progress', subscriptionRequired, asyn
   return c.json({ success: true, message: 'Progress saved', draft: solutionToDict(draft) });
 });
 
-challengesRouter.get('/api/challenges/:id/progress', subscriptionRequired, async (c) => {
+challengesRouter.get('/api/challenges/:id/progress', authRequired, async (c) => {
   const user = c.get('user');
   const challengeId = c.req.param('id');
   const rows = await db
@@ -255,7 +254,7 @@ challengesRouter.delete('/api/challenges/:id/progress', authRequired, async (c) 
   return c.json({ success: false, message: 'No progress found to reset' });
 });
 
-challengesRouter.get('/api/challenges/:id/solutions', subscriptionRequired, async (c) => {
+challengesRouter.get('/api/challenges/:id/solutions', authRequired, async (c) => {
   const user = c.get('user');
   const challengeId = c.req.param('id');
   const limit = Number(c.req.query('limit') ?? '10');

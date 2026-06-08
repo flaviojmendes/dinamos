@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { trackEvent } from '../../utils/analytics';
-import Countdown from '../Countdown/Countdown';
-import { Typography, LanguageSwitcher, CouponModal, Footer } from '../Common';
+import { Typography, LanguageSwitcher, Footer } from '../Common';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { getTopics, ForumTopic } from '../../services/forumService';
@@ -36,12 +35,11 @@ function formatRelativeTime(dateString: string): string {
 
 export default function LandingPage() {
   const { t, i18n } = useTranslation();
-  const { user, isSubscribed } = useAuth();
-  const [showCouponModal, setShowCouponModal] = useState(false);
+  const { user } = useAuth();
   const [latestTopics, setLatestTopics] = useState<ForumTopic[]>([]);
   const [loadingTopics, setLoadingTopics] = useState(false);
 
-  // Fetch latest forum topics for logged-in users (subscribed or not)
+  // Fetch latest forum topics for logged-in users
   useEffect(() => {
     async function fetchLatestTopics() {
       if (!user) return;

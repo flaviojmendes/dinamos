@@ -7,6 +7,9 @@ import { ScoringConfig } from '../engine/scoring';
 
 export type GameStatus = 'lobby' | 'running' | 'paused' | 'ended';
 
+/** Round lifecycle: build during 'interval', frozen+scoring during 'round'. */
+export type GamePhase = 'lobby' | 'interval' | 'round' | 'ended';
+
 export interface GameArchitecture {
   nodes: { id: string; position: { x: number; y: number }; config: NodeConfig }[];
   edges: EdgeSpec[];
@@ -14,6 +17,29 @@ export interface GameArchitecture {
 
 export interface GameLoadProfile {
   type: LoadProfileType;
+  /** Admin-set traffic intensity multiplier applied on top of the profile. */
+  multiplier?: number;
+}
+
+/** Per-round configuration set by the admin. */
+export interface RoundConfig {
+  name?: string;
+  /** Build window (seconds) before this round goes live. */
+  intervalSec: number;
+  /** Live round length in seconds. */
+  durationSec: number;
+  loadProfile: GameLoadProfile;
+  chaosEvents: ChaosEvent[];
+  scoringConfig: ScoringConfig;
+  /** Multiplier applied to this round's score in the weighted aggregate. */
+  weight: number;
+}
+
+/** One player's result for a single round. */
+export interface RoundScore {
+  score: number;
+  breakdown?: unknown;
+  metrics?: GoldenSignals | null;
 }
 
 /** Player-facing control state (GET /api/game/:code). */
@@ -40,6 +66,13 @@ export interface GameState {
   joined: boolean;
   my_architecture: GameArchitecture | null;
   my_score: number;
+  // Round state.
+  phase: GamePhase;
+  current_round: number;
+  total_rounds: number;
+  round_started_at: string | null;
+  round_ends_at: string | null;
+  my_round_scores: Record<string, RoundScore>;
 }
 
 export interface LeaderboardEntry {
@@ -75,6 +108,10 @@ export interface ScoreSubmission {
   score: number;
   score_breakdown?: unknown;
   metrics?: GoldenSignals;
+  // Round-based submission: the per-round score recorded under round_index.
+  round_index?: number;
+  round_score?: number;
+  round_breakdown?: unknown;
 }
 
 /** One player's live state for the admin spectator view. */

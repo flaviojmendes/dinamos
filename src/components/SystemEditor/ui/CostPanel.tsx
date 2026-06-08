@@ -29,9 +29,9 @@ export default function CostPanel({ nodes, metrics, provider, totalCost, onClose
     const map = new Map<string, BillLine>();
     nodes.forEach(({ id, config }) => {
       const m = metrics[id];
-      const servers = m?.servers ?? config.concurrency * config.replicas;
+      const servers = m?.servers ?? Math.max(1, Math.round(config.concurrency * config.replicas));
       const arrival = m?.arrivalRate ?? 0;
-      const cost = estimateCostFromMetrics(config.kind, servers, arrival, config.replicaCount, provider);
+      const cost = estimateCostFromMetrics(config.kind, servers, arrival, config.replicaCount, provider, config.serviceTimeMs);
       if (cost <= 0) return;
       const product = productName(config.kind, provider);
       const cur = map.get(product) ?? { product, cost: 0, count: 0 };

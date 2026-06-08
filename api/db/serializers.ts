@@ -40,9 +40,6 @@ export interface UserRow {
   roleId: number | null;
   avatarImage: string | null;
   githubUsername: string | null;
-  isSubscribed: boolean | null;
-  subscribedAt: DateLike;
-  stripeCustomerId: string | null;
   tokens: number | null;
   onboardingCompleted: boolean | null;
   createdAt: DateLike;
@@ -52,12 +49,10 @@ export interface UserRow {
 export function userToDict(
   user: UserRow,
   role: RoleRow | null,
-  permissionCodes: string[],
-  freeAccessEnabled: boolean
+  permissionCodes: string[]
 ) {
   const roleName = role?.name ?? user.role ?? 'Estudante';
   const roleColor = role?.color ?? '#3B82F6';
-  const effectiveSubscribed = Boolean(user.isSubscribed) || freeAccessEnabled;
 
   return {
     id: user.id,
@@ -69,9 +64,6 @@ export function userToDict(
     permissions: permissionCodes,
     avatar_image: user.avatarImage,
     github_username: user.githubUsername,
-    is_subscribed: effectiveSubscribed,
-    subscribed_at: toIso(user.subscribedAt),
-    stripe_customer_id: user.stripeCustomerId,
     tokens: user.tokens ?? 0,
     onboarding_completed: user.onboardingCompleted ?? false,
     created_at: toIso(user.createdAt),

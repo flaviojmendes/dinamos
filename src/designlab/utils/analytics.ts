@@ -81,11 +81,6 @@ export const trackProfileUpdate = (field?: string) => {
   trackEvent('Profile', 'Update', field);
 };
 
-// Track subscription action
-export const trackSubscriptionAction = (action: string, plan?: string) => {
-  trackEvent('Subscription', action, plan);
-};
-
 // Track search
 export const trackSearch = (query: string, resultsCount?: number) => {
   trackEvent('Search', 'Query', query, resultsCount);

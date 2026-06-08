@@ -25,7 +25,6 @@ export interface AppUser {
   permissions: string[];
   avatar_image: string | null;
   github_username: string | null;
-  is_subscribed: boolean;
   tokens: number;
   onboarding_completed: boolean;
   [key: string]: unknown;
@@ -35,17 +34,13 @@ interface AuthContextType {
   // Dinamos-native API
   user: User | null;
   loading: boolean;
-  isSubscribed: boolean;
   signInWithGoogle: () => Promise<void>;
   signInWithGithub: () => Promise<void>;
   signOut: () => Promise<void>;
-  setIsSubscribed: (isSubscribed: boolean) => void;
-  checkSubscription: (forceRefresh?: boolean) => Promise<boolean>;
 
   // designLab-compatible API (aliases + extensions)
   currentUser: User | null;
   appUser: AppUser | null;
-  checkingSubscription: boolean;
   isEmailVerified: boolean;
   logout: () => Promise<void>;
   loginWithGoogle: () => Promise<void>;
@@ -75,46 +70,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [userState, setUserState] = useState<User | null>(null);
   const [appUser, setAppUser] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isSubscribed, setIsSubscribed] = useState(false);
-  const [checkingSubscription, setCheckingSubscription] = useState(true);
   const [emailVerified, setEmailVerified] = useState(false);
 
-  // NOTE: must be referentially stable (useCallback) because consumers like
-  // ProtectedRoute put `checkSubscription` in effect dependency arrays. An
-  // unstable identity here previously caused an infinite "Verifying access"
-  // loop on subscription-gated pages.
-  const fetchUserProfile = useCallback(async (forceRefresh = false): Promise<boolean> => {
+  const fetchUserProfile = useCallback(async (forceRefresh = false): Promise<void> => {
     const current = auth.currentUser;
     if (!current) {
       setAppUser(null);
-      setIsSubscribed(false);
-      return false;
+      return;
     }
     try {
       const token = await current.getIdToken(forceRefresh);
       const response = await fetch(`${API_URL}/api/users/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!response.ok) {
-        setIsSubscribed(false);
-        return false;
-      }
+      if (!response.ok) return;
       const data: AppUser = await response.json();
-      setAppUser((prev) => (prev && prev.id === data.id && prev.is_subscribed === data.is_subscribed && prev.tokens === data.tokens ? prev : data));
-      const subscribed = data.is_subscribed === true;
-      setIsSubscribed(subscribed);
-      return subscribed;
+      setAppUser((prev) => (prev && prev.id === data.id && prev.tokens === data.tokens ? prev : data));
     } catch (error) {
       console.error('Error fetching user profile:', error);
-      setIsSubscribed(false);
-      return false;
     }
   }, []);
-
-  const checkSubscription = useCallback(
-    (forceRefresh = false): Promise<boolean> => fetchUserProfile(forceRefresh),
-    [fetchUserProfile],
-  );
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -122,19 +97,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUserState(user);
         setEmailVerified(user?.emailVerified ?? false);
         if (user) {
-          setCheckingSubscription(true);
           await fetchUserProfile();
-          setCheckingSubscription(false);
         } else {
           setAppUser(null);
-          setIsSubscribed(false);
-          setCheckingSubscription(false);
         }
       } catch (error) {
         console.error('Auth state change error:', error);
         setUserState(null);
-        setIsSubscribed(false);
-        setCheckingSubscription(false);
       } finally {
         setLoading(false);
       }
@@ -238,22 +207,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signOut = async () => {
     await firebaseSignOut(auth);
     setAppUser(null);
-    setIsSubscribed(false);
   };
 
   const value: AuthContextType = {
     user: userState,
     loading,
-    isSubscribed,
     signInWithGoogle,
     signInWithGithub,
     signOut,
-    setIsSubscribed,
-    checkSubscription,
     // designLab-compatible
     currentUser: userState,
     appUser,
-    checkingSubscription,
     isEmailVerified: emailVerified,
     logout: signOut,
     loginWithGoogle: signInWithGoogle,

@@ -43,7 +43,6 @@ function toIndexEntry(row: ContentRow) {
     slug: row.slug,
     path: row.path,
     moduleId: row.moduleId,
-    requiresSubscription: row.requiresSubscription,
     orderIndex: row.orderIndex,
     simulatorKey: row.simulatorKey,
     titleEn: row.titleEn,
@@ -60,7 +59,6 @@ function toAdminDict(row: ContentRow) {
     slug: row.slug,
     path: row.path,
     module_id: row.moduleId,
-    requires_subscription: row.requiresSubscription,
     order_index: row.orderIndex,
     simulator_key: row.simulatorKey,
     published: row.published,
@@ -138,7 +136,6 @@ interface ContentPayload {
   slug?: string;
   path?: string;
   module_id?: string | null;
-  requires_subscription?: boolean;
   order_index?: number;
   simulator_key?: string | null;
   published?: boolean;
@@ -182,7 +179,6 @@ contentRouter.post('/api/admin/content', async (c) => {
       slug,
       path,
       moduleId: normalizeOptional(body.module_id) ?? null,
-      requiresSubscription: body.requires_subscription ?? true,
       orderIndex: body.order_index ?? 0,
       simulatorKey: normalizeOptional(body.simulator_key) ?? null,
       published: body.published ?? true,
@@ -225,8 +221,6 @@ contentRouter.put('/api/admin/content/:id', async (c) => {
     updates.path = path;
   }
   if (body.module_id !== undefined) updates.moduleId = normalizeOptional(body.module_id) ?? null;
-  if (body.requires_subscription !== undefined)
-    updates.requiresSubscription = body.requires_subscription;
   if (body.order_index !== undefined) updates.orderIndex = body.order_index;
   if (body.simulator_key !== undefined)
     updates.simulatorKey = normalizeOptional(body.simulator_key) ?? null;

@@ -1,7 +1,6 @@
 import type { Context, MiddlewareHandler } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import { verifyIdToken, type DecodedUser } from '../lib/firebaseAdmin.js';
-import { isFreeAccessEnabled } from '../lib/freeAccess.js';
 import { getUserContext, type UserContext } from '../db/repo.js';
 
 export type AppVariables = {
@@ -52,26 +51,6 @@ export const optionalAuth: MiddlewareHandler<{ Variables: AppVariables }> = asyn
     } catch {
       /* ignore */
     }
-  }
-  await next();
-};
-
-/** Requires authRequired first. Enforces subscription unless free-access is on. */
-export const subscriptionRequired: MiddlewareHandler<{
-  Variables: AppVariables;
-}> = async (c, next) => {
-  const user = c.get('user');
-  if (!user) throw new HTTPException(401, { message: 'Not authenticated' });
-  const ctx = await getUserContext(user.uid);
-  if (!ctx) throw new HTTPException(403, { message: 'User not found' });
-  if (await isFreeAccessEnabled()) {
-    await next();
-    return;
-  }
-  if (!ctx.user.isSubscribed) {
-    throw new HTTPException(403, {
-      message: 'Subscription required. Please subscribe to access this content.',
-    });
   }
   await next();
 };

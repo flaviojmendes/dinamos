@@ -5,7 +5,6 @@
  *         progress is keyed by pathname (useContentProgress) and roadmap.tsx
  *         links to these exact paths.
  * `slug`  maps to src/content/<slug>.<lang>.mdx (internal, decoupled from URL).
- * `requiresSubscription` defaults to true; free pages set it to false.
  *
  * Interactive simulators, the Roadmap, and the Forum are NOT here — they stay
  * as bespoke routes in App.tsx.
@@ -13,21 +12,20 @@
 export interface ContentEntry {
   path: string;
   slug: string;
-  requiresSubscription?: boolean;
 }
 
 export const contentManifest: ContentEntry[] = [
-  // Fundamentals (free)
-  { path: '/intro', slug: 'intro', requiresSubscription: false },
-  { path: '/sistemas-distribuidos-101', slug: 'distributed-systems-101', requiresSubscription: false },
-  { path: '/system-design-101', slug: 'system-design-101', requiresSubscription: false },
+  // Fundamentals
+  { path: '/intro', slug: 'intro' },
+  { path: '/sistemas-distribuidos-101', slug: 'distributed-systems-101' },
+  { path: '/system-design-101', slug: 'system-design-101' },
 
-  // Theoretical foundations (free)
-  { path: '/theoretical-foundations', slug: 'theoretical-foundations/index', requiresSubscription: false },
-  { path: '/theoretical-foundations/cap-theorem', slug: 'theoretical-foundations/cap-theorem', requiresSubscription: false },
-  { path: '/theoretical-foundations/consistency-models', slug: 'theoretical-foundations/consistency-models', requiresSubscription: false },
-  { path: '/theoretical-foundations/distributed-challenges', slug: 'theoretical-foundations/distributed-challenges', requiresSubscription: false },
-  { path: '/theoretical-foundations/network-partitions', slug: 'theoretical-foundations/network-partitions', requiresSubscription: false },
+  // Theoretical foundations
+  { path: '/theoretical-foundations', slug: 'theoretical-foundations/index' },
+  { path: '/theoretical-foundations/cap-theorem', slug: 'theoretical-foundations/cap-theorem' },
+  { path: '/theoretical-foundations/consistency-models', slug: 'theoretical-foundations/consistency-models' },
+  { path: '/theoretical-foundations/distributed-challenges', slug: 'theoretical-foundations/distributed-challenges' },
+  { path: '/theoretical-foundations/network-partitions', slug: 'theoretical-foundations/network-partitions' },
 
   // System components
   { path: '/componentes', slug: 'components/index' },

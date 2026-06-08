@@ -82,7 +82,6 @@ CREATE TABLE IF NOT EXISTS "content_pages" (
   "slug" varchar(255) NOT NULL,
   "path" varchar(255) NOT NULL,
   "module_id" varchar(50),
-  "requires_subscription" boolean DEFAULT true NOT NULL,
   "order_index" integer DEFAULT 0 NOT NULL,
   "simulator_key" varchar(120),
   "published" boolean DEFAULT true NOT NULL,

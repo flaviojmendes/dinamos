@@ -9,8 +9,6 @@ const TermsAndConditionsPage: React.FC = () => {
   const acceptanceParagraphs = t('terms.sections.acceptance.paragraphs', { returnObjects: true }) as string[];
   const descriptionItems = t('terms.sections.description.items', { returnObjects: true }) as string[];
   const accountsItems = t('terms.sections.accounts.items', { returnObjects: true }) as string[];
-  const subscriptionItems = t('terms.sections.subscription.items', { returnObjects: true }) as string[];
-  const cancellationItems = t('terms.sections.cancellation.items', { returnObjects: true }) as string[];
   const ipItems = t('terms.sections.ip_rights.items', { returnObjects: true }) as string[];
   const conductItems = t('terms.sections.conduct.items', { returnObjects: true }) as string[];
   const availabilityItems = t('terms.sections.availability.items', { returnObjects: true }) as string[];
@@ -22,10 +20,6 @@ const TermsAndConditionsPage: React.FC = () => {
   const contactItems = t('terms.sections.contact.items', { returnObjects: true }) as string[];
   const descriptionIntro = t('terms.sections.description.intro');
   const accountsIntro = t('terms.sections.accounts.intro');
-  const subscriptionIntro = t('terms.sections.subscription.intro');
-  const cancellationIntro = t('terms.sections.cancellation.intro');
-  const subscriptionNote = t('terms.sections.subscription.note');
-  const cancellationNote = t('terms.sections.cancellation.note');
   const ipIntro = t('terms.sections.ip_rights.intro');
   const conductIntro = t('terms.sections.conduct.intro');
   const availabilityIntro = t('terms.sections.availability.intro');
@@ -96,28 +90,6 @@ const TermsAndConditionsPage: React.FC = () => {
                 <li key={item}>{item}</li>
               ))}
             </ul>
-          </section>
-
-          <section className="space-y-3">
-            <h2 className="text-2xl font-semibold text-white">{t('terms.sections.subscription.title')}</h2>
-            <p>{subscriptionIntro}</p>
-            <ul className="list-disc list-inside ml-4 space-y-1">
-              {subscriptionItems.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-            <p className="text-sm text-zinc-400">{subscriptionNote}</p>
-          </section>
-
-          <section className="space-y-3">
-            <h2 className="text-2xl font-semibold text-white">{t('terms.sections.cancellation.title')}</h2>
-            <p>{cancellationIntro}</p>
-            <ul className="list-disc list-inside ml-4 space-y-1">
-              {cancellationItems.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-            <p className="text-sm text-zinc-400">{cancellationNote}</p>
           </section>
 
           <section className="space-y-3">

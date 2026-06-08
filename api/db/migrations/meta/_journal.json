@@ -71,6 +71,13 @@
       "when": 1780914438733,
       "tag": "0009_glamorous_mindworm",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1780927558306,
+      "tag": "0010_many_namora",
+      "breakpoints": true
     }
   ]
 }

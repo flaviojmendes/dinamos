@@ -30,6 +30,56 @@ const DEFAULT_SCORING = {
 
 const DEFAULT_LOAD_PROFILE = { type: 'constant' as const };
 
+interface RoundConfig {
+  name?: string;
+  /** Build window (seconds) before this round goes live. Informational. */
+  intervalSec: number;
+  /** Live round length in seconds. */
+  durationSec: number;
+  loadProfile: { type: string };
+  chaosEvents: unknown[];
+  scoringConfig: Record<string, number>;
+  /** Multiplier applied to this round's score in the weighted aggregate. */
+  weight: number;
+}
+
+function normalizeRound(raw: Partial<RoundConfig> | undefined, idx: number): RoundConfig {
+  return {
+    name: raw?.name ?? `Round ${idx + 1}`,
+    intervalSec: Number(raw?.intervalSec ?? 60),
+    durationSec: Number(raw?.durationSec ?? 120),
+    loadProfile: raw?.loadProfile ?? DEFAULT_LOAD_PROFILE,
+    chaosEvents: Array.isArray(raw?.chaosEvents) ? raw!.chaosEvents : [],
+    scoringConfig: { ...DEFAULT_SCORING, ...(raw?.scoringConfig ?? {}) },
+    weight: Number(raw?.weight ?? 1),
+  };
+}
+
+/** Read the (possibly null) rounds column as a typed array. */
+function getRounds(session: SessionRow): RoundConfig[] {
+  const raw = session.rounds;
+  if (!Array.isArray(raw)) return [];
+  return raw.map((r, i) => normalizeRound(r as Partial<RoundConfig>, i));
+}
+
+/**
+ * Weighted aggregate across rounds: total = Σ weight_i * roundScore_i.
+ * `roundScores` is the per-player map { [roundIndex]: { score, ... } }.
+ */
+function computeAggregate(
+  rounds: RoundConfig[],
+  roundScores: Record<string, { score?: number }> | null | undefined
+): number {
+  if (!roundScores) return 0;
+  let total = 0;
+  for (const [key, val] of Object.entries(roundScores)) {
+    const idx = Number(key);
+    const weight = rounds[idx]?.weight ?? 1;
+    total += weight * (val?.score ?? 0);
+  }
+  return total;
+}
+
 /** Short, unambiguous, URL-friendly match code (no easily confused chars). */
 function generateCode(): string {
   const alphabet = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
@@ -68,10 +118,15 @@ function toIso(value: Date | string | null | undefined): string | null {
   return value instanceof Date ? value.toISOString() : new Date(value).toISOString();
 }
 
-/** Seconds of match-time elapsed since the match started running. */
-function matchElapsedSec(session: SessionRow): number {
-  if (!session.startedAt) return 0;
-  const started = new Date(session.startedAt).getTime();
+/**
+ * Seconds elapsed within the current round. The player's sim restarts at t=0
+ * each round, so chaos must be scheduled relative to the round start (not the
+ * match start) or it would never fire.
+ */
+function roundElapsedSec(session: SessionRow): number {
+  const anchor = session.roundStartedAt ?? session.startedAt;
+  if (!anchor) return 0;
+  const started = new Date(anchor).getTime();
   return Math.max(0, Math.floor((Date.now() - started) / 1000));
 }
 
@@ -94,6 +149,12 @@ function adminSessionToDict(session: SessionRow) {
     chaos_events: session.chaosEvents ?? [],
     scoring_config: session.scoringConfig ?? DEFAULT_SCORING,
     budget: session.budget ?? null,
+    rounds: session.rounds ?? [],
+    phase: session.phase ?? 'lobby',
+    current_round: session.currentRound ?? 0,
+    total_rounds: getRounds(session).length,
+    round_started_at: toIso(session.roundStartedAt),
+    round_ends_at: toIso(session.roundEndsAt),
     announcement: session.announcement ?? null,
     announcement_at: toIso(session.announcementAt),
     created_by: session.createdBy,
@@ -129,7 +190,24 @@ gameRouter.post('/api/admin/game', async (c) => {
     budget?: unknown;
     duration_sec?: number | null;
     starts_at?: string | null;
+    rounds?: Partial<RoundConfig>[];
   }>();
+
+  // Normalize the rounds. If none provided, derive a single round from the
+  // flat config so older clients keep working.
+  const rawRounds = Array.isArray(body.rounds) && body.rounds.length > 0
+    ? body.rounds
+    : [
+        {
+          intervalSec: 60,
+          durationSec: body.duration_sec ?? 120,
+          loadProfile: body.load_profile ?? DEFAULT_LOAD_PROFILE,
+          chaosEvents: [],
+          scoringConfig: body.scoring_config ?? DEFAULT_SCORING,
+          weight: 1,
+        },
+      ];
+  const rounds = rawRounds.map((r, i) => normalizeRound(r, i));
 
   const code = await generateUniqueCode();
   const inserted = await db
@@ -138,16 +216,20 @@ gameRouter.post('/api/admin/game', async (c) => {
       code,
       name: body.name ?? null,
       status: 'lobby',
+      phase: 'lobby',
+      currentRound: 0,
       seed: body.seed ?? 1,
       startsAt: body.starts_at ? new Date(body.starts_at) : null,
       startingArchitecture: (body.starting_architecture ?? null) as object | null,
       lockedNodeIds: (body.locked_node_ids ?? []) as object,
       allowDeleteStarting: body.allow_delete_starting ?? true,
-      loadProfile: (body.load_profile ?? DEFAULT_LOAD_PROFILE) as object,
+      // Mirror the first round's live config so the lobby preview is correct.
+      loadProfile: (rounds[0].loadProfile ?? DEFAULT_LOAD_PROFILE) as object,
       chaosEvents: [] as object,
-      scoringConfig: (body.scoring_config ?? DEFAULT_SCORING) as object,
+      scoringConfig: (rounds[0].scoringConfig ?? DEFAULT_SCORING) as object,
       budget: (body.budget ?? null) as object | null,
       durationSec: body.duration_sec ?? null,
+      rounds: rounds as object,
       createdBy: user.uid,
     })
     .returning();
@@ -169,17 +251,27 @@ gameRouter.patch('/api/admin/game/:code', async (c) => {
   if (!session) throw new HTTPException(404, { message: 'Match not found' });
 
   const body = await c.req.json<{
-    action?: 'start' | 'pause' | 'resume' | 'end';
+    // 'start'/'pause'/'resume'/'end' are legacy flat-match controls.
+    // 'open_interval'/'start_round'/'end_round' drive the round state machine.
+    action?:
+      | 'start'
+      | 'pause'
+      | 'resume'
+      | 'end'
+      | 'open_interval'
+      | 'start_round'
+      | 'end_round';
     name?: string;
     seed?: number;
     starts_at?: string | null;
     duration_sec?: number | null;
-    // Shift the running match's end time by this many seconds (+/-).
+    // Shift the active round's end time by this many seconds (+/-).
     add_sec?: number;
     load_profile?: { type: string };
     scoring_config?: Record<string, number>;
     allow_delete_starting?: boolean;
     locked_node_ids?: string[];
+    rounds?: Partial<RoundConfig>[];
   }>();
 
   const updates: Partial<typeof gameSessions.$inferInsert> = { updatedAt: new Date() };
@@ -196,48 +288,85 @@ gameRouter.patch('/api/admin/game/:code', async (c) => {
     updates.allowDeleteStarting = body.allow_delete_starting;
   if (body.locked_node_ids !== undefined)
     updates.lockedNodeIds = body.locked_node_ids as object;
+  if (body.rounds !== undefined)
+    updates.rounds = body.rounds.map((r, i) => normalizeRound(r, i)) as object;
 
-  if (body.action === 'start') {
+  const rounds = body.rounds
+    ? body.rounds.map((r, i) => normalizeRound(r, i))
+    : getRounds(session);
+  const totalRounds = rounds.length;
+  const curRound = session.currentRound ?? 0;
+  const action = body.action;
+
+  // Begin the next round: freeze players, mirror the round's config into the
+  // live columns the client engine reads, and time-box it.
+  const beginRound = (next: number) => {
+    const round = rounds[next - 1];
+    if (!round) throw new HTTPException(400, { message: 'No such round' });
+    const now = new Date();
+    updates.currentRound = next;
+    updates.phase = 'round';
     updates.status = 'running';
-    const startedAt = new Date();
-    updates.startedAt = startedAt;
-    if (!body.starts_at) updates.startsAt = startedAt;
-  } else if (body.action === 'pause') {
+    updates.roundStartedAt = now;
+    updates.roundEndsAt = new Date(now.getTime() + round.durationSec * 1000);
+    updates.loadProfile = round.loadProfile as object;
+    updates.chaosEvents = round.chaosEvents as object;
+    updates.scoringConfig = round.scoringConfig as object;
+    if (!session.startedAt) updates.startedAt = now;
+  };
+
+  if (action === 'start_round') {
+    beginRound(Math.min(totalRounds, curRound + 1));
+  } else if (action === 'start') {
+    // Legacy "start now": route to round 1 when the match has rounds.
+    if (totalRounds > 0) {
+      beginRound(curRound > 0 ? curRound : 1);
+    } else {
+      updates.status = 'running';
+      const startedAt = new Date();
+      updates.startedAt = startedAt;
+      if (!body.starts_at) updates.startsAt = startedAt;
+    }
+  } else if (action === 'open_interval') {
+    // Build window before the next round; sim paused, editing enabled.
+    updates.phase = 'interval';
     updates.status = 'paused';
-  } else if (body.action === 'resume') {
+    updates.roundEndsAt = null;
+  } else if (action === 'end_round') {
+    const now = new Date();
+    if (curRound >= totalRounds) {
+      updates.phase = 'ended';
+      updates.status = 'ended';
+      updates.endsAt = now;
+      updates.roundEndsAt = null;
+    } else {
+      updates.phase = 'interval';
+      updates.status = 'paused';
+      updates.roundEndsAt = null;
+    }
+  } else if (action === 'pause') {
+    updates.status = 'paused';
+  } else if (action === 'resume') {
     updates.status = 'running';
-  } else if (body.action === 'end') {
+  } else if (action === 'end') {
     updates.status = 'ended';
+    updates.phase = 'ended';
     updates.endsAt = new Date();
+    updates.roundEndsAt = null;
   }
 
-  // ----- Time math (kept consistent across start / duration / add_sec) -----
-  if (body.action !== 'end') {
-    const startedAt = updates.startedAt ?? session.startedAt;
-    const effectiveDuration =
-      body.duration_sec !== undefined ? body.duration_sec : session.durationSec;
-
-    // Recompute ends_at whenever we know a start time and a duration.
-    if (startedAt && effectiveDuration) {
-      updates.endsAt = new Date(
-        new Date(startedAt).getTime() + effectiveDuration * 1000
-      );
-    } else if (body.duration_sec === null) {
-      updates.endsAt = null; // duration cleared => open-ended match
-    }
-
-    // Extend/shorten relative to the (possibly just recomputed) end time.
-    if (body.add_sec !== undefined && body.add_sec !== 0) {
+  // Adjust the active round's end time (admin fine-tuning during a round).
+  if (body.add_sec !== undefined && body.add_sec !== 0) {
+    const effectivePhase = (updates.phase ?? session.phase) as string;
+    if (effectivePhase === 'round') {
+      const base = updates.roundEndsAt ?? session.roundEndsAt;
+      const baseMs = base ? new Date(base).getTime() : Date.now();
+      updates.roundEndsAt = new Date(baseMs + body.add_sec * 1000);
+    } else {
+      // Legacy flat-match end-time shift.
       const baseEnds = updates.endsAt ?? session.endsAt;
       const baseMs = baseEnds ? new Date(baseEnds).getTime() : Date.now();
-      const newEnds = new Date(baseMs + body.add_sec * 1000);
-      updates.endsAt = newEnds;
-      if (startedAt) {
-        updates.durationSec = Math.max(
-          0,
-          Math.round((newEnds.getTime() - new Date(startedAt).getTime()) / 1000)
-        );
-      }
+      updates.endsAt = new Date(baseMs + body.add_sec * 1000);
     }
   }
 
@@ -265,7 +394,8 @@ gameRouter.post('/api/admin/game/:code/chaos', async (c) => {
     throw new HTTPException(400, { message: 'type and targetId are required' });
 
   // Schedule a couple of seconds into the future so every client picks it up.
-  const startSec = matchElapsedSec(session) + 2;
+  // Round-relative: clients reset the sim clock to 0 at the start of each round.
+  const startSec = roundElapsedSec(session) + 2;
   const event = {
     id: `chaos-${Date.now()}`,
     type: body.type,
@@ -326,6 +456,7 @@ gameRouter.get('/api/admin/game/:code/players', async (c) => {
       avatar_image: userMap.get(p.userId)?.avatarImage ?? null,
       score: p.score ?? 0,
       score_breakdown: p.scoreBreakdown ?? null,
+      round_scores: p.roundScores ?? {},
       metrics: p.metrics ?? null,
       architecture: p.architecture ?? null,
       node_count: nodeCount,
@@ -449,6 +580,11 @@ async function playerSessionToDict(session: SessionRow, userId: string) {
     allow_delete_starting: session.allowDeleteStarting ?? true,
     scoring_config: session.scoringConfig ?? DEFAULT_SCORING,
     budget: session.budget ?? null,
+    phase: session.phase ?? 'lobby',
+    current_round: session.currentRound ?? 0,
+    total_rounds: getRounds(session).length,
+    round_started_at: toIso(session.roundStartedAt),
+    round_ends_at: toIso(session.roundEndsAt),
     announcement: session.announcement ?? null,
     announcement_at: toIso(session.announcementAt),
     starting_architecture: session.startingArchitecture ?? null,
@@ -456,6 +592,7 @@ async function playerSessionToDict(session: SessionRow, userId: string) {
     joined: !!me,
     my_architecture: me?.architecture ?? null,
     my_score: me?.score ?? 0,
+    my_round_scores: me?.roundScores ?? {},
   };
 }
 
@@ -509,36 +646,70 @@ gameRouter.put('/api/game/:code/architecture', async (c) => {
     score?: number;
     score_breakdown?: unknown;
     metrics?: unknown;
+    // Round-based submission: per-round score recorded under round_index, with
+    // the aggregate recomputed server-side from all rounds' weights.
+    round_index?: number;
+    round_score?: number;
+    round_breakdown?: unknown;
   }>();
+
+  const rounds = getRounds(session);
+
+  // Load the existing player row so we can merge round scores.
+  const existingRows = await db
+    .select()
+    .from(gamePlayers)
+    .where(
+      and(eq(gamePlayers.sessionId, session.id), eq(gamePlayers.userId, user.uid))
+    )
+    .limit(1);
+  const existing = existingRows[0] ?? null;
+
+  // Merge the new round result into the per-round map.
+  const prevRoundScores = (existing?.roundScores ?? {}) as Record<
+    string,
+    { score?: number; breakdown?: unknown; metrics?: unknown }
+  >;
+  let roundScores = prevRoundScores;
+  let aggregate: number | null = null;
+  if (body.round_index !== undefined && body.round_score !== undefined) {
+    roundScores = {
+      ...prevRoundScores,
+      [String(body.round_index)]: {
+        score: body.round_score,
+        breakdown: body.round_breakdown ?? null,
+        metrics: body.metrics ?? null,
+      },
+    };
+    aggregate = computeAggregate(rounds, roundScores);
+  }
 
   const updates: Partial<typeof gamePlayers.$inferInsert> = {
     lastSubmittedAt: new Date(),
   };
   if (body.architecture !== undefined)
     updates.architecture = body.architecture as object;
-  if (body.score !== undefined) updates.score = body.score;
   if (body.score_breakdown !== undefined)
     updates.scoreBreakdown = body.score_breakdown as object;
   if (body.metrics !== undefined) updates.metrics = body.metrics as object;
+  if (aggregate !== null) {
+    updates.score = aggregate;
+    updates.roundScores = roundScores as object;
+  } else if (body.score !== undefined) {
+    // Flat (legacy / non-round) submission.
+    updates.score = body.score;
+  }
 
-  // Upsert: create the player row if they submit before an explicit join.
-  const existing = await db
-    .select({ id: gamePlayers.id })
-    .from(gamePlayers)
-    .where(
-      and(eq(gamePlayers.sessionId, session.id), eq(gamePlayers.userId, user.uid))
-    )
-    .limit(1);
-
-  if (existing.length === 0) {
+  if (!existing) {
     await db.insert(gamePlayers).values({
       sessionId: session.id,
       userId: user.uid,
       architecture: (body.architecture ?? session.startingArchitecture ?? null) as
         | object
         | null,
-      score: body.score ?? 0,
+      score: aggregate ?? body.score ?? 0,
       scoreBreakdown: (body.score_breakdown ?? null) as object | null,
+      roundScores: roundScores as object,
       metrics: (body.metrics ?? null) as object | null,
       lastSubmittedAt: new Date(),
     });

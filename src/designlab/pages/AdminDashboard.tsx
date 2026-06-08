@@ -21,8 +21,6 @@ interface UserGrowthResponse {
 interface DashboardData {
   users: {
     total: number
-    subscribed: number
-    subscription_rate: number
     active_30_days: number
     new_this_week: number
   }
@@ -620,7 +618,7 @@ function AdminDashboard() {
                 <StatCard
                   title="Total de Usuários"
                   value={data.users.total}
-                  subtitle={`${data.users.subscribed} assinantes (${data.users.subscription_rate}%)`}
+                  subtitle={`${data.users.active_30_days} ativos (30 dias)`}
                   color="sky"
                   trend={{ value: data.users.new_this_week, label: `+${data.users.new_this_week} esta semana` }}
                   icon={

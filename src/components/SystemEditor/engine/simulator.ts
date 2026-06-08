@@ -44,6 +44,8 @@ export class Simulator {
 
   history: SimulationFrame[] = [];
   totalCost = 0; // accumulated USD over the run
+  totalSuccess = 0; // cumulative successful requests over the run
+  totalFailed = 0; // cumulative failed requests over the run
 
   constructor(config: SimConfig) {
     this.nodes = config.nodes;
@@ -110,6 +112,8 @@ export class Simulator {
     this.time = 0;
     this.history = [];
     this.totalCost = 0;
+    this.totalSuccess = 0;
+    this.totalFailed = 0;
     if (seed !== undefined) this.seed = seed;
     this.rng = new Rng(this.seed);
     this.state.queueLengths.clear();
@@ -159,6 +163,8 @@ export class Simulator {
 
     const system = this.systemMetrics(result.runtime, trace.system, warnings);
     this.totalCost += (system.costPerHour / 3600) * this.dt;
+    this.totalSuccess += system.totalThroughput * this.dt;
+    this.totalFailed += system.failedRate * this.dt;
 
     const frame: SimulationFrame = { time: this.time, nodeMetrics, edgeFlow, system };
     this.history.push(frame);
@@ -267,7 +273,8 @@ export class Simulator {
     });
     const endToEndFail = clientLoad > 0 ? entryFail / clientLoad : 0;
     const totalThroughput = success * (1 - endToEndFail);
-    const errorRate = offered > 0 ? 1 - totalThroughput / offered : 0;
+    const failedRate = Math.max(0, offered - totalThroughput);
+    const errorRate = offered > 0 ? failedRate / offered : 0;
 
     return {
       time: this.time,
@@ -275,6 +282,7 @@ export class Simulator {
       totalThroughput,
       successRate: offered > 0 ? totalThroughput / offered : 1,
       errorRate: Math.max(0, Math.min(1, errorRate)),
+      failedRate,
       inFlightTotal: inFlight,
       p50: e2e.p50,
       p95: e2e.p95,

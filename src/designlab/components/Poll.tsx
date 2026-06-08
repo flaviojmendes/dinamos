@@ -6,11 +6,10 @@ import { TacticalButton } from './tactical';
 interface PollProps {
   poll: PollType;
   onPollUpdate?: (poll: PollType) => void;
-  isSubscribed: boolean;
   canManage?: boolean;
 }
 
-const Poll = ({ poll, onPollUpdate, isSubscribed, canManage = false }: PollProps) => {
+const Poll = ({ poll, onPollUpdate, canManage = false }: PollProps) => {
   const [selectedOptions, setSelectedOptions] = useState<number[]>(poll.user_votes || []);
   const [isVoting, setIsVoting] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
@@ -25,7 +24,7 @@ const Poll = ({ poll, onPollUpdate, isSubscribed, canManage = false }: PollProps
   }, [localPoll.ends_at]);
 
   // Determine if voting is allowed
-  const canVote = isSubscribed && !localPoll.is_closed && !hasEnded;
+  const canVote = !localPoll.is_closed && !hasEnded;
   
   // Check if user has voted
   const hasVoted = localPoll.user_votes && localPoll.user_votes.length > 0;
@@ -277,13 +276,6 @@ const Poll = ({ poll, onPollUpdate, isSubscribed, canManage = false }: PollProps
           )}
         </div>
       </div>
-      
-      {/* Non-subscribed message */}
-      {!isSubscribed && !localPoll.is_closed && !hasEnded && (
-        <p className="mt-3 text-sm text-signal-amber text-center font-sans">
-          Apenas assinantes podem votar em enquetes.
-        </p>
-      )}
     </div>
   );
 };

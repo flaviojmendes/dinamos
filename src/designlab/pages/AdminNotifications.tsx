@@ -28,7 +28,6 @@ interface SelectableUser {
   email: string;
   nickname: string | null;
   avatar_image: string | null;
-  is_subscribed: boolean;
   role: string;
   role_color: string;
 }
@@ -45,7 +44,6 @@ const AdminNotifications = () => {
   const [sendEmail, setSendEmail] = useState(true);
   
   // Filter state
-  const [subscriptionFilter, setSubscriptionFilter] = useState<string>('all');
   const [roleFilter, setRoleFilter] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
   
@@ -85,9 +83,6 @@ const AdminNotifications = () => {
       setLoadingUsers(true);
       try {
         const params: any = {};
-        if (subscriptionFilter !== 'all') {
-          params.subscription_filter = subscriptionFilter;
-        }
         if (roleFilter !== 'all') {
           params.role_filter = roleFilter;
         }
@@ -109,7 +104,7 @@ const AdminNotifications = () => {
     // Debounce search
     const timer = setTimeout(fetchUsers, 300);
     return () => clearTimeout(timer);
-  }, [subscriptionFilter, roleFilter, searchTerm]);
+  }, [roleFilter, searchTerm]);
 
   // Count how many selected users are visible vs hidden
   const visibleUserIds = new Set(users.map(u => u.id));
@@ -199,7 +194,6 @@ const AdminNotifications = () => {
     setCtaText('');
     setCtaUrl('');
     setSendEmail(true);
-    setSubscriptionFilter('all');
     setRoleFilter('all');
     setSearchTerm('');
     setSelectedUserIds(new Set());
@@ -286,20 +280,6 @@ const AdminNotifications = () => {
                         placeholder="Buscar por nome ou email..."
                         className={`${inputClass} pl-9 py-2.5 text-sm`}
                       />
-                    </div>
-
-                    {/* Subscription Filter */}
-                    <div className="relative">
-                      <Users className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                      <select
-                        value={subscriptionFilter}
-                        onChange={(e) => setSubscriptionFilter(e.target.value)}
-                        className={`${inputClass} pl-9 py-2.5 text-sm appearance-none`}
-                      >
-                        <option value="all">Todos</option>
-                        <option value="subscribed">Assinantes</option>
-                        <option value="not_subscribed">Não assinantes</option>
-                      </select>
                     </div>
 
                     {/* Role Filter */}
@@ -420,15 +400,6 @@ const AdminNotifications = () => {
                               <p className="text-xs text-slate-500 dark:text-tactical-label truncate">
                                 {user.email}
                               </p>
-                            </div>
-
-                            {/* Status */}
-                            <div className="flex-shrink-0">
-                              {user.is_subscribed ? (
-                                <StatusBadge variant="active" label="Assinante" />
-                              ) : (
-                                <StatusBadge variant="offline" label="Gratuito" />
-                              )}
                             </div>
                           </label>
                         ))}

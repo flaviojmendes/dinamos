@@ -434,7 +434,6 @@ const AdminUsers = () => {
   // Filters & Pagination
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
-  const [statusFilter, setStatusFilter] = useState('all');
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [sortBy, setSortBy] = useState('created_at');
@@ -453,7 +452,7 @@ const AdminUsers = () => {
   useEffect(() => {
     // Reset page when filters change
     setPage(1);
-  }, [searchTerm, roleFilter, statusFilter, minTokens, maxTokens, minQuizAvg, maxQuizAvg]);
+  }, [searchTerm, roleFilter, minTokens, maxTokens, minQuizAvg, maxQuizAvg]);
 
   useEffect(() => {
     // Debounce search
@@ -462,7 +461,7 @@ const AdminUsers = () => {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [searchTerm, roleFilter, statusFilter, page, sortBy, sortDesc, minTokens, maxTokens, minQuizAvg, maxQuizAvg]);
+  }, [searchTerm, roleFilter, page, sortBy, sortDesc, minTokens, maxTokens, minQuizAvg, maxQuizAvg]);
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -475,7 +474,6 @@ const AdminUsers = () => {
       };
       if (searchTerm) params.search = searchTerm;
       if (roleFilter !== 'all') params.role = roleFilter;
-      if (statusFilter !== 'all') params.is_subscribed = statusFilter === 'active';
       
       // Token filters
       if (minTokens) params.min_tokens = parseInt(minTokens);
@@ -517,22 +515,6 @@ const AdminUsers = () => {
     } catch (err) {
       console.error('Error updating role:', err);
       alert('Failed to update role');
-    } finally {
-      setUpdating(null);
-    }
-  };
-
-  const handleSubscriptionChange = async (userId: string, isSubscribed: boolean) => {
-    setUpdating(userId);
-    try {
-      await apiClient.put(`/api/admin/users/${userId}/subscription`, { is_subscribed: isSubscribed });
-      
-      setUsers(users.map(u => 
-        u.id === userId ? { ...u, is_subscribed: isSubscribed } : u
-      ));
-    } catch (err) {
-      console.error('Error updating subscription:', err);
-      alert('Failed to update subscription');
     } finally {
       setUpdating(null);
     }
@@ -630,19 +612,6 @@ const AdminUsers = () => {
                   {availableRoles.map(role => (
                     <option key={role} value={role}>{role}</option>
                   ))}
-                </select>
-              </div>
-              <div className="w-full sm:w-48">
-                <label htmlFor="status-filter" className="sr-only">Filtrar por Status</label>
-                <select
-                  id="status-filter"
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green sm:text-sm px-3 py-2"
-                >
-                  <option value="all">Todos os Status</option>
-                  <option value="active">Inscrito</option>
-                  <option value="inactive">Não Inscrito</option>
                 </select>
               </div>
               <button
@@ -791,21 +760,6 @@ const AdminUsers = () => {
                       </div>
                       
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-slate-500 dark:text-tactical-label">Inscrição:</span>
-                        <button
-                          onClick={() => handleSubscriptionChange(user.id, !user.is_subscribed)}
-                          disabled={updating === user.id}
-                          className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
-                            user.is_subscribed
-                              ? 'bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-300 dark:hover:bg-green-900/50'
-                              : 'bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-tactical-raised dark:text-tactical-text dark:hover:bg-gray-600'
-                          }`}
-                        >
-                          {user.is_subscribed ? 'Ativo' : 'Inativo'}
-                        </button>
-                      </div>
-                      
-                      <div className="flex items-center justify-between">
                         <span className="text-sm font-medium text-slate-500 dark:text-tactical-label">Entrou em:</span>
                         <span className="text-sm text-slate-900 dark:text-tactical-text">
                           {user.created_at ? new Date(user.created_at).toLocaleDateString() : '-'}
@@ -898,15 +852,6 @@ const AdminUsers = () => {
                         <th 
                           scope="col" 
                           className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-tactical-label cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-                          onClick={() => handleSort('is_subscribed')}
-                        >
-                          <div className="flex items-center">
-                            Inscrição <SortIcon column="is_subscribed" />
-                          </div>
-                        </th>
-                        <th 
-                          scope="col" 
-                          className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-tactical-label cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
                           onClick={() => handleSort('created_at')}
                         >
                           <div className="flex items-center">
@@ -974,19 +919,6 @@ const AdminUsers = () => {
                                 {user.quizzes_completed || 0} quiz{(user.quizzes_completed || 0) !== 1 ? 'zes' : ''}
                               </span>
                             </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <button
-                              onClick={() => handleSubscriptionChange(user.id, !user.is_subscribed)}
-                              disabled={updating === user.id}
-                              className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
-                                user.is_subscribed
-                                  ? 'bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-300 dark:hover:bg-green-900/50'
-                                  : 'bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-tactical-raised dark:text-tactical-text dark:hover:bg-gray-600'
-                              }`}
-                            >
-                              {user.is_subscribed ? 'Ativo' : 'Inativo'}
-                            </button>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-tactical-label">
                             {user.created_at ? new Date(user.created_at).toLocaleDateString() : '-'}

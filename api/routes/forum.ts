@@ -12,7 +12,6 @@ import {
 import {
   authRequired,
   optionalAuth,
-  subscriptionRequired,
   type AppVariables,
 } from '../middleware/auth.js';
 import {
@@ -101,7 +100,7 @@ forumRouter.get('/api/forum/topics', authRequired, async (c) => {
 });
 
 // Create topic --------------------------------------------------------------
-forumRouter.post('/api/forum/topics', subscriptionRequired, async (c) => {
+forumRouter.post('/api/forum/topics', authRequired, async (c) => {
   const user = c.get('user');
   const body = await c.req.json<{ title: string; content: string; category: string }>();
   const cat = await db
@@ -176,7 +175,7 @@ async function calculateMessageDepth(messageId: number): Promise<number> {
 }
 
 // Create message (reply) ----------------------------------------------------
-forumRouter.post('/api/forum/topics/:id/messages', subscriptionRequired, async (c) => {
+forumRouter.post('/api/forum/topics/:id/messages', authRequired, async (c) => {
   const user = c.get('user');
   const topicId = Number(c.req.param('id'));
   const body = await c.req.json<{

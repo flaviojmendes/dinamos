@@ -64,7 +64,6 @@ interface MessageComponentProps {
   canDeleteFn: (userId: string) => boolean;
   canEditFn: (userId: string) => boolean;
   theme: string;
-  isSubscribed: boolean;
 }
 
 const MessageComponent = memo(({ 
@@ -75,7 +74,6 @@ const MessageComponent = memo(({
   canDeleteFn,
   canEditFn,
   theme,
-  isSubscribed
 }: MessageComponentProps) => {
   const [isReplying, setIsReplying] = useState(false);
   const [replyContent, setReplyContent] = useState('');
@@ -91,7 +89,7 @@ const MessageComponent = memo(({
   const [saving, setSaving] = useState(false);
 
   const depth = message.depth || 0;
-  const canReply = depth < 2 && isSubscribed;
+  const canReply = depth < 2;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -374,7 +372,6 @@ const MessageComponent = memo(({
                 canDeleteFn={canDeleteFn}
                 canEditFn={canEditFn}
                 theme={theme}
-                isSubscribed={isSubscribed}
               />
             ))}
           </div>
@@ -387,7 +384,7 @@ const MessageComponent = memo(({
 const TopicView = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { appUser, isSubscribed } = useAuth();
+  const { appUser } = useAuth();
   const { theme } = useTheme();
   const [topic, setTopic] = useState<ForumTopic | null>(null);
   const [messages, setMessages] = useState<ForumMessage[]>([]);
@@ -932,7 +929,6 @@ const TopicView = () => {
                   <Poll 
                     poll={poll}
                     onPollUpdate={(updatedPoll) => setPoll(updatedPoll)}
-                    isSubscribed={isSubscribed}
                     canManage={appUser?.id === topic.user_id || (appUser?.permissions?.includes('delete_any_topic') ?? false)}
                   />
                 </div>
@@ -972,13 +968,11 @@ const TopicView = () => {
                 canDeleteFn={canDelete}
                 canEditFn={canEdit}
                 theme={theme}
-                isSubscribed={isSubscribed}
               />
             ))}
           </div>
 
           {/* Reply Form */}
-          {isSubscribed ? (
           <div className="tactical-panel p-6">
             <h3 className={`${sectionTitleClass} mb-4`}>Adicionar resposta</h3>
             <form onSubmit={handleMainReply}>
@@ -1028,13 +1022,6 @@ const TopicView = () => {
               </div>
             </form>
           </div>
-          ) : (
-            <div className="tactical-panel p-6 text-center">
-              <p className="text-slate-500 dark:text-tactical-dim">
-                Somente assinantes podem responder a tópicos. <Link to="/subscribe" className="text-brand-600 dark:text-signal-green hover:opacity-80">Assine agora</Link> para participar da discussão.
-              </p>
-            </div>
-          )}
         </div>
       </main>
     </div>

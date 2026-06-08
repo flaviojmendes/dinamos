@@ -44,7 +44,6 @@ import {
   getRoleRow,
   getUserContext,
 } from '../db/repo.js';
-import { isFreeAccessEnabled, getFreeAccessStatus, setFreeAccessMode } from '../lib/freeAccess.js';
 import { sendSystemNotificationEmail } from '../lib/email.js';
 
 export const adminRouter = new Hono<{ Variables: AppVariables }>();
@@ -79,8 +78,6 @@ adminRouter.get('/api/admin/users', async (c) => {
   const limit = Number(q.limit ?? '10');
   const search = q.search;
   const role = q.role;
-  const isSubscribed =
-    q.is_subscribed === undefined ? undefined : q.is_subscribed === 'true';
   const sortBy = q.sort_by ?? 'created_at';
   const sortDesc = (q.sort_desc ?? 'true') === 'true';
   const minTokens = q.min_tokens != null ? Number(q.min_tokens) : undefined;
@@ -93,7 +90,6 @@ adminRouter.get('/api/admin/users', async (c) => {
     const term = `%${search}%`;
     conditions.push(or(ilike(users.nickname, term), ilike(users.email, term)));
   }
-  if (isSubscribed !== undefined) conditions.push(eq(users.isSubscribed, isSubscribed));
   if (minTokens != null) conditions.push(gte(users.tokens, minTokens));
   if (maxTokens != null) conditions.push(sql`${users.tokens} <= ${maxTokens}`);
 
@@ -112,7 +108,6 @@ adminRouter.get('/api/admin/users', async (c) => {
     .where(conditions.length ? and(...conditions) : undefined);
 
   const statsMap = await quizStatsByUser();
-  const free = await isFreeAccessEnabled();
 
   // role lookup
   const roleIds = Array.from(
@@ -135,7 +130,7 @@ adminRouter.get('/api/admin/users', async (c) => {
         permsCache.set(u.roleId, codes);
       }
       return {
-        ...userToDict(u, roleRow as any, codes ?? [], free),
+        ...userToDict(u, roleRow as any, codes ?? []),
         avg_quiz_score: avg,
         quizzes_completed: stat?.count ?? 0,
         _sort_created: u.createdAt ? new Date(u.createdAt).getTime() : 0,
@@ -156,7 +151,6 @@ adminRouter.get('/api/admin/users', async (c) => {
       case 'nickname': av = a.nickname ?? ''; bv = b.nickname ?? ''; break;
       case 'email': av = a.email ?? ''; bv = b.email ?? ''; break;
       case 'role': av = a.role ?? ''; bv = b.role ?? ''; break;
-      case 'is_subscribed': av = a.is_subscribed ? 1 : 0; bv = b.is_subscribed ? 1 : 0; break;
       case 'tokens': av = a.tokens ?? 0; bv = b.tokens ?? 0; break;
       case 'avg_quiz_score': av = a.avg_quiz_score; bv = b.avg_quiz_score; break;
       case 'quizzes_completed': av = a.quizzes_completed; bv = b.quizzes_completed; break;
@@ -183,19 +177,7 @@ adminRouter.put('/api/admin/users/:id/role', async (c) => {
     .set({ role: body.role, roleId: roleObj.id })
     .where(eq(users.id, userId));
   const ctx = await getUserContext(userId);
-  return c.json(userToDict(ctx!.user, ctx!.role, ctx!.permissionCodes, await isFreeAccessEnabled()));
-});
-
-adminRouter.put('/api/admin/users/:id/subscription', async (c) => {
-  const userId = c.req.param('id');
-  const body = await c.req.json<{ is_subscribed: boolean }>();
-  const target = await db.select().from(users).where(eq(users.id, userId)).limit(1);
-  if (!target[0]) throw new HTTPException(404, { message: 'User not found' });
-  const updates: Record<string, unknown> = { isSubscribed: body.is_subscribed };
-  if (body.is_subscribed && !target[0].subscribedAt) updates.subscribedAt = new Date();
-  await db.update(users).set(updates).where(eq(users.id, userId));
-  const ctx = await getUserContext(userId);
-  return c.json(userToDict(ctx!.user, ctx!.role, ctx!.permissionCodes, await isFreeAccessEnabled()));
+  return c.json(userToDict(ctx!.user, ctx!.role, ctx!.permissionCodes));
 });
 
 adminRouter.put('/api/admin/users/:id/reset-onboarding', async (c) => {
@@ -204,7 +186,7 @@ adminRouter.put('/api/admin/users/:id/reset-onboarding', async (c) => {
   if (!target[0]) throw new HTTPException(404, { message: 'User not found' });
   await db.update(users).set({ onboardingCompleted: false }).where(eq(users.id, userId));
   const ctx = await getUserContext(userId);
-  return c.json(userToDict(ctx!.user, ctx!.role, ctx!.permissionCodes, await isFreeAccessEnabled()));
+  return c.json(userToDict(ctx!.user, ctx!.role, ctx!.permissionCodes));
 });
 
 adminRouter.get('/api/admin/users/:id/token-transactions', async (c) => {
@@ -340,22 +322,6 @@ adminRouter.get('/api/admin/permissions', async (c) => {
   const rows = await db.select().from(permissions);
   return c.json({
     permissions: rows.map((p) => ({ code: p.code, description: p.description })),
-  });
-});
-
-// ==================== Settings: free access ====================
-
-adminRouter.get('/api/admin/settings/free-access', async (c) => {
-  return c.json(await getFreeAccessStatus());
-});
-
-adminRouter.put('/api/admin/settings/free-access', async (c) => {
-  const body = await c.req.json<{ enabled: boolean }>();
-  await setFreeAccessMode(body.enabled);
-  return c.json({
-    success: true,
-    enabled: body.enabled,
-    message: `Free access mode ${body.enabled ? 'enabled' : 'disabled'}`,
   });
 });
 
@@ -623,9 +589,6 @@ async function buildDashboardAnalytics() {
   const sevenDaysAgo = new Date(now.getTime() - 7 * 86400000);
 
   const totalUsers = Number((await db.select({ c: count() }).from(users))[0].c);
-  const subscribedUsers = Number(
-    (await db.select({ c: count() }).from(users).where(eq(users.isSubscribed, true)))[0].c
-  );
   const activeQuizUsers = Number(
     (
       await db
@@ -783,8 +746,6 @@ async function buildDashboardAnalytics() {
   return {
     users: {
       total: totalUsers,
-      subscribed: subscribedUsers,
-      subscription_rate: totalUsers > 0 ? Math.round((subscribedUsers / totalUsers) * 1000) / 10 : 0,
       active_30_days: Math.max(activeQuizUsers, activeSolutionUsers),
       new_this_week: newUsersWeek,
     },
@@ -1136,25 +1097,22 @@ adminRouter.post('/api/admin/notifications/broadcast', async (c) => {
   );
 });
 
-function notificationFilterConditions(subscriptionFilter?: string, roleId?: number | null) {
+function notificationFilterConditions(roleId?: number | null) {
   const conditions: any[] = [];
-  if (subscriptionFilter === 'subscribed') conditions.push(eq(users.isSubscribed, true));
-  else if (subscriptionFilter === 'not_subscribed')
-    conditions.push(eq(users.isSubscribed, false));
   if (roleId != null) conditions.push(eq(users.roleId, roleId));
   return conditions;
 }
 
 adminRouter.post('/api/admin/notifications/filtered', async (c) => {
   const payload = await c.req.json<
-    NotifPayload & { subscription_filter?: string; role_filter?: string }
+    NotifPayload & { role_filter?: string }
   >();
   let roleId: number | null = null;
   if (payload.role_filter) {
     const r = await getRoleByName(payload.role_filter);
     roleId = r?.id ?? -1;
   }
-  const conditions = notificationFilterConditions(payload.subscription_filter, roleId);
+  const conditions = notificationFilterConditions(roleId);
   const targets = await db
     .select({ id: users.id, email: users.email, nickname: users.nickname })
     .from(users)
@@ -1172,33 +1130,31 @@ adminRouter.post('/api/admin/notifications/filtered', async (c) => {
       notifications_created: targets.length,
       emails_sent: emailsSent,
       users_matched: targets.length,
-      filters_applied: { subscription: payload.subscription_filter, role: payload.role_filter },
+      filters_applied: { role: payload.role_filter },
     },
     201
   );
 });
 
 adminRouter.get('/api/admin/notifications/preview-count', async (c) => {
-  const subscriptionFilter = c.req.query('subscription_filter');
   const roleFilter = c.req.query('role_filter');
   let roleId: number | null = null;
   if (roleFilter) {
     const r = await getRoleByName(roleFilter);
     roleId = r?.id ?? -1;
   }
-  const conditions = notificationFilterConditions(subscriptionFilter, roleId);
+  const conditions = notificationFilterConditions(roleId);
   const rows = await db
     .select({ c: count() })
     .from(users)
     .where(conditions.length ? and(...conditions) : undefined);
   return c.json({
     count: Number(rows[0]?.c ?? 0),
-    filters: { subscription: subscriptionFilter, role: roleFilter },
+    filters: { role: roleFilter },
   });
 });
 
 adminRouter.get('/api/admin/notifications/users', async (c) => {
-  const subscriptionFilter = c.req.query('subscription_filter');
   const roleFilter = c.req.query('role_filter');
   const search = c.req.query('search');
   let roleId: number | null = null;
@@ -1206,7 +1162,7 @@ adminRouter.get('/api/admin/notifications/users', async (c) => {
     const r = await getRoleByName(roleFilter);
     roleId = r?.id ?? -1;
   }
-  const conditions = notificationFilterConditions(subscriptionFilter, roleId);
+  const conditions = notificationFilterConditions(roleId);
   if (search) {
     const term = `%${search}%`;
     conditions.push(or(ilike(users.nickname, term), ilike(users.email, term)));
@@ -1233,7 +1189,6 @@ adminRouter.get('/api/admin/notifications/users', async (c) => {
         email: u.email,
         nickname: u.nickname,
         avatar_image: u.avatarImage,
-        is_subscribed: u.isSubscribed,
         role: r?.name ?? u.role,
         role_color: r?.color ?? '#3B82F6',
       };

@@ -5,7 +5,6 @@ import { db } from '../db/client.js';
 import { quizzes, quizQuestions, quizOptions, quizAttempts, users } from '../db/schema.js';
 import {
   authRequired,
-  subscriptionRequired,
   type AppVariables,
 } from '../middleware/auth.js';
 import { quizToDict, quizQuestionToDict, quizAttemptToDict } from '../db/serializers.js';
@@ -88,7 +87,7 @@ quizzesRouter.get('/api/quizzes', authRequired, async (c) => {
   return c.json({ quizzes: result });
 });
 
-quizzesRouter.get('/api/quizzes/:id', subscriptionRequired, async (c) => {
+quizzesRouter.get('/api/quizzes/:id', authRequired, async (c) => {
   const id = Number(c.req.param('id'));
   const rows = await db.select().from(quizzes).where(eq(quizzes.id, id)).limit(1);
   if (!rows[0] || !rows[0].isPublished)
@@ -97,7 +96,7 @@ quizzesRouter.get('/api/quizzes/:id', subscriptionRequired, async (c) => {
   return c.json(quizToDict(rows[0], questions.length, questions, true));
 });
 
-quizzesRouter.post('/api/quizzes/:id/attempt', subscriptionRequired, async (c) => {
+quizzesRouter.post('/api/quizzes/:id/attempt', authRequired, async (c) => {
   const user = c.get('user');
   const quizId = Number(c.req.param('id'));
   const body = await c.req.json<{
@@ -149,7 +148,7 @@ quizzesRouter.post('/api/quizzes/:id/attempt', subscriptionRequired, async (c) =
   return c.json(result, 201);
 });
 
-quizzesRouter.get('/api/quizzes/:id/attempts', subscriptionRequired, async (c) => {
+quizzesRouter.get('/api/quizzes/:id/attempts', authRequired, async (c) => {
   const user = c.get('user');
   const quizId = Number(c.req.param('id'));
   const rows = await db

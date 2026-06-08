@@ -22,9 +22,10 @@ export interface LessonEntry {
   path: string;
   slug: string;
   moduleId?: string | null;
-  requiresSubscription?: boolean;
   simulatorKey?: string | null;
   orderIndex?: number;
+  titleEn?: string | null;
+  titlePt?: string | null;
 }
 
 export interface ModuleDef {
@@ -36,6 +37,8 @@ export interface ModuleDef {
   base: string;
   /** Explicit lesson paths for modules without a shared URL prefix. */
   paths?: string[];
+  /** DB-driven display order (content_modules.order_index). */
+  orderIndex?: number;
 }
 
 export interface ContentItem {
@@ -44,7 +47,11 @@ export interface ContentItem {
   moduleId: string;
   tier: Tier;
   type: ContentType;
-  free: boolean;
+  /** DB-driven display order (content_pages.order_index). */
+  orderIndex?: number;
+  /** DB-driven titles (content_pages.title_en / title_pt), used for nav labels. */
+  titleEn?: string | null;
+  titlePt?: string | null;
   prerequisites?: string[];
   related?: string[];
   keywords?: string[];
@@ -205,13 +212,13 @@ const TOOL_PATHS: string[] = ['/editor', '/roadmap'];
 // Practice Arena: the merged designLab destinations (challenges hub, quizzes,
 // ranking, forum, profile, notifications). Registered so they are searchable in
 // the command palette and browsable on /explore alongside lessons & simulators.
-const PRACTICE_PATHS: { path: string; free: boolean }[] = [
-  { path: '/design-lab', free: true },
-  { path: '/quizzes', free: true },
-  { path: '/ranking', free: true },
-  { path: '/forum', free: true },
-  { path: '/profile', free: false },
-  { path: '/notifications', free: false },
+const PRACTICE_PATHS: string[] = [
+  '/design-lab',
+  '/quizzes',
+  '/ranking',
+  '/forum',
+  '/profile',
+  '/notifications',
 ];
 
 function buildRegistry(lessons: LessonEntry[]): ContentItem[] {
@@ -228,7 +235,9 @@ function buildRegistry(lessons: LessonEntry[]): ContentItem[] {
       moduleId,
       tier: tierForModule(moduleId),
       type,
-      free: entry.requiresSubscription === false,
+      orderIndex: entry.orderIndex,
+      titleEn: entry.titleEn,
+      titlePt: entry.titlePt,
     });
   }
 
@@ -241,7 +250,6 @@ function buildRegistry(lessons: LessonEntry[]): ContentItem[] {
       moduleId,
       tier: tierForModule(moduleId),
       type: 'simulator',
-      free: false,
     });
   }
 
@@ -253,19 +261,17 @@ function buildRegistry(lessons: LessonEntry[]): ContentItem[] {
       moduleId: 'tools',
       tier: 'TOOLS',
       type: 'tool',
-      free: true,
     });
   }
 
   // Practice Arena (merged designLab destinations).
-  for (const { path, free } of PRACTICE_PATHS) {
+  for (const path of PRACTICE_PATHS) {
     if (byPath.has(path)) continue;
     byPath.set(path, {
       path,
       moduleId: 'practice',
       tier: 'TOOLS',
       type: 'tool',
-      free,
     });
   }
 
@@ -302,6 +308,41 @@ export function itemsByType(type: ContentType): ContentItem[] {
 export function moduleOf(path: string): ModuleDef | undefined {
   const item = getItem(path);
   return item ? getModule(item.moduleId) : undefined;
+}
+
+/**
+ * DB-driven sort rank for a path, used to order the sidebar/roadmap nav.
+ * Items are ordered by their module's `order_index`, then the page's
+ * `order_index` within that module. Anything without a DB row (simulators,
+ * tools, external links) sorts last and keeps its static-tree position via the
+ * caller's index tiebreaker. Falls back to the live module array position when
+ * a module has no explicit `orderIndex` yet (e.g. before the index loads).
+ */
+/**
+ * DB-driven display title for a path, in the requested language (with fallback
+ * to the other language). Lesson/case pages carry their title from the CMS
+ * (content_pages.title_en / title_pt); items without a DB title (simulators,
+ * tools, module roots) return undefined so callers fall back to i18n keys.
+ */
+export function titleForPath(path: string, lang: string): string | undefined {
+  const item = getItem(path);
+  if (!item) return undefined;
+  const pt = lang.toLowerCase().startsWith('pt');
+  const primary = pt ? item.titlePt : item.titleEn;
+  const fallback = pt ? item.titleEn : item.titlePt;
+  const resolved = (primary && primary.trim()) || (fallback && fallback.trim()) || '';
+  return resolved || undefined;
+}
+
+export function orderRank(path: string): { module: number; page: number } {
+  const item = getItem(path);
+  const moduleId = item?.moduleId ?? moduleIdForPath(path);
+  const moduleArrayIdx = MODULES.findIndex((m) => m.id === moduleId);
+  const moduleOrder =
+    getModule(moduleId)?.orderIndex ??
+    (moduleArrayIdx >= 0 ? moduleArrayIdx : Number.MAX_SAFE_INTEGER);
+  const pageOrder = item?.orderIndex ?? Number.MAX_SAFE_INTEGER;
+  return { module: moduleOrder, page: pageOrder };
 }
 
 /**

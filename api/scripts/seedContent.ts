@@ -5,8 +5,8 @@
  *   node --env-file=.env node_modules/.bin/tsx api/scripts/seedContent.ts
  *
  * Idempotent: upserts by slug, so re-running refreshes bodies without creating
- * duplicates. The path + requiresSubscription come from the (authoritative)
- * contentManifest; the moduleId is derived the same way the nav registry does.
+ * duplicates. The path comes from the (authoritative) contentManifest; the
+ * moduleId is derived the same way the nav registry does.
  *
  * After verifying the seed, the static .mdx files can be removed (one is kept
  * as an authoring template). Content is then edited via the admin CMS.
@@ -42,12 +42,11 @@ async function main() {
   // Dedupe manifest by slug (first occurrence = canonical path; alias paths
   // such as /fallback and /horizontal-scaling are dropped — they were excluded
   // from search anyway and the canonical route is preserved).
-  const bySlug = new Map<string, { path: string; requiresSubscription: boolean }>();
+  const bySlug = new Map<string, { path: string }>();
   for (const entry of contentManifest) {
     if (bySlug.has(entry.slug)) continue;
     bySlug.set(entry.slug, {
       path: entry.path,
-      requiresSubscription: entry.requiresSubscription !== false,
     });
   }
 
@@ -68,7 +67,6 @@ async function main() {
       slug,
       path: meta.path,
       moduleId: moduleIdForPath(meta.path),
-      requiresSubscription: meta.requiresSubscription,
       orderIndex: order++,
       simulatorKey: null as string | null,
       published: true,
@@ -87,7 +85,6 @@ async function main() {
         set: {
           path: values.path,
           moduleId: values.moduleId,
-          requiresSubscription: values.requiresSubscription,
           orderIndex: values.orderIndex,
           titleEn: values.titleEn,
           titlePt: values.titlePt,

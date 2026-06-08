@@ -53,7 +53,7 @@ const resources = {
           },
           users: {
             title: 'Users',
-            description: 'View users, subscriptions, and account details.',
+            description: 'View users and account details.',
           },
           roles: {
             title: 'Roles',
@@ -232,66 +232,11 @@ const resources = {
         error_google: 'Error logging in with Google. Please try again.',
         error_github: 'Error logging in with GitHub. Please try again.'
       },
-      subscription: {
-        title: 'Full Access',
-        subtitle: 'Invest in your knowledge and professional development',
-        limited_offer: 'Black November Special Offer (50% OFF)',
-        one_time_lifetime: 'Monthly subscription - Full access',
-        buy_now: 'Buy Now',
-        processing: 'Processing...',
-        error_processing: 'An error occurred while processing the payment. Please try again.',
-        select_currency: 'Select your currency',
-        coupon_code: 'Coupon Code (Optional)',
-        enter_coupon: 'Enter coupon code',
-        clear_coupon: 'Clear coupon',
-        coupon_will_apply: 'Coupon "{{code}}" will be applied at checkout',
-        coupon_invalid_format: 'Invalid coupon format. Use 3-20 characters (letters, numbers, - or _)',
-        black_november_special: 'Black November Special Price! (50% OFF)',
-        use_coupon_hint: 'Use BLACKNOVEMBER for 50% OFF!',
-        features: [
-          'Access to all interactive simulators',
-          'Complete content on System Design',
-          'Regular content updates',
-          'Real-world practical examples',
-          'Community support',
-          'Full access to content'
-        ],
-        why_buy_title: 'Why buy?',
-        why_practical_title: 'Hands-on Learning',
-        why_practical_desc: 'Interactive simulators to experiment with real distributed systems scenarios, making it easier to understand complex concepts.',
-        why_updated_title: 'Updated Content',
-        why_updated_desc: 'Constantly updated material with the latest trends and best practices in systems architecture.',
-        why_career_title: 'Professional Development',
-        why_career_desc: 'Learn essential skills to advance your career as a software architect or engineer.',
-        why_community_title: 'Community',
-        why_community_desc: 'Join a community of developers, share experiences, and learn with other professionals.',
-        payment_confirmed: 'Payment Confirmed!',
-        access_granted_redirect: 'Your access has been granted successfully. Redirecting to the content...',
-        monthly: 'Monthly',
-        yearly: 'Yearly',
-        one_time: 'One-time',
-        monthly_plan: 'Monthly',
-        yearly_plan: 'Yearly',
-        lifetime_plan: 'Lifetime Access',
-        billed_monthly: 'Billed monthly',
-        best_value: 'BEST VALUE',
-        save: 'Save',
-        subscribe_now: 'Subscribe Now',
-        cancel_anytime: 'Cancel anytime',
-        lifetime_access_label: 'Acesso vitalício (Lifetime)',
-        lifetime_description: 'Pay once and keep unlimited access forever.',
-        pay_once: 'Pay once',
-        get_lifetime_access: 'Get lifetime access',
-        lifetime_note: 'One-time payment. Immediate lifetime access.',
-        lifetime_unavailable: 'Lifetime pricing is not available for this currency yet.'
-      },
       preferences: {
         title: 'Preferences',
         account_info: 'Account Information',
         email: 'Email',
         creation_date: 'Sign-up Date',
-        manage_subscription: 'Manage Subscription',
-        manage_subscription_desc: 'Manage your subscription, payment method, and invoice history through the Stripe portal.',
         privacy_cookies_title: 'Privacy & Cookies',
         cookie_preferences_title: 'Cookie Preferences',
         cookie_preferences_desc: 'Manage how we collect and use data on our website through cookies.',
@@ -313,7 +258,6 @@ const resources = {
             description: 'We collect information you provide directly to us, such as when you:',
             items: [
               'Create an account or log in',
-              'Subscribe to our services',
               'Contact us for support',
               'Participate in surveys or feedback'
             ]
@@ -393,8 +337,7 @@ const resources = {
               'Interactive learning content and tutorials',
               'System design simulators and tools',
               'Educational materials and documentation',
-              'Community features and progress tracking',
-              'Premium subscription services'
+              'Community features and progress tracking'
             ]
           },
           accounts: {
@@ -408,29 +351,8 @@ const resources = {
               'Accept responsibility for all activities under your account'
             ]
           },
-          subscription: {
-            title: '4. Subscription Services',
-            intro: 'Some features require a paid subscription. By subscribing, you agree to:',
-            items: [
-              'Pay all applicable fees for your plan',
-              'Automatic renewal unless cancelled before renewal',
-              'Our refund policy as outlined in Section 5',
-              'Fees are non-refundable except as required by law'
-            ],
-            note: 'We may change subscription pricing with reasonable notice to existing subscribers.'
-          },
-          cancellation: {
-            title: '5. Cancellation and Refunds',
-            intro: 'You may cancel anytime. After cancellation:',
-            items: [
-              'You keep access until the end of the billing period',
-              'No partial refunds for unused time',
-              'Your account reverts to the free tier after expiration'
-            ],
-            note: 'Refunds may be provided at our discretion in cases of unavailability or exceptional circumstances.'
-          },
           ip_rights: {
-            title: '6. Intellectual Property & Attribution',
+            title: '4. Intellectual Property & Attribution',
             intro: 'All educational content on the Service is free to access, study, and share. We ask only one thing in return: always credit the platform. Whenever you use, reference, or reproduce our content — including in videos, courses, classes, presentations, articles, social media, or any other medium — you must:',
             items: [
               'Give clear and visible credit to Dinamos (trilhainfo) as the source of the content',
@@ -440,7 +362,7 @@ const resources = {
             ]
           },
           conduct: {
-            title: '7. User Conduct',
+            title: '5. User Conduct',
             intro: 'You agree not to use the Service to:',
             items: [
               'Violate any laws or regulations',
@@ -452,7 +374,7 @@ const resources = {
             ]
           },
           availability: {
-            title: '8. Service Availability',
+            title: '6. Service Availability',
             intro: 'We strive for reliability but cannot guarantee uninterrupted availability. The Service may be unavailable due to:',
             items: [
               'Scheduled maintenance',
@@ -463,14 +385,14 @@ const resources = {
             note: 'We may modify, suspend, or discontinue the Service with reasonable notice.'
           },
           privacy: {
-            title: '9. Privacy and Data Protection',
+            title: '7. Privacy and Data Protection',
             paragraphs: [
               'Your privacy is important to us. Our collection and use of personal information is governed by our Privacy Policy, which is incorporated by reference.',
               'By using the Service, you consent to our data practices as described in the Privacy Policy.'
             ]
           },
           disclaimer: {
-            title: '10. Disclaimer of Warranties',
+            title: '8. Disclaimer of Warranties',
             intro: 'The Service is provided "as is" and "as available" without warranties of any kind, including:',
             items: [
               'Merchantability or fitness for a particular purpose',
@@ -480,7 +402,7 @@ const resources = {
             ]
           },
           liability: {
-            title: '11. Limitation of Liability',
+            title: '9. Limitation of Liability',
             intro: 'To the maximum extent permitted by law, Dinamos is not liable for indirect, incidental, special, consequential, or punitive damages, including:',
             items: [
               'Loss of profits, data, or other intangible losses',
@@ -490,7 +412,7 @@ const resources = {
             note: 'Total liability is limited to the amount you paid for the Service in the 12 months preceding the claim.'
           },
           indemnification: {
-            title: '12. Indemnification',
+            title: '10. Indemnification',
             intro: 'You agree to indemnify and hold harmless Dinamos from claims, damages, losses, or expenses arising from:',
             items: [
               'Your use of the Service',
@@ -500,7 +422,7 @@ const resources = {
             ]
           },
           termination: {
-            title: '13. Termination',
+            title: '11. Termination',
             intro: 'We may terminate or suspend your account and access immediately without notice for reasons including:',
             items: [
               'Breach of these Terms',
@@ -510,14 +432,14 @@ const resources = {
             note: 'Upon termination, your right to use the Service ceases immediately; provisions on IP, disclaimers, and limitations survive.'
           },
           governing_law: {
-            title: '14. Governing Law',
+            title: '12. Governing Law',
             paragraphs: [
               'These Terms are governed by the laws of Brazil, without regard to conflict of law provisions.',
               'Disputes are subject to the exclusive jurisdiction of the courts of Brazil.'
             ]
           },
           changes: {
-            title: '15. Changes to Terms',
+            title: '13. Changes to Terms',
             intro: 'We may modify these Terms at any time. If we make material changes, we will notify you by:',
             items: [
               'Posting the updated Terms on this page',
@@ -527,7 +449,7 @@ const resources = {
             note: 'Continued use after changes constitutes acceptance of the new Terms.'
           },
           contact: {
-            title: '16. Contact Information',
+            title: '14. Contact Information',
             intro: 'If you have questions about these Terms, contact us:',
             items: [
               'Email: flavio@trilha.info',
@@ -535,7 +457,7 @@ const resources = {
             ]
           },
           severability: {
-            title: '17. Severability',
+            title: '15. Severability',
             paragraphs: [
               'If any provision is unenforceable or invalid, it will be limited or eliminated to the minimum extent necessary so the remaining Terms remain in full force and effect.'
             ]
@@ -546,20 +468,6 @@ const resources = {
           cookies: 'Cookie Policy',
           back_home: 'Back to Dinamos'
         }
-      },
-      coupon_modal: {
-        welcome_title: 'Welcome! 🎉',
-        welcome_subtitle: 'Get exclusive access with our special Black November offer! (50% OFF)',
-        coupon_code: 'Your exclusive coupon code:',
-        discount_amount: '50% OFF - Valid All Black November! (50% OFF)',
-        features_title: 'What you\'ll get:',
-        feature_1: 'Complete systems design course',
-        feature_2: 'Interactive simulators',
-        feature_3: 'Real-world case studies',
-        feature_4: 'Lifetime access',
-        subscribe_now: 'Subscribe Now & Save 50%',
-        maybe_later: 'Maybe later',
-        timer_note: 'This offer is valid throughout the entire month of Black November! (50% OFF)'
       },
       landing: {
         hero_title: 'Master Distributed Systems in Practice',
@@ -625,8 +533,6 @@ const resources = {
         journey_real_cases_description: 'Apply your knowledge by analyzing real success cases',
 
         invest_title: 'Invest in Your Future',
-        invest_subtitle: 'Full access to all content with a monthly subscription',
-        invest_payment_info: 'Monthly subscription - Full access',
         new_offer_badge: 'New Offer',
         what_you_receive_title: 'What You Get',
         what_you_receive_item1: 'Over 15 interactive simulators for hands-on practice',
@@ -647,7 +553,7 @@ const resources = {
         free_price: 'FREE',
         free_description: 'Full access to all content, simulators, and real cases. No credit card required.',
         cta_free_title: 'Start Learning Today!',
-        cta_free_subtitle: 'Full access to all content, 100% free. No subscription required.',
+        cta_free_subtitle: 'Full access to all content, 100% free.',
         forum_section: {
           title: 'Community Forum',
           subtitle: 'Latest discussions from the community',
@@ -1769,6 +1675,14 @@ const resources = {
             name: 'Orchestration vs Choreography',
             description: 'Compare orchestration and choreography patterns'
           },
+          canary_deployment: {
+            name: 'Canary Deployment',
+            description: 'Gradual rollout with traffic shifting and instant rollback',
+            simulator: {
+              name: 'Canary Deployment Simulator',
+              description: 'Deploy a canary, shift traffic, and watch the metrics'
+            }
+          },
           cqrs: {
             name: 'CQRS',
             description: 'Separate write and read models via an event log',
@@ -2257,6 +2171,7 @@ const resources = {
           concurrency: 'Concurrency (c)',
           replicas: 'Replicas',
           capacity_approx: 'capacity ≈ {{value}}',
+          match_fixed: 'fixed by match',
           reliability: 'Reliability',
           failure_rate: 'Failure rate',
           timeout: 'Timeout',
@@ -2300,6 +2215,10 @@ const resources = {
           throughput: 'Throughput',
           success: 'Success',
           p95: 'p95',
+          success_total: 'Successful reqs',
+          success_total_hint: 'Total requests served OK this run',
+          failed_total: 'Failed reqs',
+          failed_total_hint: 'Total requests failed/dropped this run',
           in_flight: 'In-flight',
           cost: '{{provider}} cost',
           error_budget: 'Error budget used (SLO {{slo}}%)',
@@ -2489,13 +2408,8 @@ const resources = {
         be_first: 'Be the first to start a discussion!',
         no_replies: 'No replies yet. Be the first to respond!',
         try_again: 'Try again',
-        subscription_required: 'Subscription Required',
-        subscription_message: 'The community forum is available exclusively for subscribers. Join now to participate in discussions and learn with the community!',
-        subscribe_now: 'Subscribe Now',
         login_required: 'Login Required',
         login_message: 'Please sign in to access the community forum.',
-        subscribe_to_post: 'Subscribe to post',
-        subscribe_to_reply: 'Subscribe to join the discussion and reply to topics.',
         sort: {
           recent: 'Most recent',
           active: 'Most active',
@@ -6334,7 +6248,7 @@ const resources = {
           },
           users: {
             title: 'Usuários',
-            description: 'Veja usuários, assinaturas e detalhes de conta.',
+            description: 'Veja usuários e detalhes de conta.',
           },
           roles: {
             title: 'Funções',
@@ -6513,66 +6427,11 @@ const resources = {
         error_google: 'Erro ao fazer login com Google. Por favor, tente novamente.',
         error_github: 'Erro ao fazer login com GitHub. Por favor, tente novamente.'
       },
-      subscription: {
-        title: 'Acesso Completo',
-        subtitle: 'Invista em seu conhecimento e desenvolvimento profissional',
-        limited_offer: 'Oferta Especial de Black November (50% OFF)',
-        one_time_lifetime: 'Assinatura mensal - Acesso completo',
-        buy_now: 'Comprar Agora',
-        processing: 'Processando...',
-        error_processing: 'Ocorreu um erro ao processar o pagamento. Por favor, tente novamente.',
-        select_currency: 'Selecione sua moeda',
-        coupon_code: 'Código do Cupom (Opcional)',
-        enter_coupon: 'Digite o código do cupom',
-        clear_coupon: 'Limpar cupom',
-        coupon_will_apply: 'Cupom "{{code}}" será aplicado no checkout',
-        coupon_invalid_format: 'Formato de cupom inválido. Use 3-20 caracteres (letras, números, - ou _)',
-        black_november_special: 'Preço Especial de Black November! (50% OFF)',
-        use_coupon_hint: 'Use BLACKNOVEMBER para 50% OFF!',
-        features: [
-          'Acesso a todos os simuladores interativos',
-          'Conteúdo completo sobre System Design',
-          'Atualizações regulares de conteúdo',
-          'Exemplos práticos do mundo real',
-          'Suporte via comunidade',
-          'Acesso completo ao conteúdo'
-        ],
-        why_buy_title: 'Por que comprar?',
-        why_practical_title: 'Aprendizado Prático',
-        why_practical_desc: 'Simuladores interativos que permitem experimentar cenários reais de sistemas distribuídos, facilitando a compreensão de conceitos complexos.',
-        why_updated_title: 'Conteúdo Atualizado',
-        why_updated_desc: 'Material constantemente atualizado com as últimas tendências e melhores práticas em sistemas de arquitetura.',
-        why_career_title: 'Desenvolvimento Profissional',
-        why_career_desc: 'Aprenda habilidades essenciais para avançar sua carreira como arquiteto ou engenheiro de software.',
-        why_community_title: 'Comunidade',
-        why_community_desc: 'Faça parte de uma comunidade de desenvolvedores, compartilhe experiências e aprenda com outros profissionais.',
-        payment_confirmed: 'Pagamento Confirmado!',
-        access_granted_redirect: 'Seu acesso foi liberado com sucesso. Redirecionando para o conteúdo...',
-        monthly: 'Mensal',
-        yearly: 'Anual',
-        one_time: 'Pagamento único',
-        monthly_plan: 'Mensal',
-        yearly_plan: 'Anual',
-        lifetime_plan: 'Acesso Vitalício',
-        billed_monthly: 'Cobrado mensalmente',
-        best_value: 'MELHOR VALOR',
-        save: 'Economize',
-        subscribe_now: 'Assinar Agora',
-        cancel_anytime: 'Cancele quando quiser',
-        lifetime_access_label: 'Acesso vitalício',
-        lifetime_description: 'Pagamento único para manter acesso para sempre.',
-        pay_once: 'Pague uma vez',
-        get_lifetime_access: 'Garantir acesso vitalício',
-        lifetime_note: 'Pagamento único. Acesso vitalício imediato.',
-        lifetime_unavailable: 'Preço vitalício indisponível para esta moeda no momento.'
-      },
       preferences: {
         title: 'Preferências',
         account_info: 'Informações da Conta',
         email: 'Email',
         creation_date: 'Data de Inscrição',
-        manage_subscription: 'Gerenciar Assinatura',
-        manage_subscription_desc: 'Gerencie sua assinatura, método de pagamento e histórico de faturas através do portal do Stripe.',
         privacy_cookies_title: 'Privacidade e Cookies',
         cookie_preferences_title: 'Preferências de Cookies',
         cookie_preferences_desc: 'Gerencie como coletamos e usamos dados em nosso site através de cookies.',
@@ -6674,8 +6533,7 @@ const resources = {
               'Conteúdo interativo e tutoriais',
               'Simuladores e ferramentas de system design',
               'Materiais educacionais e documentação',
-              'Recursos de comunidade e acompanhamento de progresso',
-              'Serviços de assinatura premium'
+              'Recursos de comunidade e acompanhamento de progresso'
             ]
           },
           accounts: {
@@ -6689,29 +6547,8 @@ const resources = {
               'Assumir responsabilidade por todas as atividades em sua conta'
             ]
           },
-          subscription: {
-            title: '4. Serviços de Assinatura',
-            intro: 'Alguns recursos exigem assinatura paga. Ao assinar, você concorda em:',
-            items: [
-              'Pagar todas as taxas aplicáveis ao seu plano',
-              'Renovação automática salvo cancelamento antes da renovação',
-              'Nossa política de reembolso conforme Seção 5',
-              'Taxas não são reembolsáveis salvo exigência legal'
-            ],
-            note: 'Podemos alterar preços de assinatura com aviso razoável aos assinantes existentes.'
-          },
-          cancellation: {
-            title: '5. Cancelamento e Reembolsos',
-            intro: 'Você pode cancelar a qualquer momento. Após o cancelamento:',
-            items: [
-              'Você mantém acesso até o fim do período de faturamento',
-              'Não há reembolsos proporcionais pelo tempo não utilizado',
-              'Sua conta volta ao plano gratuito após a expiração'
-            ],
-            note: 'Reembolsos podem ser concedidos a nosso critério em casos de indisponibilidade ou circunstâncias excepcionais.'
-          },
           ip_rights: {
-            title: '6. Propriedade Intelectual e Atribuição',
+            title: '4. Propriedade Intelectual e Atribuição',
             intro: 'Todo o conteúdo educacional do Serviço é gratuito para acessar, estudar e compartilhar. Pedimos apenas uma coisa em troca: sempre dê os créditos à plataforma. Sempre que você usar, referenciar ou reproduzir nosso conteúdo — incluindo em vídeos, cursos, aulas, apresentações, artigos, redes sociais ou qualquer outro meio — você deve:',
             items: [
               'Dar crédito claro e visível ao Dinamos (trilhainfo) como fonte do conteúdo',
@@ -6721,7 +6558,7 @@ const resources = {
             ]
           },
           conduct: {
-            title: '7. Conduta do Usuário',
+            title: '5. Conduta do Usuário',
             intro: 'Você concorda em não usar o Serviço para:',
             items: [
               'Violar leis ou regulamentos',
@@ -6733,7 +6570,7 @@ const resources = {
             ]
           },
           availability: {
-            title: '8. Disponibilidade do Serviço',
+            title: '6. Disponibilidade do Serviço',
             intro: 'Buscamos confiabilidade, mas não garantimos disponibilidade ininterrupta. O Serviço pode ficar indisponível devido a:',
             items: [
               'Manutenções programadas',
@@ -6744,14 +6581,14 @@ const resources = {
             note: 'Podemos modificar, suspender ou descontinuar o Serviço com aviso razoável.'
           },
           privacy: {
-            title: '9. Privacidade e Proteção de Dados',
+            title: '7. Privacidade e Proteção de Dados',
             paragraphs: [
               'Sua privacidade é importante. A coleta e uso de informações pessoais são regidos por nossa Política de Privacidade, incorporada por referência.',
               'Ao usar o Serviço, você consente com nossas práticas de dados conforme descritas na Política de Privacidade.'
             ]
           },
           disclaimer: {
-            title: '10. Isenção de Garantias',
+            title: '8. Isenção de Garantias',
             intro: 'O Serviço é fornecido "como está" e "conforme disponível", sem garantias de qualquer tipo, incluindo:',
             items: [
               'Comercialização ou adequação a um propósito específico',
@@ -6761,7 +6598,7 @@ const resources = {
             ]
           },
           liability: {
-            title: '11. Limitação de Responsabilidade',
+            title: '9. Limitação de Responsabilidade',
             intro: 'Na máxima extensão permitida por lei, o Dinamos não é responsável por danos indiretos, incidentais, especiais, consequenciais ou punitivos, incluindo:',
             items: [
               'Perda de lucros, dados ou outros prejuízos intangíveis',
@@ -6771,7 +6608,7 @@ const resources = {
             note: 'A responsabilidade total é limitada ao valor pago pelo Serviço nos 12 meses anteriores à reclamação.'
           },
           indemnification: {
-            title: '12. Indenização',
+            title: '10. Indenização',
             intro: 'Você concorda em indenizar e isentar o Dinamos de reivindicações, danos, perdas ou despesas decorrentes de:',
             items: [
               'Seu uso do Serviço',
@@ -6781,7 +6618,7 @@ const resources = {
             ]
           },
           termination: {
-            title: '13. Rescisão',
+            title: '11. Rescisão',
             intro: 'Podemos encerrar ou suspender sua conta e acesso imediatamente, sem aviso, por motivos como:',
             items: [
               'Violação destes Termos',
@@ -6791,14 +6628,14 @@ const resources = {
             note: 'Com a rescisão, seu direito de usar o Serviço cessa imediatamente; disposições sobre propriedade intelectual, isenções e limitações permanecem vigentes.'
           },
           governing_law: {
-            title: '14. Legislação Aplicável',
+            title: '12. Legislação Aplicável',
             paragraphs: [
               'Estes Termos são regidos pelas leis do Brasil, sem considerar conflitos de leis.',
               'Disputas estão sujeitas à jurisdição exclusiva dos tribunais do Brasil.'
             ]
           },
           changes: {
-            title: '15. Alterações nos Termos',
+            title: '13. Alterações nos Termos',
             intro: 'Podemos modificar estes Termos a qualquer momento. Em caso de mudanças materiais, notificaremos você por:',
             items: [
               'Publicação dos Termos atualizados nesta página',
@@ -6808,7 +6645,7 @@ const resources = {
             note: 'O uso contínuo após as alterações constitui aceitação dos novos Termos.'
           },
           contact: {
-            title: '16. Informações de Contato',
+            title: '14. Informações de Contato',
             intro: 'Se tiver dúvidas sobre estes Termos, entre em contato:',
             items: [
               'Email: flavio@trilha.info',
@@ -6816,7 +6653,7 @@ const resources = {
             ]
           },
           severability: {
-            title: '17. Divisibilidade',
+            title: '15. Divisibilidade',
             paragraphs: [
               'Se qualquer disposição for inexequível ou inválida, ela será limitada ou eliminada na extensão mínima necessária para que o restante dos Termos permaneça em pleno vigor.'
             ]
@@ -6827,20 +6664,6 @@ const resources = {
           cookies: 'Política de Cookies',
           back_home: 'Voltar para o Dinamos'
         }
-      },
-      coupon_modal: {
-        welcome_title: 'Bem-vindo! 🎉',
-        welcome_subtitle: 'Tenha acesso exclusivo com nossa oferta especial de Black November! (50% OFF)',
-        coupon_code: 'Seu código de cupom exclusivo:',
-        discount_amount: '50% OFF - Válido Todo Black November! (50% OFF)',
-        features_title: 'O que você receberá:',
-        feature_1: 'Curso completo de design de sistemas',
-        feature_2: 'Simuladores interativos',
-        feature_3: 'Estudos de caso do mundo real',
-        feature_4: 'Acesso completo',
-        subscribe_now: 'Assinar Agora e Economizar 50%',
-        maybe_later: 'Talvez mais tarde',
-        timer_note: 'Esta oferta é válida durante todo o mês de Black November! (50% OFF)'
       },
       landing: {
         hero_title: 'Domine Sistemas Distribuídos na Prática',
@@ -6906,8 +6729,6 @@ const resources = {
         journey_real_cases_description: 'Aplique seu conhecimento analisando casos reais de sucesso',
 
         invest_title: 'Invista no Seu Futuro',
-        invest_subtitle: 'Acesso completo a todo o conteúdo com uma assinatura mensal',
-        invest_payment_info: 'Assinatura mensal - Acesso completo',
         new_offer_badge: 'Nova Oferta',
         what_you_receive_title: 'O Que Você Recebe',
         what_you_receive_item1: 'Mais de 15 simuladores interativos para prática hands-on',
@@ -6928,7 +6749,7 @@ const resources = {
         free_price: 'GRÁTIS',
         free_description: 'Acesso completo a todo conteúdo, simuladores e casos reais. Sem necessidade de cartão de crédito.',
         cta_free_title: 'Comece a Aprender Hoje!',
-        cta_free_subtitle: 'Acesso completo a todo o conteúdo, 100% grátis. Sem assinatura necessária.',
+        cta_free_subtitle: 'Acesso completo a todo o conteúdo, 100% grátis.',
         forum_section: {
           title: 'Fórum da Comunidade',
           subtitle: 'Últimas discussões da comunidade',
@@ -8050,6 +7871,14 @@ const resources = {
             name: 'Orquestração vs Coreografia',
             description: 'Compare os padrões de orquestração e coreografia'
           },
+          canary_deployment: {
+            name: 'Canary Deployment',
+            description: 'Rollout gradual com divisão de tráfego e rollback instantâneo',
+            simulator: {
+              name: 'Simulador de Canary Deployment',
+              description: 'Faça deploy de um canary, divida o tráfego e observe as métricas'
+            }
+          },
           cqrs: {
             name: 'CQRS',
             description: 'Separe os modelos de escrita e leitura via um log de eventos',
@@ -8558,6 +8387,7 @@ const resources = {
           concurrency: 'Concorrência (c)',
           replicas: 'Réplicas',
           capacity_approx: 'capacidade ≈ {{value}}',
+          match_fixed: 'fixo na partida',
           reliability: 'Confiabilidade',
           failure_rate: 'Taxa de falha',
           timeout: 'Timeout',
@@ -8601,6 +8431,10 @@ const resources = {
           throughput: 'Vazão',
           success: 'Sucesso',
           p95: 'p95',
+          success_total: 'Reqs com sucesso',
+          success_total_hint: 'Total de requisições atendidas com sucesso nesta execução',
+          failed_total: 'Reqs com falha',
+          failed_total_hint: 'Total de requisições com falha/descartadas nesta execução',
           in_flight: 'Em andamento',
           cost: 'Custo {{provider}}',
           error_budget: 'Orçamento de erro usado (SLO {{slo}}%)',
@@ -8790,13 +8624,8 @@ const resources = {
         be_first: 'Seja o primeiro a iniciar uma discussão!',
         no_replies: 'Nenhuma resposta ainda. Seja o primeiro a responder!',
         try_again: 'Tentar novamente',
-        subscription_required: 'Assinatura Necessária',
-        subscription_message: 'O fórum da comunidade está disponível exclusivamente para assinantes. Assine agora para participar das discussões e aprender com a comunidade!',
-        subscribe_now: 'Assinar Agora',
         login_required: 'Login Necessário',
         login_message: 'Por favor, faça login para acessar o fórum da comunidade.',
-        subscribe_to_post: 'Assine para publicar',
-        subscribe_to_reply: 'Assine para participar da discussão e responder aos tópicos.',
         sort: {
           recent: 'Mais recentes',
           active: 'Mais ativos',

@@ -3,11 +3,9 @@ import { Link } from 'react-router-dom'
 import Navbar from '../../components/Navbar'
 import api from '../../utils/api'
 import type { Quiz, QuizStats } from '../../types'
-import { useAuth } from '../../contexts/AuthContext'
 import { Tag, TacticalButton } from '../../components/tactical'
 
 function QuizList() {
-  const { isSubscribed } = useAuth()
   const [quizzes, setQuizzes] = useState<Quiz[]>([])
   const [themes, setThemes] = useState<string[]>([])
   const [selectedTheme, setSelectedTheme] = useState<string>('')
@@ -181,36 +179,7 @@ function QuizList() {
             </div>
           ) : (
             <div className="relative">
-              {/* Paywall for non-subscribed users */}
-              {!isSubscribed && (
-                <div className="absolute inset-0 z-30 flex items-center justify-center">
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-white/80 to-white dark:from-tactical-bg/30 dark:via-tactical-bg/80 dark:to-tactical-bg backdrop-blur-[2px]"></div>
-                  <div className="relative z-10 text-center p-8 max-w-md">
-                    <div className="tactical-panel p-8">
-                      <div className="w-16 h-16 mx-auto mb-6 border border-signal-cyan/40 bg-signal-cyan/10 rounded-full flex items-center justify-center">
-                        <span className="text-3xl">🧠</span>
-                      </div>
-                      <h3 className="text-2xl font-bold font-sans text-slate-900 dark:text-tactical-text mb-3">
-                        Acesso restrito
-                      </h3>
-                      <p className="text-slate-600 dark:text-tactical-dim mb-6">
-                        Este conteúdo não está disponível no momento. Entre em contato com o administrador para obter acesso.
-                      </p>
-                      <Link
-                        to="/subscription-required"
-                        className="inline-flex items-center justify-center gap-2 w-full px-6 py-3 font-sans font-medium rounded-lg transition-colors bg-slate-900 dark:bg-white text-white dark:text-black hover:bg-slate-700 dark:hover:bg-slate-200"
-                      >
-                        Mais Informações
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                        </svg>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <div className={`grid gap-6 md:grid-cols-2 lg:grid-cols-3 ${!isSubscribed ? 'pointer-events-none select-none' : ''}`}>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {quizzes.map((quiz) => (
                   <Link
                     key={quiz.id}

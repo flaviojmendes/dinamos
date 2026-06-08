@@ -72,9 +72,6 @@ export interface User {
   permissions?: string[] // Codes
   avatar_image?: string
   github_username?: string
-  is_subscribed?: boolean
-  subscribed_at?: string
-  stripe_customer_id?: string
   tokens?: number
   onboarding_completed?: boolean
   created_at?: string

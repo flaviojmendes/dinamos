@@ -14,27 +14,6 @@ export default function Preferences() {
   const { user } = useAuth();
   const { t, i18n } = useTranslation();
 
-  const handleManageSubscription = async () => {
-    try {
-      const apiUrl = import.meta.env.VITE_API_URL ?? '';
-      const response = await fetch(`${apiUrl}/api/subscription/create-portal-session`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: user?.uid,
-          returnUrl: window.location.origin + '/preferences',
-        }),
-      });
-
-      const { url } = await response.json();
-      window.location.href = url;
-    } catch (error) {
-      console.error('Error creating portal session:', error);
-    }
-  };
-
   const locale = i18n.resolvedLanguage?.startsWith('pt') ? 'pt-BR' : 'en-US';
 
   return (

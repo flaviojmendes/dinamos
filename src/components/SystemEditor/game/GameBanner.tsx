@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Gamepad2, Clock, Activity, Users, Flag } from 'lucide-react';
+import { Gamepad2, Clock, Activity, Users, Flag, Layers, Hammer, Lock } from 'lucide-react';
 import { useGameContext } from './GameContext';
 import GameAnnouncement from './GameAnnouncement';
 
@@ -28,37 +28,47 @@ export default function GameBanner() {
   if (!game?.state) return null;
   const st = game.state;
   const serverNow = now + game.serverOffsetMs;
+  const phase = st.phase ?? 'lobby';
+  const isLive = phase === 'round';
+  const isBuild = phase === 'interval' || phase === 'lobby';
 
-  let phaseLabel = '';
-  let phaseValue = '';
-  if (st.status === 'lobby') {
-    const startsMs = st.starts_at ? new Date(st.starts_at).getTime() : null;
-    phaseLabel = t('editor.game.starts_in', { defaultValue: 'Starts in' });
-    phaseValue = startsMs ? fmtClock((startsMs - serverNow) / 1000) : '--:--';
-  } else if (st.status === 'running') {
-    const startedMs = st.started_at ? new Date(st.started_at).getTime() : null;
-    const endsMs = st.ends_at ? new Date(st.ends_at).getTime() : null;
+  let timeLabel = '';
+  let timeValue = '';
+  if (isLive) {
+    const endsMs = st.round_ends_at ? new Date(st.round_ends_at).getTime() : null;
+    const startedMs = st.round_started_at ? new Date(st.round_started_at).getTime() : null;
     if (endsMs) {
-      phaseLabel = t('editor.game.time_left', { defaultValue: 'Time left' });
-      phaseValue = fmtClock((endsMs - serverNow) / 1000);
+      timeLabel = t('editor.game.round_time_left', { defaultValue: 'Round time left' });
+      timeValue = fmtClock((endsMs - serverNow) / 1000);
     } else {
-      phaseLabel = t('editor.game.elapsed', { defaultValue: 'Elapsed' });
-      phaseValue = startedMs ? fmtClock((serverNow - startedMs) / 1000) : '0:00';
+      timeLabel = t('editor.game.elapsed', { defaultValue: 'Elapsed' });
+      timeValue = startedMs ? fmtClock((serverNow - startedMs) / 1000) : '0:00';
     }
-  } else if (st.status === 'paused') {
-    phaseLabel = t('editor.game.status', { defaultValue: 'Status' });
-    phaseValue = t('editor.game.paused', { defaultValue: 'Paused' });
+  } else if (phase === 'lobby') {
+    const startsMs = st.starts_at ? new Date(st.starts_at).getTime() : null;
+    timeLabel = t('editor.game.starts_in', { defaultValue: 'Starts in' });
+    timeValue = startsMs ? fmtClock((startsMs - serverNow) / 1000) : '--:--';
+  } else if (phase === 'interval') {
+    timeLabel = t('editor.game.status', { defaultValue: 'Status' });
+    timeValue = t('editor.game.build_phase', { defaultValue: 'Build phase' });
   } else {
-    phaseLabel = t('editor.game.status', { defaultValue: 'Status' });
-    phaseValue = t('editor.game.ended', { defaultValue: 'Ended' });
+    timeLabel = t('editor.game.status', { defaultValue: 'Status' });
+    timeValue = t('editor.game.ended', { defaultValue: 'Ended' });
   }
 
-  const statusTone =
-    st.status === 'running'
-      ? 'text-signal-green border-signal-green'
-      : st.status === 'ended'
-      ? 'text-signal-red border-signal-red'
-      : 'text-signal-amber border-signal-amber';
+  const phaseTone = isLive
+    ? 'text-signal-green border-signal-green'
+    : phase === 'ended'
+    ? 'text-signal-red border-signal-red'
+    : 'text-signal-amber border-signal-amber';
+
+  const phaseName = isLive
+    ? t('editor.game.live', { defaultValue: 'Live' })
+    : phase === 'interval'
+    ? t('editor.game.build', { defaultValue: 'Build' })
+    : phase === 'ended'
+    ? t('editor.game.ended', { defaultValue: 'Ended' })
+    : t('editor.game.lobby', { defaultValue: 'Lobby' });
 
   return (
     <>
@@ -70,15 +80,25 @@ export default function GameBanner() {
         {st.name && <span className="text-tactical-text font-normal">· {st.name}</span>}
       </div>
 
-      <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full border ${statusTone} capitalize`}>
-        {st.status === 'ended' ? <Flag className="w-3.5 h-3.5" /> : <Activity className="w-3.5 h-3.5" />}
-        {st.status}
+      <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full border ${phaseTone}`}>
+        {phase === 'ended' ? <Flag className="w-3.5 h-3.5" /> : isLive ? <Activity className="w-3.5 h-3.5" /> : <Hammer className="w-3.5 h-3.5" />}
+        {phaseName}
       </div>
+
+      {(st.total_rounds ?? 0) > 0 && (
+        <div className="flex items-center gap-1.5 text-tactical-dim">
+          <Layers className="w-3.5 h-3.5" />
+          <span className="text-tactical-label">{t('editor.game.round', { defaultValue: 'Round' })}:</span>
+          <span className="text-tactical-text font-bold tabular-nums">
+            {Math.max(isLive ? st.current_round : st.current_round + (phase === 'interval' ? 1 : 0), 0)}/{st.total_rounds}
+          </span>
+        </div>
+      )}
 
       <div className="flex items-center gap-1.5 text-tactical-dim">
         <Clock className="w-3.5 h-3.5" />
-        <span className="text-tactical-label">{phaseLabel}:</span>
-        <span className="text-tactical-text font-bold tabular-nums">{phaseValue}</span>
+        <span className="text-tactical-label">{timeLabel}:</span>
+        <span className="text-tactical-text font-bold tabular-nums">{timeValue}</span>
       </div>
 
       <div className="flex items-center gap-1.5 text-tactical-dim">
@@ -98,6 +118,20 @@ export default function GameBanner() {
         <span className="text-signal-green font-bold tabular-nums">{Math.round(st.my_score)}</span>
       </div>
     </div>
+
+    {/* Frozen-canvas indicator while a round is live */}
+    {isLive && (
+      <div className="mb-3 flex items-center gap-2 rounded-md border border-signal-amber/50 bg-signal-amber/5 px-3 py-2 font-sans text-xs text-signal-amber">
+        <Lock className="w-3.5 h-3.5 shrink-0" />
+        {t('editor.game.round_locked', { defaultValue: 'Round in progress — your architecture is locked. Make changes during the build phase.' })}
+      </div>
+    )}
+    {isBuild && phase === 'interval' && (
+      <div className="mb-3 flex items-center gap-2 rounded-md border border-signal-cyan/50 bg-signal-cyan/5 px-3 py-2 font-sans text-xs text-signal-cyan">
+        <Hammer className="w-3.5 h-3.5 shrink-0" />
+        {t('editor.game.build_now', { defaultValue: 'Build phase — refine your architecture before the next round starts.' })}
+      </div>
+    )}
     </>
   );
 }
