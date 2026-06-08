@@ -15,7 +15,8 @@
     "db:push": "drizzle-kit push",
     "db:introspect": "drizzle-kit introspect",
     "db:seed-content": "tsx --env-file=.env api/scripts/seedContent.ts",
-    "db:seed-modules": "tsx --env-file=.env api/scripts/seedModules.ts"
+    "db:seed-modules": "tsx --env-file=.env api/scripts/seedModules.ts",
+    "db:export-content": "tsx --env-file=.env api/scripts/exportContentSql.ts"
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
