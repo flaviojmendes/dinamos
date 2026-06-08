@@ -8,6 +8,12 @@ export const config = {
   maxDuration: 60,
 };
 
+// Single Hono function for the whole API. vercel.json rewrites every /api/*
+// request (any depth) here, and the function still sees the original URL, so
+// Hono routes it. We previously used a `[[...route]]` catch-all filename, but
+// Vercel only matched a single path segment after /api (so nested routes like
+// /api/users/me returned a platform 404 without ever invoking the function).
+//
 // hono/vercel's `handle` is the Edge adapter — it calls `app.fetch(request)`
 // with a Web Request. On Vercel's Node.js runtime the function instead receives
 // Node's (req, res), so we use @hono/node-server's request listener, which
