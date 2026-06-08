@@ -1325,9 +1325,12 @@ export default function App() {
       };
     }
     
-    // Update menuItems in the window object
+    // Update menuItems in the window object. menuItems is now derived
+    // asynchronously from DB content (useMemo on contentPages), so this must
+    // re-run whenever it changes — otherwise consumers like /roadmap read the
+    // initial empty array and spin forever.
     window.__APP_DATA__.menuItems = menuItems;
-  }, []);
+  }, [menuItems]);
 
   // Initialize analytics only if user has consented
   useEffect(() => {

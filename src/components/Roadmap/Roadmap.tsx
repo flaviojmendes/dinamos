@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useContent } from '../../contexts/ContentContext';
 import { useContentProgress } from '../../hooks/useContentProgress';
 import ContentLayout from '../Common/ContentLayout';
 import { motion } from 'framer-motion';
@@ -50,24 +51,32 @@ const getDescendantPaths = (item: MenuItem): string[] => {
 
 export default function Roadmap() {
   const { isCompleted } = useContentProgress();
+  const { pages: contentPages } = useContent();
   const location = useLocation();
   const navigate = useNavigate();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [expanded, setExpanded] = useState<string | null>(null);
   const { t } = useTranslation();
 
+  // menuItems is published to window.__APP_DATA__ by App.tsx once DB content
+  // loads. Re-read it on navigation AND whenever the content index changes, so
+  // a direct load/refresh of /roadmap picks up the menu once it's ready instead
+  // of spinning forever on the initial empty array. App writes the window value
+  // in an effect; since child effects run before parent effects, we retry on
+  // the next tick when content is ready but the menu hasn't been published yet.
   useEffect(() => {
-    const getMenuItems = () => {
-      if (window.__APP_DATA__ && window.__APP_DATA__.menuItems) {
-        return window.__APP_DATA__.menuItems;
+    const read = () => {
+      const items = window.__APP_DATA__?.menuItems ?? [];
+      if (items.length > 0) {
+        setMenuItems(items);
+        return true;
       }
-      return [];
+      return false;
     };
-    const items = getMenuItems();
-    if (items && items.length > 0) {
-      setMenuItems(items);
-    }
-  }, [location]);
+    if (read()) return;
+    const timer = window.setTimeout(read, 0);
+    return () => window.clearTimeout(timer);
+  }, [location, contentPages]);
 
   const makeMenuKey = (path: string, field: 'name' | 'description') =>
     `menu.${path.replace(/^\//, '').replace(/\//g, '.')}.${field}`;
