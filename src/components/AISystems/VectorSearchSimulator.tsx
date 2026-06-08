@@ -295,7 +295,7 @@ export default function VectorSearchSimulator() {
       </Panel>
 
       {!result && (
-        <div className="rounded-lg dark:rounded-none border border-dashed border-slate-300 dark:border-tactical-border px-4 py-8 text-center font-sans text-xs text-slate-400 dark:text-tactical-label">
+        <div className="rounded-lg border border-dashed border-slate-300 dark:border-tactical-border px-4 py-8 text-center font-sans text-xs text-slate-400 dark:text-tactical-label">
           {t(`${base}.labels.idle`)}
         </div>
       )}

@@ -1,26 +1,11 @@
-import React, { Suspense, useMemo } from 'react';
-import { MDXProvider } from '@mdx-js/react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { mdxComponents } from '../mdx';
+import { useLocation } from 'react-router-dom';
+import api from '../../designlab/utils/api';
+import MdxRenderer from './MdxRenderer';
+import ContentAnnotations from './ContentAnnotations';
 
 type Lang = 'en' | 'pt';
-type Loader = () => Promise<{ default: React.ComponentType }>;
-
-// Lazily-loaded MDX content (code-split per page). Keys look like
-// "../../content/theoretical-foundations/cap-theorem.en.mdx".
-const modules = import.meta.glob('../../content/**/*.mdx') as Record<string, Loader>;
-
-// registry[slug] = { en?: loader, pt?: loader }
-const registry: Record<string, Partial<Record<Lang, Loader>>> = {};
-for (const [filePath, loader] of Object.entries(modules)) {
-  const match = filePath.match(/\/content\/(.+)\.(en|pt)\.mdx$/);
-  if (!match) continue;
-  const [, slug, lang] = match;
-  (registry[slug] ||= {})[lang as Lang] = loader;
-}
-
-/** Slugs that have at least one MDX file present (used for incremental migration). */
-export const availableSlugs = new Set(Object.keys(registry));
 
 function ContentSkeleton() {
   return (
@@ -39,32 +24,55 @@ interface Props {
 }
 
 /**
- * Renders an MDX content page for the current language, falling back to English.
- * Breadcrumb and prev/next/related navigation are provided by ContentLayout
- * (registry-driven) so this component only owns the document body.
- * Used by the manifest-driven content route in App.tsx.
+ * Renders a DB-backed MDX content page for the current language.
+ *
+ * The MDX source now lives in Postgres (content_pages) and is fetched from the
+ * content API, then compiled in the browser by MdxRenderer. Breadcrumb and
+ * prev/next/related navigation are provided by ContentLayout (registry-driven),
+ * so this component only owns the document body. Used by the manifest-driven
+ * content route in App.tsx.
  */
 export default function MdxPage({ slug }: Props) {
   const { i18n } = useTranslation();
+  const location = useLocation();
   const lang: Lang = i18n.language?.startsWith('pt') ? 'pt' : 'en';
 
-  const Content = useMemo(() => {
-    const entry = registry[slug];
-    const loader = entry?.[lang] ?? entry?.en ?? entry?.pt;
-    if (!loader) return null;
-    return React.lazy(loader);
+  const [body, setBody] = useState<string | null>(null);
+  const [status, setStatus] = useState<'loading' | 'loaded' | 'notfound'>('loading');
+  const articleRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    setStatus('loading');
+    setBody(null);
+    api
+      .get<{ body: string }>(`/api/content/${slug}`, { params: { lang } })
+      .then((res) => {
+        if (cancelled) return;
+        setBody(res.data?.body ?? '');
+        setStatus('loaded');
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        console.error(`[content] Failed to load "${slug}":`, err);
+        setStatus('notfound');
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [slug, lang]);
 
   return (
-    <article className="mx-auto max-w-4xl px-4 py-6 md:px-8 lg:py-10">
-      {Content ? (
-        <MDXProvider components={mdxComponents}>
-          <Suspense fallback={<ContentSkeleton />} key={`${slug}-${lang}`}>
-            <Content />
-          </Suspense>
-        </MDXProvider>
-      ) : (
+    <article ref={articleRef} className="mx-auto max-w-4xl px-4 py-6 md:px-8 lg:py-10">
+      {status === 'loading' && <ContentSkeleton />}
+      {status === 'notfound' && (
         <p className="text-slate-500 dark:text-tactical-dim">Content not found: {slug}</p>
+      )}
+      {status === 'loaded' && body !== null && (
+        <MdxRenderer source={body} fallback={<ContentSkeleton />} />
+      )}
+      {status === 'loaded' && (
+        <ContentAnnotations slug={slug} path={location.pathname} containerRef={articleRef} />
       )}
     </article>
   );

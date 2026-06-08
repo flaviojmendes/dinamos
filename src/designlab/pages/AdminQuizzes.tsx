@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar'
 import { TacticalButton, StatusBadge } from '../components/tactical'
 
 const inputClass =
-  'w-full px-4 py-2 rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none'
+  'w-full px-4 py-2 rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:ring-brand-500 dark:focus:ring-signal-green'
 const labelClass = 'block text-sm font-medium text-slate-600 dark:text-tactical-dim mb-1'
 import api from '../utils/api'
 import type { Quiz } from '../types'
@@ -278,7 +278,7 @@ function AdminQuizzes() {
               <p className="text-red-600 dark:text-red-400">{error}</p>
             </div>
           ) : quizzes.length === 0 ? (
-            <div className="text-center py-16 tactical-panel dark:rounded-none">
+            <div className="text-center py-16 tactical-panel">
               <div className="text-6xl mb-4">📝</div>
               <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
                 Nenhum quiz criado
@@ -291,7 +291,7 @@ function AdminQuizzes() {
               </TacticalButton>
             </div>
           ) : (
-            <div className="tactical-panel overflow-hidden dark:rounded-none">
+            <div className="tactical-panel overflow-hidden">
               <table className="w-full border-collapse text-sm">
                 <thead className="sticky top-0 z-10 bg-slate-50 dark:bg-tactical-surface">
                   <tr>
@@ -331,7 +331,7 @@ function AdminQuizzes() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-brand-50 text-brand-700 border border-brand-200 dark:rounded-none">
+                        <span className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-brand-50 text-brand-700 border border-brand-200">
                           {quiz.theme}
                         </span>
                       </td>
@@ -409,7 +409,7 @@ function AdminQuizzes() {
           <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20">
             <div className="fixed inset-0 bg-black/50" onClick={closeModal}></div>
             
-            <div className="relative tactical-panel max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col dark:rounded-none">
+            <div className="relative tactical-panel max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col">
               {/* Modal Header */}
               <div className="px-6 py-4 border-b border-slate-200 dark:border-tactical-border flex items-center justify-between">
                 <h2 className="font-sans text-xl font-bold text-slate-900 dark:text-tactical-text">
@@ -526,7 +526,7 @@ function AdminQuizzes() {
                         id="is_published"
                         checked={quizForm.is_published}
                         onChange={(e) => setQuizForm({ ...quizForm, is_published: e.target.checked })}
-                        className="w-4 h-4 accent-signal-green border-slate-300 dark:border-tactical-border dark:rounded-none"
+                        className="w-4 h-4 accent-signal-green border-slate-300 dark:border-tactical-border"
                       />
                       <label htmlFor="is_published" className="text-sm text-slate-700 dark:text-slate-300">
                         Publicar quiz (visível para alunos)

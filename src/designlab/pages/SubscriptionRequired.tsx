@@ -30,10 +30,10 @@ export default function SubscriptionRequired() {
           <Logo size="medium" showSubtitle={true} />
         </div>
         
-        <Panel padded={false} bodyClassName="p-8" className="rounded-2xl dark:rounded-none shadow-2xl dark:shadow-none transition-colors duration-200">
+        <Panel padded={false} bodyClassName="p-8" className="rounded-2xl shadow-2xl dark:shadow-none transition-colors duration-200">
           <div className="text-center">
             {/* Icon */}
-            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full dark:rounded-none bg-amber-100 dark:bg-tactical-raised border border-amber-200 dark:border-signal-amber/40 mb-4">
+            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-amber-100 dark:bg-tactical-raised border border-amber-200 dark:border-signal-amber/40 mb-4">
               <svg
                 className="h-10 w-10 text-amber-600 dark:text-signal-amber"
                 fill="none"
@@ -64,7 +64,7 @@ export default function SubscriptionRequired() {
             </p>
 
             {/* Description */}
-            <div className="border border-signal-amber/40 bg-signal-amber/10 rounded-lg dark:rounded-none p-4 mb-6 text-left">
+            <div className="border border-signal-amber/40 bg-signal-amber/10 rounded-lg p-4 mb-6 text-left">
               <p className="text-sm text-slate-700 dark:text-tactical-dim">
                 O acesso a este conteúdo está temporariamente restrito. 
                 Entre em contato com o administrador da plataforma para mais informações.
@@ -111,7 +111,7 @@ export default function SubscriptionRequired() {
                 variant="primary"
                 size="lg"
                 onClick={handleGoHome}
-                className="w-full dark:rounded-none"
+                className="w-full"
               >
                 Voltar para o Início
               </TacticalButton>
@@ -121,7 +121,7 @@ export default function SubscriptionRequired() {
                 variant="secondary"
                 size="lg"
                 onClick={handleLogout}
-                className="w-full dark:rounded-none"
+                className="w-full"
               >
                 Sair
               </TacticalButton>

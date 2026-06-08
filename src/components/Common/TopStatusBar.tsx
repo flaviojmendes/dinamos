@@ -7,10 +7,14 @@ import { openCommandPalette } from './CommandPalette';
 import NotificationBell from './NotificationBell';
 
 const ADMIN_LINKS: { to: string; key: string; fallback: string }[] = [
+  { to: '/admin', key: 'admin.nav.hub', fallback: 'Control Center' },
   { to: '/admin/dashboard', key: 'admin.nav.dashboard', fallback: 'Dashboard' },
   { to: '/admin/users', key: 'admin.nav.users', fallback: 'Users' },
   { to: '/admin/roles', key: 'admin.nav.roles', fallback: 'Roles' },
   { to: '/admin/challenges', key: 'admin.nav.challenges', fallback: 'Challenges' },
+  { to: '/admin/content-tree', key: 'admin.nav.organize', fallback: 'Organize Content' },
+  { to: '/admin/content', key: 'admin.nav.content', fallback: 'Content' },
+  { to: '/admin/modules', key: 'admin.nav.modules', fallback: 'Modules' },
   { to: '/admin/quizzes', key: 'admin.nav.quizzes', fallback: 'Quizzes' },
   { to: '/admin/game', key: 'admin.nav.game', fallback: 'Game Mode' },
   { to: '/admin/forum/categories', key: 'admin.nav.categories', fallback: 'Categories' },
@@ -63,7 +67,7 @@ export default function TopStatusBar({ isSidebarOpen, onToggleSidebar }: TopStat
             aria-label={isSidebarOpen
               ? t('nav.collapse_sidebar', { defaultValue: 'Collapse menu' })
               : t('nav.expand_sidebar', { defaultValue: 'Expand menu' })}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-transparent text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:rounded-none dark:text-tactical-dim dark:hover:bg-tactical-raised dark:hover:text-tactical-text cursor-pointer"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-transparent text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-tactical-dim dark:hover:bg-tactical-raised dark:hover:text-tactical-text cursor-pointer"
           >
             <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <rect x="3" y="4" width="18" height="16" rx="1" strokeWidth={1.8} />
@@ -78,7 +82,7 @@ export default function TopStatusBar({ isSidebarOpen, onToggleSidebar }: TopStat
           onClick={() => openCommandPalette()}
           title={t('command_center.search_aria')}
           aria-label={t('command_center.search_aria')}
-          className="flex h-8 w-8 items-center justify-center rounded-lg border border-transparent text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:rounded-none dark:text-tactical-dim dark:hover:bg-tactical-raised dark:hover:text-tactical-text cursor-pointer"
+          className="flex h-8 w-8 items-center justify-center rounded-lg border border-transparent text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-tactical-dim dark:hover:bg-tactical-raised dark:hover:text-tactical-text cursor-pointer"
         >
           <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
@@ -92,7 +96,7 @@ export default function TopStatusBar({ isSidebarOpen, onToggleSidebar }: TopStat
             title={t(`quick_access.${labelKey}`, { defaultValue: label })}
             aria-label={t(`quick_access.${labelKey}`, { defaultValue: label })}
             className={({ isActive }: { isActive: boolean }) =>
-              `flex items-center justify-center h-8 w-8 rounded-lg border transition-colors dark:rounded-none ${
+              `flex items-center justify-center h-8 w-8 rounded-lg border transition-colors ${
                 isActive
                   ? 'border-brand-600 dark:border-signal-green text-brand-700 dark:text-signal-green bg-brand-50 dark:bg-tactical-raised'
                   : 'border-transparent text-slate-500 dark:text-tactical-dim hover:text-slate-900 dark:hover:text-tactical-text hover:bg-slate-100 dark:hover:bg-tactical-raised'
@@ -111,7 +115,7 @@ export default function TopStatusBar({ isSidebarOpen, onToggleSidebar }: TopStat
           to="/profile"
           title={t('gamification.coins', { defaultValue: 'DinaCoins' })}
           aria-label={`${appUser?.tokens ?? 0} DinaCoins`}
-          className="flex h-8 items-center gap-1.5 rounded-lg border border-signal-amber/30 bg-signal-amber/10 px-2 font-sans text-signal-amber transition-colors hover:bg-signal-amber/20 dark:rounded-none"
+          className="flex h-8 items-center gap-1.5 rounded-lg border border-signal-amber/30 bg-signal-amber/10 px-2 font-sans text-signal-amber transition-colors hover:bg-signal-amber/20"
         >
           <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
             <circle cx="12" cy="12" r="8" strokeWidth={1.8} />
@@ -128,7 +132,7 @@ export default function TopStatusBar({ isSidebarOpen, onToggleSidebar }: TopStat
               aria-expanded={adminOpen}
               aria-haspopup="menu"
               title={t('admin.menu', { defaultValue: 'Admin' })}
-              className={`flex h-8 items-center gap-1 rounded-lg border px-2 font-sans text-[11px] font-medium transition-colors dark:rounded-none ${
+              className={`flex h-8 items-center gap-1 rounded-lg border px-2 font-sans text-[11px] font-medium transition-colors ${
                 adminOpen
                   ? 'border-signal-amber/40 bg-signal-amber/20 text-signal-amber'
                   : 'border-signal-amber/30 bg-signal-amber/10 text-signal-amber hover:bg-signal-amber/20'
@@ -143,12 +147,13 @@ export default function TopStatusBar({ isSidebarOpen, onToggleSidebar }: TopStat
             {adminOpen && (
               <div
                 role="menu"
-                className="absolute right-0 z-50 mt-1 w-48 rounded-lg border border-slate-200 bg-white py-1 shadow-lg dark:rounded-none dark:border-tactical-border dark:bg-tactical-surface"
+                className="absolute right-0 z-50 mt-1 w-48 rounded-lg border border-slate-200 bg-white py-1 shadow-lg dark:border-tactical-border dark:bg-tactical-surface"
               >
                 {ADMIN_LINKS.map((l) => (
                   <NavLink
                     key={l.to}
                     to={l.to}
+                    end={l.to === '/admin'}
                     role="menuitem"
                     onClick={() => setAdminOpen(false)}
                     className={({ isActive }: { isActive: boolean }) =>

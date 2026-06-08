@@ -257,11 +257,11 @@ export default function MessageQueue() {
         <div className="relative h-48 flex items-center justify-between max-w-4xl mx-auto">
           <div className="absolute h-px bg-slate-300 dark:bg-tactical-line left-[25%] right-[25%] top-1/2 -translate-y-1/2" />
           <div className="relative z-10 w-1/4">
-            <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 rounded-lg dark:rounded-none">
+            <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 rounded-lg">
               <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t('simulators.message_queue_sim.config.producers')}</div>
               <div className="space-y-2">
                 {Array.from({ length: config.producerCount }).map((_, i) => (
-                  <div key={i} className="h-6 border border-signal-cyan/40 bg-signal-cyan/10 flex items-center justify-center font-mono text-xs text-signal-cyan rounded-md dark:rounded-none">
+                  <div key={i} className="h-6 border border-signal-cyan/40 bg-signal-cyan/10 flex items-center justify-center font-mono text-xs text-signal-cyan rounded-md">
                     P{i + 1}
                   </div>
                 ))}
@@ -269,9 +269,9 @@ export default function MessageQueue() {
             </div>
           </div>
           <div className="relative z-10 w-1/3">
-            <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 rounded-lg dark:rounded-none">
+            <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 rounded-lg">
               <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t('simulators.message_queue_sim.flow.queue')}</div>
-              <div className="relative h-24 border border-slate-300 dark:border-tactical-border bg-slate-100 dark:bg-tactical-surface overflow-hidden rounded-md dark:rounded-none">
+              <div className="relative h-24 border border-slate-300 dark:border-tactical-border bg-slate-100 dark:bg-tactical-surface overflow-hidden rounded-md">
                 <AnimatePresence>
                   {queuedMessages.slice(0, 5).map((msg, index) => (
                     <motion.div
@@ -283,7 +283,7 @@ export default function MessageQueue() {
                       className="absolute w-full p-2"
                       style={{ top: `${index * 20}%` }}
                     >
-                      <div className="h-4 border border-signal-amber/40 bg-signal-amber/10 flex items-center justify-center font-mono text-xs text-signal-amber rounded-md dark:rounded-none">
+                      <div className="h-4 border border-signal-amber/40 bg-signal-amber/10 flex items-center justify-center font-mono text-xs text-signal-amber rounded-md">
                         {msg.content}
                       </div>
                     </motion.div>
@@ -298,14 +298,14 @@ export default function MessageQueue() {
             </div>
           </div>
           <div className="relative z-10 w-1/4">
-            <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 rounded-lg dark:rounded-none">
+            <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 rounded-lg">
               <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t('simulators.message_queue_sim.config.consumers')}</div>
               <div className="space-y-2">
                 {Array.from({ length: config.consumerCount }).map((_, i) => {
                   const processingMessage = messages.find(m => m.status === 'processing' && m.consumerId === i + 1);
                   return (
                     <div key={i} className="space-y-1">
-                      <div className={`h-6 border flex items-center justify-center font-mono text-xs rounded-md dark:rounded-none ${
+                      <div className={`h-6 border flex items-center justify-center font-mono text-xs rounded-md ${
                         processingMessage
                           ? 'border-signal-amber/40 bg-signal-amber/10 text-signal-amber'
                           : 'border-signal-green/40 bg-signal-green/10 text-signal-green'
@@ -317,7 +317,7 @@ export default function MessageQueue() {
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: "auto" }}
                           exit={{ opacity: 0, height: 0 }}
-                          className="font-mono text-xs border border-signal-amber/30 bg-signal-amber/5 p-1 text-signal-amber text-center rounded-md dark:rounded-none"
+                          className="font-mono text-xs border border-signal-amber/30 bg-signal-amber/5 p-1 text-signal-amber text-center rounded-md"
                         >
                           {processingMessage.content}
                         </motion.div>
@@ -335,7 +335,7 @@ export default function MessageQueue() {
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
             <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">{t('simulators.message_queue_sim.queue_status.size')}</div>
-            <div className="relative h-8 border border-slate-200 dark:border-tactical-border bg-slate-100 dark:bg-tactical-raised overflow-hidden rounded-md dark:rounded-none">
+            <div className="relative h-8 border border-slate-200 dark:border-tactical-border bg-slate-100 dark:bg-tactical-raised overflow-hidden rounded-md">
               <motion.div
                 className="absolute inset-y-0 left-0 bg-signal-cyan/60"
                 animate={{ width: `${(queuedMessages.length / config.maxQueueSize) * 100}%` }}
@@ -347,25 +347,25 @@ export default function MessageQueue() {
             </div>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg dark:rounded-none">
+            <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg">
               <motion.div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan" animate={{ scale: stats.produced > 0 ? [1, 1.1, 1] : 1 }} transition={{ duration: 0.3 }}>
                 {stats.produced}
               </motion.div>
               <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.message_queue_sim.queue_status.produced')}</div>
             </div>
-            <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg dark:rounded-none">
+            <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg">
               <motion.div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green" animate={{ scale: stats.processed > 0 ? [1, 1.1, 1] : 1 }} transition={{ duration: 0.3 }}>
                 {stats.processed}
               </motion.div>
               <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.message_queue_sim.queue_status.processed')}</div>
             </div>
-            <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg dark:rounded-none">
+            <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg">
               <motion.div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-red" animate={{ scale: stats.dropped > 0 ? [1, 1.1, 1] : 1 }} transition={{ duration: 0.3 }}>
                 {stats.dropped}
               </motion.div>
               <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.message_queue_sim.queue_status.dropped')}</div>
             </div>
-            <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg dark:rounded-none">
+            <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg">
               <div className="font-mono text-3xl font-bold tabular-nums leading-none text-slate-900 dark:text-tactical-text">
                 {Math.round(stats.avgProcessingTime)}ms
               </div>
@@ -384,7 +384,7 @@ export default function MessageQueue() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-3 rounded-lg dark:rounded-none"
+                className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-3 rounded-lg"
               >
                 <div className="flex items-center gap-3">
                   <span className="font-mono text-sm text-slate-900 dark:text-tactical-text">{message.content}</span>
@@ -399,7 +399,7 @@ export default function MessageQueue() {
             ))}
           </AnimatePresence>
           {messages.length === 0 && (
-            <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center rounded-lg dark:rounded-none">
+            <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center rounded-lg">
               <p className="font-sans text-xs text-slate-400 dark:text-tactical-label">
                 {t('simulators.message_queue_sim.messages.none')}
               </p>

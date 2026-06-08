@@ -105,10 +105,10 @@ export default function VerifyEmail() {
           </p>
         </div>
 
-        <Panel padded={false} bodyClassName="py-8 px-6" className="rounded-xl dark:rounded-none shadow-xl dark:shadow-none transition-colors duration-200">
+        <Panel padded={false} bodyClassName="py-8 px-6" className="rounded-xl shadow-xl dark:shadow-none transition-colors duration-200">
           {/* Email Icon */}
           <div className="flex justify-center mb-6">
-            <div className="w-20 h-20 bg-brand-100 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border rounded-full dark:rounded-none flex items-center justify-center">
+            <div className="w-20 h-20 bg-brand-100 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border rounded-full flex items-center justify-center">
               <svg className="w-10 h-10 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
@@ -116,13 +116,13 @@ export default function VerifyEmail() {
           </div>
 
           {error && (
-            <div className="mb-6 border border-signal-red/40 text-signal-red bg-signal-red/10 px-4 py-3 text-sm font-sans rounded-lg dark:rounded-none">
+            <div className="mb-6 border border-signal-red/40 text-signal-red bg-signal-red/10 px-4 py-3 text-sm font-sans rounded-lg">
               {error}
             </div>
           )}
 
           {success && (
-            <div className="mb-6 border border-signal-green/40 text-signal-green bg-signal-green/10 px-4 py-3 text-sm font-sans rounded-lg dark:rounded-none">
+            <div className="mb-6 border border-signal-green/40 text-signal-green bg-signal-green/10 px-4 py-3 text-sm font-sans rounded-lg">
               {success}
             </div>
           )}
@@ -136,7 +136,7 @@ export default function VerifyEmail() {
             </p>
           </div>
 
-          <div className="border border-signal-amber/40 bg-signal-amber/10 rounded-lg dark:rounded-none p-4 mb-6">
+          <div className="border border-signal-amber/40 bg-signal-amber/10 rounded-lg p-4 mb-6">
             <div className="flex gap-3">
               <svg className="w-5 h-5 text-signal-amber flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
@@ -159,7 +159,7 @@ export default function VerifyEmail() {
               size="lg"
               onClick={handleCheckVerification}
               disabled={loading}
-              className="w-full dark:rounded-none"
+              className="w-full"
             >
               {loading ? 'Verificando...' : 'Já verifiquei meu email'}
             </TacticalButton>
@@ -170,7 +170,7 @@ export default function VerifyEmail() {
               size="lg"
               onClick={handleResendEmail}
               disabled={loading || countdown > 0}
-              className="w-full dark:rounded-none"
+              className="w-full"
             >
               {countdown > 0 
                 ? `Reenviar email (${countdown}s)` 

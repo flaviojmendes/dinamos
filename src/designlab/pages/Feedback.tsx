@@ -40,7 +40,7 @@ function Feedback() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="tactical-panel rounded-xl dark:rounded-none card-shadow dark:shadow-none p-8 mb-8 text-center transition-colors duration-200">
+        <div className="tactical-panel rounded-xl card-shadow dark:shadow-none p-8 mb-8 text-center transition-colors duration-200">
           <h2 className="text-3xl font-sans font-bold tracking-tight mb-2 text-brand-600 dark:text-signal-green">
             Análise concluída
           </h2>
@@ -50,7 +50,7 @@ function Feedback() {
         </div>
 
         {feedback.strengths.length > 0 && (
-          <div className="tactical-panel rounded-xl dark:rounded-none card-shadow dark:shadow-none p-6 mb-6 transition-colors duration-200">
+          <div className="tactical-panel rounded-xl card-shadow dark:shadow-none p-6 mb-6 transition-colors duration-200">
             <div className="flex items-center mb-4">
               <div className="border border-signal-green/40 bg-signal-green/10 rounded-lg p-2 mr-3 transition-colors duration-200">
                 <svg
@@ -86,7 +86,7 @@ function Feedback() {
         )}
 
         {feedback.suggestions.length > 0 && (
-          <div className="tactical-panel rounded-xl dark:rounded-none card-shadow dark:shadow-none p-6 mb-6 transition-colors duration-200">
+          <div className="tactical-panel rounded-xl card-shadow dark:shadow-none p-6 mb-6 transition-colors duration-200">
             <div className="flex items-center mb-4">
               <div className="border border-signal-cyan/40 bg-signal-cyan/10 rounded-lg p-2 mr-3 transition-colors duration-200">
                 <svg
@@ -126,7 +126,7 @@ function Feedback() {
             variant="primary"
             size="lg"
             onClick={() => navigate(`/challenge/${challenge?.id}`)}
-            className="flex-1 dark:rounded-none"
+            className="flex-1"
           >
             Tentar Novamente
           </TacticalButton>
@@ -134,7 +134,7 @@ function Feedback() {
             variant="secondary"
             size="lg"
             onClick={() => navigate('/design-lab')}
-            className="flex-1 dark:rounded-none"
+            className="flex-1"
           >
             Voltar aos desafios
           </TacticalButton>

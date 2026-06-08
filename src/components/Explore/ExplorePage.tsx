@@ -11,6 +11,7 @@ import {
   type ContentType,
   type Tier,
 } from '../../config/contentRegistry';
+import { useContent } from '../../contexts/ContentContext';
 import { useContentProgress } from '../../hooks/useContentProgress';
 
 type ProgressFilter = 'done' | 'todo';
@@ -29,6 +30,7 @@ export default function ExplorePage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isCompleted, updateTrigger } = useContentProgress();
+  const { pages: contentPages } = useContent();
 
   const [query, setQuery] = useState('');
   const [moduleFilter, setModuleFilter] = useState<string | null>(null);
@@ -52,7 +54,9 @@ export default function ExplorePage() {
         haystack: `${label} ${description} ${moduleLabel} ${i.path}`.toLowerCase(),
       };
     });
-  }, [t]);
+    // contentPages drives the live registry; recompute once it loads.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [t, contentPages]);
 
   const tokens = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
 
@@ -75,7 +79,8 @@ export default function ExplorePage() {
     const counts: Record<ContentType, number> = { lesson: 0, simulator: 0, case: 0, tool: 0 };
     for (const i of contentRegistry) counts[i.type] += 1;
     return counts;
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contentPages]);
 
   const hasActiveFilters =
     moduleFilter || tierFilter || typeFilter || accessFilter || progressFilter || query.trim();

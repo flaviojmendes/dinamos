@@ -294,7 +294,7 @@ export default function EventSourcingSimulator() {
                 <button
                   key={product.name}
                   onClick={() => handleItemSelection(product.name)}
-                  className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg dark:rounded-none px-3 py-2.5 hover:border-emerald-400 dark:hover:border-signal-green transition-colors text-left"
+                  className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg px-3 py-2.5 hover:border-emerald-400 dark:hover:border-signal-green transition-colors text-left"
                 >
                   <div className="font-sans text-sm text-slate-900 dark:text-tactical-text">{product.name}</div>
                   <div className="font-mono text-xs tabular-nums text-slate-500 dark:text-tactical-dim">R$ {product.price}</div>
@@ -302,7 +302,7 @@ export default function EventSourcingSimulator() {
               ))}
             </div>
             {selectedItems.length > 0 && (
-              <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg dark:rounded-none px-3 py-3 mb-4">
+              <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg px-3 py-3 mb-4">
                 <h3 className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t('simulators.event_sourcing.create_order.selected_items')}</h3>
                 {selectedItems.map(item => (
                   <div key={item.name} className="font-sans text-xs text-slate-500 dark:text-tactical-dim">
@@ -493,7 +493,7 @@ export default function EventSourcingSimulator() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ duration: config.animationDuration }}
-                    className={`border rounded-lg dark:rounded-none px-3 py-2.5 ${
+                    className={`border rounded-lg px-3 py-2.5 ${
                       isReplayMode && index === replayIndex - 1
                         ? 'border-slate-300 bg-slate-100 dark:border-signal-cyan dark:bg-signal-cyan/10'
                         : 'border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised'

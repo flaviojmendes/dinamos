@@ -253,7 +253,7 @@ export default function FirewallSimulator() {
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 20 }}
-                    className="flex items-center justify-between gap-3 rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2.5"
+                    className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2.5"
                   >
                     <div className="min-w-0 flex flex-wrap items-center gap-x-2 gap-y-0.5 font-mono text-xs text-slate-500 dark:text-tactical-dim">
                       <span className="text-slate-900 dark:text-tactical-text">{rule.source} → {rule.destination}</span>
@@ -289,15 +289,15 @@ export default function FirewallSimulator() {
 
           <Panel title={t('simulators.firewall.stats.title')} accent="green">
             <div className="grid grid-cols-3 gap-3">
-              <div className="rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border px-3 py-3">
+              <div className="rounded-lg border border-slate-200 dark:border-tactical-border px-3 py-3">
                 <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">{stats.total}</div>
                 <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.firewall.stats.total')}</div>
               </div>
-              <div className="rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border px-3 py-3">
+              <div className="rounded-lg border border-slate-200 dark:border-tactical-border px-3 py-3">
                 <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green">{stats.allowed}</div>
                 <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.firewall.stats.allowed')}</div>
               </div>
-              <div className="rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border px-3 py-3">
+              <div className="rounded-lg border border-slate-200 dark:border-tactical-border px-3 py-3">
                 <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-red">{stats.blocked}</div>
                 <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.firewall.stats.blocked')}</div>
               </div>
@@ -338,7 +338,7 @@ export default function FirewallSimulator() {
                   initial={{ opacity: 0, x: -50 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 50 }}
-                  className="rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2.5"
+                  className="rounded-lg border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2.5"
                 >
                   <div className="flex flex-col gap-1.5">
                     <div className="flex justify-between items-center gap-2">
@@ -364,7 +364,7 @@ export default function FirewallSimulator() {
               ))}
             </AnimatePresence>
             {packets.length === 0 && (
-              <div className="rounded-lg dark:rounded-none border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center">
+              <div className="rounded-lg border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center">
                 <p className="font-sans text-xs text-slate-400 dark:text-tactical-label">
                   {t('simulators.firewall.empty')}
                 </p>
@@ -648,7 +648,7 @@ export default function FirewallSimulator() {
         )}
       </AnimatePresence>
 
-      <div className="tactical-panel rounded-lg dark:rounded-none border-l-2 border-l-signal-cyan dark:border-l-signal-cyan p-5">
+      <div className="tactical-panel rounded-lg border-l-2 border-l-signal-cyan dark:border-l-signal-cyan p-5">
         <h3 className="font-sans text-sm font-semibold text-signal-cyan mb-3">{t('simulators.firewall.info.title')}</h3>
         <ul className="space-y-1.5 font-sans text-sm text-slate-600 dark:text-tactical-dim list-disc list-inside">
           <li>{t('simulators.firewall.info.i1')}</li>

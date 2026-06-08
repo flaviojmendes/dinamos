@@ -487,7 +487,7 @@ export default function CanaryDeploymentSimulator() {
         </Panel>
       </div>
 
-      <div className="rounded-lg border border-slate-200 dark:border-slate-700 border-l-2 border-l-emerald-500 bg-slate-50 dark:bg-slate-900 dark:rounded-none p-5">
+      <div className="rounded-lg border border-slate-200 dark:border-slate-700 border-l-2 border-l-emerald-500 bg-slate-50 dark:bg-slate-900 p-5">
         <h3 className="text-sm font-sans font-semibold text-slate-900 dark:text-slate-100 mb-4">{t('simulators.canary.info.title')}</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-sans text-sm text-slate-600 dark:text-slate-400">
           <div>

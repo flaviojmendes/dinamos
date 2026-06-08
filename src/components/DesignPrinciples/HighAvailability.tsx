@@ -31,7 +31,7 @@ export default function HighAvailability() {
                 Datacenters separados fisicamente, mas interconectados, dentro de uma mesma região 
                 geográfica. Projetados para oferecer redundância e tolerância a falhas locais.
               </p>
-              <div className="rounded-xl border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised dark:rounded-none p-4 mb-4">
+              <div className="rounded-xl border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 mb-4">
                 <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Exemplo</h3>
                 <p className="font-sans text-xs text-slate-600 dark:text-tactical-dim">
                   Uma aplicação de streaming de música é implantada em duas zonas de disponibilidade 
@@ -60,7 +60,7 @@ export default function HighAvailability() {
                 Estratégias para criar e manter cópias de dados ou serviços em vários locais, 
                 garantindo a continuidade do serviço mesmo em caso de falhas.
               </p>
-              <div className="rounded-xl border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised dark:rounded-none p-4 mb-4">
+              <div className="rounded-xl border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 mb-4">
                 <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Exemplo</h3>
                 <p className="font-sans text-xs text-slate-600 dark:text-tactical-dim">
                   Um banco online utiliza dois servidores principais: um em Londres e outro em 
@@ -79,21 +79,21 @@ export default function HighAvailability() {
 
       <Panel title="Benefícios da Alta Disponibilidade" accent="green">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div className="border border-slate-200 dark:border-tactical-border rounded-lg dark:rounded-none px-3 py-3">
+          <div className="border border-slate-200 dark:border-tactical-border rounded-lg px-3 py-3">
             <h3 className="text-sm font-semibold text-emerald-600 dark:text-signal-green mb-2">Continuidade</h3>
             <p className="font-sans text-xs text-slate-600 dark:text-tactical-dim">
               Garante que os serviços permaneçam disponíveis mesmo durante falhas ou 
               manutenções planejadas.
             </p>
           </div>
-          <div className="border border-slate-200 dark:border-tactical-border rounded-lg dark:rounded-none px-3 py-3">
+          <div className="border border-slate-200 dark:border-tactical-border rounded-lg px-3 py-3">
             <h3 className="text-sm font-semibold text-emerald-600 dark:text-signal-green mb-2">Confiabilidade</h3>
             <p className="font-sans text-xs text-slate-600 dark:text-tactical-dim">
               Aumenta a confiança dos usuários ao manter o sistema funcionando de forma 
               consistente e previsível.
             </p>
           </div>
-          <div className="border border-slate-200 dark:border-tactical-border rounded-lg dark:rounded-none px-3 py-3">
+          <div className="border border-slate-200 dark:border-tactical-border rounded-lg px-3 py-3">
             <h3 className="text-sm font-semibold text-emerald-600 dark:text-signal-green mb-2">Recuperação</h3>
             <p className="font-sans text-xs text-slate-600 dark:text-tactical-dim">
               Permite recuperação rápida e automática de falhas, minimizando o impacto 

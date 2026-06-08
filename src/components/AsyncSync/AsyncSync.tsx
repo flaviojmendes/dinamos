@@ -226,12 +226,12 @@ export default function AsyncSync() {
 
                     {request.type === 'sync' && request.status !== 'served' && (
                       <motion.div
-                        className="absolute h-6 bg-signal-red/10 border border-signal-red/30 left-[2%] w-[29%] rounded-md dark:rounded-none"
+                        className="absolute h-6 bg-signal-red/10 border border-signal-red/30 left-[2%] w-[29%] rounded-md"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                       >
-                        <div className="absolute inset-0 flex items-center justify-center font-sans text-signal-red text-xs rounded-md dark:rounded-none">
+                        <div className="absolute inset-0 flex items-center justify-center font-sans text-signal-red text-xs rounded-md">
                           Aguardando...
                         </div>
                       </motion.div>
@@ -288,7 +288,7 @@ export default function AsyncSync() {
         </div>
       </Panel>
 
-      <div className="bg-slate-50 dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-xl dark:rounded-none p-5">
+      <div className="bg-slate-50 dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-xl p-5">
         <h3 className="text-sm font-semibold text-slate-900 dark:text-tactical-text mb-3">Sobre o simulador</h3>
         <div className="space-y-1.5 font-sans text-sm text-slate-600 dark:text-tactical-dim">
           <p><strong>Síncrono:</strong> A mensagem é enviada e o cliente espera a resposta.</p>

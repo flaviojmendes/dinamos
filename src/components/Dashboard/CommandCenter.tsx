@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { useContentProgress } from '../../hooks/useContentProgress';
-import { contentManifest } from '../../config/contentManifest';
-import { MODULES, type ModuleDef, type Tier } from '../../config/contentRegistry';
+import { useContent } from '../../contexts/ContentContext';
+import { type ModuleDef, type Tier } from '../../config/contentRegistry';
 import { getTopics, ForumTopic } from '../../services/forumService';
 import { openCommandPalette } from '../Common/CommandPalette';
 import {
@@ -19,8 +19,8 @@ import {
 } from '../tactical';
 
 // Learning modules come from the shared content registry (single source of
-// truth). Tool/community destinations are excluded from the mission table.
-const MODULE_ROWS: ModuleDef[] = MODULES.filter((m) => m.tier !== 'TOOLS');
+// truth, now DB-backed). Tool/community destinations are excluded from the
+// mission table; the list is derived per-render from the content context.
 
 const tierColor: Record<Tier, string> = {
   FOUNDATIONAL: 'text-signal-cyan',
@@ -152,6 +152,11 @@ export default function CommandCenter() {
   const { t } = useTranslation();
   const { user } = useAuth();
   const { isCompleted, updateTrigger } = useContentProgress();
+  const { pages: contentPages, modules } = useContent();
+  const moduleRows: ModuleDef[] = useMemo(
+    () => modules.filter((m) => m.tier !== 'TOOLS'),
+    [modules]
+  );
 
   const [topics, setTopics] = useState<ForumTopic[]>([]);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -167,8 +172,8 @@ export default function CommandCenter() {
   }, []);
 
   const rows: ModuleRow[] = useMemo(() => {
-    return MODULE_ROWS.map((m) => {
-      const lessons = (m.paths ?? contentManifest.filter((e) => e.path.startsWith(m.base)).map((e) => e.path));
+    return moduleRows.map((m) => {
+      const lessons = (m.paths ?? contentPages.filter((e) => e.path.startsWith(m.base)).map((e) => e.path));
       const uniqueLessons = Array.from(new Set(lessons));
       const total = uniqueLessons.length;
       const done = uniqueLessons.filter((p) => isCompleted(p)).length;
@@ -178,7 +183,7 @@ export default function CommandCenter() {
       return { ...m, total, done, pct, status, nextPath };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateTrigger, isCompleted]);
+  }, [updateTrigger, isCompleted, contentPages, moduleRows]);
 
   const totals = useMemo(() => {
     const total = rows.reduce((a, r) => a + r.total, 0);
@@ -319,7 +324,7 @@ export default function CommandCenter() {
               <button
                 key={p.path}
                 onClick={() => navigate(p.path)}
-                className="group flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-white p-3 text-left transition-colors hover:border-brand-500 dark:rounded-none dark:border-tactical-border dark:bg-tactical-surface dark:hover:border-signal-green"
+                className="group flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-white p-3 text-left transition-colors hover:border-brand-500 dark:border-tactical-border dark:bg-tactical-surface dark:hover:border-signal-green"
               >
                 <span className={`mt-0.5 shrink-0 ${p.color}`}>{p.icon}</span>
                 <span className="min-w-0">
@@ -347,7 +352,7 @@ export default function CommandCenter() {
             expandedKey={expanded}
             renderExpanded={(r) => {
               const lessons = Array.from(
-                new Set(r.paths ?? contentManifest.filter((e) => e.path.startsWith(r.base)).map((e) => e.path)),
+                new Set(r.paths ?? contentPages.filter((e) => e.path.startsWith(r.base)).map((e) => e.path)),
               );
               return (
                 <div className="grid grid-cols-1 gap-1 sm:grid-cols-2">
@@ -355,7 +360,7 @@ export default function CommandCenter() {
                     <button
                       key={p}
                       onClick={() => navigate(p)}
-                      className="flex items-center gap-2 rounded-md px-2 py-1.5 text-left font-sans text-xs text-slate-600 hover:bg-slate-100 dark:rounded-none dark:text-tactical-dim dark:hover:bg-tactical-surface"
+                      className="flex items-center gap-2 rounded-md px-2 py-1.5 text-left font-sans text-xs text-slate-600 hover:bg-slate-100 dark:text-tactical-dim dark:hover:bg-tactical-surface"
                     >
                       <span className={isCompleted(p) ? 'text-emerald-600 dark:text-signal-green' : 'text-slate-300 dark:text-tactical-label'}>
                         {isCompleted(p) ? '✓' : '○'}
@@ -378,7 +383,7 @@ export default function CommandCenter() {
                 <li key={tp.id}>
                   <button
                     onClick={() => navigate(`/forum/topic/${tp.id}`)}
-                    className="w-full rounded-lg border border-transparent px-2 py-2 text-left hover:bg-slate-50 dark:rounded-none dark:hover:border-tactical-border dark:hover:bg-tactical-raised"
+                    className="w-full rounded-lg border border-transparent px-2 py-2 text-left hover:bg-slate-50 dark:hover:border-tactical-border dark:hover:bg-tactical-raised"
                   >
                     <div className="flex items-center justify-between gap-2">
                       <span className="truncate font-sans text-sm text-slate-900 dark:text-tactical-text">{tp.title}</span>

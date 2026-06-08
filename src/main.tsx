@@ -5,6 +5,7 @@ import App from "./App";
 import "./index.css";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { ContentProvider } from "./contexts/ContentContext";
 import "./config/i18n";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
@@ -12,7 +13,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <BrowserRouter>
       <ThemeProvider>
         <AuthProvider>
+          <ContentProvider>
             <App />
+          </ContentProvider>
         </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>

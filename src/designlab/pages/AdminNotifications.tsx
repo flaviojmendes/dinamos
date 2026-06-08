@@ -7,7 +7,7 @@ import UserBadge from '../components/UserBadge';
 import { TacticalButton, StatusBadge, Panel } from '../components/tactical';
 
 const inputClass =
-  'w-full px-4 py-3 rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none';
+  'w-full px-4 py-3 rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:ring-brand-500 dark:focus:ring-signal-green';
 const labelClass = 'block text-sm font-medium text-slate-600 dark:text-tactical-dim mb-2';
 import { 
   Send, 
@@ -232,7 +232,7 @@ const AdminNotifications = () => {
           {/* Header */}
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-3 border border-signal-amber/40 bg-signal-amber/10 dark:rounded-none">
+              <div className="p-3 border border-signal-amber/40 bg-signal-amber/10">
                 <Megaphone className="h-6 w-6 text-signal-amber" />
               </div>
               <div>
@@ -248,7 +248,7 @@ const AdminNotifications = () => {
 
           {success ? (
             /* Success State */
-            <div className="tactical-panel p-8 text-center max-w-lg mx-auto dark:rounded-none">
+            <div className="tactical-panel p-8 text-center max-w-lg mx-auto">
               <div className="mx-auto w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-6">
                 <CheckCircle className="h-10 w-10 text-green-600 dark:text-green-400" />
               </div>
@@ -320,7 +320,7 @@ const AdminNotifications = () => {
                 </Panel>
 
                 {/* User List */}
-                <div className="tactical-panel overflow-hidden dark:rounded-none">
+                <div className="tactical-panel overflow-hidden">
                   {/* List Header */}
                   <div className="px-6 py-4 border-b border-slate-200 dark:border-tactical-border">
                     <div className="flex items-center justify-between">

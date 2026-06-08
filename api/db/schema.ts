@@ -10,6 +10,7 @@ import {
   jsonb,
   doublePrecision,
   unique,
+  index,
 } from 'drizzle-orm/pg-core';
 
 // ==================== Roles & Permissions ====================
@@ -329,5 +330,81 @@ export const gamePlayers = pgTable(
       t.sessionId,
       t.userId
     ),
+  })
+);
+
+// ==================== Content (CMS) ====================
+// Lesson pages, formerly static MDX files under src/content/. Each row holds
+// both language bodies (raw MDX source) plus the routing/registry metadata
+// previously kept in src/config/contentManifest.ts. Rendered at runtime by the
+// browser (see src/components/Common/MdxRenderer.tsx) and managed via the admin
+// CMS (/admin/content).
+
+export const contentModules = pgTable('content_modules', {
+  id: serial('id').primaryKey(),
+  // Stable string key referenced by content_pages.module_id (e.g. "components").
+  key: varchar('key', { length: 50 }).notNull().unique(),
+  label: varchar('label', { length: 200 }).notNull(),
+  // Learning tier: FOUNDATIONAL | CORE | ADVANCED | APPLIED | TOOLS.
+  tier: varchar('tier', { length: 20 }).notNull().default('CORE'),
+  // Index/landing path for the module.
+  base: varchar('base', { length: 255 }).notNull(),
+  // Optional explicit lesson paths for modules without a shared URL prefix.
+  paths: jsonb('paths'),
+  orderIndex: integer('order_index').notNull().default(0),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+});
+
+export const contentPages = pgTable('content_pages', {
+  id: serial('id').primaryKey(),
+  // Internal slug, decoupled from the URL (e.g. "components/cache").
+  slug: varchar('slug', { length: 255 }).notNull().unique(),
+  // Public URL, preserved byte-for-byte (progress is keyed by pathname).
+  path: varchar('path', { length: 255 }).notNull().unique(),
+  // Registry module id (e.g. "components", "design"); drives sidebar/search.
+  moduleId: varchar('module_id', { length: 50 }),
+  requiresSubscription: boolean('requires_subscription').notNull().default(true),
+  orderIndex: integer('order_index').notNull().default(0),
+  // Optional key into the frontend SIMULATOR_REGISTRY to attach an interactive
+  // simulator at <path>/simulator.
+  simulatorKey: varchar('simulator_key', { length: 120 }),
+  published: boolean('published').notNull().default(true),
+  titleEn: varchar('title_en', { length: 500 }),
+  titlePt: varchar('title_pt', { length: 500 }),
+  bodyEn: text('body_en'),
+  bodyPt: text('body_pt'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+});
+
+// Per-user personal notes attached to a content page. Any logged-in user can
+// create, edit and delete their own annotations; they are private to that user
+// and keyed by the content slug so they reappear whenever the page is reopened.
+export const contentAnnotations = pgTable(
+  'content_annotations',
+  {
+    id: serial('id').primaryKey(),
+    userId: varchar('user_id', { length: 255 }).notNull(),
+    // Content slug this note belongs to (e.g. "components/cache").
+    slug: varchar('slug', { length: 255 }).notNull(),
+    // Public URL captured at creation time, for "my notes" linking/back-nav.
+    path: varchar('path', { length: 255 }),
+    // 'text' = written note, 'drawing' = Excalidraw scene.
+    kind: varchar('kind', { length: 20 }).notNull().default('text'),
+    // Text body (null for drawing-only notes).
+    body: text('body'),
+    // Excalidraw scene + preview: { elements, appState, files?, preview }.
+    drawing: jsonb('drawing'),
+    // Text-quote/position anchor when the note is attached to a selection:
+    // { quote, prefix, suffix, start, end }. Null for page-level notes.
+    anchor: jsonb('anchor'),
+    // Optional highlight color tag (e.g. "amber", "green").
+    color: varchar('color', { length: 20 }),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+  },
+  (t) => ({
+    userSlugIdx: index('content_annotations_user_slug_idx').on(t.userId, t.slug),
   })
 );

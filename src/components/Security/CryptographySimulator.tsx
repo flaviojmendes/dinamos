@@ -175,7 +175,7 @@ export default function CryptographySimulator() {
             ) : (
               <div className="space-y-3">
                 {results.map((result, index) => (
-                  <div key={index} className="rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4">
+                  <div key={index} className="rounded-lg border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4">
                     <div className="grid gap-2 font-mono text-sm">
                       <div>
                         <span className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label">{resultLabels.input}</span>
@@ -200,7 +200,7 @@ export default function CryptographySimulator() {
         </div>
       </Panel>
 
-      <div className="tactical-panel rounded-lg dark:rounded-none border-l-2 border-l-signal-cyan p-5">
+      <div className="tactical-panel rounded-lg border-l-2 border-l-signal-cyan p-5">
         <h3 className="font-sans text-sm font-semibold text-signal-cyan mb-3">{t(`${base}.instructions_title`)}</h3>
         <ul className="space-y-1.5 font-sans text-sm text-slate-600 dark:text-tactical-dim mb-6 list-decimal list-inside">
           {instructions.map((instruction, index) => (

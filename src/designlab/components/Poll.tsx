@@ -108,11 +108,11 @@ const Poll = ({ poll, onPollUpdate, isSubscribed, canManage = false }: PollProps
   };
 
   return (
-    <div className="tactical-panel p-6 dark:rounded-none">
+    <div className="tactical-panel p-6">
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-2">
-          <div className="p-2 rounded-lg border border-signal-cyan/40 bg-signal-cyan/10 dark:rounded-none">
+          <div className="p-2 rounded-lg border border-signal-cyan/40 bg-signal-cyan/10">
             <svg className="w-5 h-5 text-brand-600 dark:text-signal-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
@@ -167,7 +167,7 @@ const Poll = ({ poll, onPollUpdate, isSubscribed, canManage = false }: PollProps
               onClick={() => handleOptionClick(option.id)}
               disabled={!canVote}
               className={`
-                w-full text-left p-4 rounded-lg border-2 transition-all relative overflow-hidden dark:rounded-none
+                w-full text-left p-4 rounded-lg border-2 transition-all relative overflow-hidden
                 ${canVote ? 'cursor-pointer hover:border-signal-green/60' : 'cursor-default'}
                 ${isSelected 
                   ? 'border-signal-green bg-signal-green/10 dark:bg-signal-green/10' 

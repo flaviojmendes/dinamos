@@ -149,7 +149,7 @@ export default function RoundRobin() {
   }, [isRunning, config.requestsPerSecond, config.serverCount, config.serverCapacity, config.strategy]);
 
   const selectClass =
-    'p-2 bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border font-sans text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-brand-500 w-full sm:w-auto rounded-md dark:rounded-none';
+    'p-2 bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border font-sans text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-brand-500 w-full sm:w-auto rounded-md';
 
   const rangeClass =
     'w-full h-2 bg-slate-200 dark:bg-tactical-border appearance-none cursor-pointer accent-signal-green';
@@ -260,7 +260,7 @@ export default function RoundRobin() {
           </div>
         </div>
 
-        <div className="mt-4 bg-slate-50 dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-lg dark:rounded-none p-4">
+        <div className="mt-4 bg-slate-50 dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-lg p-4">
           <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim">
             {config.strategy === 'roundRobin' && t('simulators.round_robin.strategies.round_robin')}
             {config.strategy === 'leastConnections' && t('simulators.round_robin.strategies.least_conn')}
@@ -278,7 +278,7 @@ export default function RoundRobin() {
           {servers.map((server) => (
             <div
               key={server.id}
-              className={`border p-4 rounded-lg dark:rounded-none ${
+              className={`border p-4 rounded-lg ${
                 currentServerIndex === server.id
                   ? 'border-signal-cyan bg-signal-cyan/5'
                   : 'border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised'

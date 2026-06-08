@@ -35,7 +35,7 @@ const UserBadge = ({ role, color, className = '' }: UserBadgeProps) => {
     const style = getDynamicStyle(color);
     return (
       <span
-        className={`inline-flex items-center px-2.5 py-0.5 rounded-full dark:rounded-none text-[10px] font-sans font-medium border ${className}`}
+        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-sans font-medium border ${className}`}
         style={style}
       >
         {role}
@@ -45,7 +45,7 @@ const UserBadge = ({ role, color, className = '' }: UserBadgeProps) => {
 
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full dark:rounded-none text-[10px] font-sans font-medium border ${getFallbackStyles(role)} ${className}`}
+      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-sans font-medium border ${getFallbackStyles(role)} ${className}`}
     >
       {role}
     </span>

@@ -17,7 +17,7 @@ const LanguageSwitcher: React.FC = () => {
 
   return (
     <div
-      className="inline-flex rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border overflow-hidden"
+      className="inline-flex rounded-lg border border-slate-200 dark:border-tactical-border overflow-hidden"
       role="group"
       aria-label="Language"
     >

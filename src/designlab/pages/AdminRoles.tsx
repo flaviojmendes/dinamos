@@ -6,7 +6,7 @@ import { TacticalButton } from '../components/tactical';
 import { Role, Permission } from '../types';
 
 const inputClass =
-  'mt-1 block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2';
+  'mt-1 block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:ring-brand-500 dark:focus:ring-signal-green sm:text-sm px-3 py-2';
 const labelClass = 'block text-sm font-medium text-slate-600 dark:text-tactical-dim';
 
 interface RoleFormData {
@@ -144,7 +144,7 @@ const AdminRoles = () => {
           </div>
 
           {error && (
-            <div className="border border-signal-red/40 bg-signal-red/10 p-4 mb-8 dark:rounded-none">
+            <div className="border border-signal-red/40 bg-signal-red/10 p-4 mb-8">
               <p className="text-sm text-signal-red">{error}</p>
             </div>
           )}
@@ -152,13 +152,13 @@ const AdminRoles = () => {
           {/* Role List */}
           <div className="grid grid-cols-1 gap-6 mb-8">
             {roles.map(role => (
-              <div key={role.id} className="tactical-panel p-6 dark:rounded-none">
+              <div key={role.id} className="tactical-panel p-6">
                 <div className="flex justify-between items-start">
                   <div>
                     <div className="flex items-center gap-3">
                       <h3 className="font-sans text-lg font-semibold text-slate-900 dark:text-tactical-text">{role.name}</h3>
                       <span 
-                        className="w-6 h-6 border border-slate-200 dark:border-tactical-border dark:rounded-none"
+                        className="w-6 h-6 border border-slate-200 dark:border-tactical-border"
                         style={{ backgroundColor: role.color }}
                       ></span>
                     </div>
@@ -168,7 +168,7 @@ const AdminRoles = () => {
                       <h4 className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">Permissões</h4>
                       <div className="flex flex-wrap gap-2">
                         {role.permissions.map(permCode => (
-                          <span key={permCode} className="inline-flex items-center px-2.5 py-0.5 rounded-full border border-slate-300 dark:border-tactical-line text-xs font-medium text-slate-700 dark:text-tactical-dim bg-slate-50 dark:bg-tactical-raised dark:rounded-none">
+                          <span key={permCode} className="inline-flex items-center px-2.5 py-0.5 rounded-full border border-slate-300 dark:border-tactical-line text-xs font-medium text-slate-700 dark:text-tactical-dim bg-slate-50 dark:bg-tactical-raised">
                             {permissions.find(p => p.code === permCode)?.description || permCode}
                           </span>
                         ))}
@@ -197,7 +197,7 @@ const AdminRoles = () => {
           {/* Edit/Create Modal */}
           {(editingRole || isCreating) && (
             <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-              <div className="tactical-panel max-w-2xl w-full max-h-[90vh] overflow-y-auto dark:rounded-none">
+              <div className="tactical-panel max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                 <form onSubmit={handleSubmit} className="p-6">
                   <h2 className="font-sans text-xl font-bold text-slate-900 dark:text-tactical-text mb-6">
                     {isCreating ? 'Criar novo papel' : 'Editar papel'}
@@ -222,7 +222,7 @@ const AdminRoles = () => {
                           type="color"
                           value={formData.color}
                           onChange={e => setFormData({ ...formData, color: e.target.value })}
-                          className="h-8 w-16 border-0 p-0 cursor-pointer dark:rounded-none"
+                          className="h-8 w-16 border-0 p-0 cursor-pointer"
                         />
                         <span className="ml-2 font-mono text-sm text-slate-500 dark:text-tactical-label">{formData.color}</span>
                       </div>
@@ -240,14 +240,14 @@ const AdminRoles = () => {
                     
                     <div>
                       <label className={`${labelClass} mb-2`}>Permissions</label>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 bg-slate-50 dark:bg-tactical-raised p-4 border border-slate-200 dark:border-tactical-border dark:rounded-none">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 bg-slate-50 dark:bg-tactical-raised p-4 border border-slate-200 dark:border-tactical-border">
                         {permissions.map(perm => (
                           <label key={perm.code} className="flex items-start space-x-2 p-2 hover:bg-slate-100 dark:hover:bg-tactical-surface cursor-pointer">
                             <input
                               type="checkbox"
                               checked={formData.permissions.includes(perm.code)}
                               onChange={() => togglePermission(perm.code)}
-                              className="h-4 w-4 accent-signal-green border-slate-300 dark:border-tactical-border dark:rounded-none"
+                              className="h-4 w-4 accent-signal-green border-slate-300 dark:border-tactical-border"
                             />
                             <span className="text-sm text-slate-700 dark:text-tactical-text">
                               <span className="font-mono text-xs block">{perm.code}</span>

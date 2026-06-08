@@ -118,7 +118,7 @@ const AdminSettings = () => {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-4">
-                        <div className={`p-2 border border-slate-200 dark:border-tactical-border dark:rounded-none ${freeAccessStatus?.enabled ? 'bg-signal-green/10' : 'bg-slate-100 dark:bg-tactical-raised'}`}>
+                        <div className={`p-2 border border-slate-200 dark:border-tactical-border ${freeAccessStatus?.enabled ? 'bg-signal-green/10' : 'bg-slate-100 dark:bg-tactical-raised'}`}>
                           <svg className={`w-6 h-6 ${freeAccessStatus?.enabled ? 'text-signal-green' : 'text-slate-500 dark:text-tactical-label'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                           </svg>
@@ -133,7 +133,7 @@ const AdminSettings = () => {
                         {freeAccessStatus?.description || 'Controle o acesso gratuito para todos os usuários da plataforma.'}
                       </p>
 
-                      <div className="mt-4 p-4 border border-signal-amber/40 bg-signal-amber/10 dark:rounded-none">
+                      <div className="mt-4 p-4 border border-signal-amber/40 bg-signal-amber/10">
                         <div className="flex">
                           <svg className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
@@ -153,7 +153,7 @@ const AdminSettings = () => {
                       <button
                         onClick={handleToggleFreeAccess}
                         disabled={toggling}
-                        className={`relative inline-flex h-8 w-14 flex-shrink-0 cursor-pointer border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-signal-green focus:ring-offset-2 dark:focus:ring-offset-tactical-bg dark:rounded-none ${
+                        className={`relative inline-flex h-8 w-14 flex-shrink-0 cursor-pointer border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-signal-green focus:ring-offset-2 dark:focus:ring-offset-tactical-bg ${
                           freeAccessStatus?.enabled ? 'bg-signal-green' : 'bg-slate-300 dark:bg-tactical-raised'
                         } ${toggling ? 'opacity-50 cursor-wait' : ''}`}
                       >
@@ -203,7 +203,7 @@ const AdminSettings = () => {
                     <svg className="w-5 h-5 text-brand-600 dark:text-signal-cyan flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                    O frontend verá <code className="bg-slate-100 dark:bg-tactical-raised px-1 font-mono text-xs dark:rounded-none">is_subscribed: true</code> para todos os usuários
+                    O frontend verá <code className="bg-slate-100 dark:bg-tactical-raised px-1 font-mono text-xs">is_subscribed: true</code> para todos os usuários
                   </li>
                   <li className="flex items-start gap-2">
                     <svg className="w-5 h-5 text-brand-600 dark:text-signal-cyan flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

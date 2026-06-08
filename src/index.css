@@ -46,7 +46,7 @@
 
   /* Bordered panel. Light = soft rounded card; dark = near-black hairline surface. */
   .tactical-panel {
-    @apply bg-white dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-xl dark:rounded-none;
+    @apply bg-white dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-xl;
   }
 
   /* Quiet eyebrow micro-label. Sans + light tracking reads calm, not military. */

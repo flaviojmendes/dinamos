@@ -46,7 +46,7 @@ const TimelineView = ({ spans }: { spans: Span[] }) => {
   const startTime = Math.min(...spans.map(s => s.startTime));
 
   return (
-    <div className="relative h-32 rounded-lg dark:rounded-none bg-slate-100 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border overflow-hidden">
+    <div className="relative h-32 rounded-lg bg-slate-100 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border overflow-hidden">
       <div className="absolute inset-0 flex items-center">
         {[0, 25, 50, 75, 100].map((marker) => (
           <div key={marker} className="absolute left-[${marker}%] w-px h-full bg-slate-300 dark:bg-tactical-line">

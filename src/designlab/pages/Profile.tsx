@@ -6,7 +6,7 @@ import { trackProfileUpdate } from '../utils/analytics';
 import { Panel, TacticalButton } from '../components/tactical';
 
 const inputClass =
-  'shadow-sm block w-full sm:text-sm border border-slate-300 dark:border-tactical-border rounded-md dark:rounded-none bg-white dark:bg-tactical-surface text-slate-900 dark:text-tactical-text focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-signal-green focus:border-transparent';
+  'shadow-sm block w-full sm:text-sm border border-slate-300 dark:border-tactical-border rounded-md bg-white dark:bg-tactical-surface text-slate-900 dark:text-tactical-text focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-signal-green focus:border-transparent';
 
 const labelClass =
   'block text-xs font-sans text-slate-600 dark:text-tactical-label';
@@ -140,9 +140,9 @@ const Profile = () => {
             Perfil de usuário
           </h1>
           
-          <Panel className="rounded-xl dark:rounded-none overflow-hidden" padded={false} bodyClassName="p-6 sm:p-8">
+          <Panel className="rounded-xl overflow-hidden" padded={false} bodyClassName="p-6 sm:p-8">
               {message.text && (
-                <div className={`mb-6 p-4 border rounded-lg dark:rounded-none ${message.type === 'success' ? 'border-signal-green/40 bg-signal-green/10 text-signal-green' : 'border-signal-red/40 bg-signal-red/10 text-signal-red'}`}>
+                <div className={`mb-6 p-4 border rounded-lg ${message.type === 'success' ? 'border-signal-green/40 bg-signal-green/10 text-signal-green' : 'border-signal-red/40 bg-signal-red/10 text-signal-red'}`}>
                   {message.text}
                 </div>
               )}
@@ -165,7 +165,7 @@ const Profile = () => {
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="absolute bottom-0 right-0 bg-slate-900 dark:bg-white text-white dark:text-black p-2 rounded-full dark:rounded-none shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 dark:focus-visible:ring-signal-green"
+                      className="absolute bottom-0 right-0 bg-slate-900 dark:bg-white text-white dark:text-black p-2 rounded-full shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 dark:focus-visible:ring-signal-green"
                     >
                       <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
@@ -184,7 +184,7 @@ const Profile = () => {
                   <div className="flex-1 w-full text-center sm:text-left">
                     <div className="flex items-center justify-center sm:justify-start space-x-4 mb-2">
                       <h3 className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text">Foto de perfil</h3>
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full dark:rounded-none text-[10px] font-sans font-medium ${getRoleBadgeColor(appUser.role)}`}>
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-sans font-medium ${getRoleBadgeColor(appUser.role)}`}>
                         {appUser.role}
                       </span>
                     </div>
@@ -202,8 +202,8 @@ const Profile = () => {
                       <label htmlFor="github" className={labelClass}>
                         Usuário do GitHub
                       </label>
-                      <div className="mt-1 flex rounded-md dark:rounded-none">
-                        <span className="inline-flex items-center px-3 rounded-l-md dark:rounded-none border border-r-0 border-slate-300 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised text-slate-500 dark:text-tactical-dim sm:text-sm font-sans text-xs">
+                      <div className="mt-1 flex rounded-md">
+                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-slate-300 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised text-slate-500 dark:text-tactical-dim sm:text-sm font-sans text-xs">
                           github.com/
                         </span>
                         <input
@@ -212,7 +212,7 @@ const Profile = () => {
                           id="github"
                           value={githubUsername}
                           disabled
-                          className="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md dark:rounded-none border border-slate-300 dark:border-tactical-border bg-slate-100 dark:bg-tactical-surface text-slate-500 dark:text-tactical-dim cursor-not-allowed sm:text-sm"
+                          className="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border border-slate-300 dark:border-tactical-border bg-slate-100 dark:bg-tactical-surface text-slate-500 dark:text-tactical-dim cursor-not-allowed sm:text-sm"
                         />
                       </div>
                       <p className="mt-1 text-xs text-slate-500 dark:text-tactical-label">
@@ -269,7 +269,7 @@ const Profile = () => {
                       type="submit"
                       variant="primary"
                       disabled={saving}
-                      className={`dark:rounded-none ${saving ? 'opacity-75 cursor-wait' : ''}`}
+                      className={`${saving ? 'opacity-75 cursor-wait' : ''}`}
                     >
                       {saving ? 'Salvando...' : 'Salvar Alterações'}
                     </TacticalButton>

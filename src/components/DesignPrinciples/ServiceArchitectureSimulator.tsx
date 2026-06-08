@@ -340,7 +340,7 @@ export default function ServiceArchitectureSimulator() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3 }}
-                className={`p-4 border rounded-lg dark:rounded-none relative bg-slate-50 dark:bg-tactical-raised border-slate-200 dark:border-tactical-border ${
+                className={`p-4 border rounded-lg relative bg-slate-50 dark:bg-tactical-raised border-slate-200 dark:border-tactical-border ${
                   hoveredModule && hoveredModule !== module.id && !module.dependencies?.includes(hoveredModule)
                     ? 'opacity-30'
                     : hoveredModule === module.id ? 'border-signal-cyan' : ''
@@ -394,7 +394,7 @@ export default function ServiceArchitectureSimulator() {
           </div>
         </div>
 
-        <div className="rounded-xl border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised dark:rounded-none p-5 text-center">
+        <div className="rounded-xl border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-5 text-center">
           <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim">
             Passe o mouse sobre os módulos para visualizar suas dependências.
           </p>

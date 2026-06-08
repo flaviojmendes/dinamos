@@ -166,7 +166,7 @@ export default function RagPipelineSimulator() {
                     borderColor: active ? 'rgb(34 211 238)' : undefined,
                   }}
                   transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-                  className="relative rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-3 flex flex-col gap-2"
+                  className="relative rounded-lg border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-3 flex flex-col gap-2"
                 >
                   {active && (
                     <motion.div
@@ -184,7 +184,7 @@ export default function RagPipelineSimulator() {
         </div>
 
         {activeStage < 0 && (
-          <div className="mt-4 rounded-lg dark:rounded-none border border-dashed border-slate-300 dark:border-tactical-border px-4 py-8 text-center font-sans text-xs text-slate-400 dark:text-tactical-label">
+          <div className="mt-4 rounded-lg border border-dashed border-slate-300 dark:border-tactical-border px-4 py-8 text-center font-sans text-xs text-slate-400 dark:text-tactical-label">
             {t(`${base}.labels.idle`)}
           </div>
         )}
@@ -200,7 +200,7 @@ export default function RagPipelineSimulator() {
                   initial={{ opacity: 0, x: -24 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.08, type: 'spring', stiffness: 320, damping: 26 }}
-                  className="flex items-center gap-3 rounded-md dark:rounded-none border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
+                  className="flex items-center gap-3 rounded-md border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
                 >
                   <span className="font-sans text-xs text-slate-700 dark:text-tactical-text w-16">{t(`${base}.labels.chunk`)} {c.id}</span>
                   <SegmentBar value={c.score * 100} max={100} color={c.relevant ? 'green' : 'amber'} />

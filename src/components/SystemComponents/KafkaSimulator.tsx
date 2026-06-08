@@ -132,7 +132,7 @@ export default function KafkaSimulator() {
 
         <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr_auto] gap-4 items-center">
           {/* Producer */}
-          <div className="flex lg:flex-col items-center justify-center gap-2 rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border p-3">
+          <div className="flex lg:flex-col items-center justify-center gap-2 rounded-lg border border-slate-200 dark:border-tactical-border p-3">
             <motion.div
               className="h-3 w-3 rounded-full bg-signal-cyan"
               animate={running ? { scale: [1, 1.5, 1], opacity: [0.6, 1, 0.6] } : { scale: 1 }}
@@ -148,7 +148,7 @@ export default function KafkaSimulator() {
               return (
                 <div key={p} className="flex items-center gap-2">
                   <span className="w-16 shrink-0 font-mono text-[11px] text-slate-500 dark:text-tactical-dim">{t(`${base}.labels.partition`)} {p}</span>
-                  <div className="relative flex-1 h-7 rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised overflow-hidden flex items-center px-1 gap-0.5">
+                  <div className="relative flex-1 h-7 rounded-lg border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised overflow-hidden flex items-center px-1 gap-0.5">
                     <AnimatePresence mode="popLayout">
                       {Array.from({ length: Math.min(count, MAX_BLOCKS) }).map((_, i) => (
                         <motion.span
@@ -192,7 +192,7 @@ export default function KafkaSimulator() {
               const owned = buffers.map((_, idx) => idx).filter(idx => idx % consumers === c);
               const idle = owned.length === 0;
               return (
-                <div key={c} className="flex items-center gap-2 rounded-lg dark:rounded-none border px-3 py-1.5" style={{ borderColor: PALETTE[c] }}>
+                <div key={c} className="flex items-center gap-2 rounded-lg border px-3 py-1.5" style={{ borderColor: PALETTE[c] }}>
                   <motion.span
                     className="h-2.5 w-2.5 rounded-full"
                     style={{ backgroundColor: PALETTE[c] }}

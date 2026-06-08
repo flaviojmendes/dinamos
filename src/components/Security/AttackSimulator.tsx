@@ -208,7 +208,7 @@ export default function AttackSimulator() {
           </div>
         </div>
 
-        <div className="relative w-full h-[600px] rounded-lg dark:rounded-none bg-slate-950 border border-slate-800 dark:border-tactical-border overflow-hidden">
+        <div className="relative w-full h-[600px] rounded-lg bg-slate-950 border border-slate-800 dark:border-tactical-border overflow-hidden">
           <svg
             className="absolute inset-0 w-full h-full pointer-events-none"
             style={{ zIndex: 0 }}
@@ -318,7 +318,7 @@ export default function AttackSimulator() {
         </div>
       </Panel>
 
-      <div className="tactical-panel rounded-lg dark:rounded-none border-l-2 border-l-signal-red p-5">
+      <div className="tactical-panel rounded-lg border-l-2 border-l-signal-red p-5">
         <h3 className="font-sans text-sm font-semibold text-signal-red mb-2">
           {attackType === 'ddos' ? t(`${base}.ddos_simulation_title`) : t(`${base}.mitm_simulation_title`)}
         </h3>

@@ -92,7 +92,7 @@ export default function CqrsSimulator() {
           {/* Event log */}
           <div>
             <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t(`${base}.panels.log`)}</div>
-            <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg dark:rounded-none p-2 min-h-[160px] max-h-[220px] overflow-y-auto space-y-1">
+            <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg p-2 min-h-[160px] max-h-[220px] overflow-y-auto space-y-1">
               <AnimatePresence initial={false}>
                 {log.map((e, i) => {
                   const isApplied = i < applied;
@@ -102,7 +102,7 @@ export default function CqrsSimulator() {
                       layout
                       initial={{ opacity: 0, x: 16 }}
                       animate={{ opacity: isApplied ? 1 : 0.5 }}
-                      className={`flex items-center justify-between border rounded-md dark:rounded-none px-2 py-1 ${eventColor[e.type]}`}
+                      className={`flex items-center justify-between border rounded-md px-2 py-1 ${eventColor[e.type]}`}
                     >
                       <span className="font-sans text-[10px]">{t(`${base}.events.${e.type}`)}</span>
                       <span className="font-mono text-[10px] text-slate-400 dark:text-tactical-label">{isApplied ? '✓' : '…'}</span>
@@ -120,7 +120,7 @@ export default function CqrsSimulator() {
           <div>
             <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t(`${base}.panels.read`)}</div>
             <div className="space-y-3">
-              <div className="border border-slate-200 dark:border-tactical-border rounded-lg dark:rounded-none px-3 py-3">
+              <div className="border border-slate-200 dark:border-tactical-border rounded-lg px-3 py-3">
                 <motion.div key={status} initial={{ scale: 1.1 }} animate={{ scale: 1 }} className="font-sans text-lg font-semibold tracking-tight text-slate-900 dark:text-tactical-text">
                   {t(`${base}.status_values.${status}`)}
                 </motion.div>

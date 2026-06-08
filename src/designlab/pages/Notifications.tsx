@@ -42,7 +42,7 @@ const MessageModal = ({ notification, onClose, onDelete, onNavigate }: MessageMo
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={onClose}>
-      <div className="tactical-panel rounded-xl dark:rounded-none w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col bg-white dark:bg-tactical-surface" onClick={e => e.stopPropagation()}>
+      <div className="tactical-panel rounded-xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col bg-white dark:bg-tactical-surface" onClick={e => e.stopPropagation()}>
         {/* Header */}
         <div className="p-6 border-b border-slate-200 dark:border-tactical-border flex justify-between items-start gap-4">
           <div className="flex items-start gap-4">
@@ -71,7 +71,7 @@ const MessageModal = ({ notification, onClose, onDelete, onNavigate }: MessageMo
               </div>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 text-slate-400 dark:text-tactical-dim hover:text-slate-900 dark:hover:text-tactical-text dark:rounded-none hover:bg-slate-100 dark:hover:bg-tactical-raised transition-colors">
+          <button onClick={onClose} className="p-2 text-slate-400 dark:text-tactical-dim hover:text-slate-900 dark:hover:text-tactical-text hover:bg-slate-100 dark:hover:bg-tactical-raised transition-colors">
             <X className="h-6 w-6" />
           </button>
         </div>
@@ -94,7 +94,7 @@ const MessageModal = ({ notification, onClose, onDelete, onNavigate }: MessageMo
                     onClose();
                 }
             }}
-            className="dark:rounded-none"
+            className=""
            >
              <Trash2 className="h-4 w-4" />
              Excluir
@@ -107,7 +107,7 @@ const MessageModal = ({ notification, onClose, onDelete, onNavigate }: MessageMo
                     onNavigate(notification);
                     onClose();
                 }}
-                className="dark:rounded-none"
+                className=""
              >
                <span>Ver Conteúdo</span>
                <ExternalLink className="h-4 w-4" />
@@ -262,7 +262,7 @@ export default function Notifications() {
             
             <div className="flex items-center justify-between gap-4 flex-wrap">
               <div className="flex items-center gap-3">
-                <div className="p-2 border border-signal-cyan/40 bg-signal-cyan/10 rounded-lg dark:rounded-none">
+                <div className="p-2 border border-signal-cyan/40 bg-signal-cyan/10 rounded-lg">
                   <Bell className="h-6 w-6 text-brand-600 dark:text-signal-cyan" />
                 </div>
                 <div>
@@ -285,7 +285,7 @@ export default function Notifications() {
                   size="sm"
                   onClick={handleMarkAllRead}
                   disabled={markingAllRead}
-                  className="dark:rounded-none"
+                  className=""
                 >
                   {markingAllRead ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -302,7 +302,7 @@ export default function Notifications() {
           <div className="mb-6 flex gap-2">
             <button
               onClick={() => setShowUnreadOnly(false)}
-              className={`px-4 py-2 rounded-lg dark:rounded-none text-xs font-sans font-medium transition-colors border ${
+              className={`px-4 py-2 rounded-lg text-xs font-sans font-medium transition-colors border ${
                 !showUnreadOnly
                   ? 'bg-slate-900 dark:bg-white text-white dark:text-black border-transparent'
                   : 'bg-transparent text-slate-600 dark:text-tactical-dim border-slate-300 dark:border-tactical-line hover:border-slate-900 dark:hover:border-signal-green'
@@ -312,7 +312,7 @@ export default function Notifications() {
             </button>
             <button
               onClick={() => setShowUnreadOnly(true)}
-              className={`px-4 py-2 rounded-lg dark:rounded-none text-xs font-sans font-medium transition-colors border ${
+              className={`px-4 py-2 rounded-lg text-xs font-sans font-medium transition-colors border ${
                 showUnreadOnly
                   ? 'bg-slate-900 dark:bg-white text-white dark:text-black border-transparent'
                   : 'bg-transparent text-slate-600 dark:text-tactical-dim border-slate-300 dark:border-tactical-line hover:border-slate-900 dark:hover:border-signal-green'
@@ -333,7 +333,7 @@ export default function Notifications() {
               <p className="text-slate-500 dark:text-tactical-dim">{error}</p>
             </div>
           ) : notifications.length === 0 ? (
-            <div className="text-center py-16 tactical-panel rounded-xl dark:rounded-none">
+            <div className="text-center py-16 tactical-panel rounded-xl">
               <Bell className="h-12 w-12 text-slate-300 dark:text-tactical-label mx-auto mb-4" />
               <p className="font-sans text-sm text-slate-500 dark:text-tactical-dim">
                 {showUnreadOnly ? 'Nenhuma notificação não lida' : 'Nenhuma notificação'}
@@ -348,7 +348,7 @@ export default function Notifications() {
                 <div
                   key={notification.id}
                   onClick={() => handleNotificationClick(notification)}
-                  className={`group relative p-4 rounded-xl dark:rounded-none border transition-all cursor-pointer tactical-panel ${
+                  className={`group relative p-4 rounded-xl border transition-all cursor-pointer tactical-panel ${
                     notification.is_read
                       ? 'bg-white dark:bg-tactical-surface border-slate-200 dark:border-tactical-border hover:border-slate-300 dark:hover:border-tactical-line'
                       : 'bg-brand-50 dark:bg-signal-green/5 border-brand-200 dark:border-signal-green/30 hover:border-brand-300 dark:hover:border-signal-green/50'
@@ -414,7 +414,7 @@ export default function Notifications() {
                     {/* Delete button */}
                     <button
                       onClick={(e) => handleDeleteNotification(e, notification.id)}
-                      className="flex-shrink-0 p-2 dark:rounded-none text-slate-400 dark:text-tactical-dim hover:text-signal-red hover:bg-signal-red/10 opacity-0 group-hover:opacity-100 transition-all"
+                      className="flex-shrink-0 p-2 text-slate-400 dark:text-tactical-dim hover:text-signal-red hover:bg-signal-red/10 opacity-0 group-hover:opacity-100 transition-all"
                       title="Excluir notificação"
                     >
                       <Trash2 className="h-4 w-4" />

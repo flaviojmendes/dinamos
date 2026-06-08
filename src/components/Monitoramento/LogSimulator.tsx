@@ -291,7 +291,7 @@ export default function LogSimulator() {
       </Panel>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="tactical-panel rounded-lg dark:rounded-none border-l-2 border-l-signal-green p-5">
+        <div className="tactical-panel rounded-lg border-l-2 border-l-signal-green p-5">
           <h2 className="font-sans text-sm font-semibold text-signal-green mb-3">{t(`${base}.best_practices_title`)}</h2>
           <ul className="space-y-1.5 font-sans text-sm text-slate-600 dark:text-tactical-dim list-disc list-inside">
             {(t(`${base}.best_practices_items`, { returnObjects: true }) as string[]).map((item, idx) => (
@@ -299,7 +299,7 @@ export default function LogSimulator() {
             ))}
           </ul>
         </div>
-        <div className="tactical-panel rounded-lg dark:rounded-none border-l-2 border-l-signal-red p-5">
+        <div className="tactical-panel rounded-lg border-l-2 border-l-signal-red p-5">
           <h2 className="font-sans text-sm font-semibold text-signal-red mb-3">{t(`${base}.bad_practices_title`)}</h2>
           <ul className="space-y-1.5 font-sans text-sm text-slate-600 dark:text-tactical-dim list-disc list-inside">
             {(t(`${base}.bad_practices_items`, { returnObjects: true }) as string[]).map((item, idx) => (

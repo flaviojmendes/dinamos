@@ -6,7 +6,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="p-2 rounded-lg dark:rounded-none border border-transparent dark:border-tactical-border bg-slate-100 dark:bg-tactical-surface hover:bg-slate-200 dark:hover:bg-tactical-raised transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 dark:focus:ring-signal-green focus:ring-brand-500"
+      className="p-2 rounded-lg border border-transparent dark:border-tactical-border bg-slate-100 dark:bg-tactical-surface hover:bg-slate-200 dark:hover:bg-tactical-raised transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 dark:focus:ring-signal-green focus:ring-brand-500"
       aria-label="Toggle theme"
       title={theme === 'light' ? 'Ativar modo escuro' : 'Ativar modo claro'}
     >

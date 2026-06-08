@@ -439,7 +439,7 @@ export default function ReplicationSimulator() {
         >
           <Panel title="Estatísticas" accent="green">
             <div className="grid grid-cols-1 gap-4">
-              <div className="border border-slate-200 dark:border-tactical-border rounded-lg dark:rounded-none px-3 py-3">
+              <div className="border border-slate-200 dark:border-tactical-border rounded-lg px-3 py-3">
                 <div className="font-mono text-3xl font-bold tabular-nums leading-none text-slate-900 dark:text-tactical-text">{stats.total}</div>
                 <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">Total de transações</div>
               </div>
@@ -494,7 +494,7 @@ export default function ReplicationSimulator() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
-                    className="flex items-center justify-between border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg dark:rounded-none px-3 py-2.5"
+                    className="flex items-center justify-between border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg px-3 py-2.5"
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <StatusBadge

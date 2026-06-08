@@ -146,7 +146,7 @@ export default function GpuAutoscalerSimulator() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="rounded-lg dark:rounded-none border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center font-sans text-xs text-slate-400 dark:text-tactical-label"
+              className="rounded-lg border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center font-sans text-xs text-slate-400 dark:text-tactical-label"
             >
               {t(`${base}.labels.scale_to_zero`)}
             </motion.div>
@@ -163,7 +163,7 @@ export default function GpuAutoscalerSimulator() {
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.4, y: -12 }}
                       transition={{ type: 'spring', stiffness: 360, damping: 26 }}
-                      className="relative rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-3 flex flex-col gap-2 overflow-hidden"
+                      className="relative rounded-lg border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-3 flex flex-col gap-2 overflow-hidden"
                     >
                       <div className="flex items-center gap-2">
                         {r.state === 'warming' ? (

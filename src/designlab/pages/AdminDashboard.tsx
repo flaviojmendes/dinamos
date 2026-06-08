@@ -109,7 +109,7 @@ const BarChart = ({
           <div className="w-32 text-sm text-slate-600 dark:text-tactical-dim truncate" title={item[labelKey]}>
             {item[labelKey]}
           </div>
-          <div className="flex-1 bg-slate-200 dark:bg-tactical-raised h-6 overflow-hidden dark:rounded-none">
+          <div className="flex-1 bg-slate-200 dark:bg-tactical-raised h-6 overflow-hidden">
             <div 
               className={`${color} h-full rounded-full transition-all duration-500 flex items-center justify-end pr-2`}
               style={{ width: `${Math.max((item[valueKey] / maxValue) * 100, 5)}%` }}
@@ -273,7 +273,7 @@ const StatCard = ({
       label={title}
       sub={sub}
       color={statColorMap[color]}
-      className="dark:rounded-none"
+      className=""
     />
   )
 }
@@ -377,7 +377,7 @@ const UserGrowthChart = () => {
         
         {/* Date Range Controls */}
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex overflow-hidden rounded-lg border border-slate-200 dark:border-tactical-border dark:rounded-none">
+          <div className="flex overflow-hidden rounded-lg border border-slate-200 dark:border-tactical-border">
             {(['7d', '30d', '90d', 'custom'] as const).map((range) => (
               <button
                 key={range}
@@ -399,14 +399,14 @@ const UserGrowthChart = () => {
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="px-2 py-1.5 text-xs rounded-md border border-slate-300 dark:border-tactical-border bg-white dark:bg-tactical-surface text-slate-900 dark:text-tactical-text dark:rounded-none focus:ring-brand-500 dark:focus:ring-signal-green"
+                className="px-2 py-1.5 text-xs rounded-md border border-slate-300 dark:border-tactical-border bg-white dark:bg-tactical-surface text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green"
               />
               <span className="text-slate-400 text-xs">até</span>
               <input
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="px-2 py-1.5 text-xs rounded-md border border-slate-300 dark:border-tactical-border bg-white dark:bg-tactical-surface text-slate-900 dark:text-tactical-text dark:rounded-none focus:ring-brand-500 dark:focus:ring-signal-green"
+                className="px-2 py-1.5 text-xs rounded-md border border-slate-300 dark:border-tactical-border bg-white dark:bg-tactical-surface text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green"
               />
             </div>
           )}
@@ -607,7 +607,7 @@ function AdminDashboard() {
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-600 dark:border-signal-green"></div>
             </div>
           ) : error ? (
-            <div className="text-center p-12 border border-signal-red/40 bg-signal-red/10 dark:rounded-none">
+            <div className="text-center p-12 border border-signal-red/40 bg-signal-red/10">
               <p className="text-signal-red">{error}</p>
               <TacticalButton variant="danger" onClick={fetchDashboard} className="mt-4">
                 Tentar novamente
@@ -672,7 +672,7 @@ function AdminDashboard() {
               {/* Main Content Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Step Dropout Analysis - Takes 2 columns */}
-                <Panel title="Onde os Usuários Pararam (Rascunhos)" accent="red" className="lg:col-span-2 dark:rounded-none">
+                <Panel title="Onde os Usuários Pararam (Rascunhos)" accent="red" className="lg:col-span-2">
                   <p className="text-sm text-slate-600 dark:text-tactical-dim mb-4">
                     Análise de {data.total_drafts} rascunhos não enviados - em qual etapa do wizard os usuários abandonaram
                   </p>
@@ -685,13 +685,13 @@ function AdminDashboard() {
                 </Panel>
 
                 {/* Forum Stats */}
-                <Panel title="Fórum" accent="cyan" className="dark:rounded-none">
+                <Panel title="Fórum" accent="cyan" className="">
                   <div className="flex gap-4 mb-4">
-                    <div className="flex-1 bg-slate-50 dark:bg-tactical-raised p-3 text-center dark:rounded-none">
+                    <div className="flex-1 bg-slate-50 dark:bg-tactical-raised p-3 text-center">
                       <div className="text-2xl font-mono font-bold tabular-nums text-slate-900 dark:text-tactical-text">{data.forum.total_topics}</div>
                       <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-1">Tópicos</div>
                     </div>
-                    <div className="flex-1 bg-slate-50 dark:bg-tactical-raised p-3 text-center dark:rounded-none">
+                    <div className="flex-1 bg-slate-50 dark:bg-tactical-raised p-3 text-center">
                       <div className="text-2xl font-mono font-bold tabular-nums text-slate-900 dark:text-tactical-text">{data.forum.total_messages}</div>
                       <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-1">Mensagens</div>
                     </div>
@@ -705,11 +705,11 @@ function AdminDashboard() {
                   />
                 </Panel>
 
-                <Panel title="Atividade (Últimos 30 dias)" accent="green" className="lg:col-span-2 dark:rounded-none">
+                <Panel title="Atividade (Últimos 30 dias)" accent="green" className="lg:col-span-2">
                   <ActivityChart data={data.activity_timeline} />
                 </Panel>
 
-                <Panel title="Quizzes por Tema" accent="cyan" className="dark:rounded-none">
+                <Panel title="Quizzes por Tema" accent="cyan" className="">
                   <DonutChart 
                     data={data.quizzes.themes}
                     labelKey="theme"
@@ -728,7 +728,7 @@ function AdminDashboard() {
                   </div>
                 </Panel>
 
-                <Panel title="Desafios Mais Resolvidos" accent="green" className="dark:rounded-none">
+                <Panel title="Desafios Mais Resolvidos" accent="green" className="">
                   <BarChart 
                     data={data.challenges.solutions_per_challenge}
                     labelKey="title"
@@ -738,7 +738,7 @@ function AdminDashboard() {
                   />
                 </Panel>
 
-                <Panel title="Performance dos Quizzes" accent="amber" className="lg:col-span-2 dark:rounded-none" padded={false} bodyClassName="p-4">
+                <Panel title="Performance dos Quizzes" accent="amber" className="lg:col-span-2" padded={false} bodyClassName="p-4">
                   <div className="overflow-x-auto">
                     <table className="w-full border-collapse text-sm">
                       <thead className="bg-slate-50 dark:bg-tactical-surface">
@@ -755,7 +755,7 @@ function AdminDashboard() {
                           <tr key={quiz.id} className="border-b border-slate-100 dark:border-tactical-border/60 hover:bg-slate-50 dark:hover:bg-tactical-raised">
                             <td className="py-3 px-3 text-slate-800 dark:text-tactical-text">{quiz.title}</td>
                             <td className="py-3 px-3">
-                              <span className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-brand-50 text-brand-700 border border-brand-200 dark:rounded-none">
+                              <span className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-brand-50 text-brand-700 border border-brand-200">
                                 {quiz.theme}
                               </span>
                             </td>
@@ -777,11 +777,11 @@ function AdminDashboard() {
                   </div>
                 </Panel>
 
-                <Panel title="Atividade Recente" accent="green" className="dark:rounded-none">
+                <Panel title="Atividade Recente" accent="green" className="">
                   <div className="space-y-3">
                     {data.recent_activity.slice(0, 8).map((activity) => (
                       <div key={activity.id} className="flex items-start gap-3 text-sm">
-                        <div className="w-8 h-8 border border-signal-green/40 bg-signal-green/10 flex items-center justify-center flex-shrink-0 dark:rounded-none">
+                        <div className="w-8 h-8 border border-signal-green/40 bg-signal-green/10 flex items-center justify-center flex-shrink-0">
                           <svg className="w-4 h-4 text-signal-green" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                           </svg>

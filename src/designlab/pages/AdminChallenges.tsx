@@ -6,7 +6,7 @@ import { TacticalButton } from '../components/tactical';
 import type { Challenge } from '../types';
 
 const inputClass =
-  'mt-1 block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2';
+  'mt-1 block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:ring-brand-500 dark:focus:ring-signal-green sm:text-sm px-3 py-2';
 const labelClass = 'block text-sm font-medium text-slate-600 dark:text-tactical-dim';
 import { format } from 'date-fns';
 
@@ -143,7 +143,7 @@ const AdminChallenges = () => {
         </div>
 
         {(isCreating || editingChallenge) && (
-          <div className="tactical-panel mb-8 p-6 dark:rounded-none">
+          <div className="tactical-panel mb-8 p-6">
             <h2 className="font-sans text-lg font-medium text-slate-900 dark:text-tactical-text mb-4">
               {isCreating ? 'Criar Novo Desafio' : 'Editar Desafio'}
             </h2>
@@ -291,7 +291,7 @@ const AdminChallenges = () => {
           <div className="flex flex-col">
             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                <div className="tactical-panel overflow-hidden dark:rounded-none">
+                <div className="tactical-panel overflow-hidden">
                   <table className="min-w-full border-collapse text-sm">
                     <thead className="sticky top-0 z-10 bg-slate-50 dark:bg-tactical-surface">
                       <tr>
@@ -317,7 +317,7 @@ const AdminChallenges = () => {
                               challenge.difficulty === 'Fácil' ? 'border-signal-green/40 text-signal-green bg-signal-green/10' :
                               challenge.difficulty === 'Médio' ? 'border-signal-amber/40 text-signal-amber bg-signal-amber/10' :
                               'border-signal-red/40 text-signal-red bg-signal-red/10'
-                            } dark:rounded-none`}>
+                            }`}>
                               {challenge.difficulty}
                             </span>
                           </td>

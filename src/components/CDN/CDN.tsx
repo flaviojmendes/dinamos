@@ -193,7 +193,7 @@ export default function CDN() {
         }
       >
         {isConfigOpen && (
-          <div className="mb-6 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 space-y-4 rounded-lg dark:rounded-none">
+          <div className="mb-6 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 space-y-4 rounded-lg">
             <h3 className="text-sm font-semibold text-slate-900 dark:text-tactical-text">{t('simulators.cdn.config.title')}</h3>
             <div>
               <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">
@@ -277,7 +277,7 @@ export default function CDN() {
         </div>
 
         {isRequesting && (
-          <div className="mb-6 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 flex items-center justify-center rounded-lg dark:rounded-none">
+          <div className="mb-6 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 flex items-center justify-center rounded-lg">
             <motion.div
               className="flex items-center gap-2"
               initial={{ opacity: 0 }}
@@ -297,7 +297,7 @@ export default function CDN() {
           {datacenters.map((dc) => (
             <div
               key={dc.id}
-              className={`p-3 border rounded-lg dark:rounded-none ${
+              className={`p-3 border rounded-lg ${
                 nearestDatacenter === dc.id
                   ? 'border-signal-cyan bg-signal-cyan/5'
                   : 'border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised'
@@ -326,7 +326,7 @@ export default function CDN() {
             {requestLogs.map((log) => (
               <div
                 key={log.id}
-                className="p-3 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised flex items-center justify-between rounded-lg dark:rounded-none"
+                className="p-3 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised flex items-center justify-between rounded-lg"
               >
                 <div>
                   <div className="font-mono text-sm text-slate-900 dark:text-tactical-text">
@@ -349,7 +349,7 @@ export default function CDN() {
         </Panel>
       )}
 
-      <div className="bg-slate-50 dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-xl dark:rounded-none p-5">
+      <div className="bg-slate-50 dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-xl p-5">
         <h3 className="text-sm font-semibold text-slate-900 dark:text-tactical-text mb-3">{t('simulators.cdn.info.title')}</h3>
         <ul className="space-y-1.5 font-sans text-sm text-slate-600 dark:text-tactical-dim list-disc list-inside">
           <li>{t('simulators.cdn.info.i1')}</li>

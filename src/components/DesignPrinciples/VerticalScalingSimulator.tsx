@@ -382,7 +382,7 @@ export default function VerticalScalingSimulator() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 dark:rounded-none p-6 w-full max-w-lg"
+              className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 w-full max-w-lg"
             >
               <h2 className="font-sans text-lg font-semibold tracking-tight mb-4 text-slate-900 dark:text-slate-100">{t('simulators.vertical_scaling.upgrade_modal.title')}</h2>
               <p className="font-sans text-sm text-slate-600 dark:text-slate-400 mb-6">

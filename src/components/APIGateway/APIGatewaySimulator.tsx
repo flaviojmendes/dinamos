@@ -246,15 +246,15 @@ export default function APIGatewaySimulator() {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <div className="rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border px-3 py-3">
+        <div className="rounded-lg border border-slate-200 dark:border-tactical-border px-3 py-3">
           <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">{stats.totalRequests}</div>
           <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.gateway.stats.total')}</div>
         </div>
-        <div className="rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border px-3 py-3">
+        <div className="rounded-lg border border-slate-200 dark:border-tactical-border px-3 py-3">
           <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green">{stats.successfulRequests}</div>
           <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.gateway.stats.success')}</div>
         </div>
-        <div className="rounded-lg dark:rounded-none border border-slate-200 dark:border-tactical-border px-3 py-3">
+        <div className="rounded-lg border border-slate-200 dark:border-tactical-border px-3 py-3">
           <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-red">{stats.failedRequests}</div>
           <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.gateway.stats.error')}</div>
         </div>

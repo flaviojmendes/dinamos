@@ -172,7 +172,7 @@ export default function AgentOrchestrationSimulator() {
             return (
               <div key={phase} className="flex items-center gap-2 sm:gap-4">
                 <motion.div
-                  className={`relative flex h-20 w-20 sm:h-24 sm:w-24 flex-col items-center justify-center rounded-lg dark:rounded-none border text-center ${isActive ? c.border : 'border-slate-200 dark:border-tactical-border'}`}
+                  className={`relative flex h-20 w-20 sm:h-24 sm:w-24 flex-col items-center justify-center rounded-lg border text-center ${isActive ? c.border : 'border-slate-200 dark:border-tactical-border'}`}
                   animate={{
                     scale: isActive ? 1.08 : 1,
                   }}
@@ -209,7 +209,7 @@ export default function AgentOrchestrationSimulator() {
             ↺
           </motion.span>
           <motion.div
-            className={`flex h-20 w-20 sm:h-24 sm:w-24 flex-col items-center justify-center rounded-lg dark:rounded-none border text-center ${solved ? 'border-signal-green' : 'border-slate-200 dark:border-tactical-border'}`}
+            className={`flex h-20 w-20 sm:h-24 sm:w-24 flex-col items-center justify-center rounded-lg border text-center ${solved ? 'border-signal-green' : 'border-slate-200 dark:border-tactical-border'}`}
             animate={solved ? { scale: [1, 1.12, 1], borderColor: 'rgb(34 197 94)' } : { scale: 1 }}
             transition={{ duration: 0.5 }}
           >
@@ -222,7 +222,7 @@ export default function AgentOrchestrationSimulator() {
 
       <Panel title={t(`${base}.labels.trace`)} accent="green">
         {trace.length === 0 ? (
-          <div className="rounded-lg dark:rounded-none border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center font-sans text-xs text-slate-400 dark:text-tactical-label">
+          <div className="rounded-lg border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center font-sans text-xs text-slate-400 dark:text-tactical-label">
             {t(`${base}.labels.idle`)}
           </div>
         ) : (
@@ -235,7 +235,7 @@ export default function AgentOrchestrationSimulator() {
                   initial={{ opacity: 0, x: -28, scale: 0.96 }}
                   animate={{ opacity: 1, x: 0, scale: 1 }}
                   transition={{ type: 'spring', stiffness: 420, damping: 30 }}
-                  className="flex items-center gap-3 rounded-md dark:rounded-none border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
+                  className="flex items-center gap-3 rounded-md border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
                 >
                   <span className="font-sans text-[11px] text-slate-500 dark:text-tactical-label w-14">Step {e.step}</span>
                   <StatusBadge variant={entryVariant[e.type]} label={t(`${base}.steps.${e.type}`)} />

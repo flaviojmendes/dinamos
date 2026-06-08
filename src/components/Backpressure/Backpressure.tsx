@@ -158,7 +158,7 @@ export default function Backpressure() {
   }, [isRunning, produceMessages, consumeMessages]);
 
   const inputClass =
-    'w-full bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-2 py-1 font-sans text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-brand-500 rounded-md dark:rounded-none';
+    'w-full bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-2 py-1 font-sans text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-brand-500 rounded-md';
 
   const backpressureBarColor =
     metrics.currentBackpressure > 80 ? 'bg-signal-red' :
@@ -186,7 +186,7 @@ export default function Backpressure() {
           <summary className="cursor-pointer text-sm font-medium text-slate-700 dark:text-tactical-text hover:text-brand-600 dark:hover:text-signal-green transition-colors">
             O que é backpressure?
           </summary>
-          <div className="mt-2 bg-slate-50 dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-lg dark:rounded-none p-4 space-y-3">
+          <div className="mt-2 bg-slate-50 dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-lg p-4 space-y-3">
             <p>
               Backpressure é um mecanismo fundamental em sistemas distribuídos que lida com situações onde um componente não consegue processar dados na mesma velocidade em que os recebe. É como uma válvula de pressão que regula o fluxo de dados para evitar sobrecarga.
             </p>
@@ -220,7 +220,7 @@ export default function Backpressure() {
         </details>
 
         {isConfigOpen && (
-          <div className="mb-4 grid grid-cols-2 gap-4 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 rounded-lg dark:rounded-none">
+          <div className="mb-4 grid grid-cols-2 gap-4 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 rounded-lg">
             <div>
               <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">Taxa de produção (msg/s)</label>
               <input
@@ -265,7 +265,7 @@ export default function Backpressure() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg dark:rounded-none">
+          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg">
             <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t('simulators.backpressure.title')}</div>
             <div className="h-2 bg-slate-200 dark:bg-tactical-border overflow-hidden rounded-full">
               <div
@@ -277,7 +277,7 @@ export default function Backpressure() {
               {Math.round(metrics.currentBackpressure)}%
             </div>
           </div>
-          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg dark:rounded-none">
+          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg">
             <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t('simulators.backpressure.producer_status.title')}</div>
             {producers[0].isThrottled ? (
               <StatusBadge variant="in-progress" label={t('simulators.backpressure.producer_status.throttled')} />
@@ -288,15 +288,15 @@ export default function Backpressure() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg dark:rounded-none">
+          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg">
             <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">{metrics.producedTotal}</div>
             <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.backpressure.labels.produced')}</div>
           </div>
-          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg dark:rounded-none">
+          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg">
             <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green">{metrics.processedTotal}</div>
             <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.backpressure.labels.processed')}</div>
           </div>
-          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg dark:rounded-none">
+          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg">
             <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-red">{metrics.droppedTotal}</div>
             <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.backpressure.labels.dropped')}</div>
           </div>
@@ -308,14 +308,14 @@ export default function Backpressure() {
           {messages.slice(-5).map(message => (
             <div
               key={message.id}
-              className="flex justify-between items-center border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2 rounded-md dark:rounded-none"
+              className="flex justify-between items-center border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2 rounded-md"
             >
               <StatusBadge variant={messageStatusVariant(message.status)} label={message.status.toUpperCase()} />
               <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim tabular-nums">{((Date.now() - message.timestamp) / 1000).toFixed(1)}s ago</span>
             </div>
           ))}
           {messages.slice(-5).length === 0 && (
-            <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center rounded-lg dark:rounded-none">
+            <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center rounded-lg">
               <p className="font-sans text-xs text-slate-400 dark:text-tactical-label">
                 Nenhuma mensagem recente
               </p>

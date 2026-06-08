@@ -28,9 +28,9 @@ export function SegmentBar({ value, max = 100, color = 'green', caption, classNa
   const pct = max > 0 ? Math.min(100, Math.max(0, (value / max) * 100)) : 0;
   return (
     <div className={cn('flex items-center gap-3', className)}>
-      <div className="relative h-2 flex-1 bg-slate-200 dark:bg-tactical-raised overflow-hidden rounded-full dark:rounded-none">
+      <div className="relative h-2 flex-1 bg-slate-200 dark:bg-tactical-raised overflow-hidden rounded-full">
         <div
-          className={cn('seg-bar absolute inset-y-0 left-0 rounded-full dark:rounded-none', colorClass[color])}
+          className={cn('seg-bar absolute inset-y-0 left-0 rounded-full', colorClass[color])}
           style={{ width: `${pct}%` }}
           role="progressbar"
           aria-valuenow={value}

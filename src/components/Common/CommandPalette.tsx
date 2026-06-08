@@ -8,6 +8,7 @@ import {
   fallbackLabel,
   type ContentType,
 } from '../../config/contentRegistry';
+import { useContent } from '../../contexts/ContentContext';
 import { quickAccessLinks } from '../../config/quickAccess';
 
 const OPEN_EVENT = 'command-palette:open';
@@ -51,6 +52,7 @@ const MAX_RESULTS = 24;
 export default function CommandPalette() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { pages: contentPages } = useContent();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
@@ -125,7 +127,9 @@ export default function CommandPalette() {
       });
 
     return [...nav, ...content];
-  }, [t]);
+    // contentPages drives the live registry; recompute once it loads.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [t, contentPages]);
 
   // Filter then sort into stable group order, capped for performance.
   const filtered = useMemo(() => {

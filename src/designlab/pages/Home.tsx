@@ -107,7 +107,7 @@ function Home() {
             <div className="text-red-500 text-4xl mb-4">⚠️</div>
             <h2 className="text-xl font-sans font-bold text-slate-900 dark:text-tactical-text mb-2">Erro ao carregar</h2>
             <p className="text-slate-600 dark:text-tactical-dim mb-6">{error}</p>
-            <TacticalButton variant="primary" onClick={fetchChallenges} className="dark:rounded-none">
+            <TacticalButton variant="primary" onClick={fetchChallenges} className="">
               Tentar Novamente
             </TacticalButton>
           </div>
@@ -118,8 +118,8 @@ function Home() {
               <div className="absolute inset-0 z-30 flex items-center justify-center">
                 <div className="absolute inset-0 bg-white/70 dark:bg-tactical-bg/70 backdrop-blur-[2px]"></div>
                 <div className="relative z-10 text-center p-8 max-w-md">
-                  <div className="tactical-panel dark:rounded-none card-shadow dark:shadow-none p-8">
-                    <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-slate-900 dark:rounded-none dark:bg-tactical-raised text-white dark:text-signal-green border border-transparent dark:border-tactical-border flex items-center justify-center">
+                  <div className="tactical-panel card-shadow dark:shadow-none p-8">
+                    <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-slate-900 dark:bg-tactical-raised text-white dark:text-signal-green border border-transparent dark:border-tactical-border flex items-center justify-center">
                       <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                       </svg>
@@ -132,7 +132,7 @@ function Home() {
                     </p>
                     <Link
                       to="/subscription-required"
-                      className="inline-flex items-center justify-center w-full font-sans font-medium rounded-lg bg-slate-900 text-white hover:bg-slate-700 dark:bg-white dark:text-black dark:hover:bg-slate-200 px-6 py-3 dark:rounded-none transition-colors"
+                      className="inline-flex items-center justify-center w-full font-sans font-medium rounded-lg bg-slate-900 text-white hover:bg-slate-700 dark:bg-white dark:text-black dark:hover:bg-slate-200 px-6 py-3 transition-colors"
                     >
                       Mais Informações
                       <svg className="ml-2 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -163,7 +163,7 @@ function Home() {
                     trackChallengeView(challenge.id, challenge.title)
                     navigate(`/challenge/${challenge.id}`)
                   }}
-                  className="cursor-pointer tactical-panel dark:rounded-none card-shadow dark:shadow-none overflow-hidden hover:border-brand-400 dark:group-hover:border-signal-green transition-all duration-300 flex flex-col h-full group-hover:card-shadow"
+                  className="cursor-pointer tactical-panel card-shadow dark:shadow-none overflow-hidden hover:border-brand-400 dark:group-hover:border-signal-green transition-all duration-300 flex flex-col h-full group-hover:card-shadow"
                 >
                   <div className="p-6 flex-grow">
                     <div className="flex items-start justify-between mb-4">

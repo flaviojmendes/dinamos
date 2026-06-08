@@ -557,7 +557,7 @@ export default function ComplexityGraph() {
         <div className="space-y-4">
           {algorithms.map((algorithm, index) => (
             selectedAlgorithms.has(index) && (
-              <div key={index} className="bg-slate-50 dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-xl dark:rounded-none p-5">
+              <div key={index} className="bg-slate-50 dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-xl p-5">
                 <h3 className="text-sm font-semibold mb-2" style={{ color: algorithm.color }}>
                   {algorithm.name}
                 </h3>
@@ -565,7 +565,7 @@ export default function ComplexityGraph() {
                   <p>{explanations[categories[selectedCategory].name][index].explanation}</p>
                   <div>
                     <p className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">Exemplo</p>
-                    <pre className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 overflow-x-auto rounded-lg dark:rounded-none">
+                    <pre className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 overflow-x-auto rounded-lg">
                       <code className="text-sm whitespace-pre text-slate-900 dark:text-tactical-text">
                         {explanations[categories[selectedCategory].name][index].example}
                       </code>

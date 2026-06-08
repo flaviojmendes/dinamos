@@ -136,7 +136,7 @@ export default function ShardingSimulator() {
             const isHot = total > 0 && i === hotShard && imbalance > 50;
             const pct = Math.round((l / maxLoad) * 100);
             return (
-              <div key={i} className={`relative rounded-lg dark:rounded-none border ${isHot ? 'border-signal-red' : 'border-slate-200 dark:border-tactical-border'} bg-slate-50 dark:bg-tactical-raised p-3 flex flex-col justify-end min-h-[150px] overflow-hidden`}>
+              <div key={i} className={`relative rounded-lg border ${isHot ? 'border-signal-red' : 'border-slate-200 dark:border-tactical-border'} bg-slate-50 dark:bg-tactical-raised p-3 flex flex-col justify-end min-h-[150px] overflow-hidden`}>
                 <AnimatePresence>
                   {particles.filter(p => p.shard === i).slice(-1).map(p => (
                     <motion.span

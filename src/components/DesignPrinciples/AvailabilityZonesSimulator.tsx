@@ -359,7 +359,7 @@ export default function AvailabilityZonesSimulator() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
-                  className="flex items-center justify-between border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg dark:rounded-none px-3 py-2.5"
+                  className="flex items-center justify-between border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg px-3 py-2.5"
                 >
                   <div className="flex items-center space-x-3">
                     <span className="font-sans text-xs text-slate-900 dark:text-tactical-text">

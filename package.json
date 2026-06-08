@@ -13,11 +13,17 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
-    "db:introspect": "drizzle-kit introspect"
+    "db:introspect": "drizzle-kit introspect",
+    "db:seed-content": "tsx --env-file=.env api/scripts/seedContent.ts",
+    "db:seed-modules": "tsx --env-file=.env api/scripts/seedModules.ts"
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@excalidraw/excalidraw": "^0.18.0",
+    "@mdx-js/mdx": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
     "@mdx-js/rollup": "^3.1.1",
     "@neondatabase/serverless": "^0.10.4",

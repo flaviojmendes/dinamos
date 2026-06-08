@@ -326,7 +326,7 @@ export default function ReplicacaoSimulator() {
         </p>
       </div>
 
-      <div className="rounded-xl border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised dark:rounded-none p-5">
+      <div className="rounded-xl border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-5">
         <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">{t('simulators_extra.replication.how_title')}</h3>
         <ol className="list-decimal list-inside space-y-1.5 font-sans text-sm text-slate-600 dark:text-tactical-dim">
           {(t('simulators_extra.replication.steps', { returnObjects: true }) as string[]).map((s, idx) => (
@@ -417,7 +417,7 @@ export default function ReplicacaoSimulator() {
                     <span className="font-sans">{t('simulators_extra.replication.statuses.data')}</span>
                     <span className="font-mono tabular-nums">{t('simulators_extra.replication.statuses.keys_label', { count: Object.keys(region.data).length })}</span>
                   </div>
-                  <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg dark:rounded-none p-2 max-h-24 overflow-auto font-mono text-xs">
+                  <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg p-2 max-h-24 overflow-auto font-mono text-xs">
                     {Object.entries(region.data).map(([key, data]) => (
                       <div key={key} className="flex flex-col mb-2">
                         <div className="flex justify-between">
@@ -452,7 +452,7 @@ export default function ReplicacaoSimulator() {
         <div className="space-y-2">
           <AnimatePresence>
             {operations.slice(-5).map((operation) => (
-              <motion.div key={operation.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg dark:rounded-none px-3 py-2.5">
+              <motion.div key={operation.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg px-3 py-2.5">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
                     <StatusBadge variant={operationStatusVariant(operation.status)} label={operation.status} />

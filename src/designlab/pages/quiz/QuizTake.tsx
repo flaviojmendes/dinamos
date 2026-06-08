@@ -212,7 +212,7 @@ function QuizTake() {
       <>
         <Navbar />
         <div className="min-h-screen bg-canvas-paper dark:bg-canvas-dark flex items-center justify-center">
-          <div className="text-center p-8 tactical-panel max-w-md dark:rounded-none">
+          <div className="text-center p-8 tactical-panel max-w-md">
             <div className="text-signal-red text-4xl mb-4">⚠️</div>
             <h2 className="text-xl font-bold font-sans text-slate-900 dark:text-tactical-text mb-2">
               {error || 'Quiz não encontrado'}
@@ -234,7 +234,7 @@ function QuizTake() {
         <div className="min-h-screen bg-canvas-paper dark:bg-canvas-dark py-12 px-4">
           <div className="max-w-3xl mx-auto">
             {/* Score Card */}
-            <div className="tactical-panel overflow-hidden mb-8 dark:rounded-none">
+            <div className="tactical-panel overflow-hidden mb-8">
               <div className={`p-8 text-center ${getScoreHeaderClass(attempt.percentage)}`}>
                 <div className="text-6xl mb-4">
                   {attempt.percentage >= 70 ? '🎉' : attempt.percentage >= 40 ? '👍' : '💪'}
@@ -282,7 +282,7 @@ function QuizTake() {
             </div>
 
             {/* Answers Review */}
-            <div className="tactical-panel p-6 dark:rounded-none">
+            <div className="tactical-panel p-6">
               <h3 className="text-lg font-bold font-sans text-slate-900 dark:text-tactical-text mb-6">
                 Revisão das respostas
               </h3>
@@ -361,7 +361,7 @@ function QuizTake() {
 
           {/* Timer */}
           <div className="flex justify-center mb-8">
-            <div className={`px-6 py-3 border rounded-lg font-mono tabular-nums text-2xl font-bold flex items-center gap-2 transition-colors dark:rounded-none ${getTimerBgColor()} ${getTimerColor()}`}>
+            <div className={`px-6 py-3 border rounded-lg font-mono tabular-nums text-2xl font-bold flex items-center gap-2 transition-colors ${getTimerBgColor()} ${getTimerColor()}`}>
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -370,7 +370,7 @@ function QuizTake() {
           </div>
 
           {/* Question Card */}
-          <div className="tactical-panel p-8 mb-6 dark:rounded-none">
+          <div className="tactical-panel p-8 mb-6">
             <p className="text-xl font-medium text-slate-900 dark:text-tactical-text mb-8 text-center">
               {currentQuestion.question_text}
             </p>
@@ -386,13 +386,13 @@ function QuizTake() {
                     key={option.id}
                     onClick={() => handleSelectOption(option.id)}
                     disabled={selectedOption !== null || submitting}
-                    className={`w-full p-4 border-2 rounded-lg text-left transition-all duration-200 flex items-center gap-4 dark:rounded-none ${
+                    className={`w-full p-4 border-2 rounded-lg text-left transition-all duration-200 flex items-center gap-4 ${
                       isSelected
                         ? 'border-signal-green bg-signal-green/10 dark:bg-signal-green/10'
                         : 'border-slate-200 dark:border-tactical-border hover:border-signal-green/50 bg-white dark:bg-tactical-surface'
                     } ${selectedOption !== null && !isSelected ? 'opacity-50' : ''}`}
                   >
-                    <span className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg font-sans dark:rounded-none ${
+                    <span className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg font-sans ${
                       isSelected
                         ? 'bg-slate-900 dark:bg-white text-white dark:text-black'
                         : 'bg-slate-100 dark:bg-tactical-raised text-slate-600 dark:text-tactical-dim'

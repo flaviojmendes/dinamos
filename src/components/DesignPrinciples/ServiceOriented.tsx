@@ -257,7 +257,7 @@ const DiagramModule: React.FC<{
 
   return (
     <motion.div
-      className={`absolute p-4 border-2 rounded-lg dark:rounded-none bg-slate-50 dark:bg-tactical-raised border-slate-200 dark:border-tactical-border ${
+      className={`absolute p-4 border-2 rounded-lg bg-slate-50 dark:bg-tactical-raised border-slate-200 dark:border-tactical-border ${
         !isHighlighted ? 'opacity-50' : 'border-signal-cyan'
       }`}
       style={{
@@ -486,7 +486,7 @@ export default function ServiceOriented() {
             </div>
           </div>
 
-          <div className="mt-6 rounded-xl border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised dark:rounded-none p-4">
+          <div className="mt-6 rounded-xl border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4">
             <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{t('design_principles.service_oriented.sections.example_title')}</h4>
             <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{t(`${i18nArchBase}.example`)}</p>
           </div>

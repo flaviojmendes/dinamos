@@ -123,7 +123,7 @@ export default function CircuitBreaker() {
   }, [circuitState, resetCountdown]);
 
   const inputClass =
-    'w-full bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-2 py-1 font-sans text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-brand-500 rounded-md dark:rounded-none';
+    'w-full bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-2 py-1 font-sans text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-brand-500 rounded-md';
 
   return (
     <div className="space-y-6">
@@ -143,7 +143,7 @@ export default function CircuitBreaker() {
         }
       >
         {isConfigOpen && (
-          <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 gap-4 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 rounded-lg dark:rounded-none">
+          <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 gap-4 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 rounded-lg">
             <div>
               <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">Limite de falhas</label>
               <input
@@ -205,7 +205,7 @@ export default function CircuitBreaker() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg dark:rounded-none">
+          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg">
             <div className="flex flex-wrap items-center gap-4 mb-4">
               <StatusBadge variant={circuitStateVariant(circuitState)} label={circuitState} />
               {circuitState === 'OPEN' && resetCountdown > 0 && (
@@ -218,7 +218,7 @@ export default function CircuitBreaker() {
             <div className="text-xs font-medium text-slate-500 dark:text-tactical-label">{t('simulators.circuit_breaker.labels.consecutive_failures')}</div>
             <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-amber">{consecutiveFailures}</div>
           </div>
-          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg dark:rounded-none">
+          <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg">
             <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t('simulators.circuit_breaker.labels.error_status')}</div>
             {errorsEnabled ? (
               <StatusBadge
@@ -237,7 +237,7 @@ export default function CircuitBreaker() {
           {requests.map(request => (
             <div
               key={request.id}
-              className="flex flex-wrap justify-between gap-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2.5 rounded-md dark:rounded-none"
+              className="flex flex-wrap justify-between gap-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2.5 rounded-md"
             >
               <div className="flex items-center gap-2">
                 <StatusBadge
@@ -249,7 +249,7 @@ export default function CircuitBreaker() {
             </div>
           ))}
           {requests.length === 0 && (
-            <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center rounded-lg dark:rounded-none">
+            <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center rounded-lg">
               <p className="font-sans text-xs text-slate-400 dark:text-tactical-label">
                 {t('simulators.circuit_breaker.labels.no_requests')}
               </p>

@@ -301,7 +301,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="absolute rounded-2xl dark:rounded-none pointer-events-none"
+                className="absolute rounded-2xl pointer-events-none"
                 style={{
                   left: highlightRect.left - 12,
                   top: highlightRect.top - 12,
@@ -310,7 +310,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
                 }}
               >
                 <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${step.gradient} opacity-30 animate-pulse`} />
-                <div className="absolute inset-0 rounded-2xl dark:rounded-none border-2 border-signal-green/50 dark:border-signal-green" />
+                <div className="absolute inset-0 rounded-2xl border-2 border-signal-green/50 dark:border-signal-green" />
               </motion.div>
             )}
           </div>
@@ -344,9 +344,9 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
                 : {}
             }
           >
-            <div className="absolute -inset-1 bg-signal-amber/20 dark:bg-signal-green/10 rounded-xl dark:rounded-none blur-lg" />
+            <div className="absolute -inset-1 bg-signal-amber/20 dark:bg-signal-green/10 rounded-xl blur-lg" />
             
-            <div className="relative tactical-panel dark:rounded-none overflow-hidden bg-white dark:bg-tactical-surface border-slate-200 dark:border-tactical-border">
+            <div className="relative tactical-panel overflow-hidden bg-white dark:bg-tactical-surface border-slate-200 dark:border-tactical-border">
               <div className="h-1 bg-signal-amber dark:bg-signal-green" />
               
               {/* Content */}
@@ -377,7 +377,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
                         transition={{ delay: index * 0.08 }}
                         className="flex items-center gap-2 text-slate-700 dark:text-tactical-dim text-sm"
                       >
-                        <div className="w-5 h-5 rounded-full dark:rounded-none border border-signal-green/40 bg-signal-green/10 flex items-center justify-center flex-shrink-0">
+                        <div className="w-5 h-5 rounded-full border border-signal-green/40 bg-signal-green/10 flex items-center justify-center flex-shrink-0">
                           <svg className="w-3 h-3 text-signal-green" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                           </svg>
@@ -394,7 +394,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
                     <button
                       key={s.id}
                       onClick={() => setCurrentStep(index)}
-                      className={`h-2 rounded-full dark:rounded-none transition-all duration-300 ${
+                      className={`h-2 rounded-full transition-all duration-300 ${
                         index === currentStep
                           ? 'bg-signal-green w-6'
                           : index < currentStep
@@ -407,13 +407,13 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
 
                 {/* Navigation */}
                 <div className="flex items-center justify-between">
-                  <TacticalButton variant="ghost" size="sm" onClick={handleSkip} className="dark:rounded-none">
+                  <TacticalButton variant="ghost" size="sm" onClick={handleSkip} className="">
                     Pular
                   </TacticalButton>
 
                   <div className="flex gap-2">
                     {!isFirstStep && (
-                      <TacticalButton variant="secondary" size="sm" onClick={handlePrevious} className="dark:rounded-none">
+                      <TacticalButton variant="secondary" size="sm" onClick={handlePrevious} className="">
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                         </svg>
@@ -421,7 +421,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
                       </TacticalButton>
                     )}
 
-                    <TacticalButton variant="primary" size="sm" onClick={handleNext} className="dark:rounded-none">
+                    <TacticalButton variant="primary" size="sm" onClick={handleNext} className="">
                       {isLastStep ? 'Começar!' : 'Próximo'}
                       {!isLastStep ? (
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

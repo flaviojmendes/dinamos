@@ -396,7 +396,7 @@ const MessageComposer = ({ user, onClose, onSent }: MessageComposerProps) => {
             <button
               onClick={handleSend}
               disabled={sending || !title.trim() || !message.trim()}
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-slate-900 text-white dark:bg-white dark:text-black hover:bg-slate-700 dark:hover:bg-slate-200 font-sans font-medium dark:rounded-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-slate-900 text-white dark:bg-white dark:text-black hover:bg-slate-700 dark:hover:bg-slate-200 font-sans font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {sending ? (
                 <>
@@ -605,7 +605,7 @@ const AdminUsers = () => {
           </div>
           
           {/* Filters */}
-          <div className="tactical-panel p-4 mb-6 space-y-4 dark:rounded-none">
+          <div className="tactical-panel p-4 mb-6 space-y-4">
             <div className="flex flex-col sm:flex-row gap-4 items-center">
               <div className="flex-1 w-full">
                 <label htmlFor="search" className="sr-only">Buscar</label>
@@ -615,7 +615,7 @@ const AdminUsers = () => {
                   placeholder="Buscar por nome ou email..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-4 py-2"
+                  className="block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green sm:text-sm px-4 py-2"
                 />
               </div>
               <div className="w-full sm:w-48">
@@ -624,7 +624,7 @@ const AdminUsers = () => {
                   id="role-filter"
                   value={roleFilter}
                   onChange={(e) => setRoleFilter(e.target.value)}
-                  className="block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2"
+                  className="block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green sm:text-sm px-3 py-2"
                 >
                   <option value="all">Todos os Papéis</option>
                   {availableRoles.map(role => (
@@ -638,7 +638,7 @@ const AdminUsers = () => {
                   id="status-filter"
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2"
+                  className="block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green sm:text-sm px-3 py-2"
                 >
                   <option value="all">Todos os Status</option>
                   <option value="active">Inscrito</option>
@@ -674,7 +674,7 @@ const AdminUsers = () => {
                     value={minTokens}
                     onChange={(e) => setMinTokens(e.target.value)}
                     placeholder="0"
-                    className="block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2"
+                    className="block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green sm:text-sm px-3 py-2"
                   />
                 </div>
                 <div>
@@ -688,7 +688,7 @@ const AdminUsers = () => {
                     value={maxTokens}
                     onChange={(e) => setMaxTokens(e.target.value)}
                     placeholder="Sem limite"
-                    className="block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2"
+                    className="block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green sm:text-sm px-3 py-2"
                   />
                 </div>
                 <div>
@@ -703,7 +703,7 @@ const AdminUsers = () => {
                     value={minQuizAvg}
                     onChange={(e) => setMinQuizAvg(e.target.value)}
                     placeholder="0"
-                    className="block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2"
+                    className="block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green sm:text-sm px-3 py-2"
                   />
                 </div>
                 <div>
@@ -718,7 +718,7 @@ const AdminUsers = () => {
                     value={maxQuizAvg}
                     onChange={(e) => setMaxQuizAvg(e.target.value)}
                     placeholder="100"
-                    className="block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2"
+                    className="block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green sm:text-sm px-3 py-2"
                   />
                 </div>
               </div>
@@ -738,7 +738,7 @@ const AdminUsers = () => {
               {/* Mobile Card View */}
               <div className="md:hidden space-y-4">
                 {users.map((user) => (
-                  <div key={user.id} className="tactical-panel p-4 dark:rounded-none">
+                  <div key={user.id} className="tactical-panel p-4">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center flex-1 min-w-0">
                         <div className="flex-shrink-0 h-12 w-12">
@@ -832,7 +832,7 @@ const AdminUsers = () => {
                       <div className="flex gap-2 mt-3">
                         <button
                           onClick={() => setMessageUser(user)}
-                          className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-slate-900 text-white dark:bg-white dark:text-black hover:bg-slate-700 dark:hover:bg-slate-200 text-sm font-sans font-medium dark:rounded-none transition-all"
+                          className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-slate-900 text-white dark:bg-white dark:text-black hover:bg-slate-700 dark:hover:bg-slate-200 text-sm font-sans font-medium transition-all"
                         >
                           <Mail className="h-4 w-4" />
                           Mensagem
@@ -852,7 +852,7 @@ const AdminUsers = () => {
               </div>
 
               {/* Desktop Table View */}
-              <div className="hidden md:block tactical-panel overflow-hidden dark:rounded-none">
+              <div className="hidden md:block tactical-panel overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead className="bg-gray-50 dark:bg-tactical-raised/50">

@@ -87,7 +87,7 @@ export default function InvertedIndexSimulator() {
               <button
                 key={term}
                 onClick={() => toggleTerm(term)}
-                className={`rounded-md dark:rounded-none border px-3 py-1.5 font-sans text-xs transition-colors ${
+                className={`rounded-md border px-3 py-1.5 font-sans text-xs transition-colors ${
                   active
                     ? 'border-signal-cyan bg-signal-cyan/10 text-signal-cyan'
                     : 'border-slate-200 text-slate-500 hover:border-slate-400 dark:border-tactical-border dark:text-tactical-dim'
@@ -113,7 +113,7 @@ export default function InvertedIndexSimulator() {
                       borderColor: matched ? 'rgb(34 211 238)' : 'rgba(148,163,184,0.3)',
                       opacity: query.size === 0 ? 1 : matched ? 1 : 0.45,
                     }}
-                    className="rounded-md dark:rounded-none border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
+                    className="rounded-md border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
                   >
                     <div className="flex items-center justify-between">
                       <span className="font-sans text-xs text-slate-700 dark:text-tactical-text">{t(`${base}.labels.doc`)} {d.id}</span>
@@ -139,7 +139,7 @@ export default function InvertedIndexSimulator() {
               {VOCAB.map(term => {
                 const active = query.has(term);
                 return (
-                  <div key={term} className={`flex items-center gap-2 rounded-md dark:rounded-none border px-2 py-1 ${active ? 'border-signal-cyan/60 bg-signal-cyan/5' : 'border-slate-200 dark:border-tactical-border'}`}>
+                  <div key={term} className={`flex items-center gap-2 rounded-md border px-2 py-1 ${active ? 'border-signal-cyan/60 bg-signal-cyan/5' : 'border-slate-200 dark:border-tactical-border'}`}>
                     <span className={`w-20 shrink-0 font-sans text-[11px] ${active ? 'text-signal-cyan' : 'text-slate-500 dark:text-tactical-dim'}`}>{term}</span>
                     <span className="font-sans text-[11px] text-slate-400 dark:text-tactical-label">→</span>
                     <div className="flex flex-wrap gap-1">
@@ -159,7 +159,7 @@ export default function InvertedIndexSimulator() {
           <div>
             <div className="mb-2 font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.labels.results`)}</div>
             {results.length === 0 ? (
-              <div className="rounded-lg dark:rounded-none border border-dashed border-slate-300 dark:border-tactical-border px-4 py-8 text-center font-sans text-xs text-slate-400 dark:text-tactical-label">
+              <div className="rounded-lg border border-dashed border-slate-300 dark:border-tactical-border px-4 py-8 text-center font-sans text-xs text-slate-400 dark:text-tactical-label">
                 {t(`${base}.labels.no_matches`)}
               </div>
             ) : (
@@ -173,7 +173,7 @@ export default function InvertedIndexSimulator() {
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0 }}
                       transition={{ type: 'spring', stiffness: 380, damping: 28 }}
-                      className="flex items-center gap-3 rounded-md dark:rounded-none border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
+                      className="flex items-center gap-3 rounded-md border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
                     >
                       <span className="font-mono text-[11px] text-slate-400 dark:text-tactical-label w-5 tabular-nums">{i + 1}</span>
                       <span className="font-sans text-xs text-slate-700 dark:text-tactical-text flex-1">{t(`${base}.labels.doc`)} {r.id}</span>

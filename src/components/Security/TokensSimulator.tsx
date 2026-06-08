@@ -324,7 +324,7 @@ export default function TokensSimulator() {
         </div>
       </div>
 
-      <div className="tactical-panel rounded-lg dark:rounded-none border-l-2 border-l-signal-cyan p-5">
+      <div className="tactical-panel rounded-lg border-l-2 border-l-signal-cyan p-5">
         <h3 className="font-sans text-sm font-semibold text-signal-cyan mb-3">{t(`${base}.how_to_use_title`)}</h3>
         <ul className="space-y-1.5 font-sans text-sm text-slate-600 dark:text-tactical-dim list-decimal list-inside">
           {instructions.map((instruction, index) => (

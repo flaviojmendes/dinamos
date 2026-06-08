@@ -21,7 +21,7 @@ import { trackForumTopicView, trackForumReply } from '../../utils/analytics';
 import { TacticalButton } from '../../components/tactical';
 
 const inputClass =
-  'w-full px-3 py-2 rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none';
+  'w-full px-3 py-2 rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green';
 const labelClass = 'block text-xs font-sans text-slate-700 dark:text-tactical-dim mb-1';
 const sectionTitleClass =
   'text-lg font-sans font-medium text-slate-900 dark:text-tactical-text flex items-center gap-2 before:content-[\'\'] before:h-5 before:w-1 before:bg-signal-amber';
@@ -178,7 +178,7 @@ const MessageComponent = memo(({
 
   return (
     <div className={`${depth > 0 ? 'ml-8 mt-4 border-l-2 border-slate-200 dark:border-tactical-border pl-4' : ''}`}>
-      <div className="tactical-panel p-6 dark:rounded-none">
+      <div className="tactical-panel p-6">
         <div className="flex items-center mb-4">
           {message.author?.avatar_image ? (
             <img src={message.author.avatar_image} alt="" className="h-8 w-8 rounded-full object-cover mr-2" />
@@ -237,7 +237,7 @@ const MessageComponent = memo(({
                 </div>
               </div>
               {editShowDiagram && (
-                <div className="mt-4 border border-slate-200 dark:border-tactical-border overflow-hidden h-[400px] dark:rounded-none">
+                <div className="mt-4 border border-slate-200 dark:border-tactical-border overflow-hidden h-[400px]">
                   <Excalidraw
                     excalidrawAPI={(api: any) => setEditExcalidrawAPI(api)}
                     initialData={message.diagram_data ? {
@@ -351,7 +351,7 @@ const MessageComponent = memo(({
                 </div>
               </div>
               {showDiagram && (
-                <div className="mt-4 border border-slate-200 dark:border-tactical-border overflow-hidden h-[400px] dark:rounded-none">
+                <div className="mt-4 border border-slate-200 dark:border-tactical-border overflow-hidden h-[400px]">
                   <Excalidraw
                     excalidrawAPI={(api: any) => setExcalidrawAPI(api)}
                   />
@@ -746,7 +746,7 @@ const TopicView = () => {
           </div>
 
           {/* Original Topic */}
-          <div className="tactical-panel overflow-hidden mb-8 dark:rounded-none">
+          <div className="tactical-panel overflow-hidden mb-8">
             <div className="p-6 border-b border-slate-200 dark:border-tactical-border">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex-1">
@@ -761,7 +761,7 @@ const TopicView = () => {
                           value={topic.category}
                           onChange={handleCategoryChange}
                           disabled={changingCategory}
-                          className={`inline-flex items-center px-2.5 py-0.5 text-xs border cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-signal-green transition-all dark:rounded-none ${
+                          className={`inline-flex items-center px-2.5 py-0.5 text-xs border cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-signal-green transition-all ${
                             changingCategory ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-80'
                           } ${
                             getCategoryColor(topic.category).className 
@@ -951,7 +951,7 @@ const TopicView = () => {
                 id="sort-messages"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="block w-full pl-3 pr-10 py-1 rounded-md text-sm bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:outline-none focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none"
+                className="block w-full pl-3 pr-10 py-1 rounded-md text-sm bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:outline-none focus:ring-brand-500 dark:focus:ring-signal-green"
               >
                 <option value="top">Mais Votados</option>
                 <option value="oldest">Mais Antigos</option>
@@ -979,11 +979,11 @@ const TopicView = () => {
 
           {/* Reply Form */}
           {isSubscribed ? (
-          <div className="tactical-panel p-6 dark:rounded-none">
+          <div className="tactical-panel p-6">
             <h3 className={`${sectionTitleClass} mb-4`}>Adicionar resposta</h3>
             <form onSubmit={handleMainReply}>
               <div className="mb-4" data-color-mode={theme}>
-                <div className="overflow-hidden border border-slate-300 dark:border-tactical-border dark:rounded-none">
+                <div className="overflow-hidden border border-slate-300 dark:border-tactical-border">
                   <MDEditor
                     value={replyContent}
                     onChange={(val) => setReplyContent(val || '')}
@@ -1008,7 +1008,7 @@ const TopicView = () => {
               </div>
 
               {showExcalidraw && (
-                <div className="h-[500px] border border-slate-200 dark:border-tactical-border mb-4 dark:rounded-none overflow-hidden">
+                <div className="h-[500px] border border-slate-200 dark:border-tactical-border mb-4 overflow-hidden">
                   <Excalidraw
                     excalidrawAPI={(api) => setExcalidrawAPI(api)}
                     initialData={{ appState: { viewBackgroundColor: "#ffffff" } }}
@@ -1029,7 +1029,7 @@ const TopicView = () => {
             </form>
           </div>
           ) : (
-            <div className="tactical-panel p-6 text-center dark:rounded-none">
+            <div className="tactical-panel p-6 text-center">
               <p className="text-slate-500 dark:text-tactical-dim">
                 Somente assinantes podem responder a tópicos. <Link to="/subscribe" className="text-brand-600 dark:text-signal-green hover:opacity-80">Assine agora</Link> para participar da discussão.
               </p>

@@ -55,6 +55,10 @@ const DLAdminNotifications = React.lazy(() => import("./designlab/pages/AdminNot
 const DLAdminSettings = React.lazy(() => import("./designlab/pages/AdminSettings"));
 const DLAdminQuizzes = React.lazy(() => import("./designlab/pages/AdminQuizzes"));
 const DLAdminDashboard = React.lazy(() => import("./designlab/pages/AdminDashboard"));
+const DLAdminContent = React.lazy(() => import("./designlab/pages/AdminContent"));
+const DLAdminModules = React.lazy(() => import("./designlab/pages/AdminModules"));
+const DLAdminHub = React.lazy(() => import("./designlab/pages/AdminHub"));
+const DLAdminContentTree = React.lazy(() => import("./designlab/pages/AdminContentTree"));
 
 function DesignLabRouteFallback() {
   return (
@@ -90,8 +94,9 @@ import ContentLayout from "./components/Common/ContentLayout";
 import LanguageDetectionDialog from "./components/Common/LanguageDetectionDialog";
 import { useContentProgress, PROGRESS_UPDATED_EVENT } from "./hooks/useContentProgress";
 import ContentPage from "./components/Common/ContentPage";
-import MdxPage, { availableSlugs } from "./components/Common/MdxPage";
-import { contentManifest } from "./config/contentManifest";
+import MdxPage from "./components/Common/MdxPage";
+import { useContent } from "./contexts/ContentContext";
+import { getSimulator } from "./config/simulatorRegistry";
 import {
   contentRegistry,
   getItem,
@@ -1236,6 +1241,7 @@ export default function App() {
   const { user, signOut, isSubscribed } = useAuth();
   const { isCompleted, progress, updateTrigger } = useContentProgress();
   const { t } = useTranslation();
+  const { pages: contentPages } = useContent();
   const menuItems = createMenuItems(t);
 
   // Group the top-level nav by learning tier, derived from the registry.
@@ -1365,7 +1371,7 @@ export default function App() {
     // Minimal menu item: rounded hover/active highlight, sans label, no per-item
     // description, no accent bars or type glyphs.
     const itemBase =
-      'group flex-1 flex flex-col gap-0.5 px-3 py-2 rounded-lg dark:rounded-none transition-colors relative';
+      'group flex-1 flex flex-col gap-0.5 px-3 py-2 rounded-lg transition-colors relative';
     const itemInactive =
       'text-slate-600 dark:text-tactical-dim hover:bg-slate-100 dark:hover:bg-tactical-raised hover:text-slate-900 dark:hover:text-tactical-text';
     const itemActive =
@@ -1396,7 +1402,7 @@ export default function App() {
       <div className="text-slate-900 dark:text-tactical-text">
         <div className="flex items-stretch gap-1">
           {item.disabled ? (
-            <div className="flex-1 flex flex-col gap-0.5 px-3 py-2 rounded-lg dark:rounded-none border-transparent text-slate-400 dark:text-tactical-label/70 relative cursor-not-allowed">
+            <div className="flex-1 flex flex-col gap-0.5 px-3 py-2 rounded-lg border-transparent text-slate-400 dark:text-tactical-label/70 relative cursor-not-allowed">
               <div className="flex items-center">
                 <span className="font-sans text-sm mr-2">{item.name}</span>
                 <span className="ml-auto font-sans text-[10px] text-slate-400 dark:text-tactical-label">
@@ -1540,7 +1546,7 @@ export default function App() {
                 <LanguageSwitcher />
                 <button
                   onClick={toggleSidebar}
-                  className="p-2 text-slate-500 hover:text-slate-900 dark:text-tactical-dim dark:hover:text-tactical-text rounded-lg dark:rounded-none hover:bg-slate-100 dark:hover:bg-tactical-raised"
+                  className="p-2 text-slate-500 hover:text-slate-900 dark:text-tactical-dim dark:hover:text-tactical-text rounded-lg hover:bg-slate-100 dark:hover:bg-tactical-raised"
                 >
                   {isSidebarOpen ? (
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1602,7 +1608,7 @@ export default function App() {
                 {/* Global search: prominent trigger for the command palette */}
                 <button
                   onClick={() => openCommandPalette()}
-                  className="mb-4 flex w-full cursor-pointer items-center gap-2 rounded-lg border border-slate-200 dark:border-tactical-border dark:rounded-none bg-slate-50 dark:bg-tactical-raised px-3 py-2 text-left text-slate-500 dark:text-tactical-dim transition-colors hover:border-brand-500 dark:hover:border-signal-green hover:text-slate-900 dark:hover:text-tactical-text"
+                  className="mb-4 flex w-full cursor-pointer items-center gap-2 rounded-lg border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2 text-left text-slate-500 dark:text-tactical-dim transition-colors hover:border-brand-500 dark:hover:border-signal-green hover:text-slate-900 dark:hover:text-tactical-text"
                   aria-label={t('command_center.search_aria')}
                 >
                   <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1611,7 +1617,7 @@ export default function App() {
                   <span className="flex-1 truncate font-sans text-sm">
                     {t('command_center.search_placeholder')}
                   </span>
-                  <span className="shrink-0 rounded border border-current px-1 font-sans text-[10px] opacity-70 dark:rounded-none">⌘K</span>
+                  <span className="shrink-0 rounded border border-current px-1 font-sans text-[10px] opacity-70">⌘K</span>
                 </button>
 
                 {/* Inline nav filter */}
@@ -1621,7 +1627,7 @@ export default function App() {
                     onChange={(e) => setNavFilter(e.target.value)}
                     placeholder={t('nav.filter_placeholder', { defaultValue: 'Filter navigation…' })}
                     aria-label={t('nav.filter_placeholder', { defaultValue: 'Filter navigation' })}
-                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 font-sans text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none dark:rounded-none dark:border-tactical-border dark:bg-tactical-raised dark:text-tactical-text dark:placeholder:text-tactical-label dark:focus:border-signal-green"
+                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 font-sans text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none dark:border-tactical-border dark:bg-tactical-raised dark:text-tactical-text dark:placeholder:text-tactical-label dark:focus:border-signal-green"
                   />
                 </div>
 
@@ -1638,7 +1644,7 @@ export default function App() {
                           to={i.path}
                           onClick={() => isMobile && setIsSidebarOpen(false)}
                           className={({ isActive }: { isActive: boolean }) =>
-                            `flex items-center gap-2 rounded-lg dark:rounded-none px-3 py-2 font-sans text-sm transition-colors ${
+                            `flex items-center gap-2 rounded-lg px-3 py-2 font-sans text-sm transition-colors ${
                               isActive
                                 ? 'bg-slate-100 font-medium text-slate-900 dark:bg-tactical-raised dark:text-tactical-text'
                                 : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-tactical-dim dark:hover:bg-tactical-raised dark:hover:text-tactical-text'
@@ -1693,10 +1699,10 @@ export default function App() {
                     <img
                       src={user.photoURL}
                       alt="Profile"
-                      className="w-10 h-10 rounded-full border border-slate-200 dark:rounded-none dark:border-signal-green"
+                      className="w-10 h-10 rounded-full border border-slate-200 dark:border-signal-green"
                     />
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-brand-500 dark:rounded-none dark:bg-tactical-bg dark:border dark:border-signal-green flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full bg-brand-500 dark:bg-tactical-bg dark:border dark:border-signal-green flex items-center justify-center">
                       <span className="text-lg font-semibold font-sans text-white dark:text-signal-green">
                         {user.email?.charAt(0).toUpperCase()}
                       </span>
@@ -1754,21 +1760,40 @@ export default function App() {
             {/* Content-only pages rendered from MDX (src/content/**). One route per
                 manifest entry replaces the ~60 former per-page component routes.
                 Interactive simulators remain as explicit routes below. */}
-            {contentManifest
-              .filter((entry) => availableSlugs.has(entry.slug))
-              .map(({ path, slug, requiresSubscription = true }) => (
-                <Route
-                  key={path}
-                  path={path}
-                  element={
-                    <ProtectedRoute requiresSubscription={requiresSubscription}>
-                      <ContentPage>
-                        <MdxPage slug={slug} />
-                      </ContentPage>
-                    </ProtectedRoute>
-                  }
-                />
-              ))}
+            {contentPages.map(({ path, slug, requiresSubscription = true }) => (
+              <Route
+                key={path}
+                path={path}
+                element={
+                  <ProtectedRoute requiresSubscription={requiresSubscription}>
+                    <ContentPage>
+                      <MdxPage slug={slug} />
+                    </ContentPage>
+                  </ProtectedRoute>
+                }
+              />
+            ))}
+            {/* Auto-registered simulator routes for CMS pages that attach one by
+                key. Existing bespoke simulator routes remain declared below. */}
+            {contentPages
+              .filter((p) => p.simulatorKey && getSimulator(p.simulatorKey))
+              .map(({ path, simulatorKey, requiresSubscription = true }) => {
+                const def = getSimulator(simulatorKey)!;
+                const Simulator = def.component;
+                return (
+                  <Route
+                    key={`${path}/simulator`}
+                    path={`${path}/simulator`}
+                    element={
+                      <ProtectedRoute requiresSubscription={requiresSubscription}>
+                        <ContentPage>
+                          <Simulator />
+                        </ContentPage>
+                      </ProtectedRoute>
+                    }
+                  />
+                );
+              })}
             <Route
               path="/principios-design/canary-deployment/simulator"
               element={
@@ -2504,6 +2529,38 @@ export default function App() {
               element={
                 <DLProtectedRoute>
                   <DLAdminQuizzes />
+                </DLProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <DLProtectedRoute>
+                  <DLAdminHub />
+                </DLProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/content-tree"
+              element={
+                <DLProtectedRoute>
+                  <DLAdminContentTree />
+                </DLProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/content"
+              element={
+                <DLProtectedRoute>
+                  <DLAdminContent />
+                </DLProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/modules"
+              element={
+                <DLProtectedRoute>
+                  <DLAdminModules />
                 </DLProtectedRoute>
               }
             />

@@ -154,7 +154,7 @@ export default function LlmGatewaySimulator() {
           {/* Source node */}
           <div className="absolute left-[6%] top-1/2 -translate-y-1/2 -translate-x-0">
             <motion.div
-              className="rounded-lg dark:rounded-none border border-signal-cyan/60 bg-slate-50 dark:bg-tactical-raised px-3 py-3 text-center"
+              className="rounded-lg border border-signal-cyan/60 bg-slate-50 dark:bg-tactical-raised px-3 py-3 text-center"
               animate={isRunning ? { scale: [1, 1.02, 1] } : {}}
               transition={{ duration: 1.6, repeat: Infinity }}
             >
@@ -170,7 +170,7 @@ export default function LlmGatewaySimulator() {
               className="absolute right-[5%] flex -translate-y-1/2 items-center"
               style={{ top: laneTop[route] }}
             >
-              <div className={`rounded-md dark:rounded-none border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-1.5 font-sans text-[11px] font-medium ${routeText[route]}`}>
+              <div className={`rounded-md border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-1.5 font-sans text-[11px] font-medium ${routeText[route]}`}>
                 {t(`${base}.routes.${route}`)}
               </div>
             </div>
@@ -207,7 +207,7 @@ export default function LlmGatewaySimulator() {
         <Panel title={t(`${base}.labels.recent`)} accent="amber">
           <div className="space-y-2 min-h-[160px]">
             {logs.length === 0 ? (
-              <div className="rounded-lg dark:rounded-none border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center font-sans text-xs text-slate-400 dark:text-tactical-label">
+              <div className="rounded-lg border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center font-sans text-xs text-slate-400 dark:text-tactical-label">
                 {t(`${base}.labels.empty`)}
               </div>
             ) : (
@@ -220,7 +220,7 @@ export default function LlmGatewaySimulator() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ type: 'spring', stiffness: 420, damping: 32 }}
-                    className="flex items-center gap-2 rounded-md dark:rounded-none border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
+                    className="flex items-center gap-2 rounded-md border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
                   >
                     <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim w-12 tabular-nums">{log.id}</span>
                     <StatusBadge variant={routeVariant[log.route]} label={t(`${base}.routes.${log.route}`)} />

@@ -174,7 +174,7 @@ export default function RateLimiter() {
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="border border-slate-200 dark:border-tactical-border rounded-lg dark:rounded-none">
+          <div className="border border-slate-200 dark:border-tactical-border rounded-lg">
             <div className="border-b border-slate-200 dark:border-tactical-border px-3 py-2">
               <div className="text-xs font-medium text-slate-500 dark:text-tactical-label">{t(`simulators.rate_limiter.level.${strategy}`)}</div>
               <div className="font-sans text-xs text-slate-500 dark:text-tactical-dim">{t('simulators.rate_limiter.bucket.rate', { rate: requestsPerSecond })}</div>
@@ -189,14 +189,14 @@ export default function RateLimiter() {
             </div>
           </div>
 
-          <div className="border border-slate-200 dark:border-tactical-border rounded-lg dark:rounded-none">
+          <div className="border border-slate-200 dark:border-tactical-border rounded-lg">
             <div className="border-b border-slate-200 dark:border-tactical-border px-3 py-2">
               <div className="text-xs font-medium text-slate-500 dark:text-tactical-label">{t('simulators.rate_limiter.recent.title')}</div>
               <div className="font-sans text-xs text-slate-500 dark:text-tactical-dim">{t('simulators.rate_limiter.recent.rate', { rate: messageRate })}</div>
             </div>
             <div className="p-3 space-y-2">
               {requests.map(request => (
-                <div key={request.id} className="flex flex-wrap items-center gap-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2 rounded-md dark:rounded-none">
+                <div key={request.id} className="flex flex-wrap items-center gap-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2 rounded-md">
                   <StatusBadge
                     variant={request.status === 'accepted' ? 'active' : 'classified'}
                     label={request.status === 'accepted' ? t('simulators.rate_limiter.recent.accepted') : t('simulators.rate_limiter.recent.rejected')}
@@ -207,7 +207,7 @@ export default function RateLimiter() {
                 </div>
               ))}
               {requests.length === 0 && (
-                <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center rounded-lg dark:rounded-none">
+                <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center rounded-lg">
                   <p className="font-sans text-xs text-slate-400 dark:text-tactical-label">{t('simulators.rate_limiter.recent.none')}</p>
                 </div>
               )}

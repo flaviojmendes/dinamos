@@ -90,7 +90,7 @@ function QuizList() {
 
               {/* User Stats Card */}
               {stats && stats.total_attempts > 0 && (
-                <div className="tactical-panel p-4 dark:rounded-none">
+                <div className="tactical-panel p-4">
                   <div className="flex items-center gap-6">
                     <div className="text-center">
                       <div className="text-2xl font-bold font-mono tabular-nums text-brand-600 dark:text-signal-cyan">
@@ -131,7 +131,7 @@ function QuizList() {
             <div className="mb-8 flex flex-wrap gap-2">
               <button
                 onClick={() => setSelectedTheme('')}
-                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors border dark:rounded-none ${
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors border ${
                   selectedTheme === ''
                     ? 'border-emerald-300 text-emerald-700 bg-emerald-50'
                     : 'bg-white dark:bg-tactical-surface text-slate-700 dark:text-tactical-dim border-slate-200 dark:border-tactical-line hover:border-emerald-300'
@@ -143,7 +143,7 @@ function QuizList() {
                 <button
                   key={theme}
                   onClick={() => setSelectedTheme(theme)}
-                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors border dark:rounded-none ${
+                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors border ${
                     selectedTheme === theme
                       ? 'border-emerald-300 text-emerald-700 bg-emerald-50'
                       : 'bg-white dark:bg-tactical-surface text-slate-700 dark:text-tactical-dim border-slate-200 dark:border-tactical-line hover:border-emerald-300'
@@ -161,7 +161,7 @@ function QuizList() {
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-600 dark:border-signal-green"></div>
             </div>
           ) : error ? (
-            <div className="text-center p-12 border-2 border-dashed border-signal-red/40 dark:border-signal-red/30 bg-signal-red/5 dark:bg-signal-red/10 dark:rounded-none">
+            <div className="text-center p-12 border-2 border-dashed border-signal-red/40 dark:border-signal-red/30 bg-signal-red/5 dark:bg-signal-red/10">
               <div className="text-signal-red text-4xl mb-4">⚠️</div>
               <h2 className="text-xl font-bold font-sans text-slate-900 dark:text-tactical-text mb-2">Erro ao carregar</h2>
               <p className="text-slate-600 dark:text-tactical-dim mb-6">{error}</p>
@@ -186,7 +186,7 @@ function QuizList() {
                 <div className="absolute inset-0 z-30 flex items-center justify-center">
                   <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-white/80 to-white dark:from-tactical-bg/30 dark:via-tactical-bg/80 dark:to-tactical-bg backdrop-blur-[2px]"></div>
                   <div className="relative z-10 text-center p-8 max-w-md">
-                    <div className="tactical-panel p-8 dark:rounded-none">
+                    <div className="tactical-panel p-8">
                       <div className="w-16 h-16 mx-auto mb-6 border border-signal-cyan/40 bg-signal-cyan/10 rounded-full flex items-center justify-center">
                         <span className="text-3xl">🧠</span>
                       </div>
@@ -198,7 +198,7 @@ function QuizList() {
                       </p>
                       <Link
                         to="/subscription-required"
-                        className="inline-flex items-center justify-center gap-2 w-full px-6 py-3 font-sans font-medium rounded-lg transition-colors bg-slate-900 dark:bg-white text-white dark:text-black hover:bg-slate-700 dark:hover:bg-slate-200 dark:rounded-none"
+                        className="inline-flex items-center justify-center gap-2 w-full px-6 py-3 font-sans font-medium rounded-lg transition-colors bg-slate-900 dark:bg-white text-white dark:text-black hover:bg-slate-700 dark:hover:bg-slate-200"
                       >
                         Mais Informações
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -215,7 +215,7 @@ function QuizList() {
                   <Link
                     key={quiz.id}
                     to={`/quizzes/${quiz.id}`}
-                    className="group tactical-panel overflow-hidden dark:rounded-none hover:border-slate-400 dark:hover:border-signal-green/40 transition-colors duration-300"
+                    className="group tactical-panel overflow-hidden hover:border-slate-400 dark:hover:border-signal-green/40 transition-colors duration-300"
                   >
                     <div className="p-6">
                       <div className="flex items-start justify-between mb-3">

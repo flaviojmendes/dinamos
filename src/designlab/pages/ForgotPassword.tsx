@@ -6,7 +6,7 @@ import Logo from '../components/Logo';
 import { Panel, TacticalButton } from '../components/tactical';
 
 const inputClass =
-  'w-full px-4 py-3 border border-slate-300 dark:border-tactical-border rounded-lg dark:rounded-none bg-white dark:bg-tactical-surface text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-brand-500 focus:border-transparent transition-colors duration-200';
+  'w-full px-4 py-3 border border-slate-300 dark:border-tactical-border rounded-lg bg-white dark:bg-tactical-surface text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-brand-500 focus:border-transparent transition-colors duration-200';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -63,16 +63,16 @@ export default function ForgotPassword() {
           </p>
         </div>
 
-        <Panel padded={false} bodyClassName="py-8 px-6" className="rounded-xl dark:rounded-none shadow-xl dark:shadow-none transition-colors duration-200">
+        <Panel padded={false} bodyClassName="py-8 px-6" className="rounded-xl shadow-xl dark:shadow-none transition-colors duration-200">
           {error && (
-            <div className="mb-6 border border-signal-red/40 text-signal-red bg-signal-red/10 px-4 py-3 text-sm font-sans rounded-lg dark:rounded-none">
+            <div className="mb-6 border border-signal-red/40 text-signal-red bg-signal-red/10 px-4 py-3 text-sm font-sans rounded-lg">
               {error}
             </div>
           )}
 
           {success ? (
             <div className="text-center">
-              <div className="mb-6 border border-signal-green/40 text-signal-green bg-signal-green/10 px-4 py-4 rounded-lg dark:rounded-none">
+              <div className="mb-6 border border-signal-green/40 text-signal-green bg-signal-green/10 px-4 py-4 rounded-lg">
                 <svg className="w-12 h-12 mx-auto mb-3 text-signal-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -111,7 +111,7 @@ export default function ForgotPassword() {
                   variant="primary"
                   size="lg"
                   disabled={loading}
-                  className="w-full dark:rounded-none"
+                  className="w-full"
                 >
                   {loading ? 'Enviando...' : 'Enviar link de recuperação'}
                 </TacticalButton>

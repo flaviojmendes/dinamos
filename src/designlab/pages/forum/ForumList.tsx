@@ -124,7 +124,7 @@ const ForumList = () => {
             {isSubscribed && (
             <Link
               to="/forum/new"
-              className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-sans font-medium transition-colors bg-slate-900 dark:bg-white text-white dark:text-black hover:bg-slate-700 dark:hover:bg-slate-200 dark:rounded-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 dark:focus-visible:ring-signal-green"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-sans font-medium transition-colors bg-slate-900 dark:bg-white text-white dark:text-black hover:bg-slate-700 dark:hover:bg-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 dark:focus-visible:ring-signal-green"
             >
               <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
@@ -139,7 +139,7 @@ const ForumList = () => {
             <div className="flex space-x-2 overflow-x-auto pb-2 sm:pb-0">
               <button
                 onClick={() => setCategoryFilter('')}
-                className={`px-4 py-2 rounded-lg text-xs font-sans transition-colors whitespace-nowrap border dark:rounded-none ${
+                className={`px-4 py-2 rounded-lg text-xs font-sans transition-colors whitespace-nowrap border ${
                   categoryFilter === '' 
                     ? 'border-signal-green/40 text-signal-green bg-signal-green/10' 
                     : 'border-slate-200 dark:border-tactical-line bg-white dark:bg-tactical-surface text-slate-600 dark:text-tactical-dim hover:border-signal-green/40'
@@ -151,7 +151,7 @@ const ForumList = () => {
                 <button
                   key={cat.id}
                   onClick={() => setCategoryFilter(cat.name)}
-                  className={`px-4 py-2 rounded-lg text-xs font-sans transition-colors whitespace-nowrap border dark:rounded-none ${
+                  className={`px-4 py-2 rounded-lg text-xs font-sans transition-colors whitespace-nowrap border ${
                     categoryFilter === cat.name
                       ? 'border-signal-green/40 text-signal-green bg-signal-green/10'
                       : 'border-slate-200 dark:border-tactical-line bg-white dark:bg-tactical-surface text-slate-600 dark:text-tactical-dim hover:border-signal-green/40'
@@ -168,7 +168,7 @@ const ForumList = () => {
                 id="sort"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="block w-full pl-3 pr-10 py-2 rounded-md text-sm bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:outline-none focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none"
+                className="block w-full pl-3 pr-10 py-2 rounded-md text-sm bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:outline-none focus:ring-brand-500 dark:focus:ring-signal-green"
               >
                 <option value="top">Mais Votados</option>
                 <option value="recent">Mais Recentes</option>
@@ -183,7 +183,7 @@ const ForumList = () => {
               <p className="mt-2 text-slate-500 dark:text-tactical-dim font-sans text-xs">Carregando tópicos...</p>
             </div>
           ) : topics.length === 0 ? (
-            <div className="text-center py-12 tactical-panel p-8 dark:rounded-none">
+            <div className="text-center py-12 tactical-panel p-8">
               <svg className="mx-auto h-12 w-12 text-slate-400 dark:text-tactical-label" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
@@ -196,7 +196,7 @@ const ForumList = () => {
                 <Link 
                   key={topic.id} 
                   to={`/forum/topic/${topic.id}`}
-                  className="block tactical-panel p-6 dark:rounded-none hover:border-slate-400 dark:hover:border-signal-green/40 transition-colors relative group"
+                  className="block tactical-panel p-6 hover:border-slate-400 dark:hover:border-signal-green/40 transition-colors relative group"
                 >
                   {canDelete(topic) && (
                     <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">

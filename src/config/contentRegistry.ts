@@ -10,10 +10,22 @@
  * `menuKey(path, field)` + `t()`, exactly like the sidebar's MenuLink. The
  * registry itself stays language-agnostic.
  */
-import { contentManifest } from './contentManifest';
-
 export type Tier = 'FOUNDATIONAL' | 'CORE' | 'ADVANCED' | 'APPLIED' | 'TOOLS';
 export type ContentType = 'lesson' | 'simulator' | 'case' | 'tool';
+
+/**
+ * A lesson page as delivered by the content API (`GET /api/content`). The
+ * registry is (re)built from these at runtime via `setRegistryLessons`, since
+ * lesson content now lives in the database instead of static MDX files.
+ */
+export interface LessonEntry {
+  path: string;
+  slug: string;
+  moduleId?: string | null;
+  requiresSubscription?: boolean;
+  simulatorKey?: string | null;
+  orderIndex?: number;
+}
 
 export interface ModuleDef {
   id: string;
@@ -42,7 +54,7 @@ export interface ContentItem {
  * Modules in learning order, grouped by tier. Mirrors (and now replaces) the
  * MODULES list that used to live in CommandCenter.
  */
-export const MODULES: ModuleDef[] = [
+export const DEFAULT_MODULES: ModuleDef[] = [
   { id: 'fundamentals', label: 'Fundamentals', tier: 'FOUNDATIONAL', base: '/intro', paths: ['/intro', '/sistemas-distribuidos-101', '/system-design-101'] },
   { id: 'theory', label: 'Theoretical Foundations', tier: 'FOUNDATIONAL', base: '/theoretical-foundations' },
   { id: 'components', label: 'System Components', tier: 'CORE', base: '/componentes' },
@@ -66,7 +78,20 @@ export const MODULES: ModuleDef[] = [
 /** Tier display order, used to group the sidebar and the explore page. */
 export const TIER_ORDER: Tier[] = ['FOUNDATIONAL', 'CORE', 'ADVANCED', 'APPLIED', 'TOOLS'];
 
-const moduleById = new Map(MODULES.map((m) => [m.id, m]));
+/**
+ * The live module list. Initialized with the built-in defaults so the app
+ * works before the modules index loads, then replaced from the DB via
+ * `setRegistryModules` (see ContentContext). Modules are now CMS-editable.
+ */
+export let MODULES: ModuleDef[] = DEFAULT_MODULES;
+
+let moduleById = new Map(MODULES.map((m) => [m.id, m]));
+
+/** Replace the live module list from the fetched modules index. */
+export function setRegistryModules(modules: ModuleDef[]): void {
+  MODULES = modules.length ? modules : DEFAULT_MODULES;
+  moduleById = new Map(MODULES.map((m) => [m.id, m]));
+}
 
 export function getModule(id: string): ModuleDef | undefined {
   return moduleById.get(id);
@@ -102,7 +127,7 @@ const PATH_MODULE_OVERRIDES: Record<string, string> = {
   '/cdn': 'components',
 };
 
-function moduleIdForPath(path: string): string {
+export function moduleIdForPath(path: string): string {
   if (PATH_MODULE_OVERRIDES[path]) return PATH_MODULE_OVERRIDES[path];
   if (['/intro', '/sistemas-distribuidos-101', '/system-design-101'].includes(path)) {
     return 'fundamentals';
@@ -189,13 +214,13 @@ const PRACTICE_PATHS: { path: string; free: boolean }[] = [
   { path: '/notifications', free: false },
 ];
 
-function buildRegistry(): ContentItem[] {
+function buildRegistry(lessons: LessonEntry[]): ContentItem[] {
   const byPath = new Map<string, ContentItem>();
 
-  // Lessons + cases from the MDX manifest.
-  for (const entry of contentManifest) {
+  // Lessons + cases from the content API (formerly the static MDX manifest).
+  for (const entry of lessons) {
     if (ALIAS_PATHS.has(entry.path) || byPath.has(entry.path)) continue;
-    const moduleId = moduleIdForPath(entry.path);
+    const moduleId = entry.moduleId || moduleIdForPath(entry.path);
     const type: ContentType = entry.path.startsWith('/casos-reais') ? 'case' : 'lesson';
     byPath.set(entry.path, {
       path: entry.path,
@@ -247,9 +272,20 @@ function buildRegistry(): ContentItem[] {
   return Array.from(byPath.values());
 }
 
-export const contentRegistry: ContentItem[] = buildRegistry();
+/**
+ * The live registry. Starts empty and is (re)populated by `setRegistryLessons`
+ * once the content index has been fetched (see ContentContext). ES module live
+ * bindings mean importers always read the latest array on their next render.
+ */
+export let contentRegistry: ContentItem[] = [];
 
-const registryByPath = new Map(contentRegistry.map((i) => [i.path, i]));
+let registryByPath = new Map<string, ContentItem>();
+
+/** Rebuild the registry from the fetched lesson index. */
+export function setRegistryLessons(lessons: LessonEntry[]): void {
+  contentRegistry = buildRegistry(lessons);
+  registryByPath = new Map(contentRegistry.map((i) => [i.path, i]));
+}
 
 export function getItem(path: string): ContentItem | undefined {
   return registryByPath.get(path);

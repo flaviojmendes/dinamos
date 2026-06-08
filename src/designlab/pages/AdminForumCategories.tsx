@@ -6,7 +6,7 @@ import { TacticalButton } from '../components/tactical';
 import type { ForumCategory } from '../types';
 
 const inputClass =
-  'block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm px-3 py-2';
+  'block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:ring-brand-500 dark:focus:ring-signal-green sm:text-sm px-3 py-2';
 const labelClass = 'block text-sm font-medium text-slate-600 dark:text-tactical-dim mb-1';
 
 const AdminForumCategories = () => {
@@ -260,7 +260,7 @@ const AdminForumCategories = () => {
         )}
 
         {(isCreating || editingCategory) && (
-          <div className="tactical-panel mb-8 p-6 dark:rounded-none">
+          <div className="tactical-panel mb-8 p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="font-sans text-xl font-semibold text-slate-900 dark:text-tactical-text">
                 {isCreating ? 'Criar Nova Categoria' : 'Editar Categoria'}
@@ -269,7 +269,7 @@ const AdminForumCategories = () => {
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-slate-500 dark:text-tactical-label">Preview:</span>
                   <span
-                    className="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full dark:rounded-none"
+                    className="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full"
                     style={{
                       backgroundColor: `${formData.color}20`,
                       color: formData.color,
@@ -421,7 +421,7 @@ const AdminForumCategories = () => {
           <div className="flex flex-col">
             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                <div className="tactical-panel overflow-hidden dark:rounded-none">
+                <div className="tactical-panel overflow-hidden">
                   <table className="min-w-full border-collapse text-sm">
                     <thead className="sticky top-0 z-10 bg-slate-50 dark:bg-tactical-surface">
                       <tr>
@@ -547,7 +547,7 @@ const AdminForumCategories = () => {
         {/* Delete Confirmation Modal */}
         {deletingCategory && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm overflow-y-auto h-full w-full z-50" onClick={handleDeleteCancel}>
-            <div className="relative top-20 mx-auto p-5 w-96 tactical-panel dark:rounded-none" onClick={(e) => e.stopPropagation()}>
+            <div className="relative top-20 mx-auto p-5 w-96 tactical-panel" onClick={(e) => e.stopPropagation()}>
               <div className="mt-3">
                 <h3 className="font-sans text-lg font-medium text-slate-900 dark:text-tactical-text mb-4">
                   Excluir categoria

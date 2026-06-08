@@ -290,7 +290,7 @@ export default function RetriesSimulator() {
             </div>
           </Panel>
 
-          <div className="rounded-lg border border-slate-200 dark:border-slate-700 border-l-2 border-l-emerald-500 bg-slate-50 dark:bg-slate-900 dark:rounded-none p-5">
+          <div className="rounded-lg border border-slate-200 dark:border-slate-700 border-l-2 border-l-emerald-500 bg-slate-50 dark:bg-slate-900 p-5">
             <h3 className="text-sm font-sans font-semibold text-slate-900 dark:text-slate-100 mb-3">{t('simulators.retries.info.title')}</h3>
             <div className="space-y-1.5 font-sans text-sm text-slate-600 dark:text-slate-400">
               <p className="flex gap-2"><span className="text-emerald-600 dark:text-emerald-400">•</span>{t('simulators.retries.info.p1')}</p>

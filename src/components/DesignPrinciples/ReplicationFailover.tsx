@@ -34,7 +34,7 @@ export default function ReplicationFailover() {
               ou sistemas em diferentes locais.
             </p>
             <div className="space-y-3">
-              <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg dark:rounded-none p-4">
+              <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg p-4">
                 <h3 className="text-sm font-semibold text-emerald-600 dark:text-signal-green mb-2">Tipos de replicação</h3>
                 <ul className="list-disc list-inside font-sans text-sm text-slate-500 dark:text-tactical-dim space-y-1.5">
                   <li>Síncrona: Garantia de consistência imediata</li>
@@ -42,7 +42,7 @@ export default function ReplicationFailover() {
                   <li>Semi-síncrona: Equilíbrio entre as duas abordagens</li>
                 </ul>
               </div>
-              <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg dark:rounded-none p-4">
+              <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg p-4">
                 <h3 className="text-sm font-semibold text-emerald-600 dark:text-signal-green mb-2">Benefícios</h3>
                 <ul className="list-disc list-inside font-sans text-sm text-slate-500 dark:text-tactical-dim space-y-1.5">
                   <li>Redundância de dados</li>
@@ -59,7 +59,7 @@ export default function ReplicationFailover() {
               principal falha.
             </p>
             <div className="space-y-3">
-              <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg dark:rounded-none p-4">
+              <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg p-4">
                 <h3 className="text-sm font-semibold text-emerald-600 dark:text-signal-green mb-2">Tipos de failover</h3>
                 <ul className="list-disc list-inside font-sans text-sm text-slate-500 dark:text-tactical-dim space-y-1.5">
                   <li>Ativo-passivo: backup em espera</li>
@@ -67,7 +67,7 @@ export default function ReplicationFailover() {
                   <li>Cascata: Múltiplos níveis de backup</li>
                 </ul>
               </div>
-              <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg dark:rounded-none p-4">
+              <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg p-4">
                 <h3 className="text-sm font-semibold text-emerald-600 dark:text-signal-green mb-2">Componentes</h3>
                 <ul className="list-disc list-inside font-sans text-sm text-slate-500 dark:text-tactical-dim space-y-1.5">
                   <li>Monitoramento de saúde</li>
@@ -86,7 +86,7 @@ export default function ReplicationFailover() {
           className="space-y-6"
         >
           <Panel title="Exemplo do Mundo Real" accent="green">
-            <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg dark:rounded-none p-4 mb-4">
+            <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg p-4 mb-4">
               <h3 className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text mb-2">Sistema bancário online</h3>
               <p className="font-sans text-sm text-slate-500 dark:text-tactical-dim mb-4">
                 Um banco digital implementa replicação e failover da seguinte forma:
@@ -107,21 +107,21 @@ export default function ReplicationFailover() {
 
           <Panel title="Melhores Práticas" accent="cyan">
             <ul className="space-y-3">
-              <li className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg dark:rounded-none p-4">
+              <li className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg p-4">
                 <h3 className="text-sm font-semibold text-emerald-600 dark:text-signal-green mb-2">Planejamento</h3>
                 <p className="font-sans text-sm text-slate-500 dark:text-tactical-dim">
                   Defina claramente os objetivos de RPO (Recovery Point Objective) e 
                   RTO (Recovery Time Objective) para guiar a implementação.
                 </p>
               </li>
-              <li className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg dark:rounded-none p-4">
+              <li className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg p-4">
                 <h3 className="text-sm font-semibold text-emerald-600 dark:text-signal-green mb-2">Testes</h3>
                 <p className="font-sans text-sm text-slate-500 dark:text-tactical-dim">
                   Realize testes regulares de failover para garantir que o sistema 
                   funcione conforme esperado em situações reais.
                 </p>
               </li>
-              <li className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg dark:rounded-none p-4">
+              <li className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised rounded-lg p-4">
                 <h3 className="text-sm font-semibold text-emerald-600 dark:text-signal-green mb-2">Monitoramento</h3>
                 <p className="font-sans text-sm text-slate-500 dark:text-tactical-dim">
                   Implemente monitoramento abrangente para detectar problemas antes que 
@@ -140,7 +140,7 @@ export default function ReplicationFailover() {
       >
         <Link
           to="/principios-design/alta-disponibilidade/replicacao/simulator"
-          className="block rounded-xl border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised dark:rounded-none p-6 text-center hover:border-emerald-400 dark:hover:border-signal-green transition-colors"
+          className="block rounded-xl border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-6 text-center hover:border-emerald-400 dark:hover:border-signal-green transition-colors"
         >
           <h2 className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text mb-2">
             Explorar o simulador de replicação e failover

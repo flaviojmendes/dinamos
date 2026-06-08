@@ -9,7 +9,7 @@ import { ForumCategory } from '../../types';
 import { TacticalButton } from '../../components/tactical';
 
 const inputClass =
-  'mt-1 block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:ring-brand-500 dark:focus:ring-signal-green dark:rounded-none sm:text-sm py-2 px-3';
+  'mt-1 block w-full rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text placeholder:text-slate-400 dark:placeholder:text-tactical-label focus:ring-brand-500 dark:focus:ring-signal-green sm:text-sm py-2 px-3';
 const labelClass = 'block text-xs font-sans text-slate-700 dark:text-tactical-dim';
 
 interface PollDraft {
@@ -146,7 +146,7 @@ const CreateTopic = () => {
             Criar novo tópico
           </h1>
           
-          <form onSubmit={handleSubmit} className="space-y-6 tactical-panel p-6 dark:rounded-none">
+          <form onSubmit={handleSubmit} className="space-y-6 tactical-panel p-6">
             <div>
               <label htmlFor="title" className={labelClass}>
                 Título
@@ -185,7 +185,7 @@ const CreateTopic = () => {
               <label htmlFor="content" className={`${labelClass} mb-2`}>
                 Conteúdo
               </label>
-              <div className="overflow-hidden border border-slate-300 dark:border-tactical-border dark:rounded-none">
+              <div className="overflow-hidden border border-slate-300 dark:border-tactical-border">
                 <MDEditor
                   value={content}
                   onChange={(val) => setContent(val || '')}
@@ -211,7 +211,7 @@ const CreateTopic = () => {
               </div>
 
               {showPoll && (
-                <div className="rounded-lg border border-signal-cyan/30 bg-signal-cyan/5 dark:bg-tactical-raised p-5 space-y-4 dark:rounded-none">
+                <div className="rounded-lg border border-signal-cyan/30 bg-signal-cyan/5 dark:bg-tactical-raised p-5 space-y-4">
                   <div>
                     <label className={`${labelClass} mb-1`}>
                       Pergunta da Enquete

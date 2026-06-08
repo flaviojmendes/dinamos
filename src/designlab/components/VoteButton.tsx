@@ -37,7 +37,7 @@ export default function VoteButton({ id, type, initialUpvotes, initialHasVoted =
     <button
       onClick={handleVote}
       disabled={loading}
-      className={`flex items-center space-x-1 px-2 py-1 transition-colors dark:rounded-none ${
+      className={`flex items-center space-x-1 px-2 py-1 transition-colors ${
         hasVoted
           ? 'text-signal-green'
           : 'text-slate-400 dark:text-tactical-label hover:text-slate-600 dark:hover:text-tactical-dim'

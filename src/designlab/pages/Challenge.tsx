@@ -638,7 +638,7 @@ function Challenge() {
   if (isMobile) {
     return (
       <div className="flex justify-center items-center h-screen bg-canvas-paper dark:bg-canvas-dark px-4">
-        <div className="text-center max-w-md tactical-panel rounded-xl dark:rounded-none card-shadow dark:shadow-none p-8">
+        <div className="text-center max-w-md tactical-panel rounded-xl card-shadow dark:shadow-none p-8">
           <div className="text-5xl mb-6">💻</div>
           <h2 className="text-2xl font-sans font-bold tracking-tight text-slate-900 dark:text-tactical-text mb-4">
             Por favor, use um computador
@@ -646,7 +646,7 @@ function Challenge() {
           <p className="text-slate-600 dark:text-tactical-dim mb-8 leading-relaxed">
             Para garantir a melhor experiência desenhando diagramas de arquitetura e escrevendo requisitos, este desafio deve ser realizado em um computador (desktop ou notebook).
           </p>
-          <TacticalButton variant="primary" onClick={() => navigate('/design-lab')} className="w-full dark:rounded-none">
+          <TacticalButton variant="primary" onClick={() => navigate('/design-lab')} className="w-full">
             Voltar para o início
           </TacticalButton>
         </div>
@@ -657,11 +657,11 @@ function Challenge() {
   if (error) {
     return (
       <div className="flex justify-center items-center h-screen bg-canvas-paper dark:bg-canvas-dark">
-        <div className="text-center p-8 tactical-panel rounded-xl dark:rounded-none card-shadow dark:shadow-none">
+        <div className="text-center p-8 tactical-panel rounded-xl card-shadow dark:shadow-none">
           <div className="text-signal-red text-5xl mb-4">⚠️</div>
           <h2 className="text-2xl font-sans font-bold text-slate-900 dark:text-tactical-text mb-2">Erro</h2>
           <p className="text-slate-600 dark:text-tactical-dim mb-6">{error}</p>
-          <TacticalButton variant="primary" onClick={() => navigate('/design-lab')} className="dark:rounded-none">
+          <TacticalButton variant="primary" onClick={() => navigate('/design-lab')} className="">
             Voltar para o início
           </TacticalButton>
         </div>
@@ -716,7 +716,7 @@ function Challenge() {
                       <button
                         onClick={saveProgress}
                         disabled={isSaving}
-                        className="px-3 py-1 text-xs font-sans rounded-lg border border-slate-300 dark:border-tactical-border hover:bg-slate-50 dark:hover:bg-tactical-raised text-slate-700 dark:text-tactical-text dark:rounded-none transition-colors duration-200 disabled:opacity-50"
+                        className="px-3 py-1 text-xs font-sans rounded-lg border border-slate-300 dark:border-tactical-border hover:bg-slate-50 dark:hover:bg-tactical-raised text-slate-700 dark:text-tactical-text transition-colors duration-200 disabled:opacity-50"
                         title="Salvar progresso manualmente"
                       >
                         💾 Salvar
@@ -726,7 +726,7 @@ function Challenge() {
                       <button
                         onClick={resetProgress}
                         disabled={isSaving}
-                        className="px-3 py-1 text-xs font-sans rounded-lg border border-signal-red/50 hover:bg-signal-red/10 text-signal-red dark:rounded-none transition-colors duration-200 disabled:opacity-50"
+                        className="px-3 py-1 text-xs font-sans rounded-lg border border-signal-red/50 hover:bg-signal-red/10 text-signal-red transition-colors duration-200 disabled:opacity-50"
                         title="Reiniciar desafio (apaga todo o progresso)"
                       >
                         🔄 Reiniciar
@@ -736,7 +736,7 @@ function Challenge() {
                       <button
                         onClick={fetchHistory}
                         disabled={isSaving}
-                        className="px-3 py-1 text-xs font-sans rounded-lg border border-signal-cyan/40 hover:bg-signal-cyan/10 text-brand-600 dark:text-signal-cyan dark:rounded-none transition-colors duration-200 disabled:opacity-50"
+                        className="px-3 py-1 text-xs font-sans rounded-lg border border-signal-cyan/40 hover:bg-signal-cyan/10 text-brand-600 dark:text-signal-cyan transition-colors duration-200 disabled:opacity-50"
                         title="Ver histórico de tentativas"
                       >
                         📜 Histórico
@@ -747,7 +747,7 @@ function Challenge() {
               <button
                 onClick={handleFinalSubmit}
                 disabled={submitting}
-                className="bg-slate-900 text-white px-6 py-2 rounded-lg hover:bg-slate-700 dark:bg-white dark:text-black dark:hover:bg-slate-200 font-sans dark:rounded-none transition-colors duration-200 font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+                className="bg-slate-900 text-white px-6 py-2 rounded-lg hover:bg-slate-700 dark:bg-white dark:text-black dark:hover:bg-slate-200 font-sans transition-colors duration-200 font-medium disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {submitting ? 'Enviando...' : 'Enviar solução'}
               </button>
@@ -767,7 +767,7 @@ function Challenge() {
 
         {/* Challenge Description - Collapsible */}
         <div className="max-w-6xl mx-auto mt-6">
-          <details className="tactical-panel rounded-xl dark:rounded-none card-shadow dark:shadow-none transition-colors duration-200">
+          <details className="tactical-panel rounded-xl card-shadow dark:shadow-none transition-colors duration-200">
             <summary className="cursor-pointer p-4 font-sans font-semibold text-slate-900 dark:text-tactical-text hover:bg-slate-50 dark:hover:bg-tactical-raised transition-colors duration-200">
               📋 Descrição do desafio
             </summary>
@@ -813,7 +813,7 @@ function Challenge() {
 
         {/* Main Content - Full Width */}
         <div className="max-w-6xl mx-auto mt-6">
-            <div className="tactical-panel rounded-xl dark:rounded-none card-shadow dark:shadow-none p-6 transition-colors duration-200">
+            <div className="tactical-panel rounded-xl card-shadow dark:shadow-none p-6 transition-colors duration-200">
               <h2 className="text-lg font-sans font-bold text-slate-900 dark:text-tactical-text mb-4">
                 {currentStepData.title}
               </h2>
@@ -830,7 +830,7 @@ function Challenge() {
                           O conteúdo abaixo já está incluído no diagrama e não pode ser editado.
                         </p>
                       </div>
-                      <div className="bg-slate-50 dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border rounded-lg p-4 mb-4 dark:rounded-none transition-colors duration-200">
+                      <div className="bg-slate-50 dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border rounded-lg p-4 mb-4 transition-colors duration-200">
                         <pre className="whitespace-pre-wrap text-sm text-slate-800 dark:text-tactical-text font-mono">
                           {displayContent}
                         </pre>
@@ -845,7 +845,7 @@ function Challenge() {
                         </button>
                         <button
                           onClick={handleStepSubmit}
-                          className="bg-slate-900 text-white px-6 py-2 rounded-lg hover:bg-slate-700 dark:bg-white dark:text-black dark:hover:bg-slate-200 font-sans dark:rounded-none transition-colors duration-200 font-medium"
+                          className="bg-slate-900 text-white px-6 py-2 rounded-lg hover:bg-slate-700 dark:bg-white dark:text-black dark:hover:bg-slate-200 font-sans transition-colors duration-200 font-medium"
                         >
                           Próximo →
                         </button>
@@ -860,7 +860,7 @@ function Challenge() {
                         value={currentInput}
                         onChange={(e) => setCurrentInput(e.target.value)}
                         placeholder={`Digite os ${currentStepData.title.toLowerCase()} aqui...`}
-                        className="w-full h-64 p-4 border border-slate-300 dark:border-tactical-border rounded-lg bg-white dark:bg-tactical-surface text-slate-900 dark:text-tactical-text placeholder-slate-400 dark:placeholder-tactical-label focus:ring-2 focus:ring-brand-500 dark:focus:ring-signal-green focus:border-transparent resize-none transition-colors duration-200 font-sans text-sm leading-relaxed dark:rounded-none"
+                        className="w-full h-64 p-4 border border-slate-300 dark:border-tactical-border rounded-lg bg-white dark:bg-tactical-surface text-slate-900 dark:text-tactical-text placeholder-slate-400 dark:placeholder-tactical-label focus:ring-2 focus:ring-brand-500 dark:focus:ring-signal-green focus:border-transparent resize-none transition-colors duration-200 font-sans text-sm leading-relaxed"
                       />
                       <div className="flex justify-between items-center mt-6 pt-4 border-t border-slate-200 dark:border-tactical-border">
                         <button
@@ -872,7 +872,7 @@ function Challenge() {
                         </button>
                         <button
                           onClick={handleStepSubmit}
-                          className="bg-slate-900 text-white px-6 py-2 rounded-lg hover:bg-slate-700 dark:bg-white dark:text-black dark:hover:bg-slate-200 font-sans dark:rounded-none transition-colors duration-200 font-medium"
+                          className="bg-slate-900 text-white px-6 py-2 rounded-lg hover:bg-slate-700 dark:bg-white dark:text-black dark:hover:bg-slate-200 font-sans transition-colors duration-200 font-medium"
                         >
                           {currentStep < 3 ? 'Próximo →' : 'Ir para design →'}
                         </button>
@@ -899,14 +899,14 @@ function Challenge() {
                   <p className="text-sm text-slate-600 dark:text-tactical-dim mb-4 font-sans">
                     📐 Agora crie o diagrama de alto nível da sua solução:
                   </p>
-                  <ul className="text-xs text-slate-500 dark:text-tactical-label space-y-1 mb-4 font-sans bg-slate-50 dark:bg-tactical-raised rounded-lg p-3 border border-slate-200 dark:border-tactical-border dark:rounded-none">
+                  <ul className="text-xs text-slate-500 dark:text-tactical-label space-y-1 mb-4 font-sans bg-slate-50 dark:bg-tactical-raised rounded-lg p-3 border border-slate-200 dark:border-tactical-border">
                     <li>✏️ Desenhe componentes dentro da área "Design High-Level"</li>
                     <li>➡️ Use setas para mostrar o fluxo de dados</li>
                     <li>📝 Adicione textos para rotular os componentes</li>
                     <li>🔍 Use zoom para ver melhor as seções preenchidas</li>
                   </ul>
                   
-                  <div className="border border-slate-300 dark:border-tactical-border rounded-lg overflow-hidden dark:rounded-none" style={{ height: '700px' }}>
+                  <div className="border border-slate-300 dark:border-tactical-border rounded-lg overflow-hidden" style={{ height: '700px' }}>
                     <Excalidraw
                       excalidrawAPI={(api: any) => {
                         console.log('Excalidraw API initialized')
@@ -960,7 +960,7 @@ function Challenge() {
                     <button
                       onClick={handleFinalSubmit}
                       disabled={submitting}
-                      className="bg-slate-900 text-white px-6 py-2 rounded-lg hover:bg-slate-700 dark:bg-signal-green dark:text-black dark:hover:opacity-90 font-sans dark:rounded-none transition-colors duration-200 font-medium disabled:opacity-40"
+                      className="bg-slate-900 text-white px-6 py-2 rounded-lg hover:bg-slate-700 dark:bg-signal-green dark:text-black dark:hover:opacity-90 font-sans transition-colors duration-200 font-medium disabled:opacity-40"
                     >
                       {submitting ? 'Enviando...' : '✓ Enviar solução completa'}
                     </button>
@@ -974,7 +974,7 @@ function Challenge() {
       {/* History Modal */}
       {showHistory && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-          <div className="tactical-panel rounded-xl dark:rounded-none card-shadow dark:shadow-none max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col">
+          <div className="tactical-panel rounded-xl card-shadow dark:shadow-none max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col">
             <div className="p-4 border-b border-slate-200 dark:border-tactical-border flex justify-between items-center bg-slate-50 dark:bg-tactical-raised">
               <h3 className="text-lg font-sans font-bold text-slate-900 dark:text-tactical-text">Histórico de tentativas</h3>
               <button 
@@ -993,7 +993,7 @@ function Challenge() {
               ) : (
                  <div className="space-y-4">
                    {historySolutions.map((sol) => (
-                     <div key={sol.id} className="border border-slate-200 dark:border-tactical-border rounded-lg p-4 bg-slate-50 dark:bg-tactical-raised hover:bg-slate-100 dark:hover:bg-tactical-surface transition-colors dark:rounded-none">
+                     <div key={sol.id} className="border border-slate-200 dark:border-tactical-border rounded-lg p-4 bg-slate-50 dark:bg-tactical-raised hover:bg-slate-100 dark:hover:bg-tactical-surface transition-colors">
                        <div className="flex justify-between mb-3 border-b border-slate-200 dark:border-tactical-border pb-2">
                          <span className="text-sm font-sans font-medium text-slate-700 dark:text-tactical-text">
                            Tentativa #{sol.id}
