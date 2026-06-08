@@ -117,6 +117,20 @@ ALTER TABLE "content_annotations" ALTER COLUMN "body" DROP NOT NULL;
 
 CREATE INDEX IF NOT EXISTS "content_annotations_user_slug_idx"
   ON "content_annotations" USING btree ("user_id","slug");
+
+CREATE TABLE IF NOT EXISTS "content_progress" (
+  "id" serial PRIMARY KEY NOT NULL,
+  "user_id" varchar(255) NOT NULL,
+  "path" varchar(255) NOT NULL,
+  "completed" boolean DEFAULT true NOT NULL,
+  "completed_at" timestamp with time zone DEFAULT now(),
+  "created_at" timestamp with time zone DEFAULT now(),
+  "updated_at" timestamp with time zone DEFAULT now(),
+  CONSTRAINT "content_progress_user_path_unique" UNIQUE("user_id","path")
+);
+
+CREATE INDEX IF NOT EXISTS "content_progress_user_idx"
+  ON "content_progress" USING btree ("user_id");
 `;
 
 const isLocalHost = /@(localhost|127\.0\.0\.1|\[::1\]|0\.0\.0\.0)(:|\/)/.test(databaseUrl);

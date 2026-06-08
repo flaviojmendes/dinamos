@@ -408,3 +408,26 @@ export const contentAnnotations = pgTable(
     userSlugIdx: index('content_annotations_user_slug_idx').on(t.userId, t.slug),
   })
 );
+
+// Per-user lesson completion ("mark as done"). Keyed by URL pathname so it maps
+// 1:1 to the legacy localStorage `content-progress` object. `completed` is kept
+// as an explicit flag (rather than presence/absence of a row) so un-marking a
+// lesson is recorded too, matching the previous client-side behaviour.
+export const contentProgress = pgTable(
+  'content_progress',
+  {
+    id: serial('id').primaryKey(),
+    userId: varchar('user_id', { length: 255 }).notNull(),
+    // Public URL pathname this progress belongs to (e.g. "/components/cache").
+    path: varchar('path', { length: 255 }).notNull(),
+    completed: boolean('completed').notNull().default(true),
+    // When the lesson was (last) marked complete/incomplete.
+    completedAt: timestamp('completed_at', { withTimezone: true }).defaultNow(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+  },
+  (t) => ({
+    userPathUnique: unique('content_progress_user_path_unique').on(t.userId, t.path),
+    userIdx: index('content_progress_user_idx').on(t.userId),
+  })
+);

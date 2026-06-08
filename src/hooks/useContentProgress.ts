@@ -1,140 +1,183 @@
-import { useState, useEffect, useCallback } from 'react';
+import {
+  createContext,
+  createElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
+import api from '../designlab/utils/api';
+import { useAuth } from '../contexts/AuthContext';
+
+interface ContentProgressEntry {
+  completed: boolean;
+  completedAt: string;
+}
 
 interface ContentProgress {
-  [path: string]: {
-    completed: boolean;
-    completedAt: string;
-  };
+  [path: string]: ContentProgressEntry;
 }
 
-// Helper function to get all child paths for a given path
-const getChildPaths = (path: string): string[] => {
-  // Get all child paths from the current path in localStorage
-  const saved = localStorage.getItem('content-progress');
-  const progress: ContentProgress = saved ? JSON.parse(saved) : {};
-  
-  // Find all paths that start with the current path
-  return Object.keys(progress).filter(key => 
-    key.startsWith(path) && key !== path
-  );
-};
+const STORAGE_KEY = 'content-progress';
 
-// Custom event for progress updates
+// Custom event kept for backwards compatibility with callers that fire it after
+// a mutation. State now lives in a shared context, so updates already propagate
+// to every consumer automatically — this is effectively a no-op safety net.
 export const PROGRESS_UPDATED_EVENT = 'content-progress-updated';
 
-// Function to emit the progress update event
 export function emitProgressUpdate() {
-  const event = new CustomEvent(PROGRESS_UPDATED_EVENT);
-  window.dispatchEvent(event);
-  console.log('Progress update event emitted');
+  window.dispatchEvent(new CustomEvent(PROGRESS_UPDATED_EVENT));
 }
 
-export function useContentProgress() {
-  const [progress, setProgress] = useState<ContentProgress>(() => {
-    const saved = localStorage.getItem('content-progress');
-    return saved ? JSON.parse(saved) : {};
-  });
-  
-  // Force component re-render
+function readLocalProgress(): ContentProgress {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? (JSON.parse(saved) as ContentProgress) : {};
+  } catch {
+    return {};
+  }
+}
+
+function migratedFlagKey(uid: string) {
+  return `content-progress-migrated:${uid}`;
+}
+
+interface ContentProgressContextValue {
+  progress: ContentProgress;
+  markAsCompleted: (path: string, childPaths?: string[]) => void;
+  markAsIncomplete: (path: string, childPaths?: string[]) => void;
+  isCompleted: (path: string) => boolean;
+  refreshUI: () => void;
+  updateTrigger: number;
+}
+
+const ContentProgressContext = createContext<ContentProgressContextValue | null>(null);
+
+export function ContentProgressProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
+  const uid = user?.uid ?? null;
+
+  // Seed from localStorage so progress renders instantly and still works while
+  // signed out / offline. The DB becomes the source of truth once authenticated.
+  const [progress, setProgress] = useState<ContentProgress>(() => readLocalProgress());
   const [updateTrigger, setUpdateTrigger] = useState(0);
-  
-  // Function to refresh UI from outside components
-  const refreshUI = useCallback(() => {
-    setUpdateTrigger(prev => prev + 1);
-    console.log('Refreshing UI with progress data');
+  const progressRef = useRef(progress);
+  progressRef.current = progress;
+
+  const applyProgress = useCallback((next: ContentProgress) => {
+    progressRef.current = next;
+    setProgress(next);
+    setUpdateTrigger((n) => n + 1);
   }, []);
 
+  // Persist a local cache on every change (cross-tab sync + offline fallback).
   useEffect(() => {
-    // Handle storage changes from other tabs/windows
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    } catch {
+      /* storage may be unavailable (private mode); ignore. */
+    }
+  }, [progress]);
+
+  // Keep tabs in sync via the storage event.
+  useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'content-progress') {
-        const newProgress = e.newValue ? JSON.parse(e.newValue) : {};
-        setProgress(newProgress);
+      if (e.key === STORAGE_KEY) {
+        applyProgress(e.newValue ? (JSON.parse(e.newValue) as ContentProgress) : {});
       }
     };
-    
-    // Listen for progress updates from anywhere in the app
-    const handleProgressUpdate = () => {
-      const saved = localStorage.getItem('content-progress');
-      if (saved) {
-        setProgress(JSON.parse(saved));
-        refreshUI();
-      }
-    };
-
     window.addEventListener('storage', handleStorageChange);
-    window.addEventListener(PROGRESS_UPDATED_EVENT, handleProgressUpdate);
-    
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener(PROGRESS_UPDATED_EVENT, handleProgressUpdate);
-    };
-  }, [refreshUI]);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [applyProgress]);
 
+  // On sign-in: seamlessly migrate any local progress to the DB (once), then
+  // adopt the server state as the source of truth.
   useEffect(() => {
-    localStorage.setItem('content-progress', JSON.stringify(progress));
-  }, [progress]);
+    if (!uid) return;
+    let cancelled = false;
 
-  const markAsCompleted = useCallback((path: string, childPaths: string[] = []) => {
-    console.log('Marking as completed:', path);
-    setProgress(prev => {
-      const newProgress = { ...prev };
-      // Mark the parent as completed
-      newProgress[path] = {
-        completed: true,
-        completedAt: new Date().toISOString()
-      };
-      // Mark all children as completed
-      childPaths.forEach(childPath => {
-        newProgress[childPath] = {
-          completed: true,
-          completedAt: new Date().toISOString()
-        };
-      });
-      return newProgress;
-    });
-    
-    // Force UI update after state change
-    setTimeout(() => {
-      emitProgressUpdate();
-    }, 0);
-  }, []);
+    (async () => {
+      try {
+        const local = readLocalProgress();
+        const alreadyMigrated = localStorage.getItem(migratedFlagKey(uid)) === 'true';
 
-  const markAsIncomplete = useCallback((path: string, childPaths: string[] = []) => {
-    console.log('Marking as incomplete:', path);
-    setProgress(prev => {
-      const newProgress = { ...prev };
-      // Mark the parent as incomplete
-      newProgress[path] = {
-        completed: false,
-        completedAt: new Date().toISOString()
-      };
-      // Mark all children as incomplete
-      childPaths.forEach(childPath => {
-        newProgress[childPath] = {
-          completed: false,
-          completedAt: new Date().toISOString()
-        };
-      });
-      return newProgress;
-    });
-    
-    // Force UI update after state change
-    setTimeout(() => {
-      emitProgressUpdate();
-    }, 0);
-  }, []);
+        if (!alreadyMigrated && Object.keys(local).length > 0) {
+          const res = await api.post('/api/progress/migrate', { progress: local });
+          if (!cancelled && res.data?.progress) {
+            applyProgress(res.data.progress as ContentProgress);
+          }
+        } else {
+          const res = await api.get('/api/progress');
+          if (!cancelled && res.data?.progress) {
+            applyProgress(res.data.progress as ContentProgress);
+          }
+        }
+        localStorage.setItem(migratedFlagKey(uid), 'true');
+      } catch (error) {
+        console.error('Failed to sync content progress:', error);
+      }
+    })();
 
-  const isCompleted = useCallback((path: string) => {
-    return progress[path]?.completed || false;
-  }, [progress]);
+    return () => {
+      cancelled = true;
+    };
+  }, [uid, applyProgress]);
 
-  return {
-    progress,
-    markAsCompleted,
-    markAsIncomplete,
-    isCompleted,
-    refreshUI,
-    updateTrigger
-  };
-} 
+  const setPaths = useCallback(
+    (paths: string[], completed: boolean) => {
+      const completedAt = new Date().toISOString();
+      const next: ContentProgress = { ...progressRef.current };
+      for (const p of paths) {
+        next[p] = { completed, completedAt };
+      }
+      applyProgress(next);
+
+      // Persist to the DB when signed in; reconcile with the authoritative map.
+      if (uid && paths.length > 0) {
+        const [path, ...childPaths] = paths;
+        api
+          .put('/api/progress', { path, completed, paths: childPaths })
+          .then((res) => {
+            if (res.data?.progress) applyProgress(res.data.progress as ContentProgress);
+          })
+          .catch((error) => console.error('Failed to save content progress:', error));
+      }
+    },
+    [uid, applyProgress],
+  );
+
+  const markAsCompleted = useCallback(
+    (path: string, childPaths: string[] = []) => setPaths([path, ...childPaths], true),
+    [setPaths],
+  );
+
+  const markAsIncomplete = useCallback(
+    (path: string, childPaths: string[] = []) => setPaths([path, ...childPaths], false),
+    [setPaths],
+  );
+
+  const isCompleted = useCallback(
+    (path: string) => progress[path]?.completed || false,
+    [progress],
+  );
+
+  const refreshUI = useCallback(() => setUpdateTrigger((n) => n + 1), []);
+
+  const value = useMemo<ContentProgressContextValue>(
+    () => ({ progress, markAsCompleted, markAsIncomplete, isCompleted, refreshUI, updateTrigger }),
+    [progress, markAsCompleted, markAsIncomplete, isCompleted, refreshUI, updateTrigger],
+  );
+
+  return createElement(ContentProgressContext.Provider, { value }, children);
+}
+
+export function useContentProgress(): ContentProgressContextValue {
+  const ctx = useContext(ContentProgressContext);
+  if (!ctx) {
+    throw new Error('useContentProgress must be used within a ContentProgressProvider');
+  }
+  return ctx;
+}

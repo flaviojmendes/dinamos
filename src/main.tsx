@@ -6,6 +6,7 @@ import "./index.css";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { ContentProvider } from "./contexts/ContentContext";
+import { ContentProgressProvider } from "./hooks/useContentProgress";
 import "./config/i18n";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
@@ -14,7 +15,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       <ThemeProvider>
         <AuthProvider>
           <ContentProvider>
-            <App />
+            <ContentProgressProvider>
+              <App />
+            </ContentProgressProvider>
           </ContentProvider>
         </AuthProvider>
       </ThemeProvider>
