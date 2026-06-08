@@ -2,9 +2,9 @@ import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import { eq, or, desc, sql } from 'drizzle-orm';
 import type Stripe from 'stripe';
-import { db } from '../db/client';
-import { users } from '../db/schema';
-import { authRequired, adminRequired, type AppVariables } from '../middleware/auth';
+import { db } from '../db/client.js';
+import { users } from '../db/schema.js';
+import { authRequired, adminRequired, type AppVariables } from '../middleware/auth.js';
 import {
   getStripe,
   STRIPE_WEBHOOK_SECRET,
@@ -12,12 +12,12 @@ import {
   MONTHLY_PRICE_ID,
   YEARLY_PRICE_ID,
   ONE_TIME_PRICE_ID,
-} from '../lib/stripe';
+} from '../lib/stripe.js';
 import {
   setSubscriptionClaims,
   getStripeCustomerIdFromClaims,
-} from '../lib/firebaseAdmin';
-import { getUserRow } from '../db/repo';
+} from '../lib/firebaseAdmin.js';
+import { getUserRow } from '../db/repo.js';
 
 export const subscriptionRouter = new Hono<{ Variables: AppVariables }>();
 

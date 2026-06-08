@@ -1,8 +1,8 @@
 import { Hono } from 'hono';
 import { sql } from 'drizzle-orm';
-import { db } from '../db/client';
-import { quizAttempts, users } from '../db/schema';
-import { authRequired, type AppVariables } from '../middleware/auth';
+import { db } from '../db/client.js';
+import { quizAttempts, users } from '../db/schema.js';
+import { authRequired, type AppVariables } from '../middleware/auth.js';
 
 export const leaderboardRouter = new Hono<{ Variables: AppVariables }>();
 

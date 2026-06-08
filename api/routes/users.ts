@@ -1,16 +1,16 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import { and, desc, eq, max } from 'drizzle-orm';
-import { db } from '../db/client';
-import { solutions, users } from '../db/schema';
+import { db } from '../db/client.js';
+import { solutions, users } from '../db/schema.js';
 import {
   authRequired,
   subscriptionRequired,
   type AppVariables,
-} from '../middleware/auth';
-import { createUser, getUserContext, getUserRow } from '../db/repo';
-import { isFreeAccessEnabled } from '../lib/freeAccess';
-import { userToDict, solutionToDict } from '../db/serializers';
+} from '../middleware/auth.js';
+import { createUser, getUserContext, getUserRow } from '../db/repo.js';
+import { isFreeAccessEnabled } from '../lib/freeAccess.js';
+import { userToDict, solutionToDict } from '../db/serializers.js';
 
 export const usersRouter = new Hono<{ Variables: AppVariables }>();
 

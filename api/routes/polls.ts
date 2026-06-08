@@ -1,15 +1,15 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import { and, asc, eq, inArray } from 'drizzle-orm';
-import { db } from '../db/client';
-import { polls, pollOptions, pollVotes, forumTopics } from '../db/schema';
+import { db } from '../db/client.js';
+import { polls, pollOptions, pollVotes, forumTopics } from '../db/schema.js';
 import {
   authRequired,
   subscriptionRequired,
   type AppVariables,
-} from '../middleware/auth';
-import { getUserContext } from '../db/repo';
-import { pollToDict } from '../db/serializers';
+} from '../middleware/auth.js';
+import { getUserContext } from '../db/repo.js';
+import { pollToDict } from '../db/serializers.js';
 
 export const pollsRouter = new Hono<{ Variables: AppVariables }>();
 

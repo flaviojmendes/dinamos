@@ -12,7 +12,7 @@ import {
   or,
   sql,
 } from 'drizzle-orm';
-import { db } from '../db/client';
+import { db } from '../db/client.js';
 import {
   users,
   roles,
@@ -28,8 +28,8 @@ import {
   quizOptions,
   quizAttempts,
   solutions,
-} from '../db/schema';
-import { authRequired, adminRequired, type AppVariables } from '../middleware/auth';
+} from '../db/schema.js';
+import { authRequired, adminRequired, type AppVariables } from '../middleware/auth.js';
 import {
   userToDict,
   roleToDict,
@@ -37,15 +37,15 @@ import {
   forumCategoryToDict,
   quizToDict,
   quizQuestionToDict,
-} from '../db/serializers';
+} from '../db/serializers.js';
 import {
   getPermissionCodesForRole,
   getRoleByName,
   getRoleRow,
   getUserContext,
-} from '../db/repo';
-import { isFreeAccessEnabled, getFreeAccessStatus, setFreeAccessMode } from '../lib/freeAccess';
-import { sendSystemNotificationEmail } from '../lib/email';
+} from '../db/repo.js';
+import { isFreeAccessEnabled, getFreeAccessStatus, setFreeAccessMode } from '../lib/freeAccess.js';
+import { sendSystemNotificationEmail } from '../lib/email.js';
 
 export const adminRouter = new Hono<{ Variables: AppVariables }>();
 
@@ -214,7 +214,7 @@ adminRouter.get('/api/admin/users/:id/token-transactions', async (c) => {
   const target = await db.select().from(users).where(eq(users.id, userId)).limit(1);
   if (!target[0]) throw new HTTPException(404, { message: 'User not found' });
 
-  const { tokenTransactions } = await import('../db/schema');
+  const { tokenTransactions } = await import('../db/schema.js');
   const totalRows = await db
     .select({ count: count() })
     .from(tokenTransactions)
@@ -570,7 +570,7 @@ adminRouter.put('/api/admin/forum/topics/:id/category', async (c) => {
     .where(eq(forumTopics.id, id))
     .returning();
   if (!updated[0]) throw new HTTPException(404, { message: 'Topic not found' });
-  const { forumTopicToDict } = await import('../db/serializers');
+  const { forumTopicToDict } = await import('../db/serializers.js');
   return c.json(forumTopicToDict(updated[0]));
 });
 

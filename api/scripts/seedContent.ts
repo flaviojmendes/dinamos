@@ -14,10 +14,10 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import { db } from '../db/client';
-import { contentPages } from '../db/schema';
-import { contentManifest } from '../../src/config/contentManifest';
-import { moduleIdForPath } from '../../src/config/contentRegistry';
+import { db } from '../db/client.js';
+import { contentPages } from '../db/schema.js';
+import { contentManifest } from '../../src/config/contentManifest.js';
+import { moduleIdForPath } from '../../src/config/contentRegistry.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CONTENT_DIR = resolve(__dirname, '../../src/content');

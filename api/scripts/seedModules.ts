@@ -8,9 +8,9 @@
  * without creating duplicates. After seeding, modules are managed via the
  * admin CMS at /admin/modules.
  */
-import { db } from '../db/client';
-import { contentModules } from '../db/schema';
-import { DEFAULT_MODULES } from '../../src/config/contentRegistry';
+import { db } from '../db/client.js';
+import { contentModules } from '../db/schema.js';
+import { DEFAULT_MODULES } from '../../src/config/contentRegistry.js';
 
 async function main() {
   let seeded = 0;

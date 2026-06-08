@@ -1,13 +1,13 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import { and, desc, eq, inArray } from 'drizzle-orm';
-import { db } from '../db/client';
-import { gameSessions, gamePlayers, users } from '../db/schema';
+import { db } from '../db/client.js';
+import { gameSessions, gamePlayers, users } from '../db/schema.js';
 import {
   authRequired,
   adminRequired,
   type AppVariables,
-} from '../middleware/auth';
+} from '../middleware/auth.js';
 
 export const gameRouter = new Hono<{ Variables: AppVariables }>();
 

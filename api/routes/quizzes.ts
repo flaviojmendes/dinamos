@@ -1,14 +1,14 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import { and, asc, desc, eq, inArray, sql } from 'drizzle-orm';
-import { db } from '../db/client';
-import { quizzes, quizQuestions, quizOptions, quizAttempts, users } from '../db/schema';
+import { db } from '../db/client.js';
+import { quizzes, quizQuestions, quizOptions, quizAttempts, users } from '../db/schema.js';
 import {
   authRequired,
   subscriptionRequired,
   type AppVariables,
-} from '../middleware/auth';
-import { quizToDict, quizQuestionToDict, quizAttemptToDict } from '../db/serializers';
+} from '../middleware/auth.js';
+import { quizToDict, quizQuestionToDict, quizAttemptToDict } from '../db/serializers.js';
 
 export const quizzesRouter = new Hono<{ Variables: AppVariables }>();
 

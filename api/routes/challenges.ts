@@ -2,20 +2,20 @@ import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import { toFile } from 'openai';
 import { and, asc, desc, eq, sql } from 'drizzle-orm';
-import { db } from '../db/client';
-import { challenges, solutions } from '../db/schema';
+import { db } from '../db/client.js';
+import { challenges, solutions } from '../db/schema.js';
 import {
   authRequired,
   subscriptionRequired,
   type AppVariables,
-} from '../middleware/auth';
-import { challengeToDict, solutionToDict } from '../db/serializers';
+} from '../middleware/auth.js';
+import { challengeToDict, solutionToDict } from '../db/serializers.js';
 import {
   analyzeTextProposal,
   analyzeDiagram,
   evaluateWithOpenAI,
-} from '../lib/feedback';
-import { getOpenAI } from '../lib/openai';
+} from '../lib/feedback.js';
+import { getOpenAI } from '../lib/openai.js';
 
 export const challengesRouter = new Hono<{ Variables: AppVariables }>();
 

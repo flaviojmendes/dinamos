@@ -1,9 +1,9 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import { and, asc, eq } from 'drizzle-orm';
-import { db } from '../db/client';
-import { contentAnnotations } from '../db/schema';
-import { authRequired, type AppVariables } from '../middleware/auth';
+import { db } from '../db/client.js';
+import { contentAnnotations } from '../db/schema.js';
+import { authRequired, type AppVariables } from '../middleware/auth.js';
 
 export const annotationsRouter = new Hono<{ Variables: AppVariables }>();
 

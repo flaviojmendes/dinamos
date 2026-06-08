@@ -1,9 +1,9 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import { asc, eq } from 'drizzle-orm';
-import { db } from '../db/client';
-import { contentPages, contentModules } from '../db/schema';
-import { authRequired, adminRequired, type AppVariables } from '../middleware/auth';
+import { db } from '../db/client.js';
+import { contentPages, contentModules } from '../db/schema.js';
+import { authRequired, adminRequired, type AppVariables } from '../middleware/auth.js';
 
 export const contentRouter = new Hono<{ Variables: AppVariables }>();
 

@@ -1,8 +1,8 @@
 import type { Context, MiddlewareHandler } from 'hono';
 import { HTTPException } from 'hono/http-exception';
-import { verifyIdToken, type DecodedUser } from '../lib/firebaseAdmin';
-import { isFreeAccessEnabled } from '../lib/freeAccess';
-import { getUserContext, type UserContext } from '../db/repo';
+import { verifyIdToken, type DecodedUser } from '../lib/firebaseAdmin.js';
+import { isFreeAccessEnabled } from '../lib/freeAccess.js';
+import { getUserContext, type UserContext } from '../db/repo.js';
 
 export type AppVariables = {
   user: DecodedUser;

@@ -1,10 +1,10 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import { and, desc, eq, sql } from 'drizzle-orm';
-import { db } from '../db/client';
-import { notifications } from '../db/schema';
-import { authRequired, type AppVariables } from '../middleware/auth';
-import { notificationToDict } from '../db/serializers';
+import { db } from '../db/client.js';
+import { notifications } from '../db/schema.js';
+import { authRequired, type AppVariables } from '../middleware/auth.js';
+import { notificationToDict } from '../db/serializers.js';
 
 export const notificationsRouter = new Hono<{ Variables: AppVariables }>();
 

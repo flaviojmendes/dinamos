@@ -1,12 +1,12 @@
 import { and, eq, gte, inArray, sql } from 'drizzle-orm';
-import { db } from './client';
+import { db } from './client.js';
 import {
   roles,
   permissions,
   rolePermissions,
   users,
   tokenTransactions,
-} from './schema';
+} from './schema.js';
 
 export interface UserContext {
   user: typeof users.$inferSelect;

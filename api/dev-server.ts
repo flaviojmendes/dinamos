@@ -12,7 +12,7 @@
 // loaded from .env via Node's --env-file flag in the npm script.
 
 import { serve } from '@hono/node-server';
-import app from './app';
+import app from './app.js';
 
 const port = Number(process.env.API_PORT ?? 8787);
 

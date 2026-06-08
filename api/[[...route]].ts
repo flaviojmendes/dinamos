@@ -1,5 +1,5 @@
 import { handle } from 'hono/vercel';
-import app from './app';
+import app from './app.js';
 
 // Run on the Node.js runtime (firebase-admin + stripe require Node APIs).
 export const config = {

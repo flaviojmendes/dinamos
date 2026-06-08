@@ -1,36 +1,36 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import { and, asc, desc, eq, gte, inArray, sql } from 'drizzle-orm';
-import { db } from '../db/client';
+import { db } from '../db/client.js';
 import {
   forumTopics,
   forumMessages,
   forumCategories,
   votes,
   notifications,
-} from '../db/schema';
+} from '../db/schema.js';
 import {
   authRequired,
   optionalAuth,
   subscriptionRequired,
   type AppVariables,
-} from '../middleware/auth';
+} from '../middleware/auth.js';
 import {
   awardTokens,
   getUserBatchAuthors,
   getUserContext,
   getUserRow,
-} from '../db/repo';
+} from '../db/repo.js';
 import {
   forumTopicToDict,
   forumMessageToDict,
   forumCategoryToDict,
   authorToDict,
-} from '../db/serializers';
+} from '../db/serializers.js';
 import {
   sendForumReplyNotification,
   sendMessageReplyNotification,
-} from '../lib/email';
+} from '../lib/email.js';
 
 export const forumRouter = new Hono<{ Variables: AppVariables }>();
 

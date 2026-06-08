@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
-import { db } from '../db/client';
-import { appSettings } from '../db/schema';
+import { db } from '../db/client.js';
+import { appSettings } from '../db/schema.js';
 
 const KEY = 'free_access_mode';
 
