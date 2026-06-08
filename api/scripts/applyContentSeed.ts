@@ -1,12 +1,16 @@
 /**
- * Applies the content seed (modules + pages) to whatever database DATABASE_URL
- * points at. This runs during the Vercel build (`vercel-build` script) so the
- * production database is seeded on every deploy — the static frontend build
- * never touched the DB before, which is why content was missing in production.
+ * Ensures the database schema exists and applies the content seed (modules +
+ * pages) to whatever database DATABASE_URL points at. Runs during the Vercel
+ * build (`vercel-build` script) so production is provisioned on every deploy —
+ * the static frontend build never touched the DB before.
  *
- * The seed SQL (api/db/migrations/0008_seed_content.sql) is fully idempotent
- * (INSERT ... ON CONFLICT DO UPDATE), so re-running it on each deploy is safe.
- * We execute it directly instead of via `drizzle-kit migrate` because this
+ * Production was migrated from the old FastAPI backend, so only the original
+ * tables existed; Drizzle-only tables (app_settings, content_*) were missing.
+ * We idempotently re-create the full base schema (0000_init.sql, rewritten to
+ * CREATE TABLE IF NOT EXISTS + guarded FK adds) plus the content tables, then
+ * run the idempotent content seed (INSERT ... ON CONFLICT DO UPDATE).
+ *
+ * We execute SQL directly instead of via `drizzle-kit migrate` because this
  * project manages schema with `db:push`, so Drizzle's migration journal is not
  * a reliable source of "what has already run".
  *
@@ -26,11 +30,38 @@ if (!databaseUrl) {
 }
 
 const SEED_FILE = resolve('api/db/migrations/0008_seed_content.sql');
+const BASE_SCHEMA_FILE = resolve('api/db/migrations/0000_init.sql');
 
 /**
- * Idempotent DDL for the content tables. Production was never migrated (schema
- * is normally managed locally via `db:push`), so the seed has to ensure the
- * tables exist before inserting. Mirrors migrations 0004–0007.
+ * Load the base-schema migration and rewrite it to be idempotent so it can run
+ * against a database that already has some (or all) of the tables:
+ *  - `CREATE TABLE "x"`            -> `CREATE TABLE IF NOT EXISTS "x"`
+ *  - `ALTER TABLE ... ADD ...`     -> wrapped in a DO block that swallows
+ *                                     duplicate_object/duplicate_column errors
+ *    (Postgres has no `ADD CONSTRAINT IF NOT EXISTS`).
+ */
+function loadBaseSchemaDDL(): string {
+  const raw = readFileSync(BASE_SCHEMA_FILE, 'utf8');
+  return raw
+    .split('--> statement-breakpoint')
+    .map((chunk) => chunk.trim())
+    .filter(Boolean)
+    .map((stmt) => {
+      if (/^CREATE TABLE\s+"/i.test(stmt)) {
+        return stmt.replace(/^CREATE TABLE\s+"/i, 'CREATE TABLE IF NOT EXISTS "');
+      }
+      if (/^ALTER TABLE/i.test(stmt)) {
+        const body = stmt.replace(/;\s*$/, '');
+        return `DO $do$ BEGIN\n  ${body};\nEXCEPTION WHEN duplicate_object OR duplicate_column THEN NULL;\nEND $do$;`;
+      }
+      return stmt;
+    })
+    .join('\n');
+}
+
+/**
+ * Idempotent DDL for the content tables (mirrors migrations 0004–0007). These
+ * live outside 0000_init.sql, so they are ensured separately.
  */
 const SCHEMA_DDL = `
 CREATE TABLE IF NOT EXISTS "content_modules" (
@@ -101,6 +132,9 @@ async function main(): Promise<void> {
   });
 
   try {
+    console.log('[seed] Ensuring base schema…');
+    await client.unsafe(loadBaseSchemaDDL());
+
     console.log('[seed] Ensuring content schema…');
     await client.unsafe(SCHEMA_DDL);
 
