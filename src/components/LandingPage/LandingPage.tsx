@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { ArrowRight, Boxes, Gauge, Globe, ShieldCheck } from 'lucide-react';
 import { trackEvent } from '../../utils/analytics';
 import { Typography, LanguageSwitcher, Footer } from '../Common';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { getTopics, ForumTopic } from '../../services/forumService';
 import ChallengesSection from '../Forum/ChallengesSection';
-import { Panel, Tag, TacticalButton } from '../tactical';
+import { Tag, TacticalButton } from '../tactical';
 
 // Category badge accent colors for forum topics (tactical signal palette).
 const categoryColors: Record<string, string> = {
@@ -15,6 +16,35 @@ const categoryColors: Record<string, string> = {
   'Brainstorm': 'text-signal-green',
   'Ajuda': 'text-signal-amber',
 };
+
+// Brand mark for the Google OAuth button.
+function GoogleMark({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="currentColor" d="M21.35,11.1H12.18V13.83H18.69C18.36,17.64 15.19,19.27 12.19,19.27C8.36,19.27 5,16.25 5,12C5,7.9 8.2,4.73 12.2,4.73C15.29,4.73 17.1,6.7 17.1,6.7L19,4.72C19,4.72 16.56,2 12.1,2C6.42,2 2.03,6.8 2.03,12C2.03,17.05 6.16,22 12.25,22C17.6,22 21.5,18.33 21.5,12.91C21.5,11.76 21.35,11.1 21.35,11.1V11.1Z" />
+    </svg>
+  );
+}
+
+// Brand mark for the GitHub OAuth button.
+function GithubMark({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="currentColor" d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+    </svg>
+  );
+}
+
+// Animated boot log for the hero terminal panel. Language-neutral / technical.
+const TERMINAL_LINES = [
+  { t: 'init', text: 'booting distributed-systems.lab', tone: 'text-tactical-dim' },
+  { t: 'node', text: 'node-01 ▸ ONLINE   region=us-east', tone: 'text-signal-green' },
+  { t: 'node', text: 'node-02 ▸ ONLINE   region=eu-west', tone: 'text-signal-green' },
+  { t: 'lb', text: 'load-balancer ▸ routing 12.4k req/s', tone: 'text-signal-cyan' },
+  { t: 'cache', text: 'cache ▸ hit-ratio 96.2%', tone: 'text-signal-cyan' },
+  { t: 'cb', text: 'circuit-breaker ▸ CLOSED  errors=0', tone: 'text-signal-amber' },
+  { t: 'ok', text: 'consensus reached ▸ quorum 3/3', tone: 'text-signal-green' },
+];
 
 // Format relative time for forum topics
 function formatRelativeTime(dateString: string): string {
@@ -34,10 +64,28 @@ function formatRelativeTime(dateString: string): string {
 }
 
 export default function LandingPage() {
-  const { t, i18n } = useTranslation();
-  const { user } = useAuth();
+  const { t } = useTranslation();
+  const { user, signInWithGoogle, signInWithGithub } = useAuth();
   const [latestTopics, setLatestTopics] = useState<ForumTopic[]>([]);
   const [loadingTopics, setLoadingTopics] = useState(false);
+  const [signingIn, setSigningIn] = useState<null | 'google' | 'github'>(null);
+  const [authError, setAuthError] = useState<string | null>(null);
+
+  const handleSignIn = async (provider: 'google' | 'github') => {
+    if (signingIn) return;
+    setAuthError(null);
+    setSigningIn(provider);
+    try {
+      trackEvent('User', `Landing sign in with ${provider}`);
+      if (provider === 'google') await signInWithGoogle();
+      else await signInWithGithub();
+      // AuthContext re-renders "/" into the logged-in experience automatically.
+    } catch {
+      setAuthError(t(provider === 'google' ? 'auth.error_google' : 'auth.error_github'));
+    } finally {
+      setSigningIn(null);
+    }
+  };
 
   // Fetch latest forum topics for logged-in users
   useEffect(() => {
@@ -62,67 +110,200 @@ export default function LandingPage() {
       <div className="min-h-screen bg-canvas-paper dark:bg-canvas-dark text-slate-900 dark:text-slate-100">
         {/* Header - Only show for logged-out users */}
         {!user && (
-          <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
+          <header className="fixed top-0 left-0 right-0 z-50 bg-white/85 dark:bg-tactical-bg/85 backdrop-blur-xl border-b border-slate-200 dark:border-tactical-border">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
               <div className="flex items-center justify-between">
                 <Link to="/" className="flex items-center">
                   <img src="/logo.png" alt="Logo" className="h-10" />
                 </Link>
-                <div className="flex items-center gap-2">
-                    <LanguageSwitcher />
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <LanguageSwitcher />
+                  <a
+                    href="#signin"
+                    onClick={() => trackEvent('User', 'Header Sign In click')}
+                    className="inline-flex items-center gap-2 rounded-lg bg-slate-900 dark:bg-signal-green hover:bg-slate-700 dark:hover:opacity-90 text-white dark:text-black px-4 py-2 text-sm font-sans font-semibold transition-colors cursor-pointer"
+                  >
+                    {t('landing.header_signin')}
+                    <ArrowRight className="w-4 h-4" />
+                  </a>
                 </div>
               </div>
             </div>
           </header>
         )}
-  
+
         {/* Hero Section */}
-        <div className={`relative overflow-hidden ${!user ? 'pt-20' : ''}`}>
-          <div className="absolute inset-0 bg-gradient-to-br from-brand-500/5 to-transparent dark:from-signal-green/5" />
-          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
+        <div className={`relative overflow-hidden ${!user ? 'pt-16' : ''}`}>
+          <div className="absolute inset-0 bg-grid" aria-hidden="true" />
+          <div className="absolute inset-0 bg-gradient-to-br from-brand-500/10 via-transparent to-transparent dark:from-signal-green/10 dark:via-transparent" aria-hidden="true" />
+          <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-brand-500/10 blur-3xl dark:bg-signal-green/10" aria-hidden="true" />
+          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 lg:pt-24">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
+              {/* Left: message + sign in */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/70 px-3 py-1 dark:border-signal-green/30 dark:bg-signal-green/5">
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 dark:bg-signal-green opacity-75 motion-safe:animate-ping" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-600 dark:bg-signal-green" />
+                  </span>
+                  <span className="font-sans text-[11px] font-medium text-slate-600 dark:text-signal-green">{t('landing.hero_eyebrow')}</span>
+                </div>
+
+                <Typography
+                  variant="h1"
+                  className="mb-5 font-sans tracking-tight text-slate-900 dark:text-tactical-text"
+                >
+                  {t('landing.hero_title')}
+                </Typography>
+                <Typography
+                  variant="p"
+                  className="text-lg md:text-xl text-slate-600 dark:text-tactical-dim mb-8 max-w-xl"
+                >
+                  {t('landing.hero_subtitle')}
+                </Typography>
+
+                {!user ? (
+                  <div id="signin" className="tactical-panel p-5 max-w-md scroll-mt-24">
+                    <p className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text">
+                      {t('landing.signin_title')}
+                    </p>
+                    <p className="font-sans text-sm text-slate-500 dark:text-tactical-dim mt-1 mb-4">
+                      {t('landing.signin_subtitle')}
+                    </p>
+
+                    {authError && (
+                      <div className="mb-3 rounded-lg border border-signal-red/50 bg-signal-red/10 px-3 py-2 font-sans text-xs text-signal-red">
+                        {authError}
+                      </div>
+                    )}
+
+                    <div className="flex flex-col gap-2.5">
+                      <button
+                        onClick={() => handleSignIn('google')}
+                        disabled={signingIn !== null}
+                        className="w-full inline-flex items-center justify-center gap-3 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-black py-3 px-4 font-sans text-sm font-semibold hover:bg-slate-700 dark:hover:bg-slate-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                      >
+                        {signingIn === 'google' ? (
+                          <span className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <GoogleMark />
+                        )}
+                        {t('auth.login_google')}
+                      </button>
+                      <button
+                        onClick={() => handleSignIn('github')}
+                        disabled={signingIn !== null}
+                        className="w-full inline-flex items-center justify-center gap-3 rounded-lg bg-transparent border border-slate-300 dark:border-tactical-line text-slate-900 dark:text-tactical-text py-3 px-4 font-sans text-sm font-semibold hover:border-slate-900 dark:hover:border-signal-green hover:bg-slate-100 dark:hover:bg-tactical-raised transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                      >
+                        {signingIn === 'github' ? (
+                          <span className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <GithubMark />
+                        )}
+                        {t('auth.login_github')}
+                      </button>
+                    </div>
+
+                    <Link
+                      to="/intro"
+                      onClick={() => trackEvent('User', 'Clicked on Explore Content (hero)')}
+                      className="mt-3 inline-flex items-center gap-1.5 font-sans text-sm text-slate-500 hover:text-slate-900 dark:text-tactical-dim dark:hover:text-signal-green transition-colors cursor-pointer"
+                    >
+                      {t('landing.hero_explore')}
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
+
+                    <p className="mt-4 font-sans text-[11px] text-slate-400 dark:text-tactical-label">
+                      {t('landing.hero_trust')}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <Link
+                      to="/intro"
+                      onClick={() => trackEvent('User', 'Clicked on Start Now Button')}
+                      className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 dark:bg-white hover:bg-slate-700 dark:hover:bg-slate-200 text-white dark:text-black px-8 py-3 text-lg font-sans font-medium transition-colors cursor-pointer"
+                    >
+                      <span>{t('common.start_now')}</span>
+                      <ArrowRight className="w-5 h-5" />
+                    </Link>
+                    <Link
+                      to="/intro"
+                      className="inline-flex items-center justify-center gap-2 rounded-lg bg-transparent border border-slate-300 dark:border-tactical-line hover:border-slate-900 dark:hover:border-signal-green text-slate-900 dark:text-tactical-text px-8 py-3 text-lg font-sans font-medium transition-colors cursor-pointer"
+                    >
+                      <span>{t('common.view_content')}</span>
+                    </Link>
+                  </div>
+                )}
+              </motion.div>
+
+              {/* Right: live system terminal panel */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.15 }}
+                className="relative"
+              >
+                <div className="tactical-panel scanline overflow-hidden shadow-xl shadow-slate-900/5 dark:shadow-black/40">
+                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-tactical-border px-4 py-2.5">
+                    <div className="flex items-center gap-2">
+                      <span className="h-2.5 w-2.5 rounded-full bg-signal-red/80" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-signal-amber/80" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-signal-green/80" />
+                    </div>
+                    <span className="font-mono text-[11px] text-slate-400 dark:text-tactical-label">system.status</span>
+                  </div>
+                  <div className="p-4 font-mono text-[12px] leading-relaxed bg-slate-50/60 dark:bg-tactical-bg/40">
+                    {TERMINAL_LINES.map((line, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, x: -8 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.4 + i * 0.18 }}
+                        className="flex items-start gap-2 py-0.5"
+                      >
+                        <span className="select-none text-slate-300 dark:text-tactical-label">$</span>
+                        <span className={line.tone}>{line.text}</span>
+                      </motion.div>
+                    ))}
+                    <div className="flex items-center gap-2 py-0.5">
+                      <span className="select-none text-slate-300 dark:text-tactical-label">$</span>
+                      <span className="text-slate-700 dark:text-tactical-text caret" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Floating accent stat */}
+                <div className="absolute -bottom-4 -left-4 hidden sm:flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-lg dark:border-signal-green/30 dark:bg-tactical-surface">
+                  <Gauge className="w-4 h-4 text-emerald-600 dark:text-signal-green" />
+                  <span className="font-mono text-xs text-slate-700 dark:text-tactical-text">99.99% uptime</span>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Trust / stats strip */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-center"
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-px overflow-hidden rounded-xl border border-slate-200 bg-slate-200 dark:border-tactical-border dark:bg-tactical-border"
             >
-              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 dark:border-tactical-border dark:bg-tactical-surface">
-                <span className="font-sans text-[11px] text-slate-600 dark:text-tactical-dim">Distributed systems learning platform</span>
-              </div>
-              <Typography 
-                variant="h1" 
-                className="mb-6 font-sans tracking-tight text-slate-900 dark:text-tactical-text"
-              >
-                {t('landing.hero_title')}
-              </Typography>
-              <Typography 
-                variant="p" 
-                className="text-xl md:text-2xl text-slate-600 dark:text-tactical-dim mb-8 max-w-3xl mx-auto"
-              >
-                {t('landing.hero_subtitle')}
-              </Typography>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <Link
-                  to="/intro"
-                  onClick={() => trackEvent('User', 'Clicked on Start Now Button')}
-                  className="inline-flex items-center gap-2 rounded-lg bg-slate-900 dark:bg-white hover:bg-slate-700 dark:hover:bg-slate-200 text-white dark:text-black px-8 py-3 text-lg font-sans font-medium transition-colors"
-                >
-                  <span>{t('common.start_now')}</span>
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </Link>
-                <Link
-                  to="/intro"
-                  className="inline-flex items-center gap-2 rounded-lg bg-transparent border border-slate-300 dark:border-tactical-line hover:border-slate-900 dark:hover:border-signal-green text-slate-900 dark:text-tactical-text px-8 py-3 text-lg font-sans font-medium transition-colors"
-                >
-                  <span>{t('common.view_content')}</span>
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                </Link>
-              </div>
+              {[
+                { Icon: Boxes, value: t('landing.stat_simulators_value'), label: t('landing.stat_simulators_label'), color: 'text-signal-cyan' },
+                { Icon: Globe, value: t('landing.stat_cases_value'), label: t('landing.stat_cases_label'), color: 'text-signal-amber' },
+                { Icon: Gauge, value: t('landing.stat_scale_value'), label: t('landing.stat_scale_label'), color: 'text-emerald-600 dark:text-signal-green' },
+                { Icon: ShieldCheck, value: t('landing.stat_price_value'), label: t('landing.stat_price_label'), color: 'text-emerald-600 dark:text-signal-green' },
+              ].map(({ Icon, value, label, color }, i) => (
+                <div key={i} className="bg-white dark:bg-tactical-surface px-5 py-5">
+                  <Icon className={`w-5 h-5 mb-2 ${color}`} />
+                  <div className="font-mono text-2xl font-bold text-slate-900 dark:text-tactical-text tabular-nums">{value}</div>
+                  <div className="font-sans text-xs text-slate-500 dark:text-tactical-dim mt-0.5">{label}</div>
+                </div>
+              ))}
             </motion.div>
           </div>
         </div>
