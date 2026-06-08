@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Routes,
   Route,
@@ -1242,7 +1242,30 @@ export default function App() {
   const { isCompleted, progress, updateTrigger } = useContentProgress();
   const { t } = useTranslation();
   const { pages: contentPages } = useContent();
-  const menuItems = createMenuItems(t);
+  // The sidebar must mirror what actually exists in the database. The static
+  // tree below is only a source of labels/icons/structure — we prune it down to
+  // the items present in the live registry (DB lessons + code-based simulators,
+  // tools and practice destinations). With an empty DB, lessons disappear
+  // instead of rendering a hardcoded menu. Parents are kept when any descendant
+  // survives so module groupings don't collapse.
+  const menuItems = useMemo(() => {
+    const pruneToRegistry = (items: MenuItem[]): MenuItem[] =>
+      items.reduce<MenuItem[]>((acc, item) => {
+        const prunedChildren = item.children ? pruneToRegistry(item.children) : undefined;
+        const selfVisible = item.external || Boolean(getItem(item.path));
+        if (selfVisible || (prunedChildren && prunedChildren.length > 0)) {
+          acc.push({
+            ...item,
+            children: prunedChildren && prunedChildren.length > 0 ? prunedChildren : undefined,
+          });
+        }
+        return acc;
+      }, []);
+    return pruneToRegistry(createMenuItems(t));
+    // contentPages drives registry rebuilds (via ContentContext), so recompute
+    // the pruned menu whenever the DB content index changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contentPages, t]);
 
   // Group the top-level nav by learning tier, derived from the registry.
   const tierLabelFallback: Record<Tier, string> = {
