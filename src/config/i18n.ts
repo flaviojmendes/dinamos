@@ -5,6 +5,70 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 const resources = {
   en: {
     translation: {
+      admin: {
+        menu: 'Admin',
+        control_center: 'Control Center',
+        access_denied: 'Access Denied',
+        hub: {
+          title: 'Admin Control Center',
+          subtitle: 'Everything you can manage, in one place.',
+        },
+        sections: {
+          content: 'Content & Learning',
+          community: 'Community',
+          system: 'People & System',
+        },
+        cards: {
+          organize: {
+            title: 'Organize Content',
+            description: 'Drag & drop modules and lessons to nest, reorder, and reassign.',
+          },
+          content: {
+            title: 'Content Pages',
+            description: 'Create and edit MDX lessons, titles, and simulators per language.',
+          },
+          modules: {
+            title: 'Modules',
+            description: 'Define learning modules, tiers, and base paths.',
+          },
+          challenges: {
+            title: 'Challenges',
+            description: 'Manage system-design challenges and their solutions.',
+          },
+          quizzes: {
+            title: 'Quizzes',
+            description: 'Author quizzes, questions, and themes.',
+          },
+          game: {
+            title: 'Game Mode',
+            description: 'Configure gamified learning experiences.',
+          },
+          forum_categories: {
+            title: 'Forum Categories',
+            description: 'Organize discussion categories for the community forum.',
+          },
+          notifications: {
+            title: 'Notifications',
+            description: 'Broadcast announcements and manage notifications.',
+          },
+          users: {
+            title: 'Users',
+            description: 'View users, subscriptions, and account details.',
+          },
+          roles: {
+            title: 'Roles',
+            description: 'Manage roles and permission assignments.',
+          },
+          analytics: {
+            title: 'Analytics',
+            description: 'Platform metrics, growth, and engagement charts.',
+          },
+          settings: {
+            title: 'Settings',
+            description: 'Global platform configuration.',
+          },
+        },
+      },
       command_center: {
         gui_name: 'Dinamos',
         open_access: 'Free',
@@ -6222,6 +6286,70 @@ const resources = {
   },
   pt: {
     translation: {
+      admin: {
+        menu: 'Admin',
+        control_center: 'Central de Controle',
+        access_denied: 'Acesso Negado',
+        hub: {
+          title: 'Central de Controle Admin',
+          subtitle: 'Tudo que você pode gerenciar, em um só lugar.',
+        },
+        sections: {
+          content: 'Conteúdo e Aprendizado',
+          community: 'Comunidade',
+          system: 'Pessoas e Sistema',
+        },
+        cards: {
+          organize: {
+            title: 'Organizar Conteúdo',
+            description: 'Arraste e solte módulos e lições para aninhar, reordenar e reatribuir.',
+          },
+          content: {
+            title: 'Páginas de Conteúdo',
+            description: 'Crie e edite lições MDX, títulos e simuladores por idioma.',
+          },
+          modules: {
+            title: 'Módulos',
+            description: 'Defina módulos de aprendizado, níveis e caminhos base.',
+          },
+          challenges: {
+            title: 'Desafios',
+            description: 'Gerencie desafios de system design e suas soluções.',
+          },
+          quizzes: {
+            title: 'Quizzes',
+            description: 'Crie quizzes, perguntas e temas.',
+          },
+          game: {
+            title: 'Modo Jogo',
+            description: 'Configure experiências de aprendizado gamificadas.',
+          },
+          forum_categories: {
+            title: 'Categorias do Fórum',
+            description: 'Organize as categorias de discussão do fórum da comunidade.',
+          },
+          notifications: {
+            title: 'Notificações',
+            description: 'Envie comunicados e gerencie notificações.',
+          },
+          users: {
+            title: 'Usuários',
+            description: 'Veja usuários, assinaturas e detalhes de conta.',
+          },
+          roles: {
+            title: 'Funções',
+            description: 'Gerencie funções e atribuições de permissão.',
+          },
+          analytics: {
+            title: 'Análises',
+            description: 'Métricas da plataforma, crescimento e gráficos de engajamento.',
+          },
+          settings: {
+            title: 'Configurações',
+            description: 'Configuração global da plataforma.',
+          },
+        },
+      },
       command_center: {
         gui_name: 'Dinamos',
         open_access: 'Grátis',

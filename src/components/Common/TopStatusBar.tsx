@@ -1,26 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { quickAccessLinks } from '../../config/quickAccess';
 import { openCommandPalette } from './CommandPalette';
 import NotificationBell from './NotificationBell';
-
-const ADMIN_LINKS: { to: string; key: string; fallback: string }[] = [
-  { to: '/admin', key: 'admin.nav.hub', fallback: 'Control Center' },
-  { to: '/admin/dashboard', key: 'admin.nav.dashboard', fallback: 'Dashboard' },
-  { to: '/admin/users', key: 'admin.nav.users', fallback: 'Users' },
-  { to: '/admin/roles', key: 'admin.nav.roles', fallback: 'Roles' },
-  { to: '/admin/challenges', key: 'admin.nav.challenges', fallback: 'Challenges' },
-  { to: '/admin/content-tree', key: 'admin.nav.organize', fallback: 'Organize Content' },
-  { to: '/admin/content', key: 'admin.nav.content', fallback: 'Content' },
-  { to: '/admin/modules', key: 'admin.nav.modules', fallback: 'Modules' },
-  { to: '/admin/quizzes', key: 'admin.nav.quizzes', fallback: 'Quizzes' },
-  { to: '/admin/game', key: 'admin.nav.game', fallback: 'Game Mode' },
-  { to: '/admin/forum/categories', key: 'admin.nav.categories', fallback: 'Categories' },
-  { to: '/admin/notifications', key: 'admin.nav.notifications', fallback: 'Notifications' },
-  { to: '/admin/settings', key: 'admin.nav.settings', fallback: 'Settings' },
-];
 
 interface TopStatusBarProps {
   /** Current sidebar open state — controls the toggle icon/label. */
@@ -36,19 +19,6 @@ interface TopStatusBarProps {
 export default function TopStatusBar({ isSidebarOpen, onToggleSidebar }: TopStatusBarProps = {}) {
   const { t } = useTranslation();
   const { user, appUser } = useAuth();
-  const [adminOpen, setAdminOpen] = useState(false);
-  const adminRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!adminOpen) return;
-    const onClick = (e: MouseEvent) => {
-      if (adminRef.current && !adminRef.current.contains(e.target as Node)) {
-        setAdminOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', onClick);
-    return () => document.removeEventListener('mousedown', onClick);
-  }, [adminOpen]);
 
   if (!user) return null;
 
@@ -124,52 +94,27 @@ export default function TopStatusBar({ isSidebarOpen, onToggleSidebar }: TopStat
           <span className="text-xs font-bold tabular-nums">{appUser?.tokens ?? 0}</span>
         </Link>
 
-        {/* Admin menu — only for Admin role. */}
+        {/* Admin entry — links to the Control Center, which lists every admin
+            section. Only shown for the Admin role. */}
         {isAdmin && (
-          <div className="relative" ref={adminRef}>
-            <button
-              onClick={() => setAdminOpen((v) => !v)}
-              aria-expanded={adminOpen}
-              aria-haspopup="menu"
-              title={t('admin.menu', { defaultValue: 'Admin' })}
-              className={`flex h-8 items-center gap-1 rounded-lg border px-2 font-sans text-[11px] font-medium transition-colors ${
-                adminOpen
+          <NavLink
+            to="/admin"
+            end
+            title={t('admin.control_center', { defaultValue: 'Control Center' })}
+            className={({ isActive }: { isActive: boolean }) =>
+              `flex h-8 items-center gap-1 rounded-lg border px-2 font-sans text-[11px] font-medium transition-colors ${
+                isActive
                   ? 'border-signal-amber/40 bg-signal-amber/20 text-signal-amber'
                   : 'border-signal-amber/30 bg-signal-amber/10 text-signal-amber hover:bg-signal-amber/20'
-              }`}
-            >
-              <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <circle cx="12" cy="12" r="3" strokeWidth={1.8} />
-              </svg>
-              {t('admin.menu', { defaultValue: 'Admin' })}
-            </button>
-            {adminOpen && (
-              <div
-                role="menu"
-                className="absolute right-0 z-50 mt-1 w-48 rounded-lg border border-slate-200 bg-white py-1 shadow-lg dark:border-tactical-border dark:bg-tactical-surface"
-              >
-                {ADMIN_LINKS.map((l) => (
-                  <NavLink
-                    key={l.to}
-                    to={l.to}
-                    end={l.to === '/admin'}
-                    role="menuitem"
-                    onClick={() => setAdminOpen(false)}
-                    className={({ isActive }: { isActive: boolean }) =>
-                      `block px-4 py-2 font-sans text-[13px] transition-colors ${
-                        isActive
-                          ? 'text-brand-700 dark:text-signal-green'
-                          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-tactical-dim dark:hover:bg-tactical-raised dark:hover:text-tactical-text'
-                      }`
-                    }
-                  >
-                    {t(l.key, { defaultValue: l.fallback })}
-                  </NavLink>
-                ))}
-              </div>
-            )}
-          </div>
+              }`
+            }
+          >
+            <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <circle cx="12" cy="12" r="3" strokeWidth={1.8} />
+            </svg>
+            {t('admin.control_center', { defaultValue: 'Control Center' })}
+          </NavLink>
         )}
       </nav>
     </div>
