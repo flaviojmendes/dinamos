@@ -9,17 +9,12 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import CacheSimulation from "./components/CacheSimulation/CacheSimulation";
 import CircuitBreaker from "./components/CircuitBreaker/CircuitBreaker";
 import Backpressure from "./components/Backpressure/Backpressure";
 import RateLimiter from "./components/RateLimiter/RateLimiter";
 import AsyncSync from "./components/AsyncSync/AsyncSync";
 import CDN from "./components/CDN/CDN";
-import RoundRobin from "./components/RoundRobin/RoundRobin";
-import MessageQueueSimulator from "./components/MessageQueue/MessageQueue";
 import CDNSimulator from "./components/CDN/CDN";
-import APIGatewaySimulator from "./components/APIGateway/APIGatewaySimulator";
-import EventSourcingSimulator from "./components/DesignPrinciples/EventSourcingSimulator";
 import LogSimulator from "./components/Monitoramento/LogSimulator";
 import TracingSimulator from './components/Monitoramento/TracingSimulator';
 
@@ -71,21 +66,9 @@ function DesignLabRouteFallback() {
 }
 import { trackEvent, trackPageView, initializeAnalytics, handleConsentChange } from './utils/analytics';
 import ServiceOriented from "./components/DesignPrinciples/ServiceOriented";
-import RetriesSimulator from "./components/DesignPrinciples/RetriesSimulator";
-import TimeoutSimulator from "./components/DesignPrinciples/TimeoutSimulator";
-import HorizontalScalingSimulator from "./components/HorizontalScaling/HorizontalScalingSimulator";
-import VerticalScalingSimulator from "./components/DesignPrinciples/VerticalScalingSimulator";
-import ScalabilitySimulator from "./components/DesignPrinciples/ScalabilitySimulator";
 import ReplicacaoSimulator from "./components/DesignPrinciples/ReplicacaoSimulator";
 import ServiceArchitectureSimulator from "./components/DesignPrinciples/ServiceArchitectureSimulator";
 import Preferences from "./components/Preferences/Preferences";
-import ConsensusSimulator from "./components/ConsistencyStrategies/ConsensusSimulator";
-import FirewallSimulator from "./components/SystemComponents/FirewallSimulator";
-import LamportTimestampsSimulator from "./components/ConsistencyStrategies/LamportTimestampsSimulator";
-import TokensSimulator from "./components/Security/TokensSimulator";
-import CryptographySimulator from "./components/Security/CryptographySimulator";
-import AttackSimulatorPage from "./components/Security/AttackSimulatorPage";
-import PromptInjectionSimulator from "./components/Security/PromptInjectionSimulator";
 import Roadmap from "./components/Roadmap/Roadmap";
 import ContentLayout from "./components/Common/ContentLayout";
 import LanguageDetectionDialog from "./components/Common/LanguageDetectionDialog";
@@ -105,29 +88,12 @@ import {
   TIER_ORDER,
   type Tier,
 } from "./config/contentRegistry";
-import CanaryDeploymentSimulator from "./components/CanaryDeployment/CanaryDeploymentSimulator";
-import InferenceBatchingSimulator from "./components/AISystems/InferenceBatchingSimulator";
-import RagPipelineSimulator from "./components/AISystems/RagPipelineSimulator";
-import VectorSearchSimulator from "./components/AISystems/VectorSearchSimulator";
-import LlmGatewaySimulator from "./components/AISystems/LlmGatewaySimulator";
-import GpuAutoscalerSimulator from "./components/AISystems/GpuAutoscalerSimulator";
-import AgentOrchestrationSimulator from "./components/AISystems/AgentOrchestrationSimulator";
-import ConsistentHashingSimulator from "./components/DataStorage/ConsistentHashingSimulator";
-import ShardingSimulator from "./components/DataStorage/ShardingSimulator";
-import InvertedIndexSimulator from "./components/DataStorage/InvertedIndexSimulator";
-import KafkaSimulator from "./components/SystemComponents/KafkaSimulator";
-import SagaSimulator from "./components/ConsistencyStrategies/SagaSimulator";
-import DeliverySemanticsSimulator from "./components/ConsistencyStrategies/DeliverySemanticsSimulator";
-import CqrsSimulator from "./components/DesignPrinciples/CqrsSimulator";
-import TwoPhaseCommitSimulator from "./components/ConsistencyStrategies/TwoPhaseCommitSimulator";
 import Logs from "./components/MonitoringMaintenance/Logs";
 
 import SynchronizationAlgorithms from './components/ConsistencyStrategies/SynchronizationAlgorithms';
-import SynchronizationSimulator from "./components/ConsistencyStrategies/SynchronizationSimulator";
 import SimpleSystemEditorPage from "./pages/SimpleSystemEditorPage";
 const GameEditorPage = React.lazy(() => import("./pages/GameEditorPage"));
 const AdminGameConsole = React.lazy(() => import("./pages/AdminGameConsole"));
-import PollingWebhooks from "./components/SystemComponents/PollingWebhooks";
 import { LanguageSwitcher } from './components/Common';
 import ThemeToggle from "./components/Common/ThemeToggle";
 import TopStatusBar from "./components/Common/TopStatusBar";
@@ -139,8 +105,6 @@ import { CookieConsentManager } from './utils/cookieConsent';
 import CookiePreferencesPage from './pages/CookiePreferencesPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsAndConditionsPage from './pages/TermsAndConditionsPage';
-import ReplicationSimulator from "./components/DesignPrinciples/ReplicationSimulator";
-import AvailabilityZonesSimulator from "./components/DesignPrinciples/AvailabilityZonesSimulator";
 // Forum is now served by the merged designLab forum (see /forum routes below).
 import ExplorePage from "./components/Explore/ExplorePage";
 
@@ -478,7 +442,7 @@ const createMenuItems = (t: any): MenuItem[] => [
           },
           
           {
-            path: "/principios-design/disponibilidade/simulator",
+            path: "/principios-design/disponibilidade/zonas/simulator",
             name: t('menu.principios_design.disponibilidade.simulator.name'),
             description: t('menu.principios_design.disponibilidade.simulator.description'),
           },
@@ -629,7 +593,7 @@ const createMenuItems = (t: any): MenuItem[] => [
         description: t('menu.seguranca.criptografia.description'),
         children: [
           {
-            path: "/seguranca/criptografia/simulador",
+            path: "/seguranca/criptografia/simulator",
             name: t('menu.seguranca.criptografia.simulador.name'),
             description: t('menu.seguranca.criptografia.simulador.description'),
           },
@@ -641,7 +605,7 @@ const createMenuItems = (t: any): MenuItem[] => [
         description: t('menu.seguranca.tokens.description'),
         children: [
           {
-            path: "/seguranca/tokens/simulador",
+            path: "/seguranca/tokens/simulator",
             name: t('menu.seguranca.tokens.simulador.name'),
             description: t('menu.seguranca.tokens.simulador.description'),
           },
@@ -663,7 +627,7 @@ const createMenuItems = (t: any): MenuItem[] => [
         description: t('menu.seguranca.prompt_injection.description'),
         children: [
           {
-            path: "/seguranca/prompt-injection/simulador",
+            path: "/seguranca/prompt-injection/simulator",
             name: t('menu.seguranca.prompt_injection.simulador.name'),
             description: t('menu.seguranca.prompt_injection.simulador.description'),
           },
@@ -742,7 +706,7 @@ const createMenuItems = (t: any): MenuItem[] => [
           },
           // {
           //   name: "Simulador dos Filósofos",
-          //   path: "/estrategias-de-consistencia/sincronizacao/simulador",
+          //   path: "/estrategias-de-consistencia/sincronizacao/simulator",
           //   description: "Experimente diferentes estratégias de sincronização",
           //   status: "recommended",
           //   skills: ["Visualização", "Experimentação", "Análise de Soluções"]
@@ -775,7 +739,7 @@ const createMenuItems = (t: any): MenuItem[] => [
         children: [
           {
             name: t('menu.estrategias_de_consistencia.two_phase_commit.simulador.name'),
-            path: "/estrategias-de-consistencia/two-phase-commit/simulador",
+            path: "/estrategias-de-consistencia/two-phase-commit/simulator",
             description: t('menu.estrategias_de_consistencia.two_phase_commit.simulador.description'),
           },
         ],
@@ -787,7 +751,7 @@ const createMenuItems = (t: any): MenuItem[] => [
         children: [
           {
             name: t('menu.estrategias_de_consistencia.consenso.simulador.name'),
-            path: "/estrategias-de-consistencia/consenso/simulador",
+            path: "/estrategias-de-consistencia/consenso/simulator",
             description: t('menu.estrategias_de_consistencia.consenso.simulador.description'),
           },
         ],
@@ -799,7 +763,7 @@ const createMenuItems = (t: any): MenuItem[] => [
         children: [
           {
             name: t('menu.estrategias_de_consistencia.lamport_timestamps.simulador.name'),
-            path: "/estrategias-de-consistencia/lamport-timestamps/simulador",
+            path: "/estrategias-de-consistencia/lamport-timestamps/simulator",
             description: t('menu.estrategias_de_consistencia.lamport_timestamps.simulador.description'),
           },
         ],
@@ -868,7 +832,7 @@ const createMenuItems = (t: any): MenuItem[] => [
           {
             name: t('menu.monitoramento_e_manutencao.logs.simulador.name'),
             description: t('menu.monitoramento_e_manutencao.logs.simulador.description'),
-            path: "/monitoramento-e-manutencao/logs/simulador",
+            path: "/monitoramento-e-manutencao/logs/simulator",
             component: LogSimulator,
           },
           {
@@ -1843,156 +1807,6 @@ export default function App() {
                   />
                 );
               })}
-            <Route
-              path="/principios-design/canary-deployment/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <CanaryDeploymentSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/sistemas-ia/llm-serving-fundamentals/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <InferenceBatchingSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/sistemas-ia/rag/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <RagPipelineSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/sistemas-ia/vector-search/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <VectorSearchSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/sistemas-ia/llm-gateway/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <LlmGatewaySimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/sistemas-ia/gpu-autoscaling/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <GpuAutoscalerSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/sistemas-ia/agentic-systems/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <AgentOrchestrationSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/dados-armazenamento/consistent-hashing/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <ConsistentHashingSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/dados-armazenamento/sharding/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <ShardingSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/dados-armazenamento/inverted-index/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <InvertedIndexSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/componentes/kafka/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <KafkaSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/estrategias-de-consistencia/saga/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <SagaSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/estrategias-de-consistencia/delivery-semantics/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <DeliverySemanticsSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design/cqrs/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <CqrsSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design/rate-limiting/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <RateLimiter />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
             <Route path="/" element={user ? <CommandCenter /> : <LandingPage />} />
             <Route
               path="/explore"
@@ -2027,56 +1841,6 @@ export default function App() {
             />
             
             {/* Protected routes */}
-            <Route
-              path="/componentes/cache/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <CacheSimulation />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/componentes/load-balancer/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <RoundRobin />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/componentes/message-queue/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <MessageQueueSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/componentes/cdn/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <CDN />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/componentes/api-gateway/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <APIGatewaySimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
             <Route
               path="/circuit-breaker"
               element={
@@ -2128,16 +1892,6 @@ export default function App() {
               }
             />
             <Route
-              path="/principios-design/eventos/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <EventSourcingSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="/principios-design/servicos"
               element={
                 <ProtectedRoute>
@@ -2158,172 +1912,11 @@ export default function App() {
               }
             />
             <Route
-              path="/principios-design/tolerancia-falhas/retries/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <RetriesSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design/tolerancia-falhas/circuit-breaker/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <CircuitBreaker />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design/tolerancia-falhas/timeout/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <TimeoutSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design/escalabilidade/horizontal/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <HorizontalScalingSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design/escalabilidade/vertical/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <VerticalScalingSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design/escalabilidade/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <ScalabilitySimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design/disponibilidade/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <AvailabilityZonesSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/estrategias-de-consistencia/consenso/simulador"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <ConsensusSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/estrategias-de-consistencia/lamport-timestamps/simulador"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <LamportTimestampsSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/componentes/firewall/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <FirewallSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/componentes/polling-webhooks/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <PollingWebhooks />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/seguranca/tokens/simulador"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <TokensSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/seguranca/ataques/simulador"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <AttackSimulatorPage />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/seguranca/criptografia/simulador"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <CryptographySimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/seguranca/prompt-injection/simulador"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <PromptInjectionSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="/roadmap"
               element={
                 <ProtectedRoute>
                   <ContentPage>
                     <Roadmap />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/estrategias-de-consistencia/two-phase-commit/simulador"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <TwoPhaseCommitSimulator />
                   </ContentPage>
                 </ProtectedRoute>
               }
@@ -2338,16 +1931,6 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/estrategias-de-consistencia/sincronizacao/simulador"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <SynchronizationSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
 
 
 
@@ -2359,16 +1942,6 @@ export default function App() {
 
 
 
-            <Route
-              path="/monitoramento-e-manutencao/logs/simulador"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <LogSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
             <Route
               path="/monitoramento-e-manutencao/logs/tracing"
               element={
@@ -2380,26 +1953,6 @@ export default function App() {
               }
             />
             
-            <Route
-              path="/principios-design/disponibilidade/zonas/simulador"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <AvailabilityZonesSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design/disponibilidade/replicacao/simulador"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <ReplicationSimulator />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
             {/* --- Forum (designLab: polls, nested replies, notifications) --- */}
             <Route
               path="/forum"
