@@ -11,6 +11,17 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation();
 
+  // Surface the real Firebase error code alongside the friendly message so a
+  // failing login is diagnosable (e.g. auth/unauthorized-domain) instead of an
+  // opaque "try again".
+  const describeError = (error: unknown, fallback: string): string => {
+    const code = (error as { code?: string })?.code;
+    if (code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request') {
+      return fallback;
+    }
+    return code ? `${fallback} (${code})` : fallback;
+  };
+
   const handleGoogleLogin = async () => {
     try {
       setError(null);
@@ -18,7 +29,7 @@ export default function Login() {
       await signInWithGoogle();
       navigate('/');
     } catch (error) {
-      setError(t('auth.error_google'));
+      setError(describeError(error, t('auth.error_google')));
     } finally {
       setIsLoading(false);
     }
@@ -31,7 +42,7 @@ export default function Login() {
       await signInWithGithub();
       navigate('/');
     } catch (error) {
-      setError(t('auth.error_github'));
+      setError(describeError(error, t('auth.error_github')));
     } finally {
       setIsLoading(false);
     }

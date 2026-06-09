@@ -1,7 +1,10 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import {
   User,
+  AuthProvider as FirebaseAuthProvider,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   GoogleAuthProvider,
   GithubAuthProvider,
   signOut as firebaseSignOut,
@@ -14,6 +17,36 @@ import {
   AuthError,
 } from 'firebase/auth';
 import { auth } from '../config/firebase';
+
+// Firebase error codes that indicate the popup itself couldn't be used
+// (blocked by the browser, unsupported environment such as in-app webviews,
+// or storage restrictions). In these cases we transparently fall back to a
+// full-page redirect, which works where popups don't (mobile/Safari/webviews).
+const POPUP_UNSUPPORTED_CODES = new Set([
+  'auth/popup-blocked',
+  'auth/operation-not-supported-in-environment',
+  'auth/web-storage-unsupported',
+  'auth/cancelled-popup-request',
+]);
+
+/**
+ * Sign in with a provider using a popup, falling back to a full-page redirect
+ * when the popup can't be opened. Returns the popup result, or null when a
+ * redirect was initiated (the page will navigate away and the result is handled
+ * by getRedirectResult on the next load).
+ */
+async function signInWithProviderResilient(provider: FirebaseAuthProvider) {
+  try {
+    return await signInWithPopup(auth, provider);
+  } catch (error) {
+    const code = (error as AuthError)?.code;
+    if (code && POPUP_UNSUPPORTED_CODES.has(code)) {
+      await signInWithRedirect(auth, provider);
+      return null;
+    }
+    throw error;
+  }
+}
 
 // Shape of the backend user profile returned by GET /api/users/me.
 export interface AppUser {
@@ -91,6 +124,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  // Complete any sign-in that used the redirect fallback. On the load that
+  // follows the redirect this resolves with the user; onAuthStateChanged then
+  // picks up the session. Errors here are surfaced for diagnosis.
+  useEffect(() => {
+    getRedirectResult(auth).catch((error) => {
+      console.error('Redirect sign-in failed:', (error as AuthError)?.code ?? error);
+    });
+  }, []);
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       try {
@@ -113,13 +155,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
+    await signInWithProviderResilient(provider);
   };
 
   const signInWithGithub = async () => {
     const provider = new GithubAuthProvider();
     try {
-      const result = await signInWithPopup(auth, provider);
+      const result = await signInWithProviderResilient(provider);
+      // A redirect was initiated; the page will navigate away.
+      if (!result) return;
       // Capture GitHub username when available and sync to backend.
       // @ts-ignore - reloadUserInfo is undocumented but commonly present
       const screenName = result.user?.reloadUserInfo?.screenName;
