@@ -12,11 +12,23 @@ dist
 dist-ssr
 coverage
 *.local
+
+# Environment files (never commit real secrets; copy .env.example -> .env)
 .env
+.env.*
+!.env.example
+
+# TLS certificates for local HTTPS dev
+certs/
+*.pem
 
 # Firebase service account credentials (used by the local API dev server)
 serviceAccount*.json
 firebase-service-account*.json
+
+# Python bytecode (from local Cursor skill scripts)
+__pycache__/
+*.py[cod]
 
 # Editor directories and files
 .vscode/*
