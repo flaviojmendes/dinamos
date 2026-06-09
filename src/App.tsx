@@ -65,9 +65,7 @@ function DesignLabRouteFallback() {
   );
 }
 import { trackEvent, trackPageView, initializeAnalytics, handleConsentChange } from './utils/analytics';
-import ServiceOriented from "./components/DesignPrinciples/ServiceOriented";
 import ReplicacaoSimulator from "./components/DesignPrinciples/ReplicacaoSimulator";
-import ServiceArchitectureSimulator from "./components/DesignPrinciples/ServiceArchitectureSimulator";
 import Preferences from "./components/Preferences/Preferences";
 import Roadmap from "./components/Roadmap/Roadmap";
 import ContentLayout from "./components/Common/ContentLayout";
@@ -1887,26 +1885,6 @@ export default function App() {
                 <ProtectedRoute>
                   <ContentPage>
                     <CDN />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design/servicos"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <ServiceOriented />
-                  </ContentPage>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/principios-design/servicos/simulator"
-              element={
-                <ProtectedRoute>
-                  <ContentPage>
-                    <ServiceArchitectureSimulator />
                   </ContentPage>
                 </ProtectedRoute>
               }

@@ -99,6 +99,13 @@
       "when": 1781081018489,
       "tag": "0013_repoint_simulator_links",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1781081118489,
+      "tag": "0014_add_service_oriented_page",
+      "breakpoints": true
     }
   ]
 }
