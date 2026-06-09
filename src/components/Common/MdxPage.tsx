@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import api from '../../designlab/utils/api';
 import MdxRenderer from './MdxRenderer';
 import ContentAnnotations from './ContentAnnotations';
+import { getVisitorId } from '../../utils/visitorId';
 
 type Lang = 'en' | 'pt';
 
@@ -61,6 +62,23 @@ export default function MdxPage({ slug }: Props) {
       cancelled = true;
     };
   }, [slug, lang]);
+
+  // Record an anonymized page view once per session+path. Failures are silent —
+  // analytics must never interfere with rendering the lesson.
+  useEffect(() => {
+    const path = location.pathname;
+    if (!path) return;
+    const sessionKey = `viewed:${path}`;
+    try {
+      if (sessionStorage.getItem(sessionKey)) return;
+      sessionStorage.setItem(sessionKey, '1');
+    } catch {
+      /* sessionStorage unavailable: fall through and still track this load. */
+    }
+    api.post('/api/views', { path, visitorId: getVisitorId() }).catch(() => {
+      /* ignore tracking errors */
+    });
+  }, [location.pathname]);
 
   return (
     <article ref={articleRef} className="mx-auto max-w-4xl px-4 py-6 md:px-8 lg:py-10">

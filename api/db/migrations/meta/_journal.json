@@ -78,6 +78,13 @@
       "when": 1780927558306,
       "tag": "0010_many_namora",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1780994518489,
+      "tag": "0011_giant_hulk",
+      "breakpoints": true
     }
   ]
 }

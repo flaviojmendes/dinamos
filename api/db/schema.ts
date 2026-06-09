@@ -442,3 +442,27 @@ export const contentProgress = pgTable(
     userIdx: index('content_progress_user_idx').on(t.userId),
   })
 );
+
+// Anonymized page-view log used purely for aggregate analytics ("most visited
+// modules/pages"). Privacy by design: we never store the user id here. Instead
+// we keep a one-way hash of an opaque visitor key (the Firebase uid for signed-in
+// users, or a client-generated anonymous id otherwise), so the admin dashboard
+// can compute total views AND distinct-visitor counts without ever being able to
+// reverse a row back to a person.
+export const contentViews = pgTable(
+  'content_views',
+  {
+    id: serial('id').primaryKey(),
+    // Public URL pathname that was viewed (e.g. "/components/cache").
+    path: varchar('path', { length: 255 }).notNull(),
+    // sha256(ANALYTICS_SALT + visitorKey). Used only for count(distinct ...).
+    visitorHash: varchar('visitor_hash', { length: 64 }).notNull(),
+    // Whether the visitor was authenticated at view time (no identity beyond this).
+    isAuthed: boolean('is_authed').notNull().default(false),
+    viewedAt: timestamp('viewed_at', { withTimezone: true }).defaultNow(),
+  },
+  (t) => ({
+    pathIdx: index('content_views_path_idx').on(t.path),
+    viewedAtIdx: index('content_views_viewed_at_idx').on(t.viewedAt),
+  })
+);

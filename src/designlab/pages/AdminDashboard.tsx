@@ -83,6 +83,50 @@ interface DashboardData {
   }>
 }
 
+interface ContentAnalytics {
+  range_days: number
+  views: {
+    total: number
+    unique_visitors: number
+    most_visited_modules: Array<{
+      moduleId: string
+      label: string
+      views: number
+      uniqueVisitors: number
+    }>
+    most_visited_pages: Array<{
+      path: string
+      label: string
+      module: string
+      views: number
+      uniqueVisitors: number
+    }>
+  }
+  progress: {
+    modules: Array<{
+      moduleId: string
+      label: string
+      tier: string
+      lessonsTotal: number
+      completions: number
+      distinctUsers: number
+      avgCompletionPct: number
+    }>
+  }
+  marked_as_read: {
+    total_completions: number
+    distinct_pages: number
+    distinct_users: number
+    top_pages: Array<{
+      path: string
+      label: string
+      module: string
+      completions: number
+    }>
+    timeline: Array<{ date: string; count: number }>
+  }
+}
+
 // Simple bar component for charts
 const BarChart = ({ 
   data, 
@@ -539,6 +583,237 @@ const UserGrowthChart = () => {
   )
 }
 
+// Mini line chart for the "marked as read" timeline.
+const ReadTimelineChart = ({ data }: { data: ContentAnalytics['marked_as_read']['timeline'] }) => {
+  const maxValue = Math.max(...data.map(d => d.count), 1)
+  const height = 120
+  const width = Math.max(data.length * 10, 10)
+  const getY = (value: number) => height - (value / maxValue) * (height - 20)
+  const path = data.map((d, i) => `${i === 0 ? 'M' : 'L'} ${i * 10 + 5} ${getY(d.count)}`).join(' ')
+  const total = data.reduce((s, d) => s + d.count, 0)
+
+  return (
+    <div className="relative">
+      <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-32" preserveAspectRatio="none">
+        <line x1="0" y1={height - 10} x2={width} y2={height - 10} className="stroke-slate-200 dark:stroke-tactical-border" strokeWidth="1" />
+        <path d={path} fill="none" className="stroke-signal-green" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+      <div className="text-center mt-2 text-xs font-medium text-slate-500 dark:text-tactical-dim">
+        {total} marcações no período
+      </div>
+    </div>
+  )
+}
+
+// Anonymized content engagement analytics (views, progress, marked-as-read).
+const ContentAnalyticsSection = () => {
+  const [data, setData] = useState<ContentAnalytics | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [days, setDays] = useState<7 | 30 | 90>(30)
+
+  const fetchAnalytics = async (range: number) => {
+    try {
+      setLoading(true)
+      setError(null)
+      const response = await api.get<ContentAnalytics>(`/api/admin/content-analytics?days=${range}`)
+      setData(response.data)
+    } catch (err) {
+      console.error('Erro ao carregar analytics de conteúdo:', err)
+      setError('Não foi possível carregar as métricas de conteúdo')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchAnalytics(days)
+  }, [days])
+
+  return (
+    <div className="mt-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
+        <div>
+          <h2 className="text-xl font-sans font-bold tracking-tight text-slate-900 dark:text-tactical-text">
+            Conteúdo
+          </h2>
+          <p className="text-sm text-slate-500 dark:text-tactical-label mt-0.5">
+            Engajamento anonimizado: progresso, módulos mais visitados e conteúdo marcado como lido
+          </p>
+        </div>
+        <div className="flex overflow-hidden rounded-lg border border-slate-200 dark:border-tactical-border self-start">
+          {([7, 30, 90] as const).map((range) => (
+            <button
+              key={range}
+              onClick={() => setDays(range)}
+              className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                days === range
+                  ? 'bg-slate-900 text-white dark:bg-white dark:text-black'
+                  : 'bg-white dark:bg-tactical-raised text-slate-600 dark:text-tactical-dim hover:bg-slate-50 dark:hover:bg-tactical-surface'
+              }`}
+            >
+              {range} dias
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="flex justify-center items-center h-48">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-brand-600 dark:border-signal-green"></div>
+        </div>
+      ) : error ? (
+        <div className="text-center p-8 border border-signal-red/40 bg-signal-red/10">
+          <p className="text-signal-red">{error}</p>
+          <TacticalButton variant="danger" onClick={() => fetchAnalytics(days)} className="mt-4">
+            Tentar novamente
+          </TacticalButton>
+        </div>
+      ) : data && (
+        <>
+          {/* Stat cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <StatCard
+              title="Visualizações"
+              value={data.views.total}
+              subtitle={`Últimos ${data.range_days} dias`}
+              color="sky"
+              icon={null}
+            />
+            <StatCard
+              title="Visitantes Únicos"
+              value={data.views.unique_visitors}
+              subtitle="Anônimos (sem identificação)"
+              color="violet"
+              icon={null}
+            />
+            <StatCard
+              title="Conteúdos Lidos"
+              value={data.marked_as_read.total_completions}
+              subtitle={`${data.marked_as_read.distinct_users} usuários marcaram`}
+              color="emerald"
+              icon={null}
+            />
+            <StatCard
+              title="Páginas Lidas"
+              value={data.marked_as_read.distinct_pages}
+              subtitle="Páginas distintas concluídas"
+              color="amber"
+              icon={null}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Most visited modules */}
+            <Panel title="Módulos Mais Visitados" accent="cyan" className="lg:col-span-1" padded={false} bodyClassName="p-4">
+              {data.views.most_visited_modules.length === 0 ? (
+                <p className="text-slate-500 dark:text-tactical-label text-sm text-center py-6">Sem visualizações no período</p>
+              ) : (
+                <table className="w-full border-collapse text-sm">
+                  <thead className="bg-slate-50 dark:bg-tactical-surface">
+                    <tr>
+                      <th className="text-xs font-medium text-slate-500 dark:text-tactical-label pb-3 px-3 text-left border-b border-slate-200 dark:border-tactical-border">Módulo</th>
+                      <th className="text-xs font-medium text-slate-500 dark:text-tactical-label pb-3 px-3 text-right border-b border-slate-200 dark:border-tactical-border">Views</th>
+                      <th className="text-xs font-medium text-slate-500 dark:text-tactical-label pb-3 px-3 text-right border-b border-slate-200 dark:border-tactical-border">Únicos</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.views.most_visited_modules.slice(0, 8).map((m) => (
+                      <tr key={m.moduleId} className="border-b border-slate-100 dark:border-tactical-border/60 hover:bg-slate-50 dark:hover:bg-tactical-raised">
+                        <td className="py-2.5 px-3 text-slate-800 dark:text-tactical-text truncate" title={m.label}>{m.label}</td>
+                        <td className="py-2.5 px-3 text-right font-mono tabular-nums text-slate-700 dark:text-tactical-text">{m.views}</td>
+                        <td className="py-2.5 px-3 text-right font-mono tabular-nums text-slate-600 dark:text-tactical-dim">{m.uniqueVisitors}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </Panel>
+
+            {/* Most visited pages */}
+            <Panel title="Páginas Mais Visitadas" accent="cyan" className="lg:col-span-2">
+              {data.views.most_visited_pages.length === 0 ? (
+                <p className="text-slate-500 dark:text-tactical-label text-sm text-center py-6">Sem visualizações no período</p>
+              ) : (
+                <BarChart
+                  data={data.views.most_visited_pages}
+                  labelKey="label"
+                  valueKey="views"
+                  color="bg-brand-600 dark:bg-signal-cyan"
+                  maxItems={8}
+                />
+              )}
+            </Panel>
+
+            {/* Progress through modules */}
+            <Panel title="Progresso por Módulo" accent="green" className="lg:col-span-3" padded={false} bodyClassName="p-4">
+              <p className="text-sm text-slate-600 dark:text-tactical-dim mb-4 px-1">
+                Quantos usuários avançaram em cada módulo (lições marcadas como concluídas), sem identificação individual
+              </p>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse text-sm">
+                  <thead className="bg-slate-50 dark:bg-tactical-surface">
+                    <tr>
+                      <th className="text-xs font-medium text-slate-500 dark:text-tactical-label pb-3 px-3 text-left border-b border-slate-200 dark:border-tactical-border">Módulo</th>
+                      <th className="text-xs font-medium text-slate-500 dark:text-tactical-label pb-3 px-3 text-left border-b border-slate-200 dark:border-tactical-border">Tier</th>
+                      <th className="text-xs font-medium text-slate-500 dark:text-tactical-label pb-3 px-3 text-center border-b border-slate-200 dark:border-tactical-border">Lições</th>
+                      <th className="text-xs font-medium text-slate-500 dark:text-tactical-label pb-3 px-3 text-center border-b border-slate-200 dark:border-tactical-border">Usuários ativos</th>
+                      <th className="text-xs font-medium text-slate-500 dark:text-tactical-label pb-3 px-3 text-center border-b border-slate-200 dark:border-tactical-border">Conclusões</th>
+                      <th className="text-xs font-medium text-slate-500 dark:text-tactical-label pb-3 px-3 text-right border-b border-slate-200 dark:border-tactical-border">Progresso médio</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.progress.modules.map((m) => (
+                      <tr key={m.moduleId} className="border-b border-slate-100 dark:border-tactical-border/60 hover:bg-slate-50 dark:hover:bg-tactical-raised">
+                        <td className="py-2.5 px-3 text-slate-800 dark:text-tactical-text">{m.label}</td>
+                        <td className="py-2.5 px-3 text-xs text-slate-500 dark:text-tactical-dim">{m.tier}</td>
+                        <td className="py-2.5 px-3 text-center font-mono tabular-nums text-slate-600 dark:text-tactical-dim">{m.lessonsTotal}</td>
+                        <td className="py-2.5 px-3 text-center font-mono tabular-nums text-slate-700 dark:text-tactical-text">{m.distinctUsers}</td>
+                        <td className="py-2.5 px-3 text-center font-mono tabular-nums text-slate-600 dark:text-tactical-dim">{m.completions}</td>
+                        <td className="py-2.5 px-3 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <div className="w-24 h-2 bg-slate-200 dark:bg-tactical-raised rounded-full overflow-hidden">
+                              <div className="h-full bg-signal-green rounded-full" style={{ width: `${Math.min(m.avgCompletionPct, 100)}%` }} />
+                            </div>
+                            <span className="font-mono tabular-nums text-xs text-slate-700 dark:text-tactical-text w-12 text-right">{m.avgCompletionPct}%</span>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                    {data.progress.modules.length === 0 && (
+                      <tr><td colSpan={6} className="py-6 text-center text-slate-500 dark:text-tactical-label">Sem dados de progresso</td></tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </Panel>
+
+            {/* Marked as read: top pages */}
+            <Panel title="Conteúdo Mais Marcado como Lido" accent="green" className="lg:col-span-2">
+              {data.marked_as_read.top_pages.length === 0 ? (
+                <p className="text-slate-500 dark:text-tactical-label text-sm text-center py-6">Nenhum conteúdo marcado como lido ainda</p>
+              ) : (
+                <BarChart
+                  data={data.marked_as_read.top_pages}
+                  labelKey="label"
+                  valueKey="completions"
+                  color="bg-signal-green"
+                  maxItems={8}
+                />
+              )}
+            </Panel>
+
+            {/* Marked as read: timeline */}
+            <Panel title="Marcações no Período" accent="green" className="lg:col-span-1">
+              <ReadTimelineChart data={data.marked_as_read.timeline} />
+            </Panel>
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
 function AdminDashboard() {
   const { appUser, loading: authLoading } = useAuth()
   const navigate = useNavigate()
@@ -809,6 +1084,9 @@ function AdminDashboard() {
                   </div>
                 </Panel>
               </div>
+
+              {/* Anonymized content engagement analytics */}
+              <ContentAnalyticsSection />
             </>
           )}
         </div>
