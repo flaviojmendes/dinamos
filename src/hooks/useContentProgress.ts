@@ -9,7 +9,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import api from '../designlab/utils/api';
+import api from '../app/utils/api';
 import { useAuth } from '../contexts/AuthContext';
 
 interface ContentProgressEntry {

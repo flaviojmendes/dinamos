@@ -21,7 +21,7 @@ import {
   Flag,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import api, { apiClient } from '../designlab/utils/api';
+import api, { apiClient } from '../app/utils/api';
 import { PRESETS } from '../components/SystemEditor/engine/scenarios';
 import { presetNodesToArchitecture } from '../components/SystemEditor/game/architecture';
 import { DEFAULT_SCORING } from '../components/SystemEditor/engine/scoring';

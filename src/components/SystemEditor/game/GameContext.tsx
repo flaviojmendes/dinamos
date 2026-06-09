@@ -6,7 +6,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { apiClient } from '../../../designlab/utils/api';
+import { apiClient } from '../../../app/utils/api';
 import { GameState, LeaderboardEntry, ScoreSubmission } from './types';
 
 interface GameContextValue {

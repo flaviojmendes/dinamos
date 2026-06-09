@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import api from '../designlab/utils/api';
+import api from '../app/utils/api';
 import {
   setRegistryLessons,
   setRegistryModules,

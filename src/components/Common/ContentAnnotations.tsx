@@ -1,6 +1,6 @@
 import React, { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import api from '../../designlab/utils/api';
+import api from '../../app/utils/api';
 import { useAuth } from '../../contexts/AuthContext';
 import {
   serializeRange,

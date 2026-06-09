@@ -17,7 +17,7 @@ import {
   AlertTriangle,
   Gauge,
 } from 'lucide-react';
-import { apiClient } from '../../../designlab/utils/api';
+import { apiClient } from '../../../app/utils/api';
 import MiniArchitecture from './MiniArchitecture';
 import type { GoldenSignals, SpectatorPlayer, SpectatorResponse } from './types';
 

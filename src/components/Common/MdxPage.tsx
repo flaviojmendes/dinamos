@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import api from '../../designlab/utils/api';
+import api from '../../app/utils/api';
 import MdxRenderer from './MdxRenderer';
 import ContentAnnotations from './ContentAnnotations';
 import { getVisitorId } from '../../utils/visitorId';
