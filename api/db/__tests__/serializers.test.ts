@@ -4,10 +4,16 @@ import {
   userToDict,
   roleToDict,
   authorToDict,
+  challengeToDict,
   solutionToDict,
+  forumCategoryToDict,
+  forumTopicToDict,
+  forumMessageToDict,
+  notificationToDict,
   quizOptionToDict,
   quizQuestionToDict,
   quizToDict,
+  quizAttemptToDict,
   pollOptionToDict,
   pollToDict,
   type UserRow,
@@ -112,6 +118,71 @@ describe('solutionToDict', () => {
     expect(dto.diagram_data).toEqual({ nodes: [1, 2] });
     expect(dto.feedback).toBeNull();
     expect(dto.challenge_id).toBe('c1');
+  });
+});
+
+describe('challengeToDict', () => {
+  it('maps a challenge row to snake_case', () => {
+    const dto = challengeToDict({
+      id: 'c1',
+      title: 'T',
+      subtitle: 's',
+      description: 'd',
+      difficulty: 'easy',
+      category: 'cat',
+      order: 1,
+      evaluationPrompt: 'p',
+      initialRequirements: 'r',
+      videoSolutionUrl: 'http://v',
+      videoSolutionReleaseDate: new Date('2024-01-01T00:00:00Z'),
+    });
+    expect(dto.evaluation_prompt).toBe('p');
+    expect(dto.video_solution_release_date).toBe('2024-01-01T00:00:00.000Z');
+  });
+});
+
+describe('forum serializers', () => {
+  it('maps category, topic and message rows', () => {
+    expect(forumCategoryToDict({ id: 1, name: 'G', color: '#fff', description: 'd', order: 1, createdAt: null, updatedAt: null }).name).toBe('G');
+
+    const topic = forumTopicToDict({ id: 2, title: 'T', content: 'c', userId: 'u1', category: 'G', upvotes: null, createdAt: null, updatedAt: null });
+    expect(topic.upvotes).toBe(0);
+
+    const msg = forumMessageToDict({ id: 3, topicId: 2, parentId: null, userId: 'u1', content: 'hi', diagramData: '{"a":1}', upvotes: 5, createdAt: null, updatedAt: null });
+    expect(msg.diagram_data).toEqual({ a: 1 });
+    expect(msg.upvotes).toBe(5);
+  });
+});
+
+describe('notificationToDict', () => {
+  it('maps a notification row', () => {
+    const dto = notificationToDict({
+      id: 1,
+      userId: 'u1',
+      type: 'reply',
+      title: 'T',
+      message: 'M',
+      linkType: 'topic',
+      linkId: 9,
+      actorId: 'u2',
+      actorNickname: 'Bob',
+      actorAvatar: null,
+      isRead: false,
+      readAt: null,
+      createdAt: new Date('2024-01-01T00:00:00Z'),
+    });
+    expect(dto.is_read).toBe(false);
+    expect(dto.actor_nickname).toBe('Bob');
+    expect(dto.created_at).toBe('2024-01-01T00:00:00.000Z');
+  });
+});
+
+describe('quizAttemptToDict', () => {
+  it('parses answers JSON and defaults to []', () => {
+    const dto = quizAttemptToDict({ id: 1, quizId: 5, userId: 'u1', score: 3, totalQuestions: 5, percentage: 60, answers: '[{"q":1}]', startedAt: null, completedAt: null });
+    expect(dto.answers).toEqual([{ q: 1 }]);
+    const dto2 = quizAttemptToDict({ id: 2, quizId: 5, userId: 'u1', score: 0, totalQuestions: 0, percentage: 0, answers: null, startedAt: null, completedAt: null });
+    expect(dto2.answers).toEqual([]);
   });
 });
 
