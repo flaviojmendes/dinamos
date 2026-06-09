@@ -1,21 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React, { useRef, useState } from 'react';
+import { motion, useScroll, useSpring, useTransform, useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Boxes, Gauge, Globe, ShieldCheck } from 'lucide-react';
+import {
+  ArrowRight,
+  Boxes,
+  Gauge,
+  Globe,
+  ShieldCheck,
+  Network,
+  DatabaseZap,
+  Activity,
+  GitBranch,
+  ChevronDown,
+  Cpu,
+  Layers,
+  Beaker,
+  Sparkles,
+  Check,
+} from 'lucide-react';
 import { trackEvent } from '../../utils/analytics';
-import { Typography, LanguageSwitcher, Footer } from '../Common';
+import { LanguageSwitcher, Footer } from '../Common';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
-import { getTopics, ForumTopic } from '../../services/forumService';
-import ChallengesSection from '../Forum/ChallengesSection';
-import { Tag, TacticalButton } from '../tactical';
-
-// Category badge accent colors for forum topics (tactical signal palette).
-const categoryColors: Record<string, string> = {
-  'Dúvida': 'text-signal-cyan',
-  'Brainstorm': 'text-signal-green',
-  'Ajuda': 'text-signal-amber',
-};
+import Reveal from './landing/Reveal';
+import CountUp from './landing/CountUp';
+import LiveSystemPanel from './landing/LiveSystemPanel';
+import SystemTopology from './landing/SystemTopology';
 
 // Brand mark for the Google OAuth button.
 function GoogleMark({ className = 'w-5 h-5' }: { className?: string }) {
@@ -35,41 +45,57 @@ function GithubMark({ className = 'w-5 h-5' }: { className?: string }) {
   );
 }
 
-// Animated boot log for the hero terminal panel. Language-neutral / technical.
-const TERMINAL_LINES = [
-  { t: 'init', text: 'booting distributed-systems.lab', tone: 'text-tactical-dim' },
-  { t: 'node', text: 'node-01 ▸ ONLINE   region=us-east', tone: 'text-signal-green' },
-  { t: 'node', text: 'node-02 ▸ ONLINE   region=eu-west', tone: 'text-signal-green' },
-  { t: 'lb', text: 'load-balancer ▸ routing 12.4k req/s', tone: 'text-signal-cyan' },
-  { t: 'cache', text: 'cache ▸ hit-ratio 96.2%', tone: 'text-signal-cyan' },
-  { t: 'cb', text: 'circuit-breaker ▸ CLOSED  errors=0', tone: 'text-signal-amber' },
-  { t: 'ok', text: 'consensus reached ▸ quorum 3/3', tone: 'text-signal-green' },
-];
-
-// Format relative time for forum topics
-function formatRelativeTime(dateString: string): string {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffMins = Math.floor(diffMs / 60000);
-  const diffHours = Math.floor(diffMs / 3600000);
-  const diffDays = Math.floor(diffMs / 86400000);
-
-  if (diffMins < 1) return 'agora';
-  if (diffMins < 60) return `${diffMins}m`;
-  if (diffHours < 24) return `${diffHours}h`;
-  if (diffDays < 7) return `${diffDays}d`;
-  
-  return date.toLocaleDateString();
+// Reusable section heading with optional accent kicker. Centered, mono display.
+function SectionHeading({
+  kicker,
+  kickerColor = 'text-emerald-600 dark:text-signal-green',
+  title,
+  subtitle,
+}: {
+  kicker?: string;
+  kickerColor?: string;
+  title: string;
+  subtitle?: string;
+}) {
+  return (
+    <div className="mx-auto max-w-2xl text-center">
+      {kicker && (
+        <div className={`mb-4 inline-flex items-center gap-2 ${kickerColor}`}>
+          <span className="h-px w-6 bg-current opacity-60" aria-hidden="true" />
+          <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em]">{kicker}</span>
+          <span className="h-px w-6 bg-current opacity-60" aria-hidden="true" />
+        </div>
+      )}
+      <h2 className="text-balance font-mono text-3xl font-bold tracking-tight text-slate-900 dark:text-tactical-text sm:text-4xl">
+        {title}
+      </h2>
+      {subtitle && (
+        <p className="mt-4 text-pretty font-sans text-lg leading-relaxed text-slate-600 dark:text-tactical-dim">
+          {subtitle}
+        </p>
+      )}
+    </div>
+  );
 }
 
 export default function LandingPage() {
   const { t } = useTranslation();
-  const { user, signInWithGoogle, signInWithGithub } = useAuth();
-  const [latestTopics, setLatestTopics] = useState<ForumTopic[]>([]);
-  const [loadingTopics, setLoadingTopics] = useState(false);
+  const { signInWithGoogle, signInWithGithub } = useAuth();
+  const reduce = useReducedMotion();
   const [signingIn, setSigningIn] = useState<null | 'google' | 'github'>(null);
   const [authError, setAuthError] = useState<string | null>(null);
+
+  // Top page-scroll progress bar.
+  const { scrollYProgress } = useScroll();
+  const progressScale = useSpring(scrollYProgress, { stiffness: 120, damping: 30, restDelta: 0.001 });
+
+  // Scroll-fill spine for the learning-journey timeline.
+  const journeyRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: journeyProgress } = useScroll({
+    target: journeyRef,
+    offset: ['start 75%', 'end 55%'],
+  });
+  const spineScale = useSpring(journeyProgress, { stiffness: 90, damping: 28, restDelta: 0.001 });
 
   const handleSignIn = async (provider: 'google' | 'github') => {
     if (signingIn) return;
@@ -79,7 +105,6 @@ export default function LandingPage() {
       trackEvent('User', `Landing sign in with ${provider}`);
       if (provider === 'google') await signInWithGoogle();
       else await signInWithGithub();
-      // AuthContext re-renders "/" into the logged-in experience automatically.
     } catch {
       setAuthError(t(provider === 'google' ? 'auth.error_google' : 'auth.error_github'));
     } finally {
@@ -87,946 +112,592 @@ export default function LandingPage() {
     }
   };
 
-  // Fetch latest forum topics for logged-in users
-  useEffect(() => {
-    async function fetchLatestTopics() {
-      if (!user) return;
-      
-      setLoadingTopics(true);
-      try {
-        const data = await getTopics({ sort: 'recent', limit: 5 });
-        setLatestTopics(data.topics);
-      } catch (err) {
-        console.error('Failed to fetch forum topics:', err);
-      } finally {
-        setLoadingTopics(false);
-      }
-    }
-    
-    fetchLatestTopics();
-  }, [user]);
-  
-    return (
-      <div className="min-h-screen bg-canvas-paper dark:bg-canvas-dark text-slate-900 dark:text-slate-100">
-        {/* Header - Only show for logged-out users */}
-        {!user && (
-          <header className="fixed top-0 left-0 right-0 z-50 bg-white/85 dark:bg-tactical-bg/85 backdrop-blur-xl border-b border-slate-200 dark:border-tactical-border">
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-              <div className="flex items-center justify-between">
-                <Link to="/" className="flex items-center">
-                  <img src="/logo.png" alt="Logo" className="h-10" />
-                </Link>
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <LanguageSwitcher />
-                  <a
-                    href="#signin"
-                    onClick={() => trackEvent('User', 'Header Sign In click')}
-                    className="inline-flex items-center gap-2 rounded-lg bg-slate-900 dark:bg-signal-green hover:bg-slate-700 dark:hover:opacity-90 text-white dark:text-black px-4 py-2 text-sm font-sans font-semibold transition-colors cursor-pointer"
-                  >
-                    {t('landing.header_signin')}
-                    <ArrowRight className="w-4 h-4" />
-                  </a>
-                </div>
-              </div>
+  const SignInButtons = ({ compact = false }: { compact?: boolean }) => (
+    <div className="flex flex-col gap-2.5">
+      <button
+        onClick={() => handleSignIn('google')}
+        disabled={signingIn !== null}
+        className="group/btn w-full inline-flex items-center justify-center gap-3 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-black py-3 px-4 font-sans text-sm font-semibold hover:bg-slate-700 dark:hover:bg-slate-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+      >
+        {signingIn === 'google' ? (
+          <span className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+        ) : (
+          <GoogleMark />
+        )}
+        {t('auth.login_google')}
+      </button>
+      <button
+        onClick={() => handleSignIn('github')}
+        disabled={signingIn !== null}
+        className="w-full inline-flex items-center justify-center gap-3 rounded-lg bg-transparent border border-slate-300 dark:border-tactical-line text-slate-900 dark:text-tactical-text py-3 px-4 font-sans text-sm font-semibold hover:border-slate-900 dark:hover:border-signal-green hover:bg-slate-100 dark:hover:bg-tactical-raised transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+      >
+        {signingIn === 'github' ? (
+          <span className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+        ) : (
+          <GithubMark />
+        )}
+        {t('auth.login_github')}
+      </button>
+      {!compact && (
+        <p className="mt-1 font-sans text-[11px] text-slate-400 dark:text-tactical-label">
+          {t('landing.hero_trust')}
+        </p>
+      )}
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-canvas-paper dark:bg-canvas-dark text-slate-900 dark:text-slate-100">
+      {/* Scroll progress bar */}
+      <motion.div
+        className="fixed inset-x-0 top-0 z-[60] h-0.5 origin-left bg-emerald-500 dark:bg-signal-green"
+        style={{ scaleX: progressScale }}
+        aria-hidden="true"
+      />
+
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/85 dark:bg-tactical-bg/85 backdrop-blur-xl border-b border-slate-200 dark:border-tactical-border">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <div className="flex items-center justify-between">
+            <Link to="/" className="flex items-center">
+              <img src="/logo.png" alt="Dinamos" className="h-10" />
+            </Link>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <LanguageSwitcher />
+              <a
+                href="#signin"
+                onClick={() => trackEvent('User', 'Header Sign In click')}
+                className="inline-flex items-center gap-2 rounded-lg bg-slate-900 dark:bg-signal-green hover:bg-slate-700 dark:hover:opacity-90 text-white dark:text-black px-4 py-2 text-sm font-sans font-semibold transition-colors cursor-pointer"
+              >
+                {t('landing.header_signin')}
+                <ArrowRight className="w-4 h-4" />
+              </a>
             </div>
-          </header>
+          </div>
+        </div>
+      </header>
+
+      {/* ============================ HERO ============================ */}
+      <section className="relative overflow-hidden pt-16">
+        <div className="absolute inset-0 bg-grid" aria-hidden="true" />
+        <div
+          className="absolute inset-0 bg-gradient-to-br from-brand-500/10 via-transparent to-transparent dark:from-signal-green/10 dark:via-transparent"
+          aria-hidden="true"
+        />
+        <div
+          className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-brand-500/10 blur-3xl dark:bg-signal-green/10"
+          aria-hidden="true"
+        />
+        {/* floating packets */}
+        {!reduce && (
+          <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+            {[
+              { left: '12%', dur: 7, delay: 0, color: 'bg-signal-cyan/40' },
+              { left: '38%', dur: 9, delay: 1.5, color: 'bg-signal-green/40' },
+              { left: '67%', dur: 8, delay: 0.8, color: 'bg-signal-amber/40' },
+              { left: '85%', dur: 10, delay: 2.2, color: 'bg-signal-cyan/30' },
+            ].map((p, i) => (
+              <motion.span
+                key={i}
+                className={`absolute h-1.5 w-1.5 rounded-full ${p.color}`}
+                style={{ left: p.left, top: '-5%' }}
+                animate={{ y: ['0vh', '110vh'], opacity: [0, 1, 1, 0] }}
+                transition={{ duration: p.dur, delay: p.delay, repeat: Infinity, ease: 'linear' }}
+              />
+            ))}
+          </div>
         )}
 
-        {/* Hero Section */}
-        <div className={`relative overflow-hidden ${!user ? 'pt-16' : ''}`}>
-          <div className="absolute inset-0 bg-grid" aria-hidden="true" />
-          <div className="absolute inset-0 bg-gradient-to-br from-brand-500/10 via-transparent to-transparent dark:from-signal-green/10 dark:via-transparent" aria-hidden="true" />
-          <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-brand-500/10 blur-3xl dark:bg-signal-green/10" aria-hidden="true" />
-          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 lg:pt-24">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
-              {/* Left: message + sign in */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/70 px-3 py-1 dark:border-signal-green/30 dark:bg-signal-green/5">
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 dark:bg-signal-green opacity-75 motion-safe:animate-ping" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-600 dark:bg-signal-green" />
-                  </span>
-                  <span className="font-sans text-[11px] font-medium text-slate-600 dark:text-signal-green">{t('landing.hero_eyebrow')}</span>
-                </div>
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-16 lg:pt-24">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
+            {/* Left: message + sign in */}
+            <motion.div
+              initial={reduce ? false : { opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/70 px-3 py-1 dark:border-signal-green/30 dark:bg-signal-green/5">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 dark:bg-signal-green opacity-75 motion-safe:animate-ping" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-600 dark:bg-signal-green" />
+                </span>
+                <span className="font-sans text-[11px] font-medium text-slate-600 dark:text-signal-green">
+                  {t('landing.hero_eyebrow')}
+                </span>
+              </div>
 
-                <Typography
-                  variant="h1"
-                  className="mb-5 font-sans tracking-tight text-slate-900 dark:text-tactical-text"
-                >
-                  {t('landing.hero_title')}
-                </Typography>
-                <Typography
-                  variant="p"
-                  className="text-lg md:text-xl text-slate-600 dark:text-tactical-dim mb-8 max-w-xl"
-                >
-                  {t('landing.hero_subtitle')}
-                </Typography>
+              <h1 className="text-balance font-mono text-4xl font-bold leading-[1.05] tracking-tight text-slate-900 dark:text-tactical-text sm:text-5xl lg:text-[3.4rem]">
+                {t('landing.hero_title')}
+              </h1>
+              <p className="mt-5 mb-8 max-w-xl text-pretty font-sans text-lg leading-relaxed text-slate-600 dark:text-tactical-dim md:text-xl">
+                {t('landing.hero_subtitle')}
+              </p>
 
-                {!user ? (
-                  <div id="signin" className="tactical-panel p-5 max-w-md scroll-mt-24">
-                    <p className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text">
-                      {t('landing.signin_title')}
-                    </p>
-                    <p className="font-sans text-sm text-slate-500 dark:text-tactical-dim mt-1 mb-4">
-                      {t('landing.signin_subtitle')}
-                    </p>
+              <div id="signin" className="tactical-panel p-5 max-w-md scroll-mt-24">
+                <p className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text">
+                  {t('landing.signin_title')}
+                </p>
+                <p className="mt-1 mb-4 font-sans text-sm text-slate-500 dark:text-tactical-dim">
+                  {t('landing.signin_subtitle')}
+                </p>
 
-                    {authError && (
-                      <div className="mb-3 rounded-lg border border-signal-red/50 bg-signal-red/10 px-3 py-2 font-sans text-xs text-signal-red">
-                        {authError}
-                      </div>
-                    )}
-
-                    <div className="flex flex-col gap-2.5">
-                      <button
-                        onClick={() => handleSignIn('google')}
-                        disabled={signingIn !== null}
-                        className="w-full inline-flex items-center justify-center gap-3 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-black py-3 px-4 font-sans text-sm font-semibold hover:bg-slate-700 dark:hover:bg-slate-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-                      >
-                        {signingIn === 'google' ? (
-                          <span className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                        ) : (
-                          <GoogleMark />
-                        )}
-                        {t('auth.login_google')}
-                      </button>
-                      <button
-                        onClick={() => handleSignIn('github')}
-                        disabled={signingIn !== null}
-                        className="w-full inline-flex items-center justify-center gap-3 rounded-lg bg-transparent border border-slate-300 dark:border-tactical-line text-slate-900 dark:text-tactical-text py-3 px-4 font-sans text-sm font-semibold hover:border-slate-900 dark:hover:border-signal-green hover:bg-slate-100 dark:hover:bg-tactical-raised transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-                      >
-                        {signingIn === 'github' ? (
-                          <span className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                        ) : (
-                          <GithubMark />
-                        )}
-                        {t('auth.login_github')}
-                      </button>
-                    </div>
-
-                    <Link
-                      to="/intro"
-                      onClick={() => trackEvent('User', 'Clicked on Explore Content (hero)')}
-                      className="mt-3 inline-flex items-center gap-1.5 font-sans text-sm text-slate-500 hover:text-slate-900 dark:text-tactical-dim dark:hover:text-signal-green transition-colors cursor-pointer"
-                    >
-                      {t('landing.hero_explore')}
-                      <ArrowRight className="w-4 h-4" />
-                    </Link>
-
-                    <p className="mt-4 font-sans text-[11px] text-slate-400 dark:text-tactical-label">
-                      {t('landing.hero_trust')}
-                    </p>
-                  </div>
-                ) : (
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <Link
-                      to="/intro"
-                      onClick={() => trackEvent('User', 'Clicked on Start Now Button')}
-                      className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 dark:bg-white hover:bg-slate-700 dark:hover:bg-slate-200 text-white dark:text-black px-8 py-3 text-lg font-sans font-medium transition-colors cursor-pointer"
-                    >
-                      <span>{t('common.start_now')}</span>
-                      <ArrowRight className="w-5 h-5" />
-                    </Link>
-                    <Link
-                      to="/intro"
-                      className="inline-flex items-center justify-center gap-2 rounded-lg bg-transparent border border-slate-300 dark:border-tactical-line hover:border-slate-900 dark:hover:border-signal-green text-slate-900 dark:text-tactical-text px-8 py-3 text-lg font-sans font-medium transition-colors cursor-pointer"
-                    >
-                      <span>{t('common.view_content')}</span>
-                    </Link>
+                {authError && (
+                  <div className="mb-3 rounded-lg border border-signal-red/50 bg-signal-red/10 px-3 py-2 font-sans text-xs text-signal-red">
+                    {authError}
                   </div>
                 )}
-              </motion.div>
 
-              {/* Right: live system terminal panel */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.96 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.15 }}
-                className="relative"
-              >
-                <div className="tactical-panel scanline overflow-hidden shadow-xl shadow-slate-900/5 dark:shadow-black/40">
-                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-tactical-border px-4 py-2.5">
-                    <div className="flex items-center gap-2">
-                      <span className="h-2.5 w-2.5 rounded-full bg-signal-red/80" />
-                      <span className="h-2.5 w-2.5 rounded-full bg-signal-amber/80" />
-                      <span className="h-2.5 w-2.5 rounded-full bg-signal-green/80" />
-                    </div>
-                    <span className="font-mono text-[11px] text-slate-400 dark:text-tactical-label">system.status</span>
-                  </div>
-                  <div className="p-4 font-mono text-[12px] leading-relaxed bg-slate-50/60 dark:bg-tactical-bg/40">
-                    {TERMINAL_LINES.map((line, i) => (
-                      <motion.div
-                        key={i}
-                        initial={{ opacity: 0, x: -8 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.4 + i * 0.18 }}
-                        className="flex items-start gap-2 py-0.5"
-                      >
-                        <span className="select-none text-slate-300 dark:text-tactical-label">$</span>
-                        <span className={line.tone}>{line.text}</span>
-                      </motion.div>
-                    ))}
-                    <div className="flex items-center gap-2 py-0.5">
-                      <span className="select-none text-slate-300 dark:text-tactical-label">$</span>
-                      <span className="text-slate-700 dark:text-tactical-text caret" />
-                    </div>
-                  </div>
-                </div>
+                <SignInButtons />
 
-                {/* Floating accent stat */}
-                <div className="absolute -bottom-4 -left-4 hidden sm:flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-lg dark:border-signal-green/30 dark:bg-tactical-surface">
-                  <Gauge className="w-4 h-4 text-emerald-600 dark:text-signal-green" />
-                  <span className="font-mono text-xs text-slate-700 dark:text-tactical-text">99.99% uptime</span>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Trust / stats strip */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-px overflow-hidden rounded-xl border border-slate-200 bg-slate-200 dark:border-tactical-border dark:bg-tactical-border"
-            >
-              {[
-                { Icon: Boxes, value: t('landing.stat_simulators_value'), label: t('landing.stat_simulators_label'), color: 'text-signal-cyan' },
-                { Icon: Globe, value: t('landing.stat_cases_value'), label: t('landing.stat_cases_label'), color: 'text-signal-amber' },
-                { Icon: Gauge, value: t('landing.stat_scale_value'), label: t('landing.stat_scale_label'), color: 'text-emerald-600 dark:text-signal-green' },
-                { Icon: ShieldCheck, value: t('landing.stat_price_value'), label: t('landing.stat_price_label'), color: 'text-emerald-600 dark:text-signal-green' },
-              ].map(({ Icon, value, label, color }, i) => (
-                <div key={i} className="bg-white dark:bg-tactical-surface px-5 py-5">
-                  <Icon className={`w-5 h-5 mb-2 ${color}`} />
-                  <div className="font-mono text-2xl font-bold text-slate-900 dark:text-tactical-text tabular-nums">{value}</div>
-                  <div className="font-sans text-xs text-slate-500 dark:text-tactical-dim mt-0.5">{label}</div>
-                </div>
-              ))}
-            </motion.div>
-          </div>
-        </div>
-
-      {/* Free Editor Promo Section */}
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 mb-8">
-        <div className="tactical-panel rounded-lg border-signal-green/40 p-6 flex flex-col items-center text-center">
-          <div className="flex items-center gap-2 mb-3">
-            <svg className="w-5 h-5 text-emerald-600 dark:text-signal-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2a4 4 0 014-4h3m4 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span className="font-sans font-semibold text-emerald-700 dark:text-signal-green">{t('common.free_editor')}</span>
-            <Tag color="green">{t('landing.free_badge')}</Tag>
-          </div>
-          <div className="font-sans text-slate-600 dark:text-tactical-dim mb-4">
-            {t('common.access_free_editor')}
-          </div>
-          <Link to="/editor">
-            <TacticalButton variant="primary" size="lg">
-              {t('common.access_free_editor')}
-            </TacticalButton>
-          </Link>
-        </div>
-      </div>
-
-      {/* Latest Forum Topics - For all logged-in users */}
-      {user && latestTopics.length > 0 && (
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 flex items-center justify-center rounded-lg border border-emerald-200 bg-emerald-50 dark:border-signal-green/40 dark:bg-signal-green/5">
-                  <svg className="w-5 h-5 text-signal-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
-                  </svg>
-                </div>
-                <div>
-                  <h2 className="font-sans text-xl font-bold text-slate-900 dark:text-tactical-text">{t('landing.forum_section.title')}</h2>
-                  <p className="font-sans text-sm text-slate-500 dark:text-tactical-dim">{t('landing.forum_section.subtitle')}</p>
-                </div>
-              </div>
-              <Link
-                to="/forum"
-                className="flex items-center gap-1 font-sans text-brand-600 hover:opacity-80 text-sm transition-opacity dark:text-signal-green"
-              >
-                {t('landing.forum_section.view_all')}
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {latestTopics.slice(0, 3).map((topic, index) => {
-                const categoryColor = categoryColors[topic.category] || 'text-slate-400 dark:text-tactical-label';
-                return (
-                  <motion.div
-                    key={topic.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <Link
-                      to="/forum"
-                      className="block tactical-panel p-4 hover:border-signal-green/50 transition-colors group"
-                    >
-                      <div className="flex items-start gap-3">
-                        {topic.author.avatar_image ? (
-                          <img
-                            src={topic.author.avatar_image}
-                            alt={topic.author.nickname}
-                            className="w-8 h-8 object-cover border"
-                            style={{ borderColor: topic.author.role_color }}
-                          />
-                        ) : (
-                          <div
-                            className="w-8 h-8 flex items-center justify-center rounded-full text-white text-sm font-sans font-semibold"
-                            style={{ backgroundColor: topic.author.role_color }}
-                          >
-                            {topic.author.nickname.charAt(0).toUpperCase()}
-                          </div>
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className={`rounded-full px-2 py-0.5 text-[11px] font-sans ${categoryColor}`}>
-                              {topic.category}
-                            </span>
-                            <span className="font-sans text-slate-400 dark:text-tactical-label text-xs tabular-nums">
-                              {formatRelativeTime(topic.created_at)}
-                            </span>
-                          </div>
-                          <h3 className="font-sans font-medium text-slate-900 dark:text-tactical-text truncate group-hover:text-brand-600 dark:group-hover:text-signal-green transition-colors">
-                            {topic.title}
-                          </h3>
-                          <div className="flex items-center gap-2 mt-2 text-xs font-sans">
-                            <span className="text-slate-500 dark:text-tactical-dim">
-                              {topic.author.nickname}
-                            </span>
-                            <span className="text-slate-300 dark:text-tactical-label">•</span>
-                            <span className="flex items-center gap-1 text-slate-400 dark:text-tactical-label">
-                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                              </svg>
-                              {topic.upvotes}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
-                  </motion.div>
-                );
-              })}
-            </div>
-            
-            {latestTopics.length > 3 && (
-              <div className="mt-4 text-center">
-                <Link to="/forum">
-                  <TacticalButton variant="secondary">
-                    {t('landing.forum_section.see_more').replace('{{count}}', (latestTopics.length - 3).toString())}
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
-                  </TacticalButton>
+                <Link
+                  to="/intro"
+                  onClick={() => trackEvent('User', 'Clicked on Explore Content (hero)')}
+                  className="mt-3 inline-flex items-center gap-1.5 font-sans text-sm text-slate-500 hover:text-slate-900 dark:text-tactical-dim dark:hover:text-signal-green transition-colors cursor-pointer"
+                >
+                  {t('landing.hero_explore')}
+                  <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
-            )}
-          </motion.div>
-        </div>
-      )}
-
-      {/* Challenges Section - For logged-in users */}
-      {user && (
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <ChallengesSection />
-        </div>
-      )}
-
-      {/* Key Features Grid */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-center mb-12"
-        >
-          <Typography 
-            variant="h2" 
-            className="mb-6 font-sans tracking-tight text-slate-900 dark:text-tactical-text"
-          >
-            {t('landing.features_title')}
-          </Typography>
-          <Typography 
-            variant="p" 
-            className="text-xl text-slate-600 dark:text-slate-400"
-          >
-            {t('landing.features_subtitle')}
-          </Typography>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Fundamentals */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="group tactical-panel p-6 hover:border-signal-cyan/50 transition-colors"
-          >
-            <div className="flex items-center justify-center w-12 h-12 mb-4 border border-signal-cyan/40 bg-signal-cyan/5 group-hover:bg-signal-cyan/10 transition-colors">
-              <svg className="w-6 h-6 text-signal-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-              </svg>
-            </div>
-            <Typography variant="h3" className="mb-3 font-sans text-brand-600 dark:text-signal-cyan">
-              {t('landing.fundamentals_title')}
-            </Typography>
-            <ul className="space-y-2 font-sans text-sm text-slate-600 dark:text-tactical-dim">
-              {[1, 2, 3, 4].map((n) => (
-                <li key={n} className="flex items-center gap-2">
-                  <span className="text-signal-cyan">▸</span>
-                  {t(`landing.fundamentals_item${n}`)}
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-
-          {/* Interactive Learning */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="group tactical-panel p-6 hover:border-signal-green/50 transition-colors"
-          >
-            <div className="flex items-center justify-center w-12 h-12 mb-4 border border-signal-green/40 bg-signal-green/5 group-hover:bg-signal-green/10 transition-colors">
-              <svg className="w-6 h-6 text-signal-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <Typography variant="h3" className="mb-3 font-sans text-emerald-700 dark:text-signal-green">
-              {t('landing.simulators_title')}
-            </Typography>
-            <ul className="space-y-2 font-sans text-sm text-slate-600 dark:text-tactical-dim">
-              {[1, 2, 3, 4].map((n) => (
-                <li key={n} className="flex items-center gap-2">
-                  <span className="text-emerald-600 dark:text-signal-green">▸</span>
-                  {t(`landing.simulators_item${n}`)}
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-
-          {/* Real Cases */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="group tactical-panel p-6 hover:border-signal-red/50 transition-colors"
-          >
-            <div className="flex items-center justify-center w-12 h-12 mb-4 border border-signal-red/40 bg-signal-red/5 group-hover:bg-signal-red/10 transition-colors">
-              <svg className="w-6 h-6 text-signal-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-              </svg>
-            </div>
-            <Typography variant="h3" className="mb-3 font-sans text-slate-800 dark:text-signal-red">
-              {t('landing.real_cases_title')}
-            </Typography>
-            <ul className="space-y-2 font-sans text-sm text-slate-600 dark:text-tactical-dim">
-              {[1, 2, 3, 4].map((n) => (
-                <li key={n} className="flex items-center gap-2">
-                  <span className="text-signal-red">▸</span>
-                  {t(`landing.real_cases_item${n}`)}
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Learning Roadmap Section */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-center mb-12"
-        >
-          <Typography 
-            variant="h2" 
-            className="mb-6 font-sans tracking-tight text-slate-900 dark:text-tactical-text"
-          >
-            {t('landing.journey_title')}
-          </Typography>
-          <Typography 
-            variant="p" 
-            className="text-xl text-slate-500 dark:text-slate-400"
-          >
-            {t('landing.journey_subtitle')}
-          </Typography>
-        </motion.div>
-
-        <div className="relative">
-          {/* Connecting Lines */}
-          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-slate-200 dark:bg-tactical-border transform -translate-x-1/2 hidden lg:block" />
-          
-          {/* Journey Steps */}
-          <div className="space-y-12">
-            {/* Fundamentos */}
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
-              className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 items-center"
-            >
-              <div className="lg:text-right order-2 lg:order-1">
-                <h3 className="font-sans text-2xl font-bold text-brand-600 dark:text-signal-cyan mb-4">{t('landing.journey_fundamentals_title')}</h3>
-                <ul className="space-y-3 font-sans text-sm">
-                  {[1, 2, 3].map((n) => (
-                    <li key={n} className="flex items-center gap-2 lg:flex-row-reverse">
-                      <span className="text-slate-600 dark:text-tactical-dim">{t(`landing.journey_fundamentals_item${n}`)}</span>
-                      <span className="text-signal-cyan">▸</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="relative order-1 lg:order-2">
-                <div className="lg:pl-8">
-                  <div className="tactical-panel border-l-2 border-l-signal-cyan p-6">
-                    <div className="absolute left-0 top-1/2 w-8 h-px bg-signal-cyan hidden lg:block transform -translate-y-1/2" />
-                    <div className="absolute left-0 top-1/2 w-2.5 h-2.5 bg-signal-cyan hidden lg:block transform -translate-x-1/2 -translate-y-1/2" />
-                    <svg className="w-12 h-12 text-signal-cyan mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                    </svg>
-                    <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{t('landing.journey_fundamentals_description')}</p>
-                  </div>
-                </div>
-              </div>
             </motion.div>
 
-            {/* Princípios de Design */}
+            {/* Right: live system console */}
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 }}
-              className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 items-center"
+              initial={reduce ? false : { opacity: 0, scale: 0.96, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              className="relative"
             >
-              <div className="relative">
-                <div className="lg:pr-8">
-                  <div className="tactical-panel border-r-2 border-r-signal-green p-6">
-                    <div className="absolute right-0 top-1/2 w-8 h-px bg-signal-green hidden lg:block transform -translate-y-1/2" />
-                    <div className="absolute right-0 top-1/2 w-2.5 h-2.5 bg-signal-green hidden lg:block transform translate-x-1/2 -translate-y-1/2" />
-                    <svg className="w-12 h-12 text-signal-green mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                    <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{t('landing.journey_design_principles_description')}</p>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <h3 className="font-sans text-2xl font-bold text-emerald-700 dark:text-signal-green mb-4">{t('landing.journey_design_principles_title')}</h3>
-                <ul className="space-y-3 font-sans text-sm">
-                  {[1, 2, 3].map((n) => (
-                    <li key={n} className="flex items-center gap-2">
-                      <span className="text-signal-green">▸</span>
-                      <span className="text-slate-600 dark:text-tactical-dim">{t(`landing.journey_design_principles_item${n}`)}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </motion.div>
-
-            {/* Tópicos Avançados */}
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5 }}
-              className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 items-center"
-            >
-              <div className="lg:text-right order-2 lg:order-1">
-                <h3 className="font-sans text-2xl font-bold text-amber-700 dark:text-signal-amber mb-4">{t('landing.journey_advanced_topics_title')}</h3>
-                <ul className="space-y-3 font-sans text-sm">
-                  {[1, 2, 3].map((n) => (
-                    <li key={n} className="flex items-center gap-2 lg:flex-row-reverse">
-                      <span className="text-slate-600 dark:text-tactical-dim">{t(`landing.journey_advanced_topics_item${n}`)}</span>
-                      <span className="text-signal-amber">▸</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="relative order-1 lg:order-2">
-                <div className="lg:pl-8">
-                  <div className="tactical-panel border-l-2 border-l-signal-amber p-6">
-                    <div className="absolute left-0 top-1/2 w-8 h-px bg-signal-amber hidden lg:block transform -translate-y-1/2" />
-                    <div className="absolute left-0 top-1/2 w-2.5 h-2.5 bg-signal-amber hidden lg:block transform -translate-x-1/2 -translate-y-1/2" />
-                    <svg className="w-12 h-12 text-signal-amber mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                    <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{t('landing.journey_advanced_topics_description')}</p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Casos Reais */}
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.6 }}
-              className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 items-center"
-            >
-              <div className="relative">
-                <div className="lg:pr-8">
-                  <div className="tactical-panel border-r-2 border-r-signal-red p-6">
-                    <div className="absolute right-0 top-1/2 w-8 h-px bg-signal-red hidden lg:block transform -translate-y-1/2" />
-                    <div className="absolute right-0 top-1/2 w-2.5 h-2.5 bg-signal-red hidden lg:block transform translate-x-1/2 -translate-y-1/2" />
-                    <svg className="w-12 h-12 text-signal-red mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                    </svg>
-                    <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{t('landing.journey_real_cases_description')}</p>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <h3 className="font-sans text-2xl font-bold text-slate-800 dark:text-signal-red mb-4">{t('landing.journey_real_cases_title')}</h3>
-                <ul className="space-y-3 font-sans text-sm">
-                  {[1, 2, 3].map((n) => (
-                    <li key={n} className="flex items-center gap-2">
-                      <span className="text-signal-red">▸</span>
-                      <span className="text-slate-600 dark:text-tactical-dim">{t(`landing.journey_real_cases_item${n}`)}</span>
-                    </li>
-                  ))}
-                </ul>
+              <LiveSystemPanel />
+              <div className="absolute -bottom-4 -left-4 hidden sm:flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-lg dark:border-signal-green/30 dark:bg-tactical-surface">
+                <Gauge className="w-4 h-4 text-emerald-600 dark:text-signal-green" />
+                <span className="font-mono text-xs text-slate-700 dark:text-tactical-text">
+                  {t('landing.hero_uptime')}
+                </span>
               </div>
             </motion.div>
           </div>
-        </div>
-      </div>
 
-      {/* Simulator Showcase Section */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-center mb-12"
-        >
-          <Typography 
-            variant="h2" 
-            className="mb-6 font-sans tracking-tight text-slate-900 dark:text-tactical-text"
-          >
-            {t('landing.simulators_title')}
-          </Typography>
-          <Typography 
-            variant="p" 
-            className="text-xl text-slate-500 dark:text-slate-400"
-          >
-            {t('landing.simulators_subtitle')}
-          </Typography>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="group tactical-panel p-6 hover:border-signal-cyan/50 transition-colors"
-          >
-            <div className="relative aspect-video mb-4 overflow-hidden border border-slate-200 dark:border-tactical-border">
-              <img 
-                src="/cache.gif" 
-                alt="Cache Simulator" 
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <Typography variant="h3" className="mb-2 font-sans text-brand-600 dark:text-signal-cyan">
-              {t('landing.simulators_item1')}
-            </Typography>
-            <Typography variant="p" className="text-slate-600 dark:text-slate-300">
-              {t('landing.simulators_item1_description')}
-            </Typography>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="group tactical-panel p-6 hover:border-signal-green/50 transition-colors"
-          >
-            <div className="relative aspect-video mb-4 overflow-hidden border border-slate-200 dark:border-tactical-border">
-              <img 
-                src="/circuit.gif" 
-                alt="Circuit Breaker Simulator" 
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <Typography variant="h3" className="mb-2 font-sans text-emerald-700 dark:text-signal-green">
-              {t('landing.simulators_item2')}
-            </Typography>
-            <Typography variant="p" className="text-slate-600 dark:text-slate-300">
-              {t('landing.simulators_item2_description')}
-            </Typography>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="group tactical-panel p-6 hover:border-signal-amber/50 transition-colors"
-          >
-            <div className="relative aspect-video mb-4 overflow-hidden border border-slate-200 dark:border-tactical-border">
-              <img 
-                src="/loadbalancer.gif" 
-                alt="Load Balancer Simulator" 
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <Typography variant="h3" className="mb-2 font-sans text-amber-700 dark:text-signal-amber">
-              {t('landing.simulators_item3')}
-            </Typography>
-            <Typography variant="p" className="text-slate-600 dark:text-slate-300">
-              {t('landing.simulators_item3_description')}
-            </Typography>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* About Me Section */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-center mb-12"
-        >
-          <Typography 
-            variant="h2" 
-            className="mb-6 font-sans tracking-tight text-slate-900 dark:text-tactical-text"
-          >
-            {t('landing.teacher_title')}
-          </Typography>
-        </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6">
+          {/* Scroll hint */}
+          <div className="mt-16 flex justify-center">
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
-              className="tactical-panel p-6"
+              className="flex flex-col items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-slate-400 dark:text-tactical-label"
+              animate={reduce ? undefined : { y: [0, 6, 0] }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
             >
-              <h3 className="font-sans text-xl font-bold mb-4 text-brand-600 dark:text-signal-cyan">{t('landing.teacher_experience_title')}</h3>
-              <ul className="space-y-3 font-sans text-sm">
-                <li className="flex items-start gap-3 text-slate-600 dark:text-tactical-dim">
-                  <svg className="w-5 h-5 text-signal-cyan mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                  <span>{t('landing.teacher_experience_item1')}</span>
-                </li>
-                <li className="flex items-start gap-3 text-slate-600 dark:text-tactical-dim">
-                  <svg className="w-5 h-5 text-signal-cyan mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                  </svg>
-                  <span>{t('landing.teacher_experience_item2')}</span>
-                </li>
-                <li className="flex items-start gap-3 text-slate-600 dark:text-tactical-dim">
-                  <svg className="w-5 h-5 text-signal-cyan mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                  </svg>
-                  <span>{t('landing.teacher_experience_item3')}</span>
-                </li>
-              </ul>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 }}
-              className="tactical-panel p-6"
-            >
-              <h3 className="font-sans text-xl font-bold mb-4 text-emerald-700 dark:text-signal-green">{t('landing.teacher_specialties_title')}</h3>
-              <ul className="space-y-3 font-sans text-sm">
-                <li className="flex items-start gap-3 text-slate-600 dark:text-tactical-dim">
-                  <svg className="w-5 h-5 text-signal-green mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                  <span>{t('landing.teacher_specialties_item1')}</span>
-                </li>
-                <li className="flex items-start gap-3 text-slate-600 dark:text-tactical-dim">
-                  <svg className="w-5 h-5 text-signal-green mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                  <span>{t('landing.teacher_specialties_item2')}</span>
-                </li>
-                <li className="flex items-start gap-3 text-slate-600 dark:text-tactical-dim">
-                  <svg className="w-5 h-5 text-signal-green mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                  <span>{t('landing.teacher_specialties_item3')}</span>
-                </li>
-              </ul>
+              {t('landing.scroll_hint')}
+              <ChevronDown className="h-4 w-4" />
             </motion.div>
           </div>
+        </div>
+      </section>
 
+      {/* ============================ STATS ============================ */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <Reveal
+          className="grid grid-cols-2 lg:grid-cols-4 gap-px overflow-hidden rounded-xl border border-slate-200 bg-slate-200 dark:border-tactical-border dark:bg-tactical-border"
+        >
+          {[
+            { Icon: Boxes, value: t('landing.stat_simulators_value'), label: t('landing.stat_simulators_label'), color: 'text-signal-cyan' },
+            { Icon: Globe, value: t('landing.stat_cases_value'), label: t('landing.stat_cases_label'), color: 'text-signal-amber' },
+            { Icon: Gauge, value: t('landing.stat_scale_value'), label: t('landing.stat_scale_label'), color: 'text-emerald-600 dark:text-signal-green' },
+            { Icon: ShieldCheck, value: t('landing.stat_price_value'), label: t('landing.stat_price_label'), color: 'text-emerald-600 dark:text-signal-green' },
+          ].map(({ Icon, value, label, color }, i) => (
+            <div key={i} className="bg-white dark:bg-tactical-surface px-5 py-6">
+              <Icon className={`w-5 h-5 mb-3 ${color}`} />
+              <div className="font-mono text-3xl font-bold text-slate-900 dark:text-tactical-text tabular-nums">
+                <CountUp value={value} />
+              </div>
+              <div className="mt-1 font-sans text-xs text-slate-500 dark:text-tactical-dim">{label}</div>
+            </div>
+          ))}
+        </Reveal>
+      </section>
+
+      {/* ===================== TOPOLOGY SHOWCASE ===================== */}
+      <section className="relative overflow-hidden border-y border-slate-200 bg-white/60 dark:border-tactical-border dark:bg-tactical-surface/30">
+        <div className="absolute inset-0 bg-grid opacity-60" aria-hidden="true" />
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <Reveal>
+            <SectionHeading
+              kicker={t('landing.topology_label')}
+              kickerColor="text-signal-cyan"
+              title={t('landing.topology_title')}
+              subtitle={t('landing.topology_subtitle')}
+            />
+          </Reveal>
+
+          <Reveal delay={0.1} className="mt-12">
+            <div className="tactical-panel scanline overflow-hidden p-4 sm:p-8">
+              <div className="mb-4 flex items-center justify-between border-b border-slate-200 pb-3 dark:border-tactical-border">
+                <div className="flex items-center gap-2">
+                  <Network className="h-4 w-4 text-signal-cyan" />
+                  <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-slate-400 dark:text-tactical-label">
+                    topology.live
+                  </span>
+                </div>
+                <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-emerald-600 dark:text-signal-green">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-signal-green" />
+                  routing
+                </span>
+              </div>
+              <SystemTopology
+                copy={{
+                  nodeClient: t('landing.topology_node_client'),
+                  nodeLb: t('landing.topology_node_lb'),
+                  nodeCache: t('landing.topology_node_cache'),
+                  nodeDb: t('landing.topology_node_db'),
+                }}
+              />
+            </div>
+          </Reveal>
+
+          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { Icon: GitBranch, color: 'text-signal-green', border: 'hover:border-signal-green/50', title: t('landing.topology_card1_title'), text: t('landing.topology_card1_text') },
+              { Icon: DatabaseZap, color: 'text-signal-amber', border: 'hover:border-signal-amber/50', title: t('landing.topology_card2_title'), text: t('landing.topology_card2_text') },
+              { Icon: Activity, color: 'text-signal-red', border: 'hover:border-signal-red/50', title: t('landing.topology_card3_title'), text: t('landing.topology_card3_text') },
+              { Icon: Layers, color: 'text-signal-cyan', border: 'hover:border-signal-cyan/50', title: t('landing.topology_card4_title'), text: t('landing.topology_card4_text') },
+            ].map(({ Icon, color, border, title, text }, i) => (
+              <Reveal key={i} delay={i * 0.08}>
+                <div className={`tactical-panel h-full p-5 transition-colors ${border}`}>
+                  <Icon className={`mb-3 h-5 w-5 ${color}`} />
+                  <h3 className="mb-1.5 font-sans text-base font-semibold text-slate-900 dark:text-tactical-text">{title}</h3>
+                  <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">{text}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===================== FEATURES ===================== */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <Reveal>
+          <SectionHeading
+            kicker={t('landing.features_label')}
+            title={t('landing.features_title')}
+            subtitle={t('landing.features_subtitle')}
+          />
+        </Reveal>
+
+        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
+          {[
+            { Icon: Cpu, accent: 'text-brand-600 dark:text-signal-cyan', border: 'hover:border-signal-cyan/50', tile: 'border-signal-cyan/40 bg-signal-cyan/5 group-hover:bg-signal-cyan/10', bullet: 'text-signal-cyan', title: t('landing.fundamentals_title'), prefix: 'fundamentals' },
+            { Icon: Beaker, accent: 'text-emerald-700 dark:text-signal-green', border: 'hover:border-signal-green/50', tile: 'border-signal-green/40 bg-signal-green/5 group-hover:bg-signal-green/10', bullet: 'text-emerald-600 dark:text-signal-green', title: t('landing.simulators_title'), prefix: 'simulators' },
+            { Icon: Globe, accent: 'text-slate-800 dark:text-signal-red', border: 'hover:border-signal-red/50', tile: 'border-signal-red/40 bg-signal-red/5 group-hover:bg-signal-red/10', bullet: 'text-signal-red', title: t('landing.real_cases_title'), prefix: 'real_cases' },
+          ].map(({ Icon, accent, border, tile, bullet, title, prefix }, i) => (
+            <Reveal key={i} delay={i * 0.1}>
+              <div className={`group tactical-panel h-full p-6 transition-colors ${border}`}>
+                <div className={`mb-4 flex h-12 w-12 items-center justify-center border ${tile} transition-colors`}>
+                  <Icon className={`h-6 w-6 ${accent}`} />
+                </div>
+                <h3 className={`mb-3 font-mono text-xl font-semibold tracking-tight ${accent}`}>{title}</h3>
+                <ul className="space-y-2 font-sans text-sm text-slate-600 dark:text-tactical-dim">
+                  {[1, 2, 3, 4].map((n) => (
+                    <li key={n} className="flex items-center gap-2">
+                      <span className={bullet}>▸</span>
+                      {t(`landing.${prefix}_item${n}`)}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* ===================== SIMULATOR SHOWCASE ===================== */}
+      <section className="relative border-y border-slate-200 bg-white/60 dark:border-tactical-border dark:bg-tactical-surface/30">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <Reveal>
+            <SectionHeading
+              kicker={t('landing.showcase_label')}
+              kickerColor="text-signal-amber"
+              title={t('landing.simulators_title')}
+              subtitle={t('landing.simulators_subtitle')}
+            />
+          </Reveal>
+
+          <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
+            {[
+              { src: '/cache.gif', accent: 'text-brand-600 dark:text-signal-cyan', border: 'hover:border-signal-cyan/50', title: t('landing.simulators_item1'), desc: t('landing.simulators_item1_description') },
+              { src: '/circuit.gif', accent: 'text-emerald-700 dark:text-signal-green', border: 'hover:border-signal-green/50', title: t('landing.simulators_item2'), desc: t('landing.simulators_item2_description') },
+              { src: '/loadbalancer.gif', accent: 'text-amber-700 dark:text-signal-amber', border: 'hover:border-signal-amber/50', title: t('landing.simulators_item3'), desc: t('landing.simulators_item3_description') },
+            ].map(({ src, accent, border, title, desc }, i) => (
+              <Reveal key={i} delay={i * 0.1}>
+                <motion.div
+                  whileHover={reduce ? undefined : { y: -6 }}
+                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  className={`group tactical-panel h-full overflow-hidden p-3 transition-colors ${border}`}
+                >
+                  <div className="relative mb-4 aspect-video overflow-hidden rounded-lg border border-slate-200 dark:border-tactical-border">
+                    <img
+                      src={src}
+                      alt={title}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/5" />
+                  </div>
+                  <div className="px-3 pb-2">
+                    <h3 className={`mb-2 font-mono text-lg font-semibold tracking-tight ${accent}`}>{title}</h3>
+                    <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">{desc}</p>
+                  </div>
+                </motion.div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===================== LEARNING JOURNEY ===================== */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <Reveal>
+          <SectionHeading
+            kicker={t('landing.journey_label')}
+            title={t('landing.journey_title')}
+            subtitle={t('landing.journey_subtitle')}
+          />
+        </Reveal>
+
+        <div ref={journeyRef} className="relative mt-14">
+          {/* spine track + scroll-driven fill */}
+          <div className="absolute left-[19px] top-0 bottom-0 hidden w-px bg-slate-200 dark:bg-tactical-border lg:left-1/2 lg:block lg:-translate-x-1/2" aria-hidden="true" />
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5 }}
-            className="tactical-panel p-8"
-          >
+            className="absolute left-[19px] top-0 hidden w-px origin-top bg-emerald-500 dark:bg-signal-green lg:left-1/2 lg:block lg:-translate-x-1/2"
+            style={{ scaleY: spineScale, height: '100%' }}
+            aria-hidden="true"
+          />
+
+          <div className="space-y-10 lg:space-y-16">
+            {[
+              { prefix: 'fundamentals', color: 'signal-cyan', accent: 'text-brand-600 dark:text-signal-cyan', dot: 'bg-signal-cyan', Icon: Layers },
+              { prefix: 'design_principles', color: 'signal-green', accent: 'text-emerald-700 dark:text-signal-green', dot: 'bg-signal-green', Icon: GitBranch },
+              { prefix: 'advanced_topics', color: 'signal-amber', accent: 'text-amber-700 dark:text-signal-amber', dot: 'bg-signal-amber', Icon: Cpu },
+              { prefix: 'real_cases', color: 'signal-red', accent: 'text-slate-800 dark:text-signal-red', dot: 'bg-signal-red', Icon: Globe },
+            ].map((step, idx) => {
+              const isRight = idx % 2 === 1;
+              return (
+                <Reveal key={step.prefix} from={isRight ? 'left' : 'right'} repeat>
+                  <div className="relative grid grid-cols-1 items-center gap-6 lg:grid-cols-2 lg:gap-12">
+                    {/* step number marker */}
+                    <div className="absolute left-0 top-1 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white font-mono text-sm font-bold text-slate-900 dark:border-tactical-border dark:bg-tactical-surface dark:text-tactical-text lg:left-1/2 lg:-translate-x-1/2">
+                      {String(idx + 1).padStart(2, '0')}
+                      <span className={`absolute inset-0 -z-10 rounded-full ${step.dot} opacity-20 blur-[6px]`} aria-hidden="true" />
+                    </div>
+
+                    {/* content card */}
+                    <div className={`pl-16 lg:pl-0 ${isRight ? 'lg:order-2 lg:pl-12' : 'lg:order-1 lg:pr-12 lg:text-right'}`}>
+                      <h3 className={`mb-3 font-mono text-2xl font-bold tracking-tight ${step.accent}`}>
+                        {t(`landing.journey_${step.prefix}_title`)}
+                      </h3>
+                      <ul className="space-y-2 font-sans text-sm">
+                        {[1, 2, 3].map((n) => (
+                          <li
+                            key={n}
+                            className={`flex items-center gap-2 ${isRight ? '' : 'lg:flex-row-reverse'}`}
+                          >
+                            <span className={step.accent}>▸</span>
+                            <span className="text-slate-600 dark:text-tactical-dim">
+                              {t(`landing.journey_${step.prefix}_item${n}`)}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* illustration panel */}
+                    <div className={`pl-16 lg:pl-0 ${isRight ? 'lg:order-1 lg:pr-12' : 'lg:order-2 lg:pl-12'}`}>
+                      <div className="tactical-panel p-6">
+                        <step.Icon className={`mb-4 h-10 w-10 ${step.accent}`} />
+                        <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
+                          {t(`landing.journey_${step.prefix}_description`)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </Reveal>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ===================== TEACHER ===================== */}
+      <section className="relative border-y border-slate-200 bg-white/60 dark:border-tactical-border dark:bg-tactical-surface/30">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <Reveal>
+            <SectionHeading title={t('landing.teacher_title')} />
+          </Reveal>
+
+          <div className="mt-12 grid grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:gap-12">
             <div className="space-y-6">
-              <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim leading-relaxed">
-                {t('landing.teacher_about_me_text1')}
-              </p>
-              <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim leading-relaxed">
-                {t('landing.teacher_about_me_text2')}
-              </p>
-              <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim leading-relaxed">
-                {t('landing.teacher_about_me_text3')}
-              </p>
-            </div>
-          </motion.div>
-        </div>
-      </div>
+              <Reveal from="right">
+                <div className="tactical-panel p-6">
+                  <h3 className="mb-4 font-mono text-xl font-bold text-brand-600 dark:text-signal-cyan">
+                    {t('landing.teacher_experience_title')}
+                  </h3>
+                  <ul className="space-y-3 font-sans text-sm">
+                    {[1, 2, 3].map((n) => (
+                      <li key={n} className="flex items-start gap-3 text-slate-600 dark:text-tactical-dim">
+                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-signal-cyan" />
+                        <span>{t(`landing.teacher_experience_item${n}`)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </Reveal>
 
-      {/* Free Access Section */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-center mb-12"
-        >
-          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700 px-4 py-2 mb-6 dark:border-signal-green/40 dark:bg-signal-green/5 dark:text-signal-green">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span className="font-sans font-semibold">{t('landing.free_badge')}</span>
-          </div>
-          <Typography 
-            variant="h2" 
-            className="mb-6 font-sans tracking-tight text-emerald-700 dark:text-signal-green"
-          >
-            {t('landing.free_title')}
-          </Typography>
-          <Typography 
-            variant="p" 
-            className="text-xl text-slate-500 dark:text-slate-400"
-          >
-            {t('landing.free_subtitle')}
-          </Typography>
-        </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-          {/* Free Access Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="tactical-panel p-8 border-signal-green/40 hover:border-signal-green transition-colors relative overflow-hidden"
-          >
-            <div className="absolute top-0 right-0">
-              <span className="rounded-bl-lg bg-emerald-500 text-white text-xs font-sans font-semibold px-4 py-2">
-                100% {t('landing.free_badge')}
-              </span>
+              <Reveal from="right" delay={0.1}>
+                <div className="tactical-panel p-6">
+                  <h3 className="mb-4 font-mono text-xl font-bold text-emerald-700 dark:text-signal-green">
+                    {t('landing.teacher_specialties_title')}
+                  </h3>
+                  <ul className="space-y-3 font-sans text-sm">
+                    {[1, 2, 3].map((n) => (
+                      <li key={n} className="flex items-start gap-3 text-slate-600 dark:text-tactical-dim">
+                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-600 dark:text-signal-green" />
+                        <span>{t(`landing.teacher_specialties_item${n}`)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </Reveal>
             </div>
 
-            <div className="text-center py-8">
-              <div className="text-6xl font-mono font-bold text-slate-900 dark:text-tactical-text mb-4">
-                {t('landing.free_price')}
+            <Reveal from="left" delay={0.1}>
+              <div className="tactical-panel relative overflow-hidden p-8">
+                <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-signal-green/10 blur-2xl" aria-hidden="true" />
+                <div className="relative space-y-6">
+                  {[1, 2, 3].map((n) => (
+                    <p key={n} className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
+                      {t(`landing.teacher_about_me_text${n}`)}
+                    </p>
+                  ))}
+                </div>
               </div>
-              <p className="font-sans text-lg text-slate-600 dark:text-tactical-dim mb-8">
-                {t('landing.free_description')}
-              </p>
-              <Link
-                to="/intro"
-                onClick={() => trackEvent('User', 'Clicked on Free Access Button')}
-                className="inline-block rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 font-sans font-medium transition-colors text-lg dark:bg-signal-green dark:hover:opacity-90 dark:text-black"
-              >
-                {t('common.start_now')}
-              </Link>
-            </div>
-          </motion.div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="space-y-6"
-          >
+      {/* ===================== FREE / PRICING ===================== */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <Reveal>
+          <div className="mx-auto max-w-2xl text-center">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-emerald-700 dark:border-signal-green/40 dark:bg-signal-green/5 dark:text-signal-green">
+              <Sparkles className="h-4 w-4" />
+              <span className="font-sans font-semibold">{t('landing.free_badge')}</span>
+            </div>
+            <h2 className="font-mono text-3xl font-bold tracking-tight text-emerald-700 dark:text-signal-green sm:text-4xl">
+              {t('landing.free_title')}
+            </h2>
+            <p className="mt-4 font-sans text-lg leading-relaxed text-slate-600 dark:text-tactical-dim">
+              {t('landing.free_subtitle')}
+            </p>
+          </div>
+        </Reveal>
+
+        <div className="mt-12 grid grid-cols-1 items-start gap-8 lg:grid-cols-2">
+          <Reveal from="right">
+            <div className="tactical-panel relative overflow-hidden border-signal-green/40 p-8 transition-colors hover:border-signal-green">
+              <div className="absolute right-0 top-0">
+                <span className="rounded-bl-lg bg-emerald-500 px-4 py-2 font-sans text-xs font-semibold text-white dark:bg-signal-green dark:text-black">
+                  100% {t('landing.free_badge')}
+                </span>
+              </div>
+              <div className="py-8 text-center">
+                <div className="mb-4 font-mono text-6xl font-bold text-slate-900 dark:text-tactical-text">
+                  {t('landing.free_price')}
+                </div>
+                <p className="mx-auto mb-8 max-w-sm font-sans text-base text-slate-600 dark:text-tactical-dim">
+                  {t('landing.free_description')}
+                </p>
+                <Link
+                  to="/intro"
+                  onClick={() => trackEvent('User', 'Clicked on Free Access Button')}
+                  className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-8 py-3 font-sans text-lg font-medium text-white transition-colors hover:bg-emerald-700 dark:bg-signal-green dark:text-black dark:hover:opacity-90"
+                >
+                  {t('common.start_now')}
+                  <ArrowRight className="h-5 w-5" />
+                </Link>
+              </div>
+            </div>
+          </Reveal>
+
+          <Reveal from="left" delay={0.1} className="space-y-6">
             <div className="tactical-panel p-6">
-              <h4 className="font-sans text-lg font-semibold mb-4 text-brand-600 dark:text-signal-cyan flex items-center gap-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
+              <h4 className="mb-4 flex items-center gap-2 font-mono text-lg font-semibold text-brand-600 dark:text-signal-cyan">
+                <Check className="h-5 w-5" />
                 {t('landing.what_you_receive_title')}
               </h4>
               <ul className="space-y-3 font-sans text-sm">
                 {[1, 2, 3, 4].map((n) => (
                   <li key={n} className="flex items-start gap-3 text-slate-600 dark:text-tactical-dim">
-                    <svg className="w-5 h-5 text-signal-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
+                    <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-600 dark:text-signal-green" />
                     <span>{t(`landing.what_you_receive_item${n}`)}</span>
                   </li>
                 ))}
               </ul>
             </div>
-
             <div className="tactical-panel p-6">
-              <h4 className="font-sans text-lg font-semibold mb-4 text-amber-700 dark:text-signal-amber flex items-center gap-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+              <h4 className="mb-4 flex items-center gap-2 font-mono text-lg font-semibold text-amber-700 dark:text-signal-amber">
+                <Sparkles className="h-5 w-5" />
                 {t('landing.differentials_title')}
               </h4>
               <ul className="space-y-3 font-sans text-sm">
                 {[1, 2, 3, 4].map((n) => (
                   <li key={n} className="flex items-start gap-3 text-slate-600 dark:text-tactical-dim">
-                    <svg className="w-5 h-5 text-signal-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
+                    <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-600 dark:text-signal-green" />
                     <span>{t(`landing.differentials_item${n}`)}</span>
                   </li>
                 ))}
               </ul>
             </div>
-          </motion.div>
+          </Reveal>
         </div>
-      </div>
+      </section>
 
-      {/* Call to Action */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="tactical-panel rounded-lg border-emerald-200 p-8 text-center relative overflow-hidden dark:border-signal-green/40"
-        >
-          <div className="relative">
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700 px-4 py-2 mb-4 dark:border-signal-green/40 dark:bg-signal-green/5 dark:text-signal-green">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              <span className="font-sans font-semibold">100% {t('landing.free_badge')}</span>
+      {/* ===================== FINAL CTA ===================== */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+        <Reveal>
+          <div className="tactical-panel scanline relative overflow-hidden border-emerald-200 p-8 text-center dark:border-signal-green/40 sm:p-12">
+            <div className="absolute inset-0 bg-grid opacity-50" aria-hidden="true" />
+            <div className="pointer-events-none absolute -top-16 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full bg-emerald-400/20 blur-3xl dark:bg-signal-green/15" aria-hidden="true" />
+            <div className="relative mx-auto max-w-xl">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-emerald-700 dark:border-signal-green/40 dark:bg-signal-green/5 dark:text-signal-green">
+                <Check className="h-4 w-4" />
+                <span className="font-sans font-semibold">100% {t('landing.free_badge')}</span>
+              </div>
+              <h2 className="mb-4 font-mono text-3xl font-bold tracking-tight text-slate-900 dark:text-tactical-text">
+                {t('landing.cta_free_title')}
+              </h2>
+              <p className="mb-8 font-sans text-lg text-slate-600 dark:text-tactical-dim">
+                {t('landing.cta_free_subtitle')}
+              </p>
+
+              {authError && (
+                <div className="mx-auto mb-4 max-w-sm rounded-lg border border-signal-red/50 bg-signal-red/10 px-3 py-2 font-sans text-xs text-signal-red">
+                  {authError}
+                </div>
+              )}
+              <div className="mx-auto max-w-sm">
+                <SignInButtons compact />
+              </div>
+              <Link
+                to="/intro"
+                onClick={() => trackEvent('User', 'Clicked on Final CTA - Free')}
+                className="mt-4 inline-flex items-center gap-1.5 font-sans text-sm text-slate-500 transition-colors hover:text-slate-900 dark:text-tactical-dim dark:hover:text-signal-green"
+              >
+                {t('landing.hero_explore')}
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
-            <h2 className="font-sans tracking-tight text-3xl font-bold mb-4 text-slate-900 dark:text-tactical-text">{t('landing.cta_free_title')}</h2>
-            <p className="font-sans text-xl mb-8 text-slate-600 dark:text-tactical-dim">
-              {t('landing.cta_free_subtitle')}
-            </p>
-            <Link
-              to="/intro"
-              onClick={() => trackEvent('User', 'Clicked on Final CTA - Free')}
-              className="inline-block rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 text-lg font-sans font-medium transition-colors dark:bg-signal-green dark:hover:opacity-90 dark:text-black"
-            >
-              {t('common.start_now')}
-            </Link>
           </div>
-        </motion.div>
-      </div>
+        </Reveal>
+      </section>
 
       <Footer />
     </div>
   );
-} 
+}
