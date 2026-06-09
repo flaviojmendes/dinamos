@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Excalidraw } from '@excalidraw/excalidraw'
+// Excalidraw 0.18 does not auto-inject its styles; without this import the
+// toolbar/icons render unstyled at full size, breaking the editor.
+import '@excalidraw/excalidraw/index.css'
 import type { Challenge, SolutionSubmission, FeedbackData, Solution } from '../types'
 import { excalidrawTemplate } from '../templates/excalidrawTemplate'
 // Excalidraw 0.18 no longer exposes the legacy /types/types subpath; the zoom
