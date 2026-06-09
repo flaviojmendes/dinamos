@@ -2156,6 +2156,80 @@ const resources = {
             none: 'No messages yet'
           }
         },
+        philosophers_sim: {
+          title: 'Dining Philosophers',
+          subtitle: 'Five philosophers share five forks. Eating needs both neighbouring forks, so the seats compete for the same resource. Pick a strategy and watch how it avoids — or causes — deadlock.',
+          buttons: {
+            configure: 'Configure',
+            close_config: 'Close Config',
+            start: 'Start',
+            pause: 'Pause',
+            step: 'Step',
+            reset: 'Reset'
+          },
+          config: {
+            title: 'Controls',
+            strategy: 'Strategy',
+            philosophers: 'Philosophers',
+            speed: 'Speed'
+          },
+          strategies: {
+            naive: {
+              label: 'Naive',
+              desc: 'Each philosopher grabs the left fork, then waits for the right one. If everyone picks up their left fork at once, all hold one fork forever — a textbook deadlock.'
+            },
+            hierarchy: {
+              label: 'Resource Hierarchy',
+              desc: 'Forks are numbered; a philosopher always acquires the lower-numbered fork first. Breaking the circular-wait condition makes deadlock impossible.'
+            },
+            atomic: {
+              label: 'Both or Nothing',
+              desc: 'A philosopher only picks up forks when both are free, atomically. Nobody ever holds a single fork, so there is no deadlock (starvation is still possible).'
+            },
+            arbitrator: {
+              label: 'Central Arbitrator',
+              desc: 'A waiter lets at most N-1 philosophers reach for forks at the same time. With one seat always free, the circular wait can never close.'
+            }
+          },
+          states: {
+            thinking: 'Thinking',
+            hungry: 'Hungry',
+            eating: 'Eating'
+          },
+          viz: {
+            title: 'The Table',
+            tick: 'tick',
+            eating_now: 'eating',
+            fork_held: 'Fork held',
+            deadlock: 'DEADLOCK',
+            deadlock_hint: 'Deadlock detected: every hungry philosopher holds one fork and waits forever for the other. Reset and try a deadlock-free strategy.'
+          },
+          roster: {
+            title: 'Philosophers'
+          },
+          stats: {
+            title: 'Metrics',
+            total_meals: 'Total meals',
+            eating: 'Eating now',
+            longest_wait: 'Longest wait',
+            ticks: 'Ticks',
+            running: 'Running',
+            paused: 'Paused',
+            deadlocked: 'Deadlocked',
+            meals_short: '{{n}} meals'
+          },
+          log: {
+            title: 'Event Log',
+            empty: 'Waiting for events…',
+            got_hungry: '{{name}} got hungry',
+            took_left: '{{name}} picked up the left fork',
+            took_right: '{{name}} picked up the right fork',
+            took_low: '{{name}} picked up fork {{fork}}',
+            started_eating: '{{name}} grabbed both forks and started eating',
+            finished_eating: '{{name}} finished eating and released the forks',
+            deadlock_detected: 'Deadlock detected — no philosopher can make progress'
+          }
+        },
         rate_limiter: {
           title: 'Rate Limiter',
           strategy: 'Algorithm',
@@ -5579,6 +5653,80 @@ const resources = {
           messages: {
             title: 'Mensagens',
             none: 'Nenhuma mensagem ainda'
+          }
+        },
+        philosophers_sim: {
+          title: 'Jantar dos Filósofos',
+          subtitle: 'Cinco filósofos compartilham cinco garfos. Comer exige os dois garfos vizinhos, então os lugares competem pelo mesmo recurso. Escolha uma estratégia e veja como ela evita — ou causa — deadlock.',
+          buttons: {
+            configure: 'Configurar',
+            close_config: 'Fechar Config',
+            start: 'Iniciar',
+            pause: 'Pausar',
+            step: 'Passo',
+            reset: 'Resetar'
+          },
+          config: {
+            title: 'Controles',
+            strategy: 'Estratégia',
+            philosophers: 'Filósofos',
+            speed: 'Velocidade'
+          },
+          strategies: {
+            naive: {
+              label: 'Ingênua',
+              desc: 'Cada filósofo pega o garfo da esquerda e então espera pelo da direita. Se todos pegarem o garfo esquerdo ao mesmo tempo, todos ficam segurando um garfo para sempre — um deadlock clássico.'
+            },
+            hierarchy: {
+              label: 'Hierarquia de Recursos',
+              desc: 'Os garfos são numerados; um filósofo sempre pega primeiro o garfo de menor número. Quebrar a condição de espera circular torna o deadlock impossível.'
+            },
+            atomic: {
+              label: 'Dois ou Nenhum',
+              desc: 'Um filósofo só pega os garfos quando ambos estão livres, de forma atômica. Ninguém segura um único garfo, então não há deadlock (mas ainda pode haver inanição).'
+            },
+            arbitrator: {
+              label: 'Árbitro Central',
+              desc: 'Um garçom permite que no máximo N-1 filósofos tentem pegar garfos ao mesmo tempo. Com um lugar sempre livre, a espera circular nunca se fecha.'
+            }
+          },
+          states: {
+            thinking: 'Pensando',
+            hungry: 'Com fome',
+            eating: 'Comendo'
+          },
+          viz: {
+            title: 'A Mesa',
+            tick: 'ciclo',
+            eating_now: 'comendo',
+            fork_held: 'Garfo em uso',
+            deadlock: 'DEADLOCK',
+            deadlock_hint: 'Deadlock detectado: cada filósofo com fome segura um garfo e espera para sempre pelo outro. Resete e tente uma estratégia sem deadlock.'
+          },
+          roster: {
+            title: 'Filósofos'
+          },
+          stats: {
+            title: 'Métricas',
+            total_meals: 'Refeições totais',
+            eating: 'Comendo agora',
+            longest_wait: 'Maior espera',
+            ticks: 'Ciclos',
+            running: 'Executando',
+            paused: 'Pausado',
+            deadlocked: 'Em deadlock',
+            meals_short: '{{n}} refeições'
+          },
+          log: {
+            title: 'Log de Eventos',
+            empty: 'Aguardando eventos…',
+            got_hungry: '{{name}} ficou com fome',
+            took_left: '{{name}} pegou o garfo esquerdo',
+            took_right: '{{name}} pegou o garfo direito',
+            took_low: '{{name}} pegou o garfo {{fork}}',
+            started_eating: '{{name}} pegou os dois garfos e começou a comer',
+            finished_eating: '{{name}} terminou de comer e liberou os garfos',
+            deadlock_detected: 'Deadlock detectado — nenhum filósofo consegue progredir'
           }
         },
         rate_limiter: {
