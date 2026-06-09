@@ -4,6 +4,24 @@
 > simulators (cache, circuit breaker, load balancer, sharding, consensus, and
 > more), real-world case studies, and a structured learning roadmap.
 
+<!-- Project status -->
+[![CI](https://github.com/flaviojmendes/distributed-systems/actions/workflows/ci.yml/badge.svg)](https://github.com/flaviojmendes/distributed-systems/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/flaviojmendes/distributed-systems/branch/main/graph/badge.svg)](https://codecov.io/gh/flaviojmendes/distributed-systems)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
+[![Last commit](https://img.shields.io/github/last-commit/flaviojmendes/distributed-systems)](https://github.com/flaviojmendes/distributed-systems/commits/main)
+[![Open issues](https://img.shields.io/github/issues/flaviojmendes/distributed-systems)](https://github.com/flaviojmendes/distributed-systems/issues)
+[![GitHub stars](https://img.shields.io/github/stars/flaviojmendes/distributed-systems?style=social)](https://github.com/flaviojmendes/distributed-systems/stargazers)
+
+<!-- Built with -->
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white)
+![Hono](https://img.shields.io/badge/Hono-4-E36002?logo=hono&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Drizzle-4169E1?logo=postgresql&logoColor=white)
+![Vitest](https://img.shields.io/badge/tested_with-Vitest-6E9F18?logo=vitest&logoColor=white)
+
 [English](#english) · [Português](#português)
 
 ---
@@ -102,7 +120,7 @@ api/                 Hono API: routes, middleware, db (Drizzle schema + migratio
 public/              Static assets and policy pages
 src/
   components/        Feature components + interactive simulators
-  designlab/         App shell: pages, contexts, admin area
+  app/               App shell: pages, contexts, admin area
   config/            Registries (content, simulators, i18n, firebase)
   content/           MDX authoring (see src/content/AUTHORING.md)
   contexts/          React contexts (auth, theme, content)

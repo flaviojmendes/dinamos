@@ -47,6 +47,16 @@ jobs:
       - name: Run tests with coverage
         run: npm run test:coverage
 
+      - name: Upload coverage to Codecov
+        if: always()
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage/lcov.info
+          fail_ci_if_error: false
+        env:
+          # Optional for public repos; required for private. Add it in repo secrets.
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
       - name: Upload coverage report
         if: always()
         uses: actions/upload-artifact@v4
