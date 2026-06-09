@@ -144,7 +144,8 @@ const resources = {
       footer: {
         all_rights_reserved: 'All rights reserved.',
         privacy_policy: 'Privacy Policy',
-        terms: 'Terms of Service'
+        terms: 'Terms of Service',
+        open_source: 'Open source'
       },
       protected_route: {
         loading: 'Loading...'
@@ -532,6 +533,11 @@ const resources = {
         free_description: 'Full access to all content, simulators, and real cases. No credit card required.',
         cta_free_title: 'Start Learning Today!',
         cta_free_subtitle: 'Full access to all content, 100% free.',
+        open_source_label: 'Open source',
+        open_source_title: 'Built in the open',
+        open_source_subtitle: 'Dinamos is free and fully open source. Read the code, open an issue, or send a pull request. The whole platform lives on GitHub.',
+        open_source_cta: 'View on GitHub',
+        open_source_contribute: 'Contributions welcome',
         scroll_hint: 'Scroll to explore',
         hero_uptime: '99.99% uptime',
         stats_label: 'By the numbers',
@@ -3524,7 +3530,8 @@ const resources = {
       footer: {
         all_rights_reserved: 'Todos os direitos reservados.',
         privacy_policy: 'Política de Privacidade',
-        terms: 'Termos de Serviço'
+        terms: 'Termos de Serviço',
+        open_source: 'Código aberto'
       },
       protected_route: {
         loading: 'Carregando...'
@@ -3913,6 +3920,11 @@ const resources = {
         free_description: 'Acesso completo a todo conteúdo, simuladores e casos reais. Sem necessidade de cartão de crédito.',
         cta_free_title: 'Comece a Aprender Hoje!',
         cta_free_subtitle: 'Acesso completo a todo o conteúdo, 100% grátis.',
+        open_source_label: 'Código aberto',
+        open_source_title: 'Construído à vista de todos',
+        open_source_subtitle: 'O Dinamos é gratuito e totalmente open source. Leia o código, abra uma issue ou envie um pull request. Toda a plataforma vive no GitHub.',
+        open_source_cta: 'Ver no GitHub',
+        open_source_contribute: 'Contribuições são bem-vindas',
         scroll_hint: 'Role para explorar',
         hero_uptime: '99,99% de disponibilidade',
         stats_label: 'Em números',

@@ -21,8 +21,8 @@ By participating, you agree to abide by our [Code of Conduct](./CODE_OF_CONDUCT.
 See the [README](./README.md) for full setup instructions. In short:
 
 ```bash
-git clone https://github.com/flaviojmendes/distributed-systems.git
-cd distributed-systems
+git clone https://github.com/flaviojmendes/dinamos.git
+cd dinamos
 npm install
 cp .env.example .env   # fill in your values
 ```
@@ -91,5 +91,5 @@ Learning pages are authored in MDX. See
 
 ## Questions
 
-Open a [GitHub issue](https://github.com/flaviojmendes/distributed-systems/issues)
+Open a [GitHub issue](https://github.com/flaviojmendes/dinamos/issues)
 with the `question` label. Thank you for helping make Dinamos better! 🚀

@@ -1,5 +1,8 @@
 import React from 'react';
+import { Github } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+
+const REPO_URL = 'https://github.com/flaviojmendes/dinamos';
 
 export default function Footer() {
   const { t } = useTranslation();
@@ -15,6 +18,15 @@ export default function Footer() {
             <span className="text-slate-400 dark:text-tactical-label normal-case">— {t('footer.all_rights_reserved', 'All rights reserved.')}</span>
           </div>
           <div className="flex items-center gap-5 font-sans text-xs">
+            <a
+              href={REPO_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-slate-500 transition-colors hover:text-slate-900 dark:text-tactical-dim dark:hover:text-signal-green"
+            >
+              <Github className="h-3.5 w-3.5" aria-hidden />
+              {t('footer.open_source', 'Open source')}
+            </a>
             <a
               href="/privacy-policy"
               className="text-slate-500 transition-colors hover:text-slate-900 dark:text-tactical-dim dark:hover:text-tactical-text"

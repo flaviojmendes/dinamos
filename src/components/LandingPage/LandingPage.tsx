@@ -27,6 +27,8 @@ import CountUp from './landing/CountUp';
 import LiveSystemPanel from './landing/LiveSystemPanel';
 import SystemTopology from './landing/SystemTopology';
 
+const REPO_URL = 'https://github.com/flaviojmendes/dinamos';
+
 // Brand mark for the Google OAuth button.
 function GoogleMark({ className = 'w-5 h-5' }: { className?: string }) {
   return (
@@ -656,6 +658,60 @@ export default function LandingPage() {
             </div>
           </Reveal>
         </div>
+      </section>
+
+      {/* ===================== OPEN SOURCE ===================== */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-10">
+        <Reveal>
+          <div className="tactical-panel relative overflow-hidden p-6 transition-colors hover:border-signal-cyan/50 sm:p-8">
+            <div
+              className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-signal-cyan/10 blur-3xl"
+              aria-hidden="true"
+            />
+            <div className="relative flex flex-col items-start gap-6 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
+              <div className="flex items-start gap-4">
+                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center border border-signal-cyan/40 bg-signal-cyan/5 text-brand-600 dark:text-signal-cyan">
+                  <GithubMark className="h-6 w-6" />
+                </div>
+                <div>
+                  <div className="mb-2 inline-flex items-center gap-2 text-brand-600 dark:text-signal-cyan">
+                    <span className="h-px w-6 bg-current opacity-60" aria-hidden="true" />
+                    <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em]">
+                      {t('landing.open_source_label')}
+                    </span>
+                  </div>
+                  <h2 className="font-mono text-2xl font-bold tracking-tight text-slate-900 dark:text-tactical-text sm:text-3xl">
+                    {t('landing.open_source_title')}
+                  </h2>
+                  <p className="mt-3 max-w-xl text-pretty font-sans text-base leading-relaxed text-slate-600 dark:text-tactical-dim">
+                    {t('landing.open_source_subtitle')}
+                  </p>
+                  <code className="mt-4 inline-flex items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 font-mono text-xs text-slate-500 dark:border-tactical-border dark:bg-tactical-bg dark:text-tactical-label">
+                    <span className="text-signal-cyan" aria-hidden="true">$</span>
+                    github.com/flaviojmendes/dinamos
+                  </code>
+                </div>
+              </div>
+
+              <div className="flex w-full flex-col items-stretch gap-2.5 sm:w-auto sm:flex-shrink-0">
+                <a
+                  href={REPO_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackEvent('User', 'Clicked on Open Source Repo (landing)')}
+                  className="inline-flex items-center justify-center gap-2.5 rounded-lg bg-slate-900 px-6 py-3 font-sans text-sm font-semibold text-white transition-colors hover:bg-slate-700 dark:bg-white dark:text-black dark:hover:bg-slate-200"
+                >
+                  <GithubMark className="h-5 w-5" />
+                  {t('landing.open_source_cta')}
+                </a>
+                <span className="inline-flex items-center justify-center gap-1.5 font-mono text-[11px] text-slate-400 dark:text-tactical-label">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-signal-green" aria-hidden="true" />
+                  {t('landing.open_source_contribute')}
+                </span>
+              </div>
+            </div>
+          </div>
+        </Reveal>
       </section>
 
       {/* ===================== FINAL CTA ===================== */}

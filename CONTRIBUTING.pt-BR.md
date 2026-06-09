@@ -25,8 +25,8 @@ Ao participar, você concorda em seguir o nosso
 Veja o [README](./README.md) para instruções completas. Em resumo:
 
 ```bash
-git clone https://github.com/flaviojmendes/distributed-systems.git
-cd distributed-systems
+git clone https://github.com/flaviojmendes/dinamos.git
+cd dinamos
 npm install
 cp .env.example .env   # preencha os seus valores
 ```
@@ -99,5 +99,5 @@ As páginas de aprendizado são escritas em MDX. Veja
 
 ## Dúvidas
 
-Abra uma [issue no GitHub](https://github.com/flaviojmendes/distributed-systems/issues)
+Abra uma [issue no GitHub](https://github.com/flaviojmendes/dinamos/issues)
 com a label `question`. Obrigado por ajudar a melhorar o Dinamos! 🚀

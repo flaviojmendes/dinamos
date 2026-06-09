@@ -5,13 +5,13 @@
 > more), real-world case studies, and a structured learning roadmap.
 
 <!-- Project status -->
-[![CI](https://github.com/flaviojmendes/distributed-systems/actions/workflows/ci.yml/badge.svg)](https://github.com/flaviojmendes/distributed-systems/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/flaviojmendes/distributed-systems/branch/main/graph/badge.svg)](https://codecov.io/gh/flaviojmendes/distributed-systems)
+[![CI](https://github.com/flaviojmendes/dinamos/actions/workflows/ci.yml/badge.svg)](https://github.com/flaviojmendes/dinamos/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/flaviojmendes/dinamos/branch/main/graph/badge.svg)](https://codecov.io/gh/flaviojmendes/dinamos)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
-[![Last commit](https://img.shields.io/github/last-commit/flaviojmendes/distributed-systems)](https://github.com/flaviojmendes/distributed-systems/commits/main)
-[![Open issues](https://img.shields.io/github/issues/flaviojmendes/distributed-systems)](https://github.com/flaviojmendes/distributed-systems/issues)
-[![GitHub stars](https://img.shields.io/github/stars/flaviojmendes/distributed-systems?style=social)](https://github.com/flaviojmendes/distributed-systems/stargazers)
+[![Last commit](https://img.shields.io/github/last-commit/flaviojmendes/dinamos)](https://github.com/flaviojmendes/dinamos/commits/main)
+[![Open issues](https://img.shields.io/github/issues/flaviojmendes/dinamos)](https://github.com/flaviojmendes/dinamos/issues)
+[![GitHub stars](https://img.shields.io/github/stars/flaviojmendes/dinamos?style=social)](https://github.com/flaviojmendes/dinamos/stargazers)
 
 <!-- Built with -->
 ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
@@ -61,8 +61,8 @@ the feature locally: OpenAI, Resend, and Stripe.
 
 ```bash
 # 1. Clone
-git clone https://github.com/flaviojmendes/distributed-systems.git
-cd distributed-systems
+git clone https://github.com/flaviojmendes/dinamos.git
+cd dinamos
 
 # 2. Install dependencies
 npm install
@@ -161,8 +161,8 @@ correspondentes vazias para desabilitar localmente.
 ### Começando
 
 ```bash
-git clone https://github.com/flaviojmendes/distributed-systems.git
-cd distributed-systems
+git clone https://github.com/flaviojmendes/dinamos.git
+cd dinamos
 npm install
 cp .env.example .env   # preencha os valores em .env
 ```
