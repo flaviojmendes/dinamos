@@ -19,6 +19,7 @@
 import postgres from 'postgres';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { createHash } from 'node:crypto';
 
 const databaseUrl = process.env.DATABASE_URL;
 
@@ -138,6 +139,13 @@ const useSsl = !isLocalHost && !sslDisabled;
 
 async function main(): Promise<void> {
   const sqlText = readFileSync(SEED_FILE, 'utf8');
+  // The content seed is large (600KB+) and rarely changes, but it sat on the
+  // build critical path and re-ran on every deploy — making build time hostage
+  // to DB/network throughput. Hash the seed and skip the expensive INSERTs when
+  // the already-applied hash matches. Schema-ensure stays (it's cheap and
+  // idempotent) so the structure is always guaranteed.
+  const seedHash = createHash('sha256').update(sqlText).digest('hex');
+
   const client = postgres(databaseUrl as string, {
     prepare: false,
     max: 1,
@@ -151,11 +159,34 @@ async function main(): Promise<void> {
     console.log('[seed] Ensuring content schema…');
     await client.unsafe(SCHEMA_DDL);
 
+    // Tiny single-row table recording which seed hash is already applied.
+    await client.unsafe(`
+      CREATE TABLE IF NOT EXISTS "content_seed_state" (
+        "id" integer PRIMARY KEY DEFAULT 1,
+        "seed_hash" text NOT NULL,
+        "applied_at" timestamp with time zone DEFAULT now(),
+        CONSTRAINT "content_seed_state_singleton" CHECK ("id" = 1)
+      );
+    `);
+
+    const applied = await client`SELECT "seed_hash" FROM "content_seed_state" WHERE "id" = 1`;
+    if (applied.length > 0 && applied[0].seed_hash === seedHash) {
+      console.log(`[seed] Content seed unchanged (${seedHash.slice(0, 12)}…); skipping.`);
+      return;
+    }
+
     console.log('[seed] Applying content seed…');
     // The simple-query protocol (used by `unsafe` with no parameters) runs the
     // whole script in one round trip; Postgres parses the dollar-quoted bodies
     // and statement separators server-side.
     await client.unsafe(sqlText);
+
+    await client`
+      INSERT INTO "content_seed_state" ("id", "seed_hash", "applied_at")
+      VALUES (1, ${seedHash}, now())
+      ON CONFLICT ("id") DO UPDATE
+        SET "seed_hash" = EXCLUDED."seed_hash", "applied_at" = EXCLUDED."applied_at"
+    `;
 
     const [{ count: moduleCount }] = await client`SELECT count(*)::int AS count FROM content_modules`;
     const [{ count: pageCount }] = await client`SELECT count(*)::int AS count FROM content_pages`;
