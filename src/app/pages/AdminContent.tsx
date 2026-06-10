@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState, Suspense } from 'react';
+import MDEditor from '@uiw/react-md-editor';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { apiClient } from '../utils/api';
 import Navbar from '../components/Navbar';
 import { TacticalButton } from '../../components/tactical';
@@ -42,6 +44,7 @@ const emptyForm: FormData = {
 
 export default function AdminContent() {
   const { appUser } = useAuth();
+  const { theme } = useTheme();
   const { modules, reload } = useContent();
   const [pages, setPages] = useState<ContentPage[]>([]);
   const [loading, setLoading] = useState(true);
@@ -318,15 +321,19 @@ export default function AdminContent() {
                 </div>
 
                 <div className={`mt-4 grid gap-4 ${showPreview ? 'lg:grid-cols-2' : 'grid-cols-1'}`}>
-                  <div>
+                  <div data-color-mode={theme}>
                     <label className={labelClass}>MDX Source ({activeLang})</label>
-                    <textarea
-                      value={(form[bodyField] as string) ?? ''}
-                      onChange={(e) => setForm((f) => ({ ...f, [bodyField]: e.target.value }))}
-                      rows={24}
-                      spellCheck={false}
-                      className={`${inputClass} font-mono text-xs leading-relaxed`}
-                    />
+                    <div className="mt-1 overflow-hidden rounded-md border border-slate-300 dark:border-tactical-border">
+                      <MDEditor
+                        value={(form[bodyField] as string) ?? ''}
+                        onChange={(val) =>
+                          setForm((f) => ({ ...f, [bodyField]: val ?? '' }))
+                        }
+                        height={544}
+                        preview="edit"
+                        textareaProps={{ spellCheck: false }}
+                      />
+                    </div>
                   </div>
                   {showPreview && (
                     <div>
