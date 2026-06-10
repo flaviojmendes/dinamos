@@ -43,7 +43,15 @@ export function createDbMock(): DbMock {
           if (prop === 'finally') {
             return (cb: any) => Promise.resolve(nextResult()).finally(cb);
           }
-          // Any builder method (from/where/orderBy/limit/values/returning/
+          // Record the payload passed to `.values(...)` so tests can assert on
+          // exactly what would be inserted (the rest of the chain is opaque).
+          if (prop === 'values') {
+            return (...args: unknown[]) => {
+              calls.push({ op: 'values', args });
+              return proxy;
+            };
+          }
+          // Any builder method (from/where/orderBy/limit/returning/
           // onConflictDoUpdate/innerJoin/groupBy/...) just continues the chain.
           return () => proxy;
         },

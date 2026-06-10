@@ -1,6 +1,20 @@
 import { describe, it, expect, beforeEach, beforeAll, vi } from 'vitest';
+import { createHash } from 'node:crypto';
 import { createDbMock } from '../../__tests__/_helpers/dbMock';
 import type { Hono } from 'hono';
+
+// Mirror server/routes/views.ts: the default salt used when ANALYTICS_SALT is
+// unset (as in tests). The recorder must hash the anonymous visitor id only.
+const SALT = process.env.ANALYTICS_SALT ?? 'dinamos-analytics-default-salt';
+const expectedHash = (visitorKey: string) =>
+  createHash('sha256').update(`${SALT}:${visitorKey}`).digest('hex');
+
+function lastInsertedView(mock: ReturnType<typeof createDbMock>) {
+  const valuesCall = [...mock.calls].reverse().find((c) => c.op === 'values');
+  return valuesCall?.args[0] as
+    | { path: string; visitorHash: string; isAuthed: boolean }
+    | undefined;
+}
 
 const mockDb = createDbMock();
 vi.mock('../../db/client', () => ({ db: mockDb.db }));
@@ -35,6 +49,30 @@ describe('views route', () => {
     const res = await post({ path: '/content/auth' }, { Authorization: 'Bearer t' });
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ ok: true });
+  });
+
+  it('hashes the anonymous visitor id, never the Firebase uid', async () => {
+    // Same request authed vs anonymous, with the same visitor id, must produce
+    // an identical hash — proving the uid ('viewer') never feeds the hash.
+    await post({ path: '/content/x', visitorId: 'abc' }, { Authorization: 'Bearer t' });
+    const authed = lastInsertedView(mockDb);
+    mockDb.reset();
+    await post({ path: '/content/x', visitorId: 'abc' });
+    const anon = lastInsertedView(mockDb);
+
+    expect(authed?.visitorHash).toBe(expectedHash('abc'));
+    expect(authed?.visitorHash).toBe(anon?.visitorHash);
+    expect(authed?.visitorHash).not.toBe(expectedHash('viewer'));
+    expect(authed?.isAuthed).toBe(true);
+    expect(anon?.isAuthed).toBe(false);
+  });
+
+  it('falls back to the anon key (not the uid) when no visitor id is sent', async () => {
+    await post({ path: '/content/auth' }, { Authorization: 'Bearer t' });
+    const view = lastInsertedView(mockDb);
+    expect(view?.visitorHash).toBe(expectedHash('anon'));
+    expect(view?.visitorHash).not.toBe(expectedHash('viewer'));
+    expect(view?.isAuthed).toBe(true);
   });
 
   it('rejects an empty path with ok:false (no insert)', async () => {

@@ -17,6 +17,10 @@ interface ViewPayload {
  * Hash an opaque visitor key with a server-side salt. The result is one-way:
  * it lets us count distinct visitors without ever being able to recover who
  * they are. Falls back to a constant default salt in local/dev environments.
+ *
+ * The key must be an identity-less, client-generated value (never the Firebase
+ * uid): hashing a stable account id with a known salt would let anyone holding
+ * that uid recompute the hash and reconstruct a specific person's view history.
  */
 function hashVisitor(visitorKey: string): string {
   const salt = process.env.ANALYTICS_SALT ?? 'dinamos-analytics-default-salt';
@@ -42,8 +46,12 @@ viewsRouter.post('/api/views', optionalAuth, async (c) => {
   }
 
   const user = c.get('user');
+  // Always hash the anonymous, client-generated visitor id — never the Firebase
+  // uid. The visitor id is not linked to any account in the database, so view
+  // rows stay aggregate-only and can't be reversed to a specific person. We
+  // still keep the (non-identifying) authed flag for the authed/anon split.
   const anonId = body.visitorId?.trim();
-  const visitorKey = user?.uid ?? (anonId && anonId.length ? anonId : 'anon');
+  const visitorKey = anonId && anonId.length ? anonId : 'anon';
   const visitorHash = hashVisitor(visitorKey);
 
   try {

@@ -44,6 +44,12 @@ const BASE_SCHEMA_FILE = resolve('server/db/migrations/0000_init.sql');
 // 0013 repoints legacy Portuguese `/simulador` links to canonical `/simulator`.
 const BACKFILL_KEYS_FILE = resolve('server/db/migrations/0012_backfill_simulator_keys.sql');
 const REPOINT_FILE = resolve('server/db/migrations/0013_repoint_simulator_links.sql');
+// 0015 scrubs historical, re-identifiable visitor hashes from the analytics
+// view log (authed rows that were hashed from the Firebase uid). It is guarded
+// by a singleton state row, so re-running it on every deploy is a no-op once
+// applied — crucial, because an unguarded re-run would clobber the new
+// anon-based hashes and break distinct-visitor counting.
+const ANONYMIZE_VIEWS_FILE = resolve('server/db/migrations/0015_anonymize_view_history.sql');
 
 /**
  * Load the base-schema migration and rewrite it to be idempotent so it can run
@@ -214,6 +220,9 @@ async function main(): Promise<void> {
 
     console.log('[seed] Repointing legacy simulator links…');
     await client.unsafe(readFileSync(REPOINT_FILE, 'utf8'));
+
+    console.log('[seed] Anonymizing historical view log (run-once)…');
+    await client.unsafe(readFileSync(ANONYMIZE_VIEWS_FILE, 'utf8'));
   } finally {
     await client.end({ timeout: 5 });
   }
