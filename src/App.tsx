@@ -2135,6 +2135,11 @@ export default function App() {
               }
             />
 
+            {/* Catch-all: unknown URLs (legacy/mistyped routes such as the old
+                Portuguese `/simulador` links) redirect home instead of rendering
+                a blank page. */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+
           </Routes>
           </React.Suspense>
           {user && <Footer />}

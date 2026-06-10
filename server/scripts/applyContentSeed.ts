@@ -32,6 +32,11 @@ if (!databaseUrl) {
 
 const SEED_FILE = resolve('server/db/migrations/0008_seed_content.sql');
 const BASE_SCHEMA_FILE = resolve('server/db/migrations/0000_init.sql');
+// Idempotent post-seed fixups that must run on every deploy regardless of the
+// seed-hash skip (they UPDATE existing rows in place, so they are cheap and
+// non-clobbering — only the targeted legacy links change). 0013 repoints the
+// legacy Portuguese `/simulador` routes to the canonical `/simulator` ones.
+const REPOINT_FILE = resolve('server/db/migrations/0013_repoint_simulator_links.sql');
 
 /**
  * Load the base-schema migration and rewrite it to be idempotent so it can run
@@ -170,27 +175,35 @@ async function main(): Promise<void> {
     `);
 
     const applied = await client`SELECT "seed_hash" FROM "content_seed_state" WHERE "id" = 1`;
-    if (applied.length > 0 && applied[0].seed_hash === seedHash) {
-      console.log(`[seed] Content seed unchanged (${seedHash.slice(0, 12)}…); skipping.`);
-      return;
+    const seedUnchanged = applied.length > 0 && applied[0].seed_hash === seedHash;
+
+    if (seedUnchanged) {
+      console.log(`[seed] Content seed unchanged (${seedHash.slice(0, 12)}…); skipping insert.`);
+    } else {
+      console.log('[seed] Applying content seed…');
+      // The simple-query protocol (used by `unsafe` with no parameters) runs the
+      // whole script in one round trip; Postgres parses the dollar-quoted bodies
+      // and statement separators server-side.
+      await client.unsafe(sqlText);
+
+      await client`
+        INSERT INTO "content_seed_state" ("id", "seed_hash", "applied_at")
+        VALUES (1, ${seedHash}, now())
+        ON CONFLICT ("id") DO UPDATE
+          SET "seed_hash" = EXCLUDED."seed_hash", "applied_at" = EXCLUDED."applied_at"
+      `;
+
+      const [{ count: moduleCount }] = await client`SELECT count(*)::int AS count FROM content_modules`;
+      const [{ count: pageCount }] = await client`SELECT count(*)::int AS count FROM content_pages`;
+      console.log(`[seed] Done. content_modules=${moduleCount}, content_pages=${pageCount}.`);
     }
 
-    console.log('[seed] Applying content seed…');
-    // The simple-query protocol (used by `unsafe` with no parameters) runs the
-    // whole script in one round trip; Postgres parses the dollar-quoted bodies
-    // and statement separators server-side.
-    await client.unsafe(sqlText);
-
-    await client`
-      INSERT INTO "content_seed_state" ("id", "seed_hash", "applied_at")
-      VALUES (1, ${seedHash}, now())
-      ON CONFLICT ("id") DO UPDATE
-        SET "seed_hash" = EXCLUDED."seed_hash", "applied_at" = EXCLUDED."applied_at"
-    `;
-
-    const [{ count: moduleCount }] = await client`SELECT count(*)::int AS count FROM content_modules`;
-    const [{ count: pageCount }] = await client`SELECT count(*)::int AS count FROM content_pages`;
-    console.log(`[seed] Done. content_modules=${moduleCount}, content_pages=${pageCount}.`);
+    // Always run post-seed link fixups. These are idempotent REPLACE-based
+    // UPDATEs, so they correct existing rows even when the seed itself was
+    // skipped (the seed still carries the legacy `/simulador` links, so this
+    // repoint must run after it to land the canonical `/simulator` URLs).
+    console.log('[seed] Repointing legacy simulator links…');
+    await client.unsafe(readFileSync(REPOINT_FILE, 'utf8'));
   } finally {
     await client.end({ timeout: 5 });
   }
