@@ -174,13 +174,18 @@ function tickReducer(state: SimState): SimState {
 
     switch (strategy) {
       case 'naive': {
-        // Grab left, then right. Holding left while right is busy is the
-        // door to deadlock — by design, to demonstrate the failure mode.
-        if (!holds(idx, lf) && free(lf)) {
-          forks[lf] = idx;
-          newLogs.push({ key: 'took_left', params: { name: p.name } });
+        // Pick up the left fork, then — on a *later* tick — reach for the
+        // right. The one-tick gap between the two pickups is what lets the
+        // circular wait form: everyone ends up holding their left fork while
+        // waiting forever for the right. This is the deadlock, by design.
+        if (!holds(idx, lf)) {
+          if (free(lf)) {
+            forks[lf] = idx;
+            newLogs.push({ key: 'took_left', params: { name: p.name } });
+          }
+          break;
         }
-        if (holds(idx, lf) && free(rf)) {
+        if (free(rf)) {
           forks[rf] = idx;
           startEating(p);
         }
@@ -487,7 +492,7 @@ export default function PhilosophersSimulator() {
                     <input
                       type="range"
                       min={0.5}
-                      max={3}
+                      max={10}
                       step={0.5}
                       value={speed}
                       onChange={(e) => setSpeed(parseFloat(e.target.value))}
@@ -552,6 +557,26 @@ export default function PhilosophersSimulator() {
                     transition={{ type: 'spring', stiffness: 220, damping: 26 }}
                   >
                     <ForkGlyph held={fk.held} />
+                    {/* Fork ids: only meaningful for the resource-hierarchy
+                        policy, where the lower number is always taken first.
+                        Counter-rotated so the digit stays upright. */}
+                    {state.strategy === 'hierarchy' && (
+                      <g transform={`rotate(${-fk.rotate})`}>
+                        <circle
+                          r="1.9"
+                          className="fill-white dark:fill-tactical-surface stroke-signal-amber"
+                          strokeWidth="0.4"
+                        />
+                        <text
+                          textAnchor="middle"
+                          dominantBaseline="central"
+                          className="fill-signal-amber font-mono font-semibold"
+                          fontSize="2.4"
+                        >
+                          {f}
+                        </text>
+                      </g>
+                    )}
                   </motion.g>
                 ))}
 
