@@ -595,21 +595,24 @@ async function buildDashboardAnalytics() {
   // lesson read/unread updates content_progress.updated_at). Counting the union
   // — instead of max() of separate counts — avoids undercounting users who only
   // did one kind of activity.
+  // Raw sql templates don't get drizzle's per-column timestamp serialization,
+  // so postgres-js can't bind a Date directly — pass an ISO string and cast it.
+  const since30 = thirtyDaysAgo.toISOString();
   const activeUsers30d = Number(
     (
       await db.execute(sql`
         SELECT count(*)::int AS c FROM (
           SELECT ${quizAttempts.userId} AS user_id
             FROM ${quizAttempts}
-            WHERE ${quizAttempts.startedAt} >= ${thirtyDaysAgo}
+            WHERE ${quizAttempts.startedAt} >= ${since30}::timestamptz
           UNION
           SELECT ${solutions.userId} AS user_id
             FROM ${solutions}
-            WHERE ${solutions.createdAt} >= ${thirtyDaysAgo}
+            WHERE ${solutions.createdAt} >= ${since30}::timestamptz
           UNION
           SELECT ${contentProgress.userId} AS user_id
             FROM ${contentProgress}
-            WHERE ${contentProgress.updatedAt} >= ${thirtyDaysAgo}
+            WHERE ${contentProgress.updatedAt} >= ${since30}::timestamptz
         ) AS active
       `)
     )[0].c
