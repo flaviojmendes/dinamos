@@ -34,8 +34,15 @@ const SEED_FILE = resolve('server/db/migrations/0008_seed_content.sql');
 const BASE_SCHEMA_FILE = resolve('server/db/migrations/0000_init.sql');
 // Idempotent post-seed fixups that must run on every deploy regardless of the
 // seed-hash skip (they UPDATE existing rows in place, so they are cheap and
-// non-clobbering — only the targeted legacy links change). 0013 repoints the
-// legacy Portuguese `/simulador` routes to the canonical `/simulator` ones.
+// non-clobbering — only the targeted rows change). They must run AFTER the seed
+// because the seed re-applies the original values (e.g. simulator_key = NULL),
+// so these fixups have to land last to win.
+//
+// 0012 backfills content_pages.simulator_key so the CMS simulator auto-routes
+//   (`<page.path>/simulator`) actually register — without it the repointed
+//   links below point at routes that don't exist.
+// 0013 repoints legacy Portuguese `/simulador` links to canonical `/simulator`.
+const BACKFILL_KEYS_FILE = resolve('server/db/migrations/0012_backfill_simulator_keys.sql');
 const REPOINT_FILE = resolve('server/db/migrations/0013_repoint_simulator_links.sql');
 
 /**
@@ -198,10 +205,13 @@ async function main(): Promise<void> {
       console.log(`[seed] Done. content_modules=${moduleCount}, content_pages=${pageCount}.`);
     }
 
-    // Always run post-seed link fixups. These are idempotent REPLACE-based
-    // UPDATEs, so they correct existing rows even when the seed itself was
-    // skipped (the seed still carries the legacy `/simulador` links, so this
-    // repoint must run after it to land the canonical `/simulator` URLs).
+    // Always run post-seed fixups. These are idempotent UPDATEs, so they correct
+    // existing rows even when the seed insert was skipped (the seed still carries
+    // simulator_key = NULL and the legacy `/simulador` links, so these must run
+    // after it to land the canonical values).
+    console.log('[seed] Backfilling simulator keys…');
+    await client.unsafe(readFileSync(BACKFILL_KEYS_FILE, 'utf8'));
+
     console.log('[seed] Repointing legacy simulator links…');
     await client.unsafe(readFileSync(REPOINT_FILE, 'utf8'));
   } finally {
