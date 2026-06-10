@@ -11,6 +11,8 @@ vi.mock('../../config/firebase', () => ({ auth: authMock }));
 
 const fb = vi.hoisted(() => ({
   signInWithPopup: vi.fn(),
+  signInWithRedirect: vi.fn(),
+  getRedirectResult: vi.fn(),
   signOut: vi.fn(),
   fetchSignInMethodsForEmail: vi.fn(),
   linkWithPopup: vi.fn(),
@@ -23,6 +25,8 @@ vi.mock('firebase/auth', () => ({
   GoogleAuthProvider: class {},
   GithubAuthProvider: class {},
   signInWithPopup: fb.signInWithPopup,
+  signInWithRedirect: fb.signInWithRedirect,
+  getRedirectResult: fb.getRedirectResult,
   signOut: fb.signOut,
   fetchSignInMethodsForEmail: fb.fetchSignInMethodsForEmail,
   linkWithPopup: fb.linkWithPopup,
@@ -58,6 +62,7 @@ beforeEach(() => {
     json: async () => ({ id: 'u1', email: 'a@b.com', tokens: 3 }),
   }) as unknown as typeof fetch;
   fb.signInWithPopup.mockResolvedValue({ user });
+  fb.getRedirectResult.mockResolvedValue(null);
   fb.createUserWithEmailAndPassword.mockResolvedValue({ user });
   fb.signInWithEmailAndPassword.mockResolvedValue({ user });
 });
