@@ -28,6 +28,7 @@ import {
   quizOptions,
   quizAttempts,
   solutions,
+  contentProgress,
 } from '../db/schema.js';
 import { authRequired, adminRequired, type AppVariables } from '../middleware/auth.js';
 import {
@@ -589,20 +590,28 @@ async function buildDashboardAnalytics() {
   const sevenDaysAgo = new Date(now.getTime() - 7 * 86400000);
 
   const totalUsers = Number((await db.select({ c: count() }).from(users))[0].c);
-  const activeQuizUsers = Number(
+  // True distinct-user union of everyone active in the window via ANY tracked
+  // action: quiz attempts, challenge solutions, or reading content (marking a
+  // lesson read/unread updates content_progress.updated_at). Counting the union
+  // — instead of max() of separate counts — avoids undercounting users who only
+  // did one kind of activity.
+  const activeUsers30d = Number(
     (
-      await db
-        .select({ c: sql<number>`count(distinct ${quizAttempts.userId})` })
-        .from(quizAttempts)
-        .where(gte(quizAttempts.startedAt, thirtyDaysAgo))
-    )[0].c
-  );
-  const activeSolutionUsers = Number(
-    (
-      await db
-        .select({ c: sql<number>`count(distinct ${solutions.userId})` })
-        .from(solutions)
-        .where(gte(solutions.createdAt, thirtyDaysAgo))
+      await db.execute(sql`
+        SELECT count(*)::int AS c FROM (
+          SELECT ${quizAttempts.userId} AS user_id
+            FROM ${quizAttempts}
+            WHERE ${quizAttempts.startedAt} >= ${thirtyDaysAgo}
+          UNION
+          SELECT ${solutions.userId} AS user_id
+            FROM ${solutions}
+            WHERE ${solutions.createdAt} >= ${thirtyDaysAgo}
+          UNION
+          SELECT ${contentProgress.userId} AS user_id
+            FROM ${contentProgress}
+            WHERE ${contentProgress.updatedAt} >= ${thirtyDaysAgo}
+        ) AS active
+      `)
     )[0].c
   );
   const newUsersWeek = Number(
@@ -713,9 +722,17 @@ async function buildDashboardAnalytics() {
     .from(users)
     .where(gte(users.createdAt, since))
     .groupBy(sql`date(${users.createdAt})`);
+  // Content reading activity per day: rows touched (marked read/unread) within
+  // the window, keyed by updated_at so toggles in either direction count.
+  const readsByDay = await db
+    .select({ d: sql<string>`date(${contentProgress.updatedAt})`, c: count() })
+    .from(contentProgress)
+    .where(gte(contentProgress.updatedAt, since))
+    .groupBy(sql`date(${contentProgress.updatedAt})`);
   const solMap = new Map(solByDay.map((r) => [String(r.d), Number(r.c)]));
   const quizMap = new Map(quizByDay.map((r) => [String(r.d), Number(r.c)]));
   const usrMap = new Map(usersByDay.map((r) => [String(r.d), Number(r.c)]));
+  const readMap = new Map(readsByDay.map((r) => [String(r.d), Number(r.c)]));
 
   const activityTimeline: any[] = [];
   for (let i = 30; i >= 0; i--) {
@@ -724,6 +741,7 @@ async function buildDashboardAnalytics() {
       date: day,
       solutions: solMap.get(day) ?? 0,
       quiz_attempts: quizMap.get(day) ?? 0,
+      reads: readMap.get(day) ?? 0,
       new_users: usrMap.get(day) ?? 0,
     });
   }
@@ -746,7 +764,7 @@ async function buildDashboardAnalytics() {
   return {
     users: {
       total: totalUsers,
-      active_30_days: Math.max(activeQuizUsers, activeSolutionUsers),
+      active_30_days: activeUsers30d,
       new_this_week: newUsersWeek,
     },
     challenges: {

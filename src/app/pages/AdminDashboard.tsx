@@ -72,6 +72,7 @@ interface DashboardData {
     date: string
     solutions: number
     quiz_attempts: number
+    reads: number
     new_users: number
   }>
   recent_activity: Array<{
@@ -244,48 +245,202 @@ const DonutChart = ({
   )
 }
 
-// Mini line chart for activity timeline
+// Multi-series area/line chart for the activity timeline. Plots solutions,
+// quiz attempts and content reads on a shared scale, with a hover tooltip,
+// gridlines, y-axis ticks and date ticks.
+const ACTIVITY_SERIES = [
+  { key: 'reads', label: 'Leituras', stroke: '#f59e0b', fill: '#f59e0b' },
+  { key: 'quiz_attempts', label: 'Quizzes', stroke: '#06b6d4', fill: '#06b6d4' },
+  { key: 'solutions', label: 'Soluções', stroke: '#22c55e', fill: '#22c55e' },
+] as const
+
 const ActivityChart = ({ data }: { data: DashboardData['activity_timeline'] }) => {
-  const maxSolutions = Math.max(...data.map(d => d.solutions), 1)
-  const maxAttempts = Math.max(...data.map(d => d.quiz_attempts), 1)
-  const maxValue = Math.max(maxSolutions, maxAttempts, 1)
-  
-  const height = 120
-  const width = data.length * 10
-  
-  const getY = (value: number) => height - (value / maxValue) * (height - 20)
-  
-  const solutionsPath = data.map((d, i) => 
-    `${i === 0 ? 'M' : 'L'} ${i * 10 + 5} ${getY(d.solutions)}`
-  ).join(' ')
-  
-  const attemptsPath = data.map((d, i) => 
-    `${i === 0 ? 'M' : 'L'} ${i * 10 + 5} ${getY(d.quiz_attempts)}`
-  ).join(' ')
-  
+  const [hover, setHover] = useState<number | null>(null)
+
+  const maxValue = Math.max(
+    1,
+    ...data.flatMap((d) => ACTIVITY_SERIES.map((s) => d[s.key] as number))
+  )
+
+  const width = 1000
+  const height = 220
+  const padLeft = 32
+  const padRight = 12
+  const padTop = 16
+  const padBottom = 28
+  const plotW = width - padLeft - padRight
+  const plotH = height - padTop - padBottom
+
+  const n = data.length
+  const getX = (i: number) => padLeft + (n <= 1 ? plotW / 2 : (i / (n - 1)) * plotW)
+  const getY = (v: number) => padTop + plotH - (v / maxValue) * plotH
+
+  // Smooth-ish line via simple straight segments (crisp + cheap).
+  const linePath = (key: (typeof ACTIVITY_SERIES)[number]['key']) =>
+    data
+      .map((d, i) => `${i === 0 ? 'M' : 'L'} ${getX(i).toFixed(2)} ${getY(d[key] as number).toFixed(2)}`)
+      .join(' ')
+
+  const areaPath = (key: (typeof ACTIVITY_SERIES)[number]['key']) => {
+    if (n === 0) return ''
+    const top = data
+      .map((d, i) => `${i === 0 ? 'M' : 'L'} ${getX(i).toFixed(2)} ${getY(d[key] as number).toFixed(2)}`)
+      .join(' ')
+    return `${top} L ${getX(n - 1).toFixed(2)} ${padTop + plotH} L ${getX(0).toFixed(2)} ${padTop + plotH} Z`
+  }
+
+  // 4 horizontal gridlines / y-ticks.
+  const ticks = 4
+  const yTickVals = Array.from({ length: ticks + 1 }, (_, k) => Math.round((maxValue / ticks) * k))
+
+  const fmtDate = (s: string) => format(new Date(s), 'dd/MM')
+  const dateTickEvery = Math.max(1, Math.ceil(n / 8))
+
   return (
     <div className="relative">
-      <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-32" preserveAspectRatio="none">
-        {/* Grid lines */}
-        <line x1="0" y1={height - 10} x2={width} y2={height - 10} className="stroke-slate-200 dark:stroke-tactical-border" strokeWidth="1" />
-        <line x1="0" y1={height / 2} x2={width} y2={height / 2} className="stroke-slate-200 dark:stroke-tactical-border" strokeWidth="0.5" strokeDasharray="4" />
-        
-        {/* Solutions line */}
-        <path d={solutionsPath} fill="none" className="stroke-signal-green" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        
-        {/* Quiz attempts line */}
-        <path d={attemptsPath} fill="none" className="stroke-brand-600 dark:stroke-signal-cyan" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <svg
+        viewBox={`0 0 ${width} ${height}`}
+        className="w-full"
+        style={{ height: 220 }}
+        preserveAspectRatio="none"
+        onMouseLeave={() => setHover(null)}
+      >
+        <defs>
+          {ACTIVITY_SERIES.map((s) => (
+            <linearGradient key={s.key} id={`act-grad-${s.key}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={s.fill} stopOpacity="0.28" />
+              <stop offset="100%" stopColor={s.fill} stopOpacity="0" />
+            </linearGradient>
+          ))}
+        </defs>
+
+        {/* Y gridlines + tick labels */}
+        {yTickVals.map((val, k) => {
+          const y = getY(val)
+          return (
+            <g key={k}>
+              <line
+                x1={padLeft}
+                y1={y}
+                x2={width - padRight}
+                y2={y}
+                className="stroke-slate-200 dark:stroke-tactical-border"
+                strokeWidth={k === 0 ? 1 : 0.5}
+                strokeDasharray={k === 0 ? undefined : '4'}
+              />
+              <text
+                x={padLeft - 6}
+                y={y}
+                textAnchor="end"
+                dominantBaseline="middle"
+                className="fill-slate-400 dark:fill-slate-500"
+                style={{ fontSize: '10px' }}
+              >
+                {val}
+              </text>
+            </g>
+          )
+        })}
+
+        {/* Area fills (drawn first, low opacity) */}
+        {ACTIVITY_SERIES.map((s) => (
+          <path key={`area-${s.key}`} d={areaPath(s.key)} fill={`url(#act-grad-${s.key})`} />
+        ))}
+
+        {/* Lines */}
+        {ACTIVITY_SERIES.map((s) => (
+          <path
+            key={`line-${s.key}`}
+            d={linePath(s.key)}
+            fill="none"
+            stroke={s.stroke}
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            vectorEffect="non-scaling-stroke"
+          />
+        ))}
+
+        {/* Hover guide + points */}
+        {hover !== null && (
+          <line
+            x1={getX(hover)}
+            y1={padTop}
+            x2={getX(hover)}
+            y2={padTop + plotH}
+            className="stroke-slate-300 dark:stroke-tactical-dim"
+            strokeWidth="1"
+          />
+        )}
+        {hover !== null &&
+          ACTIVITY_SERIES.map((s) => (
+            <circle
+              key={`pt-${s.key}`}
+              cx={getX(hover)}
+              cy={getY(data[hover][s.key] as number)}
+              r="3"
+              fill={s.stroke}
+              className="stroke-white dark:stroke-tactical-bg"
+              strokeWidth="1.5"
+            />
+          ))}
+
+        {/* Date tick labels */}
+        {data.map((d, i) =>
+          i % dateTickEvery === 0 || i === n - 1 ? (
+            <text
+              key={`xt-${d.date}`}
+              x={getX(i)}
+              y={height - 8}
+              textAnchor="middle"
+              className="fill-slate-400 dark:fill-slate-500"
+              style={{ fontSize: '10px' }}
+            >
+              {fmtDate(d.date)}
+            </text>
+          ) : null
+        )}
+
+        {/* Invisible hover hit-areas */}
+        {data.map((_, i) => (
+          <rect
+            key={`hit-${i}`}
+            x={getX(i) - (plotW / Math.max(n, 1)) / 2}
+            y={padTop}
+            width={plotW / Math.max(n, 1)}
+            height={plotH}
+            fill="transparent"
+            onMouseEnter={() => setHover(i)}
+          />
+        ))}
       </svg>
-      
+
+      {/* Tooltip */}
+      {hover !== null && (
+        <div className="mt-1 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs">
+          <span className="font-mono font-medium text-slate-700 dark:text-tactical-text">
+            {format(new Date(data[hover].date), 'dd MMM')}
+          </span>
+          {ACTIVITY_SERIES.map((s) => (
+            <span key={s.key} className="flex items-center gap-1.5">
+              <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ backgroundColor: s.stroke }} />
+              <span className="text-slate-500 dark:text-tactical-dim">{s.label}</span>
+              <span className="font-mono tabular-nums font-medium text-slate-700 dark:text-tactical-text">
+                {data[hover][s.key] as number}
+              </span>
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* Legend */}
       <div className="flex justify-center gap-6 mt-2">
-        <div className="flex items-center gap-2 text-xs">
-          <div className="w-3 h-0.5 bg-signal-green" />
-          <span className="text-xs font-medium text-slate-600 dark:text-tactical-dim">Soluções</span>
-        </div>
-        <div className="flex items-center gap-2 text-xs">
-          <div className="w-3 h-0.5 bg-brand-600 dark:bg-signal-cyan" />
-          <span className="text-xs font-medium text-slate-600 dark:text-tactical-dim">Quizzes</span>
-        </div>
+        {ACTIVITY_SERIES.map((s) => (
+          <div key={s.key} className="flex items-center gap-2 text-xs">
+            <div className="w-3 h-0.5 rounded-full" style={{ backgroundColor: s.stroke }} />
+            <span className="text-xs font-medium text-slate-600 dark:text-tactical-dim">{s.label}</span>
+          </div>
+        ))}
       </div>
     </div>
   )
@@ -927,7 +1082,7 @@ function AdminDashboard() {
                 <StatCard
                   title="Usuários Ativos (30d)"
                   value={data.users.active_30_days}
-                  subtitle={`${Math.round((data.users.active_30_days / data.users.total) * 100) || 0}% do total`}
+                  subtitle={`${Math.round((data.users.active_30_days / data.users.total) * 100) || 0}% do total · quizzes, desafios ou leitura`}
                   color="amber"
                   icon={
                     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

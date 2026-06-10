@@ -301,8 +301,7 @@ describe('admin dashboard & growth', () => {
     asAdmin();
     mockDb.setResults([
       [{ c: 5 }], // totalUsers
-      [{ c: 2 }], // activeQuizUsers
-      [{ c: 1 }], // activeSolutionUsers
+      [{ c: 3 }], // activeUsers30d (union: quizzes + solutions + reads)
       [{ c: 1 }], // newUsersWeek
       [{ c: 3 }], // totalChallenges
       [{ c: 4 }], // submittedSolutions
@@ -322,12 +321,15 @@ describe('admin dashboard & growth', () => {
       [{ d: '2024-01-01', c: 1 }], // solByDay
       [{ d: '2024-01-01', c: 1 }], // quizByDay
       [{ d: '2024-01-01', c: 1 }], // usersByDay
+      [{ d: '2024-01-01', c: 4 }], // readsByDay
       [{ id: 1, challengeId: 'c1', createdAt: new Date(), nickname: 'N', challengeTitle: 'T' }], // recentSolutions
     ]);
     const res = await app.request('/api/admin/dashboard', { headers: AUTH });
     const body = await res.json() as any;
     expect(body.users.total).toBe(5);
+    expect(body.users.active_30_days).toBe(3);
     expect(body.activity_timeline).toHaveLength(31);
+    expect(body.activity_timeline[0]).toHaveProperty('reads');
   });
 
   it('GET user-growth', async () => {
