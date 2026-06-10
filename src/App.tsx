@@ -9,14 +9,16 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import CircuitBreaker from "./components/CircuitBreaker/CircuitBreaker";
-import Backpressure from "./components/Backpressure/Backpressure";
-import RateLimiter from "./components/RateLimiter/RateLimiter";
-import AsyncSync from "./components/AsyncSync/AsyncSync";
-import CDN from "./components/CDN/CDN";
-import CDNSimulator from "./components/CDN/CDN";
-import LogSimulator from "./components/Monitoramento/LogSimulator";
-import TracingSimulator from './components/Monitoramento/TracingSimulator';
+// Simulators are heavy, route-only components rendered inside the <Suspense>
+// boundary below. Lazy-load them so they are code-split out of the entry chunk
+// and only fetched when their route is visited.
+const CircuitBreaker = React.lazy(() => import("./components/CircuitBreaker/CircuitBreaker"));
+const Backpressure = React.lazy(() => import("./components/Backpressure/Backpressure"));
+const RateLimiter = React.lazy(() => import("./components/RateLimiter/RateLimiter"));
+const AsyncSync = React.lazy(() => import("./components/AsyncSync/AsyncSync"));
+const CDN = React.lazy(() => import("./components/CDN/CDN"));
+const LogSimulator = React.lazy(() => import("./components/Monitoramento/LogSimulator"));
+const TracingSimulator = React.lazy(() => import('./components/Monitoramento/TracingSimulator'));
 
 import LandingPage from "./components/LandingPage/LandingPage";
 import CommandCenter from "./components/Dashboard/CommandCenter";
@@ -65,9 +67,8 @@ function DesignLabRouteFallback() {
   );
 }
 import { trackEvent, trackPageView, initializeAnalytics, handleConsentChange } from './utils/analytics';
-import ReplicacaoSimulator from "./components/DesignPrinciples/ReplicacaoSimulator";
-import Preferences from "./components/Preferences/Preferences";
-import Roadmap from "./components/Roadmap/Roadmap";
+const Preferences = React.lazy(() => import("./components/Preferences/Preferences"));
+const Roadmap = React.lazy(() => import("./components/Roadmap/Roadmap"));
 import ContentLayout from "./components/Common/ContentLayout";
 import LanguageDetectionDialog from "./components/Common/LanguageDetectionDialog";
 import { useContentProgress, PROGRESS_UPDATED_EVENT } from "./hooks/useContentProgress";
@@ -86,10 +87,8 @@ import {
   TIER_ORDER,
   type Tier,
 } from "./config/contentRegistry";
-import Logs from "./components/MonitoringMaintenance/Logs";
-
-import SynchronizationAlgorithms from './components/ConsistencyStrategies/SynchronizationAlgorithms';
-import SimpleSystemEditorPage from "./pages/SimpleSystemEditorPage";
+const SynchronizationAlgorithms = React.lazy(() => import('./components/ConsistencyStrategies/SynchronizationAlgorithms'));
+const SimpleSystemEditorPage = React.lazy(() => import("./pages/SimpleSystemEditorPage"));
 const GameEditorPage = React.lazy(() => import("./pages/GameEditorPage"));
 const AdminGameConsole = React.lazy(() => import("./pages/AdminGameConsole"));
 import { LanguageSwitcher } from './components/Common';
@@ -104,7 +103,7 @@ import CookiePreferencesPage from './pages/CookiePreferencesPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsAndConditionsPage from './pages/TermsAndConditionsPage';
 // Forum is now served by the merged designLab forum (see /forum routes below).
-import ExplorePage from "./components/Explore/ExplorePage";
+const ExplorePage = React.lazy(() => import("./components/Explore/ExplorePage"));
 
 interface MenuItem {
   name: string;
