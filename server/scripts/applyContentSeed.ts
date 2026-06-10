@@ -14,7 +14,7 @@
  * project manages schema with `db:push`, so Drizzle's migration journal is not
  * a reliable source of "what has already run".
  *
- * Run with:  tsx api/scripts/applyContentSeed.ts
+ * Run with:  tsx server/scripts/applyContentSeed.ts
  */
 import postgres from 'postgres';
 import { readFileSync } from 'node:fs';
@@ -30,8 +30,8 @@ if (!databaseUrl) {
   process.exit(0);
 }
 
-const SEED_FILE = resolve('api/db/migrations/0008_seed_content.sql');
-const BASE_SCHEMA_FILE = resolve('api/db/migrations/0000_init.sql');
+const SEED_FILE = resolve('server/db/migrations/0008_seed_content.sql');
+const BASE_SCHEMA_FILE = resolve('server/db/migrations/0000_init.sql');
 
 /**
  * Load the base-schema migration and rewrite it to be idempotent so it can run

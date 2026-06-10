@@ -8,8 +8,8 @@ export default defineConfig({
     include: [
       'src/**/*.test.ts',
       'src/**/*.test.tsx',
-      'api/**/*.test.ts',
-      'api/**/*.test.tsx',
+      'server/**/*.test.ts',
+      'server/**/*.test.tsx',
     ],
     setupFiles: ['./vitest.setup.ts'],
     coverage: {
@@ -21,13 +21,13 @@ export default defineConfig({
       // data files (e.g. i18n translations) are intentionally left out so the
       // metric reflects code with meaningful behaviour to test.
       include: [
-        'api/app.ts',
-        'api/routes/**/*.ts',
-        'api/db/repo.ts',
-        'api/db/serializers.ts',
-        'api/db/client.ts',
-        'api/lib/**/*.ts',
-        'api/middleware/**/*.ts',
+        'server/app.ts',
+        'server/routes/**/*.ts',
+        'server/db/repo.ts',
+        'server/db/serializers.ts',
+        'server/db/client.ts',
+        'server/lib/**/*.ts',
+        'server/middleware/**/*.ts',
         'src/services/**/*.ts',
         'src/utils/**/*.ts',
         'src/hooks/**/*.ts',

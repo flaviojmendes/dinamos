@@ -3,7 +3,7 @@
  * migration 0008_seed_content.sql as idempotent upserts, so the same content
  * lands in any environment that runs migrations (e.g. production / Supabase).
  *
- * Run with:  SRC_DB_URL=postgres://... npx tsx api/scripts/exportContentSql.ts
+ * Run with:  SRC_DB_URL=postgres://... npx tsx server/scripts/exportContentSql.ts
  */
 import postgres from 'postgres';
 import { writeFileSync } from 'node:fs';
@@ -17,7 +17,7 @@ if (!url) {
 const isLocal = /@(localhost|127\.0\.0\.1)/.test(url);
 const sql = postgres(url, { prepare: false, max: 1, ssl: isLocal ? false : 'require' });
 
-const OUT = resolve('api/db/migrations/0008_seed_content.sql');
+const OUT = resolve('server/db/migrations/0008_seed_content.sql');
 
 function dollar(val: unknown): string {
   if (val === null || val === undefined) return 'NULL';

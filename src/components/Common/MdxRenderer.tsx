@@ -6,7 +6,7 @@ import { mdxComponents } from '../mdx';
 /**
  * Runtime MDX renderer.
  *
- * Content now lives in the database (see api/db/schema.ts `content_pages`) as
+ * Content now lives in the database (see server/db/schema.ts `content_pages`) as
  * raw MDX source instead of build-time-compiled `.mdx` files. This component
  * compiles the source string in the browser via `@mdx-js/mdx`'s `evaluate`
  * (lazy-imported so the compiler stays out of the initial bundle) and renders

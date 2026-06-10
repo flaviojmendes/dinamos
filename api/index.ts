@@ -1,5 +1,9 @@
 import { getRequestListener } from '@hono/node-server';
-import app from './app.js';
+// The Hono app and all its route/lib/db modules live in /server (outside /api)
+// so Vercel doesn't turn each file into its own Serverless Function. Only this
+// entry file under /api is deployed as a function; the rest is bundled in via
+// import tracing. vercel.json rewrites every /api/* request here.
+import app from '../server/app.js';
 
 // Run on the Node.js runtime (firebase-admin requires Node APIs).
 export const config = {

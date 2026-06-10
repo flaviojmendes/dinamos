@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:api": "tsx watch --env-file=.env api/dev-server.ts",
+    "dev:api": "tsx watch --env-file=.env server/dev-server.ts",
     "build": "tsc && vite build",
     "vercel-build": "npm run db:apply-content && tsc && vite build",
     "preview": "vite preview",
@@ -17,10 +17,10 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:introspect": "drizzle-kit introspect",
-    "db:seed-content": "tsx --env-file=.env api/scripts/seedContent.ts",
-    "db:seed-modules": "tsx --env-file=.env api/scripts/seedModules.ts",
-    "db:export-content": "tsx --env-file=.env api/scripts/exportContentSql.ts",
-    "db:apply-content": "tsx api/scripts/applyContentSeed.ts"
+    "db:seed-content": "tsx --env-file=.env server/scripts/seedContent.ts",
+    "db:seed-modules": "tsx --env-file=.env server/scripts/seedModules.ts",
+    "db:export-content": "tsx --env-file=.env server/scripts/exportContentSql.ts",
+    "db:apply-content": "tsx server/scripts/applyContentSeed.ts"
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",

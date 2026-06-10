@@ -2,7 +2,7 @@
  * One-time migration: seed the `content_pages` table from the static MDX files
  * under src/content. Run with:
  *
- *   node --env-file=.env node_modules/.bin/tsx api/scripts/seedContent.ts
+ *   node --env-file=.env node_modules/.bin/tsx server/scripts/seedContent.ts
  *
  * Idempotent: upserts by slug, so re-running refreshes bodies without creating
  * duplicates. The path comes from the (authoritative) contentManifest; the
