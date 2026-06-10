@@ -1201,7 +1201,7 @@ export default function App() {
   const { user, signOut } = useAuth();
   const { isCompleted, progress, updateTrigger } = useContentProgress();
   const { t } = useTranslation();
-  const { pages: contentPages } = useContent();
+  const { pages: contentPages, ready: contentReady } = useContent();
   // The sidebar must mirror what actually exists in the database. The static
   // tree below is only a source of labels/icons/structure — we prune it down to
   // the items present in the live registry (DB lessons + code-based simulators,
@@ -2137,8 +2137,14 @@ export default function App() {
 
             {/* Catch-all: unknown URLs (legacy/mistyped routes such as the old
                 Portuguese `/simulador` links) redirect home instead of rendering
-                a blank page. */}
-            <Route path="*" element={<Navigate to="/" replace />} />
+                a blank page. The DB-backed content routes register asynchronously
+                (ContentContext), so a deep link / refresh has no matching route
+                until the index loads — only redirect once it's `ready`, otherwise
+                show the loading fallback so we don't bounce real pages home. */}
+            <Route
+              path="*"
+              element={contentReady ? <Navigate to="/" replace /> : <DesignLabRouteFallback />}
+            />
 
           </Routes>
           </React.Suspense>
