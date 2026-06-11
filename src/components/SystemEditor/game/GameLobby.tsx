@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Gamepad2, Clock, Users, Lock, Activity, MonitorPlay } from 'lucide-react';
+import { Gamepad2, Clock, Users, Lock, Activity, MonitorPlay, ShieldCheck } from 'lucide-react';
 import { useGameContext } from './GameContext';
 import GameLeaderboard from './GameLeaderboard';
 import GameAnnouncement from './GameAnnouncement';
@@ -89,6 +89,35 @@ export default function GameLobby({ currentUserId }: { currentUserId?: string | 
             <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t('editor.game.locked_components', { defaultValue: 'Locked parts' })}</div>
           </div>
         </div>
+      </div>
+
+      {/* House rules: structural requirements enforced during rounds. A player
+          whose architecture breaks a rule earns no points until it is fixed. */}
+      <div className="tactical-panel p-4 mb-6">
+        <div className="flex items-center gap-2 font-sans text-[11px] font-medium text-slate-600 dark:text-signal-amber mb-2">
+          <ShieldCheck className="w-4 h-4" />
+          {t('editor.game.rules.title', { defaultValue: 'House rules' })}
+        </div>
+        <p className="font-sans text-[11px] text-tactical-dim mb-3">
+          {t('editor.game.rules.subtitle', {
+            defaultValue: 'Your system has to look like a real stateful service. Break a rule and you stop earning points until you fix it.',
+          })}
+        </p>
+        <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1.5 font-sans text-xs text-tactical-text">
+          {([
+            t('editor.game.rules.database_present', { defaultValue: 'keep at least one database' }),
+            t('editor.game.rules.path_to_db', { defaultValue: 'every client must reach a database through your service tier' }),
+            t('editor.game.rules.service_present', { defaultValue: 'keep at least one app server' }),
+            t('editor.game.rules.cache_miss_path', { defaultValue: 'every cache needs a miss path to a database' }),
+            t('editor.game.rules.client_present', { defaultValue: 'add a traffic source (client)' }),
+            t('editor.game.rules.no_client_to_db', { defaultValue: 'clients cannot talk to the database directly' }),
+          ] as string[]).map((rule, i) => (
+            <li key={i} className="flex items-start gap-2">
+              <span aria-hidden className="mt-1.5 w-1 h-1 rounded-full bg-signal-cyan shrink-0" />
+              <span className="first-letter:uppercase">{rule}</span>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <div className="flex items-center gap-2 mb-2 font-sans text-xs text-tactical-dim">

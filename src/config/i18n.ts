@@ -1762,6 +1762,18 @@ const resources = {
           listed_live: 'Listed on the arena',
           private_title: 'This match is invite-only',
           private_hint: 'The host made this match private. Ask them for the invite link, it carries the key that lets you in.',
+          compliance_live: 'Invalid architecture: you are not earning points.',
+          compliance_build: 'Invalid architecture: fix it before the round starts.',
+          rules: {
+            title: 'House rules',
+            subtitle: 'Your system has to look like a real stateful service. Break a rule and you stop earning points until you fix it.',
+            client_present: 'add a traffic source (client)',
+            database_present: 'keep at least one database',
+            service_present: 'keep at least one app server',
+            path_to_db: 'every client must reach a database through your service tier',
+            cache_miss_path: 'every cache needs a miss path to a database',
+            no_client_to_db: 'clients cannot talk to the database directly'
+          },
           fx: {
             kill_incoming: '{{target}} goes down in {{sec}}s',
             slow_incoming: '{{target}} slowdown in {{sec}}s',
@@ -1786,6 +1798,7 @@ const resources = {
             streak_bonus: 'SLO streak bonus (best {{sec}}s)',
             latency_penalty: 'Latency penalty',
             cost_penalty: 'Cost penalty',
+            non_compliant: 'Time with an invalid architecture (no points)',
             up_next: 'Up next: {{name}}',
             close_final: 'Close standings',
             back_to_build: 'Back to building'
@@ -5862,6 +5875,18 @@ const resources = {
           listed_live: 'Listada na arena',
           private_title: 'Esta partida é só com convite',
           private_hint: 'O anfitrião tornou esta partida privada. Peça o link de convite, ele carrega a chave que libera sua entrada.',
+          compliance_live: 'Arquitetura inválida: você não está pontuando.',
+          compliance_build: 'Arquitetura inválida: corrija antes da rodada começar.',
+          rules: {
+            title: 'Regras da casa',
+            subtitle: 'Seu sistema precisa parecer um serviço real com estado. Quebrou uma regra, parou de pontuar até corrigir.',
+            client_present: 'adicione uma fonte de tráfego (client)',
+            database_present: 'mantenha pelo menos um banco de dados',
+            service_present: 'mantenha pelo menos um servidor de aplicação',
+            path_to_db: 'todo client precisa alcançar um banco passando pela camada de serviço',
+            cache_miss_path: 'todo cache precisa de um caminho de miss até um banco',
+            no_client_to_db: 'clients não podem falar direto com o banco'
+          },
           fx: {
             kill_incoming: '{{target}} cai em {{sec}}s',
             slow_incoming: '{{target}} ficará lento em {{sec}}s',
@@ -5886,6 +5911,7 @@ const resources = {
             streak_bonus: 'Bônus de sequência de SLO (melhor: {{sec}}s)',
             latency_penalty: 'Penalidade de latência',
             cost_penalty: 'Penalidade de custo',
+            non_compliant: 'Tempo com arquitetura inválida (sem pontos)',
             up_next: 'A seguir: {{name}}',
             close_final: 'Fechar classificação',
             back_to_build: 'Voltar a construir'

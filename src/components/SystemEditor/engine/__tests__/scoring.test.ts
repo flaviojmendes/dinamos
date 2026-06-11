@@ -5,6 +5,7 @@ import {
   frameScore,
   emptyAccumulator,
   accumulate,
+  applyCompliance,
   streakMultiplier,
   STREAK_RAMP_SEC,
   STREAK_MAX_MULTIPLIER,
@@ -142,5 +143,51 @@ describe('SLO streak', () => {
     expect(acc.streak).toBe(0);
     expect(acc.bonus).toBe(0);
     expect(acc.total).toBe(15);
+  });
+});
+
+describe('applyCompliance', () => {
+  const cfg = normalizeScoring({ budgetPerHour: 10 });
+  const healthy = () =>
+    frameScore(metrics({ offeredLoad: 100, totalThroughput: 100, successRate: 1, p95: 50 }), cfg);
+
+  it('passes compliant frames through untouched (flagged compliant)', () => {
+    const frame = healthy();
+    const gated = applyCompliance(frame, true);
+    expect(gated).toEqual({ ...frame, compliant: true });
+  });
+
+  it('zeroes all gains on non-compliant frames but keeps penalties', () => {
+    const frame = frameScore(
+      metrics({ offeredLoad: 100, totalThroughput: 100, successRate: 1, p95: 900, costPerHour: 20 }),
+      cfg
+    );
+    const gated = applyCompliance(frame, false);
+    expect(gated.throughput).toBe(0);
+    expect(gated.availability).toBe(0);
+    expect(gated.latencyPenalty).toBe(frame.latencyPenalty);
+    expect(gated.costPenalty).toBe(frame.costPenalty);
+    expect(gated.net).toBe(-frame.latencyPenalty - frame.costPenalty);
+    expect(gated.sloMet).toBe(false);
+    expect(gated.compliant).toBe(false);
+  });
+
+  it('freezes the score and breaks the streak while non-compliant', () => {
+    let acc = emptyAccumulator();
+    for (let i = 0; i < 10; i++) acc = accumulate(acc, applyCompliance(healthy(), true));
+    const before = acc.total;
+    expect(acc.streak).toBe(10);
+
+    // Player deletes the database: perfect metrics, zero gains.
+    acc = accumulate(acc, applyCompliance(healthy(), false));
+    expect(acc.total).toBe(before);
+    expect(acc.streak).toBe(0);
+    expect(acc.nonCompliantTicks).toBe(1);
+
+    // Restoring compliance resumes scoring from a cold streak.
+    acc = accumulate(acc, applyCompliance(healthy(), true));
+    expect(acc.total).toBeGreaterThan(before);
+    expect(acc.streak).toBe(1);
+    expect(acc.nonCompliantTicks).toBe(1);
   });
 });

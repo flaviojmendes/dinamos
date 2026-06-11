@@ -346,6 +346,68 @@ describe('game player routes', () => {
     expect((await res.json() as any).ok).toBe(true);
   });
 
+  // House-rules guard: a tampered client submitting a rule-breaking topology
+  // (here: client wired straight into a cache, no database/server) must not be
+  // able to raise its recorded score.
+  const compliantArch = {
+    nodes: [
+      { id: 'c', position: { x: 0, y: 0 }, config: { id: 'c', kind: 'client' } },
+      { id: 's', position: { x: 0, y: 0 }, config: { id: 's', kind: 'server' } },
+      { id: 'db', position: { x: 0, y: 0 }, config: { id: 'db', kind: 'database' } },
+    ],
+    edges: [
+      { id: 'e1', source: 'c', target: 's' },
+      { id: 'e2', source: 's', target: 'db' },
+    ],
+  };
+  const cacheOnlyArch = {
+    nodes: [
+      { id: 'c', position: { x: 0, y: 0 }, config: { id: 'c', kind: 'client' } },
+      { id: 'cache', position: { x: 0, y: 0 }, config: { id: 'cache', kind: 'cache' } },
+    ],
+    edges: [{ id: 'e1', source: 'c', target: 'cache' }],
+  };
+  const playerWithRound = { ...player, roundScores: { '0': { score: 100 } } };
+
+  it('PUT architecture clamps round score gains when the architecture breaks the rules', async () => {
+    mockDb.setResults([[session], [playerWithRound], undefined]);
+    const res = await app.request('/api/game/ABC123/architecture', {
+      method: 'PUT',
+      headers: AUTH,
+      body: JSON.stringify({ architecture: cacheOnlyArch, round_index: 0, round_score: 500 }),
+    });
+    expect((await res.json() as any).ok).toBe(true);
+    const set = mockDb.calls.find((c) => c.op === 'set');
+    const updates = set?.args[0] as any;
+    expect(updates.roundScores['0'].score).toBe(100);
+  });
+
+  it('PUT architecture accepts round score gains when the architecture is compliant', async () => {
+    mockDb.setResults([[session], [playerWithRound], undefined]);
+    const res = await app.request('/api/game/ABC123/architecture', {
+      method: 'PUT',
+      headers: AUTH,
+      body: JSON.stringify({ architecture: compliantArch, round_index: 0, round_score: 500 }),
+    });
+    expect((await res.json() as any).ok).toBe(true);
+    const set = mockDb.calls.find((c) => c.op === 'set');
+    const updates = set?.args[0] as any;
+    expect(updates.roundScores['0'].score).toBe(500);
+  });
+
+  it('PUT architecture clamps flat score gains when non-compliant', async () => {
+    mockDb.setResults([[session], [player], undefined]);
+    const res = await app.request('/api/game/ABC123/architecture', {
+      method: 'PUT',
+      headers: AUTH,
+      body: JSON.stringify({ architecture: cacheOnlyArch, score: 9999 }),
+    });
+    expect((await res.json() as any).ok).toBe(true);
+    const set = mockDb.calls.find((c) => c.op === 'set');
+    const updates = set?.args[0] as any;
+    expect(updates.score).toBe(player.score);
+  });
+
   it('GET /api/game/:code/leaderboard', async () => {
     mockDb.setResults([[session], [player], [{ id: 'admin', nickname: 'A', avatarImage: null }]]);
     const res = await app.request('/api/game/ABC123/leaderboard', { headers: AUTH });

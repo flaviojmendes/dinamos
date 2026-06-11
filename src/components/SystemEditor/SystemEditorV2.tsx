@@ -46,8 +46,10 @@ import {
   normalizeScoring,
   emptyAccumulator,
   accumulate,
+  applyCompliance,
   type ScoreAccumulator,
 } from './engine/scoring';
+import { evaluateCompliance, type ComplianceResult } from './engine/compliance';
 import GameBanner from './game/GameBanner';
 import GameLeaderboard from './game/GameLeaderboard';
 import RoundFX from './game/RoundFX';
@@ -169,6 +171,8 @@ function EditorInner({ gameId }: { gameId?: string }) {
   const lastFrameRef = useRef<SimulationFrame | null>(null);
   const seededKeyRef = useRef<string | null>(null);
   const finalSubmittedRef = useRef<string | null>(null);
+  // Latest house-rules verdict, read by the synced round loop.
+  const complianceRef = useRef<ComplianceResult>({ ok: true, violations: [] });
 
   const isNodeLocked = useCallback(
     (id: string | null) =>
@@ -459,7 +463,10 @@ function EditorInner({ gameId }: { gameId?: string }) {
           last = frame;
           scoreRef.current = accumulate(
             scoreRef.current,
-            frameScore(frame.system, scoringCfg),
+            applyCompliance(
+              frameScore(frame.system, scoringCfg),
+              complianceRef.current.ok,
+            ),
           );
         }
         guard++;
@@ -891,6 +898,20 @@ function EditorInner({ gameId }: { gameId?: string }) {
     [nodes],
   );
 
+  // House-rules check (stateful service, database present, no client→DB, ...).
+  // While violated, the round loop earns no points and the banner names the
+  // broken rule so players can fix it during the build phase.
+  const compliance: ComplianceResult = useMemo(() => {
+    if (!gameActive) return { ok: true, violations: [] };
+    return evaluateCompliance(
+      nodes.map((n) => ({ id: n.id, kind: n.data.config.kind })),
+      edges.map((e) => ({ source: e.source, target: e.target })),
+    );
+  }, [gameActive, nodes, edges]);
+  useEffect(() => {
+    complianceRef.current = compliance;
+  }, [compliance]);
+
   // Live cloud cost that reacts to capacity edits (service time, concurrency,
   // replicas) immediately — even when the sim is idle. Uses live metrics when a
   // run is in progress, otherwise estimates provisioned compute straight from
@@ -925,6 +946,7 @@ function EditorInner({ gameId }: { gameId?: string }) {
               streak: scoreRef.current.streak,
               multiplier: scoreRef.current.multiplier,
             }}
+            compliance={compliance}
           />
         )}
         {/* Round splashes, chaos telegraphs, countdowns and rank toasts. */}

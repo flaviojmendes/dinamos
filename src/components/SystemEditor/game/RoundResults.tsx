@@ -7,7 +7,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { Trophy, X, Flame, Activity, ShieldCheck, Timer, DollarSign, Medal } from 'lucide-react';
+import { Trophy, X, Flame, Activity, ShieldCheck, ShieldAlert, Timer, DollarSign, Medal } from 'lucide-react';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useGameContext } from './GameContext';
 
@@ -18,6 +18,7 @@ interface BreakdownLike {
   costPenalty?: number;
   bonus?: number;
   bestStreak?: number;
+  nonCompliantTicks?: number;
 }
 
 function Row({
@@ -194,6 +195,14 @@ export default function RoundResults() {
                 )}
                 <Row icon={Timer} label={t('editor.game.results.latency_penalty', { defaultValue: 'Latency penalty' })} value={`-${Math.round(bd.latencyPenalty ?? 0)}`} tone={(bd.latencyPenalty ?? 0) > 0 ? 'text-signal-red' : 'text-tactical-dim'} />
                 <Row icon={DollarSign} label={t('editor.game.results.cost_penalty', { defaultValue: 'Cost penalty' })} value={`-${Math.round(bd.costPenalty ?? 0)}`} tone={(bd.costPenalty ?? 0) > 0 ? 'text-signal-red' : 'text-tactical-dim'} />
+                {(bd.nonCompliantTicks ?? 0) > 0 && (
+                  <Row
+                    icon={ShieldAlert}
+                    label={t('editor.game.results.non_compliant', { defaultValue: 'Time with an invalid architecture (no points)' })}
+                    value={`${bd.nonCompliantTicks}s`}
+                    tone="text-signal-red"
+                  />
+                )}
               </div>
 
               {nextMeta && (

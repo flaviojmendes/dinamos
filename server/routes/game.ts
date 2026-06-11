@@ -5,6 +5,8 @@ import { db } from '../db/client.js';
 import { gameSessions, gamePlayers, users } from '../db/schema.js';
 import { getUserContext } from '../db/repo.js';
 import { authRequired, type AppVariables } from '../middleware/auth.js';
+// Shared with the client engine: the module is dependency-free on purpose.
+import { evaluateCompliance } from '../../src/components/SystemEditor/engine/compliance.js';
 
 export const gameRouter = new Hono<{ Variables: AppVariables }>();
 
@@ -17,6 +19,27 @@ gameRouter.use('/api/games/host/*', authRequired);
 gameRouter.use('/api/game/*', authRequired);
 
 type SessionRow = typeof gameSessions.$inferSelect;
+
+/**
+ * Server-side mirror of the client's house-rules gate. A submission whose
+ * architecture breaks the rules (no database, cache-only, client wired into
+ * the DB, ...) can never raise the recorded score, so tampering with the
+ * client-side check gains nothing.
+ */
+function architectureCompliant(arch: unknown): boolean {
+  const a = arch as {
+    nodes?: { id?: unknown; config?: { kind?: unknown } }[];
+    edges?: { source?: unknown; target?: unknown }[];
+  } | null;
+  if (!a || !Array.isArray(a.nodes) || a.nodes.length === 0) return false;
+  const nodes = a.nodes
+    .filter((n) => n && typeof n.id === 'string' && typeof n.config?.kind === 'string')
+    .map((n) => ({ id: n.id as string, kind: n.config!.kind as string }));
+  const edges = (Array.isArray(a.edges) ? a.edges : [])
+    .filter((e) => e && typeof e.source === 'string' && typeof e.target === 'string')
+    .map((e) => ({ source: e.source as string, target: e.target as string }));
+  return evaluateCompliance(nodes, edges).ok;
+}
 
 const DEFAULT_SCORING = {
   wThroughput: 1,
@@ -783,6 +806,12 @@ gameRouter.put('/api/game/:code/architecture', async (c) => {
     .limit(1);
   const existing = existingRows[0] ?? null;
 
+  // House-rules guard: submissions with a non-compliant architecture cannot
+  // raise any recorded score (they may still lower it, e.g. via penalties).
+  // Submissions without an architecture are trusted; our client always sends it.
+  const compliant =
+    body.architecture === undefined || architectureCompliant(body.architecture);
+
   // Merge the new round result into the per-round map.
   const prevRoundScores = (existing?.roundScores ?? {}) as Record<
     string,
@@ -791,10 +820,14 @@ gameRouter.put('/api/game/:code/architecture', async (c) => {
   let roundScores = prevRoundScores;
   let aggregate: number | null = null;
   if (body.round_index !== undefined && body.round_score !== undefined) {
+    const prevRound = prevRoundScores[String(body.round_index)]?.score ?? 0;
+    const roundScore = compliant
+      ? body.round_score
+      : Math.min(body.round_score, prevRound);
     roundScores = {
       ...prevRoundScores,
       [String(body.round_index)]: {
-        score: body.round_score,
+        score: roundScore,
         breakdown: body.round_breakdown ?? null,
         metrics: body.metrics ?? null,
       },
@@ -814,8 +847,10 @@ gameRouter.put('/api/game/:code/architecture', async (c) => {
     updates.score = aggregate;
     updates.roundScores = roundScores as object;
   } else if (body.score !== undefined) {
-    // Flat (legacy / non-round) submission.
-    updates.score = body.score;
+    // Flat (legacy / non-round) submission, same no-gains-while-invalid rule.
+    updates.score = compliant
+      ? body.score
+      : Math.min(body.score, existing?.score ?? 0);
   }
 
   if (!existing) {
@@ -825,7 +860,7 @@ gameRouter.put('/api/game/:code/architecture', async (c) => {
       architecture: (body.architecture ?? session.startingArchitecture ?? null) as
         | object
         | null,
-      score: aggregate ?? body.score ?? 0,
+      score: aggregate ?? (compliant ? body.score ?? 0 : 0),
       scoreBreakdown: (body.score_breakdown ?? null) as object | null,
       roundScores: roundScores as object,
       metrics: (body.metrics ?? null) as object | null,

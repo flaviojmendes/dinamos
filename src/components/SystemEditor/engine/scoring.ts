@@ -44,6 +44,11 @@ export interface ScoreBreakdown {
    * within target while actually serving traffic). Drives the streak bonus.
    */
   sloMet?: boolean;
+  /**
+   * Whether the architecture satisfied the match's house rules this second
+   * (see engine/compliance.ts). False means no points were earned.
+   */
+  compliant?: boolean;
 }
 
 /** Seconds of sustained SLO needed to reach the maximum streak multiplier. */
@@ -93,6 +98,28 @@ export function frameScore(
   return { throughput, availability, latencyPenalty, costPenalty, net, sloMet };
 }
 
+/**
+ * Apply the architecture-compliance gate to a frame's score. A non-compliant
+ * second earns nothing: positive points are zeroed (penalties still bite, so a
+ * melting system keeps hurting) and the SLO streak is broken. Cheating the
+ * topology (cache-only, no database, clients wired into the DB) therefore
+ * freezes the player's score instead of inflating it.
+ */
+export function applyCompliance(
+  frame: ScoreBreakdown,
+  compliant: boolean
+): ScoreBreakdown {
+  if (compliant) return { ...frame, compliant: true };
+  return {
+    ...frame,
+    throughput: 0,
+    availability: 0,
+    net: -frame.latencyPenalty - frame.costPenalty,
+    sloMet: false,
+    compliant: false,
+  };
+}
+
 export interface ScoreAccumulator {
   total: number;
   ticks: number;
@@ -108,6 +135,8 @@ export interface ScoreAccumulator {
   multiplier: number;
   /** Total bonus points earned from streak multipliers. */
   bonus: number;
+  /** Seconds spent with a rule-breaking architecture (earned no points). */
+  nonCompliantTicks: number;
 }
 
 export function emptyAccumulator(): ScoreAccumulator {
@@ -122,6 +151,7 @@ export function emptyAccumulator(): ScoreAccumulator {
     bestStreak: 0,
     multiplier: 1,
     bonus: 0,
+    nonCompliantTicks: 0,
   };
 }
 
@@ -147,5 +177,7 @@ export function accumulate(
     bestStreak: Math.max(acc.bestStreak ?? 0, streak),
     multiplier,
     bonus: (acc.bonus ?? 0) + frameBonus,
+    nonCompliantTicks:
+      (acc.nonCompliantTicks ?? 0) + (frame.compliant === false ? 1 : 0),
   };
 }

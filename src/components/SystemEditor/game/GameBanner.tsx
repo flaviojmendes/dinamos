@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Gamepad2, Clock, Activity, Users, Flag, Layers, Hammer, Lock, Flame } from 'lucide-react';
+import { useTranslation, type UseTranslationResponse } from 'react-i18next';
+import { Gamepad2, Clock, Activity, Users, Flag, Layers, Hammer, Lock, Flame, ShieldAlert } from 'lucide-react';
 import { useGameContext } from './GameContext';
 import GameAnnouncement from './GameAnnouncement';
+import type { ComplianceResult, ComplianceRuleId } from '../engine/compliance';
 
 function fmtClock(totalSec: number): string {
   const s = Math.max(0, Math.floor(totalSec));
@@ -18,11 +19,37 @@ export interface LiveRoundStats {
   multiplier: number;
 }
 
+type TFn = UseTranslationResponse<'translation', undefined>['t'];
+
+/** Short, actionable label for each broken house rule. */
+function ruleLabel(t: TFn, rule: ComplianceRuleId): string {
+  switch (rule) {
+    case 'client_present':
+      return t('editor.game.rules.client_present', { defaultValue: 'add a traffic source (client)' });
+    case 'database_present':
+      return t('editor.game.rules.database_present', { defaultValue: 'keep at least one database' });
+    case 'service_present':
+      return t('editor.game.rules.service_present', { defaultValue: 'keep at least one app server' });
+    case 'path_to_db':
+      return t('editor.game.rules.path_to_db', { defaultValue: 'every client must reach a database through your service tier' });
+    case 'cache_miss_path':
+      return t('editor.game.rules.cache_miss_path', { defaultValue: 'every cache needs a miss path to a database' });
+    case 'no_client_to_db':
+      return t('editor.game.rules.no_client_to_db', { defaultValue: 'clients cannot talk to the database directly' });
+  }
+}
+
 /**
  * Match status bar shown above the canvas in game mode: live status, countdown
  * to start, elapsed/remaining match time, broadcast traffic and player count.
  */
-export default function GameBanner({ liveRound }: { liveRound?: LiveRoundStats }) {
+export default function GameBanner({
+  liveRound,
+  compliance,
+}: {
+  liveRound?: LiveRoundStats;
+  compliance?: ComplianceResult;
+}) {
   const { t } = useTranslation();
   const game = useGameContext();
   const [now, setNow] = useState(Date.now());
@@ -156,6 +183,29 @@ export default function GameBanner({ liveRound }: { liveRound?: LiveRoundStats }
         <span className="text-signal-green font-bold tabular-nums">{Math.round(st.my_score)}</span>
       </div>
     </div>
+
+    {/* House-rules violations: no points accrue until the architecture is
+        valid again. Red while the round is burning score, amber during build. */}
+    {compliance && !compliance.ok && phase !== 'ended' && (
+      <div
+        role="alert"
+        className={`mb-3 flex items-start gap-2 rounded-md border px-3 py-2 font-sans text-xs ${
+          isLive
+            ? 'border-signal-red/60 bg-signal-red/10 text-signal-red'
+            : 'border-signal-amber/50 bg-signal-amber/5 text-signal-amber'
+        }`}
+      >
+        <ShieldAlert className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+        <div>
+          <span className="font-bold">
+            {isLive
+              ? t('editor.game.compliance_live', { defaultValue: 'Invalid architecture: you are not earning points.' })
+              : t('editor.game.compliance_build', { defaultValue: 'Invalid architecture: fix it before the round starts.' })}
+          </span>{' '}
+          {compliance.violations.map((v) => ruleLabel(t, v)).join(' · ')}
+        </div>
+      </div>
+    )}
 
     {/* Frozen-canvas indicator while a round is live */}
     {isLive && (
