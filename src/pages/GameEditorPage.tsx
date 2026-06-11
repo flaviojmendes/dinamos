@@ -1,6 +1,6 @@
-import { useParams, Navigate, Link } from 'react-router-dom';
+import { useParams, useSearchParams, Navigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, Lock } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import {
   GameProvider,
@@ -48,6 +48,26 @@ function GameEditorContent({ code }: { code: string }) {
     );
   }
 
+  if (game.joinDenied) {
+    return (
+      <div className="max-w-md mx-auto p-10 text-center">
+        <Lock className="w-10 h-10 text-signal-amber mx-auto mb-4" />
+        <h1 className="font-sans text-xl font-bold text-tactical-text mb-2">
+          {t('editor.game.private_title', { defaultValue: 'This match is invite-only' })}
+        </h1>
+        <p className="font-sans text-sm text-tactical-dim mb-6">
+          {t('editor.game.private_hint', {
+            defaultValue:
+              'The host made this match private. Ask them for the invite link, it carries the key that lets you in.',
+          })}
+        </p>
+        <Link to="/arena" className="font-sans text-sm text-signal-cyan underline">
+          {t('editor.game.back_to_arena', { defaultValue: 'Back to the arena' })}
+        </Link>
+      </div>
+    );
+  }
+
   if (game.loading && !game.state) {
     return <Spinner label={t('editor.game.loading', { defaultValue: 'Loading match…' })} />;
   }
@@ -61,13 +81,20 @@ function GameEditorContent({ code }: { code: string }) {
 
 export default function GameEditorPage() {
   const { code } = useParams<{ code: string }>();
+  const [searchParams] = useSearchParams();
   const { currentUser, loading } = useAuth();
+  // Private-match invite key, carried by the share link.
+  const joinKey = searchParams.get('key');
 
   if (loading) {
     return <Spinner label="Loading…" />;
   }
   if (!currentUser) {
-    return <Navigate to="/login" replace state={{ from: `/editor/game/${code ?? ''}` }} />;
+    // Keep the query string so the invite key survives the login round-trip.
+    const search = joinKey ? `?key=${encodeURIComponent(joinKey)}` : '';
+    return (
+      <Navigate to="/login" replace state={{ from: `/editor/game/${code ?? ''}${search}` }} />
+    );
   }
   if (!code) {
     return <Navigate to="/editor" replace />;
@@ -75,7 +102,7 @@ export default function GameEditorPage() {
 
   return (
     <div className="min-h-screen bg-canvas-paper dark:bg-tactical-bg">
-      <GameProvider code={code}>
+      <GameProvider code={code} joinKey={joinKey}>
         <GameEditorContent code={code} />
       </GameProvider>
     </div>

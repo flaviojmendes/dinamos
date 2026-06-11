@@ -312,6 +312,12 @@ export const gameSessions = pgTable('game_sessions', {
   // Latest admin broadcast shown to all players in the match.
   announcement: text('announcement'),
   announcementAt: timestamp('announcement_at', { withTimezone: true }),
+  // Anyone with the code can join (true) vs invite-link only (false).
+  joinOpen: boolean('join_open').notNull().default(true),
+  // Whether the match appears in public discovery ("Happening now").
+  listed: boolean('listed').notNull().default(true),
+  // Secret appended to invite links when joinOpen is false.
+  joinKey: varchar('join_key', { length: 32 }),
   createdBy: varchar('created_by', { length: 255 }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),

@@ -184,3 +184,11 @@
   background-color: theme('colors.signal.green');
   border-color: theme('colors.tactical.bg');
 }
+
+/* Reduced motion: flowing edges stay dashed (state is still legible) but the
+   marching-ants animation stops. */
+@media (prefers-reduced-motion: reduce) {
+  .react-flow__edge.animated path {
+    animation: none;
+  }
+}

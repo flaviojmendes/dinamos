@@ -1,15 +1,21 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 export default function Login() {
   const { signInWithGoogle, signInWithGithub } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation();
+
+  // Where to land after sign-in. Protected pages (arena, match links) pass
+  // their path via router state so the user resumes exactly where they were.
+  const fromState = (location.state as { from?: string } | null)?.from;
+  const destination = fromState && fromState.startsWith('/') ? fromState : '/';
 
   // Surface the real Firebase error code alongside the friendly message so a
   // failing login is diagnosable (e.g. auth/unauthorized-domain) instead of an
@@ -27,7 +33,7 @@ export default function Login() {
       setError(null);
       setIsLoading(true);
       await signInWithGoogle();
-      navigate('/');
+      navigate(destination, { replace: true });
     } catch (error) {
       setError(describeError(error, t('auth.error_google')));
     } finally {
@@ -40,7 +46,7 @@ export default function Login() {
       setError(null);
       setIsLoading(true);
       await signInWithGithub();
-      navigate('/');
+      navigate(destination, { replace: true });
     } catch (error) {
       setError(describeError(error, t('auth.error_github')));
     } finally {

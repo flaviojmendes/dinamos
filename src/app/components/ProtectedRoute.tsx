@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 interface ProtectedRouteProps {
@@ -11,10 +11,18 @@ export default function ProtectedRoute({
   requireEmailVerification = true,
 }: ProtectedRouteProps) {
   const { currentUser, isEmailVerified } = useAuth();
+  const location = useLocation();
 
-  // Not logged in - redirect to login
+  // Not logged in - redirect to login, remembering where the user was headed
+  // so Login can send them back (e.g. /arena) after sign-in.
   if (!currentUser) {
-    return <Navigate to="/login" />;
+    return (
+      <Navigate
+        to="/login"
+        replace
+        state={{ from: `${location.pathname}${location.search}` }}
+      />
+    );
   }
 
   // Check if email verification is required and user signed up with email/password

@@ -18,7 +18,7 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { useTranslation } from 'react-i18next';
-import { Play, Pause, SkipForward, RotateCcw, Download, Upload, Settings2, Copy, Unplug, Zap, Trash2, ArrowDownUp, ArrowLeftRight, Undo2, Redo2, Plus, SlidersHorizontal, Boxes, type LucideIcon } from 'lucide-react';
+import { Play, Pause, SkipForward, RotateCcw, Download, Upload, Settings2, Copy, Unplug, Zap, Trash2, ArrowDownUp, ArrowLeftRight, Undo2, Redo2, Plus, SlidersHorizontal, Boxes, X, type LucideIcon } from 'lucide-react';
 
 import {
   NodeConfig,
@@ -50,6 +50,8 @@ import {
 } from './engine/scoring';
 import GameBanner from './game/GameBanner';
 import GameLeaderboard from './game/GameLeaderboard';
+import RoundFX from './game/RoundFX';
+import RoundResults from './game/RoundResults';
 import { useIsTouchLayout } from './ui/useIsTouchLayout';
 import BottomSheet from './ui/BottomSheet';
 import MobilePalette from './ui/MobilePalette';
@@ -883,6 +885,11 @@ function EditorInner({ gameId }: { gameId?: string }) {
 
   const selectedConfig = nodes.find((n) => n.id === selectedId)?.data.config ?? null;
   const nodeOptions = nodes.map((n) => ({ id: n.id, label: n.data.config.label }));
+  // id -> label map used by the chaos telegraphs in RoundFX.
+  const nodeLabels = useMemo(
+    () => Object.fromEntries(nodes.map((n) => [n.id, n.data.config.label])),
+    [nodes],
+  );
 
   // Live cloud cost that reacts to capacity edits (service time, concurrency,
   // replicas) immediately — even when the sim is idle. Uses live metrics when a
@@ -898,8 +905,9 @@ function EditorInner({ gameId }: { gameId?: string }) {
     }, 0);
   }, [nodes, metrics, provider]);
 
-  const btn = `px-3 ${isTouch ? 'py-2.5 min-h-[44px]' : 'py-2'} font-sans text-sm rounded-md border transition-colors flex items-center gap-2 whitespace-nowrap shrink-0`;
-  const iconBtn = `${isTouch ? 'p-2.5 min-h-[44px] min-w-[44px]' : 'p-2'} rounded-md border transition-colors flex items-center justify-center shrink-0`;
+  const focusRing = 'focus:outline-none focus-visible:ring-2 focus-visible:ring-signal-cyan/70';
+  const btn = `px-3 ${isTouch ? 'py-2.5 min-h-[44px]' : 'py-2'} font-sans text-sm rounded-md border transition-colors flex items-center gap-2 whitespace-nowrap shrink-0 ${focusRing}`;
+  const iconBtn = `${isTouch ? 'p-2.5 min-h-[44px] min-w-[44px]' : 'p-2'} rounded-md border transition-colors flex items-center justify-center shrink-0 ${focusRing}`;
 
   return (
     <MetricsContext.Provider value={{ metrics, running, selectedId }}>
@@ -910,7 +918,19 @@ function EditorInner({ gameId }: { gameId?: string }) {
         </h1>
 
         {/* Game-mode status bar (replaces manual sim controls when in a match) */}
-        {gameActive && <GameBanner />}
+        {gameActive && (
+          <GameBanner
+            liveRound={{
+              score: scoreRef.current.total,
+              streak: scoreRef.current.streak,
+              multiplier: scoreRef.current.multiplier,
+            }}
+          />
+        )}
+        {/* Round splashes, chaos telegraphs, countdowns and rank toasts. */}
+        {gameActive && <RoundFX nodeLabels={nodeLabels} />}
+        {/* Post-round debrief and final standings. */}
+        {gameActive && <RoundResults />}
 
         {/* Toolbar */}
         <div className={`flex items-center gap-2 mb-3 ${isTouch ? 'overflow-x-auto pb-1' : 'flex-wrap'}`}>
@@ -929,6 +949,19 @@ function EditorInner({ gameId }: { gameId?: string }) {
               <button onClick={reset} className={`${btn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}>
                 <RotateCcw className="w-4 h-4" /> {t('editor.buttons.reset', { defaultValue: 'Reset' })}
               </button>
+
+              {/* Live sim clock: lets users line chaos events (in seconds) up
+                  with what they see, and makes the running state unmissable. */}
+              <div
+                title={t('editor.labels.sim_time', { defaultValue: 'Simulated time' })}
+                className="flex items-center gap-1.5 px-2 font-mono text-xs text-tactical-dim shrink-0 tabular-nums"
+              >
+                <span
+                  aria-hidden
+                  className={`w-2 h-2 rounded-full ${running ? 'bg-signal-green animate-pulse motion-reduce:animate-none' : 'bg-tactical-line'}`}
+                />
+                t={Math.floor(simRef.current?.currentTime ?? 0)}s
+              </div>
 
               <div className="border-l border-tactical-line h-8 mx-1 shrink-0" />
             </>
@@ -994,7 +1027,7 @@ function EditorInner({ gameId }: { gameId?: string }) {
                   type="number"
                   value={seed}
                   onChange={(e) => setSeed(Number(e.target.value))}
-                  className="w-20 bg-tactical-raised border border-tactical-border px-2 py-1 font-mono text-xs text-tactical-text"
+                  className="w-20 bg-tactical-raised border border-tactical-border rounded-md px-2 py-1 font-mono text-xs text-tactical-text"
                 />
               </label>
 
@@ -1034,7 +1067,16 @@ function EditorInner({ gameId }: { gameId?: string }) {
         </div>
 
         {importError && (
-          <div className="bg-signal-red/10 border border-signal-red rounded-lg p-3 text-signal-red font-sans text-sm mb-3">{importError}</div>
+          <div role="alert" className="flex items-start justify-between gap-3 bg-signal-red/10 border border-signal-red rounded-lg p-3 text-signal-red font-sans text-sm mb-3">
+            <span>{importError}</span>
+            <button
+              onClick={() => setImportError(null)}
+              aria-label={t('editor.errors.dismiss', { defaultValue: 'Dismiss error' })}
+              className={`shrink-0 hover:opacity-70 transition-opacity ${focusRing} rounded`}
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         )}
 
         {/* Scenario controls (admin-driven in game mode, so hidden for players;
@@ -1133,6 +1175,24 @@ function EditorInner({ gameId }: { gameId?: string }) {
               <Background variant={BackgroundVariant.Dots} gap={14} size={1} />
             </ReactFlow>
 
+            {/* Teaching empty state: shows how to get the first node on canvas
+                instead of leaving a blank dot grid. Non-interactive overlay. */}
+            {nodes.length === 0 && (
+              <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+                <div className="max-w-xs text-center font-sans px-4">
+                  <Boxes className="w-8 h-8 mx-auto mb-3 text-tactical-label" aria-hidden />
+                  <div className="text-sm font-medium text-slate-700 dark:text-tactical-text mb-1">
+                    {t('editor.canvas.empty_title', { defaultValue: 'Build your first system' })}
+                  </div>
+                  <p className="text-xs leading-relaxed text-slate-500 dark:text-tactical-dim">
+                    {isTouch
+                      ? t('editor.canvas.empty_hint_touch', { defaultValue: 'Tap Components to add a node, then drag between handles to connect them.' })
+                      : t('editor.canvas.empty_hint', { defaultValue: 'Drag a component from the palette onto the canvas, then drag between handles to connect nodes.' })}
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* Touch: floating action bar replaces right-click context menus. */}
             {isTouch && selectedId && (
               <SelectionActionBar
@@ -1157,7 +1217,11 @@ function EditorInner({ gameId }: { gameId?: string }) {
             {menu && (
               <div
                 className="absolute z-50 min-w-[180px] bg-white dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-lg shadow-lg py-1"
-                style={{ left: Math.min(menu.x, (canvasRef.current?.clientWidth ?? 9999) - 190), top: menu.y }}
+                style={{
+                  left: Math.max(0, Math.min(menu.x, (canvasRef.current?.clientWidth ?? 9999) - 190)),
+                  // Keep the tallest menu variant (node: 5 items + divider) inside the canvas.
+                  top: Math.max(0, Math.min(menu.y, (canvasRef.current?.clientHeight ?? 9999) - (menu.kind === 'node' ? 200 : 90))),
+                }}
                 onClick={(e) => e.stopPropagation()}
               >
                 {menu.kind === 'node' ? (
@@ -1277,13 +1341,13 @@ function EditorInner({ gameId }: { gameId?: string }) {
                 >
                   <div className="p-4 space-y-4">
                     <div>
-                      <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-2">{t('editor.menu.arrange_vertical', { defaultValue: 'Arrange' })}</div>
+                      <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-2">{t('editor.mobile.arrange', { defaultValue: 'Arrange' })}</div>
                       <div className="flex gap-2">
                         <button onClick={() => { applyLayout('vertical'); setSheet(null); }} className={`${btn} flex-1 justify-center border-tactical-border text-tactical-dim`}>
-                          <ArrowDownUp className="w-4 h-4" /> {t('editor.buttons.arrange_vertical', { defaultValue: 'Vertical' })}
+                          <ArrowDownUp className="w-4 h-4" /> {t('editor.mobile.vertical', { defaultValue: 'Vertical' })}
                         </button>
                         <button onClick={() => { applyLayout('horizontal'); setSheet(null); }} className={`${btn} flex-1 justify-center border-tactical-border text-tactical-dim`}>
-                          <ArrowLeftRight className="w-4 h-4" /> {t('editor.buttons.arrange_horizontal', { defaultValue: 'Horizontal' })}
+                          <ArrowLeftRight className="w-4 h-4" /> {t('editor.mobile.horizontal', { defaultValue: 'Horizontal' })}
                         </button>
                       </div>
                     </div>
@@ -1302,7 +1366,7 @@ function EditorInner({ gameId }: { gameId?: string }) {
                         type="number"
                         value={seed}
                         onChange={(e) => setSeed(Number(e.target.value))}
-                        className="w-full bg-tactical-raised border border-tactical-border px-2 py-2 font-mono text-sm text-tactical-text"
+                        className="w-full bg-tactical-raised border border-tactical-border rounded-md px-2 py-2 font-mono text-sm text-tactical-text"
                       />
                     </label>
 

@@ -3,17 +3,16 @@ import { HTTPException } from 'hono/http-exception';
 import { and, desc, eq, inArray } from 'drizzle-orm';
 import { db } from '../db/client.js';
 import { gameSessions, gamePlayers, users } from '../db/schema.js';
-import {
-  authRequired,
-  adminRequired,
-  type AppVariables,
-} from '../middleware/auth.js';
+import { getUserContext } from '../db/repo.js';
+import { authRequired, type AppVariables } from '../middleware/auth.js';
 
 export const gameRouter = new Hono<{ Variables: AppVariables }>();
 
-// Admin-only mutations live under /api/admin/game*.
-gameRouter.use('/api/admin/game', authRequired, adminRequired);
-gameRouter.use('/api/admin/game/*', authRequired, adminRequired);
+// /api/games/live is public (the arena landing page lists running matches
+// without a login). Everything else requires a signed-in user; host mutations
+// additionally require being the match creator (or a platform Admin).
+gameRouter.use('/api/games/host', authRequired);
+gameRouter.use('/api/games/host/*', authRequired);
 // Player-facing routes only require a logged-in user.
 gameRouter.use('/api/game/*', authRequired);
 
@@ -32,6 +31,8 @@ const DEFAULT_LOAD_PROFILE = { type: 'constant' as const };
 
 interface RoundConfig {
   name?: string;
+  /** Player-facing one-liner describing the round's scenario beat. */
+  story?: string;
   /** Build window (seconds) before this round goes live. Informational. */
   intervalSec: number;
   /** Live round length in seconds. */
@@ -46,6 +47,7 @@ interface RoundConfig {
 function normalizeRound(raw: Partial<RoundConfig> | undefined, idx: number): RoundConfig {
   return {
     name: raw?.name ?? `Round ${idx + 1}`,
+    story: raw?.story,
     intervalSec: Number(raw?.intervalSec ?? 60),
     durationSec: Number(raw?.durationSec ?? 120),
     loadProfile: raw?.loadProfile ?? DEFAULT_LOAD_PROFILE,
@@ -53,6 +55,17 @@ function normalizeRound(raw: Partial<RoundConfig> | undefined, idx: number): Rou
     scoringConfig: { ...DEFAULT_SCORING, ...(raw?.scoringConfig ?? {}) },
     weight: Number(raw?.weight ?? 1),
   };
+}
+
+/** Non-sensitive round metadata safe to show players and the audience. */
+function publicRounds(rounds: RoundConfig[]) {
+  return rounds.map((r) => ({
+    name: r.name ?? null,
+    story: r.story ?? null,
+    interval_sec: r.intervalSec,
+    duration_sec: r.durationSec,
+    weight: r.weight,
+  }));
 }
 
 /** Read the (possibly null) rounds column as a typed array. */
@@ -90,6 +103,16 @@ function generateCode(): string {
   return out;
 }
 
+/** Secret for private-match invite links. */
+function generateJoinKey(): string {
+  const alphabet = 'abcdefghijkmnpqrstuvwxyz23456789';
+  let out = '';
+  for (let i = 0; i < 16; i++) {
+    out += alphabet[Math.floor(Math.random() * alphabet.length)];
+  }
+  return out;
+}
+
 async function generateUniqueCode(): Promise<string> {
   for (let attempt = 0; attempt < 8; attempt++) {
     const code = generateCode();
@@ -111,6 +134,25 @@ async function getSessionByCode(code: string): Promise<SessionRow | null> {
     .where(eq(gameSessions.code, code))
     .limit(1);
   return rows[0] ?? null;
+}
+
+async function isAdmin(userId: string): Promise<boolean> {
+  const ctx = await getUserContext(userId);
+  const roleName = ctx?.role?.name ?? ctx?.user.role ?? '';
+  return roleName === 'Admin';
+}
+
+/**
+ * Load a match for host-side management: 404 when missing, 403 unless the
+ * requester created it (or is a platform Admin).
+ */
+async function getManagedSession(code: string, userId: string): Promise<SessionRow> {
+  const session = await getSessionByCode(code);
+  if (!session) throw new HTTPException(404, { message: 'Match not found' });
+  if (session.createdBy !== userId && !(await isAdmin(userId))) {
+    throw new HTTPException(403, { message: 'Only the match host can manage it' });
+  }
+  return session;
 }
 
 function toIso(value: Date | string | null | undefined): string | null {
@@ -157,6 +199,9 @@ function adminSessionToDict(session: SessionRow) {
     round_ends_at: toIso(session.roundEndsAt),
     announcement: session.announcement ?? null,
     announcement_at: toIso(session.announcementAt),
+    join_open: session.joinOpen ?? true,
+    listed: session.listed ?? true,
+    join_key: session.joinKey ?? null,
     created_by: session.createdBy,
     created_at: toIso(session.createdAt),
     updated_at: toIso(session.updatedAt),
@@ -164,20 +209,70 @@ function adminSessionToDict(session: SessionRow) {
   };
 }
 
-// ==================== Admin endpoints ====================
+// ==================== Public discovery ====================
 
-// List recent matches for the admin console.
-gameRouter.get('/api/admin/game', async (c) => {
+// Live matches for the arena landing page. Public (no auth): exposes only
+// non-sensitive metadata so a marketing page can show what's happening now.
+gameRouter.get('/api/games/live', async (c) => {
   const rows = await db
     .select()
     .from(gameSessions)
+    .where(
+      and(
+        inArray(gameSessions.status, ['lobby', 'running', 'paused']),
+        eq(gameSessions.listed, true)
+      )
+    )
+    .orderBy(desc(gameSessions.createdAt))
+    .limit(24);
+
+  const ids = rows.map((s) => s.id);
+  const playerRows = ids.length
+    ? await db
+        .select({ sessionId: gamePlayers.sessionId })
+        .from(gamePlayers)
+        .where(inArray(gamePlayers.sessionId, ids))
+    : [];
+  const counts = new Map<number, number>();
+  for (const p of playerRows) {
+    counts.set(p.sessionId, (counts.get(p.sessionId) ?? 0) + 1);
+  }
+
+  return c.json({
+    server_time: new Date().toISOString(),
+    matches: rows.map((s) => ({
+      code: s.code,
+      name: s.name,
+      status: s.status,
+      phase: s.phase ?? 'lobby',
+      join_open: s.joinOpen ?? true,
+      current_round: s.currentRound ?? 0,
+      total_rounds: getRounds(s).length,
+      player_count: counts.get(s.id) ?? 0,
+      starts_at: toIso(s.startsAt),
+      round_ends_at: toIso(s.roundEndsAt),
+      created_at: toIso(s.createdAt),
+    })),
+  });
+});
+
+// ==================== Host endpoints ====================
+
+// List the requester's matches (platform Admins see everything).
+gameRouter.get('/api/games/host', async (c) => {
+  const user = c.get('user');
+  const admin = await isAdmin(user.uid);
+  const rows = await db
+    .select()
+    .from(gameSessions)
+    .where(admin ? undefined : eq(gameSessions.createdBy, user.uid))
     .orderBy(desc(gameSessions.createdAt))
     .limit(50);
   return c.json({ sessions: rows.map(adminSessionToDict) });
 });
 
-// Create a new match.
-gameRouter.post('/api/admin/game', async (c) => {
+// Create a new match. Any signed-in user can host.
+gameRouter.post('/api/games/host', async (c) => {
   const user = c.get('user');
   const body = await c.req.json<{
     name?: string;
@@ -191,6 +286,8 @@ gameRouter.post('/api/admin/game', async (c) => {
     duration_sec?: number | null;
     starts_at?: string | null;
     rounds?: Partial<RoundConfig>[];
+    join_open?: boolean;
+    listed?: boolean;
   }>();
 
   // Normalize the rounds. If none provided, derive a single round from the
@@ -230,6 +327,10 @@ gameRouter.post('/api/admin/game', async (c) => {
       budget: (body.budget ?? null) as object | null,
       durationSec: body.duration_sec ?? null,
       rounds: rounds as object,
+      joinOpen: body.join_open ?? true,
+      listed: body.listed ?? true,
+      // Every match gets a key; it is only enforced when joinOpen is false.
+      joinKey: generateJoinKey(),
       createdBy: user.uid,
     })
     .returning();
@@ -237,18 +338,16 @@ gameRouter.post('/api/admin/game', async (c) => {
   return c.json(adminSessionToDict(inserted[0]), 201);
 });
 
-// Full admin view of a single match (config + live leaderboard).
-gameRouter.get('/api/admin/game/:code', async (c) => {
-  const session = await getSessionByCode(c.req.param('code'));
-  if (!session) throw new HTTPException(404, { message: 'Match not found' });
+// Full host view of a single match (config + live leaderboard).
+gameRouter.get('/api/games/host/:code', async (c) => {
+  const session = await getManagedSession(c.req.param('code'), c.get('user').uid);
   const leaderboard = await buildLeaderboard(session.id);
   return c.json({ ...adminSessionToDict(session), leaderboard });
 });
 
 // Update a match: status transitions, broadcast traffic, schedule, etc.
-gameRouter.patch('/api/admin/game/:code', async (c) => {
-  const session = await getSessionByCode(c.req.param('code'));
-  if (!session) throw new HTTPException(404, { message: 'Match not found' });
+gameRouter.patch('/api/games/host/:code', async (c) => {
+  const session = await getManagedSession(c.req.param('code'), c.get('user').uid);
 
   const body = await c.req.json<{
     // 'start'/'pause'/'resume'/'end' are legacy flat-match controls.
@@ -272,11 +371,15 @@ gameRouter.patch('/api/admin/game/:code', async (c) => {
     allow_delete_starting?: boolean;
     locked_node_ids?: string[];
     rounds?: Partial<RoundConfig>[];
+    join_open?: boolean;
+    listed?: boolean;
   }>();
 
   const updates: Partial<typeof gameSessions.$inferInsert> = { updatedAt: new Date() };
 
   if (body.name !== undefined) updates.name = body.name;
+  if (body.join_open !== undefined) updates.joinOpen = body.join_open;
+  if (body.listed !== undefined) updates.listed = body.listed;
   if (body.seed !== undefined) updates.seed = body.seed;
   if (body.starts_at !== undefined)
     updates.startsAt = body.starts_at ? new Date(body.starts_at) : null;
@@ -380,9 +483,8 @@ gameRouter.patch('/api/admin/game/:code', async (c) => {
 });
 
 // Inject a chaos event into the live broadcast timeline.
-gameRouter.post('/api/admin/game/:code/chaos', async (c) => {
-  const session = await getSessionByCode(c.req.param('code'));
-  if (!session) throw new HTTPException(404, { message: 'Match not found' });
+gameRouter.post('/api/games/host/:code/chaos', async (c) => {
+  const session = await getManagedSession(c.req.param('code'), c.get('user').uid);
 
   const body = await c.req.json<{
     type: 'killNode' | 'latencyInjection' | 'partition';
@@ -418,15 +520,12 @@ gameRouter.post('/api/admin/game/:code/chaos', async (c) => {
   return c.json({ chaos_events: chaosEvents });
 });
 
-// Live spectator view: every player's current architecture + activity stats.
-gameRouter.get('/api/admin/game/:code/players', async (c) => {
-  const session = await getSessionByCode(c.req.param('code'));
-  if (!session) throw new HTTPException(404, { message: 'Match not found' });
-
+/** Per-player live state shared by the admin spectator and the audience stage. */
+async function buildSpectatorPlayers(sessionId: number) {
   const players = await db
     .select()
     .from(gamePlayers)
-    .where(eq(gamePlayers.sessionId, session.id))
+    .where(eq(gamePlayers.sessionId, sessionId))
     .orderBy(desc(gamePlayers.score));
 
   const userIds = players.map((p) => p.userId);
@@ -442,7 +541,7 @@ gameRouter.get('/api/admin/game/:code/players', async (c) => {
     : [];
   const userMap = new Map(userRows.map((u) => [u.id, u]));
 
-  const result = players.map((p, i) => {
+  return players.map((p, i) => {
     const arch = (p.architecture ?? null) as {
       nodes?: unknown[];
       edges?: unknown[];
@@ -465,14 +564,18 @@ gameRouter.get('/api/admin/game/:code/players', async (c) => {
       last_submitted_at: toIso(p.lastSubmittedAt),
     };
   });
+}
 
+// Live spectator view: every player's current architecture + activity stats.
+gameRouter.get('/api/games/host/:code/players', async (c) => {
+  const session = await getManagedSession(c.req.param('code'), c.get('user').uid);
+  const result = await buildSpectatorPlayers(session.id);
   return c.json({ server_time: new Date().toISOString(), players: result });
 });
 
 // Broadcast (or clear) an announcement shown to all players in the match.
-gameRouter.post('/api/admin/game/:code/announce', async (c) => {
-  const session = await getSessionByCode(c.req.param('code'));
-  if (!session) throw new HTTPException(404, { message: 'Match not found' });
+gameRouter.post('/api/games/host/:code/announce', async (c) => {
+  const session = await getManagedSession(c.req.param('code'), c.get('user').uid);
 
   const body = await c.req.json<{ message?: string }>();
   const message = (body.message ?? '').trim();
@@ -490,9 +593,8 @@ gameRouter.post('/api/admin/game/:code/announce', async (c) => {
 });
 
 // Remove a player from a match (kick). They can re-join unless the match ended.
-gameRouter.delete('/api/admin/game/:code/players/:userId', async (c) => {
-  const session = await getSessionByCode(c.req.param('code'));
-  if (!session) throw new HTTPException(404, { message: 'Match not found' });
+gameRouter.delete('/api/games/host/:code/players/:userId', async (c) => {
+  const session = await getManagedSession(c.req.param('code'), c.get('user').uid);
   const userId = c.req.param('userId');
 
   await db
@@ -504,10 +606,9 @@ gameRouter.delete('/api/admin/game/:code/players/:userId', async (c) => {
   return c.json({ ok: true });
 });
 
-// Delete (soft-end) a match.
-gameRouter.delete('/api/admin/game/:code', async (c) => {
-  const session = await getSessionByCode(c.req.param('code'));
-  if (!session) throw new HTTPException(404, { message: 'Match not found' });
+// Delete a match.
+gameRouter.delete('/api/games/host/:code', async (c) => {
+  const session = await getManagedSession(c.req.param('code'), c.get('user').uid);
   await db.delete(gameSessions).where(eq(gameSessions.id, session.id));
   return c.json({ ok: true });
 });
@@ -581,8 +682,10 @@ async function playerSessionToDict(session: SessionRow, userId: string) {
     scoring_config: session.scoringConfig ?? DEFAULT_SCORING,
     budget: session.budget ?? null,
     phase: session.phase ?? 'lobby',
+    join_open: session.joinOpen ?? true,
     current_round: session.currentRound ?? 0,
     total_rounds: getRounds(session).length,
+    rounds_public: publicRounds(getRounds(session)),
     round_started_at: toIso(session.roundStartedAt),
     round_ends_at: toIso(session.roundEndsAt),
     announcement: session.announcement ?? null,
@@ -612,6 +715,10 @@ gameRouter.post('/api/game/:code/join', async (c) => {
   if (session.status === 'ended')
     throw new HTTPException(409, { message: 'This match has already ended' });
 
+  const body = await c.req
+    .json<{ key?: string }>()
+    .catch(() => ({}) as { key?: string });
+
   const existing = await db
     .select()
     .from(gamePlayers)
@@ -619,6 +726,17 @@ gameRouter.post('/api/game/:code/join', async (c) => {
       and(eq(gamePlayers.sessionId, session.id), eq(gamePlayers.userId, user.uid))
     )
     .limit(1);
+
+  // Private matches require the invite key. Players already in the match (and
+  // the host) can always rejoin, e.g. after a refresh without the key.
+  if (
+    existing.length === 0 &&
+    session.joinOpen === false &&
+    session.createdBy !== user.uid &&
+    (!session.joinKey || body.key !== session.joinKey)
+  ) {
+    throw new HTTPException(403, { message: 'This match is invite-only' });
+  }
 
   if (existing.length === 0) {
     await db
@@ -734,4 +852,34 @@ gameRouter.get('/api/game/:code/leaderboard', async (c) => {
   if (!session) throw new HTTPException(404, { message: 'Match not found' });
   const leaderboard = await buildLeaderboard(session.id);
   return c.json({ leaderboard });
+});
+
+// Audience stage view: full live state for projecting scores to a room.
+// Requires login (any user), not admin, so a venue screen can stay open on a
+// regular account while the host drives the match from the admin console.
+gameRouter.get('/api/game/:code/spectate', async (c) => {
+  const session = await getSessionByCode(c.req.param('code'));
+  if (!session) throw new HTTPException(404, { message: 'Match not found' });
+
+  const players = await buildSpectatorPlayers(session.id);
+  const rounds = getRounds(session);
+
+  return c.json({
+    code: session.code,
+    name: session.name,
+    status: session.status,
+    phase: session.phase ?? 'lobby',
+    current_round: session.currentRound ?? 0,
+    total_rounds: rounds.length,
+    rounds_public: publicRounds(rounds),
+    starts_at: toIso(session.startsAt),
+    round_started_at: toIso(session.roundStartedAt),
+    round_ends_at: toIso(session.roundEndsAt),
+    load_profile: session.loadProfile ?? DEFAULT_LOAD_PROFILE,
+    announcement: session.announcement ?? null,
+    announcement_at: toIso(session.announcementAt),
+    player_count: players.length,
+    server_time: new Date().toISOString(),
+    players,
+  });
 });

@@ -5,6 +5,9 @@ import {
   frameScore,
   emptyAccumulator,
   accumulate,
+  streakMultiplier,
+  STREAK_RAMP_SEC,
+  STREAK_MAX_MULTIPLIER,
   ScoringConfig,
 } from '../scoring';
 import { SystemMetrics } from '../types';
@@ -88,5 +91,56 @@ describe('accumulate', () => {
     expect(acc.total).toBe(0);
     expect(acc.ticks).toBe(2);
     expect(acc.latencyPenalty).toBe(100);
+  });
+});
+
+describe('SLO streak', () => {
+  const cfg = normalizeScoring();
+  const healthy = () =>
+    frameScore(metrics({ offeredLoad: 100, totalThroughput: 100, successRate: 1, p95: 50 }), cfg);
+  const failing = () =>
+    frameScore(metrics({ offeredLoad: 100, totalThroughput: 10, successRate: 0.5, p95: 900 }), cfg);
+
+  it('marks SLO met only when serving traffic within targets', () => {
+    expect(healthy().sloMet).toBe(true);
+    expect(failing().sloMet).toBe(false);
+    // No traffic at all never builds a streak.
+    expect(frameScore(metrics({ offeredLoad: 0, successRate: 1, p95: 0 }), cfg).sloMet).toBe(false);
+  });
+
+  it('ramps the multiplier from 1x to the cap', () => {
+    expect(streakMultiplier(0)).toBe(1);
+    expect(streakMultiplier(STREAK_RAMP_SEC)).toBe(STREAK_MAX_MULTIPLIER);
+    expect(streakMultiplier(STREAK_RAMP_SEC * 10)).toBe(STREAK_MAX_MULTIPLIER);
+    expect(streakMultiplier(STREAK_RAMP_SEC / 2)).toBeCloseTo(1 + (STREAK_MAX_MULTIPLIER - 1) / 2);
+  });
+
+  it('builds streak on healthy seconds and earns a bonus', () => {
+    let acc = emptyAccumulator();
+    for (let i = 0; i < 10; i++) acc = accumulate(acc, healthy());
+    expect(acc.streak).toBe(10);
+    expect(acc.bestStreak).toBe(10);
+    expect(acc.multiplier).toBeGreaterThan(1);
+    expect(acc.bonus).toBeGreaterThan(0);
+    // Total exceeds what the raw net alone would have produced.
+    const rawNet = healthy().net * 10;
+    expect(acc.total).toBeGreaterThan(rawNet);
+  });
+
+  it('resets the streak (but keeps bestStreak) on a bad second', () => {
+    let acc = emptyAccumulator();
+    for (let i = 0; i < 20; i++) acc = accumulate(acc, healthy());
+    acc = accumulate(acc, failing());
+    expect(acc.streak).toBe(0);
+    expect(acc.bestStreak).toBe(20);
+    expect(acc.multiplier).toBe(1);
+  });
+
+  it('frames without sloMet keep legacy behavior (no streak, no bonus)', () => {
+    let acc = emptyAccumulator();
+    acc = accumulate(acc, { throughput: 10, availability: 5, latencyPenalty: 0, costPenalty: 0, net: 15 });
+    expect(acc.streak).toBe(0);
+    expect(acc.bonus).toBe(0);
+    expect(acc.total).toBe(15);
   });
 });

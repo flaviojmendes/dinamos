@@ -91,7 +91,9 @@ import {
 const SynchronizationAlgorithms = React.lazy(() => import('./components/ConsistencyStrategies/SynchronizationAlgorithms'));
 const SimpleSystemEditorPage = React.lazy(() => import("./pages/SimpleSystemEditorPage"));
 const GameEditorPage = React.lazy(() => import("./pages/GameEditorPage"));
-const AdminGameConsole = React.lazy(() => import("./pages/AdminGameConsole"));
+const GameStagePage = React.lazy(() => import("./pages/GameStagePage"));
+const GameArenaPage = React.lazy(() => import("./pages/GameArenaPage"));
+const HostConsole = React.lazy(() => import("./pages/HostConsole"));
 import { LanguageSwitcher } from './components/Common';
 import ThemeToggle from "./components/Common/ThemeToggle";
 import TopStatusBar from "./components/Common/TopStatusBar";
@@ -1432,6 +1434,14 @@ export default function App() {
   });
   const [isMobile, setIsMobile] = useState(false);
   const [navFilter, setNavFilter] = useState('');
+  const { pathname } = useLocation();
+  // Arena surfaces are standalone (a marketing domain points straight at
+  // /arena) and the stage view is a projector screen: both render without the
+  // app shell (sidebar, top bar, palette) and carry their own Dinamos CTA.
+  const chromeless =
+    pathname === '/arena' ||
+    pathname.startsWith('/arena/') ||
+    /^\/editor\/game\/[^/]+\/stage\/?$/.test(pathname);
   const { user, signOut } = useAuth();
   const { isCompleted, progress, updateTrigger } = useContentProgress();
   const { t } = useTranslation();
@@ -1779,7 +1789,7 @@ export default function App() {
     <div className="min-h-screen bg-canvas-paper dark:bg-canvas-dark text-slate-900 dark:text-slate-100 transition-colors duration-300">
       <div className="flex h-screen overflow-hidden">
         {/* Mobile Header */}
-        {isMobile && user && (
+        {isMobile && user && !chromeless && (
           <div className="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-tactical-surface/95 backdrop-blur-xl border-b border-slate-200 dark:border-tactical-border px-4 py-3">
             <div className="flex items-center justify-between">
               <Link to="/" className="text-xl font-bold bg-gradient-to-r from-brand-500 to-brand-700 bg-clip-text text-transparent">
@@ -1808,7 +1818,7 @@ export default function App() {
         )}
 
         {/* Sidebar */}
-        {user && (
+        {user && !chromeless && (
           <aside
             className={`${
               isMobile
@@ -1987,19 +1997,19 @@ export default function App() {
         )}
 
         {/* Overlay for mobile */}
-        {isMobile && isSidebarOpen && (
+        {isMobile && isSidebarOpen && !chromeless && (
           <div 
             className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-30"
             onClick={() => setIsSidebarOpen(false)}
           />
         )}
 
-        {user && <CommandPalette />}
-        {user && <AnnouncementModal />}
+        {user && !chromeless && <CommandPalette />}
+        {user && !chromeless && <AnnouncementModal />}
 
         {/* Main content */}
-        <main className={`flex-1 overflow-y-auto bg-canvas-paper dark:bg-canvas-dark ${isMobile ? 'pt-16' : ''}`}>
-          {user && <TopStatusBar isSidebarOpen={isSidebarOpen} onToggleSidebar={toggleSidebar} />}
+        <main className={`flex-1 overflow-y-auto bg-canvas-paper dark:bg-canvas-dark ${isMobile && !chromeless ? 'pt-16' : ''}`}>
+          {user && !chromeless && <TopStatusBar isSidebarOpen={isSidebarOpen} onToggleSidebar={toggleSidebar} />}
           <React.Suspense fallback={<DesignLabRouteFallback />}>
           <Routes>
             {/* Content-only pages rendered from MDX (src/content/**). One route per
@@ -2053,6 +2063,26 @@ export default function App() {
             <Route path="/terms-and-conditions" element={<TermsAndConditionsPage />} />
             <Route path="/editor" element={<SimpleSystemEditorPage />} />
             <Route path="/editor/game/:code" element={<GameEditorPage />} />
+            <Route path="/editor/game/:code/stage" element={<GameStagePage />} />
+            {/* Arena landing page (marketing domain points here). Sign-in is
+                required; ProtectedRoute remembers /arena and Login returns
+                the user here after authenticating. */}
+            <Route
+              path="/arena"
+              element={
+                <DLProtectedRoute>
+                  <GameArenaPage />
+                </DLProtectedRoute>
+              }
+            />
+            <Route
+              path="/arena/host"
+              element={
+                <DLProtectedRoute>
+                  <HostConsole />
+                </DLProtectedRoute>
+              }
+            />
             
             {/* Preferences routes */}
             <Route 
@@ -2369,14 +2399,8 @@ export default function App() {
                 </DLProtectedRoute>
               }
             />
-            <Route
-              path="/admin/game"
-              element={
-                <DLProtectedRoute>
-                  <AdminGameConsole />
-                </DLProtectedRoute>
-              }
-            />
+            {/* Legacy admin console URL: hosting is open to everyone now. */}
+            <Route path="/admin/game" element={<Navigate to="/arena/host" replace />} />
 
             {/* Catch-all: unknown URLs (legacy/mistyped routes such as the old
                 Portuguese `/simulador` links) redirect home instead of rendering

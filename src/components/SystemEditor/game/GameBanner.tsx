@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Gamepad2, Clock, Activity, Users, Flag, Layers, Hammer, Lock } from 'lucide-react';
+import { Gamepad2, Clock, Activity, Users, Flag, Layers, Hammer, Lock, Flame } from 'lucide-react';
 import { useGameContext } from './GameContext';
 import GameAnnouncement from './GameAnnouncement';
 
@@ -11,11 +11,18 @@ function fmtClock(totalSec: number): string {
   return `${m}:${r.toString().padStart(2, '0')}`;
 }
 
+/** Live round-local stats fed by the editor's score accumulator. */
+export interface LiveRoundStats {
+  score: number;
+  streak: number;
+  multiplier: number;
+}
+
 /**
  * Match status bar shown above the canvas in game mode: live status, countdown
  * to start, elapsed/remaining match time, broadcast traffic and player count.
  */
-export default function GameBanner() {
+export default function GameBanner({ liveRound }: { liveRound?: LiveRoundStats }) {
   const { t } = useTranslation();
   const game = useGameContext();
   const [now, setNow] = useState(Date.now());
@@ -70,6 +77,12 @@ export default function GameBanner() {
     ? t('editor.game.ended', { defaultValue: 'Ended' })
     : t('editor.game.lobby', { defaultValue: 'Lobby' });
 
+  // Scenario beat: the live round's name, or the next round's while building.
+  const roundsMeta = st.rounds_public ?? [];
+  const liveMeta = isLive ? roundsMeta[Math.max(0, st.current_round - 1)] : null;
+  const nextMeta = phase === 'interval' ? roundsMeta[st.current_round] : null;
+  const streakActive = isLive && liveRound && liveRound.multiplier > 1;
+
   return (
     <>
     <GameAnnouncement />
@@ -92,6 +105,24 @@ export default function GameBanner() {
           <span className="text-tactical-text font-bold tabular-nums">
             {Math.max(isLive ? st.current_round : st.current_round + (phase === 'interval' ? 1 : 0), 0)}/{st.total_rounds}
           </span>
+          {liveMeta?.name && <span className="text-tactical-text">· {liveMeta.name}</span>}
+          {nextMeta?.name && (
+            <span className="text-tactical-label">
+              · {t('editor.game.next_round_name', { defaultValue: 'Next: {{name}}', name: nextMeta.name })}
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* SLO streak: live multiplier on positive points while the system stays healthy. */}
+      {streakActive && (
+        <div
+          title={t('editor.game.streak_hint', { defaultValue: 'SLO streak: keep errors <1% and p95 under target to grow your score multiplier.' })}
+          className="flex items-center gap-1 px-2 py-0.5 rounded-full border border-signal-amber text-signal-amber font-bold tabular-nums"
+        >
+          <Flame className="w-3.5 h-3.5" />
+          ×{liveRound!.multiplier.toFixed(2)}
+          <span className="font-normal text-tactical-label">({liveRound!.streak}s)</span>
         </div>
       )}
 
@@ -114,6 +145,13 @@ export default function GameBanner() {
       </div>
 
       <div className="flex items-center gap-1.5 ml-auto text-tactical-dim">
+        {isLive && liveRound && (
+          <>
+            <span className="text-tactical-label">{t('editor.game.round_score', { defaultValue: 'Round' })}:</span>
+            <span className="text-signal-cyan font-bold tabular-nums">{Math.round(liveRound.score)}</span>
+            <span className="text-tactical-label mx-1">·</span>
+          </>
+        )}
         <span className="text-tactical-label">{t('editor.game.your_score', { defaultValue: 'Your score' })}:</span>
         <span className="text-signal-green font-bold tabular-nums">{Math.round(st.my_score)}</span>
       </div>
@@ -123,13 +161,13 @@ export default function GameBanner() {
     {isLive && (
       <div className="mb-3 flex items-center gap-2 rounded-md border border-signal-amber/50 bg-signal-amber/5 px-3 py-2 font-sans text-xs text-signal-amber">
         <Lock className="w-3.5 h-3.5 shrink-0" />
-        {t('editor.game.round_locked', { defaultValue: 'Round in progress — your architecture is locked. Make changes during the build phase.' })}
+        {t('editor.game.round_locked', { defaultValue: 'Round in progress: your architecture is locked. Make changes during the build phase.' })}
       </div>
     )}
     {isBuild && phase === 'interval' && (
       <div className="mb-3 flex items-center gap-2 rounded-md border border-signal-cyan/50 bg-signal-cyan/5 px-3 py-2 font-sans text-xs text-signal-cyan">
         <Hammer className="w-3.5 h-3.5 shrink-0" />
-        {t('editor.game.build_now', { defaultValue: 'Build phase — refine your architecture before the next round starts.' })}
+        {t('editor.game.build_now', { defaultValue: 'Build phase: refine your architecture before the next round starts.' })}
       </div>
     )}
     </>

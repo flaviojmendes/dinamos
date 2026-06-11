@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Gamepad2, Clock, Users, Lock, Activity } from 'lucide-react';
+import { Gamepad2, Clock, Users, Lock, Activity, MonitorPlay } from 'lucide-react';
 import { useGameContext } from './GameContext';
 import GameLeaderboard from './GameLeaderboard';
 import GameAnnouncement from './GameAnnouncement';
@@ -93,6 +94,14 @@ export default function GameLobby({ currentUserId }: { currentUserId?: string | 
       <div className="flex items-center gap-2 mb-2 font-sans text-xs text-tactical-dim">
         <Clock className="w-3.5 h-3.5" />
         {t('editor.game.joined_players', { defaultValue: 'Players in the lobby' })}
+        <Link
+          to={`/editor/game/${st.code}/stage`}
+          target="_blank"
+          className="ml-auto inline-flex items-center gap-1.5 px-2 py-1 rounded-md border border-tactical-border text-tactical-dim hover:border-signal-amber hover:text-signal-amber transition-colors"
+        >
+          <MonitorPlay className="w-3.5 h-3.5" />
+          {t('editor.game.open_stage', { defaultValue: 'Audience screen' })}
+        </Link>
       </div>
       <GameLeaderboard entries={game.leaderboard} currentUserId={currentUserId} />
     </div>

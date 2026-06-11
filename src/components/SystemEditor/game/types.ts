@@ -42,6 +42,15 @@ export interface RoundScore {
   metrics?: GoldenSignals | null;
 }
 
+/** Non-sensitive round metadata broadcast to players and the audience. */
+export interface PublicRound {
+  name: string | null;
+  story: string | null;
+  interval_sec: number;
+  duration_sec: number;
+  weight: number;
+}
+
 /** Player-facing control state (GET /api/game/:code). */
 export interface GameState {
   code: string;
@@ -66,10 +75,13 @@ export interface GameState {
   joined: boolean;
   my_architecture: GameArchitecture | null;
   my_score: number;
+  // Whether anyone with the code can join (false = invite-link only).
+  join_open?: boolean;
   // Round state.
   phase: GamePhase;
   current_round: number;
   total_rounds: number;
+  rounds_public: PublicRound[];
   round_started_at: string | null;
   round_ends_at: string | null;
   my_round_scores: Record<string, RoundScore>;
@@ -114,7 +126,7 @@ export interface ScoreSubmission {
   round_breakdown?: unknown;
 }
 
-/** One player's live state for the admin spectator view. */
+/** One player's live state for the admin spectator / audience stage views. */
 export interface SpectatorPlayer {
   rank: number;
   user_id: string;
@@ -122,6 +134,7 @@ export interface SpectatorPlayer {
   avatar_image: string | null;
   score: number;
   score_breakdown: unknown;
+  round_scores?: Record<string, RoundScore>;
   metrics: GoldenSignals | null;
   architecture: GameArchitecture | null;
   node_count: number;
@@ -131,6 +144,26 @@ export interface SpectatorPlayer {
 }
 
 export interface SpectatorResponse {
+  server_time: string;
+  players: SpectatorPlayer[];
+}
+
+/** GET /api/game/:code/spectate — everything the audience stage screen needs. */
+export interface StageState {
+  code: string;
+  name: string | null;
+  status: GameStatus;
+  phase: GamePhase;
+  current_round: number;
+  total_rounds: number;
+  rounds_public: PublicRound[];
+  starts_at: string | null;
+  round_started_at: string | null;
+  round_ends_at: string | null;
+  load_profile: GameLoadProfile;
+  announcement: string | null;
+  announcement_at: string | null;
+  player_count: number;
   server_time: string;
   players: SpectatorPlayer[];
 }

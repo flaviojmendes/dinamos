@@ -271,7 +271,7 @@ export default function AdminSpectator({ code }: { code: string }) {
 
   const fetchPlayers = useCallback(async () => {
     try {
-      const res = await apiClient.get(`/api/admin/game/${code}/players`);
+      const res = await apiClient.get(`/api/games/host/${code}/players`);
       const data = res.data as SpectatorResponse;
       setPlayers(data.players ?? []);
       if (data.server_time) {
@@ -286,7 +286,7 @@ export default function AdminSpectator({ code }: { code: string }) {
     async (userId: string, nickname: string | null) => {
       if (!confirm(`Kick ${nickname ?? 'this player'} from the match?`)) return;
       try {
-        await apiClient.delete(`/api/admin/game/${code}/players/${userId}`);
+        await apiClient.delete(`/api/games/host/${code}/players/${userId}`);
         setExpandedId((id) => (id === userId ? null : id));
         fetchPlayers();
       } catch {

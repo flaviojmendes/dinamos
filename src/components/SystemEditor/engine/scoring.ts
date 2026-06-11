@@ -39,6 +39,21 @@ export interface ScoreBreakdown {
   latencyPenalty: number;
   costPenalty: number;
   net: number;
+  /**
+   * Whether this simulated second met the SLO (healthy error rate and p95
+   * within target while actually serving traffic). Drives the streak bonus.
+   */
+  sloMet?: boolean;
+}
+
+/** Seconds of sustained SLO needed to reach the maximum streak multiplier. */
+export const STREAK_RAMP_SEC = 60;
+/** Maximum bonus multiplier applied to positive points while on a streak. */
+export const STREAK_MAX_MULTIPLIER = 2;
+
+/** Bonus multiplier for a given streak length (1x → 2x over STREAK_RAMP_SEC). */
+export function streakMultiplier(streak: number): number {
+  return 1 + (STREAK_MAX_MULTIPLIER - 1) * Math.min(1, streak / STREAK_RAMP_SEC);
 }
 
 /**
@@ -66,7 +81,16 @@ export function frameScore(
   }
 
   const net = throughput + availability - latencyPenalty - costPenalty;
-  return { throughput, availability, latencyPenalty, costPenalty, net };
+
+  // SLO check: the system is serving real traffic with ≤1% errors and p95
+  // within target. Sustaining this builds the streak multiplier; one bad
+  // second resets it, so resilience under chaos pays more than raw capacity.
+  const sloMet =
+    system.offeredLoad > 0 &&
+    system.successRate >= 0.99 &&
+    system.p95 <= cfg.latencyTargetMs;
+
+  return { throughput, availability, latencyPenalty, costPenalty, net, sloMet };
 }
 
 export interface ScoreAccumulator {
@@ -76,6 +100,14 @@ export interface ScoreAccumulator {
   availability: number;
   latencyPenalty: number;
   costPenalty: number;
+  /** Consecutive SLO-meeting seconds (resets on any bad second). */
+  streak: number;
+  /** Longest streak achieved this round. */
+  bestStreak: number;
+  /** Current bonus multiplier derived from the streak. */
+  multiplier: number;
+  /** Total bonus points earned from streak multipliers. */
+  bonus: number;
 }
 
 export function emptyAccumulator(): ScoreAccumulator {
@@ -86,6 +118,10 @@ export function emptyAccumulator(): ScoreAccumulator {
     availability: 0,
     latencyPenalty: 0,
     costPenalty: 0,
+    streak: 0,
+    bestStreak: 0,
+    multiplier: 1,
+    bonus: 0,
   };
 }
 
@@ -93,12 +129,23 @@ export function accumulate(
   acc: ScoreAccumulator,
   frame: ScoreBreakdown
 ): ScoreAccumulator {
+  const sloMet = frame.sloMet ?? false;
+  const streak = sloMet ? (acc.streak ?? 0) + 1 : 0;
+  const multiplier = streakMultiplier(streak);
+  // The bonus applies only to positive points: a streak amplifies what you
+  // earn, it never softens penalties.
+  const positive = frame.throughput + frame.availability;
+  const frameBonus = sloMet ? positive * (multiplier - 1) : 0;
   return {
-    total: Math.max(0, acc.total + frame.net),
+    total: Math.max(0, acc.total + frame.net + frameBonus),
     ticks: acc.ticks + 1,
     throughput: acc.throughput + frame.throughput,
     availability: acc.availability + frame.availability,
     latencyPenalty: acc.latencyPenalty + frame.latencyPenalty,
     costPenalty: acc.costPenalty + frame.costPenalty,
+    streak,
+    bestStreak: Math.max(acc.bestStreak ?? 0, streak),
+    multiplier,
+    bonus: (acc.bonus ?? 0) + frameBonus,
   };
 }

@@ -19,11 +19,15 @@ import {
   Hammer,
   SkipForward,
   Flag,
+  MonitorPlay,
+  Lock,
+  EyeOff,
 } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+import { Link } from 'react-router-dom';
 import api, { apiClient } from '../app/utils/api';
 import { PRESETS } from '../components/SystemEditor/engine/scenarios';
 import { presetNodesToArchitecture } from '../components/SystemEditor/game/architecture';
+import { MATCH_SCENARIOS, getMatchScenario } from '../components/SystemEditor/game/matchScenarios';
 import { DEFAULT_SCORING } from '../components/SystemEditor/engine/scoring';
 import GameLeaderboard from '../components/SystemEditor/game/GameLeaderboard';
 import AdminSpectator from '../components/SystemEditor/game/AdminSpectator';
@@ -44,6 +48,7 @@ const CHAOS_TYPES = ['killNode', 'latencyInjection', 'partition'] as const;
 
 interface RoundConfig {
   name?: string;
+  story?: string;
   intervalSec: number;
   durationSec: number;
   loadProfile: { type: string; multiplier?: number };
@@ -90,14 +95,29 @@ interface AdminSession {
   round_ends_at?: string | null;
   leaderboard?: LeaderboardEntry[];
   announcement?: string | null;
+  join_open?: boolean;
+  listed?: boolean;
+  join_key?: string | null;
   server_time?: string;
 }
 
-function matchUrl(code: string): string {
-  return `${window.location.origin}/editor/game/${code}`;
+// Private matches embed the invite key in the link so only invited players
+// can join; the bare code is not enough.
+function matchUrl(code: string, joinKey?: string | null): string {
+  const base = `${window.location.origin}/editor/game/${code}`;
+  return joinKey ? `${base}?key=${joinKey}` : base;
+}
+
+function inviteUrl(session: AdminSession): string {
+  return matchUrl(session.code, session.join_open === false ? session.join_key : null);
+}
+
+function stageUrl(code: string): string {
+  return `${window.location.origin}/editor/game/${code}/stage`;
 }
 
 function CopyButton({ text }: { text: string }) {
+  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   return (
     <button
@@ -109,7 +129,9 @@ function CopyButton({ text }: { text: string }) {
       className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md border border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan font-sans text-xs transition-colors"
     >
       {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-      {copied ? 'Copied' : 'Copy URL'}
+      {copied
+        ? t('editor.game.copied', { defaultValue: 'Copied' })
+        : t('editor.game.copy_invite', { defaultValue: 'Copy invite link' })}
     </button>
   );
 }
@@ -119,15 +141,42 @@ function CopyButton({ text }: { text: string }) {
 function CreateMatch({ onCreated }: { onCreated: () => void }) {
   const { t } = useTranslation();
   const [name, setName] = useState('');
+  const [scenarioId, setScenarioId] = useState('custom');
   const [presetId, setPresetId] = useState(PRESETS[0].id);
   const [allowDelete, setAllowDelete] = useState(true);
   const [lockedIds, setLockedIds] = useState<string[]>([]);
   const [startInMin, setStartInMin] = useState(2);
+  const [joinOpen, setJoinOpen] = useState(true);
+  const [listed, setListed] = useState(true);
   const [rounds, setRounds] = useState<RoundConfig[]>([defaultRound(0)]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
   const preset = useMemo(() => PRESETS.find((p) => p.id === presetId) ?? PRESETS[0], [presetId]);
+  const scenario = scenarioId === 'custom' ? undefined : getMatchScenario(scenarioId);
+
+  // Picking a scripted scenario fills the whole match: starting architecture,
+  // story-driven rounds (with scripted chaos), locks and scoring. Everything
+  // stays editable below before creating.
+  const applyScenario = (id: string) => {
+    setScenarioId(id);
+    const s = getMatchScenario(id);
+    if (!s) return;
+    setPresetId(s.presetId);
+    setLockedIds(s.lockedNodeIds);
+    setRounds(
+      s.rounds.map((r) => ({
+        name: r.name,
+        story: r.story,
+        intervalSec: r.intervalSec,
+        durationSec: r.durationSec,
+        loadProfile: { ...r.loadProfile },
+        chaosEvents: r.chaosEvents,
+        scoringConfig: { ...r.scoringConfig },
+        weight: r.weight,
+      })),
+    );
+  };
 
   const toggleLocked = (id: string) =>
     setLockedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
@@ -149,8 +198,8 @@ function CreateMatch({ onCreated }: { onCreated: () => void }) {
       const architecture = presetNodesToArchitecture(preset.nodes, preset.edges);
       const startsAt =
         startInMin > 0 ? new Date(Date.now() + startInMin * 60_000).toISOString() : null;
-      await apiClient.post('/api/admin/game', {
-        name: name || preset.name,
+      await apiClient.post('/api/games/host', {
+        name: name || scenario?.name || preset.name,
         seed: preset.seed,
         starting_architecture: architecture,
         allow_delete_starting: allowDelete,
@@ -159,6 +208,8 @@ function CreateMatch({ onCreated }: { onCreated: () => void }) {
         // Keep the legacy column populated with the first round's length.
         duration_sec: rounds[0]?.durationSec ?? null,
         starts_at: startsAt,
+        join_open: joinOpen,
+        listed,
       });
       onCreated();
       setName('');
@@ -182,12 +233,35 @@ function CreateMatch({ onCreated }: { onCreated: () => void }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
+          <label className={lbl}>{t('editor.game.scenario', { defaultValue: 'Scenario' })}</label>
+          <select className={field} value={scenarioId} onChange={(e) => applyScenario(e.target.value)}>
+            <option value="custom">{t('editor.game.scenario_custom', { defaultValue: 'Custom (build your own)' })}</option>
+            {MATCH_SCENARIOS.map((s) => (
+              <option key={s.id} value={s.id}>{s.name}</option>
+            ))}
+          </select>
+          {scenario && (
+            <p className="mt-1 font-sans text-[11px] leading-relaxed text-tactical-dim">{scenario.description}</p>
+          )}
+        </div>
+        <div>
           <label className={lbl}>{t('editor.game.match_name', { defaultValue: 'Match name' })}</label>
-          <input className={field} value={name} onChange={(e) => setName(e.target.value)} placeholder={preset.name} />
+          <input className={field} value={name} onChange={(e) => setName(e.target.value)} placeholder={scenario?.name ?? preset.name} />
         </div>
         <div>
           <label className={lbl}>{t('editor.game.starting_architecture', { defaultValue: 'Starting architecture' })}</label>
-          <select className={field} value={presetId} onChange={(e) => { setPresetId(e.target.value); setLockedIds([]); }}>
+          <select
+            className={field}
+            value={presetId}
+            onChange={(e) => {
+              // Manual preset change breaks scenario chaos targets: fall back
+              // to custom and drop the scripted events.
+              setPresetId(e.target.value);
+              setLockedIds([]);
+              setScenarioId('custom');
+              setRounds((prev) => prev.map((r) => ({ ...r, chaosEvents: [] })));
+            }}
+          >
             {PRESETS.map((p) => (
               <option key={p.id} value={p.id}>{p.name}</option>
             ))}
@@ -196,6 +270,50 @@ function CreateMatch({ onCreated }: { onCreated: () => void }) {
         <div>
           <label className={lbl}>{t('editor.game.start_in_min', { defaultValue: 'Open lobby in (min)' })}</label>
           <input type="number" min={0} className={field} value={startInMin} onChange={(e) => setStartInMin(Number(e.target.value))} />
+        </div>
+      </div>
+
+      {/* Who can find and join the match */}
+      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <span className={lbl}>{t('editor.game.joining', { defaultValue: 'Joining' })}</span>
+          <div className="flex rounded-md border border-tactical-border overflow-hidden" role="radiogroup" aria-label={t('editor.game.joining', { defaultValue: 'Joining' })}>
+            <button
+              type="button"
+              role="radio"
+              aria-checked={joinOpen}
+              onClick={() => setJoinOpen(true)}
+              className={`flex-1 px-3 py-2 font-sans text-xs transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-cyan ${joinOpen ? 'bg-signal-cyan/10 text-signal-cyan' : 'text-tactical-dim hover:text-tactical-text'}`}
+            >
+              {t('editor.game.join_public', { defaultValue: 'Public' })}
+            </button>
+            <button
+              type="button"
+              role="radio"
+              aria-checked={!joinOpen}
+              onClick={() => setJoinOpen(false)}
+              className={`flex-1 px-3 py-2 font-sans text-xs transition-colors border-l border-tactical-border focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-cyan ${!joinOpen ? 'bg-signal-amber/10 text-signal-amber' : 'text-tactical-dim hover:text-tactical-text'}`}
+            >
+              {t('editor.game.join_private', { defaultValue: 'Private' })}
+            </button>
+          </div>
+          <p className="mt-1 font-sans text-[11px] leading-relaxed text-tactical-dim">
+            {joinOpen
+              ? t('editor.game.join_public_hint', { defaultValue: 'Anyone with the match code can join.' })
+              : t('editor.game.join_private_hint', { defaultValue: 'Only people with your invite link can join. The link is generated when the match is created.' })}
+          </p>
+        </div>
+        <div>
+          <span className={lbl}>{t('editor.game.arena_listing', { defaultValue: 'Arena listing' })}</span>
+          <label className="flex items-center gap-2 rounded-md border border-tactical-border px-3 py-2 font-sans text-xs text-tactical-text cursor-pointer hover:border-signal-cyan/60 transition-colors">
+            <input type="checkbox" checked={listed} onChange={(e) => setListed(e.target.checked)} className="accent-signal-cyan" />
+            {t('editor.game.listed_label', { defaultValue: 'Show in “Happening now” on the arena' })}
+          </label>
+          <p className="mt-1 font-sans text-[11px] leading-relaxed text-tactical-dim">
+            {listed
+              ? t('editor.game.listed_hint', { defaultValue: 'Visitors browsing the arena will see this match.' })
+              : t('editor.game.unlisted_hint', { defaultValue: 'Hidden from the arena. Only people with the link will find it.' })}
+          </p>
         </div>
       </div>
 
@@ -219,6 +337,12 @@ function CreateMatch({ onCreated }: { onCreated: () => void }) {
               <div className="flex items-center justify-between mb-2">
                 <div className="font-sans text-xs font-bold text-tactical-text">
                   {t('editor.game.round', { defaultValue: 'Round' })} {idx + 1}
+                  {r.name && r.name !== `Round ${idx + 1}` && <span className="text-signal-cyan"> · {r.name}</span>}
+                  {(r.chaosEvents?.length ?? 0) > 0 && (
+                    <span className="ml-2 font-normal text-signal-amber">
+                      <Zap className="w-3 h-3 inline -mt-0.5" /> {r.chaosEvents.length} {t('editor.game.scripted_chaos', { defaultValue: 'scripted chaos' })}
+                    </span>
+                  )}
                 </div>
                 {rounds.length > 1 && (
                   <button onClick={() => removeRound(idx)} className="text-tactical-dim hover:text-signal-red transition-colors" aria-label="Remove round">
@@ -226,6 +350,9 @@ function CreateMatch({ onCreated }: { onCreated: () => void }) {
                   </button>
                 )}
               </div>
+              {r.story && (
+                <p className="mb-2 font-sans text-[11px] leading-relaxed text-tactical-dim">{r.story}</p>
+              )}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                 <div>
                   <label className={lbl}>{t('editor.game.interval_sec', { defaultValue: 'Build (sec)' })}</label>
@@ -331,7 +458,7 @@ function ManageMatch({ code }: { code: string }) {
 
   const fetchDetail = useCallback(async () => {
     try {
-      const res = await apiClient.get(`/api/admin/game/${code}`);
+      const res = await apiClient.get(`/api/games/host/${code}`);
       const data = res.data as AdminSession;
       if (data.server_time) {
         offsetRef.current = new Date(data.server_time).getTime() - Date.now();
@@ -354,19 +481,19 @@ function ManageMatch({ code }: { code: string }) {
   }, []);
 
   const patch = async (body: Record<string, unknown>) => {
-    await api.patch(`/api/admin/game/${code}`, body);
+    await api.patch(`/api/games/host/${code}`, body);
     fetchDetail();
   };
 
   const sendAnnouncement = async (message: string) => {
-    await apiClient.post(`/api/admin/game/${code}/announce`, { message });
+    await apiClient.post(`/api/games/host/${code}/announce`, { message });
     fetchDetail();
   };
 
   const injectChaos = async () => {
     const target = chaosTarget || session?.starting_architecture?.nodes?.[0]?.id;
     if (!target) return;
-    await apiClient.post(`/api/admin/game/${code}/chaos`, {
+    await apiClient.post(`/api/games/host/${code}/chaos`, {
       type: chaosType,
       targetId: target,
       durationSec: chaosDuration,
@@ -486,6 +613,27 @@ function ManageMatch({ code }: { code: string }) {
             className="accent-signal-cyan"
           />
           {t('editor.game.allow_delete_live', { defaultValue: 'Players can delete components' })}
+        </label>
+
+        <div className="border-l border-tactical-line h-6 mx-1" />
+
+        <label className="flex items-center gap-2 font-sans text-xs text-tactical-dim" title={t('editor.game.join_public_hint', { defaultValue: 'Anyone with the match code can join.' })}>
+          <input
+            type="checkbox"
+            checked={session.join_open ?? true}
+            onChange={(e) => patch({ join_open: e.target.checked })}
+            className="accent-signal-cyan"
+          />
+          {t('editor.game.open_joining', { defaultValue: 'Open joining' })}
+        </label>
+        <label className="flex items-center gap-2 font-sans text-xs text-tactical-dim" title={t('editor.game.listed_hint', { defaultValue: 'Visitors browsing the arena will see this match.' })}>
+          <input
+            type="checkbox"
+            checked={session.listed ?? true}
+            onChange={(e) => patch({ listed: e.target.checked })}
+            className="accent-signal-cyan"
+          />
+          {t('editor.game.listed_live', { defaultValue: 'Listed on the arena' })}
         </label>
       </div>
 
@@ -631,6 +779,7 @@ function ManageMatch({ code }: { code: string }) {
 // ---------------- Match list ----------------
 
 function MatchRow({ session, onChanged }: { session: AdminSession; onChanged: () => void }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const statusTone =
     session.status === 'running'
@@ -640,8 +789,8 @@ function MatchRow({ session, onChanged }: { session: AdminSession; onChanged: ()
       : 'text-signal-amber';
 
   const remove = async () => {
-    if (!confirm('Delete this match permanently?')) return;
-    await apiClient.delete(`/api/admin/game/${session.code}`);
+    if (!confirm(t('editor.game.delete_confirm', { defaultValue: 'Delete this match permanently?' }))) return;
+    await apiClient.delete(`/api/games/host/${session.code}`);
     onChanged();
   };
 
@@ -654,31 +803,58 @@ function MatchRow({ session, onChanged }: { session: AdminSession; onChanged: ()
         </div>
         <span className={`font-sans text-xs capitalize ${statusTone}`}>{session.status}</span>
         <span className="font-sans text-xs text-tactical-dim">{session.starting_architecture?.nodes?.length ?? 0} parts</span>
+        {session.join_open === false && (
+          <span className="inline-flex items-center gap-1 font-sans text-[11px] text-signal-amber" title={t('editor.game.join_private_hint', { defaultValue: 'Only people with your invite link can join.' })}>
+            <Lock className="w-3 h-3" /> {t('editor.game.chip_private', { defaultValue: 'Invite only' })}
+          </span>
+        )}
+        {session.listed === false && (
+          <span className="inline-flex items-center gap-1 font-sans text-[11px] text-tactical-dim" title={t('editor.game.unlisted_hint', { defaultValue: 'Hidden from the arena.' })}>
+            <EyeOff className="w-3 h-3" /> {t('editor.game.chip_unlisted', { defaultValue: 'Unlisted' })}
+          </span>
+        )}
         <div className="ml-auto flex items-center gap-2">
-          <CopyButton text={matchUrl(session.code)} />
-          <button onClick={() => setOpen((o) => !o)} className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md border border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan font-sans text-xs transition-colors">
-            <Settings2 className="w-3.5 h-3.5" /> Manage
+          <CopyButton text={inviteUrl(session)} />
+          <a
+            href={stageUrl(session.code)}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md border border-tactical-border text-tactical-dim hover:border-signal-amber hover:text-signal-amber font-sans text-xs transition-colors"
+            title={stageUrl(session.code)}
+          >
+            <MonitorPlay className="w-3.5 h-3.5" /> {t('editor.game.stage', { defaultValue: 'Stage' })}
+          </a>
+          <button
+            onClick={() => setOpen((o) => !o)}
+            aria-expanded={open}
+            className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md border border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan font-sans text-xs transition-colors"
+          >
+            <Settings2 className="w-3.5 h-3.5" /> {t('editor.game.manage', { defaultValue: 'Manage' })}
           </button>
-          <button onClick={remove} className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md border border-tactical-border text-tactical-dim hover:border-signal-red hover:text-signal-red font-sans text-xs transition-colors">
+          <button
+            onClick={remove}
+            aria-label={t('editor.game.delete_match', { defaultValue: 'Delete match' })}
+            title={t('editor.game.delete_match', { defaultValue: 'Delete match' })}
+            className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md border border-tactical-border text-tactical-dim hover:border-signal-red hover:text-signal-red font-sans text-xs transition-colors"
+          >
             <Trash2 className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
-      <div className="mt-1 font-sans text-[11px] text-tactical-label break-all">{matchUrl(session.code)}</div>
+      <div className="mt-1 font-sans text-[11px] text-tactical-label break-all">{inviteUrl(session)}</div>
       {open && <ManageMatch code={session.code} />}
     </div>
   );
 }
 
-export default function AdminGameConsole() {
+export default function HostConsole() {
   const { t } = useTranslation();
-  const { appUser } = useAuth();
   const [sessions, setSessions] = useState<AdminSession[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchSessions = useCallback(async () => {
     try {
-      const res = await apiClient.get('/api/admin/game');
+      const res = await apiClient.get('/api/games/host');
       setSessions((res.data?.sessions ?? []) as AdminSession[]);
     } catch {
       /* ignore */
@@ -693,27 +869,30 @@ export default function AdminGameConsole() {
     return () => clearInterval(id);
   }, [fetchSessions]);
 
-  if (appUser && appUser.role !== 'Admin') {
-    return (
-      <div className="max-w-md mx-auto p-10 text-center font-sans text-tactical-dim">
-        {t('editor.game.admin_only', { defaultValue: 'Admin privileges required.' })}
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-canvas-paper dark:bg-tactical-bg">
       <div className="max-w-5xl mx-auto p-4 md:p-8">
-        <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1">{t('editor.game.console', { defaultValue: 'Game console' })}</div>
-        <h1 className="text-2xl md:text-3xl font-sans font-bold mb-6 tracking-tight text-slate-900 dark:text-tactical-text flex items-center gap-3">
+        <div className="flex items-center justify-between mb-1">
+          <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t('editor.game.console', { defaultValue: 'Host console' })}</div>
+          <Link to="/arena" className="font-sans text-xs text-signal-cyan hover:underline">
+            ← {t('editor.game.back_to_arena', { defaultValue: 'Back to the arena' })}
+          </Link>
+        </div>
+        <h1 className="text-2xl md:text-3xl font-sans font-bold mb-2 tracking-tight text-slate-900 dark:text-tactical-text flex items-center gap-3">
           <Gamepad2 className="w-7 h-7 text-signal-cyan" />
-          {t('editor.game.console_title', { defaultValue: 'Editor Game Console' })}
+          {t('editor.game.console_title', { defaultValue: 'Host a Match' })}
         </h1>
+        <p className="font-sans text-sm text-slate-500 dark:text-tactical-dim mb-6 max-w-2xl">
+          {t('editor.game.console_subtitle', {
+            defaultValue:
+              'Pick a scenario, create the match, then share the join link with your players and the stage link with your audience.',
+          })}
+        </p>
 
         <CreateMatch onCreated={fetchSessions} />
 
         <div className="flex items-center gap-2 font-sans text-[11px] font-medium text-slate-600 dark:text-signal-amber mb-3">
-          {t('editor.game.matches', { defaultValue: 'Matches' })}
+          {t('editor.game.matches', { defaultValue: 'Your matches' })}
           <button onClick={fetchSessions} className="text-tactical-dim hover:text-signal-cyan transition-colors">
             <RefreshCw className="w-3.5 h-3.5" />
           </button>

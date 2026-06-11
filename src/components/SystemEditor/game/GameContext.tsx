@@ -15,6 +15,8 @@ interface GameContextValue {
   leaderboard: LeaderboardEntry[];
   loading: boolean;
   notFound: boolean;
+  /** Join rejected: the match is invite-only and no valid key was provided. */
+  joinDenied: boolean;
   error: string | null;
   /** server_time - Date.now() in ms, used to align the local sim clock. */
   serverOffsetMs: number;
@@ -34,15 +36,19 @@ const LEADERBOARD_POLL_MS = 4000;
 
 export function GameProvider({
   code,
+  joinKey,
   children,
 }: {
   code: string;
+  /** Invite key from the share link; required to join private matches. */
+  joinKey?: string | null;
   children: React.ReactNode;
 }) {
   const [state, setState] = useState<GameState | null>(null);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [joinDenied, setJoinDenied] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [serverOffsetMs, setServerOffsetMs] = useState(0);
 
@@ -74,13 +80,20 @@ export function GameProvider({
 
   const join = useCallback(async () => {
     try {
-      const res = await apiClient.post(`/api/game/${code}/join`);
+      const res = await apiClient.post(`/api/game/${code}/join`, {
+        key: joinKey ?? undefined,
+      });
       joinedRef.current = true;
+      setJoinDenied(false);
       applyState(res.data as GameState);
     } catch (err: any) {
-      setError(err?.response?.data?.detail ?? 'Failed to join match');
+      if (err?.response?.status === 403) {
+        setJoinDenied(true);
+      } else {
+        setError(err?.response?.data?.detail ?? 'Failed to join match');
+      }
     }
-  }, [code, applyState]);
+  }, [code, joinKey, applyState]);
 
   const submitScore = useCallback(
     async (submission: ScoreSubmission) => {
@@ -136,6 +149,7 @@ export function GameProvider({
     leaderboard,
     loading,
     notFound,
+    joinDenied,
     error,
     serverOffsetMs,
     join,

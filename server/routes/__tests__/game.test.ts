@@ -61,32 +61,39 @@ function asAdmin() {
   repo.getUserContext.mockResolvedValue({ user: { role: 'Admin' }, role: { name: 'Admin' }, permissionCodes: [] });
 }
 
+function asStudent() {
+  repo.getUserContext.mockResolvedValue({ user: { role: 'Estudante' }, role: { name: 'Estudante' }, permissionCodes: [] });
+}
+
 beforeEach(() => {
   mockDb.reset();
   repo.getUserContext.mockReset();
 });
 
-describe('game admin routes', () => {
+describe('game host routes', () => {
   it('401 without token', async () => {
-    expect((await app.request('/api/admin/game')).status).toBe(401);
+    expect((await app.request('/api/games/host')).status).toBe(401);
   });
 
-  it('403 for non-admins', async () => {
-    repo.getUserContext.mockResolvedValue({ user: { role: 'Estudante' }, role: { name: 'Estudante' }, permissionCodes: [] });
-    expect((await app.request('/api/admin/game', { headers: AUTH })).status).toBe(403);
-  });
-
-  it('GET /api/admin/game lists sessions', async () => {
-    asAdmin();
+  it('GET /api/games/host lists sessions for a regular user', async () => {
+    asStudent();
     mockDb.setResults([[session]]);
-    const res = await app.request('/api/admin/game', { headers: AUTH });
+    const res = await app.request('/api/games/host', { headers: AUTH });
+    expect(res.status).toBe(200);
     expect((await res.json() as any).sessions).toHaveLength(1);
   });
 
-  it('POST /api/admin/game creates a match', async () => {
+  it('GET /api/games/host lists all sessions for admins', async () => {
     asAdmin();
+    mockDb.setResults([[session]]);
+    const res = await app.request('/api/games/host', { headers: AUTH });
+    expect((await res.json() as any).sessions).toHaveLength(1);
+  });
+
+  it('POST /api/games/host creates a match for a regular user', async () => {
+    asStudent();
     mockDb.setResults([[], [session]]);
-    const res = await app.request('/api/admin/game', {
+    const res = await app.request('/api/games/host', {
       method: 'POST',
       headers: AUTH,
       body: JSON.stringify({ name: 'Match', rounds: [{ durationSec: 60, weight: 2 }] }),
@@ -94,10 +101,10 @@ describe('game admin routes', () => {
     expect(res.status).toBe(201);
   });
 
-  it('POST /api/admin/game creates a single-round fallback', async () => {
-    asAdmin();
+  it('POST /api/games/host creates a single-round fallback', async () => {
+    asStudent();
     mockDb.setResults([[], [session]]);
-    const res = await app.request('/api/admin/game', {
+    const res = await app.request('/api/games/host', {
       method: 'POST',
       headers: AUTH,
       body: JSON.stringify({ duration_sec: 90 }),
@@ -105,25 +112,39 @@ describe('game admin routes', () => {
     expect(res.status).toBe(201);
   });
 
-  it('GET /api/admin/game/:code with leaderboard', async () => {
-    asAdmin();
+  it('GET /api/games/host/:code with leaderboard (creator)', async () => {
+    asStudent();
     mockDb.setResults([[session], [player], [{ id: 'admin', nickname: 'A', avatarImage: null }]]);
-    const res = await app.request('/api/admin/game/ABC123', { headers: AUTH });
+    const res = await app.request('/api/games/host/ABC123', { headers: AUTH });
     const body = await res.json() as any;
     expect(body.code).toBe('ABC123');
     expect(body.leaderboard).toHaveLength(1);
   });
 
-  it('GET /api/admin/game/:code 404', async () => {
-    asAdmin();
-    mockDb.setResults([[]]);
-    expect((await app.request('/api/admin/game/NOPE', { headers: AUTH })).status).toBe(404);
+  it('GET /api/games/host/:code 403 for a non-creator non-admin', async () => {
+    asStudent();
+    mockDb.setResults([[{ ...session, createdBy: 'someone-else' }]]);
+    const res = await app.request('/api/games/host/ABC123', { headers: AUTH });
+    expect(res.status).toBe(403);
   });
 
-  it('PATCH /api/admin/game/:code start_round', async () => {
+  it('GET /api/games/host/:code allowed for non-creator admin', async () => {
     asAdmin();
+    mockDb.setResults([[{ ...session, createdBy: 'someone-else' }], [player], [{ id: 'admin', nickname: 'A', avatarImage: null }]]);
+    const res = await app.request('/api/games/host/ABC123', { headers: AUTH });
+    expect(res.status).toBe(200);
+  });
+
+  it('GET /api/games/host/:code 404', async () => {
+    asStudent();
+    mockDb.setResults([[]]);
+    expect((await app.request('/api/games/host/NOPE', { headers: AUTH })).status).toBe(404);
+  });
+
+  it('PATCH /api/games/host/:code start_round', async () => {
+    asStudent();
     mockDb.setResults([[session], [{ ...session, phase: 'round', status: 'running', currentRound: 1 }]]);
-    const res = await app.request('/api/admin/game/ABC123', {
+    const res = await app.request('/api/games/host/ABC123', {
       method: 'PATCH',
       headers: AUTH,
       body: JSON.stringify({ action: 'start_round' }),
@@ -131,10 +152,10 @@ describe('game admin routes', () => {
     expect(res.status).toBe(200);
   });
 
-  it('PATCH /api/admin/game/:code end action with add_sec', async () => {
-    asAdmin();
+  it('PATCH /api/games/host/:code end action with add_sec', async () => {
+    asStudent();
     mockDb.setResults([[{ ...session, phase: 'round', roundEndsAt: new Date() }], [session]]);
-    const res = await app.request('/api/admin/game/ABC123', {
+    const res = await app.request('/api/games/host/ABC123', {
       method: 'PATCH',
       headers: AUTH,
       body: JSON.stringify({ action: 'end_round', add_sec: 30, name: 'Renamed', seed: 7, rounds: [{ durationSec: 30, weight: 1 }] }),
@@ -142,10 +163,21 @@ describe('game admin routes', () => {
     expect(res.status).toBe(200);
   });
 
-  it('POST /api/admin/game/:code/chaos schedules an event', async () => {
-    asAdmin();
+  it('PATCH /api/games/host/:code 403 for a non-creator non-admin', async () => {
+    asStudent();
+    mockDb.setResults([[{ ...session, createdBy: 'someone-else' }]]);
+    const res = await app.request('/api/games/host/ABC123', {
+      method: 'PATCH',
+      headers: AUTH,
+      body: JSON.stringify({ action: 'start_round' }),
+    });
+    expect(res.status).toBe(403);
+  });
+
+  it('POST /api/games/host/:code/chaos schedules an event', async () => {
+    asStudent();
     mockDb.setResults([[session], undefined]);
-    const res = await app.request('/api/admin/game/ABC123/chaos', {
+    const res = await app.request('/api/games/host/ABC123/chaos', {
       method: 'POST',
       headers: AUTH,
       body: JSON.stringify({ type: 'killNode', targetId: 'n1' }),
@@ -155,9 +187,9 @@ describe('game admin routes', () => {
   });
 
   it('POST chaos 400 without type/targetId', async () => {
-    asAdmin();
+    asStudent();
     mockDb.setResults([[session]]);
-    const res = await app.request('/api/admin/game/ABC123/chaos', {
+    const res = await app.request('/api/games/host/ABC123/chaos', {
       method: 'POST',
       headers: AUTH,
       body: JSON.stringify({}),
@@ -165,18 +197,18 @@ describe('game admin routes', () => {
     expect(res.status).toBe(400);
   });
 
-  it('GET /api/admin/game/:code/players (spectator)', async () => {
-    asAdmin();
+  it('GET /api/games/host/:code/players (spectator)', async () => {
+    asStudent();
     mockDb.setResults([[session], [player], [{ id: 'admin', nickname: 'A', avatarImage: null }]]);
-    const res = await app.request('/api/admin/game/ABC123/players', { headers: AUTH });
+    const res = await app.request('/api/games/host/ABC123/players', { headers: AUTH });
     const body = await res.json() as any;
     expect(body.players[0].node_count).toBe(1);
   });
 
-  it('POST /api/admin/game/:code/announce', async () => {
-    asAdmin();
+  it('POST /api/games/host/:code/announce', async () => {
+    asStudent();
     mockDb.setResults([[session], undefined]);
-    const res = await app.request('/api/admin/game/ABC123/announce', {
+    const res = await app.request('/api/games/host/ABC123/announce', {
       method: 'POST',
       headers: AUTH,
       body: JSON.stringify({ message: 'Hello' }),
@@ -184,18 +216,42 @@ describe('game admin routes', () => {
     expect((await res.json() as any).announcement).toBe('Hello');
   });
 
-  it('DELETE /api/admin/game/:code/players/:userId', async () => {
-    asAdmin();
+  it('DELETE /api/games/host/:code/players/:userId', async () => {
+    asStudent();
     mockDb.setResults([[session], undefined]);
-    const res = await app.request('/api/admin/game/ABC123/players/u9', { method: 'DELETE', headers: AUTH });
+    const res = await app.request('/api/games/host/ABC123/players/u9', { method: 'DELETE', headers: AUTH });
     expect((await res.json() as any).ok).toBe(true);
   });
 
-  it('DELETE /api/admin/game/:code', async () => {
-    asAdmin();
+  it('DELETE /api/games/host/:code', async () => {
+    asStudent();
     mockDb.setResults([[session], undefined]);
-    const res = await app.request('/api/admin/game/ABC123', { method: 'DELETE', headers: AUTH });
+    const res = await app.request('/api/games/host/ABC123', { method: 'DELETE', headers: AUTH });
     expect((await res.json() as any).ok).toBe(true);
+  });
+});
+
+describe('public game discovery', () => {
+  it('GET /api/games/live works without auth', async () => {
+    mockDb.setResults([[session], [{ sessionId: 1 }, { sessionId: 1 }]]);
+    const res = await app.request('/api/games/live');
+    expect(res.status).toBe(200);
+    const body = await res.json() as any;
+    expect(body.matches).toHaveLength(1);
+    expect(body.matches[0].code).toBe('ABC123');
+    expect(body.matches[0].player_count).toBe(2);
+    // Only non-sensitive metadata is exposed.
+    expect(body.matches[0].starting_architecture).toBeUndefined();
+    expect(body.matches[0].created_by).toBeUndefined();
+    expect(body.matches[0].join_key).toBeUndefined();
+    // Join policy is exposed so the arena can hide the Join button.
+    expect(body.matches[0].join_open).toBe(true);
+  });
+
+  it('GET /api/games/live returns empty list when nothing is live', async () => {
+    mockDb.setResults([[]]);
+    const res = await app.request('/api/games/live');
+    expect((await res.json() as any).matches).toHaveLength(0);
   });
 });
 
@@ -225,6 +281,51 @@ describe('game player routes', () => {
     expect(res.status).toBe(409);
   });
 
+  const privateSession = {
+    ...session,
+    joinOpen: false,
+    joinKey: 'secretkey1234567',
+    createdBy: 'someone-else',
+  };
+
+  it('POST /api/game/:code/join 403 on private match without key', async () => {
+    mockDb.setResults([[privateSession], []]);
+    const res = await app.request('/api/game/ABC123/join', { method: 'POST', headers: AUTH });
+    expect(res.status).toBe(403);
+  });
+
+  it('POST /api/game/:code/join 403 on private match with wrong key', async () => {
+    mockDb.setResults([[privateSession], []]);
+    const res = await app.request('/api/game/ABC123/join', {
+      method: 'POST',
+      headers: AUTH,
+      body: JSON.stringify({ key: 'wrong' }),
+    });
+    expect(res.status).toBe(403);
+  });
+
+  it('POST /api/game/:code/join joins a private match with the invite key', async () => {
+    mockDb.setResults([[privateSession], [], undefined, [player]]);
+    const res = await app.request('/api/game/ABC123/join', {
+      method: 'POST',
+      headers: AUTH,
+      body: JSON.stringify({ key: 'secretkey1234567' }),
+    });
+    expect(res.status).toBe(200);
+  });
+
+  it('POST /api/game/:code/join lets an existing player rejoin a private match without the key', async () => {
+    mockDb.setResults([[privateSession], [player], [player]]);
+    const res = await app.request('/api/game/ABC123/join', { method: 'POST', headers: AUTH });
+    expect(res.status).toBe(200);
+  });
+
+  it('POST /api/game/:code/join lets the host join their private match without the key', async () => {
+    mockDb.setResults([[{ ...privateSession, createdBy: 'admin' }], [], undefined, [player]]);
+    const res = await app.request('/api/game/ABC123/join', { method: 'POST', headers: AUTH });
+    expect(res.status).toBe(200);
+  });
+
   it('PUT /api/game/:code/architecture (new player, round submission)', async () => {
     mockDb.setResults([[session], [], undefined]);
     const res = await app.request('/api/game/ABC123/architecture', {
@@ -249,5 +350,26 @@ describe('game player routes', () => {
     mockDb.setResults([[session], [player], [{ id: 'admin', nickname: 'A', avatarImage: null }]]);
     const res = await app.request('/api/game/ABC123/leaderboard', { headers: AUTH });
     expect((await res.json() as any).leaderboard).toHaveLength(1);
+  });
+
+  it('GET /api/game/:code/spectate returns the audience stage state', async () => {
+    mockDb.setResults([[session], [player], [{ id: 'admin', nickname: 'A', avatarImage: null }]]);
+    const res = await app.request('/api/game/ABC123/spectate', { headers: AUTH });
+    const body = await res.json() as any;
+    expect(body.code).toBe('ABC123');
+    expect(body.total_rounds).toBe(1);
+    expect(body.rounds_public).toHaveLength(1);
+    expect(body.players).toHaveLength(1);
+    expect(body.players[0].rank).toBe(1);
+    expect(body.players[0].node_count).toBe(1);
+  });
+
+  it('GET /api/game/:code/spectate requires auth', async () => {
+    expect((await app.request('/api/game/ABC123/spectate')).status).toBe(401);
+  });
+
+  it('GET /api/game/:code/spectate 404', async () => {
+    mockDb.setResults([[]]);
+    expect((await app.request('/api/game/NOPE/spectate', { headers: AUTH })).status).toBe(404);
   });
 });
