@@ -1,383 +1,526 @@
-import { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Panel, StatusBadge, TacticalButton } from '../tactical';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { Panel, TacticalButton } from '../tactical';
+import { AnimatedMetric } from '../AISystems/motion';
+import { NarrationBar, Legend } from '../simulators/teaching';
 
-interface CacheEntry {
+const base = 'simulators.cache';
+const CACHE_MS = 4; // memory read latency
+const KEYS: { id: string; hot: boolean }[] = [
+  { id: 'user:1', hot: true },
+  { id: 'user:2', hot: true },
+  { id: 'cart:7', hot: false },
+  { id: 'cart:8', hot: false },
+  { id: 'post:42', hot: false },
+  { id: 'post:99', hot: false },
+];
+
+interface Entry {
   key: string;
-  value: string;
-  timestamp: number;
+  insertedAt: number;
+  lastUsed: number;
 }
 
-interface SimulationConfig {
-  cacheEnabled: boolean;
-  cacheTTL: number;
-  requestDelay: number;
-  dbDelay: number;
-}
+type Station = 'client' | 'cache' | 'db';
+type Tone = 'idle' | 'hit' | 'miss';
+type Narr = { kind: 'idle' | 'lookup' | 'hit' | 'miss' | 'stale' | 'evict' | 'disabled'; vars?: Record<string, string | number> };
 
-interface RequestLog {
-  id: number;
-  timestamp: number;
-  type: 'request' | 'cache-hit' | 'cache-miss' | 'db-query';
-  key: string;
-  duration: number;
-}
-
-const logBadgeVariant = (type: RequestLog['type']) => {
-  switch (type) {
-    case 'request': return 'pending' as const;
-    case 'cache-hit': return 'active' as const;
-    case 'cache-miss': return 'in-progress' as const;
-    case 'db-query': return 'offline' as const;
-  }
-};
+const stationLeft: Record<Station, string> = { client: '8%', cache: '50%', db: '92%' };
 
 export default function CacheSimulation() {
   const { t } = useTranslation();
-  const [position, setPosition] = useState<'client' | 'cache' | 'db' | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [currentKey, setCurrentKey] = useState('user-1');
-  const [cache, setCache] = useState<Map<string, CacheEntry>>(new Map());
-  const [logs, setLogs] = useState<RequestLog[]>([]);
-  const [isConfigOpen, setIsConfigOpen] = useState(false);
-  const [, forceUpdate] = useState({});  // Used to force re-render for countdown
-  const nextLogId = useRef(1);
-  const [config, setConfig] = useState<SimulationConfig>({
-    cacheEnabled: true,
-    cacheTTL: 30,
-    requestDelay: 500,
-    dbDelay: 1000,
-  });
+  const reduce = useReducedMotion();
 
-  // Update cache countdown every second
+  const [cacheOn, setCacheOn] = useState(true);
+  const [ttl, setTtl] = useState(15);
+  const [dbLatency, setDbLatency] = useState(90);
+  const [capacity, setCapacity] = useState(4);
+
+  const [entries, setEntries] = useState<Entry[]>([]);
+  const entriesRef = useRef<Entry[]>([]);
+  const writeCache = (next: Entry[]) => { entriesRef.current = next; setEntries(next); };
+
+  const [now, setNow] = useState(Date.now());
+  const [token, setToken] = useState<{ key: string; at: Station; tone: Tone } | null>(null);
+  const [phase, setPhase] = useState<Station | 'store' | null>(null);
+  const [evicting, setEvicting] = useState<string | null>(null);
+  const [narr, setNarr] = useState<Narr>({ kind: 'idle' });
+  const [last, setLast] = useState<{ key: string; ms: number; hit: boolean } | null>(null);
+
+  const [requests, setRequests] = useState(0);
+  const [hits, setHits] = useState(0);
+  const [dbQueries, setDbQueries] = useState(0);
+  const [latencySum, setLatencySum] = useState(0);
+
+  const runId = useRef(0);
+  const busy = useRef(false);
+  const auto = useRef(false);
+  const [autoOn, setAutoOn] = useState(false);
+
+  // Real-time clock for TTL countdown + expiry sweep.
   useEffect(() => {
-    const timer = setInterval(() => {
-      // Only force update if there are items in cache
-      if (cache.size > 0) {
-        forceUpdate({});
+    const id = setInterval(() => {
+      setNow(Date.now());
+      const fresh = entriesRef.current.filter((e) => Date.now() - e.insertedAt < ttl * 1000);
+      if (fresh.length !== entriesRef.current.length) writeCache(fresh);
+    }, 250);
+    return () => clearInterval(id);
+  }, [ttl]);
+
+  const dur = (ms: number) => (reduce ? Math.min(ms, 60) : ms);
+  const sleep = (ms: number, id: number) =>
+    new Promise<boolean>((res) => setTimeout(() => res(id === runId.current), dur(ms)));
+
+  const reset = useCallback(() => {
+    runId.current += 1;
+    busy.current = false;
+    auto.current = false;
+    setAutoOn(false);
+    writeCache([]);
+    setToken(null);
+    setPhase(null);
+    setEvicting(null);
+    setNarr({ kind: 'idle' });
+    setLast(null);
+    setRequests(0);
+    setHits(0);
+    setDbQueries(0);
+    setLatencySum(0);
+  }, []);
+
+  const runRead = useCallback(
+    async (key: string) => {
+      if (busy.current) return;
+      busy.current = true;
+      const id = ++runId.current;
+      const travel = 420;
+
+      setRequests((v) => v + 1);
+      setNarr({ kind: 'lookup', vars: { key } });
+      setLast(null);
+
+      // Client -> Cache (or straight past when cache is off).
+      setPhase('client');
+      setToken({ key, at: 'client', tone: 'idle' });
+      if (!(await sleep(120, id))) return done();
+
+      if (!cacheOn) {
+        // Bypass: client -> db -> client, always the slow path.
+        setNarr({ kind: 'disabled', vars: { ms: dbLatency } });
+        setToken({ key, at: 'db', tone: 'miss' });
+        setPhase('db');
+        if (!(await sleep(travel, id))) return done();
+        if (!(await sleep(dbLatency, id))) return done();
+        setDbQueries((v) => v + 1);
+        setToken({ key, at: 'client', tone: 'miss' });
+        setPhase('client');
+        if (!(await sleep(travel, id))) return done();
+        record(key, dbLatency, false);
+        return finish(id);
       }
-    }, 1000);
 
-    return () => clearInterval(timer);
-  }, [cache.size]);
+      setToken({ key, at: 'cache', tone: 'idle' });
+      setPhase('cache');
+      if (!(await sleep(travel, id))) return done();
 
-  const getRemainingTime = (timestamp: number, ttl: number) => {
-    const remaining = Math.max(0, Math.ceil((timestamp + ttl * 1000 - Date.now()) / 1000));
-    if (remaining === 0) {
-      // Remove expired items from cache
-      setCache(current => {
-        const newCache = new Map(current);
-        for (const [key, entry] of newCache.entries()) {
-          if (Date.now() - entry.timestamp > config.cacheTTL * 1000) {
-            newCache.delete(key);
-          }
+      const existing = entriesRef.current.find((e) => e.key === key);
+      const fresh = existing && Date.now() - existing.insertedAt < ttl * 1000;
+
+      if (fresh) {
+        // HIT: bounce straight back from memory.
+        setNarr({ kind: 'hit', vars: { key, ms: CACHE_MS } });
+        setToken({ key, at: 'cache', tone: 'hit' });
+        writeCache(entriesRef.current.map((e) => (e.key === key ? { ...e, lastUsed: Date.now() } : e)));
+        if (!(await sleep(220, id))) return done();
+        setToken({ key, at: 'client', tone: 'hit' });
+        setPhase('client');
+        if (!(await sleep(travel, id))) return done();
+        setHits((v) => v + 1);
+        record(key, CACHE_MS, true);
+        return finish(id);
+      }
+
+      // MISS (absent or stale) -> fall through to the database.
+      setNarr(existing ? { kind: 'stale', vars: { key } } : { kind: 'miss', vars: { key, ms: dbLatency } });
+      setToken({ key, at: 'cache', tone: 'miss' });
+      if (!(await sleep(260, id))) return done();
+      if (existing) setNarr({ kind: 'miss', vars: { key, ms: dbLatency } });
+
+      setToken({ key, at: 'db', tone: 'miss' });
+      setPhase('db');
+      if (!(await sleep(travel, id))) return done();
+      if (!(await sleep(dbLatency, id))) return done();
+      setDbQueries((v) => v + 1);
+
+      // DB -> cache: store the result, evicting LRU if the cache is full.
+      setToken({ key, at: 'cache', tone: 'idle' });
+      setPhase('store');
+      if (!(await sleep(travel, id))) return done();
+
+      let next = entriesRef.current.filter((e) => Date.now() - e.insertedAt < ttl * 1000 && e.key !== key);
+      if (next.length >= capacity) {
+        const victim = next.reduce((a, b) => (a.lastUsed <= b.lastUsed ? a : b));
+        setNarr({ kind: 'evict', vars: { key: victim.key, incoming: key } });
+        setEvicting(victim.key);
+        if (!(await sleep(360, id))) return done();
+        next = next.filter((e) => e.key !== victim.key);
+        setEvicting(null);
+      }
+      next = [...next, { key, insertedAt: Date.now(), lastUsed: Date.now() }];
+      writeCache(next);
+
+      setToken({ key, at: 'client', tone: 'idle' });
+      setPhase('client');
+      if (!(await sleep(travel, id))) return done();
+      record(key, dbLatency, false);
+      return finish(id);
+
+      function record(k: string, ms: number, hit: boolean) {
+        setLast({ key: k, ms, hit });
+        setLatencySum((v) => v + ms);
+      }
+      function done() {
+        busy.current = false;
+      }
+      function finish(fid: number) {
+        if (fid !== runId.current) { busy.current = false; return; }
+        setToken(null);
+        setPhase(null);
+        busy.current = false;
+        if (auto.current) {
+          setTimeout(() => {
+            if (auto.current && fid === runId.current) runRead(weightedKey());
+          }, reduce ? 120 : 520);
         }
-        return newCache;
-      });
-    }
-    return remaining;
-  };
-
-  const addLog = (log: Omit<RequestLog, 'id'>) => {
-    setLogs(current => [...current.slice(-9), { ...log, id: nextLogId.current++ }]);
-  };
-
-  const simulateRequest = async () => {
-    if (isProcessing) return;
-    setIsProcessing(true);
-
-    // Initial request
-    addLog({
-      timestamp: Date.now(),
-      type: 'request',
-      key: currentKey,
-      duration: 0,
-    });
-
-    // Client to Cache
-    setPosition('client');
-    await new Promise(r => setTimeout(r, config.requestDelay / 2));
-    
-    // Check cache
-    setPosition('cache');
-    await new Promise(r => setTimeout(r, config.requestDelay / 2));
-
-    if (config.cacheEnabled) {
-      const cachedData = cache.get(currentKey);
-      if (cachedData && Date.now() - cachedData.timestamp <= config.cacheTTL * 1000) {
-        // Cache hit
-        addLog({
-          timestamp: Date.now(),
-          type: 'cache-hit',
-          key: currentKey,
-          duration: config.requestDelay,
-        });
-        
-        // Return to client
-        setPosition('client');
-        await new Promise(r => setTimeout(r, config.requestDelay));
-        setIsProcessing(false);
-        setPosition(null);
-        return;
       }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [cacheOn, ttl, dbLatency, capacity, reduce],
+  );
 
-      // Cache miss
-      addLog({
-        timestamp: Date.now(),
-        type: 'cache-miss',
-        key: currentKey,
-        duration: config.requestDelay,
-      });
+  const toggleAuto = () => {
+    if (auto.current) {
+      auto.current = false;
+      setAutoOn(false);
+    } else {
+      auto.current = true;
+      setAutoOn(true);
+      if (!busy.current) runRead(weightedKey());
     }
-    
-    // Go to database
-    setPosition('db');
-    await new Promise(r => setTimeout(r, config.requestDelay));
-
-    // Database processing
-    addLog({
-      timestamp: Date.now(),
-      type: 'db-query',
-      key: currentKey,
-      duration: config.dbDelay,
-    });
-    await new Promise(r => setTimeout(r, config.dbDelay));
-    
-    // Back through Cache
-    setPosition('cache');
-    await new Promise(r => setTimeout(r, config.requestDelay));
-
-    // Update cache
-    if (config.cacheEnabled) {
-      setCache(current => new Map(current).set(currentKey, {
-        key: currentKey,
-        value: `Data for ${currentKey}`,
-        timestamp: Date.now(),
-      }));
-    }
-    
-    // Back to Client
-    setPosition('client');
-    await new Promise(r => setTimeout(r, config.requestDelay));
-
-    setIsProcessing(false);
-    setPosition(null);
   };
 
-  const clearCache = () => {
-    setCache(new Map());
-  };
+  const hitRatio = requests > 0 ? Math.round((hits / requests) * 100) : 0;
+  const avgLatency = requests > 0 ? Math.round(latencySum / requests) : 0;
 
-  const inputClass =
-    'w-full bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-2 py-1 font-sans text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-brand-500 rounded-md';
-
-  const rangeClass =
-    'w-full h-2 bg-slate-200 dark:bg-tactical-border appearance-none cursor-pointer accent-signal-green';
+  const narrText =
+    narr.kind === 'idle' ? t(`${base}.narration.idle`) : t(`${base}.narration.${narr.kind}`, narr.vars);
+  const narrTone = narr.kind === 'hit' ? 'success' : narr.kind === 'idle' ? 'idle' : 'active';
 
   return (
     <div className="space-y-6">
-      <Panel accent="cyan" padded={false} bodyClassName="p-4 md:p-6">
-        <div className="relative h-20 flex items-center justify-between max-w-3xl mx-auto">
-          <div className="absolute h-px bg-slate-300 dark:bg-tactical-line left-0 right-0 top-1/2 -translate-y-1/2" />
-
-          <div
-            className={`absolute w-4 h-4 bg-signal-cyan transition-all duration-500 ease-in-out top-1/2 -translate-y-1/2
-              ${position === 'client' ? 'left-0' : 
-                position === 'cache' ? 'left-1/2 -translate-x-1/2' : 
-                position === 'db' ? 'left-full -translate-x-full' : 
-                'left-0 opacity-0'}`}
-          />
-
-          <div className={`relative z-10 w-16 h-16 border-2 transition-colors duration-300 rounded-lg
-            ${position === 'client' ? 'border-signal-cyan bg-signal-cyan/10' : 'border-slate-300 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised'}
-            flex items-center justify-center`}>
-            <span className="font-sans text-xs text-slate-900 dark:text-tactical-text">{t('cache.simulation.client')}</span>
-          </div>
-          
-          <div className={`relative z-10 w-16 h-16 border-2 transition-colors duration-300 rounded-lg
-            ${position === 'cache' && config.cacheEnabled ? 
-              (cache.has(currentKey) && Date.now() - cache.get(currentKey)!.timestamp <= config.cacheTTL * 1000) ?
-                'border-signal-green bg-signal-green/10' : 'border-signal-amber bg-signal-amber/10'
-              : position === 'cache' ? 'border-signal-red bg-signal-red/10' 
-              : 'border-slate-300 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised'}
-            flex items-center justify-center`}>
-            <span className="font-sans text-xs text-slate-900 dark:text-tactical-text">{t('cache.simulation.cache')}</span>
-          </div>
-
-          <div className={`relative z-10 w-16 h-16 border-2 transition-colors duration-300 rounded-lg
-            ${position === 'db' ? 'border-signal-red bg-signal-red/10' : 'border-slate-300 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised'}
-            flex items-center justify-center`}>
-            <span className="font-sans text-xs text-slate-900 dark:text-tactical-text">{t('cache.simulation.database')}</span>
-          </div>
-        </div>
-      </Panel>
-
       <Panel
-        title={t('cache.simulation.configuration')}
-        accent="amber"
+        title={t(`${base}.title`)}
+        accent="cyan"
         action={
-          <button
-            onClick={() => setIsConfigOpen(!isConfigOpen)}
-            className="text-slate-400 dark:text-tactical-label hover:text-slate-900 dark:hover:text-tactical-text transition-colors"
-            aria-expanded={isConfigOpen}
-          >
-            <svg
-              className={`w-5 h-5 transform transition-transform duration-200 ${isConfigOpen ? 'rotate-180' : ''}`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <TacticalButton size="sm" variant={autoOn ? 'danger' : 'primary'} onClick={toggleAuto}>
+              {autoOn ? t(`${base}.buttons.stop`) : t(`${base}.buttons.auto`)}
+            </TacticalButton>
+            <TacticalButton size="sm" variant="ghost" onClick={() => writeCache([])}>{t(`${base}.buttons.clear`)}</TacticalButton>
+            <TacticalButton size="sm" variant="ghost" onClick={reset}>{t(`${base}.buttons.reset`)}</TacticalButton>
+          </div>
         }
       >
-        <div className={`space-y-4 overflow-hidden transition-all duration-200 ease-in-out ${
-          isConfigOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-        }`}>
-          <div className="flex items-center justify-between">
-            <label className="font-sans text-sm text-slate-600 dark:text-tactical-dim flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={config.cacheEnabled}
-                onChange={(e) => setConfig(c => ({ ...c, cacheEnabled: e.target.checked }))}
-                className="border-slate-300 dark:border-tactical-border text-signal-green focus:ring-signal-green"
-              />
-              <span>{t('cache.simulation.cache_enabled')}</span>
-            </label>
-          </div>
+        <p className="mb-5 max-w-prose font-sans text-xs leading-relaxed text-slate-500 dark:text-tactical-dim">{t(`${base}.subtitle`)}</p>
 
-          <div>
-            <div className="flex justify-between font-sans text-sm text-slate-600 dark:text-tactical-dim mb-1">
-              <span>{t('cache.simulation.cache_ttl')}</span>
-              <span className="text-signal-cyan tabular-nums">{config.cacheTTL}s</span>
-            </div>
-            <input
-              type="range"
-              min="5"
-              max="60"
-              value={config.cacheTTL}
-              onChange={(e) => setConfig(c => ({ ...c, cacheTTL: parseInt(e.target.value) }))}
-              className={rangeClass}
-            />
-          </div>
-
-          <div>
-            <div className="flex justify-between font-sans text-sm text-slate-600 dark:text-tactical-dim mb-1">
-              <span>{t('cache.simulation.network_delay')}</span>
-              <span className="text-signal-cyan tabular-nums">{config.requestDelay}ms</span>
-            </div>
-            <input
-              type="range"
-              min="100"
-              max="2000"
-              step="100"
-              value={config.requestDelay}
-              onChange={(e) => setConfig(c => ({ ...c, requestDelay: parseInt(e.target.value) }))}
-              className={rangeClass}
-            />
-          </div>
-
-          <div>
-            <div className="flex justify-between font-sans text-sm text-slate-600 dark:text-tactical-dim mb-1">
-              <span>{t('cache.simulation.database_delay')}</span>
-              <span className="text-signal-cyan tabular-nums">{config.dbDelay}ms</span>
-            </div>
-            <input
-              type="range"
-              min="200"
-              max="3000"
-              step="100"
-              value={config.dbDelay}
-              onChange={(e) => setConfig(c => ({ ...c, dbDelay: parseInt(e.target.value) }))}
-              className={rangeClass}
-            />
-          </div>
+        {/* Cache on/off segmented toggle */}
+        <div className="mb-5 inline-flex rounded-lg border border-slate-200 p-0.5 dark:border-tactical-border">
+          {[true, false].map((on) => (
+            <button
+              key={String(on)}
+              onClick={() => setCacheOn(on)}
+              className={`rounded-md px-3 py-1.5 font-sans text-xs font-medium transition-colors ${
+                cacheOn === on
+                  ? on
+                    ? 'bg-signal-green/15 text-emerald-700 dark:text-signal-green'
+                    : 'bg-signal-red/15 text-red-700 dark:text-signal-red'
+                  : 'text-slate-500 dark:text-tactical-dim'
+              }`}
+            >
+              {on ? t(`${base}.toggle.cache_on`) : t(`${base}.toggle.cache_off`)}
+            </button>
+          ))}
         </div>
-      </Panel>
 
-      <Panel title={t('cache.simulation.send')} accent="green">
-        <div className="flex flex-col md:flex-row gap-4">
-          <input
-            type="text"
-            value={currentKey}
-            onChange={(e) => setCurrentKey(e.target.value)}
-            placeholder={t('cache.simulation.cache_key_placeholder')}
-            className={`flex-1 ${inputClass} px-4 py-2`}
+        {/* Stage: client -> cache -> db with a traveling request token */}
+        <div className="relative mx-auto mb-6 h-28 max-w-2xl">
+          <div className="absolute left-[8%] right-[8%] top-9 h-px bg-slate-200 dark:bg-tactical-line" />
+          <StageNode left="8%" label={t(`${base}.stage.client`)} active={phase === 'client'} tone="cyan" />
+          <StageNode
+            left="50%"
+            label={t(`${base}.stage.cache`)}
+            sub={t(`${base}.stage.cache_sub`)}
+            active={cacheOn && (phase === 'cache' || phase === 'store')}
+            dim={!cacheOn}
+            tone={token?.tone === 'miss' && phase === 'cache' ? 'amber' : 'green'}
           />
-          <div className="flex gap-2 md:gap-4">
-            <TacticalButton
-              size="sm"
-              variant="primary"
-              onClick={simulateRequest}
-              disabled={isProcessing}
-              className="flex-1 md:flex-none"
-            >
-              {isProcessing ? t('cache.simulation.processing') : t('cache.simulation.send')}
-            </TacticalButton>
-            <TacticalButton
-              size="sm"
-              variant="danger"
-              onClick={clearCache}
-              className="flex-1 md:flex-none"
-            >
-              {t('cache.simulation.clear')}
-            </TacticalButton>
+          <StageNode left="92%" label={t(`${base}.stage.db`)} sub={t(`${base}.stage.db_sub`)} active={phase === 'db'} tone="red" />
+
+          <AnimatePresence>
+            {token && (
+              <motion.div
+                key="token"
+                className="absolute top-9 z-10"
+                style={{ x: '-50%', y: '-50%' }}
+                initial={{ opacity: 0, scale: 0.6, left: stationLeft.client }}
+                animate={{ opacity: 1, scale: 1, left: stationLeft[token.at] }}
+                exit={{ opacity: 0, scale: 0.6 }}
+                transition={{ left: { duration: dur(420) / 1000, ease: [0.22, 1, 0.36, 1] }, default: { duration: 0.18 } }}
+              >
+                <span
+                  className={`flex items-center gap-1 rounded-full px-2 py-1 font-mono text-[10px] font-semibold shadow-sm ${
+                    token.tone === 'hit'
+                      ? 'bg-signal-green text-black'
+                      : token.tone === 'miss'
+                        ? 'bg-signal-amber text-black'
+                        : 'bg-signal-cyan text-black'
+                  }`}
+                >
+                  {token.key}
+                </span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Key picker */}
+        <div className="mb-5">
+          <span className="label-mono mb-2 block">{t(`${base}.keys_label`)}</span>
+          <div className="flex flex-wrap gap-2">
+            {KEYS.map((k) => {
+              const e = entries.find((x) => x.key === k.id);
+              const cached = !!e && now - e.insertedAt < ttl * 1000;
+              return (
+                <button
+                  key={k.id}
+                  onClick={() => runRead(k.id)}
+                  disabled={busy.current}
+                  className={`group inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 font-mono text-xs transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+                    cached
+                      ? 'border-signal-green/40 text-emerald-700 dark:text-signal-green'
+                      : 'border-slate-200 text-slate-600 hover:border-slate-400 dark:border-tactical-border dark:text-tactical-text dark:hover:border-tactical-line'
+                  }`}
+                >
+                  <span className={`h-1.5 w-1.5 rounded-full ${cached ? 'bg-signal-green' : 'bg-slate-300 dark:bg-tactical-line'}`} />
+                  {k.id}
+                  {k.hot && <span className="rounded-sm bg-signal-amber/15 px-1 text-[9px] font-medium uppercase tracking-wide text-amber-700 dark:text-signal-amber">{t(`${base}.hot`)}</span>}
+                </button>
+              );
+            })}
           </div>
         </div>
-      </Panel>
 
-      <Panel title={t('cache.simulation.cache_status')} accent="cyan">
-        <div className="space-y-2">
-          {Array.from(cache.entries()).map(([key, entry]) => (
-            <div key={key} className="flex flex-col md:flex-row md:justify-between md:items-center border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-3 gap-2 md:gap-0 rounded-lg">
-              <div className="font-mono text-sm text-slate-900 dark:text-tactical-text break-all">{key}</div>
-              <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
-                {t('cache.simulation.expires_in')} {getRemainingTime(entry.timestamp, config.cacheTTL)}s
-              </div>
+        <div className="mb-5">
+          <NarrationBar tone={narrTone} stepKey={`${narr.kind}-${requests}`}>{narrText}</NarrationBar>
+        </div>
+
+        {/* Cache slots with TTL countdown + last-read latency */}
+        <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
+          <div>
+            <span className="label-mono mb-2 block">{t(`${base}.slots`)} · {Math.min(entries.length, capacity)}/{capacity}</span>
+            <div className="space-y-1.5">
+              {Array.from({ length: capacity }).map((_, i) => {
+                const e = entries[i];
+                if (!e) {
+                  return (
+                    <div key={`empty-${i}`} className="flex h-9 items-center rounded-md border border-dashed border-slate-200 px-3 dark:border-tactical-border">
+                      <span className="font-mono text-[11px] text-slate-300 dark:text-tactical-line">—</span>
+                    </div>
+                  );
+                }
+                const remaining = Math.max(0, ttl * 1000 - (now - e.insertedAt));
+                const pct = Math.max(0, Math.min(1, remaining / (ttl * 1000)));
+                const expiringSoon = pct <= 0.4;
+                const isEvicting = evicting === e.key;
+                return (
+                  <motion.div
+                    key={e.key}
+                    layout
+                    animate={isEvicting ? { backgroundColor: 'rgba(231,76,60,0.16)', x: [0, -3, 3, 0] } : {}}
+                    transition={{ duration: 0.3 }}
+                    className="relative flex h-9 items-center justify-between overflow-hidden rounded-md border border-slate-200 px-3 dark:border-tactical-border"
+                  >
+                    <div
+                      className={`absolute bottom-0 left-0 top-0 ${expiringSoon ? 'bg-signal-amber/10' : 'bg-signal-green/10'}`}
+                      style={{ width: `${pct * 100}%` }}
+                    />
+                    <span className="relative font-mono text-xs text-slate-900 dark:text-tactical-text">{e.key}</span>
+                    <span className={`relative font-mono text-[11px] tabular-nums ${expiringSoon ? 'text-amber-700 dark:text-signal-amber' : 'text-slate-400 dark:text-tactical-dim'}`}>
+                      {(remaining / 1000).toFixed(1)}s
+                    </span>
+                  </motion.div>
+                );
+              })}
             </div>
-          ))}
-          {cache.size === 0 && (
-            <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center rounded-lg">
-              <p className="font-sans text-xs text-slate-400 dark:text-tactical-label">
-                {t('cache.simulation.cache_empty')}
-              </p>
+          </div>
+
+          <div>
+            <span className="label-mono mb-2 block">{t(`${base}.last_read`)}</span>
+            <div className="rounded-lg border border-slate-200 p-4 dark:border-tactical-border">
+              <AnimatePresence mode="wait">
+                {last ? (
+                  <motion.div
+                    key={`${last.key}-${requests}`}
+                    initial={reduce ? false : { opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <div className="flex items-baseline justify-between">
+                      <span className={`font-mono text-3xl font-bold tabular-nums ${last.hit ? 'text-signal-green' : 'text-signal-amber'}`}>
+                        {last.ms}<span className="text-base font-medium text-slate-400 dark:text-tactical-dim"> ms</span>
+                      </span>
+                      <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{last.key}</span>
+                    </div>
+                    <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-tactical-raised">
+                      <motion.div
+                        className={`h-full rounded-full ${last.hit ? 'bg-signal-green' : 'bg-signal-amber'}`}
+                        initial={{ width: 0 }}
+                        animate={{ width: `${Math.max(2, Math.min(100, (last.ms / dbLatency) * 100))}%` }}
+                        transition={{ duration: 0.4, ease: 'easeOut' }}
+                      />
+                    </div>
+                    <p className="mt-2 font-sans text-[11px] text-slate-500 dark:text-tactical-dim">
+                      {last.hit ? t(`${base}.served_from_memory`) : t(`${base}.served_from_db`)}
+                      {last.hit && <> · {t(`${base}.legend.miss`).toLowerCase()} ≈ {dbLatency} ms</>}
+                    </p>
+                  </motion.div>
+                ) : (
+                  <motion.p key="placeholder" className="font-sans text-xs text-slate-400 dark:text-tactical-label">
+                    {t(`${base}.narration.idle`)}
+                  </motion.p>
+                )}
+              </AnimatePresence>
             </div>
-          )}
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <Legend
+            items={[
+              { swatch: 'bg-signal-green', label: t(`${base}.legend.fresh`) },
+              { swatch: 'bg-signal-amber', label: t(`${base}.legend.expiring`) },
+              { swatch: 'bg-signal-red', label: t(`${base}.legend.miss`) },
+              { swatch: '', hollow: true, label: t(`${base}.legend.empty`) },
+            ]}
+          />
         </div>
       </Panel>
 
-      <Panel title={t('cache.simulation.logs')} accent="amber">
-        <div className="space-y-2">
-          {logs.map(log => (
-            <div
-              key={log.id}
-              className="flex flex-col md:flex-row md:justify-between md:items-center border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-3 gap-2 md:gap-0 rounded-lg"
-            >
-              <div className="flex flex-wrap items-center gap-2 md:gap-3">
-                <StatusBadge
-                  variant={logBadgeVariant(log.type)}
-                  label={
-                    log.type === 'request' ? t('cache.simulation.request') :
-                    log.type === 'cache-hit' ? t('cache.simulation.cache_hit') :
-                    log.type === 'cache-miss' ? t('cache.simulation.cache_miss') :
-                    t('cache.simulation.db_query')
-                  }
-                />
-                <span className="font-mono text-sm text-slate-900 dark:text-tactical-text break-all">{log.key}</span>
-              </div>
-              <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim tabular-nums">{log.duration}ms</span>
-            </div>
-          ))}
-          {logs.length === 0 && (
-            <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center rounded-lg">
-              <p className="font-sans text-xs text-slate-400 dark:text-tactical-label">
-                {t('cache.simulation.no_logs')}
-              </p>
-            </div>
-          )}
+      {/* Controls */}
+      <Panel title={t(`${base}.controls.ttl`)} accent="amber">
+        <div className="grid gap-5 sm:grid-cols-3">
+          <SliderRow label={t(`${base}.controls.ttl`)} value={`${ttl}s`} min={5} max={40} step={1} v={ttl} onChange={setTtl} accent="amber" />
+          <SliderRow label={t(`${base}.controls.db_latency`)} value={`${dbLatency}ms`} min={20} max={200} step={10} v={dbLatency} onChange={setDbLatency} accent="red" />
+          <SliderRow label={t(`${base}.controls.capacity`)} value={String(capacity)} min={2} max={6} step={1} v={capacity} onChange={setCapacity} accent="cyan" />
         </div>
       </Panel>
+
+      <Panel title={t(`${base}.metrics.title`)} accent="green">
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <AnimatedMetric value={hitRatio} suffix="%" label={t(`${base}.metrics.hit_ratio`)} color={hitRatio >= 60 ? 'green' : hitRatio >= 30 ? 'amber' : 'red'} pulse={autoOn} />
+          <AnimatedMetric value={avgLatency} suffix=" ms" label={t(`${base}.metrics.avg_latency`)} color={avgLatency <= dbLatency / 2 ? 'green' : 'amber'} />
+          <AnimatedMetric value={dbQueries} label={t(`${base}.metrics.db_queries`)} color={dbQueries > 0 ? 'red' : 'default'} />
+          <AnimatedMetric value={requests} label={t(`${base}.metrics.requests`)} color="cyan" />
+        </div>
+        <p className="mt-4 max-w-prose font-sans text-[11px] leading-relaxed text-slate-500 dark:text-tactical-dim">{t(`${base}.hint`)}</p>
+      </Panel>
+    </div>
+  );
+}
+
+function weightedKey(): string {
+  const pool: string[] = [];
+  for (const k of KEYS) for (let i = 0; i < (k.hot ? 4 : 1); i++) pool.push(k.id);
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function StageNode({
+  left,
+  label,
+  sub,
+  active,
+  dim,
+  tone,
+}: {
+  left: string;
+  label: string;
+  sub?: string;
+  active?: boolean;
+  dim?: boolean;
+  tone: 'cyan' | 'green' | 'red' | 'amber';
+}) {
+  const ring =
+    tone === 'green'
+      ? 'border-signal-green bg-signal-green/10'
+      : tone === 'red'
+        ? 'border-signal-red bg-signal-red/10'
+        : tone === 'amber'
+          ? 'border-signal-amber bg-signal-amber/10'
+          : 'border-signal-cyan bg-signal-cyan/10';
+  return (
+    <div className="absolute top-9 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center" style={{ left }}>
+      <motion.div
+        animate={active ? { scale: [1, 1.06, 1] } : { scale: 1 }}
+        transition={active ? { duration: 1.2, repeat: Infinity, ease: 'easeInOut' } : { duration: 0.2 }}
+        className={`flex h-14 w-14 items-center justify-center rounded-xl border-2 transition-colors ${
+          active ? ring : 'border-slate-300 bg-white dark:border-tactical-border dark:bg-tactical-raised'
+        } ${dim ? 'opacity-40' : ''}`}
+      >
+        <span className="font-sans text-[10px] font-semibold text-slate-700 dark:text-tactical-text">{label}</span>
+      </motion.div>
+      {sub && <span className="mt-1.5 font-mono text-[9px] uppercase tracking-wide text-slate-400 dark:text-tactical-label">{sub}</span>}
+    </div>
+  );
+}
+
+function SliderRow({
+  label,
+  value,
+  min,
+  max,
+  step,
+  v,
+  onChange,
+  accent,
+}: {
+  label: string;
+  value: string;
+  min: number;
+  max: number;
+  step: number;
+  v: number;
+  onChange: (n: number) => void;
+  accent: 'amber' | 'red' | 'cyan';
+}) {
+  const accentClass = accent === 'red' ? 'accent-signal-red' : accent === 'cyan' ? 'accent-signal-cyan' : 'accent-signal-amber';
+  const valueClass = accent === 'red' ? 'text-signal-red' : accent === 'cyan' ? 'text-signal-cyan' : 'text-signal-amber';
+  return (
+    <div>
+      <div className="mb-1.5 flex items-center justify-between">
+        <span className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{label}</span>
+        <span className={`font-mono text-sm tabular-nums ${valueClass}`}>{value}</span>
+      </div>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={v}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className={`h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200 dark:bg-tactical-border ${accentClass}`}
+      />
     </div>
   );
 }

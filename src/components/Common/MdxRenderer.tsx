@@ -22,6 +22,12 @@ interface Props {
   onError?: (error: Error | null) => void;
   /** Rendered while the source is compiling. */
   fallback?: React.ReactNode;
+  /**
+   * Per-element overrides merged over the default lesson `mdxComponents`. Used
+   * by surfaces (like the announcement modal) that need a more compact
+   * typographic scale than full lesson pages.
+   */
+  components?: Record<string, unknown>;
 }
 
 function DefaultSkeleton() {
@@ -35,7 +41,7 @@ function DefaultSkeleton() {
   );
 }
 
-export default function MdxRenderer({ source, onError, fallback }: Props) {
+export default function MdxRenderer({ source, onError, fallback, components }: Props) {
   const [Content, setContent] = useState<React.ComponentType<{
     components?: Record<string, unknown>;
   }> | null>(null);
@@ -126,5 +132,5 @@ export default function MdxRenderer({ source, onError, fallback }: Props) {
     return <>{fallback ?? <DefaultSkeleton />}</>;
   }
 
-  return <Content components={mdxComponents} />;
+  return <Content components={components ? { ...mdxComponents, ...components } : mdxComponents} />;
 }

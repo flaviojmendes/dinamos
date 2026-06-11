@@ -53,6 +53,7 @@ const DLAdminContent = React.lazy(() => import("./app/pages/AdminContent"));
 const DLAdminModules = React.lazy(() => import("./app/pages/AdminModules"));
 const DLAdminHub = React.lazy(() => import("./app/pages/AdminHub"));
 const DLAdminContentTree = React.lazy(() => import("./app/pages/AdminContentTree"));
+const DLAdminAnnouncements = React.lazy(() => import("./app/pages/AdminAnnouncements"));
 
 function DesignLabRouteFallback() {
   return (
@@ -95,6 +96,7 @@ import { LanguageSwitcher } from './components/Common';
 import ThemeToggle from "./components/Common/ThemeToggle";
 import TopStatusBar from "./components/Common/TopStatusBar";
 import CommandPalette, { openCommandPalette } from "./components/Common/CommandPalette";
+import AnnouncementModal from "./components/Common/AnnouncementModal";
 import { useTranslation } from 'react-i18next';
 import CookieConsentBanner from './components/Common/CookieConsentBanner';
 import Footer from "./components/Common/Footer";
@@ -199,6 +201,28 @@ const createMenuItems = (t: any): MenuItem[] => [
         path: "/theoretical-foundations/network-partitions",
         name: t('menu.theoretical_foundations.network_partitions.name'),
         description: t('menu.theoretical_foundations.network_partitions.description'),
+      },
+      {
+        path: "/theoretical-foundations/pacelc",
+        name: t('menu.theoretical_foundations.pacelc.name'),
+        description: t('menu.theoretical_foundations.pacelc.description'),
+        children: [
+          {
+            path: "/theoretical-foundations/pacelc/simulator",
+            name: t('menu.theoretical_foundations.pacelc.simulator.name'),
+            description: t('menu.theoretical_foundations.pacelc.simulator.description'),
+          },
+        ],
+      },
+      {
+        path: "/theoretical-foundations/flp-impossibility",
+        name: t('menu.theoretical_foundations.flp.name'),
+        description: t('menu.theoretical_foundations.flp.description'),
+      },
+      {
+        path: "/theoretical-foundations/fallacies",
+        name: t('menu.theoretical_foundations.fallacies.name'),
+        description: t('menu.theoretical_foundations.fallacies.description'),
       },
     ],
   },
@@ -351,6 +375,47 @@ const createMenuItems = (t: any): MenuItem[] => [
         path: "/componentes/kubernetes",
         name: t('menu.componentes.kubernetes.name'),
         description: t('menu.componentes.kubernetes.description'),
+      },
+      {
+        path: "/componentes/api-styles",
+        name: t('menu.componentes.api_styles.name'),
+        description: t('menu.componentes.api_styles.description'),
+        children: [
+          {
+            path: "/componentes/api-styles/simulator",
+            name: t('menu.componentes.api_styles.simulator.name'),
+            description: t('menu.componentes.api_styles.simulator.description'),
+          },
+        ],
+      },
+      {
+        path: "/componentes/realtime-push",
+        name: t('menu.componentes.realtime_push.name'),
+        description: t('menu.componentes.realtime_push.description'),
+        children: [
+          {
+            path: "/componentes/realtime-push/simulator",
+            name: t('menu.componentes.realtime_push.simulator.name'),
+            description: t('menu.componentes.realtime_push.simulator.description'),
+          },
+        ],
+      },
+      {
+        path: "/componentes/dead-letter-queue",
+        name: t('menu.componentes.dead_letter_queue.name'),
+        description: t('menu.componentes.dead_letter_queue.description'),
+        children: [
+          {
+            path: "/componentes/dead-letter-queue/simulator",
+            name: t('menu.componentes.dead_letter_queue.simulator.name'),
+            description: t('menu.componentes.dead_letter_queue.simulator.description'),
+          },
+        ],
+      },
+      {
+        path: "/componentes/stream-processing",
+        name: t('menu.componentes.stream_processing.name'),
+        description: t('menu.componentes.stream_processing.description'),
       },
     ],
   },
@@ -562,6 +627,59 @@ const createMenuItems = (t: any): MenuItem[] => [
             description: t('menu.principios_design.backpressure.simulator.description'),
           },
         ],
+      },
+      {
+        path: "/principios-design/event-sourcing",
+        name: t('menu.principios_design.event_sourcing.name'),
+        description: t('menu.principios_design.event_sourcing.description'),
+        children: [
+          {
+            path: "/principios-design/event-sourcing/simulator",
+            name: t('menu.principios_design.event_sourcing.simulator.name'),
+            description: t('menu.principios_design.event_sourcing.simulator.description'),
+          },
+        ],
+      },
+      {
+        path: "/principios-design/outbox",
+        name: t('menu.principios_design.outbox.name'),
+        description: t('menu.principios_design.outbox.description'),
+        children: [
+          {
+            path: "/principios-design/outbox/simulator",
+            name: t('menu.principios_design.outbox.simulator.name'),
+            description: t('menu.principios_design.outbox.simulator.description'),
+          },
+        ],
+      },
+      {
+        path: "/principios-design/bulkhead",
+        name: t('menu.principios_design.bulkhead.name'),
+        description: t('menu.principios_design.bulkhead.description'),
+        children: [
+          {
+            path: "/principios-design/bulkhead/simulator",
+            name: t('menu.principios_design.bulkhead.simulator.name'),
+            description: t('menu.principios_design.bulkhead.simulator.description'),
+          },
+        ],
+      },
+      {
+        path: "/principios-design/blue-green",
+        name: t('menu.principios_design.blue_green.name'),
+        description: t('menu.principios_design.blue_green.description'),
+        children: [
+          {
+            path: "/principios-design/blue-green/simulator",
+            name: t('menu.principios_design.blue_green.simulator.name'),
+            description: t('menu.principios_design.blue_green.simulator.description'),
+          },
+        ],
+      },
+      {
+        path: "/principios-design/feature-flags",
+        name: t('menu.principios_design.feature_flags.name'),
+        description: t('menu.principios_design.feature_flags.description'),
       }
     ],
   },
@@ -794,6 +912,42 @@ const createMenuItems = (t: any): MenuItem[] => [
         path: "/estrategias-de-consistencia/vector-clocks",
         description: t('menu.estrategias_de_consistencia.vector_clocks.description'),
       },
+      {
+        name: t('menu.estrategias_de_consistencia.crdts.name'),
+        path: "/estrategias-de-consistencia/crdts",
+        description: t('menu.estrategias_de_consistencia.crdts.description'),
+        children: [
+          {
+            name: t('menu.estrategias_de_consistencia.crdts.simulator.name'),
+            path: "/estrategias-de-consistencia/crdts/simulator",
+            description: t('menu.estrategias_de_consistencia.crdts.simulator.description'),
+          },
+        ],
+      },
+      {
+        name: t('menu.estrategias_de_consistencia.gossip.name'),
+        path: "/estrategias-de-consistencia/gossip",
+        description: t('menu.estrategias_de_consistencia.gossip.description'),
+        children: [
+          {
+            name: t('menu.estrategias_de_consistencia.gossip.simulator.name'),
+            path: "/estrategias-de-consistencia/gossip/simulator",
+            description: t('menu.estrategias_de_consistencia.gossip.simulator.description'),
+          },
+        ],
+      },
+      {
+        name: t('menu.estrategias_de_consistencia.distributed_locks.name'),
+        path: "/estrategias-de-consistencia/distributed-locks",
+        description: t('menu.estrategias_de_consistencia.distributed_locks.description'),
+        children: [
+          {
+            name: t('menu.estrategias_de_consistencia.distributed_locks.simulator.name'),
+            path: "/estrategias-de-consistencia/distributed-locks/simulator",
+            description: t('menu.estrategias_de_consistencia.distributed_locks.simulator.description'),
+          },
+        ],
+      },
     ],
   },
   {
@@ -869,6 +1023,28 @@ const createMenuItems = (t: any): MenuItem[] => [
         path: "/monitoramento-e-manutencao/slo-sli-sla",
         name: t('menu.monitoramento_e_manutencao.slo_sli_sla.name'),
         description: t('menu.monitoramento_e_manutencao.slo_sli_sla.description'),
+      },
+      {
+        path: "/monitoramento-e-manutencao/chaos-engineering",
+        name: t('menu.monitoramento_e_manutencao.chaos_engineering.name'),
+        description: t('menu.monitoramento_e_manutencao.chaos_engineering.description'),
+        children: [
+          {
+            path: "/monitoramento-e-manutencao/chaos-engineering/simulator",
+            name: t('menu.monitoramento_e_manutencao.chaos_engineering.simulator.name'),
+            description: t('menu.monitoramento_e_manutencao.chaos_engineering.simulator.description'),
+          },
+        ],
+      },
+      {
+        path: "/monitoramento-e-manutencao/disaster-recovery",
+        name: t('menu.monitoramento_e_manutencao.disaster_recovery.name'),
+        description: t('menu.monitoramento_e_manutencao.disaster_recovery.description'),
+      },
+      {
+        path: "/monitoramento-e-manutencao/multi-region",
+        name: t('menu.monitoramento_e_manutencao.multi_region.name'),
+        description: t('menu.monitoramento_e_manutencao.multi_region.description'),
       },
     ],
   },
@@ -1098,6 +1274,64 @@ const createMenuItems = (t: any): MenuItem[] => [
             description: t('menu.data_storage.inverted_index.simulator.description'),
           },
         ],
+      },
+      {
+        path: "/dados-armazenamento/storage-engines",
+        name: t('menu.data_storage.storage_engines.name'),
+        description: t('menu.data_storage.storage_engines.description'),
+        children: [
+          {
+            path: "/dados-armazenamento/storage-engines/simulator",
+            name: t('menu.data_storage.storage_engines.simulator.name'),
+            description: t('menu.data_storage.storage_engines.simulator.description'),
+          },
+        ],
+      },
+      {
+        path: "/dados-armazenamento/bloom-filters",
+        name: t('menu.data_storage.bloom_filters.name'),
+        description: t('menu.data_storage.bloom_filters.description'),
+        children: [
+          {
+            path: "/dados-armazenamento/bloom-filters/simulator",
+            name: t('menu.data_storage.bloom_filters.simulator.name'),
+            description: t('menu.data_storage.bloom_filters.simulator.description'),
+          },
+        ],
+      },
+      {
+        path: "/dados-armazenamento/replication-quorums",
+        name: t('menu.data_storage.replication_quorums.name'),
+        description: t('menu.data_storage.replication_quorums.description'),
+        children: [
+          {
+            path: "/dados-armazenamento/replication-quorums/simulator",
+            name: t('menu.data_storage.replication_quorums.simulator.name'),
+            description: t('menu.data_storage.replication_quorums.simulator.description'),
+          },
+        ],
+      },
+      {
+        path: "/dados-armazenamento/cdc",
+        name: t('menu.data_storage.cdc.name'),
+        description: t('menu.data_storage.cdc.description'),
+        children: [
+          {
+            path: "/dados-armazenamento/cdc/simulator",
+            name: t('menu.data_storage.cdc.simulator.name'),
+            description: t('menu.data_storage.cdc.simulator.description'),
+          },
+        ],
+      },
+      {
+        path: "/dados-armazenamento/oltp-olap",
+        name: t('menu.data_storage.oltp_olap.name'),
+        description: t('menu.data_storage.oltp_olap.description'),
+      },
+      {
+        path: "/dados-armazenamento/time-series",
+        name: t('menu.data_storage.time_series.name'),
+        description: t('menu.data_storage.time_series.description'),
       },
     ],
   },
@@ -1761,6 +1995,7 @@ export default function App() {
         )}
 
         {user && <CommandPalette />}
+        {user && <AnnouncementModal />}
 
         {/* Main content */}
         <main className={`flex-1 overflow-y-auto bg-canvas-paper dark:bg-canvas-dark ${isMobile ? 'pt-16' : ''}`}>
@@ -2123,6 +2358,14 @@ export default function App() {
               element={
                 <DLProtectedRoute>
                   <DLAdminModules />
+                </DLProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/announcements"
+              element={
+                <DLProtectedRoute>
+                  <DLAdminAnnouncements />
                 </DLProtectedRoute>
               }
             />

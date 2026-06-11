@@ -5,6 +5,12 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 const resources = {
   en: {
     translation: {
+      announcement: {
+        badge: 'Announcement',
+        default_title: 'Heads up',
+        acknowledge: 'Got it',
+        dismissing: 'Dismissing…'
+      },
       admin: {
         control_center: 'Control Center',
         access_denied: 'Access Denied',
@@ -49,6 +55,10 @@ const resources = {
           notifications: {
             title: 'Notifications',
             description: 'Broadcast announcements and manage notifications.'
+          },
+          announcements: {
+            title: 'Announcements',
+            description: 'Publish a modal shown to users until they acknowledge it.'
           },
           users: {
             title: 'Users',
@@ -684,6 +694,22 @@ const resources = {
             recovery: {
               description: 'When partitions heal, systems must carefully reconcile state and resolve any conflicts that occurred during the partition.'
             }
+          },
+          pacelc: {
+            name: 'PACELC Theorem',
+            description: 'Beyond CAP: the latency-vs-consistency trade-off even without partitions',
+            simulator: {
+              name: 'PACELC Simulator',
+              description: 'Classify real databases by their partition and normal-operation trade-offs'
+            }
+          },
+          flp: {
+            name: 'FLP Impossibility',
+            description: 'Why no async consensus algorithm can guarantee termination',
+          },
+          fallacies: {
+            name: 'Fallacies of Distributed Computing',
+            description: 'Eight false assumptions that wreck distributed systems'
           }
         },
         componentes: {
@@ -788,6 +814,34 @@ const resources = {
           kubernetes: {
             name: 'Kubernetes',
             description: 'Declarative orchestration of containers at scale'
+          },
+          api_styles: {
+            name: 'API Styles: REST, gRPC & GraphQL',
+            description: 'Choosing how services talk: round trips, payloads, schemas',
+            simulator: {
+              name: 'API Styles Simulator',
+              description: 'Compare round trips, payload size, and over-fetching'
+            }
+          },
+          realtime_push: {
+            name: 'WebSockets & Real-Time Push',
+            description: 'Polling vs SSE vs WebSockets for live updates',
+            simulator: {
+              name: 'Real-Time Push Simulator',
+              description: 'Compare delivery latency and request overhead'
+            }
+          },
+          dead_letter_queue: {
+            name: 'Dead Letter Queues',
+            description: 'Where messages go after exhausting their retries',
+            simulator: {
+              name: 'Dead Letter Queue Simulator',
+              description: 'Tune failure rate and retries; watch messages dead-letter'
+            }
+          },
+          stream_processing: {
+            name: 'Stream Processing',
+            description: 'Continuous computation over event streams (Flink, Kafka Streams)'
           }
         },
         principios_design: {
@@ -936,6 +990,42 @@ const resources = {
               name: 'Backpressure Simulator',
               description: 'Throttle a producer when the queue fills up'
             }
+          },
+          event_sourcing: {
+            name: 'Event Sourcing',
+            description: 'Store state as an immutable log of events',
+            simulator: {
+              name: 'Event Sourcing Simulator',
+              description: 'Append events and rebuild state from the log'
+            }
+          },
+          outbox: {
+            name: 'Transactional Outbox',
+            description: 'Publish events reliably without dual-write inconsistency',
+            simulator: {
+              name: 'Outbox Simulator',
+              description: 'Compare dual-write vs the outbox pattern under broker failures'
+            }
+          },
+          bulkhead: {
+            name: 'Bulkhead Pattern',
+            description: 'Isolate resource pools so one failure can\'t sink the ship',
+            simulator: {
+              name: 'Bulkhead Simulator',
+              description: 'Watch a slow dependency starve a shared pool — then isolate it'
+            }
+          },
+          blue_green: {
+            name: 'Blue-Green Deployment',
+            description: 'Two identical environments with instant switchover and rollback',
+            simulator: {
+              name: 'Blue-Green Simulator',
+              description: 'Shift traffic between environments and roll back instantly'
+            }
+          },
+          feature_flags: {
+            name: 'Feature Flags',
+            description: 'Decouple deploy from release; toggle features at runtime'
           }
         },
         estrategias_de_consistencia: {
@@ -1000,6 +1090,30 @@ const resources = {
           vector_clocks: {
             name: 'Vector Clocks',
             description: 'Track causality and detect concurrent updates'
+          },
+          crdts: {
+            name: 'CRDTs',
+            description: 'Conflict-free replicated data types that always converge',
+            simulator: {
+              name: 'CRDT Simulator',
+              description: 'Edit replicas independently, then merge and watch them converge'
+            }
+          },
+          gossip: {
+            name: 'Gossip & Anti-Entropy',
+            description: 'Epidemic protocols that spread state across a cluster',
+            simulator: {
+              name: 'Gossip Simulator',
+              description: 'Watch a rumor spread node-to-node until the cluster converges'
+            }
+          },
+          distributed_locks: {
+            name: 'Distributed Locks & Fencing Tokens',
+            description: 'Mutual exclusion with leases and fencing against stale holders',
+            simulator: {
+              name: 'Distributed Lock Simulator',
+              description: 'Acquire a lease, stall the holder, and watch fencing reject stale writes'
+            }
           }
         },
         monitoramento_e_manutencao: {
@@ -1044,6 +1158,22 @@ const resources = {
           slo_sli_sla: {
             name: 'SLO, SLI & Error Budgets',
             description: 'Measure reliability and spend it with burn rate'
+          },
+          chaos_engineering: {
+            name: 'Chaos Engineering',
+            description: 'Deliberately inject failure to build confidence in resilience',
+            simulator: {
+              name: 'Chaos Simulator',
+              description: 'Kill nodes during a game day and watch availability hold or crater'
+            }
+          },
+          disaster_recovery: {
+            name: 'Disaster Recovery & Backups',
+            description: 'RPO, RTO, backup strategies, and recovery patterns'
+          },
+          multi_region: {
+            name: 'Multi-Region & Geo-Replication',
+            description: 'Run across regions for latency, availability, and survival'
           }
         },
         casos_reais: {
@@ -1216,6 +1346,46 @@ const resources = {
               name: 'Inverted Index Simulator',
               description: 'Query terms and watch documents rank by score'
             }
+          },
+          storage_engines: {
+            name: 'Storage Engines: B-Tree vs LSM',
+            description: 'How databases physically store and update data on disk',
+            simulator: {
+              name: 'Storage Engine Simulator',
+              description: 'Stream writes and compare write/read amplification'
+            }
+          },
+          bloom_filters: {
+            name: 'Bloom Filters',
+            description: 'Probabilistic membership tests with no false negatives',
+            simulator: {
+              name: 'Bloom Filter Simulator',
+              description: 'Insert keys, query them, and watch false positives appear'
+            }
+          },
+          replication_quorums: {
+            name: 'Replication Models & Quorums',
+            description: 'Leader-follower, multi-leader, leaderless, and R + W > N',
+            simulator: {
+              name: 'Quorum Replication Simulator',
+              description: 'Tune N, W, R and see when reads return stale data'
+            }
+          },
+          cdc: {
+            name: 'Change Data Capture (CDC)',
+            description: 'Stream row-level changes from the database log downstream',
+            simulator: {
+              name: 'CDC Simulator',
+              description: 'Tail a transaction log into caches, search, and analytics'
+            }
+          },
+          oltp_olap: {
+            name: 'OLTP vs OLAP, Warehouses & Lakes',
+            description: 'Transactional vs analytical stores and the modern data stack'
+          },
+          time_series: {
+            name: 'Time-Series Databases',
+            description: 'Storing and querying high-volume timestamped metrics'
           }
         },
         editor: {
@@ -1563,6 +1733,32 @@ const resources = {
         }
       },
       simulators: {
+        cache: {
+          title: 'Cache-Aside Simulator',
+          subtitle: 'Reads check the cache first. Hits return from memory; misses fall through to the database and get stored for next time.',
+          controls: { ttl: 'TTL (entry lifetime)', db_latency: 'Database latency', capacity: 'Cache capacity' },
+          buttons: { auto: 'Auto traffic', stop: 'Stop', clear: 'Clear cache', reset: 'Reset' },
+          toggle: { cache_on: 'Cache on', cache_off: 'Cache off' },
+          stage: { client: 'Client', cache: 'Cache', cache_sub: 'memory', db: 'Database', db_sub: 'disk' },
+          keys_label: 'Read a key',
+          hot: 'hot',
+          slots: 'Cache slots',
+          last_read: 'Last read',
+          served_from_memory: 'served from memory',
+          served_from_db: 'from the database',
+          legend: { fresh: 'Fresh in cache', expiring: 'Expiring soon', miss: 'Miss / database', empty: 'Empty slot' },
+          narration: {
+            idle: 'Pick a key and send a read, or turn on auto traffic. Hits come from memory; misses hit the database.',
+            lookup: 'Reading {{key}}: checking the cache first.',
+            hit: 'HIT: {{key}} served from memory in {{ms}} ms. The database was never touched.',
+            miss: 'MISS: {{key}} is not cached. Querying the database ({{ms}} ms), then storing the result.',
+            stale: 'STALE: {{key}} outlived its TTL, so it counts as a miss and gets refetched.',
+            evict: 'Cache full: evicting least-recently-used {{key}} to make room for {{incoming}}.',
+            disabled: 'Cache is off: every read goes straight to the database at {{ms}} ms.'
+          },
+          metrics: { title: 'Live metrics', hit_ratio: 'Hit ratio', avg_latency: 'Avg latency', db_queries: 'Database queries', requests: 'Total reads' },
+          hint: 'A cache trades freshness for speed. A high hit ratio keeps most reads in memory and shields the database; TTL and capacity decide how often you pay the slow path.'
+        },
         consistent_hashing: {
           title: 'Consistent Hashing Simulator',
           subtitle: 'Keys on a ring — add/remove nodes and watch them remap',
@@ -1646,6 +1842,85 @@ const resources = {
             hint: 'AND intersects postings lists; OR unions them. Score counts how many query terms each document contains.'
           }
         },
+        storage_engine: {
+          title: 'Storage Engine Simulator',
+          subtitle: 'Stream writes through an LSM-tree or a B-tree and compare amplification',
+          buttons: { step: 'Write 1 key', start: 'Auto-run', stop: 'Stop', reset: 'Reset' },
+          engines: { lsm: 'LSM-Tree', btree: 'B-Tree' },
+          wal: 'Write-Ahead Log',
+          narration: {
+            idle: 'Write keys one at a time and watch where they land. LSM appends sequentially then compacts; B-tree updates pages in place.',
+            lsm_append: 'Write appended to the in-memory memtable ({{mem}}/{{cap}}). Sequential, so writes are cheap.',
+            lsm_flush: 'Memtable is full: flushed to a new immutable L0 SSTable in one sequential write.',
+            lsm_compact: '{{count}} L0 SSTables merged into one L1 table ({{size}} entries rewritten). This rewrite is write amplification.',
+            btree_update: 'Found the leaf page for this key and rewrote page {{page}} in place. Random I/O, but reads stay a single tree walk.'
+          },
+          lsm: { memtable: 'Memtable (in-memory)', level: 'Level {{n}} (SSTables on disk)' },
+          btree: { pages: 'B-Tree pages (updated in place)', note: 'Each write seeks to a leaf page and rewrites it — random I/O.' },
+          metrics: { title: 'Live Metrics', writes: 'Logical writes', write_amp: 'Write amplification', read_amp: 'Read amplification', compactions: 'Compactions' },
+          hint_lsm: 'LSM-trees absorb writes sequentially into a memtable, then flush and compact SSTables — cheap writes, but reads may scan many tables until compaction.',
+          hint_btree: 'B-trees update pages in place: reads are a single tree walk (low read amplification) but writes cause random I/O.'
+        },
+        bloom_filter: {
+          title: 'Bloom Filter Simulator',
+          subtitle: 'A bit array + k hashes: fast membership tests with no false negatives',
+          placeholder: 'Type a key…',
+          controls: { bits: 'Bit array size (m)', hashes: 'Hash functions (k)' },
+          buttons: { add: 'Insert', query: 'Query', random: 'Add random', reset: 'Reset' },
+          maps_to: 'hashes',
+          checks: 'checks',
+          narration: {
+            idle: 'Insert a few keys, then query one. Each key hashes to k bit positions; watch which bits get set and how queries are answered.',
+            inserted: 'Inserted "{{word}}": its k hashes point to bits {{positions}}, now set to 1.',
+            maybe: '"{{word}}": all {{k}} hashed bits are 1, so it is probably present (could still be a collision).',
+            false_positive: '"{{word}}" was never inserted, yet all its bits are 1 because other keys set them. That is a false positive.',
+            absent: '"{{word}}": bit {{pos}} is 0, so it is definitely not present. Bloom filters never give false negatives.'
+          },
+          result: {
+            maybe: 'is probably present (all k bits set).',
+            false_positive: 'reads as present, but was never inserted. False positive!',
+            definitely_not: 'is definitely not present (at least one bit is 0).'
+          },
+          metrics: { title: 'Live Metrics', items: 'Items inserted', bits_set: 'Bits set', fill: 'Fill ratio', fp_rate: 'Est. false-positive rate' },
+          hint: 'A query is "maybe present" only if every hashed bit is 1. More items or fewer bits raise the false-positive rate; there are never false negatives.'
+        },
+        quorum_replication: {
+          title: 'Quorum Replication Simulator',
+          subtitle: 'Tune replicas (N), write quorum (W), and read quorum (R)',
+          controls: { replicas: 'Replicas (N)', write_quorum: 'Write quorum (W)', read_quorum: 'Read quorum (R)' },
+          buttons: { write: 'Write new version', read: 'Read', reset: 'Reset' },
+          node: 'Node',
+          legend: { write: 'Write quorum (W)', read: 'Read quorum (R)', overlap: 'Overlap (sees latest)' },
+          narration: {
+            idle: 'Write a new version to W nodes, then read from R nodes, and watch whether the read quorum overlaps the latest write.',
+            wrote: 'Wrote v{{version}} to a write quorum of W={{w}} nodes. The other replicas still hold older versions.',
+            read_fresh: 'The read quorum R={{r}} overlapped the write quorum at {{count}} node(s), so it returned the freshest v{{value}}. R+W>N forces that overlap.',
+            read_stale: 'The read quorum R={{r}} missed every node holding the latest write, so it returned a stale v{{value}}. With R+W not greater than N the quorums can miss each other.'
+          },
+          read_returned: 'Read returned',
+          result: { stale: 'stale! Missed the latest write.', fresh: 'fresh, up to date.' },
+          metrics: { title: 'Live Metrics', replicas: 'Replicas', latest: 'Latest version', fault_tolerance: 'Tolerated failures', strong: 'Strong reads?' },
+          hint: 'When R + W > N the read and write quorums always overlap, so reads see the newest write. Lower them for higher availability at the cost of stale reads.'
+        },
+        cdc: {
+          title: 'CDC Simulator',
+          subtitle: 'A connector tails the database log and ships changes to downstream sinks',
+          controls: { write_rate: 'DB writes / tick', connector_rate: 'Connector throughput / tick' },
+          buttons: { step: 'Tick once', start: 'Auto-run', stop: 'Stop', reset: 'Reset' },
+          source: 'Source DB transaction log',
+          connector: 'CDC connector',
+          offset: 'offset',
+          narration: {
+            idle: 'Start the stream. The connector tails the DB log in order and ships each change to every downstream sink.',
+            shipping: 'Connector shipped {{k}} change(s) downstream. Replication lag is {{lag}}.',
+            lagging: 'Writes ({{rate}}/tick) outpace the connector ({{crate}}/tick), so the log grows behind the offset. Lag is now {{lag}}.',
+            caught_up: 'The connector is keeping up: lag is {{lag}} and the sinks are in sync with the source.'
+          },
+          wal_note: 'Amber = behind the offset (not yet captured); green = already shipped downstream',
+          sinks: { cache: 'Cache invalidation', search: 'Search index', warehouse: 'Data warehouse' },
+          metrics: { title: 'Live Metrics', produced: 'Changes produced', consumed: 'Changes shipped', lag: 'Replication lag', pending: 'Pending in log' },
+          hint: 'If writes outpace the connector, lag grows and downstream sinks fall behind. CDC keeps caches, search, and analytics in sync without dual writes.'
+        },
         kafka: {
           title: 'Kafka Simulator',
           subtitle: 'Producers, partitions, and a consumer group — watch the lag',
@@ -1675,6 +1950,75 @@ const resources = {
             idle: 'idle',
             hint: 'Each partition is read by exactly one consumer. Add consumers beyond the partition count and they sit idle — partitions cap parallelism.'
           }
+        },
+        api_styles: {
+          title: 'API Styles Simulator',
+          subtitle: 'Fetch a screen of data with REST, GraphQL, or gRPC and compare the cost',
+          styles: { rest: 'REST', graphql: 'GraphQL', grpc: 'gRPC' },
+          controls: { fields: 'Fields the screen needs', with_orders: 'Including related orders', no_orders: 'User only' },
+          client: 'Client',
+          server: 'Server',
+          round_trip: 'Round trip',
+          payload_label: 'Response payload',
+          binary: 'binary protobuf',
+          used: 'Used by screen',
+          over: 'Over-fetched',
+          sinks_orders: 'Related orders',
+          narration: {
+            rest: 'REST returned all 12 user fields across {{rt}} round trip(s); the screen used {{used}}, so {{over}}% was over-fetched.',
+            graphql: 'GraphQL returned exactly the {{used}} field(s) the screen asked for in one round trip, no over-fetching.',
+            grpc: 'gRPC returned {{used}} field(s) as compact binary in one round trip, roughly a third the size of JSON.'
+          },
+          metrics: { title: 'Live Metrics', round_trips: 'Round trips', payload: 'Payload size', over_fetch: 'Over-fetched', schema: 'Typed schema' },
+          hint: {
+            rest: 'REST often needs one request per resource and returns whole objects — simple and cacheable, but it over-fetches and may need several round trips.',
+            graphql: 'GraphQL gets exactly the requested fields in a single round trip — no over-fetching, at the cost of server-side query planning.',
+            grpc: 'gRPC sends compact binary Protobuf over one round trip with a strict schema — fastest on the wire, but not human-readable and harder to debug.'
+          }
+        },
+        realtime_push: {
+          title: 'Real-Time Push Simulator',
+          subtitle: 'Deliver server events with polling, SSE, or WebSockets',
+          modes: { polling: 'Polling', sse: 'Server-Sent Events', websocket: 'WebSocket' },
+          controls: { interval: 'Poll interval (ticks)' },
+          buttons: { start: 'Start', stop: 'Stop', reset: 'Reset' },
+          server: 'Server',
+          client: 'Client',
+          persistent: 'persistent connection',
+          repeated: 'repeated requests',
+          one_connection: 'One open connection',
+          many_requests: 'Many short requests',
+          narration: {
+            idle: 'Pick a transport and run it. Watch how server events reach the client, and what each approach costs.',
+            poll_deliver: 'A poll arrived and collected {{k}} queued event(s). They had waited up to {{interval}} ticks for this request.',
+            poll_empty: 'A poll arrived but the server had nothing new, a wasted empty request.',
+            push: 'The server pushed the event the instant it happened over the open connection, about 1 tick of latency.'
+          },
+          metrics: { title: 'Live Metrics', delivered: 'Events delivered', latency: 'Avg delivery latency', requests: 'Requests sent', empty_polls: 'Wasted empty polls' },
+          hint: {
+            polling: 'Polling re-asks on a fixed interval: simple, but adds latency (up to one interval) and wastes requests when nothing changed.',
+            sse: 'Server-Sent Events push one-way over a single long-lived HTTP connection — near-instant delivery with almost no request overhead.',
+            websocket: 'WebSockets keep a full-duplex connection open — instant, bidirectional delivery ideal for chat, games, and live collaboration.'
+          }
+        },
+        dead_letter_queue: {
+          title: 'Dead Letter Queue Simulator',
+          subtitle: 'Failed messages retry, then move to the DLQ after the limit',
+          controls: { failure_rate: 'Transient failure rate', max_retries: 'Max retries' },
+          buttons: { step: 'Process one', start: 'Auto-run', stop: 'Stop', reset: 'Reset' },
+          main_queue: 'Main queue',
+          dlq: 'Dead Letter Queue',
+          consumer: 'Consumer',
+          attempt: 'attempt',
+          poison: 'Poison message (always fails)',
+          narration: {
+            idle: 'Run the queue. Failed messages are retried; once they pass the retry limit they move to the DLQ so they cannot block the queue forever.',
+            ok: 'Message #{{id}} processed successfully on attempt {{n}}.',
+            retry: 'Message #{{id}} failed (attempt {{n}}/{{max}}), re-queued for another try.',
+            dlq: 'Message #{{id}} hit the retry limit after {{n}} attempts, moved to the DLQ. The queue keeps flowing.'
+          },
+          metrics: { title: 'Live Metrics', processed: 'Processed', retried: 'Retries', dead_lettered: 'Dead-lettered', success_rate: 'Success rate' },
+          hint: 'Transient failures are retried; once a message exceeds the retry limit (or is a poison message) it goes to the DLQ instead of blocking the queue forever.'
         },
         saga: {
           title: 'Saga Simulator',
@@ -1764,6 +2108,69 @@ const resources = {
             empty: 'No messages yet',
             hint: 'At-most-once can lose messages; at-least-once can duplicate them. "Exactly-once" = at-least-once delivery plus deduplication on the consumer.'
           }
+        },
+        crdt: {
+          title: 'CRDT Simulator (G-Counter)',
+          subtitle: 'Increment replicas independently, then merge — they always converge',
+          buttons: { sync: 'Sync (merge all)', reset: 'Reset' },
+          increment: '+1 on {{replica}}',
+          replica: 'Replica',
+          gossip_label: 'Gossip:',
+          narration: {
+            idle: 'Increment any replica. Each counts only in its own slot, so the replicas drift apart until they gossip.',
+            increment: 'Replica {{replica}} counted +1 in its own slot and now reads {{total}}. The others have not heard yet, so values diverge.',
+            merge: '{{a}} and {{b}} gossiped: each slot becomes the max of the two. No increment is ever lost, and merge order never changes the result.',
+            converged: 'Every replica now holds the same vector and agrees on {{total}}. Eventually consistent, with zero conflict resolution.'
+          },
+          converged: 'Converged',
+          diverged: 'Diverged',
+          all_agree: 'All replicas agree on the value.',
+          need_sync: 'Replicas hold different values, gossip to merge.',
+          metrics: { title: 'Live Metrics', max_value: 'Counter value', merges: 'Merges', converged: 'Converged?', replicas: 'Replicas' },
+          hint: 'Each replica counts its own increments in its own slot. Merge takes the element-wise max, so increments are never lost and any merge order yields the same result.'
+        },
+        gossip: {
+          title: 'Gossip Simulator',
+          subtitle: 'One node learns an update; it spreads epidemically across the cluster',
+          controls: { fanout: 'Fanout (peers per round)', speed: 'Speed' },
+          speed: { slow: 'Slow', normal: 'Normal', fast: 'Fast' },
+          buttons: { start: 'Start rumor', resume: 'Resume', pause: 'Pause', step: 'Step', replay: 'Replay', reset: 'Reset' },
+          legend: { known: 'Knows the update', packet: 'Rumor in flight', unaware: 'Unaware' },
+          narration: {
+            idle: 'One node knows the update. Press Start to let it gossip, or Step through one round at a time.',
+            round: 'Round {{round}}: {{senders}} informed node(s) gossiped to {{peers}} peer(s). Now {{known}}/{{total}} know.',
+            converged: 'Converged in {{rounds}} rounds. Coverage roughly doubles each round, so the cluster syncs in about log\u2082(N) rounds.'
+          },
+          chart: { title: 'Coverage by round', round: 'r{{n}}' },
+          metrics: { title: 'Live Metrics', round: 'Round', infected: 'Nodes informed', converged: 'Converged', nodes: 'Total nodes' },
+          hint: 'Each informed node tells a few random peers each round, so the update reaches everyone in about log(N) rounds, with no coordinator, and it tolerates failures.'
+        },
+        distributed_lock: {
+          title: 'Distributed Lock Simulator',
+          subtitle: 'A lease-based lock with fencing tokens that reject stale writers',
+          buttons: { demo: 'Run fencing demo', acquire: 'Acquire', write: 'Write', stall: 'Stall (pause)', reset: 'Reset' },
+          lock: 'Lock',
+          free: 'Free',
+          held_by: 'Held by',
+          token: 'token',
+          write_token: 'write @ token',
+          client: 'Client',
+          resource: 'Resource',
+          accepted: 'ACCEPTED',
+          fenced: 'FENCED',
+          stale: '(stale)',
+          stalled_note: 'stalled, lease still ticking',
+          narration: {
+            idle: 'Acquire the lock, stall the holder until its lease expires, let another client acquire, then write from the stalled client to watch fencing reject the stale token. Or run the demo.',
+            acquire: 'Client {{client}} acquired the lock with fencing token {{token}} (a monotonically increasing number).',
+            stall: 'Client {{client}} stalled (e.g. a GC pause). Its lease keeps ticking and will expire while it is frozen.',
+            expired: 'The lease expired and the lock auto-released.',
+            expired_stalled: 'The lease expired and the lock auto-released, but the stalled holder still thinks it owns the lock.',
+            write_ok: 'Client {{client}} wrote with token {{token}} (>= resource token {{rt}}): accepted. The resource advances to {{token}}.',
+            fenced: 'Client {{client}} wrote with stale token {{token}} (< resource token {{rt}}): fenced. The resource rejects the old token.'
+          },
+          metrics: { title: 'Live Metrics', tokens_issued: 'Tokens issued', accepted: 'Writes accepted', fenced: 'Writes fenced', resource_token: 'Resource token' },
+          hint: 'Acquire the lock, stall the holder until its lease expires, let another client acquire (higher token), then write from the stalled client — the resource fences the stale, lower token.'
         },
         cqrs: {
           title: 'CQRS Simulator',
@@ -2620,6 +3027,109 @@ const resources = {
             p3: 'Adjust timeout, response times, and success rate to visualize impacts.'
           }
         },
+        outbox: {
+          title: 'Transactional Outbox Simulator',
+          subtitle: 'Dual-write vs the outbox pattern when the broker is flaky',
+          modes: { 'dual-write': 'Dual write', outbox: 'Outbox pattern' },
+          controls: { broker_fail: 'Broker failure rate' },
+          buttons: { place: 'Place order', start: 'Auto-run', stop: 'Stop', reset: 'Reset' },
+          service: 'Service',
+          orders_made: 'orders placed',
+          events_sent: 'events delivered',
+          one_transaction: 'One transaction',
+          relay: 'relay',
+          narration: {
+            idle: 'Place an order and follow it through. Raise the broker failure rate to see how each approach copes.',
+            dual_ok: 'Order #{{n}}: committed to the DB, then the event published to the broker. Both succeeded this time.',
+            dual_lost: 'Order #{{n}}: committed to the DB, but the broker was down so the publish failed. That event is lost forever, the DB and broker now disagree.',
+            outbox_commit: 'Order #{{n}}: the order and its outbox row committed in one transaction. The relay will publish it next.',
+            outbox_drain: 'Order #{{n}} committed atomically; the relay published {{k}} queued outbox row(s) to the broker.',
+            outbox_wait: 'Order #{{n}}: committed atomically. The broker is down, so the outbox row waits safely in the DB, nothing is lost.'
+          },
+          database: 'Database (orders)',
+          outbox_table: 'Outbox (pending)',
+          broker: 'Broker (events)',
+          lost: 'Lost events',
+          consistent: 'Consistent',
+          inconsistent: 'Inconsistent!',
+          metrics: { title: 'Live Metrics', orders: 'Orders committed', published: 'Events published', lost: 'Lost events', pending: 'Pending in outbox' },
+          hint: {
+            'dual-write': 'With a dual write, the DB commit and the publish are separate. When the broker fails after the commit, the event is lost forever — the DB and broker diverge.',
+            outbox: 'The outbox writes the event into the same transaction as the data. A relay publishes it with retries, so nothing is lost — only delayed when the broker is down.'
+          }
+        },
+        bulkhead: {
+          title: 'Bulkhead Simulator',
+          subtitle: 'One slow dependency should not sink unrelated traffic',
+          modes: { shared: 'Shared pool', bulkhead: 'Isolated bulkheads' },
+          controls: { b_slow: 'Dependency B slowness' },
+          buttons: { start: 'Auto-run', stop: 'Stop', reset: 'Reset' },
+          service_a: 'Service A (healthy dep)',
+          service_b: 'Service B (slow dep)',
+          shared_pool: 'Shared worker pool',
+          pool_a: 'Pool A',
+          pool_b: 'Pool B',
+          legend_a: 'Busy with A',
+          legend_b: 'Busy with B (slow)',
+          legend_free: 'Free slot',
+          narration: {
+            shared: 'One shared pool of {{pool}} workers serves both dependencies. Right now {{used}} slots are in use.',
+            starved: 'Slow B calls are holding {{busyB}} of the shared slots, so healthy A calls now get rejected. One slow dependency sinks everything.',
+            bulkhead: 'A and B each own half the pool. B\u2019s slowness fills only its own slots, so A keeps serving normally.'
+          },
+          healthy_dep: 'Healthy dependency',
+          slow_dep: 'Slow / failing dependency',
+          shared_note: 'Shared pool: slow B calls hold every worker, so healthy A calls get rejected too.',
+          bulkhead_note: 'Bulkheads: A and B each get half the pool, so B\u2019s slowness is contained and A keeps serving.',
+          metrics: { title: 'Live Metrics', a_health: 'A success rate', b_health: 'B success rate', a_rejected: 'A rejected', b_rejected: 'B rejected' },
+          hint: 'Without isolation, a slow dependency exhausts the shared pool and takes down healthy traffic. Bulkheads cap each dependency so failures stay contained.'
+        },
+        pacelc: {
+          title: 'PACELC Simulator',
+          subtitle: 'If Partition: choose A or C. Else (normal ops): choose L or C.',
+          presets: 'Real systems',
+          systems: { dynamo: 'DynamoDB', cassandra: 'Cassandra', mongo: 'MongoDB', pnuts: 'PNUTS', bigtable: 'Bigtable / HBase' },
+          scenario: { label: 'Simulate now', normal: 'Normal operation', partition: 'Network partition' },
+          active_now: 'Governing now',
+          root: 'A request arrives',
+          if_partition: 'IF a partition (P)',
+          else_normal: 'ELSE: normal operation (E)',
+          p_question: 'Availability or Consistency?',
+          e_question: 'Latency or Consistency?',
+          choices: { PA: 'Availability', PC: 'Consistency', EL: 'Low latency', EC: 'Consistency' },
+          classification: 'Classification',
+          outcomes: {
+            PA: 'During a partition, the system stays available and serves possibly-stale data on both sides (e.g. Dynamo, Cassandra).',
+            PC: 'During a partition, the system refuses requests on the minority side to preserve consistency (e.g. MongoDB, HBase).',
+            EL: 'In normal operation, the system answers from the nearest replica for low latency, accepting weaker consistency (e.g. Dynamo).',
+            EC: 'In normal operation, the system coordinates replicas for strong consistency, paying extra latency (e.g. MongoDB, Bigtable).'
+          },
+          favors_latency: 'Favors availability / latency',
+          favors_consistency: 'Favors consistency',
+          hint: 'PACELC extends CAP: a partition forces A-vs-C, but Else (the common case, no partition) you still trade Latency vs Consistency. Many systems pick the same side in both — PA/EL or PC/EC.'
+        },
+        chaos: {
+          title: 'Chaos Engineering Simulator',
+          subtitle: 'Inject failures into a cluster and measure whether resilience holds',
+          buttons: { kill: 'Kill a node', start: 'Run game day', stop: 'Pause', reset: 'Reset' },
+          redundancy_toggle: 'Replicas + retries (redundancy)',
+          nodes_up: '{{up}}/{{total}} nodes up',
+          availability: 'availability',
+          narration: {
+            idle: 'All nodes are healthy. Kill a node or run a game day to test whether the system survives failure.',
+            resilient: '{{down}} node(s) down, but replicas and retries reroute around them, so availability holds at {{avail}}%.',
+            degraded: '{{down}} node(s) down and requests are pinned to nodes, so availability has dropped to {{avail}}%.'
+          },
+          hint_on: 'With replicas and retries, requests reroute to healthy nodes — killing a node barely dents availability. This is the goal: failures are non-events.',
+          hint_off: 'Without redundancy, requests pinned to a dead node fail outright. Every node you kill drops availability proportionally — exactly the weakness chaos testing exposes.',
+          metrics: { title: 'Live Metrics', availability: 'Availability', experiments: 'Faults injected', served: 'Requests served', failed: 'Requests failed' },
+          log: {
+            title: 'Event Log',
+            empty: 'Run a game day or kill a node to inject chaos…',
+            killed: 'CHAOS: node N{{id}} terminated',
+            recovered: 'node N{{id}} recovered'
+          }
+        },
         event_sourcing: {
           title: 'Event Sourcing Simulator',
           buttons: {
@@ -3465,6 +3975,12 @@ const resources = {
   },
   pt: {
     translation: {
+      announcement: {
+        badge: 'Comunicado',
+        default_title: 'Atenção',
+        acknowledge: 'Entendi',
+        dismissing: 'Fechando…'
+      },
       admin: {
         control_center: 'Central de Controle',
         access_denied: 'Acesso Negado',
@@ -3509,6 +4025,10 @@ const resources = {
           notifications: {
             title: 'Notificações',
             description: 'Envie comunicados e gerencie notificações.'
+          },
+          announcements: {
+            title: 'Comunicados',
+            description: 'Publique um modal exibido aos usuários até que confirmem a leitura.'
           },
           users: {
             title: 'Usuários',
@@ -4145,6 +4665,22 @@ const resources = {
             recovery: {
               description: 'Quando partições se curam, sistemas devem cuidadosamente reconciliar estado e resolver quaisquer conflitos que ocorreram durante a partição.'
             }
+          },
+          pacelc: {
+            name: 'Teorema PACELC',
+            description: 'Além do CAP: o trade-off latência-vs-consistência mesmo sem partições',
+            simulator: {
+              name: 'Simulador PACELC',
+              description: 'Classifique bancos reais pelos seus trade-offs em partição e operação normal'
+            }
+          },
+          flp: {
+            name: 'Impossibilidade FLP',
+            description: 'Por que nenhum algoritmo de consenso assíncrono pode garantir terminação',
+          },
+          fallacies: {
+            name: 'Falácias da Computação Distribuída',
+            description: 'Oito suposições falsas que arruínam sistemas distribuídos'
           }
         },
         componentes: {
@@ -4249,6 +4785,34 @@ const resources = {
           kubernetes: {
             name: 'Kubernetes',
             description: 'Orquestração declarativa de containers em escala'
+          },
+          api_styles: {
+            name: 'Estilos de API: REST, gRPC e GraphQL',
+            description: 'Como serviços conversam: round trips, payloads, schemas',
+            simulator: {
+              name: 'Simulador de Estilos de API',
+              description: 'Compare round trips, tamanho do payload e over-fetching'
+            }
+          },
+          realtime_push: {
+            name: 'WebSockets e Push em Tempo Real',
+            description: 'Polling vs SSE vs WebSockets para atualizações ao vivo',
+            simulator: {
+              name: 'Simulador de Push em Tempo Real',
+              description: 'Compare latência de entrega e overhead de requisições'
+            }
+          },
+          dead_letter_queue: {
+            name: 'Dead Letter Queues',
+            description: 'Para onde vão as mensagens após esgotar as tentativas',
+            simulator: {
+              name: 'Simulador de Dead Letter Queue',
+              description: 'Ajuste taxa de falha e retries; veja mensagens irem para a DLQ'
+            }
+          },
+          stream_processing: {
+            name: 'Processamento de Streams',
+            description: 'Computação contínua sobre fluxos de eventos (Flink, Kafka Streams)'
           }
         },
         principios_design: {
@@ -4397,6 +4961,42 @@ const resources = {
               name: 'Simulador de Backpressure',
               description: 'Throttle o produtor quando a fila enche'
             }
+          },
+          event_sourcing: {
+            name: 'Event Sourcing',
+            description: 'Armazene o estado como um log imutável de eventos',
+            simulator: {
+              name: 'Simulador de Event Sourcing',
+              description: 'Anexe eventos e reconstrua o estado a partir do log'
+            }
+          },
+          outbox: {
+            name: 'Transactional Outbox',
+            description: 'Publique eventos com confiabilidade sem inconsistência de escrita dupla',
+            simulator: {
+              name: 'Simulador de Outbox',
+              description: 'Compare escrita dupla vs o padrão outbox sob falhas do broker'
+            }
+          },
+          bulkhead: {
+            name: 'Padrão Bulkhead',
+            description: 'Isole pools de recursos para que uma falha não afunde o navio',
+            simulator: {
+              name: 'Simulador de Bulkhead',
+              description: 'Veja uma dependência lenta esgotar um pool compartilhado — e então isole-a'
+            }
+          },
+          blue_green: {
+            name: 'Deploy Blue-Green',
+            description: 'Dois ambientes idênticos com troca instantânea e rollback',
+            simulator: {
+              name: 'Simulador Blue-Green',
+              description: 'Mude o tráfego entre ambientes e faça rollback instantâneo'
+            }
+          },
+          feature_flags: {
+            name: 'Feature Flags',
+            description: 'Desacople deploy de release; ligue/desligue features em runtime'
           }
         },
         estrategias_de_consistencia: {
@@ -4461,6 +5061,30 @@ const resources = {
           vector_clocks: {
             name: 'Relógios Vetoriais',
             description: 'Rastreie causalidade e detecte atualizações concorrentes'
+          },
+          crdts: {
+            name: 'CRDTs',
+            description: 'Tipos de dados replicados sem conflito que sempre convergem',
+            simulator: {
+              name: 'Simulador de CRDT',
+              description: 'Edite réplicas de forma independente, depois mescle e veja convergir'
+            }
+          },
+          gossip: {
+            name: 'Gossip e Anti-Entropia',
+            description: 'Protocolos epidêmicos que espalham estado pelo cluster',
+            simulator: {
+              name: 'Simulador de Gossip',
+              description: 'Veja um rumor se espalhar nó a nó até o cluster convergir'
+            }
+          },
+          distributed_locks: {
+            name: 'Locks Distribuídos e Fencing Tokens',
+            description: 'Exclusão mútua com leases e fencing contra donos obsoletos',
+            simulator: {
+              name: 'Simulador de Lock Distribuído',
+              description: 'Adquira um lease, trave o dono e veja o fencing rejeitar escritas obsoletas'
+            }
           }
         },
         monitoramento_e_manutencao: {
@@ -4505,6 +5129,22 @@ const resources = {
           slo_sli_sla: {
             name: 'SLO, SLI e Error Budgets',
             description: 'Meça a confiabilidade e gaste-a com burn rate'
+          },
+          chaos_engineering: {
+            name: 'Chaos Engineering',
+            description: 'Injete falhas deliberadamente para ganhar confiança na resiliência',
+            simulator: {
+              name: 'Simulador de Chaos',
+              description: 'Mate nós durante um game day e veja a disponibilidade resistir ou despencar'
+            }
+          },
+          disaster_recovery: {
+            name: 'Disaster Recovery & Backups',
+            description: 'RPO, RTO, estratégias de backup e padrões de recuperação'
+          },
+          multi_region: {
+            name: 'Multi-Região & Geo-Replicação',
+            description: 'Rode entre regiões por latência, disponibilidade e sobrevivência'
           }
         },
         casos_reais: {
@@ -4677,6 +5317,46 @@ const resources = {
               name: 'Simulador de Índice Invertido',
               description: 'Consulte termos e veja documentos ranqueados por pontuação'
             }
+          },
+          storage_engines: {
+            name: 'Engines de Armazenamento: B-Tree vs LSM',
+            description: 'Como os bancos guardam e atualizam dados fisicamente em disco',
+            simulator: {
+              name: 'Simulador de Engine de Armazenamento',
+              description: 'Envie escritas e compare a amplificação de escrita/leitura'
+            }
+          },
+          bloom_filters: {
+            name: 'Bloom Filters',
+            description: 'Testes probabilísticos de pertencimento sem falsos negativos',
+            simulator: {
+              name: 'Simulador de Bloom Filter',
+              description: 'Insira chaves, consulte-as e veja os falsos positivos surgirem'
+            }
+          },
+          replication_quorums: {
+            name: 'Modelos de Replicação e Quóruns',
+            description: 'Líder-seguidor, multi-líder, sem líder e R + W > N',
+            simulator: {
+              name: 'Simulador de Quórum de Replicação',
+              description: 'Ajuste N, W, R e veja quando leituras retornam dados antigos'
+            }
+          },
+          cdc: {
+            name: 'Change Data Capture (CDC)',
+            description: 'Transmita mudanças do log do banco para sistemas downstream',
+            simulator: {
+              name: 'Simulador de CDC',
+              description: 'Leia o log de transações para caches, busca e analytics'
+            }
+          },
+          oltp_olap: {
+            name: 'OLTP vs OLAP, Warehouses e Lakes',
+            description: 'Bancos transacionais vs analíticos e o data stack moderno'
+          },
+          time_series: {
+            name: 'Bancos de Séries Temporais',
+            description: 'Armazenando e consultando métricas de alto volume com timestamp'
           }
         },
         editor: {
@@ -5024,6 +5704,32 @@ const resources = {
         }
       },
       simulators: {
+        cache: {
+          title: 'Simulador Cache-Aside',
+          subtitle: 'As leituras checam o cache primeiro. Acertos voltam da memória; erros caem para o banco e são armazenados para a próxima vez.',
+          controls: { ttl: 'TTL (vida da entrada)', db_latency: 'Latência do banco', capacity: 'Capacidade do cache' },
+          buttons: { auto: 'Tráfego automático', stop: 'Parar', clear: 'Limpar cache', reset: 'Resetar' },
+          toggle: { cache_on: 'Cache ligado', cache_off: 'Cache desligado' },
+          stage: { client: 'Cliente', cache: 'Cache', cache_sub: 'memória', db: 'Banco', db_sub: 'disco' },
+          keys_label: 'Ler uma chave',
+          hot: 'quente',
+          slots: 'Slots do cache',
+          last_read: 'Última leitura',
+          served_from_memory: 'servido da memória',
+          served_from_db: 'do banco de dados',
+          legend: { fresh: 'Fresco no cache', expiring: 'Expirando logo', miss: 'Erro / banco', empty: 'Slot vazio' },
+          narration: {
+            idle: 'Escolha uma chave e envie uma leitura, ou ligue o tráfego automático. Acertos vêm da memória; erros vão ao banco.',
+            lookup: 'Lendo {{key}}: checando o cache primeiro.',
+            hit: 'HIT: {{key}} servido da memória em {{ms}} ms. O banco nunca foi tocado.',
+            miss: 'MISS: {{key}} não está no cache. Consultando o banco ({{ms}} ms) e armazenando o resultado.',
+            stale: 'STALE: {{key}} passou do TTL, então conta como erro e é buscado de novo.',
+            evict: 'Cache cheio: removendo o menos usado recentemente ({{key}}) para abrir espaço para {{incoming}}.',
+            disabled: 'Cache desligado: toda leitura vai direto ao banco a {{ms}} ms.'
+          },
+          metrics: { title: 'Métricas ao vivo', hit_ratio: 'Taxa de acerto', avg_latency: 'Latência média', db_queries: 'Consultas ao banco', requests: 'Leituras totais' },
+          hint: 'Um cache troca frescor por velocidade. Uma alta taxa de acerto mantém a maioria das leituras na memória e protege o banco; TTL e capacidade decidem com que frequência você paga o caminho lento.'
+        },
         consistent_hashing: {
           title: 'Simulador de Consistent Hashing',
           subtitle: 'Chaves num anel — adicione/remova nós e veja o remapeamento',
@@ -5107,6 +5813,85 @@ const resources = {
             hint: 'AND intersecta as listas de postings; OR as une. A pontuação conta quantos termos da consulta cada documento contém.'
           }
         },
+        storage_engine: {
+          title: 'Simulador de Engine de Armazenamento',
+          subtitle: 'Envie escritas por uma LSM-tree ou uma B-tree e compare a amplificação',
+          buttons: { step: 'Escrever 1 chave', start: 'Auto', stop: 'Parar', reset: 'Resetar' },
+          engines: { lsm: 'LSM-Tree', btree: 'B-Tree' },
+          wal: 'Write-Ahead Log',
+          narration: {
+            idle: 'Escreva chaves uma a uma e veja onde caem. LSM anexa sequencialmente e depois compacta; B-tree atualiza páginas no lugar.',
+            lsm_append: 'Escrita anexada à memtable em memória ({{mem}}/{{cap}}). Sequencial, então as escritas são baratas.',
+            lsm_flush: 'Memtable cheia: descarregada em uma nova SSTable L0 imutável em uma escrita sequencial.',
+            lsm_compact: '{{count}} SSTables L0 mescladas em uma tabela L1 ({{size}} entradas reescritas). Essa reescrita é amplificação de escrita.',
+            btree_update: 'Localizou a página folha desta chave e reescreveu a página {{page}} no lugar. I/O aleatório, mas leituras continuam uma única travessia.'
+          },
+          lsm: { memtable: 'Memtable (em memória)', level: 'Nível {{n}} (SSTables em disco)' },
+          btree: { pages: 'Páginas B-Tree (atualizadas no lugar)', note: 'Cada escrita busca a página folha e a reescreve — I/O aleatório.' },
+          metrics: { title: 'Métricas ao Vivo', writes: 'Escritas lógicas', write_amp: 'Amplificação de escrita', read_amp: 'Amplificação de leitura', compactions: 'Compactações' },
+          hint_lsm: 'LSM-trees absorvem escritas sequencialmente em uma memtable, depois fazem flush e compactam SSTables — escritas baratas, mas leituras podem varrer várias tabelas até a compactação.',
+          hint_btree: 'B-trees atualizam páginas no lugar: leituras são uma única travessia da árvore (baixa amplificação de leitura), mas escritas causam I/O aleatório.'
+        },
+        bloom_filter: {
+          title: 'Simulador de Bloom Filter',
+          subtitle: 'Um array de bits + k hashes: testes rápidos de pertencimento sem falsos negativos',
+          placeholder: 'Digite uma chave…',
+          controls: { bits: 'Tamanho do array de bits (m)', hashes: 'Funções de hash (k)' },
+          buttons: { add: 'Inserir', query: 'Consultar', random: 'Adicionar aleatório', reset: 'Resetar' },
+          maps_to: 'hasheia',
+          checks: 'verifica',
+          narration: {
+            idle: 'Insira algumas chaves e consulte uma. Cada chave hasheia para k posições de bit; veja quais bits são setados e como as consultas são respondidas.',
+            inserted: 'Inseriu "{{word}}": seus k hashes apontam para os bits {{positions}}, agora setados em 1.',
+            maybe: '"{{word}}": todos os {{k}} bits hasheados são 1, então provavelmente está presente (pode ser colisão).',
+            false_positive: '"{{word}}" nunca foi inserida, mas todos os bits dela são 1 porque outras chaves os setaram. Isso é um falso positivo.',
+            absent: '"{{word}}": o bit {{pos}} é 0, então definitivamente não está presente. Bloom filters nunca dão falso negativo.'
+          },
+          result: {
+            maybe: 'provavelmente está presente (todos os k bits setados).',
+            false_positive: 'aparece como presente, mas nunca foi inserida. Falso positivo!',
+            definitely_not: 'definitivamente não está presente (ao menos um bit é 0).'
+          },
+          metrics: { title: 'Métricas ao Vivo', items: 'Itens inseridos', bits_set: 'Bits setados', fill: 'Taxa de preenchimento', fp_rate: 'Taxa estimada de falso positivo' },
+          hint: 'Uma consulta é "talvez presente" só se todos os bits hasheados forem 1. Mais itens ou menos bits aumentam a taxa de falsos positivos; nunca há falsos negativos.'
+        },
+        quorum_replication: {
+          title: 'Simulador de Quórum de Replicação',
+          subtitle: 'Ajuste réplicas (N), quórum de escrita (W) e quórum de leitura (R)',
+          controls: { replicas: 'Réplicas (N)', write_quorum: 'Quórum de escrita (W)', read_quorum: 'Quórum de leitura (R)' },
+          buttons: { write: 'Escrever nova versão', read: 'Ler', reset: 'Resetar' },
+          node: 'Nó',
+          legend: { write: 'Quórum de escrita (W)', read: 'Quórum de leitura (R)', overlap: 'Sobreposição (vê a última)' },
+          narration: {
+            idle: 'Escreva uma nova versão em W nós, depois leia de R nós, e veja se o quórum de leitura sobrepõe a última escrita.',
+            wrote: 'Escreveu v{{version}} em um quórum de escrita de W={{w}} nós. As outras réplicas ainda têm versões antigas.',
+            read_fresh: 'O quórum de leitura R={{r}} sobrepôs o quórum de escrita em {{count}} nó(s), então retornou a versão mais nova v{{value}}. R+W>N força essa sobreposição.',
+            read_stale: 'O quórum de leitura R={{r}} não tocou nenhum nó com a última escrita, então retornou um v{{value}} desatualizado. Com R+W não maior que N os quóruns podem se perder.'
+          },
+          read_returned: 'Leitura retornou',
+          result: { stale: 'desatualizada! Perdeu a última escrita.', fresh: 'atual, em dia.' },
+          metrics: { title: 'Métricas ao Vivo', replicas: 'Réplicas', latest: 'Última versão', fault_tolerance: 'Falhas toleradas', strong: 'Leituras fortes?' },
+          hint: 'Quando R + W > N os quóruns de leitura e escrita sempre se sobrepõem, então leituras veem a escrita mais nova. Reduza-os para mais disponibilidade ao custo de leituras antigas.'
+        },
+        cdc: {
+          title: 'Simulador de CDC',
+          subtitle: 'Um conector lê o log do banco e envia mudanças para sistemas downstream',
+          controls: { write_rate: 'Escritas no banco / tick', connector_rate: 'Vazão do conector / tick' },
+          buttons: { step: 'Um tick', start: 'Auto', stop: 'Parar', reset: 'Resetar' },
+          source: 'Log de transações do banco de origem',
+          connector: 'Conector CDC',
+          offset: 'offset',
+          narration: {
+            idle: 'Inicie o fluxo. O conector lê o log do banco em ordem e envia cada mudança para todos os sinks downstream.',
+            shipping: 'O conector enviou {{k}} mudança(s) downstream. O atraso de replicação é {{lag}}.',
+            lagging: 'As escritas ({{rate}}/tick) superam o conector ({{crate}}/tick), então o log cresce atrás do offset. O atraso agora é {{lag}}.',
+            caught_up: 'O conector está acompanhando: o atraso é {{lag}} e os sinks estão em sincronia com a origem.'
+          },
+          wal_note: 'Âmbar = atrás do offset (ainda não capturado); verde = já enviado downstream',
+          sinks: { cache: 'Invalidação de cache', search: 'Índice de busca', warehouse: 'Data warehouse' },
+          metrics: { title: 'Métricas ao Vivo', produced: 'Mudanças produzidas', consumed: 'Mudanças enviadas', lag: 'Atraso de replicação', pending: 'Pendentes no log' },
+          hint: 'Se as escritas superam o conector, o atraso cresce e os sistemas downstream ficam para trás. CDC mantém caches, busca e analytics em sincronia sem escrita dupla.'
+        },
         kafka: {
           title: 'Simulador de Kafka',
           subtitle: 'Produtores, partições e um consumer group — veja o lag',
@@ -5136,6 +5921,75 @@ const resources = {
             idle: 'ocioso',
             hint: 'Cada partição é lida por exatamente um consumidor. Adicione consumidores além do número de partições e eles ficam ociosos — as partições limitam o paralelismo.'
           }
+        },
+        api_styles: {
+          title: 'Simulador de Estilos de API',
+          subtitle: 'Busque uma tela de dados com REST, GraphQL ou gRPC e compare o custo',
+          styles: { rest: 'REST', graphql: 'GraphQL', grpc: 'gRPC' },
+          controls: { fields: 'Campos que a tela precisa', with_orders: 'Incluindo pedidos relacionados', no_orders: 'Apenas usuário' },
+          client: 'Cliente',
+          server: 'Servidor',
+          round_trip: 'Round trip',
+          payload_label: 'Payload da resposta',
+          binary: 'protobuf binário',
+          used: 'Usado pela tela',
+          over: 'Em excesso',
+          sinks_orders: 'Pedidos relacionados',
+          narration: {
+            rest: 'REST retornou todos os 12 campos do usuário em {{rt}} round trip(s); a tela usou {{used}}, então {{over}}% veio em excesso.',
+            graphql: 'GraphQL retornou exatamente os {{used}} campo(s) que a tela pediu em um round trip, sem excesso.',
+            grpc: 'gRPC retornou {{used}} campo(s) como binário compacto em um round trip, cerca de um terço do tamanho do JSON.'
+          },
+          metrics: { title: 'Métricas ao Vivo', round_trips: 'Round trips', payload: 'Tamanho do payload', over_fetch: 'Dados em excesso', schema: 'Schema tipado' },
+          hint: {
+            rest: 'REST costuma precisar de uma requisição por recurso e retorna objetos inteiros — simples e cacheável, mas faz over-fetch e pode exigir vários round trips.',
+            graphql: 'GraphQL traz exatamente os campos pedidos em um único round trip — sem over-fetching, ao custo do planejamento de consulta no servidor.',
+            grpc: 'gRPC envia Protobuf binário compacto em um round trip com schema estrito — o mais rápido na rede, mas não legível por humanos e mais difícil de depurar.'
+          }
+        },
+        realtime_push: {
+          title: 'Simulador de Push em Tempo Real',
+          subtitle: 'Entregue eventos do servidor com polling, SSE ou WebSockets',
+          modes: { polling: 'Polling', sse: 'Server-Sent Events', websocket: 'WebSocket' },
+          controls: { interval: 'Intervalo de polling (ticks)' },
+          buttons: { start: 'Iniciar', stop: 'Parar', reset: 'Resetar' },
+          server: 'Servidor',
+          client: 'Cliente',
+          persistent: 'conexão persistente',
+          repeated: 'requisições repetidas',
+          one_connection: 'Uma conexão aberta',
+          many_requests: 'Muitas requisições curtas',
+          narration: {
+            idle: 'Escolha um transporte e rode. Veja como os eventos do servidor chegam ao cliente e o custo de cada abordagem.',
+            poll_deliver: 'Um poll chegou e coletou {{k}} evento(s) na fila. Eles esperaram até {{interval}} ticks por essa requisição.',
+            poll_empty: 'Um poll chegou mas o servidor não tinha nada novo, uma requisição vazia desperdiçada.',
+            push: 'O servidor empurrou o evento no instante em que aconteceu pela conexão aberta, cerca de 1 tick de latência.'
+          },
+          metrics: { title: 'Métricas ao Vivo', delivered: 'Eventos entregues', latency: 'Latência média de entrega', requests: 'Requisições enviadas', empty_polls: 'Polls vazios desperdiçados' },
+          hint: {
+            polling: 'Polling pergunta de novo em intervalo fixo: simples, mas adiciona latência (até um intervalo) e desperdiça requisições quando nada mudou.',
+            sse: 'Server-Sent Events fazem push unidirecional por uma única conexão HTTP de longa duração — entrega quase instantânea com quase nenhum overhead.',
+            websocket: 'WebSockets mantêm uma conexão full-duplex aberta — entrega instantânea e bidirecional, ideal para chat, jogos e colaboração ao vivo.'
+          }
+        },
+        dead_letter_queue: {
+          title: 'Simulador de Dead Letter Queue',
+          subtitle: 'Mensagens com falha são retentadas e vão para a DLQ após o limite',
+          controls: { failure_rate: 'Taxa de falha transitória', max_retries: 'Máximo de retries' },
+          buttons: { step: 'Processar uma', start: 'Auto', stop: 'Parar', reset: 'Resetar' },
+          main_queue: 'Fila principal',
+          dlq: 'Dead Letter Queue',
+          consumer: 'Consumidor',
+          attempt: 'tentativa',
+          poison: 'Mensagem venenosa (sempre falha)',
+          narration: {
+            idle: 'Rode a fila. Mensagens com falha são retentadas; ao passar do limite de retries elas vão para a DLQ para não bloquear a fila para sempre.',
+            ok: 'Mensagem #{{id}} processada com sucesso na tentativa {{n}}.',
+            retry: 'Mensagem #{{id}} falhou (tentativa {{n}}/{{max}}), recolocada na fila para nova tentativa.',
+            dlq: 'Mensagem #{{id}} atingiu o limite de retries após {{n}} tentativas, movida para a DLQ. A fila continua fluindo.'
+          },
+          metrics: { title: 'Métricas ao Vivo', processed: 'Processadas', retried: 'Retentativas', dead_lettered: 'Enviadas à DLQ', success_rate: 'Taxa de sucesso' },
+          hint: 'Falhas transitórias são retentadas; quando uma mensagem excede o limite de retries (ou é uma mensagem venenosa), ela vai para a DLQ em vez de bloquear a fila para sempre.'
         },
         saga: {
           title: 'Simulador de Saga',
@@ -5225,6 +6079,69 @@ const resources = {
             empty: 'Nenhuma mensagem ainda',
             hint: 'At-most-once pode perder mensagens; at-least-once pode duplicá-las. "Exactly-once" = entrega at-least-once mais deduplicação no consumidor.'
           }
+        },
+        crdt: {
+          title: 'Simulador de CRDT (G-Counter)',
+          subtitle: 'Incremente réplicas de forma independente, depois mescle — sempre convergem',
+          buttons: { sync: 'Sincronizar (mesclar tudo)', reset: 'Resetar' },
+          increment: '+1 em {{replica}}',
+          replica: 'Réplica',
+          gossip_label: 'Gossip:',
+          narration: {
+            idle: 'Incremente qualquer réplica. Cada uma conta apenas no próprio slot, então as réplicas divergem até fofocarem entre si.',
+            increment: 'A réplica {{replica}} contou +1 no próprio slot e agora marca {{total}}. As outras ainda não souberam, então os valores divergem.',
+            merge: '{{a}} e {{b}} fofocaram: cada slot vira o máximo das duas. Nenhum incremento se perde, e a ordem do merge nunca muda o resultado.',
+            converged: 'Agora todas as réplicas têm o mesmo vetor e concordam em {{total}}. Consistência eventual, com zero resolução de conflito.'
+          },
+          converged: 'Convergiu',
+          diverged: 'Divergiu',
+          all_agree: 'Todas as réplicas concordam no valor.',
+          need_sync: 'As réplicas têm valores diferentes, fofoque para mesclar.',
+          metrics: { title: 'Métricas ao Vivo', max_value: 'Valor do contador', merges: 'Merges', converged: 'Convergiu?', replicas: 'Réplicas' },
+          hint: 'Cada réplica conta os próprios incrementos no seu slot. O merge pega o máximo elemento a elemento, então incrementos nunca se perdem e qualquer ordem de merge dá o mesmo resultado.'
+        },
+        gossip: {
+          title: 'Simulador de Gossip',
+          subtitle: 'Um nó aprende uma atualização; ela se espalha epidemicamente pelo cluster',
+          controls: { fanout: 'Fanout (peers por rodada)', speed: 'Velocidade' },
+          speed: { slow: 'Lenta', normal: 'Normal', fast: 'Rápida' },
+          buttons: { start: 'Iniciar rumor', resume: 'Retomar', pause: 'Pausar', step: 'Passo', replay: 'Repetir', reset: 'Resetar' },
+          legend: { known: 'Conhece a atualização', packet: 'Rumor em trânsito', unaware: 'Sem saber' },
+          narration: {
+            idle: 'Um nó conhece a atualização. Toque em Iniciar para ela fofocar, ou avance um Passo (rodada) por vez.',
+            round: 'Rodada {{round}}: {{senders}} nó(s) informado(s) fofocaram para {{peers}} peer(s). Agora {{known}}/{{total}} sabem.',
+            converged: 'Convergiu em {{rounds}} rodadas. A cobertura praticamente dobra a cada rodada, então o cluster sincroniza em cerca de log\u2082(N) rodadas.'
+          },
+          chart: { title: 'Cobertura por rodada', round: 'r{{n}}' },
+          metrics: { title: 'Métricas ao Vivo', round: 'Rodada', infected: 'Nós informados', converged: 'Convergência', nodes: 'Total de nós' },
+          hint: 'Cada nó informado avisa alguns peers aleatórios por rodada, então a atualização alcança todos em cerca de log(N) rodadas, sem coordenador, e tolerando falhas.'
+        },
+        distributed_lock: {
+          title: 'Simulador de Lock Distribuído',
+          subtitle: 'Um lock baseado em lease com fencing tokens que rejeitam escritores obsoletos',
+          buttons: { demo: 'Rodar demo de fencing', acquire: 'Adquirir', write: 'Escrever', stall: 'Travar (pausar)', reset: 'Resetar' },
+          lock: 'Lock',
+          free: 'Livre',
+          held_by: 'Dono:',
+          token: 'token',
+          write_token: 'escrita @ token',
+          client: 'Cliente',
+          resource: 'Recurso',
+          accepted: 'ACEITA',
+          fenced: 'BLOQUEADA',
+          stale: '(obsoleto)',
+          stalled_note: 'travado, lease ainda contando',
+          narration: {
+            idle: 'Adquira o lock, trave o dono até o lease expirar, deixe outro cliente adquirir e então escreva pelo cliente travado para ver o fencing rejeitar o token obsoleto. Ou rode a demo.',
+            acquire: 'Cliente {{client}} adquiriu o lock com o fencing token {{token}} (um número monotonicamente crescente).',
+            stall: 'Cliente {{client}} travou (ex: pausa de GC). O lease continua contando e vai expirar enquanto ele está congelado.',
+            expired: 'O lease expirou e o lock foi liberado automaticamente.',
+            expired_stalled: 'O lease expirou e o lock foi liberado, mas o dono travado ainda acha que é o dono do lock.',
+            write_ok: 'Cliente {{client}} escreveu com o token {{token}} (>= token do recurso {{rt}}): aceita. O recurso avança para {{token}}.',
+            fenced: 'Cliente {{client}} escreveu com o token obsoleto {{token}} (< token do recurso {{rt}}): bloqueada. O recurso rejeita o token antigo.'
+          },
+          metrics: { title: 'Métricas ao Vivo', tokens_issued: 'Tokens emitidos', accepted: 'Escritas aceitas', fenced: 'Escritas bloqueadas', resource_token: 'Token do recurso' },
+          hint: 'Adquira o lock, trave o dono até o lease expirar, deixe outro cliente adquirir (token maior) e então escreva pelo cliente travado — o recurso bloqueia o token antigo e menor.'
         },
         cqrs: {
           title: 'Simulador de CQRS',
@@ -6079,6 +6996,109 @@ const resources = {
             p1: 'Este simulador demonstra como o mecanismo de timeout funciona em sistemas distribuídos. Cada requisição tem um tempo limite configurável para ser completada.',
             p2: 'Se a resposta não chegar dentro do tempo limite, a requisição é cancelada e um erro de timeout é retornado, evitando que recursos fiquem presos indefinidamente.',
             p3: 'Ajuste timeout, tempos de resposta e taxa de sucesso para visualizar impactos.'
+          }
+        },
+        outbox: {
+          title: 'Simulador de Transactional Outbox',
+          subtitle: 'Escrita dupla vs o padrão outbox quando o broker é instável',
+          modes: { 'dual-write': 'Escrita dupla', outbox: 'Padrão outbox' },
+          controls: { broker_fail: 'Taxa de falha do broker' },
+          buttons: { place: 'Criar pedido', start: 'Auto', stop: 'Parar', reset: 'Resetar' },
+          service: 'Serviço',
+          orders_made: 'pedidos criados',
+          events_sent: 'eventos entregues',
+          one_transaction: 'Uma transação',
+          relay: 'relay',
+          narration: {
+            idle: 'Crie um pedido e acompanhe o trajeto. Aumente a taxa de falha do broker para ver como cada abordagem reage.',
+            dual_ok: 'Pedido #{{n}}: confirmado no banco e o evento publicado no broker. Os dois funcionaram desta vez.',
+            dual_lost: 'Pedido #{{n}}: confirmado no banco, mas o broker estava fora e a publicação falhou. Esse evento se perdeu para sempre, banco e broker agora divergem.',
+            outbox_commit: 'Pedido #{{n}}: o pedido e a linha de outbox foram confirmados em uma transação. O relay vai publicar em seguida.',
+            outbox_drain: 'Pedido #{{n}} confirmado atomicamente; o relay publicou {{k}} linha(s) pendente(s) do outbox no broker.',
+            outbox_wait: 'Pedido #{{n}}: confirmado atomicamente. O broker está fora, então a linha de outbox espera segura no banco, nada se perde.'
+          },
+          database: 'Banco (pedidos)',
+          outbox_table: 'Outbox (pendentes)',
+          broker: 'Broker (eventos)',
+          lost: 'Eventos perdidos',
+          consistent: 'Consistente',
+          inconsistent: 'Inconsistente!',
+          metrics: { title: 'Métricas ao Vivo', orders: 'Pedidos confirmados', published: 'Eventos publicados', lost: 'Eventos perdidos', pending: 'Pendentes no outbox' },
+          hint: {
+            'dual-write': 'Com escrita dupla, o commit no banco e a publicação são separados. Quando o broker falha após o commit, o evento se perde para sempre — banco e broker divergem.',
+            outbox: 'O outbox grava o evento na mesma transação dos dados. Um relay o publica com retries, então nada se perde — só atrasa quando o broker está fora.'
+          }
+        },
+        bulkhead: {
+          title: 'Simulador de Bulkhead',
+          subtitle: 'Uma dependência lenta não deveria afundar o tráfego não relacionado',
+          modes: { shared: 'Pool compartilhado', bulkhead: 'Bulkheads isolados' },
+          controls: { b_slow: 'Lentidão da dependência B' },
+          buttons: { start: 'Auto', stop: 'Parar', reset: 'Resetar' },
+          service_a: 'Serviço A (dep saudável)',
+          service_b: 'Serviço B (dep lenta)',
+          shared_pool: 'Pool de workers compartilhado',
+          pool_a: 'Pool A',
+          pool_b: 'Pool B',
+          legend_a: 'Ocupado com A',
+          legend_b: 'Ocupado com B (lenta)',
+          legend_free: 'Slot livre',
+          narration: {
+            shared: 'Um único pool de {{pool}} workers atende as duas dependências. Agora {{used}} slots estão em uso.',
+            starved: 'Chamadas lentas de B estão segurando {{busyB}} dos slots compartilhados, então chamadas saudáveis de A passam a ser rejeitadas. Uma dependência lenta afunda tudo.',
+            bulkhead: 'A e B têm metade do pool cada. A lentidão de B enche apenas os próprios slots, então A continua atendendo normalmente.'
+          },
+          healthy_dep: 'Dependência saudável',
+          slow_dep: 'Dependência lenta / com falha',
+          shared_note: 'Pool compartilhado: chamadas lentas de B seguram todos os workers, então chamadas saudáveis de A também são rejeitadas.',
+          bulkhead_note: 'Bulkheads: A e B recebem metade do pool cada, então a lentidão de B fica contida e A continua atendendo.',
+          metrics: { title: 'Métricas ao Vivo', a_health: 'Taxa de sucesso de A', b_health: 'Taxa de sucesso de B', a_rejected: 'A rejeitadas', b_rejected: 'B rejeitadas' },
+          hint: 'Sem isolamento, uma dependência lenta esgota o pool compartilhado e derruba o tráfego saudável. Bulkheads limitam cada dependência para que falhas fiquem contidas.'
+        },
+        pacelc: {
+          title: 'Simulador PACELC',
+          subtitle: 'Se Partição: escolha A ou C. Senão (operação normal): escolha L ou C.',
+          presets: 'Sistemas reais',
+          systems: { dynamo: 'DynamoDB', cassandra: 'Cassandra', mongo: 'MongoDB', pnuts: 'PNUTS', bigtable: 'Bigtable / HBase' },
+          scenario: { label: 'Simular agora', normal: 'Operação normal', partition: 'Partição de rede' },
+          active_now: 'Governando agora',
+          root: 'Chega uma requisição',
+          if_partition: 'SE há partição (P)',
+          else_normal: 'SENÃO: operação normal (E)',
+          p_question: 'Disponibilidade ou Consistência?',
+          e_question: 'Latência ou Consistência?',
+          choices: { PA: 'Disponibilidade', PC: 'Consistência', EL: 'Baixa latência', EC: 'Consistência' },
+          classification: 'Classificação',
+          outcomes: {
+            PA: 'Durante uma partição, o sistema permanece disponível e serve dados possivelmente desatualizados nos dois lados (ex: Dynamo, Cassandra).',
+            PC: 'Durante uma partição, o sistema recusa requisições no lado minoritário para preservar a consistência (ex: MongoDB, HBase).',
+            EL: 'Em operação normal, o sistema responde da réplica mais próxima para baixa latência, aceitando consistência mais fraca (ex: Dynamo).',
+            EC: 'Em operação normal, o sistema coordena réplicas para consistência forte, pagando latência extra (ex: MongoDB, Bigtable).'
+          },
+          favors_latency: 'Favorece disponibilidade / latência',
+          favors_consistency: 'Favorece consistência',
+          hint: 'PACELC estende o CAP: uma partição força A-vs-C, mas no Senão (o caso comum, sem partição) você ainda troca Latência vs Consistência. Muitos sistemas escolhem o mesmo lado nos dois — PA/EL ou PC/EC.'
+        },
+        chaos: {
+          title: 'Simulador de Chaos Engineering',
+          subtitle: 'Injete falhas em um cluster e meça se a resiliência se mantém',
+          buttons: { kill: 'Matar um nó', start: 'Rodar game day', stop: 'Pausar', reset: 'Resetar' },
+          redundancy_toggle: 'Réplicas + retries (redundância)',
+          nodes_up: '{{up}}/{{total}} nós ativos',
+          availability: 'disponibilidade',
+          narration: {
+            idle: 'Todos os nós estão saudáveis. Mate um nó ou rode um game day para testar se o sistema sobrevive a falhas.',
+            resilient: '{{down}} nó(s) fora, mas réplicas e retries desviam ao redor deles, então a disponibilidade se mantém em {{avail}}%.',
+            degraded: '{{down}} nó(s) fora e as requisições estão presas aos nós, então a disponibilidade caiu para {{avail}}%.'
+          },
+          hint_on: 'Com réplicas e retries, requisições são redirecionadas para nós saudáveis — matar um nó mal afeta a disponibilidade. Esse é o objetivo: falhas viram não-eventos.',
+          hint_off: 'Sem redundância, requisições presas a um nó morto falham direto. Cada nó que você mata derruba a disponibilidade proporcionalmente — exatamente a fraqueza que o teste de chaos expõe.',
+          metrics: { title: 'Métricas ao Vivo', availability: 'Disponibilidade', experiments: 'Falhas injetadas', served: 'Requisições atendidas', failed: 'Requisições falhas' },
+          log: {
+            title: 'Log de Eventos',
+            empty: 'Rode um game day ou mate um nó para injetar chaos…',
+            killed: 'CHAOS: nó N{{id}} terminado',
+            recovered: 'nó N{{id}} recuperado'
           }
         },
         event_sourcing: {

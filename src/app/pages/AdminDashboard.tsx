@@ -969,6 +969,162 @@ const ContentAnalyticsSection = () => {
   )
 }
 
+interface AnnouncementAnalytics {
+  total_users: number
+  totals: {
+    announcements: number
+    received: number
+    acknowledged: number
+    ack_rate: number
+  }
+  announcements: Array<{
+    id: number
+    title: string | null
+    published: boolean
+    published_at: string | null
+    received: number
+    acknowledged: number
+    ack_rate: number
+  }>
+}
+
+// Reach of admin announcements: how many users were shown each one (received)
+// and how many acknowledged it. "Received" unions the impression log with acks,
+// so acknowledgements recorded before view tracking still count as reach.
+const AnnouncementAnalyticsSection = () => {
+  const [data, setData] = useState<AnnouncementAnalytics | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  const fetchData = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      const res = await api.get<AnnouncementAnalytics>('/api/admin/announcements/analytics')
+      setData(res.data)
+    } catch (err) {
+      console.error('Erro ao carregar analytics de comunicados:', err)
+      setError('Não foi possível carregar as métricas de comunicados')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  return (
+    <div className="mt-8">
+      <div className="mb-4">
+        <h2 className="text-xl font-sans font-bold tracking-tight text-slate-900 dark:text-tactical-text">
+          Comunicados
+        </h2>
+        <p className="text-sm text-slate-500 dark:text-tactical-label mt-0.5">
+          Quantos usuários receberam (viram o modal) e confirmaram cada comunicado
+        </p>
+      </div>
+
+      {loading ? (
+        <div className="flex justify-center items-center h-48">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-brand-600 dark:border-signal-green"></div>
+        </div>
+      ) : error ? (
+        <div className="text-center p-8 border border-signal-red/40 bg-signal-red/10">
+          <p className="text-signal-red">{error}</p>
+          <TacticalButton variant="danger" onClick={fetchData} className="mt-4">
+            Tentar novamente
+          </TacticalButton>
+        </div>
+      ) : data && (
+        <>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <StatCard
+              title="Comunicados"
+              value={data.totals.announcements}
+              subtitle="Total criados"
+              color="sky"
+              icon={null}
+            />
+            <StatCard
+              title="Recebimentos"
+              value={data.totals.received}
+              subtitle={`${data.total_users} usuários no total`}
+              color="violet"
+              icon={null}
+            />
+            <StatCard
+              title="Confirmações"
+              value={data.totals.acknowledged}
+              subtitle="Usuários que clicaram em ok"
+              color="emerald"
+              icon={null}
+            />
+            <StatCard
+              title="Taxa de Confirmação"
+              value={`${data.totals.ack_rate}%`}
+              subtitle="Confirmados ÷ recebidos"
+              color="amber"
+              icon={null}
+            />
+          </div>
+
+          <Panel title="Por Comunicado" accent="cyan" padded={false} bodyClassName="p-4">
+            {data.announcements.length === 0 ? (
+              <p className="text-slate-500 dark:text-tactical-label text-sm text-center py-6">
+                Nenhum comunicado criado ainda
+              </p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse text-sm">
+                  <thead className="bg-slate-50 dark:bg-tactical-surface">
+                    <tr>
+                      <th className="text-xs font-medium text-slate-500 dark:text-tactical-label pb-3 px-3 text-left border-b border-slate-200 dark:border-tactical-border">Comunicado</th>
+                      <th className="text-xs font-medium text-slate-500 dark:text-tactical-label pb-3 px-3 text-left border-b border-slate-200 dark:border-tactical-border">Status</th>
+                      <th className="text-xs font-medium text-slate-500 dark:text-tactical-label pb-3 px-3 text-center border-b border-slate-200 dark:border-tactical-border">Recebido</th>
+                      <th className="text-xs font-medium text-slate-500 dark:text-tactical-label pb-3 px-3 text-center border-b border-slate-200 dark:border-tactical-border">Confirmado</th>
+                      <th className="text-xs font-medium text-slate-500 dark:text-tactical-label pb-3 px-3 text-right border-b border-slate-200 dark:border-tactical-border">Taxa</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.announcements.map((a) => (
+                      <tr key={a.id} className="border-b border-slate-100 dark:border-tactical-border/60 hover:bg-slate-50 dark:hover:bg-tactical-raised">
+                        <td className="py-2.5 px-3 text-slate-800 dark:text-tactical-text">
+                          {a.title || <span className="text-slate-400 dark:text-tactical-label italic">Sem título</span>}
+                        </td>
+                        <td className="py-2.5 px-3">
+                          <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-xs font-medium rounded-full border ${
+                            a.published
+                              ? 'border-signal-green/40 text-emerald-700 dark:text-signal-green'
+                              : 'border-slate-300 text-slate-500 dark:border-tactical-line dark:text-tactical-label'
+                          }`}>
+                            <span className={`h-1.5 w-1.5 rounded-full ${a.published ? 'bg-signal-green' : 'bg-slate-400 dark:bg-tactical-line'}`} />
+                            {a.published ? 'Publicado' : 'Rascunho'}
+                          </span>
+                        </td>
+                        <td className="py-2.5 px-3 text-center font-mono tabular-nums text-slate-700 dark:text-tactical-text">{a.received}</td>
+                        <td className="py-2.5 px-3 text-center font-mono tabular-nums text-slate-600 dark:text-tactical-dim">{a.acknowledged}</td>
+                        <td className="py-2.5 px-3 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <div className="w-24 h-2 bg-slate-200 dark:bg-tactical-raised rounded-full overflow-hidden">
+                              <div className="h-full bg-signal-green rounded-full" style={{ width: `${Math.min(a.ack_rate, 100)}%` }} />
+                            </div>
+                            <span className="font-mono tabular-nums text-xs text-slate-700 dark:text-tactical-text w-10 text-right">{a.ack_rate}%</span>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </Panel>
+        </>
+      )}
+    </div>
+  )
+}
+
 function AdminDashboard() {
   const { appUser, loading: authLoading } = useAuth()
   const navigate = useNavigate()
@@ -1242,6 +1398,9 @@ function AdminDashboard() {
 
               {/* Anonymized content engagement analytics */}
               <ContentAnalyticsSection />
+
+              {/* Announcement reach: received vs acknowledged */}
+              <AnnouncementAnalyticsSection />
             </>
           )}
         </div>

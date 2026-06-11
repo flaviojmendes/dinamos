@@ -443,6 +443,71 @@ export const contentProgress = pgTable(
   })
 );
 
+// ==================== Announcements ====================
+// Admin-authored broadcast shown to users as a modal (e.g. "new content
+// available"). Each row carries both language bodies as Markdown. The active
+// announcement is the most recently published row a given user has not yet
+// acknowledged; acknowledgements are recorded per-user so the modal never
+// reappears once dismissed. Editing a published row keeps its id (so prior
+// acks still suppress it); admins can "reset acks" to re-trigger it for everyone.
+export const announcements = pgTable('announcements', {
+  id: serial('id').primaryKey(),
+  titleEn: varchar('title_en', { length: 300 }),
+  titlePt: varchar('title_pt', { length: 300 }),
+  // Markdown source rendered client-side (same renderer as lesson pages).
+  bodyEn: text('body_en'),
+  bodyPt: text('body_pt'),
+  published: boolean('published').notNull().default(false),
+  publishedAt: timestamp('published_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+});
+
+// Per-user acknowledgement of an announcement. Presence of a row means the user
+// dismissed that announcement, so it is never shown to them again.
+export const announcementAcks = pgTable(
+  'announcement_acks',
+  {
+    id: serial('id').primaryKey(),
+    announcementId: integer('announcement_id')
+      .notNull()
+      .references(() => announcements.id, { onDelete: 'cascade' }),
+    userId: varchar('user_id', { length: 255 }).notNull(),
+    acknowledgedAt: timestamp('acknowledged_at', { withTimezone: true }).defaultNow(),
+  },
+  (t) => ({
+    announcementUserUnique: unique('announcement_acks_announcement_user_unique').on(
+      t.announcementId,
+      t.userId
+    ),
+    userIdx: index('announcement_acks_user_idx').on(t.userId),
+  })
+);
+
+// Per-user "received" impression of an announcement: a row is written the first
+// time the modal is actually shown to a user (before they dismiss it). One row
+// per (announcement, user); together with announcement_acks this powers the
+// received-vs-acknowledged analytics. An acknowledgement also implies receipt,
+// so the analytics union both tables when counting reach.
+export const announcementViews = pgTable(
+  'announcement_views',
+  {
+    id: serial('id').primaryKey(),
+    announcementId: integer('announcement_id')
+      .notNull()
+      .references(() => announcements.id, { onDelete: 'cascade' }),
+    userId: varchar('user_id', { length: 255 }).notNull(),
+    seenAt: timestamp('seen_at', { withTimezone: true }).defaultNow(),
+  },
+  (t) => ({
+    announcementUserUnique: unique('announcement_views_announcement_user_unique').on(
+      t.announcementId,
+      t.userId
+    ),
+    userIdx: index('announcement_views_user_idx').on(t.userId),
+  })
+);
+
 // Anonymized page-view log used purely for aggregate analytics ("most visited
 // modules/pages"). Privacy by design: we never store the user id here. Instead
 // we keep a one-way hash of an opaque visitor key (the Firebase uid for signed-in

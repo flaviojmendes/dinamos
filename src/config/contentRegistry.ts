@@ -165,6 +165,9 @@ const SIMULATOR_PATHS: string[] = [
   '/componentes/firewall/simulator',
   '/componentes/polling-webhooks/simulator',
   '/componentes/kafka/simulator',
+  '/componentes/api-styles/simulator',
+  '/componentes/realtime-push/simulator',
+  '/componentes/dead-letter-queue/simulator',
   // Design principles
   '/principios-design/escalabilidade/horizontal/simulator',
   '/principios-design/escalabilidade/vertical/simulator',
@@ -177,6 +180,12 @@ const SIMULATOR_PATHS: string[] = [
   '/principios-design/canary-deployment/simulator',
   '/principios-design/cqrs/simulator',
   '/principios-design/rate-limiting/simulator',
+  '/principios-design/event-sourcing/simulator',
+  '/principios-design/outbox/simulator',
+  '/principios-design/bulkhead/simulator',
+  '/principios-design/blue-green/simulator',
+  '/theoretical-foundations/pacelc/simulator',
+  '/monitoramento-e-manutencao/chaos-engineering/simulator',
   '/backpressure',
   // Consistency strategies
   '/estrategias-de-consistencia/sincronizacao/algoritmos',
@@ -185,6 +194,9 @@ const SIMULATOR_PATHS: string[] = [
   '/estrategias-de-consistencia/lamport-timestamps/simulator',
   '/estrategias-de-consistencia/saga/simulator',
   '/estrategias-de-consistencia/delivery-semantics/simulator',
+  '/estrategias-de-consistencia/crdts/simulator',
+  '/estrategias-de-consistencia/gossip/simulator',
+  '/estrategias-de-consistencia/distributed-locks/simulator',
   // Security
   '/seguranca/criptografia/simulator',
   '/seguranca/tokens/simulator',
@@ -204,6 +216,10 @@ const SIMULATOR_PATHS: string[] = [
   '/dados-armazenamento/consistent-hashing/simulator',
   '/dados-armazenamento/sharding/simulator',
   '/dados-armazenamento/inverted-index/simulator',
+  '/dados-armazenamento/storage-engines/simulator',
+  '/dados-armazenamento/bloom-filters/simulator',
+  '/dados-armazenamento/replication-quorums/simulator',
+  '/dados-armazenamento/cdc/simulator',
 ];
 
 // Tools and community destinations.

@@ -17,8 +17,8 @@
  * Run with:  tsx server/scripts/applyContentSeed.ts
  */
 import postgres from 'postgres';
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { readFileSync, existsSync } from 'node:fs';
+import { resolve, basename } from 'node:path';
 import { createHash } from 'node:crypto';
 
 const databaseUrl = process.env.DATABASE_URL;
@@ -50,6 +50,24 @@ const REPOINT_FILE = resolve('server/db/migrations/0013_repoint_simulator_links.
 // applied — crucial, because an unguarded re-run would clobber the new
 // anon-based hashes and break distinct-visitor counting.
 const ANONYMIZE_VIEWS_FILE = resolve('server/db/migrations/0015_anonymize_view_history.sql');
+
+// Incremental content additions that live in their own migration files (one per
+// module) instead of being folded into the giant 0008 seed. Each is an
+// idempotent `INSERT ... ON CONFLICT DO UPDATE`, so re-running on every deploy is
+// cheap and non-clobbering. They must run AFTER the seed and the simulator-key
+// backfill so their rows (and attached simulator_key values) always win.
+const CONTENT_ADDENDA: string[] = [
+  '0016_add_data_storage_pages.sql',
+  '0017_add_components_pages.sql',
+  '0018_add_consistency_pages.sql',
+  '0019_add_design_pages.sql',
+  '0020_add_theory_pages.sql',
+  '0021_add_monitoring_pages.sql',
+  // Not content pages, but an idempotent announcement insert that broadcasts the
+  // new-content batch above. Safe to re-run on every deploy (guarded by NOT
+  // EXISTS) and depends only on the announcements table from SCHEMA_DDL.
+  '0023_add_content_announcement.sql',
+].map((f) => resolve('server/db/migrations', f));
 
 /**
  * Load the base-schema migration and rewrite it to be idempotent so it can run
@@ -149,6 +167,40 @@ CREATE TABLE IF NOT EXISTS "content_progress" (
 
 CREATE INDEX IF NOT EXISTS "content_progress_user_idx"
   ON "content_progress" USING btree ("user_id");
+
+CREATE TABLE IF NOT EXISTS "announcements" (
+  "id" serial PRIMARY KEY NOT NULL,
+  "title_en" varchar(300),
+  "title_pt" varchar(300),
+  "body_en" text,
+  "body_pt" text,
+  "published" boolean DEFAULT false NOT NULL,
+  "published_at" timestamp with time zone,
+  "created_at" timestamp with time zone DEFAULT now(),
+  "updated_at" timestamp with time zone DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS "announcement_acks" (
+  "id" serial PRIMARY KEY NOT NULL,
+  "announcement_id" integer NOT NULL REFERENCES "announcements"("id") ON DELETE CASCADE,
+  "user_id" varchar(255) NOT NULL,
+  "acknowledged_at" timestamp with time zone DEFAULT now(),
+  CONSTRAINT "announcement_acks_announcement_user_unique" UNIQUE("announcement_id","user_id")
+);
+
+CREATE INDEX IF NOT EXISTS "announcement_acks_user_idx"
+  ON "announcement_acks" USING btree ("user_id");
+
+CREATE TABLE IF NOT EXISTS "announcement_views" (
+  "id" serial PRIMARY KEY NOT NULL,
+  "announcement_id" integer NOT NULL REFERENCES "announcements"("id") ON DELETE CASCADE,
+  "user_id" varchar(255) NOT NULL,
+  "seen_at" timestamp with time zone DEFAULT now(),
+  CONSTRAINT "announcement_views_announcement_user_unique" UNIQUE("announcement_id","user_id")
+);
+
+CREATE INDEX IF NOT EXISTS "announcement_views_user_idx"
+  ON "announcement_views" USING btree ("user_id");
 `;
 
 const isLocalHost = /@(localhost|127\.0\.0\.1|\[::1\]|0\.0\.0\.0)(:|\/)/.test(databaseUrl);
@@ -223,6 +275,13 @@ async function main(): Promise<void> {
 
     console.log('[seed] Anonymizing historical view log (run-once)…');
     await client.unsafe(readFileSync(ANONYMIZE_VIEWS_FILE, 'utf8'));
+
+    // Apply incremental per-module content additions (idempotent upserts).
+    for (const file of CONTENT_ADDENDA) {
+      if (!existsSync(file)) continue;
+      console.log(`[seed] Applying content addendum ${basename(file)}…`);
+      await client.unsafe(readFileSync(file, 'utf8'));
+    }
   } finally {
     await client.end({ timeout: 5 });
   }

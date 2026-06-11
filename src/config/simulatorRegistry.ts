@@ -38,6 +38,9 @@ export const SIMULATORS: SimulatorDef[] = [
   { key: 'firewall', label: 'Firewall', component: lazy(() => import('../components/SystemComponents/FirewallSimulator')) },
   { key: 'polling-webhooks', label: 'Polling vs Webhooks', component: lazy(() => import('../components/SystemComponents/PollingWebhooks')) },
   { key: 'kafka', label: 'Kafka Streaming', component: lazy(() => import('../components/SystemComponents/KafkaSimulator')) },
+  { key: 'api-styles', label: 'API Styles (REST/gRPC/GraphQL)', component: lazy(() => import('../components/SystemComponents/ApiStylesSimulator')) },
+  { key: 'realtime-push', label: 'Real-Time Push (WS/SSE)', component: lazy(() => import('../components/SystemComponents/RealtimePushSimulator')) },
+  { key: 'dead-letter-queue', label: 'Dead Letter Queue', component: lazy(() => import('../components/SystemComponents/DeadLetterQueueSimulator')) },
 
   // Design principles
   { key: 'circuit-breaker', label: 'Circuit Breaker', component: lazy(() => import('../components/CircuitBreaker/CircuitBreaker')) },
@@ -55,6 +58,10 @@ export const SIMULATORS: SimulatorDef[] = [
   { key: 'replication', label: 'Replication', component: lazy(() => import('../components/DesignPrinciples/ReplicationSimulator')) },
   { key: 'cqrs', label: 'CQRS', component: lazy(() => import('../components/DesignPrinciples/CqrsSimulator')) },
   { key: 'canary-deployment', label: 'Canary Deployment', component: lazy(() => import('../components/CanaryDeployment/CanaryDeploymentSimulator')) },
+  { key: 'outbox', label: 'Transactional Outbox', component: lazy(() => import('../components/DesignPrinciples/OutboxSimulator')) },
+  { key: 'bulkhead', label: 'Bulkhead', component: lazy(() => import('../components/DesignPrinciples/BulkheadSimulator')) },
+  { key: 'pacelc', label: 'PACELC', component: lazy(() => import('../components/Theory/PacelcSimulator')) },
+  { key: 'chaos', label: 'Chaos Engineering', component: lazy(() => import('../components/Monitoring/ChaosSimulator')) },
 
   // Consistency strategies
   { key: 'consensus', label: 'Consensus', component: lazy(() => import('../components/ConsistencyStrategies/ConsensusSimulator')) },
@@ -64,6 +71,9 @@ export const SIMULATORS: SimulatorDef[] = [
   { key: 'synchronization-algorithms', label: 'Synchronization Algorithms', component: lazy(() => import('../components/ConsistencyStrategies/SynchronizationAlgorithms')) },
   { key: 'saga', label: 'Saga', component: lazy(() => import('../components/ConsistencyStrategies/SagaSimulator')) },
   { key: 'delivery-semantics', label: 'Delivery Semantics', component: lazy(() => import('../components/ConsistencyStrategies/DeliverySemanticsSimulator')) },
+  { key: 'crdt', label: 'CRDTs', component: lazy(() => import('../components/ConsistencyStrategies/CrdtSimulator')) },
+  { key: 'gossip', label: 'Gossip Protocol', component: lazy(() => import('../components/ConsistencyStrategies/GossipSimulator')) },
+  { key: 'distributed-lock', label: 'Distributed Locks & Fencing', component: lazy(() => import('../components/ConsistencyStrategies/DistributedLockSimulator')) },
 
   // Security
   { key: 'tokens', label: 'Tokens', component: lazy(() => import('../components/Security/TokensSimulator')) },
@@ -87,6 +97,10 @@ export const SIMULATORS: SimulatorDef[] = [
   { key: 'consistent-hashing', label: 'Consistent Hashing', component: lazy(() => import('../components/DataStorage/ConsistentHashingSimulator')) },
   { key: 'sharding', label: 'Sharding', component: lazy(() => import('../components/DataStorage/ShardingSimulator')) },
   { key: 'inverted-index', label: 'Inverted Index', component: lazy(() => import('../components/DataStorage/InvertedIndexSimulator')) },
+  { key: 'storage-engine', label: 'Storage Engines (B-Tree vs LSM)', component: lazy(() => import('../components/DataStorage/StorageEngineSimulator')) },
+  { key: 'bloom-filter', label: 'Bloom Filter', component: lazy(() => import('../components/DataStorage/BloomFilterSimulator')) },
+  { key: 'quorum-replication', label: 'Quorum Replication', component: lazy(() => import('../components/DataStorage/QuorumReplicationSimulator')) },
+  { key: 'cdc', label: 'Change Data Capture', component: lazy(() => import('../components/DataStorage/CdcSimulator')) },
 ];
 
 const byKey = new Map(SIMULATORS.map((s) => [s.key, s]));
