@@ -202,6 +202,68 @@ CREATE TABLE IF NOT EXISTS "announcement_views" (
 CREATE INDEX IF NOT EXISTS "announcement_views_user_idx"
   ON "announcement_views" USING btree ("user_id");
 
+CREATE TABLE IF NOT EXISTS "game_sessions" (
+  "id" serial PRIMARY KEY NOT NULL,
+  "code" varchar(20) NOT NULL,
+  "name" varchar(120),
+  "status" varchar(20) DEFAULT 'lobby' NOT NULL,
+  "seed" integer DEFAULT 1 NOT NULL,
+  "starts_at" timestamp with time zone,
+  "starting_architecture" jsonb,
+  "locked_node_ids" jsonb,
+  "allow_delete_starting" boolean DEFAULT true,
+  "load_profile" jsonb,
+  "chaos_events" jsonb,
+  "scoring_config" jsonb,
+  "budget" jsonb,
+  "duration_sec" integer,
+  "rounds" jsonb,
+  "phase" varchar(20) DEFAULT 'lobby' NOT NULL,
+  "current_round" integer DEFAULT 0 NOT NULL,
+  "round_started_at" timestamp with time zone,
+  "round_ends_at" timestamp with time zone,
+  "started_at" timestamp with time zone,
+  "ends_at" timestamp with time zone,
+  "announcement" text,
+  "announcement_at" timestamp with time zone,
+  "join_open" boolean DEFAULT true NOT NULL,
+  "listed" boolean DEFAULT true NOT NULL,
+  "join_key" varchar(32),
+  "created_by" varchar(255),
+  "created_at" timestamp with time zone DEFAULT now(),
+  "updated_at" timestamp with time zone DEFAULT now(),
+  CONSTRAINT "game_sessions_code_unique" UNIQUE("code")
+);
+
+-- Columns added by later migrations (0010/0011/0024/0025). Idempotent so a
+-- table created by an older deploy still gets the newer fields.
+ALTER TABLE "game_sessions" ADD COLUMN IF NOT EXISTS "rounds" jsonb;
+ALTER TABLE "game_sessions" ADD COLUMN IF NOT EXISTS "phase" varchar(20) DEFAULT 'lobby' NOT NULL;
+ALTER TABLE "game_sessions" ADD COLUMN IF NOT EXISTS "current_round" integer DEFAULT 0 NOT NULL;
+ALTER TABLE "game_sessions" ADD COLUMN IF NOT EXISTS "round_started_at" timestamp with time zone;
+ALTER TABLE "game_sessions" ADD COLUMN IF NOT EXISTS "round_ends_at" timestamp with time zone;
+ALTER TABLE "game_sessions" ADD COLUMN IF NOT EXISTS "join_open" boolean DEFAULT true NOT NULL;
+ALTER TABLE "game_sessions" ADD COLUMN IF NOT EXISTS "listed" boolean DEFAULT true NOT NULL;
+ALTER TABLE "game_sessions" ADD COLUMN IF NOT EXISTS "join_key" varchar(32);
+
+CREATE TABLE IF NOT EXISTS "game_players" (
+  "id" serial PRIMARY KEY NOT NULL,
+  "session_id" integer NOT NULL REFERENCES "game_sessions"("id") ON DELETE CASCADE,
+  "user_id" varchar(255) NOT NULL,
+  "joined_at" timestamp with time zone DEFAULT now(),
+  "architecture" jsonb,
+  "score" double precision DEFAULT 0,
+  "score_breakdown" jsonb,
+  "round_scores" jsonb,
+  "metrics" jsonb,
+  "last_submitted_at" timestamp with time zone,
+  CONSTRAINT "game_players_session_user_unique" UNIQUE("session_id","user_id")
+);
+
+ALTER TABLE "game_players" ADD COLUMN IF NOT EXISTS "score_breakdown" jsonb;
+ALTER TABLE "game_players" ADD COLUMN IF NOT EXISTS "round_scores" jsonb;
+ALTER TABLE "game_players" ADD COLUMN IF NOT EXISTS "metrics" jsonb;
+
 CREATE TABLE IF NOT EXISTS "saved_architectures" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
   "user_id" varchar(255) NOT NULL,
