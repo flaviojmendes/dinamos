@@ -90,6 +90,7 @@ import {
 } from "./config/contentRegistry";
 const SynchronizationAlgorithms = React.lazy(() => import('./components/ConsistencyStrategies/SynchronizationAlgorithms'));
 const SimpleSystemEditorPage = React.lazy(() => import("./pages/SimpleSystemEditorPage"));
+const EmbedEditorPage = React.lazy(() => import("./pages/EmbedEditorPage"));
 const GameEditorPage = React.lazy(() => import("./pages/GameEditorPage"));
 const GameStagePage = React.lazy(() => import("./pages/GameStagePage"));
 const GameArenaPage = React.lazy(() => import("./pages/GameArenaPage"));
@@ -1441,6 +1442,7 @@ export default function App() {
   const chromeless =
     pathname === '/arena' ||
     pathname.startsWith('/arena/') ||
+    pathname.startsWith('/embed/') ||
     /^\/editor\/game\/[^/]+\/stage\/?$/.test(pathname);
   const { user, signOut } = useAuth();
   const { isCompleted, progress, updateTrigger } = useContentProgress();
@@ -2062,6 +2064,7 @@ export default function App() {
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/terms-and-conditions" element={<TermsAndConditionsPage />} />
             <Route path="/editor" element={<SimpleSystemEditorPage />} />
+            <Route path="/embed/editor/:id" element={<EmbedEditorPage />} />
             <Route path="/editor/game/:code" element={<GameEditorPage />} />
             <Route path="/editor/game/:code/stage" element={<GameStagePage />} />
             {/* Arena landing page (marketing domain points here). Sign-in is

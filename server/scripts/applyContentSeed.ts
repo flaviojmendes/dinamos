@@ -201,6 +201,19 @@ CREATE TABLE IF NOT EXISTS "announcement_views" (
 
 CREATE INDEX IF NOT EXISTS "announcement_views_user_idx"
   ON "announcement_views" USING btree ("user_id");
+
+CREATE TABLE IF NOT EXISTS "saved_architectures" (
+  "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+  "user_id" varchar(255) NOT NULL,
+  "title" varchar(160),
+  "visibility" varchar(20) DEFAULT 'private' NOT NULL,
+  "design" jsonb NOT NULL,
+  "created_at" timestamp with time zone DEFAULT now(),
+  "updated_at" timestamp with time zone DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS "saved_architectures_user_idx"
+  ON "saved_architectures" USING btree ("user_id");
 `;
 
 const isLocalHost = /@(localhost|127\.0\.0\.1|\[::1\]|0\.0\.0\.0)(:|\/)/.test(databaseUrl);

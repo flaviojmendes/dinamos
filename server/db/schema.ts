@@ -11,6 +11,7 @@ import {
   doublePrecision,
   unique,
   index,
+  uuid,
 } from 'drizzle-orm/pg-core';
 
 // ==================== Roles & Permissions ====================
@@ -348,6 +349,33 @@ export const gamePlayers = pgTable(
       t.sessionId,
       t.userId
     ),
+  })
+);
+
+// ==================== Saved Architectures ====================
+// User-owned designs built in the standalone System Editor (/editor). Saved so
+// authors can recover and share them, and so they can be embedded read-only in
+// external sites via /embed/editor/:id. `design` holds the full DesignV2 blob
+// (see src/components/SystemEditor/ui/persistence.ts): seed, load profile,
+// chaos timeline, nodes and edges. Visibility gates who can read a row:
+//   private  -> owner only
+//   unlisted -> anyone with the id (link/embed), hidden from discovery
+//   public   -> anyone with the id (link/embed)
+export const savedArchitectures = pgTable(
+  'saved_architectures',
+  {
+    // Non-guessable id so unlisted shares/embeds are not enumerable.
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: varchar('user_id', { length: 255 }).notNull(),
+    title: varchar('title', { length: 160 }),
+    visibility: varchar('visibility', { length: 20 }).notNull().default('private'),
+    // Full DesignV2 document: { version, seed, profileType, chaos, nodes, edges }.
+    design: jsonb('design').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+  },
+  (t) => ({
+    userIdx: index('saved_architectures_user_idx').on(t.userId),
   })
 );
 

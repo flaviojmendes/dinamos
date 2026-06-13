@@ -140,6 +140,23 @@ export function solutionToDict(s: any) {
   };
 }
 
+// ==================== Saved Architectures ====================
+
+// `includeDesign` is false for list views (the full graph blob is heavy and not
+// needed to render the picker).
+export function savedArchitectureToDict(a: any, includeDesign = true) {
+  const result: Record<string, unknown> = {
+    id: a.id,
+    user_id: a.userId,
+    title: a.title,
+    visibility: a.visibility,
+    created_at: toIso(a.createdAt),
+    updated_at: toIso(a.updatedAt),
+  };
+  if (includeDesign) result.design = a.design;
+  return result;
+}
+
 // ==================== Forum ====================
 
 export function forumCategoryToDict(c: any) {

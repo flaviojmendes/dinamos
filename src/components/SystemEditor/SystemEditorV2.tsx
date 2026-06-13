@@ -18,7 +18,7 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { useTranslation } from 'react-i18next';
-import { Play, Pause, SkipForward, RotateCcw, Download, Upload, Settings2, Copy, Unplug, Zap, Trash2, ArrowDownUp, ArrowLeftRight, Undo2, Redo2, Plus, SlidersHorizontal, Boxes, X, type LucideIcon } from 'lucide-react';
+import { Play, Pause, SkipForward, RotateCcw, Download, Upload, Settings2, Copy, Unplug, Zap, Trash2, ArrowDownUp, ArrowLeftRight, Undo2, Redo2, Plus, SlidersHorizontal, Boxes, X, Save, Share2, FolderOpen, Link2, Check, type LucideIcon } from 'lucide-react';
 
 import {
   NodeConfig,
@@ -37,7 +37,8 @@ import InspectorPanel from './ui/InspectorPanel';
 import CostPanel from './ui/CostPanel';
 import Dashboard from './ui/Dashboard';
 import ScenarioBar from './ui/ScenarioBar';
-import { parseDesign, serializeDesign, SerializedNode } from './ui/persistence';
+import { parseDesign, serializeDesign, SerializedNode, DesignV2 } from './ui/persistence';
+import { apiClient } from '../../app/utils/api';
 import { layoutGraph, LayoutDirection } from './ui/autoLayout';
 import { useGameContext } from './game/GameContext';
 import { architectureToRF, rfToArchitecture } from './game/architecture';
@@ -60,6 +61,17 @@ import MobilePalette from './ui/MobilePalette';
 import SelectionActionBar from './ui/SelectionActionBar';
 
 type RFNode = Node<SimNodeData>;
+
+interface SavedArchitectureSummary {
+  id: string;
+  title: string | null;
+  visibility: 'private' | 'unlisted' | 'public';
+  updated_at: string | null;
+}
+
+interface SavedArchitectureRow extends SavedArchitectureSummary {
+  design: DesignV2;
+}
 
 const nodeTypes = Object.fromEntries(
   Object.keys(NODE_CATALOG).map((k) => [k, SimNode]),
@@ -106,15 +118,232 @@ function ContextItem({
   );
 }
 
-function EditorInner({ gameId }: { gameId?: string }) {
+// Small copy-to-clipboard row used by the share panel.
+function CopyField({ value, label }: { value: string; label: string }) {
+  const { t } = useTranslation();
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      /* clipboard unavailable; the field is still selectable */
+    }
+  };
+  return (
+    <div>
+      <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1">{label}</div>
+      <div className="flex items-stretch gap-2">
+        <input
+          readOnly
+          value={value}
+          onFocus={(e) => e.currentTarget.select()}
+          className="flex-1 bg-slate-50 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border rounded-md px-2 py-1.5 font-mono text-[11px] text-slate-700 dark:text-tactical-text"
+        />
+        <button
+          onClick={copy}
+          className="shrink-0 inline-flex items-center gap-1 px-2.5 rounded-md border border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan font-sans text-xs"
+        >
+          {copied ? <Check className="w-3.5 h-3.5" /> : <Link2 className="w-3.5 h-3.5" />}
+          {copied ? t('editor.save.copied', { defaultValue: 'Copied' }) : t('editor.save.copy', { defaultValue: 'Copy' })}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function SharePanel({
+  designId,
+  title,
+  visibility,
+  canSave,
+  saving,
+  onSave,
+  onTitleChange,
+  onVisibilityChange,
+  onClose,
+}: {
+  designId: string | null;
+  title: string;
+  visibility: 'private' | 'unlisted' | 'public';
+  canSave: boolean;
+  saving: boolean;
+  onSave: () => void;
+  onTitleChange: (value: string) => void;
+  onVisibilityChange: (value: 'private' | 'unlisted' | 'public') => void;
+  onClose: () => void;
+}) {
+  const { t } = useTranslation();
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const shareUrl = designId ? `${origin}/editor?design=${designId}` : '';
+  const embedUrl = designId ? `${origin}/embed/editor/${designId}` : '';
+  const embedSnippet = `<iframe src="${embedUrl}" width="100%" height="600" style="border:0" loading="lazy" title="${title || 'Distributed system'}"></iframe>`;
+  const isShareable = visibility !== 'private';
+  const isSaved = !!designId;
+
+  return (
+    <div className="tactical-panel p-4 mb-4 space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="font-sans text-sm font-medium text-slate-700 dark:text-tactical-text">
+          {t('editor.save.share_title', { defaultValue: 'Share this architecture' })}
+        </div>
+        <button onClick={onClose} aria-label={t('editor.errors.dismiss', { defaultValue: 'Dismiss' })} className="text-tactical-dim hover:text-tactical-text">
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+
+      <div className="grid sm:grid-cols-2 gap-3">
+        <label className="block">
+          <span className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t('editor.save.title_label', { defaultValue: 'Title' })}</span>
+          <input
+            value={title}
+            onChange={(e) => onTitleChange(e.target.value)}
+            placeholder={t('editor.save.title_placeholder', { defaultValue: 'Untitled architecture' })}
+            className="mt-1 w-full bg-slate-50 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border rounded-md px-2 py-1.5 font-sans text-xs text-slate-700 dark:text-tactical-text"
+          />
+        </label>
+        <label className="block">
+          <span className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t('editor.save.visibility_label', { defaultValue: 'Visibility' })}</span>
+          <select
+            value={visibility}
+            onChange={(e) => onVisibilityChange(e.target.value as 'private' | 'unlisted' | 'public')}
+            className="mt-1 w-full bg-slate-50 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border rounded-md px-2 py-1.5 font-sans text-xs text-slate-700 dark:text-tactical-text"
+          >
+            <option value="private">{t('editor.save.visibility_private', { defaultValue: 'Private (only me)' })}</option>
+            <option value="unlisted">{t('editor.save.visibility_unlisted', { defaultValue: 'Unlisted (anyone with the link)' })}</option>
+            <option value="public">{t('editor.save.visibility_public', { defaultValue: 'Public (anyone with the link)' })}</option>
+          </select>
+        </label>
+      </div>
+
+      {!isSaved ? (
+        // Not saved yet: ask the user to save before a link can be generated.
+        canSave ? (
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <p className="flex-1 font-sans text-xs text-tactical-dim">
+              {t('editor.save.save_to_share', { defaultValue: 'Save this architecture to generate a share link and embed code.' })}
+            </p>
+            <button
+              onClick={onSave}
+              disabled={saving}
+              className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-signal-cyan text-signal-cyan hover:bg-signal-cyan/10 font-sans text-xs disabled:opacity-50"
+            >
+              <Save className="w-3.5 h-3.5" />
+              {saving
+                ? t('editor.save.saving', { defaultValue: 'Saving…' })
+                : t('editor.save.save_and_share', { defaultValue: 'Save & create link' })}
+            </button>
+          </div>
+        ) : (
+          <p className="font-sans text-xs text-tactical-dim">
+            {t('editor.save.sign_in_to_save', { defaultValue: 'Sign in to save & share' })}
+          </p>
+        )
+      ) : isShareable ? (
+        <div className="space-y-3">
+          <CopyField value={shareUrl} label={t('editor.save.link_label', { defaultValue: 'Share link' })} />
+          <CopyField value={embedSnippet} label={t('editor.save.embed_label', { defaultValue: 'Embed (iframe)' })} />
+        </div>
+      ) : (
+        <p className="font-sans text-xs text-tactical-dim">
+          {t('editor.save.private_hint', { defaultValue: 'Set visibility to Unlisted or Public to get a shareable link and embed code.' })}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function LibraryModal({
+  items,
+  loading,
+  currentId,
+  onLoad,
+  onDelete,
+  onClose,
+}: {
+  items: SavedArchitectureSummary[];
+  loading: boolean;
+  currentId: string | null;
+  onLoad: (id: string) => void;
+  onDelete: (id: string) => void;
+  onClose: () => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <div
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4"
+      onClick={onClose}
+    >
+      <div
+        className="tactical-panel w-full max-w-lg max-h-[80vh] overflow-y-auto p-5"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <div className="font-sans text-sm font-medium text-slate-700 dark:text-tactical-text">
+            {t('editor.save.my_designs', { defaultValue: 'My designs' })}
+          </div>
+          <button onClick={onClose} aria-label={t('editor.errors.dismiss', { defaultValue: 'Dismiss' })} className="text-tactical-dim hover:text-tactical-text">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        {loading ? (
+          <p className="font-sans text-xs text-tactical-dim py-6 text-center">{t('editor.save.loading', { defaultValue: 'Loading…' })}</p>
+        ) : items.length === 0 ? (
+          <p className="font-sans text-xs text-tactical-dim py-6 text-center">{t('editor.save.empty', { defaultValue: 'No saved architectures yet. Build something and hit Save.' })}</p>
+        ) : (
+          <ul className="space-y-2">
+            {items.map((it) => (
+              <li
+                key={it.id}
+                className={`flex items-center justify-between gap-3 rounded-lg border px-3 py-2 ${it.id === currentId ? 'border-signal-cyan' : 'border-tactical-border'}`}
+              >
+                <button onClick={() => onLoad(it.id)} className="flex-1 text-left min-w-0">
+                  <div className="font-sans text-sm text-slate-700 dark:text-tactical-text truncate">
+                    {it.title || t('editor.save.untitled', { defaultValue: 'Untitled architecture' })}
+                  </div>
+                  <div className="font-sans text-[11px] text-tactical-dim">
+                    {t(`editor.save.visibility_${it.visibility}_short`, { defaultValue: it.visibility })}
+                    {it.updated_at ? ` · ${new Date(it.updated_at).toLocaleDateString()}` : ''}
+                  </div>
+                </button>
+                <button
+                  onClick={() => onDelete(it.id)}
+                  aria-label={t('editor.save.delete', { defaultValue: 'Delete' })}
+                  className="shrink-0 text-tactical-dim hover:text-signal-red"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export interface SystemEditorV2Props {
+  gameId?: string;
+  /** Hydrate the canvas from a saved design (e.g. a recovered/embedded build). */
+  initialDesign?: DesignV2 | null;
+  /** View-only mode: no editing/saving, but pan/zoom and running the sim stay on. */
+  readOnly?: boolean;
+  /** Hide the save/share library affordances (used by the embed view). */
+  hideChrome?: boolean;
+}
+
+function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEditorV2Props) {
   const { t } = useTranslation();
   const { user } = useAuth();
   const game = useGameContext();
   const gameState = game?.state ?? null;
   const gameActive = !!gameId && !!game;
   // During a live round players are locked out of editing; they build during
-  // intervals (and the lobby). Non-game sessions are always editable.
-  const frozen = gameActive && gameState?.phase === 'round';
+  // intervals (and the lobby). Non-game sessions are always editable. Read-only
+  // (embed/share view) freezes editing the same way a live round does.
+  const frozen = (gameActive && gameState?.phase === 'round') || !!readOnly;
   const initial = useMemo(() => presetToRF('three-tier'), []);
 
   const [nodes, setNodes, onNodesChange] = useNodesState<SimNodeData>(initial.nodes);
@@ -138,6 +367,21 @@ function EditorInner({ gameId }: { gameId?: string }) {
   const [provider, setProvider] = useState<CloudProvider>('aws');
   const [chaos, setChaos] = useState<ChaosEvent[]>([]);
   const [importError, setImportError] = useState<string | null>(null);
+
+  // --- Saved architectures (DB persistence: recover + share + embed) ---
+  // Identity of the currently-loaded saved design, so Save re-saves in place.
+  const [currentDesignId, setCurrentDesignId] = useState<string | null>(null);
+  // Pre-populated, inline-editable title so there is always something to save.
+  const defaultTitle = t('editor.save.untitled', { defaultValue: 'Untitled architecture' });
+  const [currentTitle, setCurrentTitle] = useState(defaultTitle);
+  const [currentVisibility, setCurrentVisibility] = useState<'private' | 'unlisted' | 'public'>('private');
+  const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [showShare, setShowShare] = useState(false);
+  const [showLibrary, setShowLibrary] = useState(false);
+  const [library, setLibrary] = useState<SavedArchitectureSummary[]>([]);
+  const [libraryLoading, setLibraryLoading] = useState(false);
+  const initialDesignHydratedRef = useRef(false);
 
   const [menu, setMenu] = useState<{ kind: 'node' | 'edge' | 'pane'; id: string; x: number; y: number } | null>(null);
   const [showBill, setShowBill] = useState(false);
@@ -831,16 +1075,57 @@ function EditorInner({ gameId }: { gameId?: string }) {
     [setNodes, setEdges, takeSnapshot],
   );
 
-  const exportDesign = useCallback(() => {
-    setRunning(false);
+  // Snapshot the current canvas as a DesignV2 document (shared by file export
+  // and DB save).
+  const buildDesign = useCallback((): DesignV2 => {
     const sNodes: SerializedNode[] = nodes.map((n) => ({ id: n.id, position: n.position, config: n.data.config }));
-    const json = serializeDesign(
-      sNodes,
-      edges.map((e) => ({ id: e.id, source: e.source, target: e.target, sourceHandle: e.sourceHandle, targetHandle: e.targetHandle })),
+    return {
+      version: '2.0',
       seed,
       profileType,
       chaos,
-    );
+      nodes: sNodes,
+      edges: edges.map((e) => ({ id: e.id, source: e.source, target: e.target, sourceHandle: e.sourceHandle, targetHandle: e.targetHandle })),
+    };
+  }, [nodes, edges, seed, profileType, chaos]);
+
+  // Hydrate the canvas + simulation from a DesignV2 document (file import, DB
+  // recover, embed). Caller decides whether to snapshot for undo first.
+  const applyDesign = useCallback(
+    (design: DesignV2) => {
+      const rfNodes: RFNode[] = design.nodes.map((n) => ({
+        id: n.id,
+        type: n.config.kind,
+        position: n.position,
+        data: { config: n.config },
+      }));
+      setRunning(false);
+      setNodes(rfNodes);
+      setEdges(design.edges.map((ed) => ({ id: ed.id, source: ed.source, target: ed.target, sourceHandle: ed.sourceHandle ?? 'bottom', targetHandle: ed.targetHandle ?? 'top', animated: true, style: { strokeWidth: 2.5 } })));
+      setSeed(design.seed);
+      setProfileType(design.profileType);
+      setChaos(design.chaos);
+      setSelectedId(null);
+      simRef.current?.reset(design.seed);
+      setMetrics({});
+      setHistory([]);
+      setTotalCost(0); setSuccessCount(0); setFailedCount(0);
+    },
+    [setNodes, setEdges],
+  );
+
+  // Hydrate once from a server-provided design (recovered share link / embed).
+  useEffect(() => {
+    if (!initialDesign) return;
+    if (initialDesignHydratedRef.current) return;
+    initialDesignHydratedRef.current = true;
+    applyDesign(initialDesign);
+  }, [initialDesign, applyDesign]);
+
+  const exportDesign = useCallback(() => {
+    setRunning(false);
+    const design = buildDesign();
+    const json = serializeDesign(design.nodes, design.edges, design.seed, design.profileType, design.chaos);
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -850,7 +1135,7 @@ function EditorInner({ gameId }: { gameId?: string }) {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-  }, [nodes, edges, seed, profileType, chaos]);
+  }, [buildDesign]);
 
   const importDesign = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -863,22 +1148,9 @@ function EditorInner({ gameId }: { gameId?: string }) {
         try {
           const design = parseDesign(e.target?.result as string);
           takeSnapshot();
-          const rfNodes: RFNode[] = design.nodes.map((n) => ({
-            id: n.id,
-            type: n.config.kind,
-            position: n.position,
-            data: { config: n.config },
-          }));
-          setNodes(rfNodes);
-          setEdges(design.edges.map((ed) => ({ id: ed.id, source: ed.source, target: ed.target, sourceHandle: ed.sourceHandle ?? 'bottom', targetHandle: ed.targetHandle ?? 'top', animated: true, style: { strokeWidth: 2.5 } })));
-          setSeed(design.seed);
-          setProfileType(design.profileType);
-          setChaos(design.chaos);
-          setSelectedId(null);
-          simRef.current?.reset(design.seed);
-          setMetrics({});
-          setHistory([]);
-          setTotalCost(0); setSuccessCount(0); setFailedCount(0);
+          applyDesign(design);
+          // An imported file is a fresh local build, not the loaded saved row.
+          setCurrentDesignId(null);
         } catch {
           setImportError(t('editor.errors.import_error', { defaultValue: 'Failed to import design file.' }));
         }
@@ -887,7 +1159,117 @@ function EditorInner({ gameId }: { gameId?: string }) {
       reader.onerror = () => setImportError(t('editor.errors.read_error', { defaultValue: 'Could not read file.' }));
       reader.readAsText(file);
     },
-    [setNodes, setEdges, t, takeSnapshot],
+    [applyDesign, t, takeSnapshot],
+  );
+
+  // --- Save / load / share against /api/architectures ---
+  const saveDesign = useCallback(async () => {
+    if (!user) return;
+    setSaveState('saving');
+    setSaveError(null);
+    try {
+      const payload = {
+        title: currentTitle || null,
+        visibility: currentVisibility,
+        design: buildDesign(),
+      };
+      let row: SavedArchitectureRow;
+      if (currentDesignId) {
+        const res = await apiClient.put(`/api/architectures/${currentDesignId}`, payload);
+        row = res.data;
+      } else {
+        const res = await apiClient.post('/api/architectures', payload);
+        row = res.data;
+      }
+      setCurrentDesignId(row.id);
+      setCurrentTitle(row.title || defaultTitle);
+      setCurrentVisibility(row.visibility);
+      setSaveState('saved');
+      setShowShare(true);
+    } catch (err) {
+      setSaveState('error');
+      setSaveError(t('editor.save.error', { defaultValue: 'Could not save the architecture.' }));
+    }
+  }, [user, currentTitle, currentVisibility, currentDesignId, buildDesign, defaultTitle, t]);
+
+  // Persist a visibility change immediately for an already-saved design so the
+  // share/embed link works without a second explicit save.
+  const updateVisibility = useCallback(
+    async (visibility: 'private' | 'unlisted' | 'public') => {
+      setCurrentVisibility(visibility);
+      if (!currentDesignId) return;
+      try {
+        await apiClient.put(`/api/architectures/${currentDesignId}`, { visibility });
+      } catch {
+        /* non-fatal; the next full save will retry */
+      }
+    },
+    [currentDesignId],
+  );
+
+  // Persist a title edit for an already-saved design (called on blur). New
+  // designs just keep the value in state until the first save.
+  const updateTitle = useCallback(
+    async (title: string) => {
+      if (!currentDesignId) return;
+      try {
+        await apiClient.put(`/api/architectures/${currentDesignId}`, { title: title || null });
+      } catch {
+        /* non-fatal; the next full save will retry */
+      }
+    },
+    [currentDesignId],
+  );
+
+  // Share button: open the share panel. If the design isn't saved yet, the panel
+  // prompts the user to save first and then reveals the link/embed.
+  const handleShare = useCallback(() => {
+    setShowShare(true);
+  }, []);
+
+  const openLibrary = useCallback(async () => {
+    setShowLibrary(true);
+    setLibraryLoading(true);
+    try {
+      const res = await apiClient.get('/api/architectures');
+      setLibrary(res.data.architectures ?? []);
+    } catch {
+      setLibrary([]);
+    } finally {
+      setLibraryLoading(false);
+    }
+  }, []);
+
+  const loadFromLibrary = useCallback(
+    async (id: string) => {
+      try {
+        const res = await apiClient.get(`/api/architectures/${id}`);
+        const row: SavedArchitectureRow = res.data;
+        takeSnapshot();
+        applyDesign(row.design);
+        setCurrentDesignId(row.id);
+        setCurrentTitle(row.title || defaultTitle);
+        setCurrentVisibility(row.visibility);
+        setShowLibrary(false);
+        setSaveState('idle');
+      } catch {
+        setImportError(t('editor.save.load_error', { defaultValue: 'Could not load that architecture.' }));
+      }
+    },
+    [applyDesign, takeSnapshot, defaultTitle, t],
+  );
+
+  const deleteFromLibrary = useCallback(
+    async (id: string) => {
+      try {
+        await apiClient.delete(`/api/architectures/${id}`);
+        setLibrary((items) => items.filter((it) => it.id !== id));
+        if (currentDesignId === id) setCurrentDesignId(null);
+      } catch {
+        /* ignore */
+      }
+    },
+    [currentDesignId],
   );
 
   const selectedConfig = nodes.find((n) => n.id === selectedId)?.data.config ?? null;
@@ -1058,9 +1440,64 @@ function EditorInner({ gameId }: { gameId?: string }) {
               <button onClick={exportDesign} className={`${btn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}>
                 <Download className="w-4 h-4" /> {t('editor.buttons.export', { defaultValue: 'Export' })}
               </button>
-              <button onClick={() => fileInputRef.current?.click()} className={`${btn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}>
-                <Upload className="w-4 h-4" /> {t('editor.buttons.import', { defaultValue: 'Import' })}
-              </button>
+              {!readOnly && (
+                <button onClick={() => fileInputRef.current?.click()} className={`${btn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}>
+                  <Upload className="w-4 h-4" /> {t('editor.buttons.import', { defaultValue: 'Import' })}
+                </button>
+              )}
+
+              {/* Save / share to the user's library (recover + share + embed). */}
+              {!readOnly && !hideChrome && (
+                <>
+                  <div className="border-l border-tactical-line h-8 mx-1 shrink-0" />
+
+                  {/* Pre-populated, click-to-edit title for the current design. */}
+                  <input
+                    value={currentTitle}
+                    onChange={(e) => setCurrentTitle(e.target.value)}
+                    onBlur={(e) => updateTitle(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }}
+                    aria-label={t('editor.save.title_label', { defaultValue: 'Title' })}
+                    title={t('editor.save.title_label', { defaultValue: 'Title' })}
+                    placeholder={t('editor.save.title_placeholder', { defaultValue: 'Untitled architecture' })}
+                    className="w-44 bg-transparent border border-transparent hover:border-tactical-border focus:border-signal-cyan rounded-md px-2 py-1 font-sans text-sm font-medium text-slate-700 dark:text-tactical-text focus:bg-tactical-raised outline-none transition-colors"
+                  />
+
+                  {user ? (
+                    <>
+                      <button
+                        onClick={saveDesign}
+                        disabled={saveState === 'saving'}
+                        className={`${btn} border-signal-cyan text-signal-cyan hover:bg-signal-cyan/10 disabled:opacity-50`}
+                      >
+                        <Save className="w-4 h-4" />
+                        {saveState === 'saving'
+                          ? t('editor.save.saving', { defaultValue: 'Saving…' })
+                          : t('editor.save.save', { defaultValue: 'Save' })}
+                      </button>
+                      <button
+                        onClick={handleShare}
+                        className={`${btn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}
+                      >
+                        <Share2 className="w-4 h-4" /> {t('editor.save.share', { defaultValue: 'Share' })}
+                      </button>
+                      <button
+                        onClick={openLibrary}
+                        className={`${btn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}
+                      >
+                        <FolderOpen className="w-4 h-4" /> {t('editor.save.my_designs', { defaultValue: 'My designs' })}
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      onClick={handleShare}
+                      className={`${btn} border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan`}
+                    >
+                      <Share2 className="w-4 h-4" /> {t('editor.save.share', { defaultValue: 'Share' })}
+                    </button>
+                  )}
+                </>
+              )}
             </>
           )}
 
@@ -1099,6 +1536,47 @@ function EditorInner({ gameId }: { gameId?: string }) {
               <X className="w-4 h-4" />
             </button>
           </div>
+        )}
+
+        {saveError && (
+          <div role="alert" className="flex items-start justify-between gap-3 bg-signal-red/10 border border-signal-red rounded-lg p-3 text-signal-red font-sans text-sm mb-3">
+            <span>{saveError}</span>
+            <button
+              onClick={() => setSaveError(null)}
+              aria-label={t('editor.errors.dismiss', { defaultValue: 'Dismiss error' })}
+              className={`shrink-0 hover:opacity-70 transition-opacity ${focusRing} rounded`}
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+
+        {/* Share + visibility panel. When the design isn't saved yet it prompts
+            the user to save first, then reveals the share link / embed code. */}
+        {showShare && !readOnly && !hideChrome && (
+          <SharePanel
+            designId={currentDesignId}
+            title={currentTitle}
+            visibility={currentVisibility}
+            canSave={!!user}
+            saving={saveState === 'saving'}
+            onSave={saveDesign}
+            onTitleChange={setCurrentTitle}
+            onVisibilityChange={updateVisibility}
+            onClose={() => setShowShare(false)}
+          />
+        )}
+
+        {/* "My designs" library picker. */}
+        {showLibrary && !readOnly && !hideChrome && (
+          <LibraryModal
+            items={library}
+            loading={libraryLoading}
+            currentId={currentDesignId}
+            onLoad={loadFromLibrary}
+            onDelete={deleteFromLibrary}
+            onClose={() => setShowLibrary(false)}
+          />
         )}
 
         {/* Scenario controls (admin-driven in game mode, so hidden for players;
@@ -1163,8 +1641,9 @@ function EditorInner({ gameId }: { gameId?: string }) {
               maxZoom={1.5}
             >
               {/* Desktop drag-and-drop palette. On touch this is replaced by the
-                  tap-to-add MobilePalette in a bottom sheet. */}
-              {!isTouch && (
+                  tap-to-add MobilePalette in a bottom sheet. Hidden in read-only
+                  (share/embed) views where there is nothing to drag. */}
+              {!isTouch && !readOnly && (
                 <Panel position="top-left" className="bg-white/95 dark:bg-tactical-surface/95 border border-slate-200 dark:border-tactical-border rounded-lg p-3 backdrop-blur-sm max-h-[520px] overflow-y-auto">
                   <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-2">{t('editor.labels.components', { defaultValue: 'Components' })}</div>
                   <div className="grid grid-cols-2 gap-1.5">
@@ -1411,10 +1890,20 @@ function EditorInner({ gameId }: { gameId?: string }) {
   );
 }
 
-export default function SystemEditorV2({ gameId }: { gameId?: string } = {}) {
+export default function SystemEditorV2({
+  gameId,
+  initialDesign,
+  readOnly,
+  hideChrome,
+}: SystemEditorV2Props = {}) {
   return (
     <ReactFlowProvider>
-      <EditorInner gameId={gameId} />
+      <EditorInner
+        gameId={gameId}
+        initialDesign={initialDesign}
+        readOnly={readOnly}
+        hideChrome={hideChrome}
+      />
     </ReactFlowProvider>
   );
 }
