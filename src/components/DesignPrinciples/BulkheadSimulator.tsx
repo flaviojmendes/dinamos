@@ -65,9 +65,19 @@ export default function BulkheadSimulator() {
         return true;
       };
 
-      // Two new requests per tick for each service.
-      for (let i = 0; i < 2; i++) if (!tryAcquire('a')) setRejA((v) => v + 1);
-      for (let i = 0; i < 2; i++) if (!tryAcquire('b')) setRejB((v) => v + 1);
+      // Two new requests per tick for each service, served in a fair
+      // (randomized) order so neither service gets first-pick of the shared
+      // pool — otherwise A would always win the race and never starve.
+      const incoming: ('a' | 'b')[] = ['a', 'a', 'b', 'b'];
+      for (let i = incoming.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [incoming[i], incoming[j]] = [incoming[j], incoming[i]];
+      }
+      for (const slot of incoming) {
+        if (!tryAcquire(slot)) {
+          if (slot === 'a') setRejA((v) => v + 1); else setRejB((v) => v + 1);
+        }
+      }
 
       // Reflect live occupancy into the rendered slot view.
       setBusyA(releases.current.filter((r) => r.slot === 'a').length);
