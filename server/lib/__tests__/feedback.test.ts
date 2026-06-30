@@ -1,22 +1,26 @@
 import { describe, it, expect, beforeEach, beforeAll, vi } from 'vitest';
 
-const openai = { getOpenAI: vi.fn(() => null as any), OPENAI_MODEL: 'gpt-test' };
-vi.mock('../openai', () => openai);
+const google: any = {
+  getGoogleAI: vi.fn(() => null as any),
+  GOOGLE_MODEL: 'gemini-test',
+  geminiText: (res: any) => (typeof res?.text === 'string' ? res.text : ''),
+};
+vi.mock('../google', () => google);
 
 let analyzeTextProposal: typeof import('../feedback').analyzeTextProposal;
 let analyzeDiagram: typeof import('../feedback').analyzeDiagram;
 let describeDiagram: typeof import('../feedback').describeDiagram;
-let evaluateWithOpenAI: typeof import('../feedback').evaluateWithOpenAI;
+let evaluateWithAI: typeof import('../feedback').evaluateWithAI;
 
 beforeAll(async () => {
   const mod = await import('../feedback');
   analyzeTextProposal = mod.analyzeTextProposal;
   analyzeDiagram = mod.analyzeDiagram;
   describeDiagram = mod.describeDiagram;
-  evaluateWithOpenAI = mod.evaluateWithOpenAI;
+  evaluateWithAI = mod.evaluateWithAI;
 });
 
-beforeEach(() => openai.getOpenAI.mockReset().mockReturnValue(null));
+beforeEach(() => google.getGoogleAI.mockReset().mockReturnValue(null));
 
 describe('analyzeTextProposal', () => {
   it('rewards a complete proposal', () => {
@@ -86,18 +90,18 @@ describe('describeDiagram', () => {
   });
 });
 
-describe('evaluateWithOpenAI', () => {
+describe('evaluateWithAI', () => {
   it('returns [null, null] without a client', async () => {
-    openai.getOpenAI.mockReturnValue(null);
-    expect(await evaluateWithOpenAI({ title: 'X' }, 'p', { elements: [] })).toEqual([null, null]);
+    google.getGoogleAI.mockReturnValue(null);
+    expect(await evaluateWithAI({ title: 'X' }, 'p', { elements: [] })).toEqual([null, null]);
   });
 
-  it('parses an OpenAI JSON response (with evaluation_prompt)', async () => {
-    const create = vi.fn(async () => ({
-      choices: [{ message: { content: JSON.stringify({ strengths: ['s1'], suggestions: ['x1'] }) } }],
+  it('parses a Gemini JSON response (with evaluation_prompt)', async () => {
+    const generateContent = vi.fn(async () => ({
+      text: JSON.stringify({ strengths: ['s1'], suggestions: ['x1'] }),
     }));
-    openai.getOpenAI.mockReturnValue({ chat: { completions: { create } } } as any);
-    const [strengths, suggestions] = await evaluateWithOpenAI(
+    google.getGoogleAI.mockReturnValue({ models: { generateContent } } as any);
+    const [strengths, suggestions] = await evaluateWithAI(
       { title: 'X', evaluation_prompt: 'Evaluate this', description: 'd' },
       'proposal',
       { elements: [{ type: 'rectangle', text: 'API' }] },
@@ -108,19 +112,17 @@ describe('evaluateWithOpenAI', () => {
   });
 
   it('defaults strengths when the response has none', async () => {
-    const create = vi.fn(async () => ({
-      choices: [{ message: { content: JSON.stringify({ suggestions: [] }) } }],
-    }));
-    openai.getOpenAI.mockReturnValue({ chat: { completions: { create } } } as any);
-    const [strengths] = await evaluateWithOpenAI({ title: 'X' }, 'p', { elements: [] });
+    const generateContent = vi.fn(async () => ({ text: JSON.stringify({ suggestions: [] }) }));
+    google.getGoogleAI.mockReturnValue({ models: { generateContent } } as any);
+    const [strengths] = await evaluateWithAI({ title: 'X' }, 'p', { elements: [] });
     expect(strengths?.[0]).toMatch(/praticando/);
   });
 
-  it('returns [null, null] on an OpenAI error', async () => {
-    const create = vi.fn(async () => {
+  it('returns [null, null] on a Gemini error', async () => {
+    const generateContent = vi.fn(async () => {
       throw new Error('boom');
     });
-    openai.getOpenAI.mockReturnValue({ chat: { completions: { create } } } as any);
-    expect(await evaluateWithOpenAI({ title: 'X' }, 'p', { elements: [] })).toEqual([null, null]);
+    google.getGoogleAI.mockReturnValue({ models: { generateContent } } as any);
+    expect(await evaluateWithAI({ title: 'X' }, 'p', { elements: [] })).toEqual([null, null]);
   });
 });

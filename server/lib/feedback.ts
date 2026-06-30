@@ -1,4 +1,4 @@
-import { getOpenAI, OPENAI_MODEL } from './openai.js';
+import { getGoogleAI, GOOGLE_MODEL, geminiText } from './google.js';
 
 type Diagram = { elements?: any[]; [k: string]: any };
 
@@ -332,7 +332,10 @@ function buildSubmissionBlock(
   return `**PROPOSTA DO ESTUDANTE (texto):**\n\n${text}\n\n---\n\n**DIAGRAMA DO ESTUDANTE (componentes e conexões extraídos):**\n\n${diagramDescription}${audioSection}`;
 }
 
-function createOpenAIPrompt(
+const SYSTEM_INSTRUCTION =
+  'Você é um entrevistador sênior de System Design. Dá feedback técnico, preciso e construtivo, baseado ESTRITAMENTE no que o estudante apresentou, sem inventar informações ou supor componentes/conexões inexistentes. Responde sempre em português do Brasil e exclusivamente no formato JSON solicitado.';
+
+function createAIPrompt(
   challenge: any,
   textProposal: string,
   diagramDescription: string,
@@ -355,37 +358,28 @@ function createOpenAIPrompt(
   return `${context}\n\n---\n\n${submission}\n\n---\n\n${GROUNDING_RULES}\n\n---\n\n${OUTPUT_FORMAT}`;
 }
 
-export async function evaluateWithOpenAI(
+export async function evaluateWithAI(
   challenge: any,
   textProposal: string,
   diagram: Diagram,
   audioTranscription?: string | null
 ): Promise<[string[], string[]] | [null, null]> {
-  const client = getOpenAI();
+  const client = getGoogleAI();
   if (!client) return [null, null];
   try {
     const diagramDescription = describeDiagram(diagram);
-    const prompt = createOpenAIPrompt(
-      challenge,
-      textProposal,
-      diagramDescription,
-      audioTranscription
-    );
-    const response = await client.chat.completions.create({
-      model: OPENAI_MODEL,
-      messages: [
-        {
-          role: 'system',
-          content:
-            'Você é um entrevistador sênior de System Design. Dá feedback técnico, preciso e construtivo, baseado ESTRITAMENTE no que o estudante apresentou, sem inventar informações ou supor componentes/conexões inexistentes. Responde sempre em português do Brasil e exclusivamente no formato JSON solicitado.',
-        },
-        { role: 'user', content: prompt },
-      ],
-      temperature: 0.3,
-      max_tokens: 1800,
-      response_format: { type: 'json_object' },
+    const prompt = createAIPrompt(challenge, textProposal, diagramDescription, audioTranscription);
+    const response = await client.models.generateContent({
+      model: GOOGLE_MODEL,
+      contents: prompt,
+      config: {
+        systemInstruction: SYSTEM_INSTRUCTION,
+        temperature: 0.3,
+        maxOutputTokens: 1800,
+        responseMimeType: 'application/json',
+      },
     });
-    const content = response.choices[0]?.message?.content ?? '{}';
+    const content = geminiText(response) || '{}';
     const data = JSON.parse(content);
     let strengths: string[] = data.strengths ?? [];
     const suggestions: string[] = data.suggestions ?? [];
@@ -393,7 +387,7 @@ export async function evaluateWithOpenAI(
       strengths = ['Continue praticando! Todo design tem um ponto de partida.'];
     return [strengths, suggestions];
   } catch (e) {
-    console.error('[feedback] OpenAI error:', e);
+    console.error('[feedback] Google AI error:', e);
     return [null, null];
   }
 }

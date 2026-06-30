@@ -1,6 +1,5 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
-import { toFile } from 'openai';
 import { and, asc, desc, eq, sql } from 'drizzle-orm';
 import { db } from '../db/client.js';
 import { challenges, solutions } from '../db/schema.js';
@@ -12,9 +11,9 @@ import { challengeToDict, solutionToDict } from '../db/serializers.js';
 import {
   analyzeTextProposal,
   analyzeDiagram,
-  evaluateWithOpenAI,
+  evaluateWithAI,
 } from '../lib/feedback.js';
-import { getOpenAI } from '../lib/openai.js';
+import { getGoogleAI, GOOGLE_MODEL, geminiText } from '../lib/google.js';
 
 export const challengesRouter = new Hono<{ Variables: AppVariables }>();
 
@@ -54,11 +53,11 @@ challengesRouter.get('/api/challenges/:id', authRequired, async (c) => {
 });
 
 challengesRouter.post('/api/transcribe-audio', authRequired, async (c) => {
-  const client = getOpenAI();
+  const client = getGoogleAI();
   if (!client) {
     return c.json({
       transcription:
-        '[Transcrição mock] Esta é uma transcrição simulada do áudio. Configure a API key da OpenAI para habilitar a transcrição real.',
+        '[Transcrição mock] Esta é uma transcrição simulada do áudio. Configure a API key do Google AI (Gemini) para habilitar a transcrição real.',
     });
   }
   try {
@@ -67,16 +66,18 @@ challengesRouter.post('/api/transcribe-audio', authRequired, async (c) => {
     if (!(audio instanceof File)) {
       throw new HTTPException(400, { message: 'No audio file provided' });
     }
-    const buffer = Buffer.from(await audio.arrayBuffer());
-    const file = await toFile(buffer, audio.name || 'audio.webm', {
-      type: audio.type || 'audio/webm',
+    const base64 = Buffer.from(await audio.arrayBuffer()).toString('base64');
+    const mimeType = audio.type || 'audio/webm';
+    const response = await client.models.generateContent({
+      model: GOOGLE_MODEL,
+      contents: [
+        {
+          text: 'Transcreva o áudio a seguir em português do Brasil. Retorne somente o texto transcrito, sem comentários, rótulos ou pontuação extra.',
+        },
+        { inlineData: { mimeType, data: base64 } },
+      ],
     });
-    const transcript = await client.audio.transcriptions.create({
-      model: 'whisper-1',
-      file,
-      language: 'pt',
-    });
-    return c.json({ transcription: transcript.text });
+    return c.json({ transcription: geminiText(response).trim() });
   } catch (e: any) {
     console.error('[transcribe] error:', e);
     return c.json({
@@ -123,8 +124,8 @@ challengesRouter.post('/api/feedback', authRequired, async (c) => {
     }
   };
 
-  if (getOpenAI()) {
-    const [strengths, suggestions] = await evaluateWithOpenAI(
+  if (getGoogleAI()) {
+    const [strengths, suggestions] = await evaluateWithAI(
       challenge,
       solution.textProposal,
       solution.diagram,

@@ -3,9 +3,13 @@ import { createDbMock } from '../../__tests__/_helpers/dbMock';
 import type { Hono } from 'hono';
 
 const mockDb = createDbMock();
-const openai = { getOpenAI: vi.fn(() => null) };
+const google = {
+  getGoogleAI: vi.fn(() => null),
+  GOOGLE_MODEL: 'gemini-test',
+  geminiText: (res: any) => (typeof res?.text === 'string' ? res.text : ''),
+};
 vi.mock('../../db/client', () => ({ db: mockDb.db }));
-vi.mock('../../lib/openai', () => openai);
+vi.mock('../../lib/google', () => google);
 vi.mock('../../lib/firebaseAdmin', () => ({
   verifyIdToken: vi.fn(async () => ({ uid: 'u1', email: 'u1@example.com' })),
 }));
@@ -32,7 +36,7 @@ const challenge = {
 
 beforeEach(() => {
   mockDb.reset();
-  openai.getOpenAI.mockReturnValue(null);
+  google.getGoogleAI.mockReturnValue(null);
 });
 
 describe('challenges routes', () => {
@@ -62,7 +66,7 @@ describe('challenges routes', () => {
     expect(res.status).toBe(404);
   });
 
-  it('POST /api/transcribe-audio returns mock without OpenAI', async () => {
+  it('POST /api/transcribe-audio returns mock without Google AI', async () => {
     const res = await app.request('/api/transcribe-audio', { method: 'POST', headers: AUTH });
     const body = await res.json() as any;
     expect(body.transcription).toMatch(/mock/i);
