@@ -60,15 +60,20 @@ challengesRouter.post('/api/transcribe-audio', authRequired, async (c) => {
         '[Transcrição mock] Esta é uma transcrição simulada do áudio. Configure a API key do Google AI (Gemini) para habilitar a transcrição real.',
     });
   }
+  const t0 = Date.now();
   try {
-    const body = await c.req.parseBody();
-    const audio = body['audio'];
-    if (!(audio instanceof File)) {
-      throw new HTTPException(400, { message: 'No audio file provided' });
+    // The audio arrives as base64 JSON (NOT multipart/form-data): the JSON body
+    // path is the one that works reliably on Vercel's Node runtime, whereas
+    // multipart parsing there can hang until the function times out (504).
+    const body = await c.req.json<{ audio?: string; mimeType?: string }>().catch(() => ({} as any));
+    const base64 = typeof body.audio === 'string' ? body.audio : '';
+    if (!base64) {
+      throw new HTTPException(400, { message: 'No audio data provided' });
     }
-    const base64 = Buffer.from(await audio.arrayBuffer()).toString('base64');
     // Gemini wants the bare container type (e.g. "audio/webm"), not "audio/webm;codecs=opus".
-    const mimeType = (audio.type || 'audio/webm').split(';')[0].trim();
+    const mimeType = (body.mimeType || 'audio/webm').split(';')[0].trim();
+    console.log(`[transcribe] received ${base64.length} b64 chars (${mimeType}) at +${Date.now() - t0}ms`);
+
     const response = await client.models.generateContent({
       model: GOOGLE_MODEL,
       contents: [
@@ -84,12 +89,13 @@ challengesRouter.post('/api/transcribe-audio', authRequired, async (c) => {
         temperature: 0,
         // Fail fast with a clean error instead of letting the platform kill the
         // request at maxDuration (60s).
-        abortSignal: AbortSignal.timeout(50_000),
+        abortSignal: AbortSignal.timeout(45_000),
       },
     });
+    console.log(`[transcribe] Gemini responded at +${Date.now() - t0}ms`);
     return c.json({ transcription: geminiText(response).trim() });
   } catch (e: any) {
-    console.error('[transcribe] error:', e);
+    console.error(`[transcribe] error at +${Date.now() - t0}ms:`, e);
     return c.json({
       transcription: `[Erro na transcrição] Não foi possível transcrever o áudio. Erro: ${e?.message ?? e}`,
     });

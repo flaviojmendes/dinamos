@@ -6,6 +6,21 @@ interface AudioRecorderProps {
   initialTranscription?: string // Transcription restored from database
 }
 
+// Reads a Blob into a bare base64 string (no data: prefix). FileReader is used
+// instead of btoa(String.fromCharCode(...)) which overflows the call stack on
+// larger recordings.
+function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      const result = reader.result as string
+      resolve(result.includes(',') ? result.split(',')[1] : result)
+    }
+    reader.onerror = () => reject(reader.error ?? new Error('Failed to read audio blob'))
+    reader.readAsDataURL(blob)
+  })
+}
+
 function AudioRecorder({ onTranscriptionComplete, maxDuration = 120, initialTranscription = '' }: AudioRecorderProps) {
   const [isRecording, setIsRecording] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
@@ -137,16 +152,21 @@ function AudioRecorder({ onTranscriptionComplete, maxDuration = 120, initialTran
     setError('')
     
     try {
-      const formData = new FormData()
-      formData.append('audio', audioBlob, 'recording.webm')
+      // Send as base64 JSON rather than multipart/form-data: the JSON body path
+      // is reliable on the serverless (Vercel) runtime, whereas multipart can
+      // hang there and trip the function timeout.
+      const base64 = await blobToBase64(audioBlob)
 
       const { auth } = await import('../config/firebase')
       const token = auth.currentUser ? await auth.currentUser.getIdToken() : null
 
       const response = await fetch(`${import.meta.env.VITE_API_URL ?? ''}/api/transcribe-audio`, {
         method: 'POST',
-        body: formData,
-        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        body: JSON.stringify({ audio: base64, mimeType: audioBlob.type || 'audio/webm' }),
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
       })
 
       if (!response.ok) {

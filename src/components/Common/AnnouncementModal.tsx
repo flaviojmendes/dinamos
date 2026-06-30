@@ -76,6 +76,9 @@ export default function AnnouncementModal() {
   // so a single display logs exactly one impression (the server is idempotent
   // too, but this avoids redundant requests on re-renders / refetches).
   const seenRef = useRef<Set<number>>(new Set());
+  // Throttle gate so the focus + visibilitychange pair browsers fire together on
+  // a tab switch collapses into a single request.
+  const lastFetchRef = useRef(0);
   // `overflowing` => content exceeds the viewport; `atBottom` => user has read
   // to the end. Together they drive the bottom scroll-fade affordance.
   const [overflowing, setOverflowing] = useState(false);
@@ -83,6 +86,9 @@ export default function AnnouncementModal() {
 
   const fetchActive = useCallback(async () => {
     if (showingRef.current) return;
+    const now = Date.now();
+    if (now - lastFetchRef.current < 10_000) return;
+    lastFetchRef.current = now;
     try {
       const res = await api.get<{ announcement: ActiveAnnouncement | null }>(
         '/api/announcements/active',
@@ -102,12 +108,17 @@ export default function AnnouncementModal() {
   }, [fetchActive, location.pathname]);
 
   useEffect(() => {
-    const onFocus = () => fetchActive();
-    window.addEventListener('focus', onFocus);
-    document.addEventListener('visibilitychange', onFocus);
+    // Only re-check when the tab actually becomes visible/focused — never on
+    // hide. The throttle in fetchActive coalesces the focus + visibilitychange
+    // pair into one request.
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') fetchActive();
+    };
+    window.addEventListener('focus', onVisible);
+    document.addEventListener('visibilitychange', onVisible);
     return () => {
-      window.removeEventListener('focus', onFocus);
-      document.removeEventListener('visibilitychange', onFocus);
+      window.removeEventListener('focus', onVisible);
+      document.removeEventListener('visibilitychange', onVisible);
     };
   }, [fetchActive]);
 

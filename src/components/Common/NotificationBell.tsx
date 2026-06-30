@@ -1,30 +1,40 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 
 const API_URL = import.meta.env.VITE_API_URL ?? '';
-const POLL_INTERVAL_MS = 30_000;
+// Base cadence while the tab is in the foreground. Background tabs stop polling
+// entirely and resync on the next focus, so this only ever runs for the tab the
+// user is actually looking at.
+const POLL_INTERVAL_MS = 60_000;
+// Minimum gap between event-driven fetches (visibility/focus) to coalesce the
+// focus + visibilitychange pair browsers fire together on tab switch.
+const MIN_FETCH_GAP_MS = 15_000;
 
 /**
- * Polls the merged designLab backend for the unread-notification count and
- * renders a bell with a badge that links to /notifications. No websockets are
- * available on Vercel Hobby, so a lightweight 30s poll is used instead.
+ * Renders a bell with an unread-notification badge that links to /notifications.
+ * No websockets are available on Vercel Hobby, so a lightweight poll is used —
+ * but only while the tab is visible. Hidden/background tabs pause polling and
+ * resync the moment they regain focus, which keeps total request volume low
+ * even with many tabs open.
  */
 export default function NotificationBell() {
   const { user, getIdToken } = useAuth();
   const { t } = useTranslation();
   const [count, setCount] = useState(0);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  useEffect(() => {
-    if (!user) {
-      setCount(0);
-      return;
-    }
-    let cancelled = false;
+  const mountedRef = useRef(true);
+  const inFlightRef = useRef(false);
+  const lastFetchRef = useRef(0);
 
-    const fetchCount = async () => {
+  const fetchCount = useCallback(
+    async (force = false) => {
+      if (!user || inFlightRef.current) return;
+      const now = Date.now();
+      if (!force && now - lastFetchRef.current < MIN_FETCH_GAP_MS) return;
+      inFlightRef.current = true;
+      lastFetchRef.current = now;
       try {
         const token = await getIdToken();
         if (!token) return;
@@ -33,19 +43,55 @@ export default function NotificationBell() {
         });
         if (!res.ok) return;
         const data = await res.json();
-        if (!cancelled) setCount(Number(data.unread_count ?? data.count ?? 0));
+        if (mountedRef.current) setCount(Number(data.unread_count ?? data.count ?? 0));
       } catch {
         /* transient network errors are ignored; next poll retries */
+      } finally {
+        inFlightRef.current = false;
+      }
+    },
+    [user, getIdToken],
+  );
+
+  useEffect(() => {
+    mountedRef.current = true;
+    if (!user) {
+      setCount(0);
+      return;
+    }
+
+    let timer: ReturnType<typeof setInterval> | null = null;
+    const startTimer = () => {
+      if (timer) return;
+      timer = setInterval(() => fetchCount(), POLL_INTERVAL_MS);
+    };
+    const stopTimer = () => {
+      if (timer) clearInterval(timer);
+      timer = null;
+    };
+
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        fetchCount(true);
+        startTimer();
+      } else {
+        stopTimer();
       }
     };
 
-    fetchCount();
-    timerRef.current = setInterval(fetchCount, POLL_INTERVAL_MS);
+    // Initial sync + start polling only if the tab is currently visible.
+    if (document.visibilityState === 'visible') {
+      fetchCount(true);
+      startTimer();
+    }
+    document.addEventListener('visibilitychange', onVisibility);
+
     return () => {
-      cancelled = true;
-      if (timerRef.current) clearInterval(timerRef.current);
+      mountedRef.current = false;
+      stopTimer();
+      document.removeEventListener('visibilitychange', onVisibility);
     };
-  }, [user, getIdToken]);
+  }, [user, fetchCount]);
 
   if (!user) return null;
 
