@@ -4,6 +4,7 @@ interface AudioRecorderProps {
   onTranscriptionComplete: (transcription: string) => void
   maxDuration?: number // in seconds
   initialTranscription?: string // Transcription restored from database
+  context?: string // domain context (e.g. challenge title/description) to bias transcription accuracy
 }
 
 // Reads a Blob into a bare base64 string (no data: prefix). FileReader is used
@@ -21,7 +22,7 @@ function blobToBase64(blob: Blob): Promise<string> {
   })
 }
 
-function AudioRecorder({ onTranscriptionComplete, maxDuration = 120, initialTranscription = '' }: AudioRecorderProps) {
+function AudioRecorder({ onTranscriptionComplete, maxDuration = 120, initialTranscription = '', context = '' }: AudioRecorderProps) {
   const [isRecording, setIsRecording] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
   const [recordingTime, setRecordingTime] = useState(0)
@@ -62,11 +63,21 @@ function AudioRecorder({ onTranscriptionComplete, maxDuration = 120, initialTran
   const startRecording = async () => {
     try {
       setError('')
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      // Enable the browser DSP (echo cancellation / noise suppression / auto
+      // gain) and mono capture — cleaner audio noticeably improves transcription.
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+          channelCount: 1,
+        },
+      })
       streamRef.current = stream
-      
+
       const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: 'audio/webm'
+        mimeType: 'audio/webm',
+        audioBitsPerSecond: 128000,
       })
       mediaRecorderRef.current = mediaRecorder
       audioChunksRef.current = []
@@ -162,7 +173,11 @@ function AudioRecorder({ onTranscriptionComplete, maxDuration = 120, initialTran
 
       const response = await fetch(`${import.meta.env.VITE_API_URL ?? ''}/api/transcribe-audio`, {
         method: 'POST',
-        body: JSON.stringify({ audio: base64, mimeType: audioBlob.type || 'audio/webm' }),
+        body: JSON.stringify({
+          audio: base64,
+          mimeType: audioBlob.type || 'audio/webm',
+          context: context || undefined,
+        }),
         headers: {
           'Content-Type': 'application/json',
           ...(token ? { Authorization: `Bearer ${token}` } : {}),

@@ -950,6 +950,9 @@ function Challenge() {
                       }}
                       maxDuration={120}
                       initialTranscription={audioTranscription}
+                      context={[challenge?.title, challenge?.subtitle, challenge?.description]
+                        .filter(Boolean)
+                        .join('. ')}
                     />
                   </div>
                   
