@@ -67,7 +67,8 @@ challengesRouter.post('/api/transcribe-audio', authRequired, async (c) => {
       throw new HTTPException(400, { message: 'No audio file provided' });
     }
     const base64 = Buffer.from(await audio.arrayBuffer()).toString('base64');
-    const mimeType = audio.type || 'audio/webm';
+    // Gemini wants the bare container type (e.g. "audio/webm"), not "audio/webm;codecs=opus".
+    const mimeType = (audio.type || 'audio/webm').split(';')[0].trim();
     const response = await client.models.generateContent({
       model: GOOGLE_MODEL,
       contents: [
@@ -76,6 +77,15 @@ challengesRouter.post('/api/transcribe-audio', authRequired, async (c) => {
         },
         { inlineData: { mimeType, data: base64 } },
       ],
+      config: {
+        // Transcription needs no reasoning; disabling "thinking" cuts latency
+        // dramatically and avoids the Vercel function timeout (504).
+        thinkingConfig: { thinkingBudget: 0 },
+        temperature: 0,
+        // Fail fast with a clean error instead of letting the platform kill the
+        // request at maxDuration (60s).
+        abortSignal: AbortSignal.timeout(50_000),
+      },
     });
     return c.json({ transcription: geminiText(response).trim() });
   } catch (e: any) {

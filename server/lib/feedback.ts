@@ -377,6 +377,10 @@ export async function evaluateWithAI(
         temperature: 0.3,
         maxOutputTokens: 1800,
         responseMimeType: 'application/json',
+        // Cap reasoning so a complex diagram can't make the request exceed the
+        // serverless timeout; fall back to the mock analyzer if it still does.
+        thinkingConfig: { thinkingBudget: 512 },
+        abortSignal: AbortSignal.timeout(50_000),
       },
     });
     const content = geminiText(response) || '{}';
