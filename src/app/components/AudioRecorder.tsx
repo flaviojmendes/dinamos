@@ -4,7 +4,6 @@ interface AudioRecorderProps {
   onTranscriptionComplete: (transcription: string) => void
   maxDuration?: number // in seconds
   initialTranscription?: string // Transcription restored from database
-  context?: string // domain context (e.g. challenge title/description) to bias transcription accuracy
 }
 
 // Reads a Blob into a bare base64 string (no data: prefix). FileReader is used
@@ -22,7 +21,7 @@ function blobToBase64(blob: Blob): Promise<string> {
   })
 }
 
-function AudioRecorder({ onTranscriptionComplete, maxDuration = 120, initialTranscription = '', context = '' }: AudioRecorderProps) {
+function AudioRecorder({ onTranscriptionComplete, maxDuration = 60, initialTranscription = '' }: AudioRecorderProps) {
   const [isRecording, setIsRecording] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
   const [recordingTime, setRecordingTime] = useState(0)
@@ -176,7 +175,6 @@ function AudioRecorder({ onTranscriptionComplete, maxDuration = 120, initialTran
         body: JSON.stringify({
           audio: base64,
           mimeType: audioBlob.type || 'audio/webm',
-          context: context || undefined,
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -356,7 +354,7 @@ function AudioRecorder({ onTranscriptionComplete, maxDuration = 120, initialTran
             <strong>Instruções:</strong>
           </p>
           <ul className="text-xs text-blue-800 dark:text-blue-300 space-y-1">
-            <li>• Grave um áudio de até {maxDuration / 60} minutos explicando seu design</li>
+            <li>• Grave um áudio de até {maxDuration >= 60 ? `${Math.floor(maxDuration / 60)} min` : `${maxDuration}s`} explicando seu design</li>
             <li>• Fale sobre as decisões arquiteturais e justificativas</li>
             <li>• O áudio será automaticamente transcrito e enviado com sua solução</li>
             <li>• Você pode pausar e retomar a gravação a qualquer momento</li>

@@ -948,11 +948,8 @@ function Challenge() {
                         console.log('Audio transcription received:', transcription.substring(0, 100))
                         setAudioTranscription(transcription)
                       }}
-                      maxDuration={120}
+                      maxDuration={60}
                       initialTranscription={audioTranscription}
-                      context={[challenge?.title, challenge?.subtitle, challenge?.description]
-                        .filter(Boolean)
-                        .join('. ')}
                     />
                   </div>
                   

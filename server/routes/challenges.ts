@@ -13,7 +13,8 @@ import {
   analyzeDiagram,
   evaluateWithAI,
 } from '../lib/feedback.js';
-import { getGoogleAI, GOOGLE_MODEL, geminiText } from '../lib/google.js';
+import { getGoogleAI } from '../lib/google.js';
+import { isSpeechConfigured, transcribeSpeech } from '../lib/speech.js';
 
 export const challengesRouter = new Hono<{ Variables: AppVariables }>();
 
@@ -53,11 +54,12 @@ challengesRouter.get('/api/challenges/:id', authRequired, async (c) => {
 });
 
 challengesRouter.post('/api/transcribe-audio', authRequired, async (c) => {
-  const client = getGoogleAI();
-  if (!client) {
+  // Dedicated speech-to-text (Google Cloud Speech-to-Text). Unlike a generative
+  // model, it transcribes verbatim and never "answers" the speaker.
+  if (!isSpeechConfigured()) {
     return c.json({
       transcription:
-        '[Transcrição mock] Esta é uma transcrição simulada do áudio. Configure a API key do Google AI (Gemini) para habilitar a transcrição real.',
+        '[Transcrição mock] Esta é uma transcrição simulada do áudio. Configure o service account do Firebase e habilite a API "Cloud Speech-to-Text" para habilitar a transcrição real.',
     });
   }
   const t0 = Date.now();
@@ -66,51 +68,18 @@ challengesRouter.post('/api/transcribe-audio', authRequired, async (c) => {
     // path is the one that works reliably on Vercel's Node runtime, whereas
     // multipart parsing there can hang until the function times out (504).
     const body = await c.req
-      .json<{ audio?: string; mimeType?: string; context?: string }>()
+      .json<{ audio?: string; mimeType?: string }>()
       .catch(() => ({} as any));
     const base64 = typeof body.audio === 'string' ? body.audio : '';
     if (!base64) {
       throw new HTTPException(400, { message: 'No audio data provided' });
     }
-    // Gemini wants the bare container type (e.g. "audio/webm"), not "audio/webm;codecs=opus".
     const mimeType = (body.mimeType || 'audio/webm').split(';')[0].trim();
     console.log(`[transcribe] received ${base64.length} b64 chars (${mimeType}) at +${Date.now() - t0}ms`);
 
-    // Domain context (the challenge the student is explaining) biases the model
-    // toward the correct technical vocabulary, which is the main accuracy win.
-    const context = typeof body.context === 'string' ? body.context.trim().slice(0, 1500) : '';
-    const contextSection = context
-      ? `\n\nCONTEXTO (assunto que o estudante está explicando, use para acertar os termos técnicos): ${context}`
-      : '';
-
-    const prompt =
-      'Você é um transcritor profissional. Transcreva o áudio a seguir de forma fiel e VERBATIM (palavra por palavra), em português do Brasil.\n\n' +
-      'Regras:\n' +
-      '- Transcreva exatamente o que foi dito, sem resumir, parafrasear, traduzir, corrigir ou adicionar nada.\n' +
-      '- O áudio é a explicação de uma solução de System Design / Sistemas Distribuídos. Mantenha os termos técnicos como foram falados — geralmente em inglês (ex.: "load balancer", "cache", "sharding", "rate limiting", "API", "database", "hash", "consistent hashing", "read replica", "message queue").\n' +
-      '- Use pontuação e capitalização naturais para tornar o texto legível.\n' +
-      '- Se algum trecho estiver inaudível, escreva [inaudível].\n' +
-      '- Retorne SOMENTE o texto transcrito, sem comentários, rótulos, aspas ou marcações.' +
-      contextSection;
-
-    const response = await client.models.generateContent({
-      model: GOOGLE_MODEL,
-      contents: [
-        { text: prompt },
-        { inlineData: { mimeType, data: base64 } },
-      ],
-      config: {
-        // Transcription needs no reasoning; disabling "thinking" cuts latency
-        // dramatically and avoids the Vercel function timeout (504).
-        thinkingConfig: { thinkingBudget: 0 },
-        temperature: 0,
-        // Fail fast with a clean error instead of letting the platform kill the
-        // request at maxDuration (60s).
-        abortSignal: AbortSignal.timeout(45_000),
-      },
-    });
-    console.log(`[transcribe] Gemini responded at +${Date.now() - t0}ms`);
-    return c.json({ transcription: geminiText(response).trim() });
+    const transcription = await transcribeSpeech(base64, mimeType);
+    console.log(`[transcribe] Speech-to-Text responded at +${Date.now() - t0}ms`);
+    return c.json({ transcription: (transcription ?? '').trim() });
   } catch (e: any) {
     console.error(`[transcribe] error at +${Date.now() - t0}ms:`, e);
     return c.json({
