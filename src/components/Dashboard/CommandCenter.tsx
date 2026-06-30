@@ -49,7 +49,7 @@ const PRACTICE_LINKS: PracticeLink[] = [
     nameKey: 'menu.home.name',
     name: 'Design Lab',
     descKey: 'menu.home.description',
-    desc: 'Solve architecture challenges with AI feedback',
+    desc: 'Simulate a system design interview with real-time AI feedback',
     color: 'text-signal-green',
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
@@ -274,6 +274,9 @@ export default function CommandCenter() {
     },
   ];
 
+  const designLab = PRACTICE_LINKS.find((p) => p.path === '/design-lab')!;
+  const otherLinks = PRACTICE_LINKS.filter((p) => p.path !== '/design-lab');
+
   const greeting = (appUser?.nickname || user?.displayName || user?.email || t('command_center.operator')).split('@')[0];
   const avatarUrl = appUser?.avatar_image ?? null;
   const roleColor = appUser?.role_color || '#34d399';
@@ -342,13 +345,13 @@ export default function CommandCenter() {
               <SkeletonLine className="h-2.5 w-full max-w-md" />
             </div>
           ) : recommended ? (
-            <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div className="min-w-0 flex-1">
                 <span className="label-mono">{t('command_center.recommended_next')}</span>
-                <p className="mt-1.5 font-sans text-xl font-semibold leading-snug text-slate-900 dark:text-tactical-text">
+                <p className="mt-1 font-sans text-lg font-semibold leading-snug text-slate-900 dark:text-tactical-text">
                   {lessonLabel(recommended.path)}
                 </p>
-                <p className="mt-0.5 font-sans text-sm text-slate-500 dark:text-tactical-dim">
+                <p className="mt-0.5 font-sans text-xs text-slate-500 dark:text-tactical-dim">
                   {t(`command_center.modules.${recommended.id}`, { defaultValue: recommended.module })}
                 </p>
                 <SegmentBar
@@ -356,12 +359,12 @@ export default function CommandCenter() {
                   max={totals.total || 1}
                   color="cyan"
                   caption={`${totals.pct}%`}
-                  className="mt-4 max-w-md"
+                  className="mt-3 max-w-md"
                 />
               </div>
               <TacticalButton
                 variant="primary"
-                size="lg"
+                size="md"
                 className="shrink-0"
                 onClick={() => navigate(recommended.path)}
               >
@@ -386,24 +389,24 @@ export default function CommandCenter() {
 
         <Panel title={t('command_center.progress_overview')} accent="green">
           {contentLoading ? (
-            <div className="flex flex-col items-center gap-5 py-2">
-              <div className="h-[132px] w-[132px] animate-pulse rounded-full bg-slate-200 dark:bg-tactical-raised" />
-              <SkeletonLine className="h-10 w-full" />
+            <div className="flex flex-col items-center gap-4 py-1">
+              <div className="h-[104px] w-[104px] animate-pulse rounded-full bg-slate-200 dark:bg-tactical-raised" />
+              <SkeletonLine className="h-9 w-full" />
             </div>
           ) : (
             <div className="flex flex-col items-center">
-              <ProgressRing value={totals.pct} label={t('command_center.ring_complete')} />
-              <div className="mt-5 grid w-full grid-cols-3 gap-2 border-t border-slate-200 pt-4 text-center dark:border-tactical-border">
+              <ProgressRing value={totals.pct} size={104} label={t('command_center.ring_complete')} />
+              <div className="mt-4 grid w-full grid-cols-3 gap-2 border-t border-slate-200 pt-3 text-center dark:border-tactical-border">
                 {[
                   { value: `${totals.modulesDone}/${totals.moduleCount}`, label: t('command_center.modules_cleared') },
                   { value: `${totals.done}/${totals.total}`, label: t('command_center.stat_lessons') },
                   { value: `${totals.inProgress}`, label: t('command_center.stat_in_progress') },
                 ].map((s, i) => (
                   <div key={i}>
-                    <div className="font-sans text-lg font-bold tabular-nums leading-none text-slate-900 dark:text-tactical-text">
+                    <div className="font-sans text-base font-bold tabular-nums leading-none text-slate-900 dark:text-tactical-text">
                       {s.value}
                     </div>
-                    <div className="label-mono mt-1.5">{s.label}</div>
+                    <div className="label-mono mt-1">{s.label}</div>
                   </div>
                 ))}
               </div>
@@ -412,15 +415,46 @@ export default function CommandCenter() {
         </Panel>
       </div>
 
-      {/* Practice Arena: merged designLab destinations */}
-      <div className="mt-4">
+      {/* Practice Arena: merged designLab destinations, elevated as the focal section */}
+      <div className="mt-5">
         <Panel
           title={t('command_center.modules.practice', { defaultValue: 'Practice Arena' })}
           accent="amber"
           bodyClassName="p-4"
+          action={
+            <span className="hidden font-sans text-xs text-slate-500 dark:text-tactical-dim sm:inline">
+              {t('command_center.practice_arena_subtitle')}
+            </span>
+          }
+          className="ring-1 ring-signal-amber/30 dark:ring-signal-amber/25"
         >
+          {/* Featured: Design Lab system-design interview simulator */}
+          <button
+            onClick={() => navigate(designLab.path)}
+            className="group mb-3 flex w-full cursor-pointer items-center gap-4 rounded-xl border border-emerald-300/70 bg-gradient-to-r from-emerald-50 to-transparent p-4 text-left transition-all hover:-translate-y-0.5 hover:border-emerald-400 hover:shadow-md dark:border-signal-green/30 dark:from-signal-green/10 dark:hover:border-signal-green"
+          >
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-emerald-300/70 bg-white text-signal-green dark:border-signal-green/40 dark:bg-tactical-surface">
+              {designLab.icon}
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="flex flex-wrap items-center gap-2">
+                <span className="font-sans text-base font-bold text-slate-900 dark:text-tactical-text">
+                  {t(designLab.nameKey, { defaultValue: designLab.name })}
+                </span>
+                <Tag color="green">{t('command_center.design_lab_badge')}</Tag>
+              </span>
+              <span className="mt-0.5 block font-sans text-sm text-slate-600 dark:text-tactical-dim">
+                {t(designLab.descKey, { defaultValue: designLab.desc })}
+              </span>
+            </span>
+            <span className="hidden shrink-0 items-center gap-1.5 font-sans text-sm font-semibold text-emerald-600 dark:text-signal-green sm:flex">
+              {t('command_center.design_lab_cta')}
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </span>
+          </button>
+
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {PRACTICE_LINKS.map((p) => (
+            {otherLinks.map((p) => (
               <button
                 key={p.path}
                 onClick={() => navigate(p.path)}

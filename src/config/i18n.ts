@@ -94,6 +94,9 @@ const resources = {
         greeting_subtitle: 'Pick up where you left off.',
         operation_activity: 'Up next',
         recommended_next: 'Recommended next',
+        practice_arena_subtitle: 'Sharpen your skills with hands-on challenges',
+        design_lab_badge: 'Real-time feedback',
+        design_lab_cta: 'Start a mock interview',
         deploy: 'Start',
         all_cleared: 'All lessons complete',
         all_cleared_sub: 'Every module is done. Revisit a topic or jump into the Practice Arena.',
@@ -1402,7 +1405,7 @@ const resources = {
         },
         home: {
           name: 'Design Lab',
-          description: 'Solve architecture challenges with AI feedback'
+          description: 'Simulate a system design interview with real-time AI feedback'
         },
         quizzes: {
           name: 'Quizzes',
@@ -4238,6 +4241,9 @@ const resources = {
         greeting_subtitle: 'Continue de onde você parou.',
         operation_activity: 'A seguir',
         recommended_next: 'Recomendado a seguir',
+        practice_arena_subtitle: 'Aprimore suas habilidades com desafios práticos',
+        design_lab_badge: 'Feedback em tempo real',
+        design_lab_cta: 'Iniciar entrevista simulada',
         deploy: 'Começar',
         all_cleared: 'Todas as lições concluídas',
         all_cleared_sub: 'Todos os módulos foram concluídos. Revise um tópico ou entre na Arena de Prática.',
@@ -5547,7 +5553,7 @@ const resources = {
         },
         home: {
           name: 'Design Lab',
-          description: 'Resolva desafios de arquitetura com feedback de IA'
+          description: 'Simule uma entrevista de system design com feedback em tempo real'
         },
         quizzes: {
           name: 'Quizzes',
