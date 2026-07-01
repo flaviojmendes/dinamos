@@ -79,6 +79,16 @@ export interface NodeConfig {
   /** Base offered request rate (req/s) before the load profile multiplier. */
   baseRate?: number;
 
+  // --- cron / scheduled source (any processing node) ---
+  /**
+   * When true this node self-triggers on a schedule and acts as a traffic
+   * source: it generates its own load (`cronRate`) even with no incoming edge,
+   * modelling cron jobs, scheduled workers and periodic producers.
+   */
+  cronEnabled?: boolean;
+  /** Self-generated request rate (req/s) when `cronEnabled`, before the load multiplier. */
+  cronRate?: number;
+
   // --- loadBalancer ---
   strategy?: LoadBalancerStrategy;
   /** Per-outgoing-edge weights for the weighted strategy (by target id). */
@@ -118,7 +128,13 @@ export interface NodeConfig {
   /** Time the breaker stays open before half-open probing (ms). */
   resetTimeoutMs?: number;
 
-  // --- autoScaler ---
+  // --- autoScaler (also used by any node with autoScaleEnabled) ---
+  /**
+   * When true this node scales its own replica count at runtime to hold
+   * `targetUtilization`, bounded by `minReplicas`/`maxReplicas` — the same
+   * behaviour as a dedicated autoScaler node, but built into the node itself.
+   */
+  autoScaleEnabled?: boolean;
   /** Target utilization the scaler tries to hold [0..1]. */
   targetUtilization?: number;
   minReplicas?: number;

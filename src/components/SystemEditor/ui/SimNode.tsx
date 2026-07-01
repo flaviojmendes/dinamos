@@ -5,7 +5,7 @@
 import { memo, useEffect, useRef, useState } from 'react';
 import { Handle, Position, NodeProps } from 'reactflow';
 import { useTranslation } from 'react-i18next';
-import { ArrowUp, ArrowDown, Layers, Lock } from 'lucide-react';
+import { ArrowUp, ArrowDown, Layers, Lock, Clock } from 'lucide-react';
 import { NodeConfig, NodeMetrics } from '../engine/types';
 import { NODE_CATALOG } from './nodeCatalog';
 import { useNodeMetrics } from './MetricsContext';
@@ -213,10 +213,13 @@ function SimNodeImpl({ id, data, isConnectable, selected }: NodeProps<SimNodeDat
   const Icon = entry.icon;
   const util = metrics?.utilization ?? 0;
 
+  // A tier scales at runtime if it is an autoScaler node or a node that opted
+  // into autoscaling via autoScaleEnabled.
+  const isAutoScaling = SCALABLE_KINDS.has(config.kind) || !!config.autoScaleEnabled;
   // Effective replica count: live for auto-scaled tiers, configured otherwise.
   const replicaCount = Math.max(
     1,
-    Math.round(SCALABLE_KINDS.has(config.kind) ? metrics?.replicas ?? config.replicas : config.replicas),
+    Math.round(isAutoScaling ? metrics?.replicas ?? config.replicas : config.replicas),
   );
   // How many "stacked card" layers to draw behind the box (capped for sanity).
   const stackLayers = Math.min(3, Math.max(0, replicaCount - 1));
@@ -260,6 +263,14 @@ function SimNodeImpl({ id, data, isConnectable, selected }: NodeProps<SimNodeDat
           />
         )}
         <span className="truncate">{config.label}</span>
+        {config.cronEnabled && (
+          <span
+            title={t('editor.node.cron', { rate: config.cronRate ?? 0 })}
+            className="flex items-center gap-0.5 px-1 py-0.5 bg-tactical-line text-signal-cyan text-[10px] font-bold rounded-sm"
+          >
+            <Clock className="w-3 h-3" />
+          </span>
+        )}
         {replicaCount > 1 && (
           <span
             title={t('editor.node.replicas')}
@@ -278,7 +289,7 @@ function SimNodeImpl({ id, data, isConnectable, selected }: NodeProps<SimNodeDat
           {metrics.failedRate > 0 && <MetricRow label={t('editor.node.fail_s')} value={`${metrics.failedRate}`} tone="text-red-300" />}
           {metrics.retriedRate > 0 && <MetricRow label={t('editor.node.retry_s')} value={`${metrics.retriedRate}`} tone="text-amber-300" />}
           <KindExtras kind={config.kind} config={config} metrics={metrics} t={t} />
-          {SCALABLE_KINDS.has(config.kind) && <ReplicaStack count={metrics.replicas} label={t('editor.node.replicas')} />}
+          {isAutoScaling && <ReplicaStack count={metrics.replicas} label={t('editor.node.replicas')} />}
         </div>
       ) : (
         <div className="mt-2 text-[11px] font-sans text-tactical-label">{t('editor.node.idle')} · {t(`editor.kinds.${config.kind}`)}</div>

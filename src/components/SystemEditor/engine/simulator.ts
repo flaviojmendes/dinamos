@@ -72,7 +72,7 @@ export class Simulator {
           new CircuitBreaker(n.errorThreshold ?? 0.5, n.resetTimeoutMs ?? 5000),
         );
       }
-      if (n.kind === 'autoScaler') {
+      if (isAutoScaling(n)) {
         this.state.replicaOverride.set(n.id, n.replicas);
       }
     });
@@ -90,8 +90,12 @@ export class Simulator {
       if (n.kind === 'circuitBreaker' && !this.breakers.has(n.id)) {
         this.breakers.set(n.id, new CircuitBreaker(n.errorThreshold ?? 0.5, n.resetTimeoutMs ?? 5000));
       }
-      if (n.kind === 'autoScaler' && !this.state.replicaOverride.has(n.id)) {
-        this.state.replicaOverride.set(n.id, n.replicas);
+      if (isAutoScaling(n)) {
+        if (!this.state.replicaOverride.has(n.id)) this.state.replicaOverride.set(n.id, n.replicas);
+      } else if (this.state.replicaOverride.has(n.id)) {
+        // Autoscaling was turned off: drop the stale override so the node uses
+        // its configured replica count again.
+        this.state.replicaOverride.delete(n.id);
       }
     });
   }
@@ -178,6 +182,10 @@ export class Simulator {
       if (n.kind === 'client') {
         cfg = { ...cfg, baseRate: (n.baseRate ?? 0) * mult };
       }
+      // Scheduled (cron) sources scale with the load profile just like clients.
+      if (n.cronEnabled) {
+        cfg = { ...cfg, cronRate: (n.cronRate ?? 0) * mult };
+      }
       for (const ev of this.chaos) {
         if (ev.targetId !== n.id || !isChaosActive(ev, this.time)) continue;
         if (ev.type === 'killNode') {
@@ -222,7 +230,7 @@ export class Simulator {
 
   private updateAutoscalers(runtime: Map<string, NodeRuntime>): void {
     this.nodes.forEach((n) => {
-      if (n.kind !== 'autoScaler') return;
+      if (!isAutoScaling(n)) return;
       const rt = runtime.get(n.id);
       if (!rt) return;
       const target = n.targetUtilization ?? 0.7;
@@ -242,37 +250,46 @@ export class Simulator {
     warnings: string[],
   ): SystemMetrics {
     let offered = 0;
-    let success = 0;
-    let failedDropped = 0;
+    let totalThroughput = 0;
     let inFlight = 0;
     let costPerHour = 0;
 
     runtime.forEach((rt) => {
-      if (rt.cfg.kind === 'client') {
-        offered += rt.arrival;
-        success += rt.throughput;
-        failedDropped += rt.failed;
-      }
       inFlight += rt.queue.inSystem;
       costPerHour += estimateNodeCostPerHour(rt, this.provider);
     });
 
-    // End-to-end success: discount offered load by the entry effFailProb.
-    let entryFail = 0;
-    let clientLoad = 0;
+    // Aggregate every source of externally-offered work: clients emit `arrival`,
+    // cron-enabled nodes emit their self-generated `cronRate`. Each source's load
+    // is discounted by the fraction that fails locally or anywhere downstream.
     runtime.forEach((rt) => {
       if (rt.cfg.kind === 'client') {
+        const load = rt.arrival;
+        if (load <= 0) return;
+        offered += load;
+        // The client's throughput already removes client-side failures; discount
+        // the remainder by the weighted downstream failure across its branches.
+        let branchFail = 0;
+        let branchWeight = 0;
         rt.branches.forEach((b) => {
           const child = runtime.get(b.target);
           if (child) {
-            entryFail += rt.throughput * b.prob * child.effFailProb;
-            clientLoad += rt.throughput * b.prob;
+            branchFail += b.prob * child.effFailProb;
+            branchWeight += b.prob;
           }
         });
+        const downstreamFail = branchWeight > 0 ? branchFail / branchWeight : 0;
+        totalThroughput += rt.throughput * (1 - downstreamFail);
+      } else if (rt.cfg.cronEnabled) {
+        const load = Math.max(0, rt.cfg.cronRate ?? 0);
+        if (load <= 0) return;
+        offered += load;
+        // A cron node's effFailProb already folds in local drops/failures and
+        // downstream failure, so the surviving fraction is (1 - effFailProb).
+        totalThroughput += load * (1 - rt.effFailProb);
       }
     });
-    const endToEndFail = clientLoad > 0 ? entryFail / clientLoad : 0;
-    const totalThroughput = success * (1 - endToEndFail);
+
     const failedRate = Math.max(0, offered - totalThroughput);
     const errorRate = offered > 0 ? failedRate / offered : 0;
 
@@ -322,6 +339,11 @@ function toNodeMetrics(rt: NodeRuntime, p: { p50: number; p95: number; p99: numb
 
 function round(x: number): number {
   return Math.round(x * 10) / 10;
+}
+
+/** A node scales its own replicas if it is an autoScaler or has autoScaleEnabled. */
+function isAutoScaling(n: NodeConfig): boolean {
+  return n.kind === 'autoScaler' || n.autoScaleEnabled === true;
 }
 
 export { nodeCapacity };

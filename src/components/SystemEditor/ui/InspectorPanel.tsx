@@ -104,6 +104,33 @@ function Num({
   );
 }
 
+function Toggle({
+  label,
+  value,
+  hint,
+  onChange,
+}: {
+  label: string;
+  value: boolean;
+  hint?: string;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <label className="flex items-center justify-between mb-3 cursor-pointer">
+      <span className="flex items-center gap-1 font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{label}<HintIcon hint={hint} /></span>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={value}
+        onClick={() => onChange(!value)}
+        className={`relative inline-flex h-4 w-8 shrink-0 items-center rounded-full transition-colors ${value ? 'bg-signal-cyan' : 'bg-tactical-line'}`}
+      >
+        <span className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${value ? 'translate-x-4' : 'translate-x-0.5'}`} />
+      </button>
+    </label>
+  );
+}
+
 function Select<T extends string>({
   label,
   value,
@@ -208,13 +235,47 @@ export default function InspectorPanel({ config, onChange, onDelete, canDelete =
           <>
             <Num label={t('editor.inspector.service_time')} hint={t('editor.hints.service_time')} value={config.serviceTimeMs} min={1} max={500} unit="ms" onChange={(v) => handleChange({ serviceTimeMs: v })} />
             <Num label={t('editor.inspector.concurrency')} hint={t('editor.hints.concurrency')} value={config.concurrency} min={1} max={128} unit="srv" onChange={(v) => handleChange({ concurrency: v })} />
-            {config.kind !== 'autoScaler' && config.kind !== 'replicatedDb' && (
+            {config.kind !== 'autoScaler' && config.kind !== 'replicatedDb' && !config.autoScaleEnabled && (
               <Num label={t('editor.inspector.replicas')} hint={t('editor.hints.replicas')} value={config.replicas} min={1} max={50} onChange={(v) => handleChange({ replicas: v })} />
             )}
             <div className="font-sans text-[10px] text-slate-500 dark:text-tactical-label mb-3">
               {t('editor.inspector.capacity_approx', { value: isFinite(capacity) ? `${Math.round(capacity)} req/s` : '∞' })}
             </div>
           </>
+        )}
+
+        {/* Scheduled (cron) source: lets a service self-trigger with no input. */}
+        {config.kind === 'server' && (
+          <div className="mb-2 border-l-2 border-signal-cyan/40 pl-2">
+            <Toggle
+              label={t('editor.inspector.cron')}
+              hint={t('editor.hints.cron')}
+              value={config.cronEnabled ?? false}
+              onChange={(v) => handleChange({ cronEnabled: v })}
+            />
+            {config.cronEnabled && (
+              <Num label={t('editor.inspector.cron_rate')} hint={t('editor.hints.cron_rate')} value={config.cronRate ?? 10} min={1} max={5000} step={1} unit="req/s" onChange={(v) => handleChange({ cronRate: v })} />
+            )}
+          </div>
+        )}
+
+        {/* Built-in autoscaling: the service scales its own replicas at runtime. */}
+        {config.kind === 'server' && (
+          <div className="mb-2 border-l-2 border-signal-cyan/40 pl-2">
+            <Toggle
+              label={t('editor.inspector.auto_scalable')}
+              hint={t('editor.hints.auto_scalable')}
+              value={config.autoScaleEnabled ?? false}
+              onChange={(v) => handleChange({ autoScaleEnabled: v })}
+            />
+            {config.autoScaleEnabled && (
+              <>
+                <Num label={t('editor.inspector.target_utilization')} hint={t('editor.hints.target_utilization')} value={Math.round((config.targetUtilization ?? 0.7) * 100)} min={10} max={95} unit="%" onChange={(v) => handleChange({ targetUtilization: v / 100 })} />
+                <Num label={t('editor.inspector.min_replicas')} hint={t('editor.hints.min_replicas')} value={config.minReplicas ?? 1} min={1} max={50} onChange={(v) => handleChange({ minReplicas: v })} />
+                <Num label={t('editor.inspector.max_replicas')} hint={t('editor.hints.max_replicas')} value={config.maxReplicas ?? 20} min={1} max={100} onChange={(v) => handleChange({ maxReplicas: v })} />
+              </>
+            )}
+          </div>
         )}
 
         {/* Kind-specific controls */}

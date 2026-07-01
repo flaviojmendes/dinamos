@@ -99,10 +99,13 @@ export function solveFlow(
 
     for (const node of nodes) {
       const incoming = topo.incoming.get(node.id) ?? [];
+      // Cron-enabled nodes self-generate load on a schedule, so they act as a
+      // source: their arrival is the incoming edge flow plus their own cron rate.
+      const cronRate = node.cronEnabled ? Math.max(0, node.cronRate ?? 0) : 0;
       const arrival =
         node.kind === 'client'
           ? Math.max(0, node.baseRate ?? 0)
-          : incoming.reduce((sum, e) => sum + (edgeFlow.get(e.id) ?? 0), 0);
+          : incoming.reduce((sum, e) => sum + (edgeFlow.get(e.id) ?? 0), 0) + cronRate;
 
       const outgoing = topo.outgoing.get(node.id) ?? [];
       const rt = processNode(node, arrival, outgoing, state, effFail, nodeById);

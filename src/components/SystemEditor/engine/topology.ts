@@ -126,7 +126,9 @@ export function validateTopology(
 ): string[] {
   const warnings: string[] = [];
 
-  if (!nodes.some((n) => n.kind === 'client')) {
+  // Clients and cron-enabled nodes both originate traffic, so either satisfies
+  // the "system has a load source" check.
+  if (!nodes.some((n) => n.kind === 'client' || n.cronEnabled)) {
     warnings.push('NO_CLIENT');
   }
 
@@ -135,7 +137,8 @@ export function validateTopology(
     connected.add(e.source);
     connected.add(e.target);
   });
-  const orphans = nodes.filter((n) => !connected.has(n.id) && n.kind !== 'client');
+  // Cron sources are self-driven, so an unconnected cron node is not an orphan.
+  const orphans = nodes.filter((n) => !connected.has(n.id) && n.kind !== 'client' && !n.cronEnabled);
   orphans.forEach((n) => warnings.push(`DISCONNECTED:${n.label}`));
 
   // Capacity bottlenecks are surfaced at runtime, but a trivially zero-capacity
