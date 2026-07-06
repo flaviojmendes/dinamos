@@ -1,5 +1,12 @@
 // Common types used across the application
 
+export interface GenerationContext {
+  roleDescription: string
+  seniority: string
+  targetCompany: string
+  difficulty: string
+}
+
 export interface Challenge {
   id: string
   title: string
@@ -13,6 +20,10 @@ export interface Challenge {
   evaluation_prompt?: string
   video_solution_url?: string
   video_solution_release_date?: string
+  // Set for AI-generated ("tailored") problems, private to the author.
+  generated_by_user_id?: string | null
+  generation_context?: GenerationContext | null
+  is_custom?: boolean
 }
 
 export interface DiagramElement {

@@ -75,23 +75,35 @@ export const tokenTransactions = pgTable('token_transactions', {
 
 // ==================== Challenges & Solutions ====================
 
-export const challenges = pgTable('challenges', {
-  id: varchar('id', { length: 100 }).primaryKey(),
-  title: varchar('title', { length: 255 }).notNull(),
-  subtitle: text('subtitle'),
-  description: text('description').notNull(),
-  difficulty: varchar('difficulty', { length: 50 }).notNull(),
-  category: varchar('category', { length: 100 }).notNull(),
-  order: integer('order').default(0),
-  evaluationPrompt: text('evaluation_prompt'),
-  initialRequirements: text('initial_requirements'),
-  videoSolutionUrl: varchar('video_solution_url', { length: 255 }),
-  videoSolutionReleaseDate: timestamp('video_solution_release_date', {
-    withTimezone: true,
-  }),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }),
-});
+export const challenges = pgTable(
+  'challenges',
+  {
+    id: varchar('id', { length: 100 }).primaryKey(),
+    title: varchar('title', { length: 255 }).notNull(),
+    subtitle: text('subtitle'),
+    description: text('description').notNull(),
+    difficulty: varchar('difficulty', { length: 50 }).notNull(),
+    category: varchar('category', { length: 100 }).notNull(),
+    order: integer('order').default(0),
+    evaluationPrompt: text('evaluation_prompt'),
+    initialRequirements: text('initial_requirements'),
+    videoSolutionUrl: varchar('video_solution_url', { length: 255 }),
+    videoSolutionReleaseDate: timestamp('video_solution_release_date', {
+      withTimezone: true,
+    }),
+    // When set, this is a user-generated ("tailored") problem, private to that
+    // user. Global/admin-authored challenges leave this null.
+    generatedByUserId: varchar('generated_by_user_id', { length: 255 }),
+    // The questionnaire answers used to tailor the problem:
+    // { roleDescription, seniority, targetCompany, difficulty }.
+    generationContext: jsonb('generation_context'),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }),
+  },
+  (t) => ({
+    generatedByIdx: index('challenges_generated_by_idx').on(t.generatedByUserId),
+  })
+);
 
 export const solutions = pgTable('solutions', {
   id: serial('id').primaryKey(),

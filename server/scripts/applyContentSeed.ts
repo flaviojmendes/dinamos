@@ -276,6 +276,17 @@ CREATE TABLE IF NOT EXISTS "saved_architectures" (
 
 CREATE INDEX IF NOT EXISTS "saved_architectures_user_idx"
   ON "saved_architectures" USING btree ("user_id");
+
+-- User-generated ("tailored") Design Lab problems (migration 0027). The
+-- challenges table itself comes from 0000_init; these columns were added later,
+-- so ensure them idempotently on every deploy. A non-null generated_by_user_id
+-- marks a problem as private to that user; generation_context stores the
+-- questionnaire answers used to tailor it.
+ALTER TABLE "challenges" ADD COLUMN IF NOT EXISTS "generated_by_user_id" varchar(255);
+ALTER TABLE "challenges" ADD COLUMN IF NOT EXISTS "generation_context" jsonb;
+
+CREATE INDEX IF NOT EXISTS "challenges_generated_by_idx"
+  ON "challenges" USING btree ("generated_by_user_id");
 `;
 
 const isLocalHost = /@(localhost|127\.0\.0\.1|\[::1\]|0\.0\.0\.0)(:|\/)/.test(databaseUrl);

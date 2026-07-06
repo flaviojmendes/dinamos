@@ -116,6 +116,12 @@ export function challengeToDict(c: any) {
     initial_requirements: c.initialRequirements,
     video_solution_url: c.videoSolutionUrl,
     video_solution_release_date: toIso(c.videoSolutionReleaseDate),
+    generated_by_user_id: c.generatedByUserId ?? null,
+    generation_context:
+      typeof c.generationContext === 'string'
+        ? parseJson(c.generationContext)
+        : c.generationContext ?? null,
+    is_custom: Boolean(c.generatedByUserId),
   };
 }
 

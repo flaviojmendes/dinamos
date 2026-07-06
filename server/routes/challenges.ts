@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
-import { and, asc, desc, eq, sql } from 'drizzle-orm';
+import { randomUUID } from 'node:crypto';
+import { and, asc, desc, eq, isNull, or, sql } from 'drizzle-orm';
 import { db } from '../db/client.js';
 import { challenges, solutions } from '../db/schema.js';
 import {
@@ -14,15 +15,24 @@ import {
   evaluateWithAI,
 } from '../lib/feedback.js';
 import { getGoogleAI } from '../lib/google.js';
+import { generateChallenge, type GenerationContext } from '../lib/challengeGen.js';
 import { isSpeechConfigured, transcribeSpeech } from '../lib/speech.js';
 
 export const challengesRouter = new Hono<{ Variables: AppVariables }>();
 
 challengesRouter.get('/api/challenges', authRequired, async (c) => {
   const user = c.get('user');
+  // Global/admin challenges (generated_by_user_id IS NULL) are visible to
+  // everyone; AI-generated ("tailored") problems are private to their author.
   const rows = await db
     .select()
     .from(challenges)
+    .where(
+      or(
+        isNull(challenges.generatedByUserId),
+        eq(challenges.generatedByUserId, user.uid)
+      )
+    )
     .orderBy(asc(challenges.order), asc(challenges.id));
 
   // attempt counts (submitted only)
@@ -46,11 +56,82 @@ challengesRouter.get('/api/challenges', authRequired, async (c) => {
   return c.json({ challenges: result });
 });
 
+// Generate a tailored problem from the Design Lab questionnaire, persist it as a
+// private challenge owned by the current user, and return it. The problem then
+// flows through the exact same challenge workspace + AI-feedback pipeline as any
+// other challenge (keyed only by its id).
+challengesRouter.post('/api/challenges/generate', authRequired, async (c) => {
+  const user = c.get('user');
+  if (!user.uid || user.uid === 'anonymous') {
+    throw new HTTPException(401, { message: 'Authentication required' });
+  }
+
+  const body = await c.req
+    .json<Partial<GenerationContext>>()
+    .catch(() => ({}) as Partial<GenerationContext>);
+  const roleDescription = (body.roleDescription ?? '').trim();
+  if (!roleDescription) {
+    throw new HTTPException(400, { message: 'roleDescription is required' });
+  }
+
+  const ctx: GenerationContext = {
+    roleDescription: roleDescription.slice(0, 1000),
+    seniority: (body.seniority ?? 'Pleno').trim().slice(0, 100),
+    targetCompany: (body.targetCompany ?? '').trim().slice(0, 200),
+    difficulty: (body.difficulty ?? 'Médio').trim(),
+  };
+
+  const generated = await generateChallenge(ctx);
+  const id = `gen-${randomUUID()}`;
+
+  const inserted = await db
+    .insert(challenges)
+    .values({
+      id,
+      title: generated.title,
+      subtitle: generated.subtitle || null,
+      description: generated.description,
+      difficulty: generated.difficulty,
+      category: generated.category,
+      order: 0,
+      evaluationPrompt: generated.evaluation_prompt || null,
+      initialRequirements: generated.initial_requirements || null,
+      generatedByUserId: user.uid,
+      generationContext: ctx,
+    })
+    .returning();
+
+  return c.json(challengeToDict(inserted[0]), 201);
+});
+
 challengesRouter.get('/api/challenges/:id', authRequired, async (c) => {
+  const user = c.get('user');
   const id = c.req.param('id');
   const rows = await db.select().from(challenges).where(eq(challenges.id, id)).limit(1);
   if (!rows[0]) throw new HTTPException(404, { message: 'Challenge not found' });
+  // A tailored problem is private: only its author may open it.
+  if (rows[0].generatedByUserId && rows[0].generatedByUserId !== user.uid) {
+    throw new HTTPException(404, { message: 'Challenge not found' });
+  }
   return c.json(challengeToDict(rows[0]));
+});
+
+// Let a user delete one of their own generated problems (never a global one).
+challengesRouter.delete('/api/challenges/:id', authRequired, async (c) => {
+  const user = c.get('user');
+  const id = c.req.param('id');
+  const rows = await db
+    .select({ generatedByUserId: challenges.generatedByUserId })
+    .from(challenges)
+    .where(eq(challenges.id, id))
+    .limit(1);
+  if (!rows[0]) throw new HTTPException(404, { message: 'Challenge not found' });
+  if (rows[0].generatedByUserId !== user.uid) {
+    throw new HTTPException(403, { message: 'You can only delete your own generated problems' });
+  }
+  await db.delete(solutions).where(eq(solutions.challengeId, id));
+  await db.delete(challenges).where(eq(challenges.id, id));
+  return c.json({ success: true, message: 'Problem deleted' });
 });
 
 challengesRouter.post('/api/transcribe-audio', authRequired, async (c) => {
