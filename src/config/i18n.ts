@@ -139,6 +139,38 @@ const resources = {
           practice: 'Practice Arena'
         }
       },
+      heatmap: {
+        title: 'Activity',
+        subtitle: 'Last 12 months',
+        summary_suffix: 'contributions in the last year',
+        signed_out: 'Sign in to track your activity.',
+        empty_hint: 'Read a lesson, take a quiz, solve a challenge, or post in the forum to start your streak.',
+        no_activity: 'No activity',
+        count_actions: '{{count}} contributions',
+        count_actions_one: '{{count}} contribution',
+        stat_current_streak: 'Current streak',
+        stat_longest_streak: 'Longest streak',
+        stat_best_day: 'Best day',
+        unit_days: 'days',
+        unit_days_one: 'day',
+        unit_actions: 'actions',
+        unit_actions_one: 'action',
+        less: 'Less',
+        more: 'More',
+        weekday_mon: 'Mon',
+        weekday_wed: 'Wed',
+        weekday_fri: 'Fri',
+        parts: {
+          reads: '{{count}} lessons read',
+          reads_one: '{{count}} lesson read',
+          quizzes: '{{count}} quizzes',
+          quizzes_one: '{{count}} quiz',
+          solutions: '{{count}} solutions',
+          solutions_one: '{{count}} solution',
+          forum: '{{count}} forum posts',
+          forum_one: '{{count}} forum post'
+        }
+      },
       quick_access: {
         title: 'QUICK ACCESS',
         command_center: 'Command Center',
@@ -4291,6 +4323,38 @@ const resources = {
           cases: 'Casos do Mundo Real',
           tools: 'Ferramentas e Comunidade',
           practice: 'Arena de Prática'
+        }
+      },
+      heatmap: {
+        title: 'Atividade',
+        subtitle: 'Últimos 12 meses',
+        summary_suffix: 'contribuições no último ano',
+        signed_out: 'Entre para acompanhar sua atividade.',
+        empty_hint: 'Leia uma lição, faça um quiz, resolva um desafio ou poste no fórum para começar sua sequência.',
+        no_activity: 'Sem atividade',
+        count_actions: '{{count}} contribuições',
+        count_actions_one: '{{count}} contribuição',
+        stat_current_streak: 'Sequência atual',
+        stat_longest_streak: 'Maior sequência',
+        stat_best_day: 'Melhor dia',
+        unit_days: 'dias',
+        unit_days_one: 'dia',
+        unit_actions: 'ações',
+        unit_actions_one: 'ação',
+        less: 'Menos',
+        more: 'Mais',
+        weekday_mon: 'Seg',
+        weekday_wed: 'Qua',
+        weekday_fri: 'Sex',
+        parts: {
+          reads: '{{count}} lições lidas',
+          reads_one: '{{count}} lição lida',
+          quizzes: '{{count}} quizzes',
+          quizzes_one: '{{count}} quiz',
+          solutions: '{{count}} soluções',
+          solutions_one: '{{count}} solução',
+          forum: '{{count}} posts no fórum',
+          forum_one: '{{count}} post no fórum'
         }
       },
       quick_access: {

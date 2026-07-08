@@ -9,6 +9,7 @@ import { type ModuleDef, type Tier } from '../../config/contentRegistry';
 import { getTopics, ForumTopic } from '../../services/forumService';
 import { openCommandPalette } from '../Common/CommandPalette';
 import ProgressRing from './ProgressRing';
+import ContributionHeatmap from './ContributionHeatmap';
 import {
   Panel,
   StatusBadge,
@@ -412,6 +413,21 @@ export default function CommandCenter() {
               </div>
             </div>
           )}
+        </Panel>
+      </div>
+
+      {/* Activity mosaic: contribution graph of the operator's own work */}
+      <div className="mt-4">
+        <Panel
+          title={t('heatmap.title')}
+          accent="green"
+          action={
+            <span className="hidden font-sans text-slate-400 dark:text-tactical-label sm:inline">
+              {t('heatmap.subtitle')}
+            </span>
+          }
+        >
+          <ContributionHeatmap />
         </Panel>
       </div>
 

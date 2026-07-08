@@ -56,6 +56,7 @@
     "postcss": "^8.4.35",
     "postgres": "^3.4.9",
     "react": "^18.2.0",
+    "react-activity-calendar": "^3.2.1",
     "react-dom": "^18.2.0",
     "react-firebase-hooks": "^5.1.1",
     "react-ga4": "^2.1.0",
