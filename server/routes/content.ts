@@ -53,6 +53,80 @@ function toIndexEntry(row: ContentRow) {
   };
 }
 
+const PAGE_BODY_SELECT = {
+  slug: contentPages.slug,
+  path: contentPages.path,
+  published: contentPages.published,
+  simulatorKey: contentPages.simulatorKey,
+  titleEn: contentPages.titleEn,
+  titlePt: contentPages.titlePt,
+  bodyEn: contentPages.bodyEn,
+  bodyPt: contentPages.bodyPt,
+} as const;
+
+type PageBodyRow = {
+  slug: string;
+  path: string;
+  published: boolean;
+  simulatorKey: string | null;
+  titleEn: string | null;
+  titlePt: string | null;
+  bodyEn: string | null;
+  bodyPt: string | null;
+};
+
+function resolveLang(raw: string | undefined): 'en' | 'pt' {
+  return raw === 'pt' ? 'pt' : 'en';
+}
+
+function pageBodyResponse(row: PageBodyRow, lang: 'en' | 'pt') {
+  const primaryBody = lang === 'pt' ? row.bodyPt : row.bodyEn;
+  const fallbackBody = lang === 'pt' ? row.bodyEn : row.bodyPt;
+  const primaryTitle = lang === 'pt' ? row.titlePt : row.titleEn;
+  const fallbackTitle = lang === 'pt' ? row.titleEn : row.titlePt;
+  const body = (primaryBody && primaryBody.trim() ? primaryBody : fallbackBody) ?? '';
+  const resolvedLang = primaryBody && primaryBody.trim() ? lang : lang === 'pt' ? 'en' : 'pt';
+  return {
+    slug: row.slug,
+    path: row.path,
+    lang: resolvedLang,
+    title: primaryTitle ?? fallbackTitle ?? null,
+    simulator_key: row.simulatorKey,
+    body,
+  };
+}
+
+async function fetchPublishedPageBody(filter: {
+  slug?: string;
+  path?: string;
+}): Promise<PageBodyRow | null> {
+  const path = filter.path?.trim();
+  const slug = filter.slug?.trim();
+  if (!slug && !path) return null;
+
+  const rows = await db
+    .select(PAGE_BODY_SELECT)
+    .from(contentPages)
+    .where(path ? eq(contentPages.path, path) : eq(contentPages.slug, slug as string))
+    .limit(1);
+
+  const row = rows[0];
+  if (!row || !row.published) return null;
+  return row;
+}
+
+function sendPageBody(c: { header: (name: string, value: string) => void; json: (data: unknown) => Response }, row: PageBodyRow, lang: 'en' | 'pt') {
+  c.header('Cache-Control', PUBLIC_READ_CACHE);
+  c.header('Vary', 'Accept-Encoding, Accept-Language');
+  return c.json(pageBodyResponse(row, lang));
+}
+
+function rejectPageNotFound(c: { header: (name: string, value: string) => void }): never {
+  // Never cache misses — a stale CDN 404 breaks lesson pages after content is seeded.
+  c.header('Cache-Control', 'no-store');
+  throw new HTTPException(404, { message: 'Content not found' });
+}
+
 /** Admin list entry — metadata only; bodies load on GET /api/admin/content/:id. */
 function toAdminIndexEntry(row: ContentRow) {
   return {
@@ -115,44 +189,32 @@ contentRouter.get('/api/content', async (c) => {
   return c.json({ pages: rows.map((row) => toIndexEntry(row as ContentRow)) });
 });
 
+/**
+ * Body for a single published page via query params. Prefer `path` (the public
+ * URL) over `slug` — keeps the request on a flat `/api/content/body` route so
+ * CDN/proxy path parsing cannot truncate nested slugs.
+ */
+contentRouter.get('/api/content/body', async (c) => {
+  const lang = resolveLang(c.req.query('lang'));
+  const path = c.req.query('path');
+  const slug = c.req.query('slug');
+  if (!path?.trim() && !slug?.trim()) {
+    throw new HTTPException(400, { message: 'path or slug is required' });
+  }
+  const row = await fetchPublishedPageBody(
+    path?.trim() ? { path: path.trim() } : { slug: slug!.trim() }
+  );
+  if (!row) rejectPageNotFound(c);
+  return sendPageBody(c, row, lang);
+});
+
 /** Body for a single published page, in the requested language (with fallback). */
 contentRouter.get('/api/content/:slug{.+}', async (c) => {
   const slug = c.req.param('slug');
-  const lang = c.req.query('lang') === 'pt' ? 'pt' : 'en';
-  const rows = await db
-    .select({
-      slug: contentPages.slug,
-      path: contentPages.path,
-      published: contentPages.published,
-      simulatorKey: contentPages.simulatorKey,
-      titleEn: contentPages.titleEn,
-      titlePt: contentPages.titlePt,
-      bodyEn: contentPages.bodyEn,
-      bodyPt: contentPages.bodyPt,
-    })
-    .from(contentPages)
-    .where(eq(contentPages.slug, slug))
-    .limit(1);
-  const row = rows[0];
-  if (!row || !row.published) {
-    throw new HTTPException(404, { message: 'Content not found' });
-  }
-  const primaryBody = lang === 'pt' ? row.bodyPt : row.bodyEn;
-  const fallbackBody = lang === 'pt' ? row.bodyEn : row.bodyPt;
-  const primaryTitle = lang === 'pt' ? row.titlePt : row.titleEn;
-  const fallbackTitle = lang === 'pt' ? row.titleEn : row.titlePt;
-  const body = (primaryBody && primaryBody.trim() ? primaryBody : fallbackBody) ?? '';
-  const resolvedLang = primaryBody && primaryBody.trim() ? lang : lang === 'pt' ? 'en' : 'pt';
-  c.header('Cache-Control', PUBLIC_READ_CACHE);
-  c.header('Vary', 'Accept-Encoding, Accept-Language');
-  return c.json({
-    slug: row.slug,
-    path: row.path,
-    lang: resolvedLang,
-    title: primaryTitle ?? fallbackTitle ?? null,
-    simulator_key: row.simulatorKey,
-    body,
-  });
+  const lang = resolveLang(c.req.query('lang'));
+  const row = await fetchPublishedPageBody({ slug });
+  if (!row) rejectPageNotFound(c);
+  return sendPageBody(c, row, lang);
 });
 
 // ==================== Admin CRUD ====================

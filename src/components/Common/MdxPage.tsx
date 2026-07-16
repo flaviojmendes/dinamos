@@ -46,8 +46,9 @@ export default function MdxPage({ slug }: Props) {
     let cancelled = false;
     setStatus('loading');
     setBody(null);
+    const contentPath = location.pathname;
     api
-      .get<{ body: string }>(`/api/content/${slug}`, { params: { lang } })
+      .get<{ body: string }>('/api/content/body', { params: { path: contentPath, lang } })
       .then((res) => {
         if (cancelled) return;
         setBody(res.data?.body ?? '');
@@ -55,13 +56,13 @@ export default function MdxPage({ slug }: Props) {
       })
       .catch((err) => {
         if (cancelled) return;
-        console.error(`[content] Failed to load "${slug}":`, err);
+        console.error(`[content] Failed to load "${slug}" (${contentPath}):`, err);
         setStatus('notfound');
       });
     return () => {
       cancelled = true;
     };
-  }, [slug, lang]);
+  }, [slug, lang, location.pathname]);
 
   // Record an anonymized page view once per session+path. Failures are silent —
   // analytics must never interfere with rendering the lesson.

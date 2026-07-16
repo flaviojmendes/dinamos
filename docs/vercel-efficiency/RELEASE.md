@@ -37,6 +37,12 @@ CI builds with `npm run vercel-build` **without** `DATABASE_URL` — no DB acces
 
 For production content updates, run `npm run release:content` from a trusted environment (local with prod URL, or a manual workflow) **after** the Vercel deploy succeeds.
 
+If lesson pages show **“Content not found”** while navigation still lists them, the index is loaded but the body fetch failed. After deploying a fix:
+
+1. Run **Release content & schema** (or `npm run release:content`) so production Postgres has the page row.
+2. Redeploy the frontend/API so clients use `GET /api/content/body?path=…` (flat route, avoids nested CDN path issues).
+3. Optionally purge Vercel cache for `/api/content/*` if a stale edge 404 persists.
+
 ## Manual GitHub Actions workflow
 
 The repository includes [`.github/workflows/release-content.yml`](../../.github/workflows/release-content.yml), triggered only via **Actions → Release content & schema → Run workflow** (`workflow_dispatch`).

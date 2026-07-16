@@ -82,6 +82,20 @@ describe('content routes (public)', () => {
     mockDb.setResults([[{ ...page, published: false }]]);
     const res = await app.request('/api/content/intro');
     expect(res.status).toBe(404);
+    expect(res.headers.get('cache-control')).toBe('no-store');
+  });
+
+  it('GET /api/content/body returns page by path query', async () => {
+    mockDb.setResults([[page]]);
+    const res = await app.request('/api/content/body?path=/intro&lang=en');
+    const body = await res.json() as any;
+    expect(body.slug).toBe('intro');
+    expect(body.body).toBe('Hello');
+  });
+
+  it('GET /api/content/body 400 when path and slug missing', async () => {
+    const res = await app.request('/api/content/body');
+    expect(res.status).toBe(400);
   });
 
   it('GET /api/modules returns the public module list', async () => {
