@@ -11,32 +11,36 @@ beforeEach(() => {
   delete process.env.GOOGLE_API_KEY;
 });
 
-describe('getGoogleAI', () => {
+describe('getGoogleAIAsync', () => {
   it('returns null when no API key is set', async () => {
-    const { getGoogleAI } = await import('../google');
+    const { getGoogleAIAsync, getGoogleAI } = await import('../google');
+    expect(await getGoogleAIAsync()).toBeNull();
     expect(getGoogleAI()).toBeNull();
   });
 
   it('returns null when mock feedback is forced', async () => {
     process.env.USE_MOCK_FEEDBACK = 'true';
     process.env.GEMINI_API_KEY = 'g-test';
-    const { getGoogleAI } = await import('../google');
-    expect(getGoogleAI()).toBeNull();
+    const { getGoogleAIAsync } = await import('../google');
+    expect(await getGoogleAIAsync()).toBeNull();
   });
 
   it('accepts GOOGLE_API_KEY as a fallback', async () => {
     process.env.GOOGLE_API_KEY = 'g-test';
-    const { getGoogleAI } = await import('../google');
-    expect(getGoogleAI()).not.toBeNull();
+    const { getGoogleAIAsync, getGoogleAI } = await import('../google');
+    const client = await getGoogleAIAsync();
+    expect(client).not.toBeNull();
+    expect(getGoogleAI()).toBe(client);
   });
 
   it('constructs and caches a client when a key is present', async () => {
     process.env.GEMINI_API_KEY = 'g-test';
-    const { getGoogleAI } = await import('../google');
-    const first = getGoogleAI();
-    const second = getGoogleAI();
+    const { getGoogleAIAsync, getGoogleAI } = await import('../google');
+    const first = await getGoogleAIAsync();
+    const second = await getGoogleAIAsync();
     expect(first).not.toBeNull();
     expect(first).toBe(second);
+    expect(getGoogleAI()).toBe(first);
     expect(GoogleGenAICtor).toHaveBeenCalledTimes(1);
   });
 });

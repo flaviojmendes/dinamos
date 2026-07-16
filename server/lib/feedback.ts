@@ -1,4 +1,4 @@
-import { getGoogleAI, GOOGLE_MODEL, geminiText } from './google.js';
+import { getGoogleAIAsync, GOOGLE_MODEL, geminiText } from './google.js';
 
 type Diagram = { elements?: any[]; [k: string]: any };
 
@@ -364,7 +364,7 @@ export async function evaluateWithAI(
   diagram: Diagram,
   audioTranscription?: string | null
 ): Promise<[string[], string[]] | [null, null]> {
-  const client = getGoogleAI();
+  const client = await getGoogleAIAsync();
   if (!client) return [null, null];
   try {
     const diagramDescription = describeDiagram(diagram);

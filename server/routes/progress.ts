@@ -77,11 +77,24 @@ progressRouter.put('/api/progress', authRequired, async (c) => {
     await upsert(user.uid, target, completed, completedAt);
   }
 
-  const rows = await db
-    .select()
-    .from(contentProgress)
-    .where(eq(contentProgress.userId, user.uid));
-  return c.json({ progress: toMap(rows) });
+  const updated: Record<string, ProgressEntry> = {};
+  for (const target of targets) {
+    updated[target] = {
+      completed,
+      completedAt: completedAt.toISOString(),
+    };
+  }
+
+  // Backward compatible: full map when the client asks for it.
+  if (c.req.query('full') === 'true') {
+    const rows = await db
+      .select()
+      .from(contentProgress)
+      .where(eq(contentProgress.userId, user.uid));
+    return c.json({ progress: toMap(rows), updated });
+  }
+
+  return c.json({ updated });
 });
 
 /**

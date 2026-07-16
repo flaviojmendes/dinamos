@@ -1,0 +1,151 @@
+{
+  "title": "Terms and Conditions",
+  "last_updated_label": "Last updated:",
+  "last_updated_date": "June 2026",
+  "sections": {
+    "acceptance": {
+      "title": "1. Acceptance of Terms",
+      "paragraphs": [
+        "By accessing and using Dinamos (\"the Service\"), you accept and agree to be bound by these Terms. If you do not agree, please do not use the Service.",
+        "We may change these Terms at any time. Continued use of the Service after changes means you accept the updated Terms."
+      ]
+    },
+    "description": {
+      "title": "2. Description of Service",
+      "intro": "Dinamos is an educational platform focused on distributed systems learning. Our service includes:",
+      "items": [
+        "Interactive learning content and tutorials",
+        "System design simulators and tools",
+        "Educational materials and documentation",
+        "Community features and progress tracking"
+      ]
+    },
+    "accounts": {
+      "title": "3. User Accounts",
+      "intro": "To access certain features, you must register for an account. You agree to:",
+      "items": [
+        "Provide accurate and current information",
+        "Keep your information up to date",
+        "Maintain the security of your password and account",
+        "Notify us of unauthorized use",
+        "Accept responsibility for all activities under your account"
+      ]
+    },
+    "ip_rights": {
+      "title": "4. Intellectual Property & Attribution",
+      "intro": "All educational content on the Service is free to access, study, and share. We ask only one thing in return: always credit the platform. Whenever you use, reference, or reproduce our content — including in videos, courses, classes, presentations, articles, social media, or any other medium — you must:",
+      "items": [
+        "Give clear and visible credit to Dinamos (trilhainfo) as the source of the content",
+        "Include a link back to the platform (https://instagram.com/trilhainfo) whenever the medium allows it",
+        "Keep any copyright, trademark, or authorship notices intact",
+        "Not present our content as your own or imply official endorsement, partnership, or affiliation without permission"
+      ]
+    },
+    "conduct": {
+      "title": "5. User Conduct",
+      "intro": "You agree not to use the Service to:",
+      "items": [
+        "Violate any laws or regulations",
+        "Transmit harmful, threatening, or offensive content",
+        "Interfere with or disrupt the Service or servers",
+        "Attempt unauthorized access to other accounts",
+        "Share your account credentials with others",
+        "Use automated systems to access the Service"
+      ]
+    },
+    "availability": {
+      "title": "6. Service Availability",
+      "intro": "We strive for reliability but cannot guarantee uninterrupted availability. The Service may be unavailable due to:",
+      "items": [
+        "Scheduled maintenance",
+        "Technical difficulties",
+        "Force majeure events",
+        "Third-party service disruptions"
+      ],
+      "note": "We may modify, suspend, or discontinue the Service with reasonable notice."
+    },
+    "privacy": {
+      "title": "7. Privacy and Data Protection",
+      "paragraphs": [
+        "Your privacy is important to us. Our collection and use of personal information is governed by our Privacy Policy, which is incorporated by reference.",
+        "By using the Service, you consent to our data practices as described in the Privacy Policy."
+      ]
+    },
+    "disclaimer": {
+      "title": "8. Disclaimer of Warranties",
+      "intro": "The Service is provided \"as is\" and \"as available\" without warranties of any kind, including:",
+      "items": [
+        "Merchantability or fitness for a particular purpose",
+        "Non-infringement of third-party rights",
+        "Accuracy, completeness, or reliability of content",
+        "Uninterrupted or error-free operation"
+      ]
+    },
+    "liability": {
+      "title": "9. Limitation of Liability",
+      "intro": "To the maximum extent permitted by law, Dinamos is not liable for indirect, incidental, special, consequential, or punitive damages, including:",
+      "items": [
+        "Loss of profits, data, or other intangible losses",
+        "Damages from use or inability to use the Service",
+        "Damages from unauthorized access to your data"
+      ],
+      "note": "Total liability is limited to the amount you paid for the Service in the 12 months preceding the claim."
+    },
+    "indemnification": {
+      "title": "10. Indemnification",
+      "intro": "You agree to indemnify and hold harmless Dinamos from claims, damages, losses, or expenses arising from:",
+      "items": [
+        "Your use of the Service",
+        "Your violation of these Terms",
+        "Your violation of third-party rights",
+        "Content you submit or share through the Service"
+      ]
+    },
+    "termination": {
+      "title": "11. Termination",
+      "intro": "We may terminate or suspend your account and access immediately without notice for reasons including:",
+      "items": [
+        "Breach of these Terms",
+        "Fraudulent or illegal activity",
+        "Extended inactivity"
+      ],
+      "note": "Upon termination, your right to use the Service ceases immediately; provisions on IP, disclaimers, and limitations survive."
+    },
+    "governing_law": {
+      "title": "12. Governing Law",
+      "paragraphs": [
+        "These Terms are governed by the laws of Brazil, without regard to conflict of law provisions.",
+        "Disputes are subject to the exclusive jurisdiction of the courts of Brazil."
+      ]
+    },
+    "changes": {
+      "title": "13. Changes to Terms",
+      "intro": "We may modify these Terms at any time. If we make material changes, we will notify you by:",
+      "items": [
+        "Posting the updated Terms on this page",
+        "Updating the \"Last updated\" date",
+        "Sending notice via email or through the Service"
+      ],
+      "note": "Continued use after changes constitutes acceptance of the new Terms."
+    },
+    "contact": {
+      "title": "14. Contact Information",
+      "intro": "If you have questions about these Terms, contact us:",
+      "items": [
+        "Email: flavio@trilha.info",
+        "Through our website contact form"
+      ]
+    },
+    "severability": {
+      "title": "15. Severability",
+      "paragraphs": [
+        "If any provision is unenforceable or invalid, it will be limited or eliminated to the minimum extent necessary so the remaining Terms remain in full force and effect."
+      ]
+    }
+  },
+  "links": {
+    "privacy": "Privacy Policy",
+    "cookies": "Cookie Policy",
+    "back_home": "Back to Dinamos"
+  }
+}

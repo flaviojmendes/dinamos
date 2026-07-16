@@ -1,0 +1,42 @@
+{
+  "title": "Simulador de JWT",
+  "subtitle": "Experimente a geração e validação de tokens JWT na prática",
+  "token_configuration_title": "Configuração do Token",
+  "user_information_title": "Informações do Usuário",
+  "name_label": "Nome",
+  "email_label": "Email",
+  "role_label": "Papel",
+  "roles": {
+    "user": "Usuário",
+    "admin": "Administrador",
+    "guest": "Convidado"
+  },
+  "token_settings_title": "Configurações do Token",
+  "algorithm_label": "Algoritmo de Assinatura",
+  "expiration_label": "Tempo de Expiração (segundos)",
+  "custom_claims_title": "Claims Personalizadas",
+  "key_placeholder": "Chave",
+  "value_placeholder": "Valor",
+  "add_claim_button": "Adicionar Claim",
+  "generated_token_title": "Token Gerado",
+  "verify_token_button": "Verificar Token",
+  "no_token_message": "Configure e gere um token para visualizá-lo aqui",
+  "decoded_token_title": "Token Decodificado",
+  "header_title": "Header",
+  "payload_title": "Payload",
+  "signature_title": "Signature",
+  "verification_result_title": "Resultado da Verificação",
+  "verification_messages": {
+    "no_token": "Nenhum token para verificar",
+    "expired": "Token expirado",
+    "valid": "Token válido"
+  },
+  "how_to_use_title": "Como Usar",
+  "instructions": [
+    "Configure as informações do usuário e as configurações do token no painel esquerdo",
+    "Adicione claims personalizadas se desejar (opcional)",
+    "Clique em \"Gerar Token\" para criar um novo JWT",
+    "Visualize o token gerado e sua versão decodificada no painel direito",
+    "Use o botão \"Verificar Token\" para simular a validação do token"
+  ]
+}

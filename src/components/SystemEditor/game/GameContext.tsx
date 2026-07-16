@@ -7,6 +7,7 @@ import {
   useState,
 } from 'react';
 import { apiClient } from '../../../app/utils/api';
+import { stableHash } from '../engine/stableHash';
 import { GameState, LeaderboardEntry, ScoreSubmission } from './types';
 
 interface GameContextValue {
@@ -31,8 +32,31 @@ export function useGameContext(): GameContextValue | null {
   return useContext(GameContext);
 }
 
-const STATE_POLL_MS = 2500;
-const LEADERBOARD_POLL_MS = 4000;
+const ACTIVE_POLL_MS = 2500;
+const WAITING_POLL_MS = 10000;
+const LOBBY_POLL_MS = 12000;
+
+function pollIntervalMs(state: GameState | null): number {
+  if (!state || state.status === 'ended') return 0;
+  if (state.phase === 'round' && state.status === 'running') return ACTIVE_POLL_MS;
+  if (state.phase === 'interval' || state.status === 'paused') return WAITING_POLL_MS;
+  return LOBBY_POLL_MS;
+}
+
+function mergeThinState(prev: GameState | null, data: GameState): GameState {
+  const merged = { ...data };
+  if (data.my_architecture_unchanged && prev?.my_architecture) {
+    merged.my_architecture = prev.my_architecture;
+  }
+  if (data.starting_architecture_unchanged && prev?.starting_architecture) {
+    merged.starting_architecture = prev.starting_architecture;
+  }
+  if (!merged.load_profile && prev?.load_profile) merged.load_profile = prev.load_profile;
+  if (!merged.scoring_config && prev?.scoring_config) {
+    merged.scoring_config = prev.scoring_config;
+  }
+  return merged;
+}
 
 export function GameProvider({
   code,
@@ -53,9 +77,23 @@ export function GameProvider({
   const [serverOffsetMs, setServerOffsetMs] = useState(0);
 
   const joinedRef = useRef(false);
+  const archHashRef = useRef<string | undefined>();
+  const startingArchHashRef = useRef<string | undefined>();
+  const pollCountRef = useRef(0);
 
   const applyState = useCallback((data: GameState) => {
-    setState(data);
+    setState((prev) => {
+      const merged = mergeThinState(prev, data);
+      if (data.arch_hash) archHashRef.current = data.arch_hash;
+      else if (merged.my_architecture) {
+        archHashRef.current = stableHash(merged.my_architecture);
+      }
+      if (data.starting_arch_hash) startingArchHashRef.current = data.starting_arch_hash;
+      else if (merged.starting_architecture) {
+        startingArchHashRef.current = stableHash(merged.starting_architecture);
+      }
+      return merged;
+    });
     setNotFound(false);
     setError(null);
     if (data.server_time) {
@@ -65,7 +103,13 @@ export function GameProvider({
 
   const refresh = useCallback(async () => {
     try {
-      const res = await apiClient.get(`/api/game/${code}`);
+      const params = new URLSearchParams();
+      if (archHashRef.current) params.set('arch_hash', archHashRef.current);
+      if (startingArchHashRef.current) {
+        params.set('starting_arch_hash', startingArchHashRef.current);
+      }
+      const qs = params.toString();
+      const res = await apiClient.get(`/api/game/${code}${qs ? `?${qs}` : ''}`);
       applyState(res.data as GameState);
     } catch (err: any) {
       if (err?.response?.status === 404) {
@@ -128,20 +172,48 @@ export function GameProvider({
     }
   }, [state, join]);
 
-  // Poll control state.
+  // Pause polling when the tab is hidden; refresh immediately when it returns.
   useEffect(() => {
-    if (notFound) return;
-    const id = setInterval(refresh, STATE_POLL_MS);
-    return () => clearInterval(id);
-  }, [refresh, notFound]);
+    const onVisibility = () => {
+      if (!document.hidden && !notFound) {
+        refresh();
+        fetchLeaderboard();
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => document.removeEventListener('visibilitychange', onVisibility);
+  }, [refresh, fetchLeaderboard, notFound]);
 
-  // Poll leaderboard.
+  // Adaptive, visibility-aware polling for control state + leaderboard.
   useEffect(() => {
     if (notFound) return;
-    fetchLeaderboard();
-    const id = setInterval(fetchLeaderboard, LEADERBOARD_POLL_MS);
-    return () => clearInterval(id);
-  }, [fetchLeaderboard, notFound]);
+
+    let id: ReturnType<typeof setInterval> | undefined;
+    const tick = () => {
+      if (document.hidden) return;
+      refresh();
+      pollCountRef.current += 1;
+      const lbEvery = state?.phase === 'round' && state?.status === 'running' ? 2 : 3;
+      if (pollCountRef.current % lbEvery === 0) fetchLeaderboard();
+    };
+
+    const schedule = () => {
+      if (id) clearInterval(id);
+      if (document.hidden) return;
+      const ms = pollIntervalMs(state);
+      if (ms <= 0) return;
+      id = setInterval(tick, ms);
+    };
+
+    schedule();
+    const onVisibility = () => schedule();
+    document.addEventListener('visibilitychange', onVisibility);
+
+    return () => {
+      if (id) clearInterval(id);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, [refresh, fetchLeaderboard, notFound, state?.phase, state?.status, state]);
 
   const value: GameContextValue = {
     code,

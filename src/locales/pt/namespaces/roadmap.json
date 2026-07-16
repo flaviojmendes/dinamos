@@ -1,0 +1,23 @@
+{
+  "title": "Roadmap de Aprendizado",
+  "description_1": "Siga este guia estruturado para dominar os conceitos de sistemas distribuídos.",
+  "description_2": "O roadmap está organizado em uma sequência lógica de aprendizado, com pré-requisitos claros e habilidades a serem desenvolvidas em cada etapa.",
+  "modules": "módulos",
+  "completed": "Concluído",
+  "in_progress": "Em andamento",
+  "not_started": "Não iniciado",
+  "start_module": "Começar módulo",
+  "resume_module": "Continuar módulo",
+  "review_module": "Revisar módulo",
+  "prerequisites": "Pré-requisitos:",
+  "skills": "Habilidades:",
+  "completed_percent": "{{percent}}% do conteúdo completado",
+  "ops_map": "MAPA OPS",
+  "phase": "Fase",
+  "lessons": "lições",
+  "modules_cleared": "Módulos concluídos",
+  "lessons_done": "Lições concluídas",
+  "readiness": "Prontidão",
+  "total_phases": "Fases",
+  "of_count": "de {{count}}"
+}

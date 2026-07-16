@@ -1,0 +1,328 @@
+{
+  "logs": {
+    "title": "Logs and Tracing in Distributed Systems",
+    "intro_p1": "Logs and tracing are essential to understand behavior, debug issues, and maintain observability. They provide detailed insights into execution flow and system state.",
+    "key_concept_label": "Key Concept",
+    "key_concept_text": "In distributed systems, logs should be treated as event streams, centralized and correlated to provide a complete system view.",
+    "types_title": "Log Types",
+    "app_logs_title": "Application Logs",
+    "app_logs_items": [
+      "Business events",
+      "Execution flow",
+      "Errors and exceptions",
+      "User actions"
+    ],
+    "sys_logs_title": "System Logs",
+    "sys_logs_items": [
+      "Startup/shutdown",
+      "Resource usage",
+      "System events",
+      "Hardware issues"
+    ],
+    "sec_logs_title": "Security Logs",
+    "sec_logs_items": [
+      "Access attempts",
+      "Permission changes",
+      "Audit events",
+      "Security alerts"
+    ],
+    "structured_title": "Structured Logging",
+    "structured_desc": "Structured logging treats logs as data objects rather than plain text, enabling easier analysis and search.",
+    "benefits_title": "Benefits",
+    "benefits_items": [
+      {
+        "title": "Searchability",
+        "desc": "Enables complex searches and filters"
+      },
+      {
+        "title": "Analysis",
+        "desc": "Allows aggregations and visualizations"
+      },
+      {
+        "title": "Standardization",
+        "desc": "Consistent format across services"
+      }
+    ],
+    "example_title": "Example",
+    "aggregation_title": "Log Aggregation",
+    "components_title": "Components",
+    "components_items": [
+      {
+        "title": "Collectors",
+        "desc": "Agents collecting logs from different sources"
+      },
+      {
+        "title": "Processors",
+        "desc": "Filter, transform and enrich logs"
+      },
+      {
+        "title": "Storage",
+        "desc": "Distributed system for persistence"
+      },
+      {
+        "title": "Interface",
+        "desc": "UI for search and analysis"
+      }
+    ],
+    "elk_title": "ELK Stack",
+    "elk_items": [
+      {
+        "title": "Elasticsearch",
+        "desc": "Distributed storage and search for logs"
+      },
+      {
+        "title": "Logstash",
+        "desc": "Log processing pipeline"
+      },
+      {
+        "title": "Kibana",
+        "desc": "Visualization and analysis of logs"
+      }
+    ],
+    "tracing_title": "Distributed Tracing",
+    "tracing_desc": "Distributed tracing tracks a request across multiple services, providing end-to-end visibility.",
+    "concepts_title": "Concepts",
+    "concepts_items": [
+      {
+        "title": "Trace",
+        "desc": "Represents an end-to-end transaction"
+      },
+      {
+        "title": "Span",
+        "desc": "Unit of work within a trace"
+      },
+      {
+        "title": "Context",
+        "desc": "Metadata that propagates with the trace"
+      }
+    ],
+    "tools_title": "Tools",
+    "tools_items": [
+      {
+        "title": "Jaeger",
+        "desc": "Open-source distributed tracing system"
+      },
+      {
+        "title": "Zipkin",
+        "desc": "Focused on latency and dependency analysis"
+      },
+      {
+        "title": "OpenTelemetry",
+        "desc": "Open standard for instrumentation"
+      }
+    ],
+    "best_practices_title": "Best Practices",
+    "logging_title": "Logging",
+    "logging_items": [
+      {
+        "title": "Appropriate Levels",
+        "desc": "Use appropriate log levels (ERROR, WARN, INFO, DEBUG)"
+      },
+      {
+        "title": "Context",
+        "desc": "Include relevant information for debugging"
+      },
+      {
+        "title": "Sensitivity",
+        "desc": "Avoid sensitive data in logs"
+      }
+    ],
+    "tracing_bp_title": "Tracing",
+    "tracing_bp_items": [
+      {
+        "title": "Sampling",
+        "desc": "Configure appropriate sampling rates"
+      },
+      {
+        "title": "Instrumentation",
+        "desc": "Use standard instrumentation libraries"
+      },
+      {
+        "title": "Correlation",
+        "desc": "Keep correlation between logs and traces"
+      }
+    ]
+  },
+  "logs_page": {
+    "title": "Logs and Tracing in Distributed Systems",
+    "intro_p1": "In distributed systems, logs and tracing are fundamental for monitoring, debugging, and performance analysis. This section explores best practices and tools to implement a robust observability system.",
+    "buttons": {
+      "logs_simulator": "Logs Simulator",
+      "tracing_simulator": "Tracing Simulator"
+    },
+    "levels_title": "Log Levels",
+    "levels": {
+      "debug_desc": "Detailed information for debugging",
+      "info_desc": "Normal system events",
+      "warn_desc": "Warnings about unexpected situations",
+      "error_desc": "Errors that need attention"
+    },
+    "formats": {
+      "text_title": "Plain Text Logs",
+      "text_adv_title": "Advantages",
+      "text_adv_items": [
+        "Easy for humans to read",
+        "Lower processing overhead",
+        "Compatible with legacy tools",
+        "Smaller file size"
+      ],
+      "text_disadv_title": "Disadvantages",
+      "text_disadv_items": [
+        "Hard to parse programmatically",
+        "Lack of clear structure",
+        "Hard to add metadata",
+        "Prone to formatting errors"
+      ],
+      "json_title": "JSON Logs",
+      "json_adv_title": "Advantages",
+      "json_adv_items": [
+        "Clear and consistent structure",
+        "Easy to parse and process",
+        "Supports rich metadata",
+        "Better for automated analysis"
+      ],
+      "json_disadv_title": "Disadvantages",
+      "json_disadv_items": [
+        "Higher processing overhead",
+        "Larger log files",
+        "Less human-readable",
+        "Can be excessive for simple logs"
+      ]
+    },
+    "tracing_section": {
+      "title": "Distributed Tracing",
+      "what_is_title": "What is Tracing?",
+      "what_is_p": "Tracing tracks the path of a request across multiple services in a distributed system. Each request receives a unique ID (traceId) that is propagated across services.",
+      "components_title": "Main Components",
+      "components_items": [
+        "TraceId: unique request identifier",
+        "SpanId: identifier for each operation",
+        "ParentSpanId: parent-child relationship",
+        "Tags: additional metadata",
+        "Timestamps: operation durations"
+      ],
+      "benefits_title": "Benefits",
+      "benefits_items": [
+        "Visualization of request flows",
+        "Bottleneck identification",
+        "Debugging distributed systems",
+        "Performance analysis",
+        "Event correlation"
+      ]
+    },
+    "best_practices": {
+      "title": "Best Practices",
+      "logging_title": "Logging",
+      "logging_items": [
+        "Use appropriate log levels",
+        "Include relevant context",
+        "Keep a consistent format",
+        "Avoid sensitive logs",
+        "Use correlation IDs",
+        "Include timestamps",
+        "Structure metadata",
+        "Implement log rotation"
+      ],
+      "tracing_title": "Tracing",
+      "tracing_items": [
+        "Propagate traceId across services",
+        "Use spans for key operations",
+        "Add relevant tags",
+        "Keep spans concise",
+        "Implement sampling",
+        "Configure proper retention",
+        "Integrate with analysis tools",
+        "Monitor tracing overhead"
+      ]
+    },
+    "tools": {
+      "title": "Popular Tools",
+      "logging_title": "Logging",
+      "logging_items": [
+        "ELK Stack (Elasticsearch, Logstash, Kibana)",
+        "Graylog",
+        "Loki",
+        "Datadog",
+        "New Relic",
+        "Splunk"
+      ],
+      "tracing_title": "Tracing",
+      "tracing_items": [
+        "Jaeger",
+        "Zipkin",
+        "OpenTelemetry",
+        "Datadog APM",
+        "New Relic APM",
+        "Lightstep"
+      ]
+    }
+  },
+  "logs_simulator": {
+    "title": "Logs Simulator",
+    "intro": "Explore how to configure and analyze logs in distributed systems. This simulator demonstrates good and bad logging practices.",
+    "actions": {
+      "settings": "Settings",
+      "reset": "Reset"
+    },
+    "settings_title": "Settings",
+    "settings": {
+      "auto_advance": "Auto Advance",
+      "delay_label": "Event Delay ({{ms}}ms)"
+    },
+    "controls": {
+      "info_title": "INFO",
+      "add_good_info": "Add Good INFO",
+      "add_bad_info": "Add Bad INFO",
+      "warn_title": "WARN",
+      "add_good_warn": "Add Good WARN",
+      "add_bad_warn": "Add Bad WARN",
+      "error_title": "ERROR",
+      "add_good_error": "Add Good ERROR",
+      "add_bad_error": "Add Bad ERROR"
+    },
+    "viewer_title": "Log Viewer",
+    "badges": {
+      "good": "Good",
+      "bad": "Bad"
+    },
+    "best_practices_title": "Best Practices",
+    "best_practices_items": [
+      "Use structured logs (JSON format)",
+      "Include correlation IDs (traceId, spanId)",
+      "Add contextual information",
+      "Use appropriate log levels",
+      "Include timestamps",
+      "Identify service/component",
+      "Include relevant metadata",
+      "Maintain consistent format"
+    ],
+    "bad_practices_title": "Bad Practices",
+    "bad_practices_items": [
+      "Log sensitive information",
+      "Use inconsistent formats",
+      "Log without context",
+      "Use inappropriate log levels",
+      "Log excessive information",
+      "Use unstructured text",
+      "Log without timestamps",
+      "Mix different patterns"
+    ]
+  },
+  "tracing_simulator": {
+    "title": "Tracing Simulator",
+    "intro": "Explore distributed tracing concepts and understand how requests flow through multiple services.",
+    "controls_title": "Controls",
+    "controls": {
+      "clear": "Clear",
+      "start_request": "Start Request",
+      "add_span": "Add Span",
+      "finish_request": "Finish Request"
+    },
+    "current_request_title": "Current Request",
+    "trace_id_label": "TraceId",
+    "steps_label": "Step {{current}} of {{total}}",
+    "timeline_label": "Timeline",
+    "history_title": "Trace History",
+    "error_badge": "Error"
+  }
+}

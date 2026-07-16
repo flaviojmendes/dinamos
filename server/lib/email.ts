@@ -1,14 +1,22 @@
-import { Resend } from 'resend';
+import type { Resend } from 'resend';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY ?? '';
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev';
 const FRONTEND_URL = process.env.FRONTEND_URL ?? 'https://dinamos.net';
 
 let resend: Resend | null = null;
-function getResend(): Resend | null {
+let resendPromise: Promise<Resend | null> | null = null;
+
+async function getResend(): Promise<Resend | null> {
   if (!RESEND_API_KEY) return null;
-  if (!resend) resend = new Resend(RESEND_API_KEY);
-  return resend;
+  if (resend) return resend;
+  if (!resendPromise) {
+    resendPromise = import('resend').then(({ Resend: ResendClient }) => {
+      resend = new ResendClient(RESEND_API_KEY);
+      return resend;
+    });
+  }
+  return resendPromise;
 }
 
 export async function sendForumReplyNotification(params: {
@@ -18,7 +26,7 @@ export async function sendForumReplyNotification(params: {
   topicId: number;
   replyAuthorNickname: string;
 }): Promise<boolean> {
-  const client = getResend();
+  const client = await getResend();
   if (!client || !params.topicAuthorEmail?.trim()) return false;
   const topicUrl = `${FRONTEND_URL}/forum/topic/${params.topicId}`;
 
@@ -58,7 +66,7 @@ export async function sendMessageReplyNotification(params: {
   replyContent: string;
   parentMessageContent: string;
 }): Promise<boolean> {
-  const client = getResend();
+  const client = await getResend();
   if (!client || !params.messageAuthorEmail?.trim()) return false;
   const topicUrl = `${FRONTEND_URL}/forum/topic/${params.topicId}`;
   const replyPreview =
@@ -109,7 +117,7 @@ export async function sendSystemNotificationEmail(params: {
   ctaText?: string | null;
   ctaUrl?: string | null;
 }): Promise<boolean> {
-  const client = getResend();
+  const client = await getResend();
   if (!client || !params.recipientEmail?.trim()) return false;
 
   const ctaHtml =

@@ -26,6 +26,7 @@ import Reveal from './landing/Reveal';
 import CountUp from './landing/CountUp';
 import LiveSystemPanel from './landing/LiveSystemPanel';
 import SystemTopology from './landing/SystemTopology';
+import SimulatorMedia from './SimulatorMedia';
 
 const REPO_URL = 'https://github.com/flaviojmendes/dinamos';
 
@@ -422,10 +423,10 @@ export default function LandingPage() {
 
           <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
             {[
-              { src: '/cache.gif', accent: 'text-brand-600 dark:text-signal-cyan', border: 'hover:border-signal-cyan/50', title: t('landing.simulators_item1'), desc: t('landing.simulators_item1_description') },
-              { src: '/circuit.gif', accent: 'text-emerald-700 dark:text-signal-green', border: 'hover:border-signal-green/50', title: t('landing.simulators_item2'), desc: t('landing.simulators_item2_description') },
-              { src: '/loadbalancer.gif', accent: 'text-amber-700 dark:text-signal-amber', border: 'hover:border-signal-amber/50', title: t('landing.simulators_item3'), desc: t('landing.simulators_item3_description') },
-            ].map(({ src, accent, border, title, desc }, i) => (
+              { base: 'cache', accent: 'text-brand-600 dark:text-signal-cyan', border: 'hover:border-signal-cyan/50', title: t('landing.simulators_item1'), desc: t('landing.simulators_item1_description') },
+              { base: 'circuit', accent: 'text-emerald-700 dark:text-signal-green', border: 'hover:border-signal-green/50', title: t('landing.simulators_item2'), desc: t('landing.simulators_item2_description') },
+              { base: 'loadbalancer', accent: 'text-amber-700 dark:text-signal-amber', border: 'hover:border-signal-amber/50', title: t('landing.simulators_item3'), desc: t('landing.simulators_item3_description') },
+            ].map(({ base, accent, border, title, desc }, i) => (
               <Reveal key={i} delay={i * 0.1}>
                 <motion.div
                   whileHover={reduce ? undefined : { y: -6 }}
@@ -433,12 +434,7 @@ export default function LandingPage() {
                   className={`group tactical-panel h-full overflow-hidden p-3 transition-colors ${border}`}
                 >
                   <div className="relative mb-4 aspect-video overflow-hidden rounded-lg border border-slate-200 dark:border-tactical-border">
-                    <img
-                      src={src}
-                      alt={title}
-                      loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
+                    <SimulatorMedia base={base} alt={title} />
                     <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/5" />
                   </div>
                   <div className="px-3 pb-2">

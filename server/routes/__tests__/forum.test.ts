@@ -105,14 +105,17 @@ describe('forum routes', () => {
     expect(repo.awardTokens).toHaveBeenCalled();
   });
 
-  it('GET topic + messages', async () => {
+  it('GET topic + messages with pagination metadata', async () => {
     mockDb.setResults([
       [{ id: 1, title: 'T', content: 'c', userId: 'u1', category: 'General', upvotes: 0, createdAt: new Date(), updatedAt: new Date() }],
+      [{ count: 1 }],
       [{ id: 10, topicId: 1, parentId: null, userId: 'u1', content: 'hi', upvotes: 0, createdAt: new Date(), updatedAt: new Date() }],
     ]);
     const res = await app.request('/api/forum/topics/1?sort_messages=top', { headers: AUTH });
     const body = await res.json() as any;
     expect(body.messages).toHaveLength(1);
+    expect(body.msg_total).toBe(1);
+    expect(body.msg_limit).toBe(100);
   });
 
   it('GET topic 404', async () => {

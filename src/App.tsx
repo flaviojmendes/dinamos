@@ -8,7 +8,6 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
 // Simulators are heavy, route-only components rendered inside the <Suspense>
 // boundary below. Lazy-load them so they are code-split out of the entry chunk
 // and only fetched when their route is visited.
@@ -20,8 +19,8 @@ const CDN = React.lazy(() => import("./components/CDN/CDN"));
 const LogSimulator = React.lazy(() => import("./components/Monitoramento/LogSimulator"));
 const TracingSimulator = React.lazy(() => import('./components/Monitoramento/TracingSimulator'));
 
-import LandingPage from "./components/LandingPage/LandingPage";
-import CommandCenter from "./components/Dashboard/CommandCenter";
+const LandingPage = React.lazy(() => import("./components/LandingPage/LandingPage"));
+const CommandCenter = React.lazy(() => import("./components/Dashboard/CommandCenter"));
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import Login from "./components/Auth/Login";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
@@ -70,11 +69,11 @@ function DesignLabRouteFallback() {
 import { trackEvent, trackPageView, initializeAnalytics, handleConsentChange } from './utils/analytics';
 const Preferences = React.lazy(() => import("./components/Preferences/Preferences"));
 const Roadmap = React.lazy(() => import("./components/Roadmap/Roadmap"));
-import ContentLayout from "./components/Common/ContentLayout";
+const ContentLayout = React.lazy(() => import("./components/Common/ContentLayout"));
+const ContentPage = React.lazy(() => import("./components/Common/ContentPage"));
+const MdxPage = React.lazy(() => import("./components/Common/MdxPage"));
 import LanguageDetectionDialog from "./components/Common/LanguageDetectionDialog";
-import { useContentProgress, PROGRESS_UPDATED_EVENT } from "./hooks/useContentProgress";
-import ContentPage from "./components/Common/ContentPage";
-import MdxPage from "./components/Common/MdxPage";
+import { useContentProgress } from "./hooks/useContentProgress";
 import { useContent } from "./contexts/ContentContext";
 import { getSimulator } from "./config/simulatorRegistry";
 import {
@@ -98,8 +97,11 @@ const HostConsole = React.lazy(() => import("./pages/HostConsole"));
 import { LanguageSwitcher } from './components/Common';
 import ThemeToggle from "./components/Common/ThemeToggle";
 import TopStatusBar from "./components/Common/TopStatusBar";
-import CommandPalette, { openCommandPalette } from "./components/Common/CommandPalette";
-import AnnouncementModal from "./components/Common/AnnouncementModal";
+const CommandPalette = React.lazy(() =>
+  import("./components/Common/CommandPalette").then((m) => ({ default: m.default })),
+);
+const AnnouncementModal = React.lazy(() => import("./components/Common/AnnouncementModal"));
+import { openCommandPalette } from "./components/Common/commandPaletteEvents";
 import { useTranslation } from 'react-i18next';
 import CookieConsentBanner from './components/Common/CookieConsentBanner';
 import Footer from "./components/Common/Footer";
@@ -2006,8 +2008,12 @@ export default function App() {
           />
         )}
 
-        {user && !chromeless && <CommandPalette />}
-        {user && !chromeless && <AnnouncementModal />}
+        {user && !chromeless && (
+          <React.Suspense fallback={null}>
+            <CommandPalette />
+            <AnnouncementModal />
+          </React.Suspense>
+        )}
 
         {/* Main content */}
         <main className={`flex-1 overflow-y-auto bg-canvas-paper dark:bg-canvas-dark ${isMobile && !chromeless ? 'pt-16' : ''}`}>

@@ -41,6 +41,7 @@ import { parseDesign, serializeDesign, SerializedNode, DesignV2 } from './ui/per
 import { apiClient } from '../../app/utils/api';
 import { layoutGraph, LayoutDirection } from './ui/autoLayout';
 import { useGameContext } from './game/GameContext';
+import type { ScoreSubmission } from './game/types';
 import { architectureToRF, rfToArchitecture } from './game/architecture';
 import {
   frameScore,
@@ -51,6 +52,7 @@ import {
   type ScoreAccumulator,
 } from './engine/scoring';
 import { evaluateCompliance, type ComplianceResult } from './engine/compliance';
+import { stableHash } from './engine/stableHash';
 import GameBanner from './game/GameBanner';
 import GameLeaderboard from './game/GameLeaderboard';
 import RoundFX from './game/RoundFX';
@@ -415,6 +417,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
   const lastFrameRef = useRef<SimulationFrame | null>(null);
   const seededKeyRef = useRef<string | null>(null);
   const finalSubmittedRef = useRef<string | null>(null);
+  const lastSubmittedArchHashRef = useRef<string | null>(null);
   // Latest house-rules verdict, read by the synced round loop.
   const complianceRef = useRef<ComplianceResult>({ ok: true, violations: [] });
 
@@ -745,7 +748,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
   }, []);
 
   // While a round is live, periodically push the player's per-round score. The
-  // backend records it under the round index and recomputes the weighted total.
+  // architecture blob is included only when its stable hash changes.
   useEffect(() => {
     if (!gameActive || gameState?.phase !== 'round') return;
     const submit = () => {
@@ -754,39 +757,49 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
       if (!g || !gs) return;
       const roundIndex = Math.max(0, (gs.current_round ?? 1) - 1);
       const roundScore = Math.round(scoreRef.current.total);
-      g.submitScore({
-        architecture: rfToArchitecture(nodesRef.current, edgesRef.current),
+      const arch = rfToArchitecture(nodesRef.current, edgesRef.current);
+      const archHash = stableHash(arch);
+      const payload: ScoreSubmission = {
         score: roundScore,
         score_breakdown: scoreRef.current,
         metrics: gameMetrics(),
         round_index: roundIndex,
         round_score: roundScore,
         round_breakdown: scoreRef.current,
-      });
+      };
+      if (archHash !== lastSubmittedArchHashRef.current) {
+        payload.architecture = arch;
+        lastSubmittedArchHashRef.current = archHash;
+      }
+      g.submitScore(payload);
     };
     submit();
     const id = setInterval(submit, 4000);
     return () => clearInterval(id);
   }, [gameActive, gameState?.phase, gameState?.current_round, gameMetrics]);
 
-  // During build intervals, persist the (carried-over) architecture so it
-  // survives a refresh/rejoin and is visible to the admin spectator.
+  // During build windows, persist architecture only when it changes (debounced).
   useEffect(() => {
     if (!gameActive) return;
     const phase = gameState?.phase;
     if (phase !== 'interval' && phase !== 'lobby') return;
-    const submit = () => {
+    const arch = rfToArchitecture(nodesRef.current, edgesRef.current);
+    const archHash = stableHash(arch);
+    if (archHash === lastSubmittedArchHashRef.current) return;
+    const timer = setTimeout(() => {
       const g = gameRef.current;
       const gs = gameStateRef.current;
       if (!g) return;
+      const latest = stableHash(rfToArchitecture(nodesRef.current, edgesRef.current));
+      if (latest === lastSubmittedArchHashRef.current) return;
       g.submitScore({
         architecture: rfToArchitecture(nodesRef.current, edgesRef.current),
         score: Math.round(gs?.my_score ?? 0),
       });
-    };
-    const id = setInterval(submit, 5000);
-    return () => clearInterval(id);
-  }, [gameActive, gameState?.phase]);
+      lastSubmittedArchHashRef.current = latest;
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, [gameActive, gameState?.phase, nodes, edges]);
 
   // Submit the final per-round score once when a round ends (transition out of
   // the 'round' phase), covering both the next interval and the match end.

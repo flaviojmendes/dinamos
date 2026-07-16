@@ -1,4 +1,4 @@
-import { getGoogleAI, GOOGLE_MODEL, geminiText } from './google.js';
+import { getGoogleAIAsync, GOOGLE_MODEL, geminiText } from './google.js';
 
 // Questionnaire answers collected in the Design Lab "tailored problem" modal.
 export interface GenerationContext {
@@ -115,7 +115,7 @@ function mockChallenge(ctx: GenerationContext): GeneratedChallenge {
 export async function generateChallenge(
   ctx: GenerationContext
 ): Promise<GeneratedChallenge> {
-  const client = getGoogleAI();
+  const client = await getGoogleAIAsync();
   if (!client) return mockChallenge(ctx);
 
   try {

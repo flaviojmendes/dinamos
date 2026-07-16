@@ -1,0 +1,23 @@
+{
+  "title": "Learning Roadmap",
+  "description_1": "Follow this structured guide to master distributed systems concepts.",
+  "description_2": "The roadmap is organized into a logical learning sequence, with clear prerequisites and skills to be developed in each step.",
+  "modules": "modules",
+  "completed": "Completed",
+  "in_progress": "In progress",
+  "not_started": "Not started",
+  "start_module": "Start module",
+  "resume_module": "Resume module",
+  "review_module": "Review module",
+  "prerequisites": "Prerequisites:",
+  "skills": "Skills:",
+  "completed_percent": "{{percent}}% of content completed",
+  "ops_map": "OPS MAP",
+  "phase": "Phase",
+  "lessons": "lessons",
+  "modules_cleared": "Modules cleared",
+  "lessons_done": "Lessons done",
+  "readiness": "Readiness",
+  "total_phases": "Phases",
+  "of_count": "of {{count}}"
+}

@@ -1,0 +1,30 @@
+{
+  "back_to_attacks": "Voltar para Ataques",
+  "title": "Simulador de Ataques",
+  "subtitle": "Explore de forma interativa como diferentes tipos de ataques funcionam em sistemas distribuídos. Este simulador demonstra visualmente o comportamento e impacto dos ataques DDoS e Man-in-the-Middle.",
+  "how_to_use_title": "Como Usar o Simulador",
+  "how_to_use_steps": [
+    "Selecione o tipo de ataque que deseja simular (DDoS ou Man-in-the-Middle)",
+    "Ajuste a velocidade da simulação conforme necessário",
+    "Clique em \"Iniciar Simulação\" para começar a visualização",
+    "Observe o comportamento dos pacotes e o impacto no servidor"
+  ],
+  "simulator_elements_title": "Elementos do Simulador",
+  "simulator_elements": [
+    "Clientes legítimos tentando acessar o serviço",
+    "Servidor processando as requisições",
+    "Atacantes gerando tráfego malicioso",
+    "Pacotes legítimos (verde) e maliciosos (vermelho)"
+  ],
+  "ddos_attack_button": "Ataque DDoS",
+  "mitm_attack_button": "Man-in-the-Middle",
+  "speed_label": "Velocidade:",
+  "start_simulation": "Iniciar Simulação",
+  "stop_simulation": "Parar Simulação",
+  "ddos_simulation_title": "Simulação de Ataque DDoS",
+  "ddos_simulation_description": "Esta simulação mostra como múltiplos atacantes sobrecarregam um servidor com tráfego malicioso, dificultando o acesso de usuários legítimos ao serviço. O servidor fica sobrecarregado ao receber muitas requisições.",
+  "mitm_simulation_title": "Simulação de Ataque Man-in-the-Middle",
+  "mitm_simulation_description": "Esta simulação demonstra como um atacante pode interceptar a comunicação entre cliente e servidor se posicionando no meio da conexão. O atacante pode ler e modificar os dados transmitidos.",
+  "legitimate_traffic": "Tráfego Legítimo",
+  "malicious_traffic": "Tráfego Malicioso"
+}

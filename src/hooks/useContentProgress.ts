@@ -126,6 +126,13 @@ export function ContentProgressProvider({ children }: { children: ReactNode }) {
     };
   }, [uid, applyProgress]);
 
+  const mergeUpdated = useCallback(
+    (updated: ContentProgress) => {
+      applyProgress({ ...progressRef.current, ...updated });
+    },
+    [applyProgress],
+  );
+
   const setPaths = useCallback(
     (paths: string[], completed: boolean) => {
       const completedAt = new Date().toISOString();
@@ -141,12 +148,16 @@ export function ContentProgressProvider({ children }: { children: ReactNode }) {
         api
           .put('/api/progress', { path, completed, paths: childPaths })
           .then((res) => {
-            if (res.data?.progress) applyProgress(res.data.progress as ContentProgress);
+            if (res.data?.updated) {
+              mergeUpdated(res.data.updated as ContentProgress);
+            } else if (res.data?.progress) {
+              applyProgress(res.data.progress as ContentProgress);
+            }
           })
           .catch((error) => console.error('Failed to save content progress:', error));
       }
     },
-    [uid, applyProgress],
+    [uid, applyProgress, mergeUpdated],
   );
 
   const markAsCompleted = useCallback(

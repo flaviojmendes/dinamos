@@ -1,0 +1,248 @@
+{
+  "consistency_strategies": {
+    "consensus_simulator": {
+      "controls": {
+        "protocol_label": "Protocol:",
+        "options": {
+          "raft": "Raft",
+          "paxos": "Paxos",
+          "zookeeper": "ZooKeeper"
+        },
+        "start": "Start",
+        "pause": "Pause",
+        "restart": "Restart",
+        "speed_label": "Speed:",
+        "speed_opts": {
+          "slow": "Slow",
+          "normal": "Normal",
+          "fast": "Fast"
+        },
+        "show_explanations": "Show Explanations",
+        "hide_explanations": "Hide Explanations"
+      },
+      "step_prefix": "Step",
+      "cluster_vis_title": "Cluster Visualization",
+      "labels": {
+        "node_label": "Node",
+        "term_label": "Term",
+        "log_label": "Log",
+        "proposal_label": "Proposal",
+        "promised_label": "Promised",
+        "accepted_label": "Accepted",
+        "value_label": "Value",
+        "learned_value_label": "Learned Value",
+        "zxid_label": "zxid",
+        "data_label": "Data",
+        "watching_label": "Watching: {{path}}",
+        "last_event_label": "Last Event: {{event}}"
+      },
+      "legend": {
+        "legend_title": "Legend:",
+        "node_states_title": "Node States:",
+        "message_types_title": "Message Types:"
+      },
+      "messages": {
+        "vote_request": "Vote Request",
+        "vote_response": "Vote Response",
+        "log_replication": "Log Replication",
+        "prepare": "Prepare",
+        "promise": "Promise",
+        "propose": "Propose",
+        "accept": "Accept",
+        "watch": "Watch",
+        "replication": "Replication",
+        "notification": "Notification"
+      },
+      "progress_label": "Progress: {{percent}}%"
+    },
+    "lamport_timestamps_simulator": {
+      "title": "Lamport Timestamps Simulator",
+      "subtitle": "Visualize how logical timestamps are updated in a distributed system",
+      "info": "Add local events or send messages between processes to see how Lamport timestamps are updated. Observe how event ordering is preserved through logical clocks.",
+      "controls": {
+        "reset": "Reset Simulation"
+      },
+      "process_label": "Process {{n}}",
+      "buttons": {
+        "local_event": "Local Event",
+        "send_to": "→ {{target}}"
+      },
+      "timeline": {
+        "clock_prefix": "t = "
+      },
+      "event_labels": {
+        "local": "Local Event",
+        "send_prefix": "→ {{target}}",
+        "receive_prefix": "← {{source}}"
+      },
+      "legend": {
+        "title": "Legend",
+        "local": "Local Event",
+        "sent": "Message Sent",
+        "received": "Message Received"
+      }
+    }
+  },
+  "two_phase_commit_simulator": {
+    "title": "Two-Phase Commit Simulator",
+    "intro": "This simulator demonstrates the Two-Phase Commit protocol in a distributed bank transfer. Configure bank responses by clicking them before starting the simulation.",
+    "controls": {
+      "start": "Start",
+      "pause": "Pause",
+      "simulation": "Simulation",
+      "reset": "Reset",
+      "speed_label": "Speed:",
+      "speed_opts": {
+        "slow": "Slow",
+        "normal": "Normal",
+        "fast": "Fast"
+      }
+    },
+    "nodes": {
+      "coordinator": "Coordinator",
+      "bank_n": "Bank {{n}}"
+    },
+    "node_states": {
+      "idle": "idle",
+      "preparing": "preparing",
+      "prepared": "prepared",
+      "committed": "committed",
+      "aborted": "aborted"
+    },
+    "responses": {
+      "yes": "yes",
+      "no": "no"
+    },
+    "config": {
+      "configure_response": "Configure response:",
+      "approve": "Approve",
+      "reject": "Reject",
+      "status": "Status:",
+      "will_approve": "Will approve the transaction",
+      "will_reject": "Will reject the transaction"
+    },
+    "messages": {
+      "prepare_q": "Prepare for transfer?",
+      "vote_yes": "Yes, ready to commit",
+      "vote_no": "No, resources unavailable",
+      "decision_commit": "Commit: execute the transfer",
+      "decision_abort": "Abort: cancel the operation",
+      "done": "Operation completed successfully"
+    },
+    "steps": {
+      "current_phase": "Current Phase:",
+      "s0": "Click the banks to configure their responses, then start the simulation",
+      "s1": "Phase 1: Coordinator sent 'prepare' to all participants",
+      "s2": "Phase 1: Participants replied with their votes",
+      "s3": "Phase 2: Coordinator made the final decision",
+      "s4": "Simulation finished! You can reset to run again."
+    }
+  },
+  "algorithms": {
+    "title": "Synchronization Algorithms",
+    "intro": "There are several algorithms to ensure synchronization in distributed systems. Each has specific characteristics and ideal use cases.",
+    "key_concept_label": "Key Concept",
+    "key_concept_text": "The choice of synchronization algorithm depends on factors such as number of nodes, network latency, fault tolerance, and performance requirements.",
+    "bakery": {
+      "title": "Bakery Algorithm",
+      "concept_title": "Concept",
+      "concept_p": "Based on a bakery where each customer receives a ticket number and is served in increasing order.",
+      "badges": {
+        "total_order": "Total Order",
+        "fairness": "Fairness"
+      },
+      "demo_title": "Interactive Demo",
+      "labels": {
+        "process": "Process",
+        "ticket": "Ticket",
+        "request_access": "Request Access"
+      }
+    },
+    "token_ring": {
+      "title": "Token Ring",
+      "concept_title": "Concept",
+      "concept_p": "A token circulates among processes in a logical ring, and only the process holding the token can access shared resources.",
+      "badges": {
+        "single_token": "Single Token",
+        "circular_passing": "Circular Passing"
+      },
+      "demo_title": "Interactive Demo",
+      "move_token": "Move Token",
+      "labels": {
+        "process_prefix": "P"
+      }
+    },
+    "ricart_agrawala": {
+      "title": "Ricart-Agrawala",
+      "concept_title": "Concept",
+      "concept_p": "Based on logical timestamps, where processes request permission from all others before accessing shared resources.",
+      "badges": {
+        "timestamps": "Timestamps",
+        "consensus": "Consensus"
+      },
+      "demo_title": "Interactive Demo",
+      "labels": {
+        "process": "Process",
+        "request_access": "Request Access",
+        "ts_prefix": "TS"
+      }
+    },
+    "comparison": {
+      "title": "Comparison",
+      "bakery_title": "Bakery Algorithm",
+      "token_ring_title": "Token Ring",
+      "ricart_title": "Ricart-Agrawala",
+      "advantages": "Advantages",
+      "disadvantages": "Disadvantages",
+      "bakery": {
+        "pros": "Simple and fair",
+        "cons": "High message complexity"
+      },
+      "token_ring": {
+        "pros": "Low message complexity",
+        "cons": "Single point of failure"
+      },
+      "ricart": {
+        "pros": "Fault tolerant",
+        "cons": "High latency"
+      }
+    }
+  },
+  "availability": {
+    "availability_zones_simulator": {
+      "title": "Availability Zones Simulator",
+      "intro": "Explore how availability zones work together to ensure high availability and fault tolerance.",
+      "controls": {
+        "request_rate_label": "Request Rate (per second)",
+        "failure_chance_label": "Failure Chance (%)",
+        "auto_failover_label": "Auto Failover",
+        "start_simulation": "Start Simulation",
+        "stop_simulation": "Stop Simulation"
+      },
+      "zone_status": {
+        "healthy": "Healthy",
+        "degraded": "Degraded",
+        "failed": "Failed"
+      },
+      "zone_info": {
+        "load": "Load",
+        "active_servers": "Active Servers",
+        "latency": "Latency",
+        "simulate_failure": "Simulate Failure",
+        "recover": "Recover"
+      },
+      "statistics": {
+        "title": "Statistics",
+        "total_requests": "Total Requests",
+        "success_rate": "Success Rate"
+      },
+      "recent_requests": {
+        "title": "Recent Requests",
+        "completed": "Completed",
+        "failed": "Failed",
+        "processing": "Processing",
+        "pending": "Pending"
+      }
+    }
+  }
+}

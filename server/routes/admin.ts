@@ -45,7 +45,6 @@ import {
   getRoleRow,
   getUserContext,
 } from '../db/repo.js';
-import { sendSystemNotificationEmail } from '../lib/email.js';
 
 export const adminRouter = new Hono<{ Variables: AppVariables }>();
 
@@ -54,7 +53,8 @@ adminRouter.use('/api/admin/*', authRequired, adminRequired);
 
 // ==================== Users ====================
 
-async function quizStatsByUser() {
+async function quizStatsForUsers(userIds: string[]) {
+  if (!userIds.length) return new Map<string, { sum: number; count: number }>();
   const bestPerQuiz = await db
     .select({
       userId: quizAttempts.userId,
@@ -62,6 +62,7 @@ async function quizStatsByUser() {
       best: sql<number>`max(${quizAttempts.percentage})`,
     })
     .from(quizAttempts)
+    .where(inArray(quizAttempts.userId, userIds))
     .groupBy(quizAttempts.userId, quizAttempts.quizId);
   const map = new Map<string, { sum: number; count: number }>();
   for (const r of bestPerQuiz) {
@@ -75,8 +76,8 @@ async function quizStatsByUser() {
 
 adminRouter.get('/api/admin/users', async (c) => {
   const q = c.req.query();
-  const skip = Number(q.skip ?? '0');
-  const limit = Number(q.limit ?? '10');
+  const skip = Math.max(0, Number(q.skip ?? '0'));
+  const limit = Math.min(Math.max(1, Number(q.limit ?? '10')), 100);
   const search = q.search;
   const role = q.role;
   const sortBy = q.sort_by ?? 'created_at';
@@ -85,6 +86,11 @@ adminRouter.get('/api/admin/users', async (c) => {
   const maxTokens = q.max_tokens != null ? Number(q.max_tokens) : undefined;
   const minQuizAvg = q.min_quiz_avg != null ? Number(q.min_quiz_avg) : undefined;
   const maxQuizAvg = q.max_quiz_avg != null ? Number(q.max_quiz_avg) : undefined;
+  const needsQuizStats =
+    minQuizAvg != null ||
+    maxQuizAvg != null ||
+    sortBy === 'avg_quiz_score' ||
+    sortBy === 'quizzes_completed';
 
   const conditions: any[] = [];
   if (search) {
@@ -94,25 +100,95 @@ adminRouter.get('/api/admin/users', async (c) => {
   if (minTokens != null) conditions.push(gte(users.tokens, minTokens));
   if (maxTokens != null) conditions.push(sql`${users.tokens} <= ${maxTokens}`);
 
-  // Fetch users joined with role
-  let roleFilterId: number | null | undefined = undefined;
   if (role && role !== 'all') {
     const r = await getRoleByName(role);
     if (!r) return c.json({ users: [], total: 0, skip, limit });
-    roleFilterId = r.id;
     conditions.push(eq(users.roleId, r.id));
   }
 
-  const allRows = await db
+  const where = conditions.length ? and(...conditions) : undefined;
+
+  // Quiz-average filters require stats before pagination.
+  if (needsQuizStats) {
+    const allRows = await db.select().from(users).where(where);
+    const statsMap = await quizStatsForUsers(allRows.map((u) => u.id));
+    const roleIds = Array.from(
+      new Set(allRows.map((u) => u.roleId).filter((x): x is number => x != null))
+    );
+    const roleRows = roleIds.length
+      ? await db.select().from(roles).where(inArray(roles.id, roleIds))
+      : [];
+    const roleMap = new Map(roleRows.map((r) => [r.id, r]));
+    const permsCache = new Map<number, string[]>();
+
+    let enriched = await Promise.all(
+      allRows.map(async (u) => {
+        const stat = statsMap.get(u.id);
+        const avg = stat && stat.count > 0 ? Math.round((stat.sum / stat.count) * 10) / 10 : 0;
+        const roleRow = u.roleId ? roleMap.get(u.roleId) ?? null : null;
+        let codes = u.roleId ? permsCache.get(u.roleId) : [];
+        if (u.roleId && !codes) {
+          codes = await getPermissionCodesForRole(u.roleId);
+          permsCache.set(u.roleId, codes);
+        }
+        return {
+          ...userToDict(u, roleRow as any, codes ?? []),
+          avg_quiz_score: avg,
+          quizzes_completed: stat?.count ?? 0,
+          _sort_created: u.createdAt ? new Date(u.createdAt).getTime() : 0,
+        };
+      })
+    );
+
+    if (minQuizAvg != null) enriched = enriched.filter((u) => u.avg_quiz_score >= minQuizAvg);
+    if (maxQuizAvg != null) enriched = enriched.filter((u) => u.avg_quiz_score <= maxQuizAvg);
+
+    const total = enriched.length;
+    const cmp = (a: any, b: any): number => {
+      let av: any;
+      let bv: any;
+      switch (sortBy) {
+        case 'nickname': av = a.nickname ?? ''; bv = b.nickname ?? ''; break;
+        case 'email': av = a.email ?? ''; bv = b.email ?? ''; break;
+        case 'role': av = a.role ?? ''; bv = b.role ?? ''; break;
+        case 'tokens': av = a.tokens ?? 0; bv = b.tokens ?? 0; break;
+        case 'avg_quiz_score': av = a.avg_quiz_score; bv = b.avg_quiz_score; break;
+        case 'quizzes_completed': av = a.quizzes_completed; bv = b.quizzes_completed; break;
+        default: av = a._sort_created; bv = b._sort_created;
+      }
+      if (av < bv) return sortDesc ? 1 : -1;
+      if (av > bv) return sortDesc ? -1 : 1;
+      return 0;
+    };
+    enriched.sort(cmp);
+    const page = enriched.slice(skip, skip + limit).map(({ _sort_created, ...rest }) => rest);
+    return c.json({ users: page, total, skip, limit });
+  }
+
+  const totalRows = await db.select({ count: count() }).from(users).where(where);
+  const total = Number(totalRows[0]?.count ?? 0);
+
+  const orderCol = (() => {
+    switch (sortBy) {
+      case 'nickname': return users.nickname;
+      case 'email': return users.email;
+      case 'role': return users.role;
+      case 'tokens': return users.tokens;
+      default: return users.createdAt;
+    }
+  })();
+
+  const pageRows = await db
     .select()
     .from(users)
-    .where(conditions.length ? and(...conditions) : undefined);
+    .where(where)
+    .orderBy(sortDesc ? desc(orderCol) : asc(orderCol))
+    .offset(skip)
+    .limit(limit);
 
-  const statsMap = await quizStatsByUser();
-
-  // role lookup
+  const statsMap = await quizStatsForUsers(pageRows.map((u) => u.id));
   const roleIds = Array.from(
-    new Set(allRows.map((u) => u.roleId).filter((x): x is number => x != null))
+    new Set(pageRows.map((u) => u.roleId).filter((x): x is number => x != null))
   );
   const roleRows = roleIds.length
     ? await db.select().from(roles).where(inArray(roles.id, roleIds))
@@ -120,8 +196,8 @@ adminRouter.get('/api/admin/users', async (c) => {
   const roleMap = new Map(roleRows.map((r) => [r.id, r]));
   const permsCache = new Map<number, string[]>();
 
-  let enriched = await Promise.all(
-    allRows.map(async (u) => {
+  const usersPage = await Promise.all(
+    pageRows.map(async (u) => {
       const stat = statsMap.get(u.id);
       const avg = stat && stat.count > 0 ? Math.round((stat.sum / stat.count) * 10) / 10 : 0;
       const roleRow = u.roleId ? roleMap.get(u.roleId) ?? null : null;
@@ -134,36 +210,11 @@ adminRouter.get('/api/admin/users', async (c) => {
         ...userToDict(u, roleRow as any, codes ?? []),
         avg_quiz_score: avg,
         quizzes_completed: stat?.count ?? 0,
-        _sort_created: u.createdAt ? new Date(u.createdAt).getTime() : 0,
       };
     })
   );
 
-  // quiz avg filters
-  if (minQuizAvg != null) enriched = enriched.filter((u) => u.avg_quiz_score >= minQuizAvg);
-  if (maxQuizAvg != null) enriched = enriched.filter((u) => u.avg_quiz_score <= maxQuizAvg);
-
-  const total = enriched.length;
-
-  const cmp = (a: any, b: any): number => {
-    let av: any;
-    let bv: any;
-    switch (sortBy) {
-      case 'nickname': av = a.nickname ?? ''; bv = b.nickname ?? ''; break;
-      case 'email': av = a.email ?? ''; bv = b.email ?? ''; break;
-      case 'role': av = a.role ?? ''; bv = b.role ?? ''; break;
-      case 'tokens': av = a.tokens ?? 0; bv = b.tokens ?? 0; break;
-      case 'avg_quiz_score': av = a.avg_quiz_score; bv = b.avg_quiz_score; break;
-      case 'quizzes_completed': av = a.quizzes_completed; bv = b.quizzes_completed; break;
-      default: av = a._sort_created; bv = b._sort_created;
-    }
-    if (av < bv) return sortDesc ? 1 : -1;
-    if (av > bv) return sortDesc ? -1 : 1;
-    return 0;
-  };
-  enriched.sort(cmp);
-  const page = enriched.slice(skip, skip + limit).map(({ _sort_created, ...rest }) => rest);
-  return c.json({ users: page, total, skip, limit });
+  return c.json({ users: usersPage, total, skip, limit });
 });
 
 adminRouter.put('/api/admin/users/:id/role', async (c) => {
@@ -1053,13 +1104,26 @@ interface NotifPayload {
   link_id?: number;
 }
 
+const NOTIF_BATCH_SIZE = 50;
+const MAX_NOTIF_TARGETS = 500;
+
 async function sendNotificationsToUsers(
   targets: { id: string; email: string | null; nickname: string | null }[],
   payload: NotifPayload
 ) {
-  if (targets.length) {
+  if (targets.length > MAX_NOTIF_TARGETS) {
+    throw new HTTPException(400, {
+      message: `Cannot notify more than ${MAX_NOTIF_TARGETS} users in one request`,
+    });
+  }
+
+  let emailsSent = 0;
+  const sendEmail = payload.send_email !== false;
+
+  for (let i = 0; i < targets.length; i += NOTIF_BATCH_SIZE) {
+    const batch = targets.slice(i, i + NOTIF_BATCH_SIZE);
     await db.insert(notifications).values(
-      targets.map((u) => ({
+      batch.map((u) => ({
         userId: u.id,
         type: 'system',
         title: payload.title,
@@ -1068,24 +1132,26 @@ async function sendNotificationsToUsers(
         linkId: payload.link_id ?? null,
       }))
     );
-  }
-  let emailsSent = 0;
-  if (payload.send_email !== false) {
-    for (const u of targets) {
-      if (u.email) {
-        const ok = await sendSystemNotificationEmail({
-          recipientEmail: u.email,
-          recipientNickname: u.nickname || u.email.split('@')[0],
-          subject: payload.email_subject || `📬 ${payload.title}`,
-          title: payload.title,
-          message: payload.message,
-          ctaText: payload.cta_text,
-          ctaUrl: payload.cta_url,
-        });
-        if (ok) emailsSent++;
+
+    if (sendEmail) {
+      const { sendSystemNotificationEmail } = await import('../lib/email.js');
+      for (const u of batch) {
+        if (u.email) {
+          const ok = await sendSystemNotificationEmail({
+            recipientEmail: u.email,
+            recipientNickname: u.nickname || u.email.split('@')[0],
+            subject: payload.email_subject || `📬 ${payload.title}`,
+            title: payload.title,
+            message: payload.message,
+            ctaText: payload.cta_text,
+            ctaUrl: payload.cta_url,
+          });
+          if (ok) emailsSent++;
+        }
       }
     }
   }
+
   return emailsSent;
 }
 
@@ -1104,9 +1170,17 @@ adminRouter.post('/api/admin/notifications/system', async (c) => {
 
 adminRouter.post('/api/admin/notifications/broadcast', async (c) => {
   const payload = await c.req.json<NotifPayload>();
+  const totalRows = await db.select({ c: count() }).from(users);
+  const userCount = Number(totalRows[0]?.c ?? 0);
+  if (userCount > MAX_NOTIF_TARGETS) {
+    throw new HTTPException(400, {
+      message: `Broadcast would notify ${userCount} users; maximum is ${MAX_NOTIF_TARGETS}. Use filtered or selected delivery.`,
+    });
+  }
   const allUsers = await db
     .select({ id: users.id, email: users.email, nickname: users.nickname })
-    .from(users);
+    .from(users)
+    .limit(MAX_NOTIF_TARGETS);
   const emailsSent = await sendNotificationsToUsers(allUsers, payload);
   return c.json(
     {

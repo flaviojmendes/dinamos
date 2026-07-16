@@ -5,6 +5,7 @@ import type { Hono } from 'hono';
 const mockDb = createDbMock();
 const google = {
   getGoogleAI: vi.fn(() => null),
+  getGoogleAIAsync: vi.fn(async () => null),
   GOOGLE_MODEL: 'gemini-test',
   geminiText: (res: any) => (typeof res?.text === 'string' ? res.text : ''),
 };
@@ -37,6 +38,7 @@ const challenge = {
 beforeEach(() => {
   mockDb.reset();
   google.getGoogleAI.mockReturnValue(null);
+  google.getGoogleAIAsync.mockResolvedValue(null);
 });
 
 describe('challenges routes', () => {

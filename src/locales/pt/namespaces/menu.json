@@ -1,0 +1,845 @@
+{
+  "roadmap": {
+    "name": "🎯 Comece Aqui",
+    "description": "Sua jornada de aprendizado passo a passo"
+  },
+  "intro": {
+    "name": "Introdução",
+    "description": "Sobre o curso e motivação"
+  },
+  "sistemas_distribuidos_101": {
+    "name": "Sistemas Distribuídos 101",
+    "description": "Conceitos fundamentais através de analogias"
+  },
+  "system_design_101": {
+    "name": "System Design 101",
+    "description": "Fundamentos de design de sistemas"
+  },
+  "theoretical_foundations": {
+    "name": "Fundamentos Teóricos",
+    "description": "Teoria e princípios fundamentais de sistemas distribuídos",
+    "cap_theorem": {
+      "name": "Teorema CAP",
+      "description": "Trade-offs entre Consistência, Disponibilidade e Tolerância a Partições",
+      "consistency": {
+        "description": "Todos os nós veem os mesmos dados ao mesmo tempo. Toda leitura recebe a escrita mais recente ou um erro."
+      },
+      "availability": {
+        "description": "O sistema permanece operacional 100% do tempo. Toda requisição recebe uma resposta."
+      },
+      "partition_tolerance": {
+        "description": "O sistema continua operando apesar de falhas de rede entre os nós."
+      },
+      "cp_systems": {
+        "description": "Priorizam consistência de dados sobre disponibilidade durante partições de rede"
+      },
+      "ap_systems": {
+        "description": "Priorizam disponibilidade do sistema sobre consistência imediata durante partições"
+      },
+      "ca_systems": {
+        "description": "Sistemas tradicionais que sacrificam tolerância a partições"
+      }
+    },
+    "consistency_models": {
+      "name": "Modelos de Consistência",
+      "description": "Padrões de consistência forte, eventual e fraca",
+      "strong_consistency": {
+        "description": "Todos os nós veem os mesmos dados ao mesmo tempo. Após uma operação de escrita, todas as leituras subsequentes retornarão o valor atualizado."
+      },
+      "eventual_consistency": {
+        "description": "O sistema se tornará consistente com o tempo, desde que não receba novas atualizações. Leituras podem retornar dados obsoletos temporariamente."
+      },
+      "weak_consistency": {
+        "description": "Após uma escrita, leituras podem ou não ver o valor atualizado. O sistema não faz garantias sobre quando os dados estarão consistentes."
+      }
+    },
+    "distributed_challenges": {
+      "name": "Desafios Distribuídos",
+      "description": "Problemas comuns em sistemas distribuídos",
+      "network_partitions": {
+        "description": "Falhas de rede que dividem o sistema em grupos isolados, forçando trade-offs entre consistência e disponibilidade."
+      },
+      "clock_sync": {
+        "description": "Diferentes nós têm relógios diferentes, dificultando ordenar eventos e manter consistência."
+      },
+      "partial_failures": {
+        "description": "Algumas partes do sistema falham enquanto outras continuam funcionando, criando estados inconsistentes."
+      },
+      "consensus": {
+        "description": "Fazer nós distribuídos concordarem com um único valor ou decisão na presença de falhas."
+      },
+      "state_management": {
+        "description": "Manter controle do estado do sistema em múltiplos nós ao lidar com atualizações concorrentes."
+      },
+      "race_conditions": {
+        "description": "Múltiplos processos acessando recursos compartilhados simultaneamente, levando a resultados imprevisíveis."
+      }
+    },
+    "network_partitions": {
+      "name": "Partições de Rede e Falhas",
+      "description": "Lidando com divisões de rede e falhas de nós",
+      "what_is": {
+        "description": "Uma partição de rede ocorre quando a rede entre nós falha, dividindo o sistema em grupos isolados que não conseguem se comunicar."
+      },
+      "causes": {
+        "description": "Partições de rede podem surgir de várias questões de infraestrutura e configuração que afetam a conectividade entre nós distribuídos."
+      },
+      "failure_types": {
+        "description": "Diferentes modos de falha requerem diferentes estratégias de detecção e tratamento em sistemas distribuídos.",
+        "fail_stop": {
+          "description": "Nó para completamente e outros nós podem detectar a falha"
+        },
+        "fail_slow": {
+          "description": "Nó fica muito lento mas não falha completamente"
+        },
+        "byzantine": {
+          "description": "Nó se comporta arbitrariamente ou maliciosamente"
+        }
+      },
+      "partition_scenarios": {
+        "datacenter_split": {
+          "description": "Quando datacenters perdem conectividade, cada um deve decidir como lidar com operações em andamento"
+        },
+        "service_mesh_partition": {
+          "description": "Quando serviços em uma mesh perdem conectividade com subconjuntos de outros serviços"
+        },
+        "database_partition": {
+          "description": "Quando nós de banco se tornam isolados uns dos outros"
+        }
+      },
+      "detection": {
+        "description": "Detecção precoce e precisa de partições de rede é crucial para implementar estratégias de resposta apropriadas."
+      },
+      "prevention": {
+        "description": "Embora partições não possam ser completamente prevenidas, sua probabilidade e impacto podem ser significativamente reduzidos através de design apropriado de infraestrutura."
+      },
+      "recovery": {
+        "description": "Quando partições se curam, sistemas devem cuidadosamente reconciliar estado e resolver quaisquer conflitos que ocorreram durante a partição."
+      }
+    },
+    "pacelc": {
+      "name": "Teorema PACELC",
+      "description": "Além do CAP: o trade-off latência-vs-consistência mesmo sem partições",
+      "simulator": {
+        "name": "Simulador PACELC",
+        "description": "Classifique bancos reais pelos seus trade-offs em partição e operação normal"
+      }
+    },
+    "flp": {
+      "name": "Impossibilidade FLP",
+      "description": "Por que nenhum algoritmo de consenso assíncrono pode garantir terminação"
+    },
+    "fallacies": {
+      "name": "Falácias da Computação Distribuída",
+      "description": "Oito suposições falsas que arruínam sistemas distribuídos"
+    }
+  },
+  "componentes": {
+    "name": "Componentes Básicos",
+    "description": "Blocos fundamentais de sistemas distribuídos",
+    "banco_dados": {
+      "name": "Bancos de Dados",
+      "description": "Armazenamento e gerenciamento de dados"
+    },
+    "cache": {
+      "name": "Cache",
+      "description": "Armazenamento temporário para melhor performance",
+      "simulator": {
+        "name": "Simulador",
+        "description": "Experimente diferentes estratégias de cache"
+      }
+    },
+    "load_balancer": {
+      "name": "Balanceador de Carga",
+      "description": "Distribuição de tráfego entre servidores",
+      "simulator": {
+        "name": "Simulador",
+        "description": "Experimente diferentes algoritmos de balanceamento"
+      }
+    },
+    "message_queue": {
+      "name": "Filas de Mensagens",
+      "description": "Comunicação assíncrona entre serviços",
+      "simulator": {
+        "name": "Simulador",
+        "description": "Experimente o fluxo de mensagens"
+      }
+    },
+    "cdn": {
+      "name": "CDN",
+      "description": "Distribuição global de conteúdo",
+      "simulator": {
+        "name": "Simulador",
+        "description": "Veja como o CDN acelera entregas"
+      }
+    },
+    "api_gateway": {
+      "name": "API Gateway",
+      "description": "Ponto único de entrada para APIs",
+      "simulator": {
+        "name": "Simulador",
+        "description": "Experimente roteamento e proteção de APIs"
+      }
+    },
+    "firewall": {
+      "name": "Firewall",
+      "description": "Segurança e controle de tráfego",
+      "simulator": {
+        "name": "Simulador",
+        "description": "Experimente regras de firewall"
+      }
+    },
+    "polling_webhooks": {
+      "name": "Polling vs Webhooks",
+      "description": "Estratégias de comunicação em tempo real",
+      "teoria": {
+        "name": "Teoria e Conceitos",
+        "description": "Fundamentos e comparação detalhada"
+      },
+      "simulator": {
+        "name": "Simulador Interativo",
+        "description": "Veja a diferença na prática"
+      }
+    },
+    "vector_database": {
+      "name": "Banco de Dados Vetorial",
+      "description": "Armazene embeddings e faça busca por similaridade"
+    },
+    "model_gateway": {
+      "name": "Gateway de Modelos",
+      "description": "Infraestrutura que fica na frente dos seus LLMs"
+    },
+    "kafka": {
+      "name": "Kafka e Streaming",
+      "description": "Logs de eventos particionados e reproduzíveis e consumer groups",
+      "simulator": {
+        "name": "Simulador de Kafka",
+        "description": "Ajuste partições e consumidores e veja o consumer lag"
+      }
+    },
+    "dns": {
+      "name": "DNS",
+      "description": "A lista telefônica distribuída que resolve nomes em endereços"
+    },
+    "reverse_proxy": {
+      "name": "Reverse Proxy",
+      "description": "Uma porta de entrada que termina TLS, roteia e faz cache"
+    },
+    "service_discovery": {
+      "name": "Service Discovery",
+      "description": "Como serviços se encontram numa frota dinâmica"
+    },
+    "service_mesh": {
+      "name": "Service Mesh",
+      "description": "Proxies sidecar para tráfego, segurança e observabilidade"
+    },
+    "kubernetes": {
+      "name": "Kubernetes",
+      "description": "Orquestração declarativa de containers em escala"
+    },
+    "api_styles": {
+      "name": "Estilos de API: REST, gRPC e GraphQL",
+      "description": "Como serviços conversam: round trips, payloads, schemas",
+      "simulator": {
+        "name": "Simulador de Estilos de API",
+        "description": "Compare round trips, tamanho do payload e over-fetching"
+      }
+    },
+    "realtime_push": {
+      "name": "WebSockets e Push em Tempo Real",
+      "description": "Polling vs SSE vs WebSockets para atualizações ao vivo",
+      "simulator": {
+        "name": "Simulador de Push em Tempo Real",
+        "description": "Compare latência de entrega e overhead de requisições"
+      }
+    },
+    "dead_letter_queue": {
+      "name": "Dead Letter Queues",
+      "description": "Para onde vão as mensagens após esgotar as tentativas",
+      "simulator": {
+        "name": "Simulador de Dead Letter Queue",
+        "description": "Ajuste taxa de falha e retries; veja mensagens irem para a DLQ"
+      }
+    },
+    "stream_processing": {
+      "name": "Processamento de Streams",
+      "description": "Computação contínua sobre fluxos de eventos (Flink, Kafka Streams)"
+    }
+  },
+  "principios_design": {
+    "name": "Princípios de Design",
+    "description": "Conceitos essenciais para sistemas robustos",
+    "escalabilidade": {
+      "name": "Escalabilidade",
+      "description": "Crescimento e adaptação do sistema",
+      "horizontal": {
+        "name": "Horizontal (Scale Out)",
+        "description": "Adicionando mais máquinas",
+        "simulator": {
+          "name": "Simulador",
+          "description": "Experimente escalabilidade horizontal"
+        }
+      },
+      "vertical": {
+        "name": "Vertical (Scale Up)",
+        "description": "Aumentando recursos da máquina",
+        "simulator": {
+          "name": "Simulador",
+          "description": "Experimente escalabilidade vertical"
+        }
+      },
+      "latencia": {
+        "name": "Latência",
+        "description": "Medindo e otimizando a latência"
+      },
+      "failover": {
+        "name": "Failover",
+        "description": "Recuperação automática de falhas"
+      },
+      "simulator": {
+        "name": "Simulador Completo",
+        "description": "Compare diferentes estratégias de escala"
+      }
+    },
+    "disponibilidade": {
+      "name": "Alta Disponibilidade",
+      "description": "Mantendo o sistema sempre funcionando",
+      "replicacao": {
+        "name": "Replicação",
+        "description": "Cópias sincronizadas dos dados"
+      },
+      "failover": {
+        "name": "Failover",
+        "description": "Recuperação automática de falhas"
+      },
+      "zonas": {
+        "name": "Zonas de Disponibilidade",
+        "description": "Distribuição geográfica para resiliência"
+      },
+      "disaster-recovery": {
+        "name": "Recuperação de Desastres",
+        "description": "Estratégias de recuperação de falhas catastróficas"
+      },
+      "monitoramento": {
+        "name": "Monitoramento de Saúde",
+        "description": "Acompanhamento contínuo da saúde do sistema"
+      },
+      "distribuicao-carga": {
+        "name": "Distribuição de Carga",
+        "description": "Distribuição de tráfego entre servidores"
+      },
+      "simulator": {
+        "name": "Simulador",
+        "description": "Experimente estratégias de disponibilidade"
+      }
+    },
+    "tolerancia_falhas": {
+      "name": "Tolerância a Falhas",
+      "description": "Lidando com falhas no sistema",
+      "retries": {
+        "name": "Retries",
+        "description": "Tentativas automáticas",
+        "simulator": {
+          "name": "Simulador",
+          "description": "Experimente diferentes estratégias de retry"
+        }
+      },
+      "circuit_breaker": {
+        "name": "Circuit Breaker",
+        "description": "Prevenindo falhas em cascata",
+        "simulator": {
+          "name": "Simulador",
+          "description": "Veja o circuit breaker em ação"
+        }
+      },
+      "timeout": {
+        "name": "Timeout",
+        "description": "Limitando tempo de espera",
+        "simulator": {
+          "name": "Simulador",
+          "description": "Experimente diferentes configurações de timeout"
+        }
+      }
+    },
+    "eventos": {
+      "name": "Arquitetura Orientada a Eventos",
+      "description": "Sistemas baseados em eventos",
+      "simulator": {
+        "name": "Simulador",
+        "description": "Experimente event sourcing e event-driven"
+      }
+    },
+    "servicos": {
+      "name": "Arquitetura de Serviços",
+      "description": "Monolito vs Microsserviços"
+    },
+    "acoplamento": {
+      "name": "Acoplamento",
+      "description": "Acoplamento dinâmico e estático entre serviços"
+    },
+    "orquestracao_vs_coreografia": {
+      "name": "Orquestração vs Coreografia",
+      "description": "Compare os padrões de orquestração e coreografia"
+    },
+    "canary_deployment": {
+      "name": "Canary Deployment",
+      "description": "Rollout gradual com divisão de tráfego e rollback instantâneo",
+      "simulator": {
+        "name": "Simulador de Canary Deployment",
+        "description": "Faça deploy de um canary, divida o tráfego e observe as métricas"
+      }
+    },
+    "cqrs": {
+      "name": "CQRS",
+      "description": "Separe os modelos de escrita e leitura via um log de eventos",
+      "simulator": {
+        "name": "Simulador de CQRS",
+        "description": "Emita comandos e veja os read models se atualizarem"
+      }
+    },
+    "rate_limiting": {
+      "name": "Rate Limiting",
+      "description": "Token bucket, leaky bucket e janela deslizante",
+      "simulator": {
+        "name": "Simulador de Rate Limiter",
+        "description": "Compare algoritmos e veja aceitas vs rejeitadas"
+      }
+    },
+    "backpressure": {
+      "name": "Backpressure",
+      "description": "Controle de fluxo quando consumidores não acompanham",
+      "simulator": {
+        "name": "Simulador de Backpressure",
+        "description": "Throttle o produtor quando a fila enche"
+      }
+    },
+    "event_sourcing": {
+      "name": "Event Sourcing",
+      "description": "Armazene o estado como um log imutável de eventos",
+      "simulator": {
+        "name": "Simulador de Event Sourcing",
+        "description": "Anexe eventos e reconstrua o estado a partir do log"
+      }
+    },
+    "outbox": {
+      "name": "Transactional Outbox",
+      "description": "Publique eventos com confiabilidade sem inconsistência de escrita dupla",
+      "simulator": {
+        "name": "Simulador de Outbox",
+        "description": "Compare escrita dupla vs o padrão outbox sob falhas do broker"
+      }
+    },
+    "bulkhead": {
+      "name": "Padrão Bulkhead",
+      "description": "Isole pools de recursos para que uma falha não afunde o navio",
+      "simulator": {
+        "name": "Simulador de Bulkhead",
+        "description": "Veja uma dependência lenta esgotar um pool compartilhado — e então isole-a"
+      }
+    },
+    "blue_green": {
+      "name": "Deploy Blue-Green",
+      "description": "Dois ambientes idênticos com troca instantânea e rollback",
+      "simulator": {
+        "name": "Simulador Blue-Green",
+        "description": "Mude o tráfego entre ambientes e faça rollback instantâneo"
+      }
+    },
+    "feature_flags": {
+      "name": "Feature Flags",
+      "description": "Desacople deploy de release; ligue/desligue features em runtime"
+    }
+  },
+  "estrategias_de_consistencia": {
+    "name": "Estratégias de Consistência",
+    "description": "Como garantir a consistência em sistemas distribuídos",
+    "sincronizacao": {
+      "name": "Sincronização",
+      "description": "Coordenação e sincronização em sistemas distribuídos",
+      "fundamentos": {
+        "name": "Fundamentos",
+        "description": "Conceitos básicos de sincronização usando o Jantar dos Filósofos"
+      },
+      "deadlocks": {
+        "name": "Deadlocks",
+        "description": "Prevenção e detecção de deadlocks no contexto dos Filósofos"
+      },
+      "algoritmos": {
+        "name": "Algoritmos",
+        "description": "Algoritmos distribuídos para coordenação"
+      }
+    },
+    "two_phase_commit": {
+      "name": "Two Phase Commit",
+      "description": "Protocolo de consenso para transações distribuídas",
+      "simulador": {
+        "name": "Simulador",
+        "description": "Simulação interativa do protocolo Two Phase Commit"
+      }
+    },
+    "consenso": {
+      "name": "Estratégia de Consenso",
+      "description": "Protocolos e mecanismos para garantir acordo entre nós",
+      "simulador": {
+        "name": "Simulador",
+        "description": "Simulação interativa dos protocolos de consenso"
+      }
+    },
+    "lamport_timestamps": {
+      "name": "Relógios Lógicos de Lamport",
+      "description": "Ordenação de eventos em sistemas distribuídos",
+      "simulador": {
+        "name": "Simulador",
+        "description": "Visualize a ordenação de eventos com timestamps de Lamport"
+      }
+    },
+    "saga": {
+      "name": "Padrão Saga",
+      "description": "Transações longas com ações compensatórias",
+      "simulator": {
+        "name": "Simulador de Saga",
+        "description": "Rode uma saga, injete uma falha e veja o rollback"
+      }
+    },
+    "delivery_semantics": {
+      "name": "Semânticas de Entrega",
+      "description": "At-most-once, at-least-once e exactly-once",
+      "simulator": {
+        "name": "Simulador de Semânticas de Entrega",
+        "description": "Alterne dedup e DLQ para controlar duplicatas e perdas"
+      }
+    },
+    "vector_clocks": {
+      "name": "Relógios Vetoriais",
+      "description": "Rastreie causalidade e detecte atualizações concorrentes"
+    },
+    "crdts": {
+      "name": "CRDTs",
+      "description": "Tipos de dados replicados sem conflito que sempre convergem",
+      "simulator": {
+        "name": "Simulador de CRDT",
+        "description": "Edite réplicas de forma independente, depois mescle e veja convergir"
+      }
+    },
+    "gossip": {
+      "name": "Gossip e Anti-Entropia",
+      "description": "Protocolos epidêmicos que espalham estado pelo cluster",
+      "simulator": {
+        "name": "Simulador de Gossip",
+        "description": "Veja um rumor se espalhar nó a nó até o cluster convergir"
+      }
+    },
+    "distributed_locks": {
+      "name": "Locks Distribuídos e Fencing Tokens",
+      "description": "Exclusão mútua com leases e fencing contra donos obsoletos",
+      "simulator": {
+        "name": "Simulador de Lock Distribuído",
+        "description": "Adquira um lease, trave o dono e veja o fencing rejeitar escritas obsoletas"
+      }
+    }
+  },
+  "monitoramento_e_manutencao": {
+    "name": "Monitoramento e Manutenção",
+    "description": "Monitoramento e manutenção de sistemas distribuídos",
+    "metricas": {
+      "name": "Métricas e KPIs",
+      "description": "Indicadores essenciais para monitoramento"
+    },
+    "logs": {
+      "name": "Logs e Tracing",
+      "description": "Rastreamento e análise de logs distribuídos",
+      "simulador": {
+        "name": "Simulador de Logs",
+        "description": "Experimente com bons e maus exemplos de logs"
+      },
+      "tracing": {
+        "name": "Tracing Simulator",
+        "description": "Experimente o rastreamento de eventos"
+      }
+    },
+    "alertas": {
+      "name": "Alertas e Notificações",
+      "description": "Configuração e gestão de alertas"
+    },
+    "performance": {
+      "name": "Análise de Performance",
+      "description": "Identificação e resolução de gargalos"
+    },
+    "health_checks": {
+      "name": "Health Checks",
+      "description": "Monitoramento de saúde dos serviços"
+    },
+    "llm_observability": {
+      "name": "Observabilidade de LLM",
+      "description": "Tokens, custo, traces e avaliações de qualidade"
+    },
+    "distributed_tracing": {
+      "name": "Distributed Tracing",
+      "description": "Acompanhe uma requisição entre serviços com spans e contexto"
+    },
+    "slo_sli_sla": {
+      "name": "SLO, SLI e Error Budgets",
+      "description": "Meça a confiabilidade e gaste-a com burn rate"
+    },
+    "chaos_engineering": {
+      "name": "Chaos Engineering",
+      "description": "Injete falhas deliberadamente para ganhar confiança na resiliência",
+      "simulator": {
+        "name": "Simulador de Chaos",
+        "description": "Mate nós durante um game day e veja a disponibilidade resistir ou despencar"
+      }
+    },
+    "disaster_recovery": {
+      "name": "Disaster Recovery & Backups",
+      "description": "RPO, RTO, estratégias de backup e padrões de recuperação"
+    },
+    "multi_region": {
+      "name": "Multi-Região & Geo-Replicação",
+      "description": "Rode entre regiões por latência, disponibilidade e sobrevivência"
+    }
+  },
+  "casos_reais": {
+    "name": "Casos Reais",
+    "description": "Exemplos reais de system design de grandes empresas",
+    "youtube": {
+      "name": "YouTube",
+      "description": "Como o YouTube processa e distribui vídeos globalmente"
+    },
+    "spotify": {
+      "name": "Spotify",
+      "description": "Arquitetura de streaming de música em tempo real"
+    },
+    "bitly": {
+      "name": "Bit.ly",
+      "description": "Design de um serviço de encurtamento de URLs em escala"
+    },
+    "whatsapp": {
+      "name": "WhatsApp",
+      "description": "Sistema de mensagens em tempo real"
+    },
+    "netflix": {
+      "name": "Netflix",
+      "description": "Streaming de vídeo e recomendação de conteúdo"
+    },
+    "uber": {
+      "name": "Uber",
+      "description": "Sistema de geolocalização e matching em tempo real"
+    },
+    "chatgpt": {
+      "name": "ChatGPT",
+      "description": "Servindo LLMs a centenas de milhões com streaming"
+    },
+    "perplexity": {
+      "name": "Perplexity",
+      "description": "Motor de respostas baseado em RAG com fontes citadas"
+    },
+    "github_copilot": {
+      "name": "GitHub Copilot",
+      "description": "Autocompletar de código inline de baixa latência em escala"
+    }
+  },
+  "seguranca": {
+    "name": "Segurança",
+    "description": "Proteção e segurança em sistemas distribuídos",
+    "autenticacao": {
+      "name": "Autenticação",
+      "description": "Verificação de identidade em sistemas distribuídos"
+    },
+    "autorizacao": {
+      "name": "Autorização",
+      "description": "Controle de acesso e permissões"
+    },
+    "criptografia": {
+      "name": "Criptografia",
+      "description": "Proteção de dados em trânsito e em repouso",
+      "simulador": {
+        "name": "Simulador",
+        "description": "Experimente diferentes tipos de criptografia na prática"
+      }
+    },
+    "tokens": {
+      "name": "Tokens e JWT",
+      "description": "Gerenciamento de sessões e tokens de acesso",
+      "simulador": {
+        "name": "Simulador",
+        "description": "Experimente a geração e validação de JWTs"
+      }
+    },
+    "ssl_tls": {
+      "name": "SSL/TLS",
+      "description": "Comunicação segura entre sistemas"
+    },
+    "ataques": {
+      "name": "Ataques Comuns",
+      "description": "Prevenção contra ataques em sistemas distribuídos"
+    },
+    "prompt_injection": {
+      "name": "Prompt Injection",
+      "description": "Ataques específicos de LLM e guardrails",
+      "simulador": {
+        "name": "Simulador de Prompt Injection",
+        "description": "Combine defesas e veja se o segredo vaza"
+      }
+    }
+  },
+  "ai_systems": {
+    "name": "Sistemas de IA e LLMs",
+    "description": "Servir LLMs, RAG, busca vetorial e agentes em escala",
+    "llm_serving_fundamentals": {
+      "name": "Fundamentos de Serving de LLM",
+      "description": "Tokens, janelas de contexto, prefill vs decode e o KV cache",
+      "simulator": {
+        "name": "Simulador de Batching de Inferência",
+        "description": "Veja como o batching equilibra vazão e latência"
+      }
+    },
+    "rag": {
+      "name": "Arquitetura RAG",
+      "description": "Fundamente respostas nos seus próprios dados com recuperação",
+      "simulator": {
+        "name": "Simulador de Pipeline RAG",
+        "description": "Ajuste fragmentação, recuperação e reordenação de ponta a ponta"
+      }
+    },
+    "vector_search": {
+      "name": "Busca Vetorial",
+      "description": "Busca de vizinhos mais próximos aproximados em escala",
+      "simulator": {
+        "name": "Simulador de Busca Vetorial",
+        "description": "Equilibre recall e latência com parâmetros do HNSW"
+      }
+    },
+    "llm_gateway": {
+      "name": "Gateway de LLM",
+      "description": "Roteamento, cache semântico, fallback e controle de custo",
+      "simulator": {
+        "name": "Simulador de Gateway de LLM",
+        "description": "Roteie requisições com cache, fallback e limites de taxa"
+      }
+    },
+    "gpu_autoscaling": {
+      "name": "Serving de GPU e Autoescalonamento",
+      "description": "Partidas a frio, filas e escala-a-zero para GPUs",
+      "simulator": {
+        "name": "Simulador de Autoescalonador de GPU",
+        "description": "Equilibre custo e latência sob carga em rajadas"
+      }
+    },
+    "agentic": {
+      "name": "Sistemas com Agentes",
+      "description": "Chamada de ferramentas e orquestração de múltiplos passos",
+      "simulator": {
+        "name": "Simulador de Orquestração de Agentes",
+        "description": "Veja um agente chamar ferramentas, repetir e ramificar"
+      }
+    }
+  },
+  "data_storage": {
+    "name": "Dados e Armazenamento",
+    "description": "Particionamento, replicação e como achar dados em escala",
+    "consistent_hashing": {
+      "name": "Consistent Hashing",
+      "description": "Coloque chaves num anel para mover poucas a cada mudança",
+      "simulator": {
+        "name": "Simulador de Consistent Hashing",
+        "description": "Adicione e remova nós e veja as chaves serem remapeadas"
+      }
+    },
+    "sharding": {
+      "name": "Sharding e Particionamento",
+      "description": "Divida dados por faixa, hash ou diretório — e evite gargalos",
+      "simulator": {
+        "name": "Simulador de Sharding",
+        "description": "Envie chaves para shards e veja shards quentes surgirem"
+      }
+    },
+    "object_storage": {
+      "name": "Object & Blob Storage",
+      "description": "Armazenamento de blobs durável e barato em escala massiva (S3)"
+    },
+    "distributed_file_systems": {
+      "name": "Sistemas de Arquivos Distribuídos",
+      "description": "GFS/HDFS: arquivos em blocos e replicados por um cluster"
+    },
+    "inverted_index": {
+      "name": "Busca e Índice Invertido",
+      "description": "A estrutura de dados por trás da busca textual",
+      "simulator": {
+        "name": "Simulador de Índice Invertido",
+        "description": "Consulte termos e veja documentos ranqueados por pontuação"
+      }
+    },
+    "storage_engines": {
+      "name": "Engines de Armazenamento: B-Tree vs LSM",
+      "description": "Como os bancos guardam e atualizam dados fisicamente em disco",
+      "simulator": {
+        "name": "Simulador de Engine de Armazenamento",
+        "description": "Envie escritas e compare a amplificação de escrita/leitura"
+      }
+    },
+    "bloom_filters": {
+      "name": "Bloom Filters",
+      "description": "Testes probabilísticos de pertencimento sem falsos negativos",
+      "simulator": {
+        "name": "Simulador de Bloom Filter",
+        "description": "Insira chaves, consulte-as e veja os falsos positivos surgirem"
+      }
+    },
+    "replication_quorums": {
+      "name": "Modelos de Replicação e Quóruns",
+      "description": "Líder-seguidor, multi-líder, sem líder e R + W > N",
+      "simulator": {
+        "name": "Simulador de Quórum de Replicação",
+        "description": "Ajuste N, W, R e veja quando leituras retornam dados antigos"
+      }
+    },
+    "cdc": {
+      "name": "Change Data Capture (CDC)",
+      "description": "Transmita mudanças do log do banco para sistemas downstream",
+      "simulator": {
+        "name": "Simulador de CDC",
+        "description": "Leia o log de transações para caches, busca e analytics"
+      }
+    },
+    "oltp_olap": {
+      "name": "OLTP vs OLAP, Warehouses e Lakes",
+      "description": "Bancos transacionais vs analíticos e o data stack moderno"
+    },
+    "time_series": {
+      "name": "Bancos de Séries Temporais",
+      "description": "Armazenando e consultando métricas de alto volume com timestamp"
+    }
+  },
+  "editor": {
+    "name": "Editor de Sistemas",
+    "description": "Crie e simule sistemas distribuídos"
+  },
+  "forum": {
+    "name": "Fórum da Comunidade",
+    "description": "Discuta e aprenda com a comunidade"
+  },
+  "design_lab": {
+    "name": "Design Lab",
+    "description": "Acesse nosso design lab"
+  },
+  "home": {
+    "name": "Design Lab",
+    "description": "Simule uma entrevista de system design com feedback em tempo real"
+  },
+  "quizzes": {
+    "name": "Quizzes",
+    "description": "Teste seus conhecimentos e ganhe DinaCoins"
+  },
+  "ranking": {
+    "name": "Ranking",
+    "description": "Classificação global da comunidade"
+  },
+  "profile": {
+    "name": "Perfil",
+    "description": "Seu progresso, soluções e DinaCoins"
+  },
+  "notifications": {
+    "name": "Notificações",
+    "description": "Respostas, menções e anúncios"
+  }
+}

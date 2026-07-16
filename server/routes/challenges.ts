@@ -8,17 +8,26 @@ import {
   authRequired,
   type AppVariables,
 } from '../middleware/auth.js';
+import { maxBodyBytes, rateLimit } from '../middleware/guardrails.js';
 import { challengeToDict, solutionToDict } from '../db/serializers.js';
-import {
-  analyzeTextProposal,
-  analyzeDiagram,
-  evaluateWithAI,
-} from '../lib/feedback.js';
-import { getGoogleAI } from '../lib/google.js';
-import { generateChallenge, type GenerationContext } from '../lib/challengeGen.js';
-import { isSpeechConfigured, transcribeSpeech } from '../lib/speech.js';
+import type { GenerationContext } from '../lib/challengeGen.js';
 
 export const challengesRouter = new Hono<{ Variables: AppVariables }>();
+
+challengesRouter.use(
+  '/api/feedback',
+  maxBodyBytes(256_000),
+  rateLimit({ windowMs: 60_000, max: 20, keyPrefix: 'feedback' })
+);
+challengesRouter.use(
+  '/api/transcribe-audio',
+  maxBodyBytes(1_500_000),
+  rateLimit({ windowMs: 60_000, max: 15, keyPrefix: 'transcribe' })
+);
+challengesRouter.use(
+  '/api/challenges/generate',
+  rateLimit({ windowMs: 60_000, max: 10, keyPrefix: 'challenge-gen' })
+);
 
 challengesRouter.get('/api/challenges', authRequired, async (c) => {
   const user = c.get('user');
@@ -81,7 +90,10 @@ challengesRouter.post('/api/challenges/generate', authRequired, async (c) => {
     difficulty: (body.difficulty ?? 'Médio').trim(),
   };
 
-  const generated = await generateChallenge(ctx);
+  const generated = await (async () => {
+    const { generateChallenge } = await import('../lib/challengeGen.js');
+    return generateChallenge(ctx);
+  })();
   const id = `gen-${randomUUID()}`;
 
   const inserted = await db
@@ -135,6 +147,7 @@ challengesRouter.delete('/api/challenges/:id', authRequired, async (c) => {
 });
 
 challengesRouter.post('/api/transcribe-audio', authRequired, async (c) => {
+  const { isSpeechConfigured, transcribeSpeech } = await import('../lib/speech.js');
   // Dedicated speech-to-text (Google Cloud Speech-to-Text). Unlike a generative
   // model, it transcribes verbatim and never "answers" the speaker.
   if (!isSpeechConfigured()) {
@@ -170,6 +183,10 @@ challengesRouter.post('/api/transcribe-audio', authRequired, async (c) => {
 });
 
 challengesRouter.post('/api/feedback', authRequired, async (c) => {
+  const { analyzeTextProposal, analyzeDiagram, evaluateWithAI } = await import(
+    '../lib/feedback.js'
+  );
+  const { getGoogleAIAsync } = await import('../lib/google.js');
   const user = c.get('user');
   const userId = user.uid;
   let userEmail = user.email || `${userId}@email.com`;
@@ -207,7 +224,8 @@ challengesRouter.post('/api/feedback', authRequired, async (c) => {
     }
   };
 
-  if (getGoogleAI()) {
+  const ai = await getGoogleAIAsync();
+  if (ai) {
     const [strengths, suggestions] = await evaluateWithAI(
       challenge,
       solution.textProposal,

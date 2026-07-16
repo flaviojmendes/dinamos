@@ -41,8 +41,13 @@ jobs:
       - name: Type-check (frontend + API)
         run: npm run typecheck
 
-      - name: Build
-        run: npm run build
+      - name: Build (Vercel command, no DATABASE_URL)
+        run: npm run vercel-build
+        env:
+          DATABASE_URL: ''
+
+      - name: Bundle budget
+        run: npm run baseline:bundle && npm run baseline:bundle-budget
 
       - name: Run tests with coverage
         run: npm run test:coverage

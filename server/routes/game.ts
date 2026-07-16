@@ -5,8 +5,10 @@ import { db } from '../db/client.js';
 import { gameSessions, gamePlayers, users } from '../db/schema.js';
 import { getUserContext } from '../db/repo.js';
 import { authRequired, type AppVariables } from '../middleware/auth.js';
+import { maxBodyBytes, rateLimit } from '../middleware/guardrails.js';
 // Shared with the client engine: the module is dependency-free on purpose.
 import { evaluateCompliance } from '../../src/components/SystemEditor/engine/compliance.js';
+import { stableHash } from '../../src/components/SystemEditor/engine/stableHash.js';
 
 export const gameRouter = new Hono<{ Variables: AppVariables }>();
 
@@ -17,6 +19,21 @@ gameRouter.use('/api/games/host', authRequired);
 gameRouter.use('/api/games/host/*', authRequired);
 // Player-facing routes only require a logged-in user.
 gameRouter.use('/api/game/*', authRequired);
+
+// Guard expensive polling and large architecture writes before DB work.
+gameRouter.use(
+  '/api/game/:code',
+  rateLimit({ windowMs: 60_000, max: 120, keyPrefix: 'game-poll' })
+);
+gameRouter.use(
+  '/api/game/:code/architecture',
+  maxBodyBytes(512_000),
+  rateLimit({ windowMs: 60_000, max: 90, keyPrefix: 'game-arch' })
+);
+gameRouter.use(
+  '/api/game/:code/leaderboard',
+  rateLimit({ windowMs: 60_000, max: 90, keyPrefix: 'game-lb' })
+);
 
 type SessionRow = typeof gameSessions.$inferSelect;
 
@@ -681,14 +698,19 @@ async function buildLeaderboard(sessionId: number): Promise<LeaderboardEntry[]> 
 }
 
 /** Player-facing control state for the polling client. */
-async function playerSessionToDict(session: SessionRow, userId: string) {
+async function playerSessionToDict(
+  session: SessionRow,
+  userId: string,
+  thin?: { archHash?: string; startingArchHash?: string }
+) {
   const playerRows = await db
     .select()
     .from(gamePlayers)
     .where(eq(gamePlayers.sessionId, session.id));
   const me = playerRows.find((p) => p.userId === userId) ?? null;
+  const phase = session.phase ?? 'lobby';
 
-  return {
+  const payload: Record<string, unknown> = {
     code: session.code,
     name: session.name,
     status: session.status,
@@ -698,13 +720,9 @@ async function playerSessionToDict(session: SessionRow, userId: string) {
     ends_at: toIso(session.endsAt),
     duration_sec: session.durationSec,
     server_time: new Date().toISOString(),
-    load_profile: session.loadProfile ?? DEFAULT_LOAD_PROFILE,
-    chaos_events: session.chaosEvents ?? [],
     locked_node_ids: session.lockedNodeIds ?? [],
     allow_delete_starting: session.allowDeleteStarting ?? true,
-    scoring_config: session.scoringConfig ?? DEFAULT_SCORING,
-    budget: session.budget ?? null,
-    phase: session.phase ?? 'lobby',
+    phase,
     join_open: session.joinOpen ?? true,
     current_round: session.currentRound ?? 0,
     total_rounds: getRounds(session).length,
@@ -713,13 +731,43 @@ async function playerSessionToDict(session: SessionRow, userId: string) {
     round_ends_at: toIso(session.roundEndsAt),
     announcement: session.announcement ?? null,
     announcement_at: toIso(session.announcementAt),
-    starting_architecture: session.startingArchitecture ?? null,
     player_count: playerRows.length,
     joined: !!me,
-    my_architecture: me?.architecture ?? null,
     my_score: me?.score ?? 0,
     my_round_scores: me?.roundScores ?? {},
   };
+
+  // Live-round fields only — omit during lobby to shrink poll payloads.
+  if (phase === 'round' || phase === 'interval') {
+    payload.load_profile = session.loadProfile ?? DEFAULT_LOAD_PROFILE;
+    payload.scoring_config = session.scoringConfig ?? DEFAULT_SCORING;
+    payload.budget = session.budget ?? null;
+  }
+  if (phase === 'round') {
+    payload.chaos_events = session.chaosEvents ?? [];
+  } else {
+    payload.chaos_events = [];
+  }
+
+  const myArch = me?.architecture ?? null;
+  if (myArch) {
+    const hash = stableHash(myArch);
+    payload.arch_hash = hash;
+    if (thin?.archHash !== hash) payload.my_architecture = myArch;
+    else payload.my_architecture_unchanged = true;
+  } else {
+    payload.my_architecture = null;
+  }
+
+  const startingArch = session.startingArchitecture ?? null;
+  if (startingArch && !me) {
+    const sHash = stableHash(startingArch);
+    payload.starting_arch_hash = sHash;
+    if (thin?.startingArchHash !== sHash) payload.starting_architecture = startingArch;
+    else payload.starting_architecture_unchanged = true;
+  }
+
+  return payload;
 }
 
 // Poll the control state for a match.
@@ -727,7 +775,11 @@ gameRouter.get('/api/game/:code', async (c) => {
   const user = c.get('user');
   const session = await getSessionByCode(c.req.param('code'));
   if (!session) throw new HTTPException(404, { message: 'Match not found' });
-  return c.json(await playerSessionToDict(session, user.uid));
+  const thin = {
+    archHash: c.req.query('arch_hash') || undefined,
+    startingArchHash: c.req.query('starting_arch_hash') || undefined,
+  };
+  return c.json(await playerSessionToDict(session, user.uid, thin));
 });
 
 // Join a match (idempotent). Seeds the player's architecture from the start.

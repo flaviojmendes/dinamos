@@ -1,0 +1,32 @@
+{
+  "title": "Atividade",
+  "subtitle": "Últimos 12 meses",
+  "summary_suffix": "atividades no último ano",
+  "signed_out": "Entre para acompanhar sua atividade.",
+  "empty_hint": "Leia uma lição, faça um quiz, resolva um desafio ou poste no fórum para começar sua sequência.",
+  "no_activity": "Sem atividade",
+  "count_actions": "{{count}} atividades",
+  "count_actions_one": "{{count}} atividade",
+  "stat_current_streak": "Sequência atual",
+  "stat_longest_streak": "Maior sequência",
+  "stat_best_day": "Melhor dia",
+  "unit_days": "dias",
+  "unit_days_one": "dia",
+  "unit_actions": "ações",
+  "unit_actions_one": "ação",
+  "less": "Menos",
+  "more": "Mais",
+  "weekday_mon": "Seg",
+  "weekday_wed": "Qua",
+  "weekday_fri": "Sex",
+  "parts": {
+    "reads": "{{count}} lições lidas",
+    "reads_one": "{{count}} lição lida",
+    "quizzes": "{{count}} quizzes",
+    "quizzes_one": "{{count}} quiz",
+    "solutions": "{{count}} soluções",
+    "solutions_one": "{{count}} solução",
+    "forum": "{{count}} posts no fórum",
+    "forum_one": "{{count}} post no fórum"
+  }
+}

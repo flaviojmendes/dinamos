@@ -53,12 +53,13 @@ beforeEach(() => {
 });
 
 describe('content routes (public)', () => {
-  it('GET /api/content returns the published index', async () => {
+  it('GET /api/content returns the published index with CDN cache headers', async () => {
     mockDb.setResults([[page]]);
     const res = await app.request('/api/content');
     const body = await res.json() as any;
     expect(body.pages[0].slug).toBe('intro');
     expect(body.pages[0].hasEn).toBe(true);
+    expect(res.headers.get('cache-control')).toContain('max-age=300');
   });
 
   it('GET /api/content/:slug returns the requested language', async () => {
@@ -97,11 +98,14 @@ describe('content routes (admin)', () => {
     expect(res.status).toBe(403);
   });
 
-  it('GET /api/admin/content lists all pages', async () => {
+  it('GET /api/admin/content lists index entries without bodies', async () => {
     asAdmin();
     mockDb.setResults([[page]]);
     const res = await app.request('/api/admin/content', { headers: AUTH });
-    expect((await res.json() as any).pages).toHaveLength(1);
+    const body = await res.json() as any;
+    expect(body.pages).toHaveLength(1);
+    expect(body.pages[0].has_en).toBe(true);
+    expect(body.pages[0].body_en).toBeUndefined();
   });
 
   it('GET /api/admin/content/:id 404', async () => {

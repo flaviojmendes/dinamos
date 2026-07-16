@@ -1,0 +1,4613 @@
+{
+  "announcement": {
+    "badge": "Comunicado",
+    "default_title": "Atenção",
+    "acknowledge": "Entendi",
+    "dismissing": "Fechando…"
+  },
+  "admin": {
+    "control_center": "Central de Controle",
+    "access_denied": "Acesso Negado",
+    "hub": {
+      "title": "Central de Controle Admin",
+      "subtitle": "Tudo que você pode gerenciar, em um só lugar."
+    },
+    "sections": {
+      "content": "Conteúdo e Aprendizado",
+      "community": "Comunidade",
+      "system": "Pessoas e Sistema"
+    },
+    "cards": {
+      "organize": {
+        "title": "Organizar Conteúdo",
+        "description": "Arraste e solte módulos e lições para aninhar, reordenar e reatribuir."
+      },
+      "content": {
+        "title": "Páginas de Conteúdo",
+        "description": "Crie e edite lições MDX, títulos e simuladores por idioma."
+      },
+      "modules": {
+        "title": "Módulos",
+        "description": "Defina módulos de aprendizado, níveis e caminhos base."
+      },
+      "challenges": {
+        "title": "Desafios",
+        "description": "Gerencie desafios de system design e suas soluções."
+      },
+      "quizzes": {
+        "title": "Quizzes",
+        "description": "Crie quizzes, perguntas e temas."
+      },
+      "game": {
+        "title": "Modo Jogo",
+        "description": "Configure experiências de aprendizado gamificadas."
+      },
+      "forum_categories": {
+        "title": "Categorias do Fórum",
+        "description": "Organize as categorias de discussão do fórum da comunidade."
+      },
+      "notifications": {
+        "title": "Notificações",
+        "description": "Envie comunicados e gerencie notificações."
+      },
+      "announcements": {
+        "title": "Comunicados",
+        "description": "Publique um modal exibido aos usuários até que confirmem a leitura."
+      },
+      "users": {
+        "title": "Usuários",
+        "description": "Veja usuários e detalhes de conta."
+      },
+      "roles": {
+        "title": "Funções",
+        "description": "Gerencie funções e atribuições de permissão."
+      },
+      "analytics": {
+        "title": "Análises",
+        "description": "Métricas da plataforma, crescimento e gráficos de engajamento."
+      },
+      "settings": {
+        "title": "Configurações",
+        "description": "Configuração global da plataforma."
+      }
+    }
+  },
+  "command_center": {
+    "title": "Painel",
+    "session_active": "Ativo",
+    "operator": "Bem-vindo,",
+    "readiness_suffix": "— {{pct}}% concluído",
+    "quick_jump": "Acesso rápido",
+    "modules_cleared": "Módulos concluídos",
+    "readiness": "Progresso",
+    "progress_overview": "Visão geral do progresso",
+    "ring_complete": "concluído",
+    "stat_lessons": "Lições",
+    "stat_in_progress": "Em andamento",
+    "coins_label": "DinaCoins",
+    "greeting_subtitle": "Continue de onde você parou.",
+    "operation_activity": "A seguir",
+    "recommended_next": "Recomendado a seguir",
+    "practice_arena_subtitle": "Aprimore suas habilidades com desafios práticos",
+    "design_lab_badge": "Feedback em tempo real",
+    "design_lab_cta": "Iniciar entrevista simulada",
+    "deploy": "Começar",
+    "all_cleared": "Todas as lições concluídas",
+    "all_cleared_sub": "Todos os módulos foram concluídos. Revise um tópico ou entre na Arena de Prática.",
+    "modules_empty": "Nenhum módulo ainda — o conteúdo está carregando ou não há módulos disponíveis.",
+    "activity_empty_sub": "Seja o primeiro a iniciar uma discussão no fórum.",
+    "mission_table": "Módulos",
+    "col_operation": "Módulo",
+    "col_priority": "Nível",
+    "col_progress": "Progresso",
+    "col_status": "Status",
+    "activity_feed": "Atividade recente",
+    "view_all": "Ver tudo",
+    "no_transmissions": "Nenhuma atividade recente",
+    "replies": "{{count}} respostas",
+    "search_placeholder": "Buscar lições...",
+    "search_aria": "Buscar lições",
+    "no_matches": "Nenhum resultado",
+    "time_now": "agora",
+    "action_review": "Revisar",
+    "action_resume": "Continuar",
+    "action_start": "Começar",
+    "tier": {
+      "foundational": "Fundamental",
+      "core": "Essencial",
+      "advanced": "Avançado",
+      "applied": "Aplicado"
+    },
+    "modules": {
+      "fundamentals": "Fundamentos",
+      "theory": "Fundamentos Teóricos",
+      "components": "Componentes de Sistema",
+      "design": "Princípios de Design",
+      "consistency": "Estratégias de Consistência",
+      "security": "Segurança",
+      "monitoring": "Monitoramento e Manutenção",
+      "ai-systems": "Sistemas de IA e LLMs",
+      "data-storage": "Dados e Armazenamento",
+      "cases": "Casos do Mundo Real",
+      "tools": "Ferramentas e Comunidade",
+      "practice": "Arena de Prática"
+    }
+  },
+  "heatmap": {
+    "title": "Atividade",
+    "subtitle": "Últimos 12 meses",
+    "summary_suffix": "atividades no último ano",
+    "signed_out": "Entre para acompanhar sua atividade.",
+    "empty_hint": "Leia uma lição, faça um quiz, resolva um desafio ou poste no fórum para começar sua sequência.",
+    "no_activity": "Sem atividade",
+    "count_actions": "{{count}} atividades",
+    "count_actions_one": "{{count}} atividade",
+    "stat_current_streak": "Sequência atual",
+    "stat_longest_streak": "Maior sequência",
+    "stat_best_day": "Melhor dia",
+    "unit_days": "dias",
+    "unit_days_one": "dia",
+    "unit_actions": "ações",
+    "unit_actions_one": "ação",
+    "less": "Menos",
+    "more": "Mais",
+    "weekday_mon": "Seg",
+    "weekday_wed": "Qua",
+    "weekday_fri": "Sex",
+    "parts": {
+      "reads": "{{count}} lições lidas",
+      "reads_one": "{{count}} lição lida",
+      "quizzes": "{{count}} quizzes",
+      "quizzes_one": "{{count}} quiz",
+      "solutions": "{{count}} soluções",
+      "solutions_one": "{{count}} solução",
+      "forum": "{{count}} posts no fórum",
+      "forum_one": "{{count}} post no fórum"
+    }
+  },
+  "quick_access": {
+    "title": "ACESSO RÁPIDO",
+    "command_center": "Centro de Comando",
+    "roadmap": "Roteiro",
+    "editor": "Editor de Sistemas",
+    "forum": "Fórum",
+    "preferences": "Preferências"
+  },
+  "common": {
+    "start_now": "Começar Agora",
+    "view_content": "Ver Conteúdo",
+    "free_editor": "Editor Gratuito!",
+    "access_free_editor": "Experimente o Editor de Sistemas Distribuídos totalmente grátis, sem cadastro!",
+    "loading": "Carregando o roadmap..."
+  },
+  "footer": {
+    "all_rights_reserved": "Todos os direitos reservados.",
+    "privacy_policy": "Política de Privacidade",
+    "terms": "Termos de Serviço",
+    "open_source": "Código aberto"
+  },
+  "protected_route": {
+    "loading": "Carregando..."
+  },
+  "badges": {
+    "free": "Grátis",
+    "new": "Novo"
+  },
+  "cookies": {
+    "banner": {
+      "title": "Usamos cookies",
+      "description": "Usamos cookies para melhorar sua experiência, analisar o tráfego do site e fornecer conteúdo personalizado. Você pode escolher quais cookies aceitar.",
+      "accept": "Aceitar Todos",
+      "reject": "Rejeitar Todos",
+      "customize": "Personalizar"
+    },
+    "preferences": {
+      "title": "Preferências de Cookies",
+      "save": "Salvar Preferências",
+      "accept": "Aceitar Todos",
+      "reject": "Rejeitar Todos"
+    },
+    "necessary": {
+      "title": "Cookies Necessários",
+      "description": "Essenciais para funcionalidade básica do site, autenticação e segurança. Não podem ser desabilitados."
+    },
+    "analytics": {
+      "title": "Cookies de Análise",
+      "description": "Nos ajudam a entender como os visitantes interagem com nosso site coletando e relatando informações anonimamente."
+    },
+    "functional": {
+      "title": "Cookies Funcionais",
+      "description": "Habilitam funcionalidades aprimoradas como lembrar suas preferências e fornecer recursos personalizados."
+    },
+    "marketing": {
+      "title": "Cookies de Marketing",
+      "description": "Rastreiam visitantes através de sites para exibir anúncios relevantes e envolventes."
+    },
+    "policy": {
+      "text": "Para mais informações, leia nossa",
+      "privacy": "Política de Privacidade",
+      "cookies": "Política de Cookies"
+    }
+  },
+  "status": {
+    "coming_soon": "Em breve"
+  },
+  "content": {
+    "mark_complete": "Marcar como concluído",
+    "completed_label": "Concluído",
+    "reading_time": "{{minutes}} min de leitura"
+  },
+  "auth": {
+    "welcome_title": "Bem-vindo ao System Design",
+    "welcome_subtitle": "Faça login para acessar o conteúdo completo e simuladores interativos",
+    "login_google": "Continuar com Google",
+    "login_github": "Continuar com GitHub",
+    "terms_notice": "Ao fazer login, você concorda com nossos termos de uso e política de privacidade.",
+    "error_google": "Erro ao fazer login com Google. Por favor, tente novamente.",
+    "error_github": "Erro ao fazer login com GitHub. Por favor, tente novamente."
+  },
+  "preferences": {
+    "title": "Preferências",
+    "account_info": "Informações da Conta",
+    "email": "Email",
+    "creation_date": "Data de Inscrição",
+    "privacy_cookies_title": "Privacidade e Cookies",
+    "cookie_preferences_title": "Preferências de Cookies",
+    "cookie_preferences_desc": "Gerencie como coletamos e usamos dados em nosso site através de cookies.",
+    "manage_cookies_btn": "Gerenciar Cookies",
+    "privacy_policy_title": "Política de Privacidade",
+    "privacy_policy_desc": "Saiba como coletamos, usamos e protegemos suas informações pessoais.",
+    "view_policy_btn": "Ver Política",
+    "terms_title": "Termos e Condições",
+    "terms_desc": "Revise nossos termos de serviço e contrato de usuário.",
+    "view_terms_btn": "Ver Termos"
+  },
+  "privacy_policy": {
+    "title": "Política de Privacidade",
+    "last_updated_label": "Última atualização:",
+    "last_updated_date": "Dezembro de 2024",
+    "sections": {
+      "info_collection": {
+        "title": "1. Informações que Coletamos",
+        "description": "Coletamos informações que você fornece diretamente para nós, como quando você:",
+        "items": [
+          "Cria uma conta ou faz login",
+          "Assina nossos serviços",
+          "Entra em contato para suporte",
+          "Participa de pesquisas ou feedback"
+        ]
+      },
+      "use_info": {
+        "title": "2. Como Usamos Suas Informações",
+        "description": "Usamos as informações que coletamos para:",
+        "items": [
+          "Fornecer, manter e melhorar nossos serviços",
+          "Processar transações e enviar informações relacionadas",
+          "Enviar avisos técnicos e mensagens de suporte",
+          "Responder aos seus comentários e perguntas",
+          "Analisar padrões de uso para melhorar a experiência do usuário"
+        ]
+      },
+      "sharing": {
+        "title": "3. Compartilhamento de Informações",
+        "description": "Não vendemos, trocamos ou transferimos suas informações pessoais para terceiros sem seu consentimento, exceto conforme descrito nesta política.",
+        "items_title": "Podemos compartilhar suas informações nas seguintes situações:",
+        "items": [
+          "Com provedores de serviço que nos ajudam a operar nossos serviços",
+          "Para cumprir obrigações legais",
+          "Para proteger nossos direitos e segurança",
+          "Em conexão com uma transferência de negócio"
+        ]
+      },
+      "security": {
+        "title": "4. Segurança dos Dados",
+        "description": "Implementamos medidas de segurança apropriadas para proteger suas informações pessoais contra acesso, alteração, divulgação ou destruição não autorizada."
+      },
+      "rights": {
+        "title": "5. Seus Direitos",
+        "description": "Dependendo da sua localização, você pode ter certos direitos em relação às suas informações pessoais, incluindo:",
+        "items": [
+          "O direito de acessar suas informações pessoais",
+          "O direito de corrigir ou atualizar suas informações",
+          "O direito de excluir suas informações",
+          "O direito de restringir o processamento",
+          "O direito à portabilidade de dados"
+        ]
+      },
+      "cookies": {
+        "title": "6. Cookies e Rastreamento",
+        "description": "Utilizamos cookies e tecnologias de rastreamento similares para melhorar sua experiência. Para informações detalhadas sobre o uso de cookies, consulte nossa"
+      },
+      "contact": {
+        "title": "7. Fale Conosco",
+        "description": "Se você tiver dúvidas sobre esta Política de Privacidade, entre em contato:",
+        "items": [
+          "Email: flavio@trilha.info",
+          "Através do formulário de contato no site"
+        ]
+      }
+    },
+    "links": {
+      "terms": "Termos e Condições",
+      "cookies": "Política de Cookies",
+      "back_home": "Voltar para o Dinamos"
+    }
+  },
+  "terms": {
+    "title": "Termos e Condições",
+    "last_updated_label": "Última atualização:",
+    "last_updated_date": "Junho de 2026",
+    "sections": {
+      "acceptance": {
+        "title": "1. Aceitação dos Termos",
+        "paragraphs": [
+          "Ao acessar e usar o Dinamos (\"o Serviço\"), você aceita e concorda em estar vinculado a estes Termos. Se não concordar, não utilize o Serviço.",
+          "Podemos alterar estes Termos a qualquer momento. O uso contínuo do Serviço após alterações significa que você aceita os Termos atualizados."
+        ]
+      },
+      "description": {
+        "title": "2. Descrição do Serviço",
+        "intro": "O Dinamos é uma plataforma educacional focada em aprendizado de sistemas distribuídos. Nosso serviço inclui:",
+        "items": [
+          "Conteúdo interativo e tutoriais",
+          "Simuladores e ferramentas de system design",
+          "Materiais educacionais e documentação",
+          "Recursos de comunidade e acompanhamento de progresso"
+        ]
+      },
+      "accounts": {
+        "title": "3. Contas de Usuário",
+        "intro": "Para acessar certos recursos, é necessário registrar uma conta. Você concorda em:",
+        "items": [
+          "Fornecer informações precisas e atualizadas",
+          "Manter suas informações atualizadas",
+          "Manter a segurança da sua senha e conta",
+          "Nos notificar sobre uso não autorizado",
+          "Assumir responsabilidade por todas as atividades em sua conta"
+        ]
+      },
+      "ip_rights": {
+        "title": "4. Propriedade Intelectual e Atribuição",
+        "intro": "Todo o conteúdo educacional do Serviço é gratuito para acessar, estudar e compartilhar. Pedimos apenas uma coisa em troca: sempre dê os créditos à plataforma. Sempre que você usar, referenciar ou reproduzir nosso conteúdo — incluindo em vídeos, cursos, aulas, apresentações, artigos, redes sociais ou qualquer outro meio — você deve:",
+        "items": [
+          "Dar crédito claro e visível ao Dinamos (trilhainfo) como fonte do conteúdo",
+          "Incluir um link para a plataforma (https://instagram.com/trilhainfo) sempre que o meio permitir",
+          "Manter intactos os avisos de direitos autorais, marca ou autoria",
+          "Não apresentar nosso conteúdo como se fosse seu nem sugerir endosso, parceria ou afiliação oficial sem permissão"
+        ]
+      },
+      "conduct": {
+        "title": "5. Conduta do Usuário",
+        "intro": "Você concorda em não usar o Serviço para:",
+        "items": [
+          "Violar leis ou regulamentos",
+          "Transmitir conteúdo nocivo, ameaçador ou ofensivo",
+          "Interferir ou interromper o Serviço ou servidores",
+          "Tentar acesso não autorizado a outras contas",
+          "Compartilhar credenciais da sua conta com terceiros",
+          "Usar sistemas automatizados para acessar o Serviço"
+        ]
+      },
+      "availability": {
+        "title": "6. Disponibilidade do Serviço",
+        "intro": "Buscamos confiabilidade, mas não garantimos disponibilidade ininterrupta. O Serviço pode ficar indisponível devido a:",
+        "items": [
+          "Manutenções programadas",
+          "Dificuldades técnicas",
+          "Eventos de força maior",
+          "Interrupções de serviços de terceiros"
+        ],
+        "note": "Podemos modificar, suspender ou descontinuar o Serviço com aviso razoável."
+      },
+      "privacy": {
+        "title": "7. Privacidade e Proteção de Dados",
+        "paragraphs": [
+          "Sua privacidade é importante. A coleta e uso de informações pessoais são regidos por nossa Política de Privacidade, incorporada por referência.",
+          "Ao usar o Serviço, você consente com nossas práticas de dados conforme descritas na Política de Privacidade."
+        ]
+      },
+      "disclaimer": {
+        "title": "8. Isenção de Garantias",
+        "intro": "O Serviço é fornecido \"como está\" e \"conforme disponível\", sem garantias de qualquer tipo, incluindo:",
+        "items": [
+          "Comercialização ou adequação a um propósito específico",
+          "Não violação de direitos de terceiros",
+          "Precisão, completude ou confiabilidade do conteúdo",
+          "Operação ininterrupta ou livre de erros"
+        ]
+      },
+      "liability": {
+        "title": "9. Limitação de Responsabilidade",
+        "intro": "Na máxima extensão permitida por lei, o Dinamos não é responsável por danos indiretos, incidentais, especiais, consequenciais ou punitivos, incluindo:",
+        "items": [
+          "Perda de lucros, dados ou outros prejuízos intangíveis",
+          "Danos decorrentes do uso ou impossibilidade de uso do Serviço",
+          "Danos decorrentes de acesso não autorizado aos seus dados"
+        ],
+        "note": "A responsabilidade total é limitada ao valor pago pelo Serviço nos 12 meses anteriores à reclamação."
+      },
+      "indemnification": {
+        "title": "10. Indenização",
+        "intro": "Você concorda em indenizar e isentar o Dinamos de reivindicações, danos, perdas ou despesas decorrentes de:",
+        "items": [
+          "Seu uso do Serviço",
+          "Sua violação destes Termos",
+          "Sua violação de direitos de terceiros",
+          "Conteúdo que você enviar ou compartilhar pelo Serviço"
+        ]
+      },
+      "termination": {
+        "title": "11. Rescisão",
+        "intro": "Podemos encerrar ou suspender sua conta e acesso imediatamente, sem aviso, por motivos como:",
+        "items": [
+          "Violação destes Termos",
+          "Atividade fraudulenta ou ilegal",
+          "Períodos prolongados de inatividade"
+        ],
+        "note": "Com a rescisão, seu direito de usar o Serviço cessa imediatamente; disposições sobre propriedade intelectual, isenções e limitações permanecem vigentes."
+      },
+      "governing_law": {
+        "title": "12. Legislação Aplicável",
+        "paragraphs": [
+          "Estes Termos são regidos pelas leis do Brasil, sem considerar conflitos de leis.",
+          "Disputas estão sujeitas à jurisdição exclusiva dos tribunais do Brasil."
+        ]
+      },
+      "changes": {
+        "title": "13. Alterações nos Termos",
+        "intro": "Podemos modificar estes Termos a qualquer momento. Em caso de mudanças materiais, notificaremos você por:",
+        "items": [
+          "Publicação dos Termos atualizados nesta página",
+          "Atualização da data de \"Última atualização\"",
+          "Envio de aviso por e-mail ou pelo Serviço"
+        ],
+        "note": "O uso contínuo após as alterações constitui aceitação dos novos Termos."
+      },
+      "contact": {
+        "title": "14. Informações de Contato",
+        "intro": "Se tiver dúvidas sobre estes Termos, entre em contato:",
+        "items": [
+          "Email: flavio@trilha.info",
+          "Através do formulário de contato no site"
+        ]
+      },
+      "severability": {
+        "title": "15. Divisibilidade",
+        "paragraphs": [
+          "Se qualquer disposição for inexequível ou inválida, ela será limitada ou eliminada na extensão mínima necessária para que o restante dos Termos permaneça em pleno vigor."
+        ]
+      }
+    },
+    "links": {
+      "privacy": "Política de Privacidade",
+      "cookies": "Política de Cookies",
+      "back_home": "Voltar para o Dinamos"
+    }
+  },
+  "landing": {
+    "hero_title": "Domine Sistemas Distribuídos na Prática",
+    "hero_subtitle": "A plataforma mais completa para aprender arquitetura de sistemas com simuladores interativos e casos reais",
+    "hero_eyebrow": "Plataforma de aprendizado de sistemas distribuídos",
+    "header_signin": "Entrar",
+    "hero_explore": "Explorar o conteúdo",
+    "hero_trust": "Grátis para sempre · Sem cartão de crédito · Login com 1 clique",
+    "signin_title": "Entre para começar a aprender",
+    "signin_subtitle": "Acompanhe seu progresso, use todos os simuladores e participe da comunidade — em um clique.",
+    "stat_simulators_value": "15+",
+    "stat_simulators_label": "Simuladores interativos",
+    "stat_cases_value": "6",
+    "stat_cases_label": "Estudos de caso reais",
+    "stat_scale_value": "1.5B+",
+    "stat_scale_label": "Requisições / ano analisadas",
+    "stat_price_value": "R$0",
+    "stat_price_label": "Custo, para sempre",
+    "features_title": "Conteúdo Completo e Prático",
+    "features_subtitle": "Tudo que você precisa para se tornar um especialista em sistemas distribuídos",
+    "simulators_title": "Aprenda com Simuladores Interativos",
+    "simulators_subtitle": "Visualize e experimente conceitos complexos em tempo real",
+    "teacher_title": "Quem vai te ensinar",
+    "teacher_experience_title": "Experiência",
+    "teacher_experience_item1": "15+ anos de experiência em desenvolvimento de software",
+    "teacher_experience_item2": "Liderança em empresas de tecnologia",
+    "teacher_experience_item3": "Projetos em escala global",
+    "teacher_specialties_title": "Especialidades",
+    "teacher_specialties_item1": "Arquitetura de Sistemas Distribuídos",
+    "teacher_specialties_item2": "Escalabilidade e Performance",
+    "teacher_specialties_item3": "Segurança e Boas Práticas",
+    "teacher_about_me_text1": "Olá! Me chamo Flávio, e atualmente atuo como Engineering Manager em Sistemas Distribuídos.",
+    "teacher_about_me_text2": "Nesse material a minha intenção é poder colocar todos esses mais de 16 anos de experiência em prática, de forma que você saia daqui com uma mentalidade de que é necessário, além de ter um repertório técnico, colocar a mão na massa, experimentar e validar suas soluções.",
+    "teacher_about_me_text3": "No meu dia a dia trabalho em projetos de alta performance, escalabilidade e disponibilidade onde atingimos mais de 1,5 bilhão de requisições por ano.",
+    "fundamentals_title": "Fundamentos Sólidos",
+    "fundamentals_item1": "Sistemas Distribuídos 101",
+    "fundamentals_item2": "System Design 101",
+    "fundamentals_item3": "Componentes Básicos",
+    "fundamentals_item4": "Arquiteturas Modernas",
+    "real_cases_title": "Casos Reais",
+    "real_cases_item1": "Netflix e YouTube",
+    "real_cases_item2": "WhatsApp e Uber",
+    "real_cases_item3": "Spotify e Bit.ly",
+    "real_cases_item4": "Decisões Técnicas",
+    "simulators_item1": "Cache Simulator",
+    "simulators_item1_description": "Entenda como o cache funciona e como ele melhora a performance dos sistemas",
+    "simulators_item2": "Circuit Breaker",
+    "simulators_item2_description": "Aprenda sobre tolerância a falhas e resiliência em sistemas distribuídos",
+    "simulators_item3": "Load Balancer",
+    "simulators_item3_description": "Explore diferentes estratégias de balanceamento de carga e suas aplicações",
+    "simulators_item4": "Segurança e Proteção",
+    "journey_title": "Sua Jornada de Aprendizado",
+    "journey_subtitle": "Um caminho estruturado para dominar sistemas distribuídos",
+    "journey_fundamentals_title": "Fundamentos",
+    "journey_fundamentals_item1": "Sistemas Distribuídos 101",
+    "journey_fundamentals_item2": "System Design 101",
+    "journey_fundamentals_item3": "Componentes Básicos",
+    "journey_fundamentals_description": "Aprenda os conceitos fundamentais e construa uma base sólida para sua jornada",
+    "journey_design_principles_title": "Princípios de Design",
+    "journey_design_principles_item1": "Escalabilidade Horizontal e Vertical",
+    "journey_design_principles_item2": "Alta Disponibilidade",
+    "journey_design_principles_item3": "Tolerância a Falhas",
+    "journey_design_principles_description": "Domine os princípios essenciais de design de sistemas distribuídos",
+    "journey_advanced_topics_title": "Tópicos Avançados",
+    "journey_advanced_topics_item1": "Estratégias de Consistência",
+    "journey_advanced_topics_item2": "Relógios Lógicos de Lamport",
+    "journey_advanced_topics_item3": "Arquitetura Orientada a Eventos",
+    "journey_advanced_topics_description": "Explore conceitos avançados e aprofunde seu conhecimento",
+    "journey_real_cases_title": "Casos Reais",
+    "journey_real_cases_item1": "YouTube e Netflix",
+    "journey_real_cases_item2": "Spotify e WhatsApp",
+    "journey_real_cases_item3": "Uber e Bit.ly",
+    "journey_real_cases_description": "Aplique seu conhecimento analisando casos reais de sucesso",
+    "what_you_receive_title": "O Que Você Recebe",
+    "what_you_receive_item1": "Mais de 15 simuladores interativos para prática hands-on",
+    "what_you_receive_item2": "6 estudos de caso detalhados de empresas de tecnologia",
+    "what_you_receive_item3": "Conteúdo teórico completo com exemplos práticos",
+    "what_you_receive_item4": "Atualizações e novos conteúdos incluídos",
+    "differentials_title": "Diferenciais",
+    "differentials_item1": "Simuladores exclusivos para praticar conceitos",
+    "differentials_item2": "Análise detalhada de decisões técnicas reais",
+    "differentials_item3": "Conteúdo em português e focado na prática",
+    "differentials_item4": "Roadmap estruturado de aprendizado",
+    "free_badge": "GRÁTIS",
+    "free_title": "Acesso Totalmente Gratuito",
+    "free_subtitle": "Todo o conteúdo disponível sem custo. Aprenda sistemas distribuídos sem barreiras.",
+    "free_price": "GRÁTIS",
+    "free_description": "Acesso completo a todo conteúdo, simuladores e casos reais. Sem necessidade de cartão de crédito.",
+    "cta_free_title": "Comece a Aprender Hoje!",
+    "cta_free_subtitle": "Acesso completo a todo o conteúdo, 100% grátis.",
+    "open_source_label": "Código aberto",
+    "open_source_title": "Construído à vista de todos",
+    "open_source_subtitle": "O Dinamos é gratuito e totalmente open source. Leia o código, abra uma issue ou envie um pull request. Toda a plataforma vive no GitHub.",
+    "open_source_cta": "Ver no GitHub",
+    "open_source_contribute": "Contribuições são bem-vindas",
+    "scroll_hint": "Role para explorar",
+    "hero_uptime": "99,99% de disponibilidade",
+    "stats_label": "Em números",
+    "topology_label": "Sistema ao vivo",
+    "topology_title": "Acompanhe uma requisição pela arquitetura",
+    "topology_subtitle": "Do cliente ao balanceador, aos nós, ao cache e ao banco — cada salto aqui é algo que você pode abrir, executar e quebrar em um simulador.",
+    "topology_node_client": "cliente",
+    "topology_node_lb": "balanceador",
+    "topology_node_cache": "cache",
+    "topology_node_db": "banco de dados",
+    "topology_card1_title": "Balanceamento de carga",
+    "topology_card1_text": "Distribua o tráfego entre nós saudáveis e veja o roteamento se adaptar conforme instâncias entram e saem.",
+    "topology_card2_title": "Cache",
+    "topology_card2_text": "Reduza a latência e proteja seu banco servindo leituras quentes direto da memória.",
+    "topology_card3_title": "Resiliência",
+    "topology_card3_text": "Circuit breakers, timeouts e retries impedem que uma única falha vire um efeito cascata.",
+    "topology_card4_title": "Replicação",
+    "topology_card4_text": "Replique o estado entre regiões e raciocine sobre os trade-offs reais de consistência.",
+    "features_label": "O que você aprende",
+    "showcase_label": "Dentro do laboratório",
+    "journey_label": "Trilha",
+    "forum_section": {
+      "title": "Fórum da Comunidade",
+      "subtitle": "Últimas discussões da comunidade",
+      "view_all": "Ver todos",
+      "see_more": "+{{count}} tópicos a mais"
+    }
+  },
+  "menu": {
+    "roadmap": {
+      "name": "🎯 Comece Aqui",
+      "description": "Sua jornada de aprendizado passo a passo"
+    },
+    "intro": {
+      "name": "Introdução",
+      "description": "Sobre o curso e motivação"
+    },
+    "sistemas_distribuidos_101": {
+      "name": "Sistemas Distribuídos 101",
+      "description": "Conceitos fundamentais através de analogias"
+    },
+    "system_design_101": {
+      "name": "System Design 101",
+      "description": "Fundamentos de design de sistemas"
+    },
+    "theoretical_foundations": {
+      "name": "Fundamentos Teóricos",
+      "description": "Teoria e princípios fundamentais de sistemas distribuídos",
+      "cap_theorem": {
+        "name": "Teorema CAP",
+        "description": "Trade-offs entre Consistência, Disponibilidade e Tolerância a Partições",
+        "consistency": {
+          "description": "Todos os nós veem os mesmos dados ao mesmo tempo. Toda leitura recebe a escrita mais recente ou um erro."
+        },
+        "availability": {
+          "description": "O sistema permanece operacional 100% do tempo. Toda requisição recebe uma resposta."
+        },
+        "partition_tolerance": {
+          "description": "O sistema continua operando apesar de falhas de rede entre os nós."
+        },
+        "cp_systems": {
+          "description": "Priorizam consistência de dados sobre disponibilidade durante partições de rede"
+        },
+        "ap_systems": {
+          "description": "Priorizam disponibilidade do sistema sobre consistência imediata durante partições"
+        },
+        "ca_systems": {
+          "description": "Sistemas tradicionais que sacrificam tolerância a partições"
+        }
+      },
+      "consistency_models": {
+        "name": "Modelos de Consistência",
+        "description": "Padrões de consistência forte, eventual e fraca",
+        "strong_consistency": {
+          "description": "Todos os nós veem os mesmos dados ao mesmo tempo. Após uma operação de escrita, todas as leituras subsequentes retornarão o valor atualizado."
+        },
+        "eventual_consistency": {
+          "description": "O sistema se tornará consistente com o tempo, desde que não receba novas atualizações. Leituras podem retornar dados obsoletos temporariamente."
+        },
+        "weak_consistency": {
+          "description": "Após uma escrita, leituras podem ou não ver o valor atualizado. O sistema não faz garantias sobre quando os dados estarão consistentes."
+        }
+      },
+      "distributed_challenges": {
+        "name": "Desafios Distribuídos",
+        "description": "Problemas comuns em sistemas distribuídos",
+        "network_partitions": {
+          "description": "Falhas de rede que dividem o sistema em grupos isolados, forçando trade-offs entre consistência e disponibilidade."
+        },
+        "clock_sync": {
+          "description": "Diferentes nós têm relógios diferentes, dificultando ordenar eventos e manter consistência."
+        },
+        "partial_failures": {
+          "description": "Algumas partes do sistema falham enquanto outras continuam funcionando, criando estados inconsistentes."
+        },
+        "consensus": {
+          "description": "Fazer nós distribuídos concordarem com um único valor ou decisão na presença de falhas."
+        },
+        "state_management": {
+          "description": "Manter controle do estado do sistema em múltiplos nós ao lidar com atualizações concorrentes."
+        },
+        "race_conditions": {
+          "description": "Múltiplos processos acessando recursos compartilhados simultaneamente, levando a resultados imprevisíveis."
+        }
+      },
+      "network_partitions": {
+        "name": "Partições de Rede e Falhas",
+        "description": "Lidando com divisões de rede e falhas de nós",
+        "what_is": {
+          "description": "Uma partição de rede ocorre quando a rede entre nós falha, dividindo o sistema em grupos isolados que não conseguem se comunicar."
+        },
+        "causes": {
+          "description": "Partições de rede podem surgir de várias questões de infraestrutura e configuração que afetam a conectividade entre nós distribuídos."
+        },
+        "failure_types": {
+          "description": "Diferentes modos de falha requerem diferentes estratégias de detecção e tratamento em sistemas distribuídos.",
+          "fail_stop": {
+            "description": "Nó para completamente e outros nós podem detectar a falha"
+          },
+          "fail_slow": {
+            "description": "Nó fica muito lento mas não falha completamente"
+          },
+          "byzantine": {
+            "description": "Nó se comporta arbitrariamente ou maliciosamente"
+          }
+        },
+        "partition_scenarios": {
+          "datacenter_split": {
+            "description": "Quando datacenters perdem conectividade, cada um deve decidir como lidar com operações em andamento"
+          },
+          "service_mesh_partition": {
+            "description": "Quando serviços em uma mesh perdem conectividade com subconjuntos de outros serviços"
+          },
+          "database_partition": {
+            "description": "Quando nós de banco se tornam isolados uns dos outros"
+          }
+        },
+        "detection": {
+          "description": "Detecção precoce e precisa de partições de rede é crucial para implementar estratégias de resposta apropriadas."
+        },
+        "prevention": {
+          "description": "Embora partições não possam ser completamente prevenidas, sua probabilidade e impacto podem ser significativamente reduzidos através de design apropriado de infraestrutura."
+        },
+        "recovery": {
+          "description": "Quando partições se curam, sistemas devem cuidadosamente reconciliar estado e resolver quaisquer conflitos que ocorreram durante a partição."
+        }
+      },
+      "pacelc": {
+        "name": "Teorema PACELC",
+        "description": "Além do CAP: o trade-off latência-vs-consistência mesmo sem partições",
+        "simulator": {
+          "name": "Simulador PACELC",
+          "description": "Classifique bancos reais pelos seus trade-offs em partição e operação normal"
+        }
+      },
+      "flp": {
+        "name": "Impossibilidade FLP",
+        "description": "Por que nenhum algoritmo de consenso assíncrono pode garantir terminação"
+      },
+      "fallacies": {
+        "name": "Falácias da Computação Distribuída",
+        "description": "Oito suposições falsas que arruínam sistemas distribuídos"
+      }
+    },
+    "componentes": {
+      "name": "Componentes Básicos",
+      "description": "Blocos fundamentais de sistemas distribuídos",
+      "banco_dados": {
+        "name": "Bancos de Dados",
+        "description": "Armazenamento e gerenciamento de dados"
+      },
+      "cache": {
+        "name": "Cache",
+        "description": "Armazenamento temporário para melhor performance",
+        "simulator": {
+          "name": "Simulador",
+          "description": "Experimente diferentes estratégias de cache"
+        }
+      },
+      "load_balancer": {
+        "name": "Balanceador de Carga",
+        "description": "Distribuição de tráfego entre servidores",
+        "simulator": {
+          "name": "Simulador",
+          "description": "Experimente diferentes algoritmos de balanceamento"
+        }
+      },
+      "message_queue": {
+        "name": "Filas de Mensagens",
+        "description": "Comunicação assíncrona entre serviços",
+        "simulator": {
+          "name": "Simulador",
+          "description": "Experimente o fluxo de mensagens"
+        }
+      },
+      "cdn": {
+        "name": "CDN",
+        "description": "Distribuição global de conteúdo",
+        "simulator": {
+          "name": "Simulador",
+          "description": "Veja como o CDN acelera entregas"
+        }
+      },
+      "api_gateway": {
+        "name": "API Gateway",
+        "description": "Ponto único de entrada para APIs",
+        "simulator": {
+          "name": "Simulador",
+          "description": "Experimente roteamento e proteção de APIs"
+        }
+      },
+      "firewall": {
+        "name": "Firewall",
+        "description": "Segurança e controle de tráfego",
+        "simulator": {
+          "name": "Simulador",
+          "description": "Experimente regras de firewall"
+        }
+      },
+      "polling_webhooks": {
+        "name": "Polling vs Webhooks",
+        "description": "Estratégias de comunicação em tempo real",
+        "teoria": {
+          "name": "Teoria e Conceitos",
+          "description": "Fundamentos e comparação detalhada"
+        },
+        "simulator": {
+          "name": "Simulador Interativo",
+          "description": "Veja a diferença na prática"
+        }
+      },
+      "vector_database": {
+        "name": "Banco de Dados Vetorial",
+        "description": "Armazene embeddings e faça busca por similaridade"
+      },
+      "model_gateway": {
+        "name": "Gateway de Modelos",
+        "description": "Infraestrutura que fica na frente dos seus LLMs"
+      },
+      "kafka": {
+        "name": "Kafka e Streaming",
+        "description": "Logs de eventos particionados e reproduzíveis e consumer groups",
+        "simulator": {
+          "name": "Simulador de Kafka",
+          "description": "Ajuste partições e consumidores e veja o consumer lag"
+        }
+      },
+      "dns": {
+        "name": "DNS",
+        "description": "A lista telefônica distribuída que resolve nomes em endereços"
+      },
+      "reverse_proxy": {
+        "name": "Reverse Proxy",
+        "description": "Uma porta de entrada que termina TLS, roteia e faz cache"
+      },
+      "service_discovery": {
+        "name": "Service Discovery",
+        "description": "Como serviços se encontram numa frota dinâmica"
+      },
+      "service_mesh": {
+        "name": "Service Mesh",
+        "description": "Proxies sidecar para tráfego, segurança e observabilidade"
+      },
+      "kubernetes": {
+        "name": "Kubernetes",
+        "description": "Orquestração declarativa de containers em escala"
+      },
+      "api_styles": {
+        "name": "Estilos de API: REST, gRPC e GraphQL",
+        "description": "Como serviços conversam: round trips, payloads, schemas",
+        "simulator": {
+          "name": "Simulador de Estilos de API",
+          "description": "Compare round trips, tamanho do payload e over-fetching"
+        }
+      },
+      "realtime_push": {
+        "name": "WebSockets e Push em Tempo Real",
+        "description": "Polling vs SSE vs WebSockets para atualizações ao vivo",
+        "simulator": {
+          "name": "Simulador de Push em Tempo Real",
+          "description": "Compare latência de entrega e overhead de requisições"
+        }
+      },
+      "dead_letter_queue": {
+        "name": "Dead Letter Queues",
+        "description": "Para onde vão as mensagens após esgotar as tentativas",
+        "simulator": {
+          "name": "Simulador de Dead Letter Queue",
+          "description": "Ajuste taxa de falha e retries; veja mensagens irem para a DLQ"
+        }
+      },
+      "stream_processing": {
+        "name": "Processamento de Streams",
+        "description": "Computação contínua sobre fluxos de eventos (Flink, Kafka Streams)"
+      }
+    },
+    "principios_design": {
+      "name": "Princípios de Design",
+      "description": "Conceitos essenciais para sistemas robustos",
+      "escalabilidade": {
+        "name": "Escalabilidade",
+        "description": "Crescimento e adaptação do sistema",
+        "horizontal": {
+          "name": "Horizontal (Scale Out)",
+          "description": "Adicionando mais máquinas",
+          "simulator": {
+            "name": "Simulador",
+            "description": "Experimente escalabilidade horizontal"
+          }
+        },
+        "vertical": {
+          "name": "Vertical (Scale Up)",
+          "description": "Aumentando recursos da máquina",
+          "simulator": {
+            "name": "Simulador",
+            "description": "Experimente escalabilidade vertical"
+          }
+        },
+        "latencia": {
+          "name": "Latência",
+          "description": "Medindo e otimizando a latência"
+        },
+        "failover": {
+          "name": "Failover",
+          "description": "Recuperação automática de falhas"
+        },
+        "simulator": {
+          "name": "Simulador Completo",
+          "description": "Compare diferentes estratégias de escala"
+        }
+      },
+      "disponibilidade": {
+        "name": "Alta Disponibilidade",
+        "description": "Mantendo o sistema sempre funcionando",
+        "replicacao": {
+          "name": "Replicação",
+          "description": "Cópias sincronizadas dos dados"
+        },
+        "failover": {
+          "name": "Failover",
+          "description": "Recuperação automática de falhas"
+        },
+        "zonas": {
+          "name": "Zonas de Disponibilidade",
+          "description": "Distribuição geográfica para resiliência"
+        },
+        "disaster-recovery": {
+          "name": "Recuperação de Desastres",
+          "description": "Estratégias de recuperação de falhas catastróficas"
+        },
+        "monitoramento": {
+          "name": "Monitoramento de Saúde",
+          "description": "Acompanhamento contínuo da saúde do sistema"
+        },
+        "distribuicao-carga": {
+          "name": "Distribuição de Carga",
+          "description": "Distribuição de tráfego entre servidores"
+        },
+        "simulator": {
+          "name": "Simulador",
+          "description": "Experimente estratégias de disponibilidade"
+        }
+      },
+      "tolerancia_falhas": {
+        "name": "Tolerância a Falhas",
+        "description": "Lidando com falhas no sistema",
+        "retries": {
+          "name": "Retries",
+          "description": "Tentativas automáticas",
+          "simulator": {
+            "name": "Simulador",
+            "description": "Experimente diferentes estratégias de retry"
+          }
+        },
+        "circuit_breaker": {
+          "name": "Circuit Breaker",
+          "description": "Prevenindo falhas em cascata",
+          "simulator": {
+            "name": "Simulador",
+            "description": "Veja o circuit breaker em ação"
+          }
+        },
+        "timeout": {
+          "name": "Timeout",
+          "description": "Limitando tempo de espera",
+          "simulator": {
+            "name": "Simulador",
+            "description": "Experimente diferentes configurações de timeout"
+          }
+        }
+      },
+      "eventos": {
+        "name": "Arquitetura Orientada a Eventos",
+        "description": "Sistemas baseados em eventos",
+        "simulator": {
+          "name": "Simulador",
+          "description": "Experimente event sourcing e event-driven"
+        }
+      },
+      "servicos": {
+        "name": "Arquitetura de Serviços",
+        "description": "Monolito vs Microsserviços"
+      },
+      "acoplamento": {
+        "name": "Acoplamento",
+        "description": "Acoplamento dinâmico e estático entre serviços"
+      },
+      "orquestracao_vs_coreografia": {
+        "name": "Orquestração vs Coreografia",
+        "description": "Compare os padrões de orquestração e coreografia"
+      },
+      "canary_deployment": {
+        "name": "Canary Deployment",
+        "description": "Rollout gradual com divisão de tráfego e rollback instantâneo",
+        "simulator": {
+          "name": "Simulador de Canary Deployment",
+          "description": "Faça deploy de um canary, divida o tráfego e observe as métricas"
+        }
+      },
+      "cqrs": {
+        "name": "CQRS",
+        "description": "Separe os modelos de escrita e leitura via um log de eventos",
+        "simulator": {
+          "name": "Simulador de CQRS",
+          "description": "Emita comandos e veja os read models se atualizarem"
+        }
+      },
+      "rate_limiting": {
+        "name": "Rate Limiting",
+        "description": "Token bucket, leaky bucket e janela deslizante",
+        "simulator": {
+          "name": "Simulador de Rate Limiter",
+          "description": "Compare algoritmos e veja aceitas vs rejeitadas"
+        }
+      },
+      "backpressure": {
+        "name": "Backpressure",
+        "description": "Controle de fluxo quando consumidores não acompanham",
+        "simulator": {
+          "name": "Simulador de Backpressure",
+          "description": "Throttle o produtor quando a fila enche"
+        }
+      },
+      "event_sourcing": {
+        "name": "Event Sourcing",
+        "description": "Armazene o estado como um log imutável de eventos",
+        "simulator": {
+          "name": "Simulador de Event Sourcing",
+          "description": "Anexe eventos e reconstrua o estado a partir do log"
+        }
+      },
+      "outbox": {
+        "name": "Transactional Outbox",
+        "description": "Publique eventos com confiabilidade sem inconsistência de escrita dupla",
+        "simulator": {
+          "name": "Simulador de Outbox",
+          "description": "Compare escrita dupla vs o padrão outbox sob falhas do broker"
+        }
+      },
+      "bulkhead": {
+        "name": "Padrão Bulkhead",
+        "description": "Isole pools de recursos para que uma falha não afunde o navio",
+        "simulator": {
+          "name": "Simulador de Bulkhead",
+          "description": "Veja uma dependência lenta esgotar um pool compartilhado — e então isole-a"
+        }
+      },
+      "blue_green": {
+        "name": "Deploy Blue-Green",
+        "description": "Dois ambientes idênticos com troca instantânea e rollback",
+        "simulator": {
+          "name": "Simulador Blue-Green",
+          "description": "Mude o tráfego entre ambientes e faça rollback instantâneo"
+        }
+      },
+      "feature_flags": {
+        "name": "Feature Flags",
+        "description": "Desacople deploy de release; ligue/desligue features em runtime"
+      }
+    },
+    "estrategias_de_consistencia": {
+      "name": "Estratégias de Consistência",
+      "description": "Como garantir a consistência em sistemas distribuídos",
+      "sincronizacao": {
+        "name": "Sincronização",
+        "description": "Coordenação e sincronização em sistemas distribuídos",
+        "fundamentos": {
+          "name": "Fundamentos",
+          "description": "Conceitos básicos de sincronização usando o Jantar dos Filósofos"
+        },
+        "deadlocks": {
+          "name": "Deadlocks",
+          "description": "Prevenção e detecção de deadlocks no contexto dos Filósofos"
+        },
+        "algoritmos": {
+          "name": "Algoritmos",
+          "description": "Algoritmos distribuídos para coordenação"
+        }
+      },
+      "two_phase_commit": {
+        "name": "Two Phase Commit",
+        "description": "Protocolo de consenso para transações distribuídas",
+        "simulador": {
+          "name": "Simulador",
+          "description": "Simulação interativa do protocolo Two Phase Commit"
+        }
+      },
+      "consenso": {
+        "name": "Estratégia de Consenso",
+        "description": "Protocolos e mecanismos para garantir acordo entre nós",
+        "simulador": {
+          "name": "Simulador",
+          "description": "Simulação interativa dos protocolos de consenso"
+        }
+      },
+      "lamport_timestamps": {
+        "name": "Relógios Lógicos de Lamport",
+        "description": "Ordenação de eventos em sistemas distribuídos",
+        "simulador": {
+          "name": "Simulador",
+          "description": "Visualize a ordenação de eventos com timestamps de Lamport"
+        }
+      },
+      "saga": {
+        "name": "Padrão Saga",
+        "description": "Transações longas com ações compensatórias",
+        "simulator": {
+          "name": "Simulador de Saga",
+          "description": "Rode uma saga, injete uma falha e veja o rollback"
+        }
+      },
+      "delivery_semantics": {
+        "name": "Semânticas de Entrega",
+        "description": "At-most-once, at-least-once e exactly-once",
+        "simulator": {
+          "name": "Simulador de Semânticas de Entrega",
+          "description": "Alterne dedup e DLQ para controlar duplicatas e perdas"
+        }
+      },
+      "vector_clocks": {
+        "name": "Relógios Vetoriais",
+        "description": "Rastreie causalidade e detecte atualizações concorrentes"
+      },
+      "crdts": {
+        "name": "CRDTs",
+        "description": "Tipos de dados replicados sem conflito que sempre convergem",
+        "simulator": {
+          "name": "Simulador de CRDT",
+          "description": "Edite réplicas de forma independente, depois mescle e veja convergir"
+        }
+      },
+      "gossip": {
+        "name": "Gossip e Anti-Entropia",
+        "description": "Protocolos epidêmicos que espalham estado pelo cluster",
+        "simulator": {
+          "name": "Simulador de Gossip",
+          "description": "Veja um rumor se espalhar nó a nó até o cluster convergir"
+        }
+      },
+      "distributed_locks": {
+        "name": "Locks Distribuídos e Fencing Tokens",
+        "description": "Exclusão mútua com leases e fencing contra donos obsoletos",
+        "simulator": {
+          "name": "Simulador de Lock Distribuído",
+          "description": "Adquira um lease, trave o dono e veja o fencing rejeitar escritas obsoletas"
+        }
+      }
+    },
+    "monitoramento_e_manutencao": {
+      "name": "Monitoramento e Manutenção",
+      "description": "Monitoramento e manutenção de sistemas distribuídos",
+      "metricas": {
+        "name": "Métricas e KPIs",
+        "description": "Indicadores essenciais para monitoramento"
+      },
+      "logs": {
+        "name": "Logs e Tracing",
+        "description": "Rastreamento e análise de logs distribuídos",
+        "simulador": {
+          "name": "Simulador de Logs",
+          "description": "Experimente com bons e maus exemplos de logs"
+        },
+        "tracing": {
+          "name": "Tracing Simulator",
+          "description": "Experimente o rastreamento de eventos"
+        }
+      },
+      "alertas": {
+        "name": "Alertas e Notificações",
+        "description": "Configuração e gestão de alertas"
+      },
+      "performance": {
+        "name": "Análise de Performance",
+        "description": "Identificação e resolução de gargalos"
+      },
+      "health_checks": {
+        "name": "Health Checks",
+        "description": "Monitoramento de saúde dos serviços"
+      },
+      "llm_observability": {
+        "name": "Observabilidade de LLM",
+        "description": "Tokens, custo, traces e avaliações de qualidade"
+      },
+      "distributed_tracing": {
+        "name": "Distributed Tracing",
+        "description": "Acompanhe uma requisição entre serviços com spans e contexto"
+      },
+      "slo_sli_sla": {
+        "name": "SLO, SLI e Error Budgets",
+        "description": "Meça a confiabilidade e gaste-a com burn rate"
+      },
+      "chaos_engineering": {
+        "name": "Chaos Engineering",
+        "description": "Injete falhas deliberadamente para ganhar confiança na resiliência",
+        "simulator": {
+          "name": "Simulador de Chaos",
+          "description": "Mate nós durante um game day e veja a disponibilidade resistir ou despencar"
+        }
+      },
+      "disaster_recovery": {
+        "name": "Disaster Recovery & Backups",
+        "description": "RPO, RTO, estratégias de backup e padrões de recuperação"
+      },
+      "multi_region": {
+        "name": "Multi-Região & Geo-Replicação",
+        "description": "Rode entre regiões por latência, disponibilidade e sobrevivência"
+      }
+    },
+    "casos_reais": {
+      "name": "Casos Reais",
+      "description": "Exemplos reais de system design de grandes empresas",
+      "youtube": {
+        "name": "YouTube",
+        "description": "Como o YouTube processa e distribui vídeos globalmente"
+      },
+      "spotify": {
+        "name": "Spotify",
+        "description": "Arquitetura de streaming de música em tempo real"
+      },
+      "bitly": {
+        "name": "Bit.ly",
+        "description": "Design de um serviço de encurtamento de URLs em escala"
+      },
+      "whatsapp": {
+        "name": "WhatsApp",
+        "description": "Sistema de mensagens em tempo real"
+      },
+      "netflix": {
+        "name": "Netflix",
+        "description": "Streaming de vídeo e recomendação de conteúdo"
+      },
+      "uber": {
+        "name": "Uber",
+        "description": "Sistema de geolocalização e matching em tempo real"
+      },
+      "chatgpt": {
+        "name": "ChatGPT",
+        "description": "Servindo LLMs a centenas de milhões com streaming"
+      },
+      "perplexity": {
+        "name": "Perplexity",
+        "description": "Motor de respostas baseado em RAG com fontes citadas"
+      },
+      "github_copilot": {
+        "name": "GitHub Copilot",
+        "description": "Autocompletar de código inline de baixa latência em escala"
+      }
+    },
+    "seguranca": {
+      "name": "Segurança",
+      "description": "Proteção e segurança em sistemas distribuídos",
+      "autenticacao": {
+        "name": "Autenticação",
+        "description": "Verificação de identidade em sistemas distribuídos"
+      },
+      "autorizacao": {
+        "name": "Autorização",
+        "description": "Controle de acesso e permissões"
+      },
+      "criptografia": {
+        "name": "Criptografia",
+        "description": "Proteção de dados em trânsito e em repouso",
+        "simulador": {
+          "name": "Simulador",
+          "description": "Experimente diferentes tipos de criptografia na prática"
+        }
+      },
+      "tokens": {
+        "name": "Tokens e JWT",
+        "description": "Gerenciamento de sessões e tokens de acesso",
+        "simulador": {
+          "name": "Simulador",
+          "description": "Experimente a geração e validação de JWTs"
+        }
+      },
+      "ssl_tls": {
+        "name": "SSL/TLS",
+        "description": "Comunicação segura entre sistemas"
+      },
+      "ataques": {
+        "name": "Ataques Comuns",
+        "description": "Prevenção contra ataques em sistemas distribuídos"
+      },
+      "prompt_injection": {
+        "name": "Prompt Injection",
+        "description": "Ataques específicos de LLM e guardrails",
+        "simulador": {
+          "name": "Simulador de Prompt Injection",
+          "description": "Combine defesas e veja se o segredo vaza"
+        }
+      }
+    },
+    "ai_systems": {
+      "name": "Sistemas de IA e LLMs",
+      "description": "Servir LLMs, RAG, busca vetorial e agentes em escala",
+      "llm_serving_fundamentals": {
+        "name": "Fundamentos de Serving de LLM",
+        "description": "Tokens, janelas de contexto, prefill vs decode e o KV cache",
+        "simulator": {
+          "name": "Simulador de Batching de Inferência",
+          "description": "Veja como o batching equilibra vazão e latência"
+        }
+      },
+      "rag": {
+        "name": "Arquitetura RAG",
+        "description": "Fundamente respostas nos seus próprios dados com recuperação",
+        "simulator": {
+          "name": "Simulador de Pipeline RAG",
+          "description": "Ajuste fragmentação, recuperação e reordenação de ponta a ponta"
+        }
+      },
+      "vector_search": {
+        "name": "Busca Vetorial",
+        "description": "Busca de vizinhos mais próximos aproximados em escala",
+        "simulator": {
+          "name": "Simulador de Busca Vetorial",
+          "description": "Equilibre recall e latência com parâmetros do HNSW"
+        }
+      },
+      "llm_gateway": {
+        "name": "Gateway de LLM",
+        "description": "Roteamento, cache semântico, fallback e controle de custo",
+        "simulator": {
+          "name": "Simulador de Gateway de LLM",
+          "description": "Roteie requisições com cache, fallback e limites de taxa"
+        }
+      },
+      "gpu_autoscaling": {
+        "name": "Serving de GPU e Autoescalonamento",
+        "description": "Partidas a frio, filas e escala-a-zero para GPUs",
+        "simulator": {
+          "name": "Simulador de Autoescalonador de GPU",
+          "description": "Equilibre custo e latência sob carga em rajadas"
+        }
+      },
+      "agentic": {
+        "name": "Sistemas com Agentes",
+        "description": "Chamada de ferramentas e orquestração de múltiplos passos",
+        "simulator": {
+          "name": "Simulador de Orquestração de Agentes",
+          "description": "Veja um agente chamar ferramentas, repetir e ramificar"
+        }
+      }
+    },
+    "data_storage": {
+      "name": "Dados e Armazenamento",
+      "description": "Particionamento, replicação e como achar dados em escala",
+      "consistent_hashing": {
+        "name": "Consistent Hashing",
+        "description": "Coloque chaves num anel para mover poucas a cada mudança",
+        "simulator": {
+          "name": "Simulador de Consistent Hashing",
+          "description": "Adicione e remova nós e veja as chaves serem remapeadas"
+        }
+      },
+      "sharding": {
+        "name": "Sharding e Particionamento",
+        "description": "Divida dados por faixa, hash ou diretório — e evite gargalos",
+        "simulator": {
+          "name": "Simulador de Sharding",
+          "description": "Envie chaves para shards e veja shards quentes surgirem"
+        }
+      },
+      "object_storage": {
+        "name": "Object & Blob Storage",
+        "description": "Armazenamento de blobs durável e barato em escala massiva (S3)"
+      },
+      "distributed_file_systems": {
+        "name": "Sistemas de Arquivos Distribuídos",
+        "description": "GFS/HDFS: arquivos em blocos e replicados por um cluster"
+      },
+      "inverted_index": {
+        "name": "Busca e Índice Invertido",
+        "description": "A estrutura de dados por trás da busca textual",
+        "simulator": {
+          "name": "Simulador de Índice Invertido",
+          "description": "Consulte termos e veja documentos ranqueados por pontuação"
+        }
+      },
+      "storage_engines": {
+        "name": "Engines de Armazenamento: B-Tree vs LSM",
+        "description": "Como os bancos guardam e atualizam dados fisicamente em disco",
+        "simulator": {
+          "name": "Simulador de Engine de Armazenamento",
+          "description": "Envie escritas e compare a amplificação de escrita/leitura"
+        }
+      },
+      "bloom_filters": {
+        "name": "Bloom Filters",
+        "description": "Testes probabilísticos de pertencimento sem falsos negativos",
+        "simulator": {
+          "name": "Simulador de Bloom Filter",
+          "description": "Insira chaves, consulte-as e veja os falsos positivos surgirem"
+        }
+      },
+      "replication_quorums": {
+        "name": "Modelos de Replicação e Quóruns",
+        "description": "Líder-seguidor, multi-líder, sem líder e R + W > N",
+        "simulator": {
+          "name": "Simulador de Quórum de Replicação",
+          "description": "Ajuste N, W, R e veja quando leituras retornam dados antigos"
+        }
+      },
+      "cdc": {
+        "name": "Change Data Capture (CDC)",
+        "description": "Transmita mudanças do log do banco para sistemas downstream",
+        "simulator": {
+          "name": "Simulador de CDC",
+          "description": "Leia o log de transações para caches, busca e analytics"
+        }
+      },
+      "oltp_olap": {
+        "name": "OLTP vs OLAP, Warehouses e Lakes",
+        "description": "Bancos transacionais vs analíticos e o data stack moderno"
+      },
+      "time_series": {
+        "name": "Bancos de Séries Temporais",
+        "description": "Armazenando e consultando métricas de alto volume com timestamp"
+      }
+    },
+    "editor": {
+      "name": "Editor de Sistemas",
+      "description": "Crie e simule sistemas distribuídos"
+    },
+    "forum": {
+      "name": "Fórum da Comunidade",
+      "description": "Discuta e aprenda com a comunidade"
+    },
+    "design_lab": {
+      "name": "Design Lab",
+      "description": "Acesse nosso design lab"
+    },
+    "home": {
+      "name": "Design Lab",
+      "description": "Simule uma entrevista de system design com feedback em tempo real"
+    },
+    "quizzes": {
+      "name": "Quizzes",
+      "description": "Teste seus conhecimentos e ganhe DinaCoins"
+    },
+    "ranking": {
+      "name": "Ranking",
+      "description": "Classificação global da comunidade"
+    },
+    "profile": {
+      "name": "Perfil",
+      "description": "Seu progresso, soluções e DinaCoins"
+    },
+    "notifications": {
+      "name": "Notificações",
+      "description": "Respostas, menções e anúncios"
+    }
+  },
+  "skills": {
+    "consensus": "Consenso",
+    "lamport_timestamps": "Timestamps de Lamport",
+    "eventual_consistency": "Consistência eventual",
+    "synchronization": "Sincronização",
+    "mutual_exclusion": "Exclusão Mútua",
+    "deadlock_prevention": "Deadlock Prevention",
+    "distributed_synchronization": "Sincronização Distribuída",
+    "race_conditions": "Condições de Corrida",
+    "shared_resources": "Recursos Compartilhados",
+    "deadlock_detection": "Detecção de Deadlock",
+    "prevention": "Prevenção",
+    "recovery": "Recuperação",
+    "bakery_algorithm": "Algoritmo do Padeiro",
+    "token_ring": "Token Ring",
+    "ricart_agrawala": "Ricart-Agrawala",
+    "two_phase_commit": "2PC",
+    "distributed_transactions": "Transações Distribuídas",
+    "atomic_consensus": "Consenso Atômico"
+  },
+  "prerequisites": {
+    "design_principles": "Princípios de Design"
+  },
+  "categories": {
+    "advanced": "Avançado"
+  },
+  "roadmap": {
+    "title": "Roadmap de Aprendizado",
+    "description_1": "Siga este guia estruturado para dominar os conceitos de sistemas distribuídos.",
+    "description_2": "O roadmap está organizado em uma sequência lógica de aprendizado, com pré-requisitos claros e habilidades a serem desenvolvidas em cada etapa.",
+    "modules": "módulos",
+    "completed": "Concluído",
+    "in_progress": "Em andamento",
+    "not_started": "Não iniciado",
+    "start_module": "Começar módulo",
+    "resume_module": "Continuar módulo",
+    "review_module": "Revisar módulo",
+    "prerequisites": "Pré-requisitos:",
+    "skills": "Habilidades:",
+    "completed_percent": "{{percent}}% do conteúdo completado",
+    "ops_map": "MAPA OPS",
+    "phase": "Fase",
+    "lessons": "lições",
+    "modules_cleared": "Módulos concluídos",
+    "lessons_done": "Lições concluídas",
+    "readiness": "Prontidão",
+    "total_phases": "Fases",
+    "of_count": "de {{count}}"
+  },
+  "editor": {
+    "title": "Simulador de Sistema Distribuído",
+    "buttons": {
+      "start": "Executar",
+      "stop": "Pausar",
+      "step": "Passo",
+      "reset": "Reiniciar",
+      "export": "Exportar (.din)",
+      "import": "Importar (.din)",
+      "arrange_vertical": "Organizar verticalmente",
+      "arrange_horizontal": "Organizar horizontalmente",
+      "undo": "Desfazer (Ctrl/Cmd+Z)",
+      "redo": "Refazer (Ctrl/Cmd+Shift+Z)"
+    },
+    "save": {
+      "save": "Salvar",
+      "save_new": "Salvar",
+      "saving": "Salvando…",
+      "share": "Compartilhar",
+      "my_designs": "Meus designs",
+      "sign_in_to_save": "Entre para salvar e compartilhar",
+      "error": "Não foi possível salvar a arquitetura.",
+      "load_error": "Não foi possível carregar essa arquitetura.",
+      "loading": "Carregando…",
+      "empty": "Nenhuma arquitetura salva ainda. Monte algo e clique em Salvar.",
+      "untitled": "Arquitetura sem título",
+      "delete": "Excluir",
+      "copy": "Copiar",
+      "copied": "Copiado",
+      "share_title": "Compartilhar esta arquitetura",
+      "title_label": "Título",
+      "title_placeholder": "Arquitetura sem título",
+      "visibility_label": "Visibilidade",
+      "visibility_private": "Privada (somente eu)",
+      "visibility_unlisted": "Não listada (qualquer pessoa com o link)",
+      "visibility_public": "Pública (qualquer pessoa com o link)",
+      "visibility_private_short": "Privada",
+      "visibility_unlisted_short": "Não listada",
+      "visibility_public_short": "Pública",
+      "link_label": "Link de compartilhamento",
+      "embed_label": "Incorporar (iframe)",
+      "private_hint": "Defina a visibilidade como Não listada ou Pública para obter um link e código de incorporação.",
+      "save_to_share": "Salve esta arquitetura para gerar um link de compartilhamento e código de incorporação.",
+      "save_and_share": "Salvar e criar link",
+      "embed_not_found": "Esta arquitetura não está disponível. Pode ser privada ou não existir mais."
+    },
+    "kinds": {
+      "client": "Cliente",
+      "loadBalancer": "Balanceador",
+      "apiGateway": "API Gateway",
+      "cache": "Cache",
+      "server": "Servidor",
+      "database": "Banco de Dados",
+      "replicatedDb": "BD Replicado",
+      "shardRouter": "Roteador de Shards",
+      "messageQueue": "Fila de Mensagens",
+      "circuitBreaker": "Circuit Breaker",
+      "autoScaler": "Auto-Scaler",
+      "externalDependency": "Dependência Externa"
+    },
+    "engine_tagline": "MOTOR DE SIMULAÇÃO V2",
+    "how_to_use": "Como usar",
+    "menu": {
+      "edit": "Editar configurações",
+      "duplicate": "Duplicar",
+      "disconnect": "Desconectar arestas",
+      "kill": "Matar nó (caos)",
+      "delete": "Excluir",
+      "delete_edge": "Excluir conexão",
+      "arrange_vertical": "Organizar verticalmente",
+      "arrange_horizontal": "Organizar horizontalmente"
+    },
+    "descriptions": {
+      "client": "Gera a carga ofertada (requisições/s) que move todo o sistema. Conecte a saída dele à primeira camada (API gateway, balanceador ou servidor). Ajuste a \"Taxa base\" para definir quantas requisições por segundo entram no sistema.",
+      "loadBalancer": "Distribui as requisições recebidas entre as réplicas para as quais aponta, usando a estratégia escolhida (round-robin, menos conexões, ponderado ou hashing consistente). Coloque-o entre o cliente/gateway e um conjunto de servidores.",
+      "apiGateway": "Ponto único de entrada na borda do sistema. Impõe um limite de requisições/s — o tráfego acima do limite é descartado — e encaminha o restante aos backends. Conecte o cliente a ele e ele aos seus serviços.",
+      "cache": "Atende uma fração das leituras a partir da memória, definida pela \"Taxa de acerto\". Acertos retornam rápido; erros caem para o armazenamento abaixo. Coloque-o à frente de um banco ou serviço para reduzir carga e latência.",
+      "server": "Camada de computação sem estado que processa requisições com um tempo de serviço e concorrência. Escale-o com réplicas ou coloque um auto-scaler à frente. Conecte-o a bancos, caches ou outros serviços dos quais depende.",
+      "database": "Armazenamento persistente e um ponto final (sem arestas de saída). Seu tempo de serviço e concorrência o tornam um gargalo comum. Envie tráfego de leitura/escrita dos servidores para ele.",
+      "replicatedDb": "Banco de dados com várias réplicas. Escritas (definidas pela \"Fração de escrita\") vão ao primário; leituras se distribuem entre as réplicas. Escolha o nível de consistência (forte/quórum/eventual) e o atraso de replicação para modelar trade-offs.",
+      "shardRouter": "Particiona o tráfego entre shards por chave usando estratégia de hash ou intervalo. O \"Desbalanceamento de shard\" modela um shard recebendo carga desproporcional. Conecte-o a um conjunto de backends de shard.",
+      "messageQueue": "Armazena as requisições recebidas e as drena a uma taxa fixa para suavizar picos. Mensagens acima da capacidade da fila são descartadas. Coloque-a entre um produtor rápido e um consumidor mais lento.",
+      "circuitBreaker": "Envolve uma dependência abaixo. Quando a taxa de erro excede o limiar, ele abre e descarta carga durante o timeout de reset, depois entra em meio-aberto para testar a recuperação. Use-o para evitar falhas em cascata.",
+      "autoScaler": "Ajusta o número de réplicas da camada à sua frente para manter a utilização próxima do alvo, limitado por mín/máx de réplicas. Use-o para reagir automaticamente a mudanças de carga.",
+      "externalDependency": "Um serviço de terceiros que você não controla (um ponto final). Modele sua latência e taxa de falha para simular indisponibilidades ou lentidão de provedores externos."
+    },
+    "hints": {
+      "label": "Nome exibido para este nó no canvas. Não afeta a simulação.",
+      "base_rate": "Requisições por segundo que este cliente gera. Maior = mais carga em todo o sistema; menor = tráfego mais leve.",
+      "cron": "Transforma este serviço em uma fonte agendada (cron): ele gera o próprio trabalho por temporizador e não precisa de conexão de entrada. Use para tarefas cron, workers recorrentes e produtores periódicos.",
+      "cron_rate": "Requisições geradas por segundo quando o cron está ligado. Maior = mais trabalho agendado injetado; menor = um fluxo periódico mais leve.",
+      "auto_scalable": "Permite que este serviço ajuste as próprias réplicas em tempo de execução para manter a utilização alvo, limitado por mín/máx de réplicas — sem precisar de um nó auto-scaler separado.",
+      "service_time": "Milissegundos para processar uma requisição (define a taxa de serviço µ). Maior = mais lento por requisição, menor capacidade e maior latência; menor = mais rápido e mais vazão.",
+      "concurrency": "Workers paralelos por réplica (o c do M/M/c). Maior = mais requisições atendidas ao mesmo tempo, menos fila e menor latência; menor = satura mais cedo.",
+      "replicas": "Número de cópias idênticas deste nó (escala horizontal). Maior = capacidade proporcionalmente maior; menor = menos capacidade.",
+      "failure_rate": "Probabilidade base de uma requisição falhar aqui, independente da carga. Maior = mais erros propagados; menor = mais confiável.",
+      "timeout": "Milissegundos até uma requisição lenta ser contada como falha. Menor = mais timeouts quando o nó está ocupado; maior = espera mais antes de desistir.",
+      "max_retries": "Quantas vezes uma chamada que falhou é repetida. Maior = menos erros finais mas mais carga amplificada (tempestade de retries); menor = menos carga mas mais falhas visíveis.",
+      "distribution": "Formato da distribuição de latência por requisição. Lognormal tem cauda pesada realista, exponencial é sem memória, determinística é constante.",
+      "variability": "Coeficiente de variação da latência (apenas lognormal). Maior = cauda mais pesada, então p95/p99 crescem; menor = latências mais uniformes.",
+      "strategy": "Como as requisições são distribuídas entre as réplicas (round-robin, menos conexões, ponderado ou hashing consistente).",
+      "rate_limit": "Máximo de requisições por segundo admitidas; o excedente é descartado. Maior = menos descartes mas mais carga abaixo; menor = protege os backends mas rejeita tráfego.",
+      "hit_rate": "Fração de leituras atendidas pelo cache. Maior = muito menos carga e latência abaixo; menor = mais requisições caem para o armazenamento.",
+      "ttl": "Quanto tempo as entradas do cache permanecem válidas. Maior = mais acertos mas dados mais antigos; menor = dados mais frescos mas mais erros de cache.",
+      "queue_capacity": "Máximo de mensagens em buffer. Maior = absorve picos maiores sem descartar, mas adiciona latência de backlog; menor = descarta mais cedo sob sobrecarga.",
+      "drain_rate": "Mensagens consumidas por segundo. Maior = o backlog esvazia mais rápido e a latência cai; menor = o backlog se acumula.",
+      "write_fraction": "Fração de operações que são escritas. Maior = mais carga no primário único (escritas serializam), reduzindo a capacidade efetiva; menor = leituras dominam e escalam pelas réplicas.",
+      "replication_lag": "Milissegundos que as réplicas atrasam em relação ao primário. Maior = leituras mais desatualizadas com consistência eventual; menor = réplicas mais frescas.",
+      "consistency": "Garantia de leitura/escrita. Forte é mais segura mas mais lenta, quórum equilibra, eventual é mais rápida mas pode ler dados antigos.",
+      "shard_count": "Número de partições entre as quais o tráfego é dividido. Maior = mais capacidade paralela; menor = cada shard carrega mais carga.",
+      "skew": "Quão desigual a carga cai no shard mais quente. Maior = um shard satura e limita a capacidade efetiva; menor = carga equilibrada.",
+      "shard_strategy": "Como as chaves mapeiam para shards. Hash distribui uniformemente; intervalo mantém chaves vizinhas juntas (mais propenso a hotspots).",
+      "error_threshold": "Taxa de erro abaixo que abre o breaker. Menor = abre mais cedo para proteger a dependência; maior = tolera mais erros antes.",
+      "reset_timeout": "Milissegundos que o breaker fica aberto antes de testar a recuperação. Maior = espera mais antes de tentar de novo; menor = tenta a dependência mais cedo.",
+      "target_utilization": "Utilização que o auto-scaler tenta manter. Menor = escala antes (mais réplicas, mais folga); maior = opera mais quente com menos réplicas.",
+      "min_replicas": "Limite inferior de réplicas que o auto-scaler mantém, mesmo ocioso.",
+      "max_replicas": "Limite superior de réplicas que o auto-scaler pode adicionar sob carga."
+    },
+    "inspector": {
+      "title": "Inspetor",
+      "empty": "Selecione um nó para editar sua configuração.",
+      "label": "Rótulo",
+      "base_rate": "Taxa base",
+      "cron": "Cron (auto-disparo)",
+      "cron_rate": "Taxa do cron",
+      "auto_scalable": "Auto-escalável",
+      "service_time": "Tempo de serviço",
+      "concurrency": "Concorrência (c)",
+      "replicas": "Réplicas",
+      "capacity_approx": "capacidade ≈ {{value}}",
+      "match_fixed": "fixo na partida",
+      "reliability": "Confiabilidade",
+      "failure_rate": "Taxa de falha",
+      "timeout": "Timeout",
+      "max_retries": "Máx. tentativas",
+      "latency_shape": "Distribuição de latência",
+      "distribution": "Distribuição",
+      "variability": "Variabilidade (CV)",
+      "strategy": "Estratégia",
+      "rate_limit": "Limite de taxa",
+      "hit_rate": "Taxa de acerto",
+      "ttl": "TTL",
+      "queue_capacity": "Capacidade da fila",
+      "drain_rate": "Taxa de drenagem",
+      "write_fraction": "Fração de escrita",
+      "replication_lag": "Atraso de replicação",
+      "consistency": "Consistência",
+      "shard_count": "Número de shards",
+      "skew": "Desbalanceamento de shard",
+      "error_threshold": "Limiar de erro",
+      "reset_timeout": "Timeout de reset",
+      "target_utilization": "Utilização alvo",
+      "min_replicas": "Mín. réplicas",
+      "max_replicas": "Máx. réplicas",
+      "dist": {
+        "lognormal": "Lognormal",
+        "exponential": "Exponencial",
+        "deterministic": "Determinística"
+      },
+      "strat": {
+        "roundRobin": "Round Robin",
+        "leastConnections": "Menos Conexões",
+        "weighted": "Ponderado",
+        "hashing": "Hashing Consistente"
+      },
+      "cons": {
+        "strong": "Forte",
+        "quorum": "Quórum",
+        "eventual": "Eventual"
+      },
+      "shard_strat": {
+        "hash": "Hash",
+        "range": "Intervalo"
+      }
+    },
+    "bill": {
+      "title": "Fatura {{provider}}",
+      "open_hint": "Clique para ver o detalhamento de custos por produto",
+      "close": "Fechar",
+      "empty": "Nenhum recurso faturável ainda. Execute a simulação.",
+      "units": "{{count}} recurso",
+      "total": "Total",
+      "accumulated": "Acumulado nesta execução"
+    },
+    "dashboard": {
+      "offered": "Ofertado",
+      "throughput": "Vazão",
+      "success": "Sucesso",
+      "p95": "p95",
+      "success_total": "Reqs com sucesso",
+      "success_total_hint": "Total de requisições atendidas com sucesso nesta execução",
+      "failed_total": "Reqs com falha",
+      "failed_total_hint": "Total de requisições com falha/descartadas nesta execução",
+      "in_flight": "Em andamento",
+      "cost": "Custo {{provider}}",
+      "error_budget": "Orçamento de erro usado (SLO {{slo}}%)",
+      "chart_throughput": "Vazão vs Ofertado (req/s)",
+      "chart_latency": "Percentis de latência (ms)",
+      "chart_success": "Taxa de sucesso (%) e em andamento",
+      "accumulated_cost": "Custo acumulado nesta execução:",
+      "golden_title": "Quatro Sinais de Ouro",
+      "golden": {
+        "latency": "Latência",
+        "latency_hint": "Quanto tempo as requisições levam",
+        "traffic": "Tráfego",
+        "traffic_hint": "Demanda sobre o sistema",
+        "errors": "Erros",
+        "errors_hint": "Requisições com falha",
+        "saturation": "Saturação",
+        "saturation_hint": "Carga do recurso mais ocupado"
+      }
+    },
+    "scenario": {
+      "preset": "Predefinição",
+      "load_profile": "Perfil de carga",
+      "cloud": "Cloud",
+      "chaos": "Caos",
+      "load": "Carregar",
+      "inject": "Injetar",
+      "profiles": {
+        "constant": "Constante",
+        "ramp": "Rampa",
+        "spike": "Pico",
+        "diurnal": "Diurno",
+        "step": "Degrau"
+      },
+      "chaos_types": {
+        "killNode": "Matar nó",
+        "latencyInjection": "Injetar latência",
+        "partition": "Partição"
+      },
+      "presets": {
+        "three-tier": "App Web de Três Camadas",
+        "read-heavy-cache": "Leitura Intensa + Cache",
+        "event-driven": "Orientado a Eventos + Fila",
+        "sharded-store": "Armazenamento Particionado",
+        "microservice-mesh": "Malha de Microsserviços",
+        "url-shortener": "Encurtador de URL",
+        "ticket-booking": "Site de Venda de Ingressos",
+        "chat-messaging": "Chat / Mensagens (WhatsApp)",
+        "social-feed": "Feed de Rede Social",
+        "video-streaming": "Streaming de Vídeo"
+      }
+    },
+    "node": {
+      "in": "ent",
+      "out": "saí",
+      "p95": "p95",
+      "fail_s": "falha/s",
+      "retry_s": "retry/s",
+      "idle": "ocioso",
+      "cron": "fonte cron · {{rate}}/s",
+      "hit_s": "acerto/s",
+      "miss_s": "erro/s",
+      "hit_rate": "taxa acerto",
+      "queue": "fila",
+      "dropped_s": "descart./s",
+      "breaker": "breaker",
+      "replicas": "réplicas",
+      "shards": "shards",
+      "consistency": "consistência",
+      "writes": "escritas",
+      "reads": "leituras",
+      "replica_set": "conjunto de réplicas",
+      "primary": "primária",
+      "replica": "réplica"
+    },
+    "warnings": {
+      "NO_CLIENT": "Nenhum nó cliente no design",
+      "NOT_CONVERGED": "A simulação não convergiu",
+      "BOTTLENECK": "Gargalo: {{name}}",
+      "DISCONNECTED": "Desconectado: {{name}}",
+      "ZERO_CAPACITY": "Capacidade zero: {{name}}"
+    },
+    "labels": {
+      "components": "Componentes",
+      "speed": "Velocidade",
+      "seed": "Semente",
+      "sim_time": "Tempo simulado"
+    },
+    "mobile": {
+      "scenario": "Cenário",
+      "tools": "Ferramentas",
+      "arrange": "Organizar",
+      "vertical": "Vertical",
+      "horizontal": "Horizontal"
+    },
+    "canvas": {
+      "empty_title": "Monte seu primeiro sistema",
+      "empty_hint": "Arraste um componente da paleta para o canvas e conecte os nós arrastando entre os pontos de conexão.",
+      "empty_hint_touch": "Toque em Componentes para adicionar um nó e arraste entre os pontos de conexão para ligá-los."
+    },
+    "errors": {
+      "import_error": "Erro ao importar arquivo. Formato inválido ou corrompido.",
+      "read_error": "Erro ao ler o arquivo. Tente novamente.",
+      "dismiss": "Fechar erro"
+    },
+    "game": {
+      "next_round_name": "Próxima: {{name}}",
+      "round_score": "Rodada",
+      "streak_hint": "Sequência de SLO: mantenha erros <1% e p95 abaixo da meta para aumentar seu multiplicador de pontos.",
+      "scenario": "Cenário",
+      "scenario_custom": "Personalizado (monte o seu)",
+      "scripted_chaos": "caos programado",
+      "open_stage": "Telão da plateia",
+      "console": "Console do anfitrião",
+      "console_title": "Crie uma Partida",
+      "console_subtitle": "Escolha um cenário, crie a partida e compartilhe o link de entrada com os jogadores e o link do telão com a plateia.",
+      "back_to_arena": "Voltar para a arena",
+      "matches": "Suas partidas",
+      "copied": "Copiado",
+      "copy_invite": "Copiar link de convite",
+      "delete_confirm": "Excluir esta partida permanentemente?",
+      "stage": "Telão",
+      "manage": "Gerenciar",
+      "delete_match": "Excluir partida",
+      "joining": "Entrada",
+      "join_public": "Pública",
+      "join_private": "Privada",
+      "join_public_hint": "Qualquer pessoa com o código da partida pode entrar.",
+      "join_private_hint": "Só quem tem seu link de convite pode entrar. O link é gerado ao criar a partida.",
+      "arena_listing": "Listagem na arena",
+      "listed_label": "Mostrar em “Acontecendo agora” na arena",
+      "listed_hint": "Visitantes da arena verão esta partida.",
+      "unlisted_hint": "Oculta da arena. Só quem tem o link vai encontrá-la.",
+      "chip_private": "Só com convite",
+      "chip_unlisted": "Não listada",
+      "open_joining": "Entrada aberta",
+      "listed_live": "Listada na arena",
+      "private_title": "Esta partida é só com convite",
+      "private_hint": "O anfitrião tornou esta partida privada. Peça o link de convite, ele carrega a chave que libera sua entrada.",
+      "compliance_live": "Arquitetura inválida: você não está pontuando.",
+      "compliance_build": "Arquitetura inválida: corrija antes da rodada começar.",
+      "rules": {
+        "title": "Regras da casa",
+        "subtitle": "Seu sistema precisa parecer um serviço real com estado. Quebrou uma regra, parou de pontuar até corrigir.",
+        "client_present": "adicione uma fonte de tráfego (client)",
+        "database_present": "mantenha pelo menos um banco de dados",
+        "service_present": "mantenha pelo menos um servidor de aplicação",
+        "path_to_db": "todo client precisa alcançar um banco passando pela camada de serviço",
+        "cache_miss_path": "todo cache precisa de um caminho de miss até um banco",
+        "no_client_to_db": "clients não podem falar direto com o banco"
+      },
+      "fx": {
+        "kill_incoming": "{{target}} cai em {{sec}}s",
+        "slow_incoming": "{{target}} ficará lento em {{sec}}s",
+        "partition_incoming": "Partição de rede em {{target}} em {{sec}}s",
+        "kill_active": "{{target}} está FORA DO AR · faltam {{sec}}s",
+        "slow_active": "{{target}} degradado · faltam {{sec}}s",
+        "partition_active": "{{target}} particionado · faltam {{sec}}s",
+        "rank_up": "Você está em #{{rank}}",
+        "rank_down": "Caiu para #{{rank}}",
+        "round_start": "Rodada {{n}}",
+        "round_over": "Fim da rodada {{n}}",
+        "go": "Valendo!",
+        "hands_off": "Pontuação registrada"
+      },
+      "results": {
+        "final_title": "Classificação final",
+        "round_title": "Resultado da rodada {{n}}",
+        "close": "Fechar resultados",
+        "you_finished": "Você terminou em #{{rank}} com {{score}} pontos",
+        "points": "pontos",
+        "rank_now": "Posição",
+        "streak_bonus": "Bônus de sequência de SLO (melhor: {{sec}}s)",
+        "latency_penalty": "Penalidade de latência",
+        "cost_penalty": "Penalidade de custo",
+        "non_compliant": "Tempo com arquitetura inválida (sem pontos)",
+        "up_next": "A seguir: {{name}}",
+        "close_final": "Fechar classificação",
+        "back_to_build": "Voltar a construir"
+      }
+    },
+    "stage": {
+      "live": "AO VIVO",
+      "build": "FASE DE CONSTRUÇÃO",
+      "final": "FINAL",
+      "lobby": "LOBBY",
+      "building_now": "Jogadores construindo",
+      "match_over": "Partida encerrada",
+      "join_at": "Entre em",
+      "champion": "Campeão",
+      "standings": "Classificação",
+      "waiting_players": "Aguardando jogadores entrarem…"
+    }
+  },
+  "arena": {
+    "badge": "ARENA",
+    "cta_dinamos": "Aprenda no dinamos.net",
+    "headline": "Construa sistemas. Sobreviva ao caos.",
+    "headline_accent": "Domine o placar.",
+    "subhead": "Um jogo multiplayer em tempo real onde cada jogador projeta um sistema distribuído contra o mesmo tráfego ao vivo e as mesmas falhas. Black Friday, quedas de datacenter, picos virais: no navegador, com amigos, pontuado a cada segundo.",
+    "live_chip_one": "{{count}} partida ao vivo agora",
+    "live_chip_other": "{{count}} partidas ao vivo agora",
+    "cta_host": "Criar partida",
+    "cta_watch": "Assistir partidas ao vivo",
+    "cta_join": "Entrar",
+    "code_ph": "CÓDIGO",
+    "live": "AO VIVO",
+    "lobby": "LOBBY",
+    "building": "CONSTRUÇÃO",
+    "untitled": "Partida de Sistemas Distribuídos",
+    "round_of": "Rodada {{n}}/{{total}}",
+    "watch": "Assistir",
+    "join": "Entrar",
+    "invite_only": "Só com convite",
+    "invite_only_hint": "O anfitrião compartilha o link de convite diretamente com os jogadores.",
+    "live_title": "Acontecendo agora",
+    "live_sub": "Partidas abertas para assistir no telão ou entrar na hora.",
+    "no_live": "Nenhuma partida ao vivo agora. Seja quem começa o próximo jogo.",
+    "how_title": "Como funciona uma partida",
+    "step1_title": "Crie e convide",
+    "step1_body": "Escolha um cenário do mundo real, crie a partida e compartilhe um link. Jogadores entram de qualquer navegador; a plateia ganha um telão ao vivo.",
+    "step2_title": "Construa sob pressão",
+    "step2_body": "Projete sua arquitetura na fase de construção: load balancers, caches, filas, réplicas. Quando a rodada trava, o tráfego ao vivo atinge todos ao mesmo tempo.",
+    "step3_title": "Sobreviva ao caos e pontue",
+    "step3_body": "Quedas e lentidões atacam no meio da rodada. Mantenha latência e erros dentro do SLO para construir um multiplicador de sequência. Resiliência vale mais que gasto bruto.",
+    "scenarios_title": "Cenários testados em batalha",
+    "scenarios_sub": "Cada partida reencena um incidente operacional real: tráfego roteirizado, falhas roteirizadas, pontuação calibrada.",
+    "rounds": "rodadas",
+    "chaos_events": "eventos de caos",
+    "closing_title": "Sua vez, arquiteto.",
+    "closing_sub": "Grátis, no navegador, sem instalação. Crie uma partida para seu time, sua turma ou seu meetup, e coloque o telão da plateia no projetor.",
+    "footer_tag": "A Arena roda no Dinamos, a plataforma gratuita e prática de sistemas distribuídos.",
+    "footer_cta": "Explore as lições no dinamos.net"
+  },
+  "challenges": {
+    "title": "Desafios de System Design",
+    "subtitle": "Pratique suas habilidades com problemas reais de sistemas distribuídos",
+    "view_all": "Ver Todos",
+    "start_challenge": "Iniciar Desafio",
+    "attempt": "tentativa",
+    "attempts": "tentativas",
+    "has_video": "Tem vídeo de solução",
+    "cta_title": "Pronto para testar seus conhecimentos?",
+    "cta_description": "Acesse o Design Lab para praticar system design com feedback de IA.",
+    "go_to_lab": "Ir para o Design Lab"
+  },
+  "components": {
+    "common": {
+      "simulator_title": "Simulador Interativo"
+    }
+  },
+  "simulators": {
+    "cache": {
+      "title": "Simulador Cache-Aside",
+      "subtitle": "As leituras checam o cache primeiro. Acertos voltam da memória; erros caem para o banco e são armazenados para a próxima vez.",
+      "controls": {
+        "ttl": "TTL (vida da entrada)",
+        "db_latency": "Latência do banco",
+        "capacity": "Capacidade do cache"
+      },
+      "buttons": {
+        "auto": "Tráfego automático",
+        "stop": "Parar",
+        "clear": "Limpar cache",
+        "reset": "Resetar"
+      },
+      "toggle": {
+        "cache_on": "Cache ligado",
+        "cache_off": "Cache desligado"
+      },
+      "stage": {
+        "client": "Cliente",
+        "cache": "Cache",
+        "cache_sub": "memória",
+        "db": "Banco",
+        "db_sub": "disco"
+      },
+      "keys_label": "Ler uma chave",
+      "hot": "quente",
+      "slots": "Slots do cache",
+      "last_read": "Última leitura",
+      "served_from_memory": "servido da memória",
+      "served_from_db": "do banco de dados",
+      "legend": {
+        "fresh": "Fresco no cache",
+        "expiring": "Expirando logo",
+        "miss": "Erro / banco",
+        "empty": "Slot vazio"
+      },
+      "narration": {
+        "idle": "Escolha uma chave e envie uma leitura, ou ligue o tráfego automático. Acertos vêm da memória; erros vão ao banco.",
+        "lookup": "Lendo {{key}}: checando o cache primeiro.",
+        "hit": "HIT: {{key}} servido da memória em {{ms}} ms. O banco nunca foi tocado.",
+        "miss": "MISS: {{key}} não está no cache. Consultando o banco ({{ms}} ms) e armazenando o resultado.",
+        "stale": "STALE: {{key}} passou do TTL, então conta como erro e é buscado de novo.",
+        "evict": "Cache cheio: removendo o menos usado recentemente ({{key}}) para abrir espaço para {{incoming}}.",
+        "disabled": "Cache desligado: toda leitura vai direto ao banco a {{ms}} ms."
+      },
+      "metrics": {
+        "title": "Métricas ao vivo",
+        "hit_ratio": "Taxa de acerto",
+        "avg_latency": "Latência média",
+        "db_queries": "Consultas ao banco",
+        "requests": "Leituras totais"
+      },
+      "hint": "Um cache troca frescor por velocidade. Uma alta taxa de acerto mantém a maioria das leituras na memória e protege o banco; TTL e capacidade decidem com que frequência você paga o caminho lento."
+    },
+    "consistent_hashing": {
+      "title": "Simulador de Consistent Hashing",
+      "subtitle": "Chaves num anel — adicione/remova nós e veja o remapeamento",
+      "controls": {
+        "vnodes": "Nós virtuais por nó",
+        "keys": "Número de chaves"
+      },
+      "buttons": {
+        "add_node": "Adicionar nó",
+        "remove_node": "Remover nó",
+        "shuffle": "Embaralhar chaves",
+        "reset": "Resetar"
+      },
+      "metrics": {
+        "title": "Métricas ao Vivo",
+        "nodes": "Nós",
+        "vnodes": "Nós virtuais",
+        "keys": "Chaves",
+        "moved": "Chaves movidas",
+        "imbalance": "Desbalanceamento"
+      },
+      "labels": {
+        "node": "Nó",
+        "hint": "Adicione ou remova um nó — só as chaves destacadas se movem. Mais nós virtuais significa distribuição mais suave."
+      }
+    },
+    "sharding": {
+      "title": "Simulador de Sharding",
+      "subtitle": "Roteie chaves para shards por faixa ou hash — e veja a desigualdade",
+      "controls": {
+        "shards": "Número de shards",
+        "strategy": "Estratégia",
+        "skew": "Desigualdade"
+      },
+      "strategies": {
+        "hash": "Hash",
+        "range": "Faixa"
+      },
+      "buttons": {
+        "start": "Iniciar",
+        "stop": "Parar",
+        "reset": "Resetar"
+      },
+      "metrics": {
+        "title": "Métricas ao Vivo",
+        "keys": "Chaves roteadas",
+        "shards": "Shards",
+        "imbalance": "Desbalanceamento",
+        "hot_load": "Shard mais quente"
+      },
+      "labels": {
+        "shard": "Shard",
+        "hint": "Aumente a desigualdade com particionamento por faixa para criar um shard quente — depois mude para hash para equilibrar."
+      }
+    },
+    "inverted_index": {
+      "title": "Simulador de Índice Invertido",
+      "subtitle": "Escolha termos de consulta e veja documentos ranqueados por pontuação",
+      "modes": {
+        "or": "OR (qualquer termo)",
+        "and": "AND (todos os termos)"
+      },
+      "buttons": {
+        "clear": "Limpar"
+      },
+      "metrics": {
+        "title": "Métricas ao Vivo",
+        "terms": "Termos da consulta",
+        "matched": "Docs encontrados",
+        "postings": "Postings varridos",
+        "corpus": "Tamanho do corpus"
+      },
+      "labels": {
+        "query": "Termos da consulta",
+        "documents": "Documentos",
+        "index": "Índice invertido",
+        "results": "Resultados ranqueados",
+        "doc": "Doc",
+        "score": "pont.",
+        "no_matches": "Nenhum documento correspondente",
+        "hint": "AND intersecta as listas de postings; OR as une. A pontuação conta quantos termos da consulta cada documento contém."
+      }
+    },
+    "storage_engine": {
+      "title": "Simulador de Engine de Armazenamento",
+      "subtitle": "Envie escritas por uma LSM-tree ou uma B-tree e compare a amplificação",
+      "buttons": {
+        "step": "Escrever 1 chave",
+        "start": "Auto",
+        "stop": "Parar",
+        "reset": "Resetar"
+      },
+      "engines": {
+        "lsm": "LSM-Tree",
+        "btree": "B-Tree"
+      },
+      "wal": "Write-Ahead Log",
+      "narration": {
+        "idle": "Escreva chaves uma a uma e veja onde caem. LSM anexa sequencialmente e depois compacta; B-tree atualiza páginas no lugar.",
+        "lsm_append": "Escrita anexada à memtable em memória ({{mem}}/{{cap}}). Sequencial, então as escritas são baratas.",
+        "lsm_flush": "Memtable cheia: descarregada em uma nova SSTable L0 imutável em uma escrita sequencial.",
+        "lsm_compact": "{{count}} SSTables L0 mescladas em uma tabela L1 ({{size}} entradas reescritas). Essa reescrita é amplificação de escrita.",
+        "btree_update": "Localizou a página folha desta chave e reescreveu a página {{page}} no lugar. I/O aleatório, mas leituras continuam uma única travessia."
+      },
+      "lsm": {
+        "memtable": "Memtable (em memória)",
+        "level": "Nível {{n}} (SSTables em disco)"
+      },
+      "btree": {
+        "pages": "Páginas B-Tree (atualizadas no lugar)",
+        "note": "Cada escrita busca a página folha e a reescreve — I/O aleatório."
+      },
+      "metrics": {
+        "title": "Métricas ao Vivo",
+        "writes": "Escritas lógicas",
+        "write_amp": "Amplificação de escrita",
+        "read_amp": "Amplificação de leitura",
+        "compactions": "Compactações"
+      },
+      "hint_lsm": "LSM-trees absorvem escritas sequencialmente em uma memtable, depois fazem flush e compactam SSTables — escritas baratas, mas leituras podem varrer várias tabelas até a compactação.",
+      "hint_btree": "B-trees atualizam páginas no lugar: leituras são uma única travessia da árvore (baixa amplificação de leitura), mas escritas causam I/O aleatório."
+    },
+    "bloom_filter": {
+      "title": "Simulador de Bloom Filter",
+      "subtitle": "Um array de bits + k hashes: testes rápidos de pertencimento sem falsos negativos",
+      "placeholder": "Digite uma chave…",
+      "controls": {
+        "bits": "Tamanho do array de bits (m)",
+        "hashes": "Funções de hash (k)"
+      },
+      "buttons": {
+        "add": "Inserir",
+        "query": "Consultar",
+        "random": "Adicionar aleatório",
+        "reset": "Resetar"
+      },
+      "maps_to": "hasheia",
+      "checks": "verifica",
+      "narration": {
+        "idle": "Insira algumas chaves e consulte uma. Cada chave hasheia para k posições de bit; veja quais bits são setados e como as consultas são respondidas.",
+        "inserted": "Inseriu \"{{word}}\": seus k hashes apontam para os bits {{positions}}, agora setados em 1.",
+        "maybe": "\"{{word}}\": todos os {{k}} bits hasheados são 1, então provavelmente está presente (pode ser colisão).",
+        "false_positive": "\"{{word}}\" nunca foi inserida, mas todos os bits dela são 1 porque outras chaves os setaram. Isso é um falso positivo.",
+        "absent": "\"{{word}}\": o bit {{pos}} é 0, então definitivamente não está presente. Bloom filters nunca dão falso negativo."
+      },
+      "result": {
+        "maybe": "provavelmente está presente (todos os k bits setados).",
+        "false_positive": "aparece como presente, mas nunca foi inserida. Falso positivo!",
+        "definitely_not": "definitivamente não está presente (ao menos um bit é 0)."
+      },
+      "metrics": {
+        "title": "Métricas ao Vivo",
+        "items": "Itens inseridos",
+        "bits_set": "Bits setados",
+        "fill": "Taxa de preenchimento",
+        "fp_rate": "Taxa estimada de falso positivo"
+      },
+      "hint": "Uma consulta é \"talvez presente\" só se todos os bits hasheados forem 1. Mais itens ou menos bits aumentam a taxa de falsos positivos; nunca há falsos negativos."
+    },
+    "quorum_replication": {
+      "title": "Simulador de Quórum de Replicação",
+      "subtitle": "Ajuste réplicas (N), quórum de escrita (W) e quórum de leitura (R)",
+      "controls": {
+        "replicas": "Réplicas (N)",
+        "write_quorum": "Quórum de escrita (W)",
+        "read_quorum": "Quórum de leitura (R)"
+      },
+      "buttons": {
+        "write": "Escrever nova versão",
+        "read": "Ler",
+        "reset": "Resetar"
+      },
+      "node": "Nó",
+      "legend": {
+        "write": "Quórum de escrita (W)",
+        "read": "Quórum de leitura (R)",
+        "overlap": "Sobreposição (vê a última)"
+      },
+      "narration": {
+        "idle": "Escreva uma nova versão em W nós, depois leia de R nós, e veja se o quórum de leitura sobrepõe a última escrita.",
+        "wrote": "Escreveu v{{version}} em um quórum de escrita de W={{w}} nós. As outras réplicas ainda têm versões antigas.",
+        "read_fresh": "O quórum de leitura R={{r}} sobrepôs o quórum de escrita em {{count}} nó(s), então retornou a versão mais nova v{{value}}. R+W>N força essa sobreposição.",
+        "read_stale": "O quórum de leitura R={{r}} não tocou nenhum nó com a última escrita, então retornou um v{{value}} desatualizado. Com R+W não maior que N os quóruns podem se perder."
+      },
+      "read_returned": "Leitura retornou",
+      "result": {
+        "stale": "desatualizada! Perdeu a última escrita.",
+        "fresh": "atual, em dia."
+      },
+      "metrics": {
+        "title": "Métricas ao Vivo",
+        "replicas": "Réplicas",
+        "latest": "Última versão",
+        "fault_tolerance": "Falhas toleradas",
+        "strong": "Leituras fortes?"
+      },
+      "hint": "Quando R + W > N os quóruns de leitura e escrita sempre se sobrepõem, então leituras veem a escrita mais nova. Reduza-os para mais disponibilidade ao custo de leituras antigas."
+    },
+    "cdc": {
+      "title": "Simulador de CDC",
+      "subtitle": "Um conector lê o log do banco e envia mudanças para sistemas downstream",
+      "controls": {
+        "write_rate": "Escritas no banco / tick",
+        "connector_rate": "Vazão do conector / tick"
+      },
+      "buttons": {
+        "step": "Um tick",
+        "start": "Auto",
+        "stop": "Parar",
+        "reset": "Resetar"
+      },
+      "source": "Log de transações do banco de origem",
+      "connector": "Conector CDC",
+      "offset": "offset",
+      "narration": {
+        "idle": "Inicie o fluxo. O conector lê o log do banco em ordem e envia cada mudança para todos os sinks downstream.",
+        "shipping": "O conector enviou {{k}} mudança(s) downstream. O atraso de replicação é {{lag}}.",
+        "lagging": "As escritas ({{rate}}/tick) superam o conector ({{crate}}/tick), então o log cresce atrás do offset. O atraso agora é {{lag}}.",
+        "caught_up": "O conector está acompanhando: o atraso é {{lag}} e os sinks estão em sincronia com a origem."
+      },
+      "wal_note": "Âmbar = atrás do offset (ainda não capturado); verde = já enviado downstream",
+      "sinks": {
+        "cache": "Invalidação de cache",
+        "search": "Índice de busca",
+        "warehouse": "Data warehouse"
+      },
+      "metrics": {
+        "title": "Métricas ao Vivo",
+        "produced": "Mudanças produzidas",
+        "consumed": "Mudanças enviadas",
+        "lag": "Atraso de replicação",
+        "pending": "Pendentes no log"
+      },
+      "hint": "Se as escritas superam o conector, o atraso cresce e os sistemas downstream ficam para trás. CDC mantém caches, busca e analytics em sincronia sem escrita dupla."
+    },
+    "kafka": {
+      "title": "Simulador de Kafka",
+      "subtitle": "Produtores, partições e um consumer group — veja o lag",
+      "controls": {
+        "partitions": "Partições",
+        "consumers": "Consumidores",
+        "produce_rate": "Taxa de produção",
+        "consume_rate": "Consumo / consumidor"
+      },
+      "buttons": {
+        "start": "Iniciar",
+        "stop": "Parar",
+        "reset": "Resetar"
+      },
+      "metrics": {
+        "title": "Métricas ao Vivo",
+        "produced": "Produzidas",
+        "consumed": "Consumidas",
+        "lag": "Consumer lag",
+        "throughput": "Capacidade de consumo"
+      },
+      "labels": {
+        "partition": "P",
+        "producer": "Produtor",
+        "consumers": "Consumer group",
+        "consumer": "C",
+        "idle": "ocioso",
+        "hint": "Cada partição é lida por exatamente um consumidor. Adicione consumidores além do número de partições e eles ficam ociosos — as partições limitam o paralelismo."
+      }
+    },
+    "api_styles": {
+      "title": "Simulador de Estilos de API",
+      "subtitle": "Busque uma tela de dados com REST, GraphQL ou gRPC e compare o custo",
+      "styles": {
+        "rest": "REST",
+        "graphql": "GraphQL",
+        "grpc": "gRPC"
+      },
+      "controls": {
+        "fields": "Campos que a tela precisa",
+        "with_orders": "Incluindo pedidos relacionados",
+        "no_orders": "Apenas usuário"
+      },
+      "client": "Cliente",
+      "server": "Servidor",
+      "round_trip": "Round trip",
+      "payload_label": "Payload da resposta",
+      "binary": "protobuf binário",
+      "used": "Usado pela tela",
+      "over": "Em excesso",
+      "sinks_orders": "Pedidos relacionados",
+      "narration": {
+        "rest": "REST retornou todos os 12 campos do usuário em {{rt}} round trip(s); a tela usou {{used}}, então {{over}}% veio em excesso.",
+        "graphql": "GraphQL retornou exatamente os {{used}} campo(s) que a tela pediu em um round trip, sem excesso.",
+        "grpc": "gRPC retornou {{used}} campo(s) como binário compacto em um round trip, cerca de um terço do tamanho do JSON."
+      },
+      "metrics": {
+        "title": "Métricas ao Vivo",
+        "round_trips": "Round trips",
+        "payload": "Tamanho do payload",
+        "over_fetch": "Dados em excesso",
+        "schema": "Schema tipado"
+      },
+      "hint": {
+        "rest": "REST costuma precisar de uma requisição por recurso e retorna objetos inteiros — simples e cacheável, mas faz over-fetch e pode exigir vários round trips.",
+        "graphql": "GraphQL traz exatamente os campos pedidos em um único round trip — sem over-fetching, ao custo do planejamento de consulta no servidor.",
+        "grpc": "gRPC envia Protobuf binário compacto em um round trip com schema estrito — o mais rápido na rede, mas não legível por humanos e mais difícil de depurar."
+      }
+    },
+    "realtime_push": {
+      "title": "Simulador de Push em Tempo Real",
+      "subtitle": "Entregue eventos do servidor com polling, SSE ou WebSockets",
+      "modes": {
+        "polling": "Polling",
+        "sse": "Server-Sent Events",
+        "websocket": "WebSocket"
+      },
+      "controls": {
+        "interval": "Intervalo de polling (ticks)"
+      },
+      "buttons": {
+        "start": "Iniciar",
+        "stop": "Parar",
+        "reset": "Resetar"
+      },
+      "server": "Servidor",
+      "client": "Cliente",
+      "persistent": "conexão persistente",
+      "repeated": "requisições repetidas",
+      "one_connection": "Uma conexão aberta",
+      "many_requests": "Muitas requisições curtas",
+      "narration": {
+        "idle": "Escolha um transporte e rode. Veja como os eventos do servidor chegam ao cliente e o custo de cada abordagem.",
+        "poll_deliver": "Um poll chegou e coletou {{k}} evento(s) na fila. Eles esperaram até {{interval}} ticks por essa requisição.",
+        "poll_empty": "Um poll chegou mas o servidor não tinha nada novo, uma requisição vazia desperdiçada.",
+        "push": "O servidor empurrou o evento no instante em que aconteceu pela conexão aberta, cerca de 1 tick de latência."
+      },
+      "metrics": {
+        "title": "Métricas ao Vivo",
+        "delivered": "Eventos entregues",
+        "latency": "Latência média de entrega",
+        "requests": "Requisições enviadas",
+        "empty_polls": "Polls vazios desperdiçados"
+      },
+      "hint": {
+        "polling": "Polling pergunta de novo em intervalo fixo: simples, mas adiciona latência (até um intervalo) e desperdiça requisições quando nada mudou.",
+        "sse": "Server-Sent Events fazem push unidirecional por uma única conexão HTTP de longa duração — entrega quase instantânea com quase nenhum overhead.",
+        "websocket": "WebSockets mantêm uma conexão full-duplex aberta — entrega instantânea e bidirecional, ideal para chat, jogos e colaboração ao vivo."
+      }
+    },
+    "dead_letter_queue": {
+      "title": "Simulador de Dead Letter Queue",
+      "subtitle": "Mensagens com falha são retentadas e vão para a DLQ após o limite",
+      "controls": {
+        "failure_rate": "Taxa de falha transitória",
+        "max_retries": "Máximo de retries"
+      },
+      "buttons": {
+        "step": "Processar uma",
+        "start": "Auto",
+        "stop": "Parar",
+        "reset": "Resetar"
+      },
+      "main_queue": "Fila principal",
+      "dlq": "Dead Letter Queue",
+      "consumer": "Consumidor",
+      "attempt": "tentativa",
+      "poison": "Mensagem venenosa (sempre falha)",
+      "narration": {
+        "idle": "Rode a fila. Mensagens com falha são retentadas; ao passar do limite de retries elas vão para a DLQ para não bloquear a fila para sempre.",
+        "ok": "Mensagem #{{id}} processada com sucesso na tentativa {{n}}.",
+        "retry": "Mensagem #{{id}} falhou (tentativa {{n}}/{{max}}), recolocada na fila para nova tentativa.",
+        "dlq": "Mensagem #{{id}} atingiu o limite de retries após {{n}} tentativas, movida para a DLQ. A fila continua fluindo."
+      },
+      "metrics": {
+        "title": "Métricas ao Vivo",
+        "processed": "Processadas",
+        "retried": "Retentativas",
+        "dead_lettered": "Enviadas à DLQ",
+        "success_rate": "Taxa de sucesso"
+      },
+      "hint": "Falhas transitórias são retentadas; quando uma mensagem excede o limite de retries (ou é uma mensagem venenosa), ela vai para a DLQ em vez de bloquear a fila para sempre."
+    },
+    "saga": {
+      "title": "Simulador de Saga",
+      "subtitle": "Uma transação distribuída como uma sequência de passos compensáveis",
+      "controls": {
+        "mode": "Coordenação",
+        "fail_at": "Injetar falha no passo"
+      },
+      "modes": {
+        "orchestrated": "Orquestrada",
+        "choreographed": "Coreografada"
+      },
+      "fail_none": "Nenhuma",
+      "buttons": {
+        "run": "Rodar saga",
+        "reset": "Resetar"
+      },
+      "roles": {
+        "coordinator": "Coordenador da Saga"
+      },
+      "steps": {
+        "reserve": "Reservar estoque",
+        "payment": "Cobrar pagamento",
+        "shipping": "Agendar envio",
+        "confirm": "Enviar confirmação"
+      },
+      "status": {
+        "pending": "Pendente",
+        "running": "Executando",
+        "done": "Confirmado",
+        "failed": "Falhou",
+        "compensated": "Compensado"
+      },
+      "metrics": {
+        "title": "Resultado",
+        "committed": "Passos confirmados",
+        "compensated": "Passos compensados",
+        "outcome": "Desfecho"
+      },
+      "outcome": {
+        "idle": "Inativo",
+        "committed": "Confirmada",
+        "rolled_back": "Revertida"
+      },
+      "labels": {
+        "hint": "Uma saga não tem rollback global. Quando um passo falha, cada passo concluído é desfeito por sua própria ação compensatória, em ordem reversa."
+      }
+    },
+    "delivery_semantics": {
+      "title": "Simulador de Semânticas de Entrega",
+      "subtitle": "At-most-once vs at-least-once vs exactly-once",
+      "controls": {
+        "mode": "Semântica",
+        "dedup": "Deduplicação",
+        "dlq": "Fila de dead-letter"
+      },
+      "modes": {
+        "at_most_once": "At-most-once",
+        "at_least_once": "At-least-once",
+        "exactly_once": "Exactly-once"
+      },
+      "buttons": {
+        "start": "Iniciar",
+        "stop": "Parar",
+        "reset": "Resetar",
+        "on": "On",
+        "off": "Off"
+      },
+      "metrics": {
+        "title": "Métricas ao Vivo",
+        "produced": "Produzidas",
+        "delivered": "Entregues",
+        "duplicates": "Duplicatas",
+        "filtered": "Filtradas (dedup)",
+        "lost": "Perdidas",
+        "dlq": "Dead-lettered"
+      },
+      "tags": {
+        "delivered": "Entregue",
+        "duplicate": "Duplicata",
+        "lost": "Perdida",
+        "dlq": "Dead-letter",
+        "filtered": "Filtrada"
+      },
+      "labels": {
+        "recent": "Mensagens recentes",
+        "empty": "Nenhuma mensagem ainda",
+        "hint": "At-most-once pode perder mensagens; at-least-once pode duplicá-las. \"Exactly-once\" = entrega at-least-once mais deduplicação no consumidor."
+      }
+    },
+    "crdt": {
+      "title": "Simulador de CRDT (G-Counter)",
+      "subtitle": "Incremente réplicas de forma independente, depois mescle — sempre convergem",
+      "buttons": {
+        "sync": "Sincronizar (mesclar tudo)",
+        "reset": "Resetar"
+      },
+      "increment": "+1 em {{replica}}",
+      "replica": "Réplica",
+      "gossip_label": "Gossip:",
+      "narration": {
+        "idle": "Incremente qualquer réplica. Cada uma conta apenas no próprio slot, então as réplicas divergem até fofocarem entre si.",
+        "increment": "A réplica {{replica}} contou +1 no próprio slot e agora marca {{total}}. As outras ainda não souberam, então os valores divergem.",
+        "merge": "{{a}} e {{b}} fofocaram: cada slot vira o máximo das duas. Nenhum incremento se perde, e a ordem do merge nunca muda o resultado.",
+        "converged": "Agora todas as réplicas têm o mesmo vetor e concordam em {{total}}. Consistência eventual, com zero resolução de conflito."
+      },
+      "converged": "Convergiu",
+      "diverged": "Divergiu",
+      "all_agree": "Todas as réplicas concordam no valor.",
+      "need_sync": "As réplicas têm valores diferentes, fofoque para mesclar.",
+      "metrics": {
+        "title": "Métricas ao Vivo",
+        "max_value": "Valor do contador",
+        "merges": "Merges",
+        "converged": "Convergiu?",
+        "replicas": "Réplicas"
+      },
+      "hint": "Cada réplica conta os próprios incrementos no seu slot. O merge pega o máximo elemento a elemento, então incrementos nunca se perdem e qualquer ordem de merge dá o mesmo resultado."
+    },
+    "gossip": {
+      "title": "Simulador de Gossip",
+      "subtitle": "Um nó aprende uma atualização; ela se espalha epidemicamente pelo cluster",
+      "controls": {
+        "fanout": "Fanout (peers por rodada)",
+        "speed": "Velocidade"
+      },
+      "speed": {
+        "slow": "Lenta",
+        "normal": "Normal",
+        "fast": "Rápida"
+      },
+      "buttons": {
+        "start": "Iniciar rumor",
+        "resume": "Retomar",
+        "pause": "Pausar",
+        "step": "Passo",
+        "replay": "Repetir",
+        "reset": "Resetar"
+      },
+      "legend": {
+        "known": "Conhece a atualização",
+        "packet": "Rumor em trânsito",
+        "unaware": "Sem saber"
+      },
+      "narration": {
+        "idle": "Um nó conhece a atualização. Toque em Iniciar para ela fofocar, ou avance um Passo (rodada) por vez.",
+        "round": "Rodada {{round}}: {{senders}} nó(s) informado(s) fofocaram para {{peers}} peer(s). Agora {{known}}/{{total}} sabem.",
+        "converged": "Convergiu em {{rounds}} rodadas. A cobertura praticamente dobra a cada rodada, então o cluster sincroniza em cerca de log₂(N) rodadas."
+      },
+      "chart": {
+        "title": "Cobertura por rodada",
+        "round": "r{{n}}"
+      },
+      "metrics": {
+        "title": "Métricas ao Vivo",
+        "round": "Rodada",
+        "infected": "Nós informados",
+        "converged": "Convergência",
+        "nodes": "Total de nós"
+      },
+      "hint": "Cada nó informado avisa alguns peers aleatórios por rodada, então a atualização alcança todos em cerca de log(N) rodadas, sem coordenador, e tolerando falhas."
+    },
+    "distributed_lock": {
+      "title": "Simulador de Lock Distribuído",
+      "subtitle": "Um lock baseado em lease com fencing tokens que rejeitam escritores obsoletos",
+      "buttons": {
+        "demo": "Rodar demo de fencing",
+        "acquire": "Adquirir",
+        "write": "Escrever",
+        "stall": "Travar (pausar)",
+        "reset": "Resetar"
+      },
+      "lock": "Lock",
+      "free": "Livre",
+      "held_by": "Dono:",
+      "token": "token",
+      "write_token": "escrita @ token",
+      "client": "Cliente",
+      "resource": "Recurso",
+      "accepted": "ACEITA",
+      "fenced": "BLOQUEADA",
+      "stale": "(obsoleto)",
+      "stalled_note": "travado, lease ainda contando",
+      "narration": {
+        "idle": "Adquira o lock, trave o dono até o lease expirar, deixe outro cliente adquirir e então escreva pelo cliente travado para ver o fencing rejeitar o token obsoleto. Ou rode a demo.",
+        "acquire": "Cliente {{client}} adquiriu o lock com o fencing token {{token}} (um número monotonicamente crescente).",
+        "stall": "Cliente {{client}} travou (ex: pausa de GC). O lease continua contando e vai expirar enquanto ele está congelado.",
+        "expired": "O lease expirou e o lock foi liberado automaticamente.",
+        "expired_stalled": "O lease expirou e o lock foi liberado, mas o dono travado ainda acha que é o dono do lock.",
+        "write_ok": "Cliente {{client}} escreveu com o token {{token}} (>= token do recurso {{rt}}): aceita. O recurso avança para {{token}}.",
+        "fenced": "Cliente {{client}} escreveu com o token obsoleto {{token}} (< token do recurso {{rt}}): bloqueada. O recurso rejeita o token antigo."
+      },
+      "metrics": {
+        "title": "Métricas ao Vivo",
+        "tokens_issued": "Tokens emitidos",
+        "accepted": "Escritas aceitas",
+        "fenced": "Escritas bloqueadas",
+        "resource_token": "Token do recurso"
+      },
+      "hint": "Adquira o lock, trave o dono até o lease expirar, deixe outro cliente adquirir (token maior) e então escreva pelo cliente travado — o recurso bloqueia o token antigo e menor."
+    },
+    "cqrs": {
+      "title": "Simulador de CQRS",
+      "subtitle": "Comandos anexam eventos; read models são projeções",
+      "controls": {
+        "lag": "Lag da projeção"
+      },
+      "commands": {
+        "create": "Criar pedido",
+        "add_item": "Adicionar item",
+        "ship": "Enviar pedido",
+        "cancel": "Cancelar pedido"
+      },
+      "buttons": {
+        "reset": "Resetar"
+      },
+      "panels": {
+        "command": "Lado de comando (escrita)",
+        "log": "Log de eventos",
+        "read": "Read models (consulta)"
+      },
+      "events": {
+        "created": "OrderCreated",
+        "item_added": "ItemAdded",
+        "shipped": "OrderShipped",
+        "cancelled": "OrderCancelled"
+      },
+      "read": {
+        "status": "Status do pedido",
+        "items": "Quantidade de itens",
+        "events_applied": "Eventos aplicados",
+        "pending": "Pendentes"
+      },
+      "status_values": {
+        "none": "—",
+        "created": "Criado",
+        "shipped": "Enviado",
+        "cancelled": "Cancelado"
+      },
+      "labels": {
+        "log_empty": "Nenhum evento ainda — emita um comando",
+        "lag_caption": "Projeção atualizada: {{pct}}%",
+        "hint": "Escritas vão para o log de eventos instantaneamente; read models atualizam de forma assíncrona. Aumente o lag para ver consistência eventual — a leitura fica atrás da escrita."
+      }
+    },
+    "inference_batching": {
+      "title": "Simulador de Batching de Inferência",
+      "subtitle": "Continuous batching em uma GPU — vazão vs latência",
+      "controls": {
+        "arrival_rate": "Taxa de chegada (req/s)",
+        "batch_capacity": "Capacidade do lote (slots KV)",
+        "output_tokens": "Média de tokens de saída"
+      },
+      "buttons": {
+        "start": "Iniciar",
+        "stop": "Parar",
+        "reset": "Reiniciar"
+      },
+      "panels": {
+        "batch": "Lote em Execução (GPU)",
+        "queue": "Fila de Admissão",
+        "metrics": "Métricas ao Vivo"
+      },
+      "metrics": {
+        "throughput": "Vazão (tok/s)",
+        "utilization": "Utilização do lote",
+        "queue_depth": "Tamanho da fila",
+        "avg_latency": "Latência média",
+        "completed": "Concluídas",
+        "dropped": "Descartadas"
+      },
+      "labels": {
+        "slot_free": "slot livre",
+        "tokens": "tok",
+        "waiting": "esperando",
+        "batch_empty": "GPU ociosa — nenhuma requisição no lote",
+        "queue_empty": "Fila vazia",
+        "request": "REQ"
+      }
+    },
+    "rag_pipeline": {
+      "title": "Simulador de Pipeline RAG",
+      "subtitle": "Embeddar → buscar → reordenar → montar → gerar",
+      "controls": {
+        "chunk_size": "Tamanho do trecho (tokens)",
+        "top_k": "Recuperar top-K",
+        "rerank": "Reordenação"
+      },
+      "buttons": {
+        "run": "Executar Consulta",
+        "reset": "Reiniciar",
+        "on": "Ligado",
+        "off": "Desligado"
+      },
+      "stages": {
+        "embed": "Embeddar Consulta",
+        "search": "Busca Vetorial",
+        "rerank": "Reordenar",
+        "assemble": "Montar Contexto",
+        "generate": "Gerar"
+      },
+      "metrics": {
+        "recall": "Recall da recuperação",
+        "latency": "Latência total",
+        "cost": "Custo / consulta",
+        "context": "Contexto usado",
+        "quality": "Qualidade da resposta"
+      },
+      "labels": {
+        "idle": "Ocioso — execute uma consulta para começar",
+        "chunk": "trecho",
+        "score": "score",
+        "retrieved": "Trechos recuperados",
+        "disabled": "desativado"
+      }
+    },
+    "vector_search": {
+      "title": "Simulador de Busca Vetorial",
+      "subtitle": "Vizinhos mais próximos aproximados com HNSW",
+      "controls": {
+        "ef_search": "efSearch (lista de candidatos)",
+        "m_links": "M (conexões do grafo)",
+        "dataset": "Tamanho do dataset"
+      },
+      "buttons": {
+        "search": "Executar Busca",
+        "reset": "Reiniciar"
+      },
+      "metrics": {
+        "recall": "Recall@10",
+        "latency": "Latência da consulta",
+        "comparisons": "Comp. de distância",
+        "memory": "Memória do índice"
+      },
+      "labels": {
+        "idle": "Execute uma busca para sondar o índice",
+        "exact": "Exata (força bruta)",
+        "approx": "HNSW (aproximada)",
+        "found": "Vizinhos encontrados"
+      }
+    },
+    "llm_gateway": {
+      "title": "Simulador de Gateway de LLM",
+      "subtitle": "Cache semântico, fallback de modelo, limite de taxa e custo",
+      "controls": {
+        "cache_rate": "Taxa de acerto do cache (%)",
+        "rate_limit": "Limite de taxa (req/s)",
+        "primary_fail": "Falha do primário (%)"
+      },
+      "buttons": {
+        "start": "Iniciar",
+        "stop": "Parar",
+        "reset": "Reiniciar"
+      },
+      "routes": {
+        "cache": "Servido do cache",
+        "primary": "Modelo primário",
+        "fallback": "Modelo de fallback",
+        "rejected": "Limitado por taxa"
+      },
+      "metrics": {
+        "served": "Atendidas",
+        "cache_hits": "Acertos de cache",
+        "fallbacks": "Fallbacks",
+        "rejected": "Rejeitadas",
+        "cost": "Custo total"
+      },
+      "labels": {
+        "recent": "Requisições recentes",
+        "empty": "Nenhuma requisição ainda"
+      }
+    },
+    "gpu_autoscaler": {
+      "title": "Simulador de Autoescalonador de GPU",
+      "subtitle": "Partidas a frio, filas e escala-a-zero",
+      "controls": {
+        "arrival_rate": "Taxa de chegada (req/s)",
+        "scale_threshold": "Limiar de fila para escalar",
+        "cold_start": "Partida a frio (s)"
+      },
+      "buttons": {
+        "start": "Iniciar",
+        "stop": "Parar",
+        "reset": "Reiniciar"
+      },
+      "panels": {
+        "replicas": "Réplicas de GPU",
+        "metrics": "Métricas ao Vivo"
+      },
+      "metrics": {
+        "replicas": "Réplicas ativas",
+        "queue": "Tamanho da fila",
+        "latency": "Latência média",
+        "cost": "Custo ($/min)",
+        "utilization": "Utilização"
+      },
+      "labels": {
+        "warming": "AQUECENDO",
+        "ready": "PRONTA",
+        "idle": "OCIOSA",
+        "scale_to_zero": "Escalado a zero — nenhuma GPU ativa"
+      }
+    },
+    "agent_orchestration": {
+      "title": "Simulador de Orquestração de Agentes",
+      "subtitle": "Laço raciocinar → agir → observar com chamadas de ferramentas",
+      "controls": {
+        "max_steps": "Máx. de passos",
+        "tool_latency": "Latência da ferramenta (ms)",
+        "fail_rate": "Falha da ferramenta (%)"
+      },
+      "buttons": {
+        "run": "Executar Agente",
+        "reset": "Reiniciar"
+      },
+      "steps": {
+        "think": "Pensar",
+        "act": "Chamar Ferramenta",
+        "observe": "Observar",
+        "answer": "Resposta Final",
+        "retry": "Repetir"
+      },
+      "tools": {
+        "search": "web_search",
+        "calculator": "calculator",
+        "database": "db_query"
+      },
+      "metrics": {
+        "steps": "Passos executados",
+        "tool_calls": "Chamadas de ferramenta",
+        "retries": "Tentativas",
+        "tokens": "Tokens usados",
+        "status": "Status"
+      },
+      "labels": {
+        "idle": "Ocioso — execute o agente para começar",
+        "running": "Executando",
+        "done": "Concluído",
+        "failed": "Falhou (máx. de passos atingido)",
+        "trace": "Trace de execução"
+      }
+    },
+    "gateway": {
+      "title": "Simulador de API Gateway",
+      "description": "Visualize como um API Gateway roteia diferentes tipos de requisições para os serviços apropriados em uma arquitetura de microsserviços.",
+      "buttons": {
+        "start": "Iniciar Simulação",
+        "stop": "Parar Simulação",
+        "show_config": "Mostrar Configurações",
+        "hide_config": "Ocultar Configurações",
+        "reset": "Reiniciar",
+        "restore_defaults": "Restaurar Padrões"
+      },
+      "config": {
+        "title": "Configurações da Simulação",
+        "rps": "Requisições por Segundo: {{value}}",
+        "routing_delay": "Delay de Roteamento: {{ms}}ms",
+        "extra_error_rate": "Taxa de Erro Adicional: {{percent}}%",
+        "removal_delay": "Tempo de Remoção: {{ms}}ms"
+      },
+      "stats": {
+        "total": "Total de Requisições",
+        "success": "Requisições com Sucesso",
+        "error": "Requisições com Erro"
+      },
+      "columns": {
+        "clients": "Clientes",
+        "apigw": "API Gateway",
+        "microservices": "Microsserviços"
+      },
+      "items": {
+        "request_id": "Requisição #{{id}}",
+        "type": "Tipo: {{type}}",
+        "routing_to": "Roteando #{{id}}",
+        "to_service": "Para: {{service}}",
+        "processing_time": "Tempo de processamento: {{ms}}ms",
+        "base_error_rate": "Taxa de erro base: {{percent}}%",
+        "error": "Erro",
+        "processing": "Processando"
+      }
+    },
+    "retries": {
+      "title": "Simulador de Retries",
+      "buttons": {
+        "settings": "Configurações",
+        "start": "Iniciar Simulação",
+        "simulating": "Simulando..."
+      },
+      "settings": {
+        "title": "Configurações da Simulação",
+        "max_retries": "Máximo de Retries: {{value}}",
+        "base_delay": "Delay Base: {{ms}}ms",
+        "success_rate": "Taxa de Sucesso: {{percent}}%"
+      },
+      "toggles": {
+        "use_exponential_backoff": "Usar Backoff Exponencial",
+        "add_jitter": "Adicionar Jitter"
+      },
+      "visualization": {
+        "title": "Visualização"
+      },
+      "attempt": {
+        "label": "Tentativa {{id}}",
+        "next_in": "Próxima tentativa em {{ms}}ms"
+      },
+      "stats": {
+        "title": "Estatísticas",
+        "total_attempts": "Total de Tentativas",
+        "final_status": "Status Final",
+        "status_success": "Sucesso",
+        "status_failure": "Falha"
+      },
+      "info": {
+        "title": "Explicação",
+        "p1": "Este simulador demonstra como os mecanismos de retry funcionam em sistemas distribuídos. Cada tentativa tem uma chance de sucesso baseada na taxa configurada.",
+        "p2": "Com backoff exponencial, o tempo entre tentativas aumenta progressivamente (1s, 2s, 4s, 8s...), reduzindo a carga do sistema.",
+        "p3": "Jitter adiciona uma variação aleatória ao tempo entre tentativas, evitando que vários clientes tentem novamente ao mesmo tempo."
+      }
+    },
+    "circuit_breaker": {
+      "title": "Circuit Breaker",
+      "buttons": {
+        "settings": "Configurações",
+        "start": "Iniciar",
+        "stop": "Parar",
+        "start_errors": "Iniciar Erros",
+        "stop_errors": "Parar Erros",
+        "reset": "Resetar"
+      },
+      "labels": {
+        "rps": "Requisições/s:",
+        "state": "Estado",
+        "reset_in": "Reset em",
+        "consecutive_failures": "Falhas Consecutivas",
+        "error_status": "Status dos Erros",
+        "active_with_chance": "Ativos ({{percent}}% de chance)",
+        "inactive": "Inativos",
+        "latest_requests": "Últimas Requisições",
+        "no_requests": "Nenhuma requisição realizada"
+      }
+    },
+    "polling_webhooks": {
+      "title": "Simulador: Polling vs Webhooks",
+      "subtitle": "Veja na prática a diferença entre polling e webhooks com nossa simulação interativa",
+      "ctas": {
+        "read_theory": "Ler Teoria Completa Primeiro",
+        "back_to_theory": "Voltar para Teoria",
+        "back_to_components": "Componentes Básicos"
+      },
+      "buttons": {
+        "polling": "Polling",
+        "webhook": "Webhook",
+        "start": "Iniciar",
+        "stop": "Parar",
+        "reset": "Resetar"
+      },
+      "config": {
+        "polling_interval": "Intervalo de Polling",
+        "data_generation": "Geração de Dados",
+        "network_latency": "Latência de Rede"
+      },
+      "flow": {
+        "title": "Fluxo de Comunicação",
+        "client": "Cliente",
+        "server": "Servidor",
+        "active_mode": "Modo Ativo:",
+        "active_sim": "🟢 Simulação Ativa ({{mode}})",
+        "stopped_sim": "🔴 Simulação Parada"
+      },
+      "stats": {
+        "title": "Estatísticas em Tempo Real",
+        "total_requests": "Total de Requisições",
+        "empty_responses": "Respostas Vazias",
+        "data_transfers": "Dados Transferidos",
+        "webhooks_sent": "Webhooks Enviados",
+        "total_bandwidth_bits": "Bandwidth Total (bits)",
+        "efficiency": "Eficiência",
+        "success_rate": "Taxa de Sucesso",
+        "wasted_requests": "Requisições Desperdiçadas"
+      },
+      "queue": {
+        "pending_data": "Dados Pendentes ({{count}})",
+        "none": "Nenhum dado pendente"
+      },
+      "log": {
+        "title": "Log de Mensagens",
+        "with_data": "Com dados",
+        "start_prompt": "Inicie a simulação para ver as mensagens..."
+      },
+      "messages": {
+        "checking": "Verificando novos dados...",
+        "data_found": "Dados encontrados: {{content}}",
+        "no_data": "Nenhum dado novo disponível"
+      }
+    },
+    "message_queue_sim": {
+      "title": "Message Queue",
+      "buttons": {
+        "configure": "Configurar",
+        "close_config": "Fechar Config",
+        "start": "Iniciar",
+        "stop": "Parar",
+        "reset": "Resetar"
+      },
+      "config": {
+        "producers": "Produtores",
+        "production_rate": "Taxa de Produção",
+        "max_queue_size": "Tamanho Máximo da Fila",
+        "consumers": "Consumidores",
+        "consumption_rate": "Taxa de Consumo",
+        "process_time": "Tempo de Processamento"
+      },
+      "flow": {
+        "title": "Fluxo de Mensagens",
+        "queue": "Fila",
+        "more": "+{{count}} mais"
+      },
+      "queue_status": {
+        "title": "Status da Fila",
+        "size": "Tamanho da Fila",
+        "produced": "Produzidas",
+        "processed": "Processadas",
+        "dropped": "Descartadas",
+        "avg_time": "Tempo Médio"
+      },
+      "messages": {
+        "title": "Mensagens",
+        "none": "Nenhuma mensagem ainda"
+      }
+    },
+    "philosophers_sim": {
+      "title": "Jantar dos Filósofos",
+      "subtitle": "Cinco filósofos compartilham cinco garfos. Comer exige os dois garfos vizinhos, então os lugares competem pelo mesmo recurso. Escolha uma estratégia e veja como ela evita — ou causa — deadlock.",
+      "buttons": {
+        "configure": "Configurar",
+        "close_config": "Fechar Config",
+        "start": "Iniciar",
+        "pause": "Pausar",
+        "step": "Passo",
+        "reset": "Resetar"
+      },
+      "config": {
+        "title": "Controles",
+        "strategy": "Estratégia",
+        "philosophers": "Filósofos",
+        "speed": "Velocidade"
+      },
+      "strategies": {
+        "naive": {
+          "label": "Ingênua",
+          "desc": "Cada filósofo pega o garfo da esquerda e então espera pelo da direita. Se todos pegarem o garfo esquerdo ao mesmo tempo, todos ficam segurando um garfo para sempre — um deadlock clássico."
+        },
+        "hierarchy": {
+          "label": "Hierarquia de Recursos",
+          "desc": "Os garfos são numerados; um filósofo sempre pega primeiro o garfo de menor número. Quebrar a condição de espera circular torna o deadlock impossível."
+        },
+        "atomic": {
+          "label": "Dois ou Nenhum",
+          "desc": "Um filósofo só pega os garfos quando ambos estão livres, de forma atômica. Ninguém segura um único garfo, então não há deadlock (mas ainda pode haver inanição)."
+        },
+        "arbitrator": {
+          "label": "Árbitro Central",
+          "desc": "Um garçom permite que no máximo N-1 filósofos tentem pegar garfos ao mesmo tempo. Com um lugar sempre livre, a espera circular nunca se fecha."
+        }
+      },
+      "states": {
+        "thinking": "Pensando",
+        "hungry": "Com fome",
+        "eating": "Comendo"
+      },
+      "viz": {
+        "title": "A Mesa",
+        "tick": "ciclo",
+        "eating_now": "comendo",
+        "fork_held": "Garfo em uso",
+        "deadlock": "DEADLOCK",
+        "deadlock_hint": "Deadlock detectado: cada filósofo com fome segura um garfo e espera para sempre pelo outro. Resete e tente uma estratégia sem deadlock."
+      },
+      "roster": {
+        "title": "Filósofos"
+      },
+      "stats": {
+        "title": "Métricas",
+        "total_meals": "Refeições totais",
+        "eating": "Comendo agora",
+        "longest_wait": "Maior espera",
+        "ticks": "Ciclos",
+        "running": "Executando",
+        "paused": "Pausado",
+        "deadlocked": "Em deadlock",
+        "meals_short": "{{n}} refeições"
+      },
+      "log": {
+        "title": "Log de Eventos",
+        "empty": "Aguardando eventos…",
+        "got_hungry": "{{name}} ficou com fome",
+        "took_left": "{{name}} pegou o garfo esquerdo",
+        "took_right": "{{name}} pegou o garfo direito",
+        "took_low": "{{name}} pegou o garfo {{fork}}",
+        "started_eating": "{{name}} pegou os dois garfos e começou a comer",
+        "finished_eating": "{{name}} terminou de comer e liberou os garfos",
+        "deadlock_detected": "Deadlock detectado — nenhum filósofo consegue progredir"
+      }
+    },
+    "rate_limiter": {
+      "title": "Rate Limiter",
+      "strategy": "Algoritmo",
+      "algorithms": {
+        "token": "Token bucket",
+        "leaky": "Leaky bucket",
+        "sliding": "Janela deslizante"
+      },
+      "algo_desc": {
+        "token": "Tokens são repostos a uma taxa constante; cada requisição gasta um. Permite rajadas até o tamanho do bucket.",
+        "leaky": "Requisições preenchem uma fila fixa que drena a uma taxa constante. Suaviza a saída; rejeita quando a fila enche.",
+        "sliding": "Conta requisições na janela de 1s anterior; rejeita ao atingir o limite. Sem rajadas além do limite."
+      },
+      "level": {
+        "token": "Tokens disponíveis",
+        "leaky": "Profundidade da fila",
+        "sliding": "Contagem na janela (1s)"
+      },
+      "buttons": {
+        "configure": "Configurar",
+        "close_config": "Fechar Config",
+        "start": "Iniciar",
+        "stop": "Parar",
+        "reset": "Resetar"
+      },
+      "config": {
+        "token_rate": "Reposição / vazamento / limite (por segundo)",
+        "message_rate": "Taxa de Mensagens (por segundo)",
+        "bucket_size": "Tamanho do bucket / fila"
+      },
+      "bucket": {
+        "title": "Token Bucket",
+        "rate": "Taxa: {{rate}} /s"
+      },
+      "recent": {
+        "title": "Últimas Requisições",
+        "rate": "Taxa: {{rate}} msgs/s",
+        "accepted": "Requisição aceita",
+        "rejected": "Requisição rejeitada",
+        "none": "Nenhuma requisição ainda"
+      },
+      "metrics": {
+        "total": "Total de Requisições",
+        "accepted": "Aceitas",
+        "rejected": "Rejeitadas"
+      }
+    },
+    "backpressure": {
+      "title": "Backpressure",
+      "buttons": {
+        "settings": "Configurações",
+        "start": "Iniciar",
+        "stop": "Parar",
+        "reset": "Resetar"
+      },
+      "producer_status": {
+        "title": "Status do Produtor",
+        "throttled": "Throttled",
+        "normal": "Normal"
+      },
+      "labels": {
+        "produced": "Mensagens Produzidas",
+        "processed": "Mensagens Processadas",
+        "dropped": "Mensagens Descartadas",
+        "latest": "Últimas Mensagens"
+      }
+    },
+    "round_robin": {
+      "title": "Load Balancer",
+      "buttons": {
+        "start": "Iniciar Simulação",
+        "stop": "Parar Simulação"
+      },
+      "config": {
+        "strategy": "Estratégia",
+        "server_count": "Número de Servidores",
+        "server_capacity": "Capacidade do Servidor",
+        "rps": "Requisições por Segundo"
+      },
+      "strategies": {
+        "round_robin": "Round Robin: Distribui as requisições sequencialmente entre todos os servidores em ordem circular.",
+        "least_conn": "Least Connections: Envia novas requisições para o servidor com menor carga atual.",
+        "random": "Random: Seleciona aleatoriamente um servidor para cada nova requisição."
+      },
+      "server_card": {
+        "server_label": "Servidor {{id}}",
+        "requests": "{{current}}/{{capacity}} requisições",
+        "response_time_ms": "({{ms}}ms)",
+        "response_time_label": "Tempo de Resposta:"
+      }
+    },
+    "cdn": {
+      "title": "Simulação de CDN",
+      "buttons": {
+        "configure": "Configurar",
+        "close_config": "Fechar Config",
+        "reset": "Reiniciar"
+      },
+      "config": {
+        "title": "Configurações",
+        "base_latency_multiplier": "Multiplicador de Latência Base (Sem Cache)",
+        "cache_latency_multiplier": "Multiplicador de Latência com Cache",
+        "max_logs": "Número Máximo de Logs"
+      },
+      "labels": {
+        "x_suffix": "x",
+        "logs_suffix": "logs",
+        "country_select": "Selecione seu país:",
+        "datacenters": "Datacenters:",
+        "cache_badge": "Cache ✓",
+        "latency": "Latência"
+      },
+      "messages": {
+        "processing": "Processando requisição..."
+      },
+      "history": {
+        "title": "Histórico de Requisições:",
+        "cache_hit": "Cache Hit"
+      },
+      "info": {
+        "title": "Como funciona?",
+        "i1": "Selecione seu país para simular uma requisição",
+        "i2": "O datacenter mais próximo será escolhido automaticamente",
+        "i3": "Primeira requisição: Busca do servidor de origem ({{base}}x a latência)",
+        "i4": "Requisições subsequentes: Servidas do cache local ({{cache}}x a latência)",
+        "i5": "A latência varia de acordo com a distância entre seu país e o datacenter"
+      }
+    },
+    "firewall": {
+      "title": "Simulador de Firewall",
+      "lead": "Este simulador demonstra como um firewall filtra pacotes de rede com base em regras predefinidas. Observe como diferentes tipos de tráfego são permitidos ou bloqueados.",
+      "rules": {
+        "title": "Regras do Firewall",
+        "restore_title": "Restaurar configuração inicial",
+        "add_rule": "Adicionar Regra",
+        "remove_rule_title": "Remover regra"
+      },
+      "stats": {
+        "title": "Estatísticas",
+        "total": "Total de Pacotes",
+        "allowed": "Permitidos",
+        "blocked": "Bloqueados"
+      },
+      "traffic": {
+        "title": "Tráfego de Rede",
+        "custom_packet": "Pacote Personalizado",
+        "generate_packet": "Gerar Pacote",
+        "stop_autogen": "Parar",
+        "start_autogen": "Auto Gerar"
+      },
+      "labels": {
+        "port": "Porta",
+        "protocol": "Protocolo",
+        "type": "Tipo",
+        "payload": "Payload",
+        "action_allow": "Permitir",
+        "action_block": "Bloquear"
+      },
+      "badges": {
+        "allow": "PERMITIDO",
+        "block": "BLOQUEADO"
+      },
+      "empty": "Nenhum pacote gerado ainda. Clique em \"Gerar Pacote\" para começar.",
+      "add_rule_modal": {
+        "title": "Nova Regra",
+        "origin": "Origem",
+        "destination": "Destino",
+        "port": "Porta",
+        "protocol": "Protocolo",
+        "type": "Tipo",
+        "action": "Ação",
+        "placeholder_ip_or_star": "IP ou *",
+        "placeholder_port_or_zero": "Porta ou 0",
+        "option_select": "Selecione",
+        "button_cancel": "Cancelar",
+        "button_add": "Adicionar"
+      },
+      "custom_packet_modal": {
+        "title": "Enviar Pacote Personalizado",
+        "origin": "Origem",
+        "destination": "Destino",
+        "port": "Porta",
+        "protocol": "Protocolo",
+        "type": "Tipo",
+        "payload": "Payload",
+        "placeholder_origin_ip": "IP (ex: 192.168.1.1)",
+        "placeholder_destination_ip": "IP (ex: 10.0.0.1)",
+        "placeholder_port": "Porta (ex: 80)",
+        "placeholder_payload": "Dados do pacote",
+        "button_cancel": "Cancelar",
+        "button_send": "Enviar Pacote"
+      },
+      "errors": {
+        "source_required": "O IP de origem é obrigatório",
+        "destination_required": "O IP de destino é obrigatório",
+        "port_required": "A porta é obrigatória"
+      },
+      "info": {
+        "title": "Como funciona?",
+        "i1": "O simulador gera pacotes de rede aleatórios com diferentes origens, destinos e portas",
+        "i2": "As regras do firewall são avaliadas em ordem, da primeira à última",
+        "i3": "A primeira regra que corresponde ao pacote determina se ele será permitido ou bloqueado",
+        "i4": "A última regra (default) bloqueia todo o tráfego não especificado nas regras anteriores",
+        "i5": "Você pode adicionar suas próprias regras e ver como elas afetam o tráfego",
+        "i6": "Use o modo \"Auto Gerar\" para ver um fluxo contínuo de pacotes"
+      }
+    },
+    "horizontal_scaling": {
+      "title": "Simulador de Escalabilidade Horizontal",
+      "intro": "Visualize como a carga é distribuída entre múltiplos servidores e como o sistema escala automaticamente baseado na demanda.",
+      "controls": {
+        "request_rate": "Taxa de Requisições/s",
+        "processing_time_ms": "Tempo de Processamento (ms)",
+        "auto_scaling": "Auto-Scaling",
+        "scale_up": "Scale Up:",
+        "scale_down": "Scale Down:",
+        "percent": "%"
+      },
+      "buttons": {
+        "start": "Iniciar",
+        "stop": "Parar",
+        "add_server": "Adicionar Servidor",
+        "remove_server": "Remover Servidor"
+      },
+      "server_card": {
+        "server_label": "Servidor {{id}}",
+        "active": "Ativo",
+        "inactive": "Inativo",
+        "load": "Carga",
+        "processed_requests": "Requisições processadas: {{count}}"
+      },
+      "requests": {
+        "recent": "Últimas Requisições",
+        "server_label": "Servidor {{id}}",
+        "status_completed": "Concluído",
+        "status_failed": "Falhou",
+        "status_processing": "Processando"
+      }
+    },
+    "vertical_scaling": {
+      "title": "Simulador de Escalabilidade Vertical",
+      "intro": "Gerencie recursos do servidor e observe como ele lida com diferentes cargas de trabalho.",
+      "level_of_total": "Nível {{current}} de {{total}}",
+      "buttons": {
+        "downgrade": "Downgrade",
+        "upgrade": "Upgrade",
+        "start": "Iniciar Simulação",
+        "stop": "Stop Simulation"
+      },
+      "resources": {
+        "cpu": "CPU ({{cores}} núcleos)",
+        "memory": "Memória ({{gb}} GB)",
+        "storage": "Armazenamento ({{gb}} GB)"
+      },
+      "queue_title": "Fila de Requisições",
+      "controls_title": "Controles",
+      "request_rate": "Taxa de Requisições ({{rate}}/s)",
+      "stats_title": "Estatísticas",
+      "processed": "Processadas",
+      "rejected": "Rejeitadas",
+      "success_rate": "Taxa de Sucesso",
+      "uptime": "Tempo Ativo",
+      "total_cost": "Custo Total",
+      "current_load": "Carga Atual",
+      "statuses": {
+        "healthy": "saudável",
+        "degraded": "degradado",
+        "failed": "falho",
+        "role": "Papel",
+        "data": "Dados",
+        "keys": "chaves",
+        "replicated_after": "Replicado após {{seconds}}s"
+      },
+      "upgrade_modal": {
+        "title": "Aumentar Servidor",
+        "text": "Deseja aumentar para {{tier}}? Isso aumentará seus custos para R${{cost}}/mês.",
+        "cancel": "Cancelar",
+        "confirm": "Aumentar"
+      }
+    },
+    "scalability": {
+      "title": "Simulador de Escalabilidade",
+      "intro": "Explore como consistência, latência e failover funcionam em um sistema distribuído.",
+      "how_title": "Como usar o simulador:",
+      "how_steps": [
+        "Configure o modo de consistência: Forte (replicação instantânea) ou Eventual (replicação com latência)",
+        "Ajuste a latência de rede e veja o efeito na replicação (valores maiores mostram atrasos eventuais)",
+        "Experimente cenários: simule falhas (failover), compare propagação de consistência, observe impactos nas requisições"
+      ],
+      "config_title": "Configurações",
+      "consistency_mode": "Modo de Consistência",
+      "strong": "Forte",
+      "eventual": "Eventual",
+      "network_latency_ms": "Latência de Rede (ms)",
+      "failure_rate": "Taxa de Falha",
+      "auto_failover": "Auto Failover",
+      "manual_title": "Operação Manual",
+      "read": "Leitura",
+      "write": "Escrita",
+      "key_placeholder": "Chave",
+      "value_placeholder": "Valor",
+      "execute": "Executar",
+      "start": "Iniciar Simulação",
+      "stop": "Parar Simulação",
+      "role": "Papel",
+      "latency": "Latência",
+      "data": "Dados",
+      "keys_label": "{{count}} chaves",
+      "replicated_after": "Replicado após {{seconds}}s",
+      "simulate_failure": "Simular Falha",
+      "recover": "Recuperar",
+      "recent_requests": "Requisições Recentes",
+      "read_label": "Leitura",
+      "write_label": "Escrita"
+    },
+    "timeout": {
+      "title": "Simulador de Timeout",
+      "buttons": {
+        "settings": "Configurações",
+        "start": "Iniciar",
+        "stop": "Parar",
+        "reset": "Reiniciar"
+      },
+      "settings": {
+        "title": "Configurações da Simulação",
+        "timeout": "Timeout: {{seconds}}s",
+        "rps": "Requisições por Segundo: {{value}}",
+        "min_response": "Tempo Mínimo de Resposta: {{seconds}}s",
+        "max_response": "Tempo Máximo de Resposta: {{seconds}}s",
+        "success_rate": "Taxa de Sucesso: {{percent}}%"
+      },
+      "visualization": {
+        "title": "Visualização"
+      },
+      "request_label": "Requisição {{id}}",
+      "statuses": {
+        "success": "Requisição completada com sucesso",
+        "timeout": "Timeout: Requisição excedeu {{seconds}}s",
+        "error": "Erro do servidor"
+      },
+      "stats": {
+        "title": "Estatísticas",
+        "total": "Total de Requisições",
+        "timeouts": "Timeouts"
+      },
+      "info": {
+        "title": "Explicação",
+        "p1": "Este simulador demonstra como o mecanismo de timeout funciona em sistemas distribuídos. Cada requisição tem um tempo limite configurável para ser completada.",
+        "p2": "Se a resposta não chegar dentro do tempo limite, a requisição é cancelada e um erro de timeout é retornado, evitando que recursos fiquem presos indefinidamente.",
+        "p3": "Ajuste timeout, tempos de resposta e taxa de sucesso para visualizar impactos."
+      }
+    },
+    "outbox": {
+      "title": "Simulador de Transactional Outbox",
+      "subtitle": "Escrita dupla vs o padrão outbox quando o broker é instável",
+      "modes": {
+        "dual-write": "Escrita dupla",
+        "outbox": "Padrão outbox"
+      },
+      "controls": {
+        "broker_fail": "Taxa de falha do broker"
+      },
+      "buttons": {
+        "place": "Criar pedido",
+        "start": "Auto",
+        "stop": "Parar",
+        "reset": "Resetar"
+      },
+      "service": "Serviço",
+      "orders_made": "pedidos criados",
+      "events_sent": "eventos entregues",
+      "one_transaction": "Uma transação",
+      "relay": "relay",
+      "narration": {
+        "idle": "Crie um pedido e acompanhe o trajeto. Aumente a taxa de falha do broker para ver como cada abordagem reage.",
+        "dual_ok": "Pedido #{{n}}: confirmado no banco e o evento publicado no broker. Os dois funcionaram desta vez.",
+        "dual_lost": "Pedido #{{n}}: confirmado no banco, mas o broker estava fora e a publicação falhou. Esse evento se perdeu para sempre, banco e broker agora divergem.",
+        "outbox_commit": "Pedido #{{n}}: o pedido e a linha de outbox foram confirmados em uma transação. O relay vai publicar em seguida.",
+        "outbox_drain": "Pedido #{{n}} confirmado atomicamente; o relay publicou {{k}} linha(s) pendente(s) do outbox no broker.",
+        "outbox_wait": "Pedido #{{n}}: confirmado atomicamente. O broker está fora, então a linha de outbox espera segura no banco, nada se perde."
+      },
+      "database": "Banco (pedidos)",
+      "outbox_table": "Outbox (pendentes)",
+      "broker": "Broker (eventos)",
+      "lost": "Eventos perdidos",
+      "consistent": "Consistente",
+      "inconsistent": "Inconsistente!",
+      "metrics": {
+        "title": "Métricas ao Vivo",
+        "orders": "Pedidos confirmados",
+        "published": "Eventos publicados",
+        "lost": "Eventos perdidos",
+        "pending": "Pendentes no outbox"
+      },
+      "hint": {
+        "dual-write": "Com escrita dupla, o commit no banco e a publicação são separados. Quando o broker falha após o commit, o evento se perde para sempre — banco e broker divergem.",
+        "outbox": "O outbox grava o evento na mesma transação dos dados. Um relay o publica com retries, então nada se perde — só atrasa quando o broker está fora."
+      }
+    },
+    "bulkhead": {
+      "title": "Simulador de Bulkhead",
+      "subtitle": "Uma dependência lenta não deveria afundar o tráfego não relacionado",
+      "modes": {
+        "shared": "Pool compartilhado",
+        "bulkhead": "Bulkheads isolados"
+      },
+      "controls": {
+        "b_slow": "Lentidão da dependência B"
+      },
+      "buttons": {
+        "start": "Auto",
+        "stop": "Parar",
+        "reset": "Resetar"
+      },
+      "service_a": "Serviço A (dep saudável)",
+      "service_b": "Serviço B (dep lenta)",
+      "shared_pool": "Pool de workers compartilhado",
+      "pool_a": "Pool A",
+      "pool_b": "Pool B",
+      "legend_a": "Ocupado com A",
+      "legend_b": "Ocupado com B (lenta)",
+      "legend_free": "Slot livre",
+      "narration": {
+        "shared": "Um único pool de {{pool}} workers atende as duas dependências. Agora {{used}} slots estão em uso.",
+        "starved": "Chamadas lentas de B estão segurando {{busyB}} dos slots compartilhados, então chamadas saudáveis de A passam a ser rejeitadas. Uma dependência lenta afunda tudo.",
+        "bulkhead": "A e B têm metade do pool cada. A lentidão de B enche apenas os próprios slots, então A continua atendendo normalmente."
+      },
+      "healthy_dep": "Dependência saudável",
+      "slow_dep": "Dependência lenta / com falha",
+      "shared_note": "Pool compartilhado: chamadas lentas de B seguram todos os workers, então chamadas saudáveis de A também são rejeitadas.",
+      "bulkhead_note": "Bulkheads: A e B recebem metade do pool cada, então a lentidão de B fica contida e A continua atendendo.",
+      "metrics": {
+        "title": "Métricas ao Vivo",
+        "a_health": "Taxa de sucesso de A",
+        "b_health": "Taxa de sucesso de B",
+        "a_rejected": "A rejeitadas",
+        "b_rejected": "B rejeitadas"
+      },
+      "hint": "Sem isolamento, uma dependência lenta esgota o pool compartilhado e derruba o tráfego saudável. Bulkheads limitam cada dependência para que falhas fiquem contidas."
+    },
+    "pacelc": {
+      "title": "Simulador PACELC",
+      "subtitle": "Se Partição: escolha A ou C. Senão (operação normal): escolha L ou C.",
+      "presets": "Sistemas reais",
+      "systems": {
+        "dynamo": "DynamoDB",
+        "cassandra": "Cassandra",
+        "mongo": "MongoDB",
+        "pnuts": "PNUTS",
+        "bigtable": "Bigtable / HBase"
+      },
+      "scenario": {
+        "label": "Simular agora",
+        "normal": "Operação normal",
+        "partition": "Partição de rede"
+      },
+      "active_now": "Governando agora",
+      "root": "Chega uma requisição",
+      "if_partition": "SE há partição (P)",
+      "else_normal": "SENÃO: operação normal (E)",
+      "p_question": "Disponibilidade ou Consistência?",
+      "e_question": "Latência ou Consistência?",
+      "choices": {
+        "PA": "Disponibilidade",
+        "PC": "Consistência",
+        "EL": "Baixa latência",
+        "EC": "Consistência"
+      },
+      "classification": "Classificação",
+      "outcomes": {
+        "PA": "Durante uma partição, o sistema permanece disponível e serve dados possivelmente desatualizados nos dois lados (ex: Dynamo, Cassandra).",
+        "PC": "Durante uma partição, o sistema recusa requisições no lado minoritário para preservar a consistência (ex: MongoDB, HBase).",
+        "EL": "Em operação normal, o sistema responde da réplica mais próxima para baixa latência, aceitando consistência mais fraca (ex: Dynamo).",
+        "EC": "Em operação normal, o sistema coordena réplicas para consistência forte, pagando latência extra (ex: MongoDB, Bigtable)."
+      },
+      "favors_latency": "Favorece disponibilidade / latência",
+      "favors_consistency": "Favorece consistência",
+      "hint": "PACELC estende o CAP: uma partição força A-vs-C, mas no Senão (o caso comum, sem partição) você ainda troca Latência vs Consistência. Muitos sistemas escolhem o mesmo lado nos dois — PA/EL ou PC/EC."
+    },
+    "chaos": {
+      "title": "Simulador de Chaos Engineering",
+      "subtitle": "Injete falhas em um cluster e meça se a resiliência se mantém",
+      "buttons": {
+        "kill": "Matar um nó",
+        "start": "Rodar game day",
+        "stop": "Pausar",
+        "reset": "Resetar"
+      },
+      "redundancy_toggle": "Réplicas + retries (redundância)",
+      "nodes_up": "{{up}}/{{total}} nós ativos",
+      "availability": "disponibilidade",
+      "narration": {
+        "idle": "Todos os nós estão saudáveis. Mate um nó ou rode um game day para testar se o sistema sobrevive a falhas.",
+        "resilient": "{{down}} nó(s) fora, mas réplicas e retries desviam ao redor deles, então a disponibilidade se mantém em {{avail}}%.",
+        "degraded": "{{down}} nó(s) fora e as requisições estão presas aos nós, então a disponibilidade caiu para {{avail}}%."
+      },
+      "hint_on": "Com réplicas e retries, requisições são redirecionadas para nós saudáveis — matar um nó mal afeta a disponibilidade. Esse é o objetivo: falhas viram não-eventos.",
+      "hint_off": "Sem redundância, requisições presas a um nó morto falham direto. Cada nó que você mata derruba a disponibilidade proporcionalmente — exatamente a fraqueza que o teste de chaos expõe.",
+      "metrics": {
+        "title": "Métricas ao Vivo",
+        "availability": "Disponibilidade",
+        "experiments": "Falhas injetadas",
+        "served": "Requisições atendidas",
+        "failed": "Requisições falhas"
+      },
+      "log": {
+        "title": "Log de Eventos",
+        "empty": "Rode um game day ou mate um nó para injetar chaos…",
+        "killed": "CHAOS: nó N{{id}} terminado",
+        "recovered": "nó N{{id}} recuperado"
+      }
+    },
+    "event_sourcing": {
+      "title": "Simulador de Event Sourcing",
+      "buttons": {
+        "settings": "Configurações",
+        "reset": "Reiniciar",
+        "replay": "Replay"
+      },
+      "intro": "Explore como o Event Sourcing funciona em um sistema de e-commerce, onde cada mudança de estado é registrada como um evento imutável.",
+      "settings": {
+        "title": "Configurações da Simulação",
+        "auto_advance": "Avançar automaticamente",
+        "event_delay": "Delay entre Eventos: {{ms}}ms",
+        "show_event_data": "Mostrar dados dos eventos",
+        "animation_duration": "Duração da Animação: {{seconds}}s"
+      },
+      "create_order": {
+        "title": "Criar Pedido",
+        "selected_items": "Itens Selecionados:",
+        "total": "Total: R$ {{amount}}",
+        "create_button": "Criar Pedido"
+      },
+      "actions": {
+        "pay": "Confirmar Pagamento",
+        "ship": "Enviar Pedido",
+        "deliver": "Confirmar Entrega",
+        "cancel": "Cancelar Pedido"
+      },
+      "state": {
+        "title": "Estado Atual",
+        "order": "Pedido: {{id}}",
+        "status": "Status: {{status}}",
+        "total": "Total: R$ {{amount}}",
+        "tracking": "Rastreamento: {{code}}",
+        "items": "Itens:"
+      },
+      "events": {
+        "title": "Eventos",
+        "speed": "Velocidade:",
+        "speed_opts": {
+          "half": "0.5s",
+          "one": "1s",
+          "two": "2s"
+        }
+      }
+    },
+    "canary": {
+      "title": "Simulador de Canary Deployment",
+      "buttons": {
+        "settings": "Configurações",
+        "deploy_canary": "Deploy Canary",
+        "pause": "Pausar",
+        "resume": "Retomar",
+        "increase_traffic": "+10% Tráfego",
+        "promote": "Promover para 100%",
+        "rollback": "Rollback",
+        "inject_errors": "Injetar Erros",
+        "stop_errors": "Parar Erros",
+        "reset": "Resetar"
+      },
+      "settings": {
+        "title": "Configurações da Simulação",
+        "canary_traffic": "Tráfego Canary: {{percent}}%",
+        "canary_error_rate": "Taxa de Erro Canary: {{percent}}%",
+        "rps": "Requisições/seg: {{value}}",
+        "rollback_threshold": "Limite para Auto-Rollback: {{percent}}%"
+      },
+      "labels": {
+        "phase": "Fase",
+        "stable_servers": "Servidores Estáveis",
+        "canary_server": "Servidor Canary",
+        "traffic": "tráfego",
+        "requests": "Requisições",
+        "errors": "Erros",
+        "metrics": "Métricas",
+        "total_requests": "Total de Requisições",
+        "canary_requests": "Requisições Canary",
+        "canary_error_rate": "Taxa de Erro Canary",
+        "stable_error_rate": "Taxa de Erro Estável",
+        "live_requests": "Requisições em Tempo Real",
+        "no_requests": "Nenhuma requisição ainda. Faça deploy de um canary para começar.",
+        "event_log": "Log de Eventos",
+        "waiting_logs": "Aguardando eventos..."
+      },
+      "logs": {
+        "deploying_canary": "🚀 Fazendo deploy da versão canary...",
+        "canary_deployed": "✅ Canary implantado com sucesso",
+        "promoting_canary": "📈 Promovendo canary para 100%...",
+        "promotion_complete": "✅ Promoção completa - canary agora é estável",
+        "rolling_back": "⚠️ Revertendo para versão estável...",
+        "rollback_complete": "✅ Rollback completo",
+        "simulation_reset": "🔄 Simulação reiniciada",
+        "traffic_increased": "📈 Tráfego aumentado para {{percent}}%",
+        "auto_rollback_triggered": "🚨 Auto-rollback ativado! Taxa de erro: {{rate}}%"
+      },
+      "info": {
+        "title": "ℹ️ Como Usar",
+        "try_this": {
+          "title": "Experimente:",
+          "item1": "Faça deploy de um canary e observe a distribuição de tráfego",
+          "item2": "Aumente gradualmente o tráfego para o canary",
+          "item3": "Injete erros para ver o auto-rollback em ação",
+          "item4": "Promova o canary quando estiver confiante"
+        },
+        "observe": {
+          "title": "Observe:",
+          "item1": "Taxas de erro entre estável e canary",
+          "item2": "Distribuição de requisições entre servidores",
+          "item3": "Auto-rollback quando o limite é excedido"
+        },
+        "real_world": {
+          "title": "Mundo Real:",
+          "text": "Em produção, você monitoraria latência, taxas de erro e métricas de negócio antes de promover um canary."
+        }
+      }
+    }
+  },
+  "design_principles": {
+    "availability": {
+      "availability_zones_simulator": {
+        "title": "Simulador de Zonas de Disponibilidade",
+        "intro": "Explore como as zonas de disponibilidade trabalham em conjunto para garantir alta disponibilidade e tolerância a falhas.",
+        "controls": {
+          "request_rate_label": "Taxa de Requisições (por segundo)",
+          "failure_chance_label": "Chance de Falha (%)",
+          "auto_failover_label": "Auto Failover",
+          "start_simulation": "Iniciar Simulação",
+          "stop_simulation": "Parar Simulação"
+        },
+        "zone_status": {
+          "healthy": "Saudável",
+          "degraded": "Degradado",
+          "failed": "Falha"
+        },
+        "zone_info": {
+          "load": "Carga",
+          "active_servers": "Servidores Ativos",
+          "latency": "Latência",
+          "simulate_failure": "Simular Falha",
+          "recover": "Recuperar"
+        },
+        "statistics": {
+          "title": "Estatísticas",
+          "total_requests": "Total de Requisições",
+          "success_rate": "Taxa de Sucesso"
+        },
+        "recent_requests": {
+          "title": "Requisições Recentes",
+          "completed": "Concluída",
+          "failed": "Falha",
+          "processing": "Processando",
+          "pending": "Pendente"
+        }
+      }
+    },
+    "consistency_strategies": {
+      "consensus_simulator": {
+        "controls": {
+          "protocol_label": "Protocolo:",
+          "options": {
+            "raft": "Raft",
+            "paxos": "Paxos",
+            "zookeeper": "ZooKeeper"
+          },
+          "start": "Iniciar",
+          "pause": "Pausar",
+          "restart": "Reiniciar",
+          "speed_label": "Velocidade:",
+          "speed_opts": {
+            "slow": "Lento",
+            "normal": "Normal",
+            "fast": "Rápido"
+          },
+          "show_explanations": "Mostrar Explicações",
+          "hide_explanations": "Ocultar Explicações"
+        },
+        "step_prefix": "Passo",
+        "cluster_vis_title": "Visualização do Cluster",
+        "labels": {
+          "node_label": "Nó",
+          "term_label": "Termo",
+          "log_label": "Log",
+          "proposal_label": "Proposta",
+          "promised_label": "Prometido",
+          "accepted_label": "Aceito",
+          "value_label": "Valor",
+          "learned_value_label": "Valor Aprendido",
+          "zxid_label": "zxid",
+          "data_label": "Dados",
+          "watching_label": "Watching: {{path}}",
+          "last_event_label": "Último Evento: {{event}}"
+        },
+        "legend": {
+          "legend_title": "Legenda:",
+          "node_states_title": "Estados dos Nós:",
+          "message_types_title": "Tipos de Mensagens:"
+        },
+        "messages": {
+          "vote_request": "Solicitação de Voto",
+          "vote_response": "Resposta de Voto",
+          "log_replication": "Replicação de Log",
+          "prepare": "Prepare",
+          "promise": "Promise",
+          "propose": "Propose",
+          "accept": "Accept",
+          "watch": "Watch",
+          "replication": "Replicação",
+          "notification": "Notificação"
+        },
+        "progress_label": "Progresso: {{percent}}%"
+      },
+      "lamport_timestamps_simulator": {
+        "title": "Simulador de Timestamps de Lamport",
+        "subtitle": "Visualize como os timestamps lógicos são atualizados em um sistema distribuído",
+        "info": "Adicione eventos locais ou envie mensagens entre processos para ver como os timestamps de Lamport são atualizados. Observe como a ordem dos eventos é mantida através dos relógios lógicos.",
+        "controls": {
+          "reset": "Reiniciar Simulação"
+        },
+        "process_label": "Processo {{n}}",
+        "buttons": {
+          "local_event": "Evento Local",
+          "send_to": "→ {{target}}"
+        },
+        "timeline": {
+          "clock_prefix": "t = "
+        },
+        "event_labels": {
+          "local": "Evento Local",
+          "send_prefix": "→ {{target}}",
+          "receive_prefix": "← {{source}}"
+        },
+        "legend": {
+          "title": "Legenda",
+          "local": "Evento Local",
+          "sent": "Mensagem Enviada",
+          "received": "Mensagem Recebida"
+        }
+      }
+    },
+    "two_phase_commit_simulator": {
+      "title": "Simulador de Two Phase Commit",
+      "intro": "Este simulador demonstra o protocolo Two Phase Commit em uma transferência bancária distribuída. Configure as respostas dos bancos clicando neles antes de iniciar a simulação.",
+      "controls": {
+        "start": "Iniciar",
+        "pause": "Pausar",
+        "simulation": "Simulação",
+        "reset": "Reiniciar",
+        "speed_label": "Velocidade:",
+        "speed_opts": {
+          "slow": "Lenta",
+          "normal": "Normal",
+          "fast": "Rápida"
+        }
+      },
+      "nodes": {
+        "coordinator": "Coordenador",
+        "bank_n": "Banco {{n}}"
+      },
+      "node_states": {
+        "idle": "ocioso",
+        "preparing": "preparando",
+        "prepared": "preparado",
+        "committed": "confirmado",
+        "aborted": "abortado"
+      },
+      "responses": {
+        "yes": "sim",
+        "no": "não"
+      },
+      "config": {
+        "configure_response": "Configurar resposta:",
+        "approve": "Aprovar",
+        "reject": "Rejeitar",
+        "status": "Status:",
+        "will_approve": "Irá aprovar a transação",
+        "will_reject": "Irá rejeitar a transação"
+      },
+      "messages": {
+        "prepare_q": "Preparar para transferência?",
+        "vote_yes": "Sim, pronto para commit",
+        "vote_no": "Não, recursos indisponíveis",
+        "decision_commit": "Commit: execute a transferência",
+        "decision_abort": "Abort: cancele a operação",
+        "done": "Operação finalizada com sucesso"
+      },
+      "steps": {
+        "current_phase": "Fase Atual:",
+        "s0": "Clique nos bancos para configurar suas respostas e então inicie a simulação",
+        "s1": "Fase 1: Coordenador enviou 'prepare' para todos os participantes",
+        "s2": "Fase 1: Participantes responderam com seus votos",
+        "s3": "Fase 2: Coordenador tomou a decisão final",
+        "s4": "Simulação concluída! Você pode reiniciar para ver novamente."
+      }
+    },
+    "algorithms": {
+      "title": "Algoritmos de Sincronização",
+      "intro": "Existem vários algoritmos para garantir a sincronização em sistemas distribuídos. Cada um tem suas características específicas e casos de uso ideais.",
+      "key_concept_label": "Conceito Chave",
+      "key_concept_text": "A escolha do algoritmo de sincronização depende de fatores como o número de nós, a latência da rede, a tolerância a falhas e os requisitos de performance.",
+      "bakery": {
+        "title": "Algoritmo do Padeiro",
+        "concept_title": "Conceito",
+        "concept_p": "Baseado na ideia de uma padaria, onde cada cliente recebe um número de senha e é atendido em ordem crescente.",
+        "badges": {
+          "total_order": "Ordem Total",
+          "fairness": "Justo"
+        },
+        "demo_title": "Demo Interativa",
+        "labels": {
+          "process": "Processo",
+          "ticket": "Senha",
+          "request_access": "Solicitar Acesso"
+        }
+      },
+      "token_ring": {
+        "title": "Token Ring",
+        "concept_title": "Conceito",
+        "concept_p": "Um token circula entre os processos em um anel lógico, e apenas o processo que possui o token pode acessar recursos compartilhados.",
+        "badges": {
+          "single_token": "Token Único",
+          "circular_passing": "Passagem Circular"
+        },
+        "demo_title": "Demo Interativa",
+        "move_token": "Mover Token",
+        "labels": {
+          "process_prefix": "P"
+        }
+      },
+      "ricart_agrawala": {
+        "title": "Ricart-Agrawala",
+        "concept_title": "Conceito",
+        "concept_p": "Baseado em timestamps lógicos, onde processos solicitam permissão de todos os outros processos antes de acessar recursos compartilhados.",
+        "badges": {
+          "timestamps": "Timestamps",
+          "consensus": "Consenso"
+        },
+        "demo_title": "Demo Interativa",
+        "labels": {
+          "process": "Processo",
+          "request_access": "Solicitar Acesso",
+          "ts_prefix": "TS"
+        }
+      },
+      "comparison": {
+        "title": "Comparação",
+        "bakery_title": "Algoritmo do Padeiro",
+        "token_ring_title": "Token Ring",
+        "ricart_title": "Ricart-Agrawala",
+        "advantages": "Vantagens",
+        "disadvantages": "Desvantagens",
+        "bakery": {
+          "pros": "Simples e justo",
+          "cons": "Alta complexidade de mensagens"
+        },
+        "token_ring": {
+          "pros": "Baixa complexidade de mensagens",
+          "cons": "Ponto único de falha"
+        },
+        "ricart": {
+          "pros": "Robusto a falhas",
+          "cons": "Alta latência"
+        }
+      }
+    },
+    "service_oriented": {
+      "title": "Design Orientado a Serviços",
+      "intro": "Explore as diferentes abordagens de organização de serviços e suas implicações práticas. Cada arquitetura tem seus próprios trade-offs e casos de uso ideais.",
+      "sections": {
+        "advantages": "Vantagens",
+        "disadvantages": "Desvantagens",
+        "example_title": "Exemplo Prático",
+        "diagram_title": "Visualização da Arquitetura",
+        "legend": {
+          "direct_call": "Chamada direta",
+          "interface": "Interface",
+          "api_events": "API/Eventos"
+        },
+        "module_labels": {
+          "deploy": "Deploy",
+          "communication": "Comunicação",
+          "database": "Banco"
+        }
+      },
+      "architectures": {
+        "monolithic": {
+          "name": "Monolito",
+          "description": "Todas as funcionalidades em um único código base, com acoplamento forte entre módulos.",
+          "advantages": [
+            "Simplicidade de desenvolvimento inicial",
+            "Menos sobrecarga em comunicação entre componentes",
+            "Deploy único e simples",
+            "Mais fácil de testar end-to-end",
+            "Compartilhamento de recursos eficiente"
+          ],
+          "disadvantages": [
+            "Difícil de escalar partes específicas do sistema",
+            "Qualquer mudança exige redistribuição completa",
+            "Pode se tornar complexo com o crescimento",
+            "Alto acoplamento entre módulos",
+            "Difícil manutenção em times grandes"
+          ],
+          "example": "Um aplicativo simples de e-commerce onde catálogo, usuários e pedidos estão em um único código base.",
+          "modules": {
+            "auth": {
+              "name": "Autenticação",
+              "details": {
+                "deployment": "Deploy único para toda a aplicação",
+                "communication": "Chamadas de função diretas",
+                "database": "Banco de dados compartilhado"
+              }
+            },
+            "orders": {
+              "name": "Pedidos",
+              "details": {
+                "deployment": "Deploy único para toda a aplicação",
+                "communication": "Chamadas de função diretas",
+                "database": "Banco de dados compartilhado"
+              }
+            },
+            "users": {
+              "name": "Usuários",
+              "details": {
+                "deployment": "Deploy único para toda a aplicação",
+                "communication": "Chamadas de função diretas",
+                "database": "Banco de dados compartilhado"
+              }
+            }
+          }
+        },
+        "modular": {
+          "name": "Monolito Modular",
+          "description": "Código organizado em módulos bem definidos com limites claros, mas ainda em um único deploy.",
+          "advantages": [
+            "Código bem organizado e modular com limites claros",
+            "Facilidade de migração para microsserviços no futuro",
+            "Menor complexidade operacional que microsserviços",
+            "Bom equilíbrio entre simplicidade e organização",
+            "Permite evolução gradual da arquitetura"
+          ],
+          "disadvantages": [
+            "Ainda requer disciplina para manter os limites entre módulos",
+            "Escalabilidade ainda limitada por ser uma única unidade",
+            "Necessidade de coordenação entre times",
+            "Pode haver tentação de quebrar os limites dos módulos",
+            "Deploy ainda é acoplado"
+          ],
+          "example": "Um e-commerce com o código dividido em módulos independentes (catálogo, pedidos, usuários), com regras/dados próprios, porém implantados juntos como uma única aplicação.",
+          "modules": {
+            "auth": {
+              "name": "Módulo de Autenticação",
+              "details": {
+                "deployment": "Deploy único, mas módulos independentes",
+                "communication": "Interfaces bem definidas",
+                "database": "Schema separado no banco compartilhado"
+              }
+            },
+            "orders": {
+              "name": "Módulo de Pedidos",
+              "details": {
+                "deployment": "Deploy único, mas módulos independentes",
+                "communication": "Interfaces bem definidas",
+                "database": "Schema separado no banco compartilhado"
+              }
+            },
+            "users": {
+              "name": "Módulo de Usuários",
+              "details": {
+                "deployment": "Deploy único, mas módulos independentes",
+                "communication": "Interfaces bem definidas",
+                "database": "Schema separado no banco compartilhado"
+              }
+            }
+          }
+        },
+        "microservices": {
+          "name": "Microsserviços",
+          "description": "Serviços independentes que se comunicam via rede, cada um com seu próprio deploy e banco de dados.",
+          "advantages": [
+            "Flexibilidade para escalar partes específicas do sistema",
+            "Maior modularidade e facilidade de manutenção",
+            "Cada equipe pode se concentrar em um único serviço",
+            "Liberdade tecnológica por serviço",
+            "Deploys independentes e mais rápidos"
+          ],
+          "disadvantages": [
+            "Complexidade aumentada na orquestração",
+            "Requer infraestrutura robusta",
+            "Desafios de consistência de dados",
+            "Maior latência na comunicação",
+            "Custos operacionais mais altos"
+          ],
+          "example": "Um e-commerce onde pagamento, inventário e usuários são implementados como microsserviços separados.",
+          "modules": {
+            "auth": {
+              "name": "Auth Service",
+              "details": {
+                "deployment": "Deploy independente",
+                "communication": "API REST/gRPC",
+                "database": "Banco de dados próprio"
+              }
+            },
+            "orders": {
+              "name": "Orders Service",
+              "details": {
+                "deployment": "Deploy independente",
+                "communication": "API REST/gRPC",
+                "database": "Banco de dados próprio"
+              }
+            },
+            "users": {
+              "name": "Users Service",
+              "details": {
+                "deployment": "Deploy independente",
+                "communication": "API REST/gRPC",
+                "database": "Banco de dados próprio"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "monitoring_maintenance": {
+    "logs": {
+      "title": "Logs e Tracing em Sistemas Distribuídos",
+      "intro_p1": "Logs e tracing são fundamentais para entender o comportamento, debugar problemas e manter a observabilidade em sistemas distribuídos. Eles fornecem insights detalhados sobre o fluxo de execução e o estado do sistema.",
+      "key_concept_label": "Conceito Chave",
+      "key_concept_text": "Em sistemas distribuídos, logs devem ser tratados como streams de eventos, centralizados e correlacionados para fornecer uma visão completa do sistema.",
+      "types_title": "Tipos de Logs",
+      "app_logs_title": "Logs de Aplicação",
+      "app_logs_items": [
+        "Eventos de negócio",
+        "Fluxo de execução",
+        "Erros e exceções",
+        "Ações do usuário"
+      ],
+      "sys_logs_title": "Logs de Sistema",
+      "sys_logs_items": [
+        "Inicialização/shutdown",
+        "Uso de recursos",
+        "Eventos de sistema",
+        "Problemas de hardware"
+      ],
+      "sec_logs_title": "Logs de Segurança",
+      "sec_logs_items": [
+        "Tentativas de acesso",
+        "Alterações de permissão",
+        "Eventos de auditoria",
+        "Alertas de segurança"
+      ],
+      "structured_title": "Logging Estruturado",
+      "structured_desc": "Logging estruturado trata logs como objetos de dados em vez de texto simples, facilitando a análise e a busca.",
+      "benefits_title": "Benefícios",
+      "benefits_items": [
+        {
+          "title": "Pesquisabilidade",
+          "desc": "Facilita buscas e filtros complexos"
+        },
+        {
+          "title": "Análise",
+          "desc": "Permite agregações e visualizações"
+        },
+        {
+          "title": "Padronização",
+          "desc": "Formato consistente entre serviços"
+        }
+      ],
+      "example_title": "Exemplo",
+      "aggregation_title": "Agregação de Logs",
+      "components_title": "Componentes",
+      "components_items": [
+        {
+          "title": "Coletores",
+          "desc": "Agentes que coletam logs de diferentes fontes"
+        },
+        {
+          "title": "Processadores",
+          "desc": "Filtram, transformam e enriquecem logs"
+        },
+        {
+          "title": "Armazenamento",
+          "desc": "Sistema distribuído para persistência"
+        },
+        {
+          "title": "Interface",
+          "desc": "UI para busca e análise"
+        }
+      ],
+      "elk_title": "Stack ELK",
+      "elk_items": [
+        {
+          "title": "Elasticsearch",
+          "desc": "Armazenamento e busca distribuída de logs"
+        },
+        {
+          "title": "Logstash",
+          "desc": "Pipeline de processamento de logs"
+        },
+        {
+          "title": "Kibana",
+          "desc": "Visualização e análise de logs"
+        }
+      ],
+      "tracing_title": "Tracing Distribuído",
+      "tracing_desc": "Tracing distribuído permite rastrear o fluxo de uma requisição por múltiplos serviços, fornecendo visibilidade end-to-end.",
+      "concepts_title": "Conceitos",
+      "concepts_items": [
+        {
+          "title": "Trace",
+          "desc": "Representa uma transação end-to-end"
+        },
+        {
+          "title": "Span",
+          "desc": "Unidade de trabalho dentro de um trace"
+        },
+        {
+          "title": "Context",
+          "desc": "Metadados que acompanham o trace"
+        }
+      ],
+      "tools_title": "Ferramentas",
+      "tools_items": [
+        {
+          "title": "Jaeger",
+          "desc": "Sistema de tracing distribuído de código aberto"
+        },
+        {
+          "title": "Zipkin",
+          "desc": "Focado em latência e análise de dependências"
+        },
+        {
+          "title": "OpenTelemetry",
+          "desc": "Padrão aberto para instrumentação"
+        }
+      ],
+      "best_practices_title": "Melhores Práticas",
+      "logging_title": "Logging",
+      "logging_items": [
+        {
+          "title": "Níveis Apropriados",
+          "desc": "Use níveis adequadamente (ERROR, WARN, INFO, DEBUG)"
+        },
+        {
+          "title": "Contexto",
+          "desc": "Inclua informações relevantes para debugging"
+        },
+        {
+          "title": "Sensibilidade",
+          "desc": "Evite dados sensíveis nos logs"
+        }
+      ],
+      "tracing_bp_title": "Tracing",
+      "tracing_bp_items": [
+        {
+          "title": "Amostragem",
+          "desc": "Configure taxas de amostragem adequadas"
+        },
+        {
+          "title": "Instrumentação",
+          "desc": "Use bibliotecas padrão de instrumentação"
+        },
+        {
+          "title": "Correlação",
+          "desc": "Mantenha correlação entre logs e traces"
+        }
+      ]
+    },
+    "logs_page": {
+      "title": "Logs e Tracing em Sistemas Distribuídos",
+      "intro_p1": "Em sistemas distribuídos, logs e tracing são fundamentais para monitoramento, debugging e análise de performance. Esta seção explora as melhores práticas e ferramentas para implementar um sistema robusto de observabilidade.",
+      "buttons": {
+        "logs_simulator": "Simulador de Logs",
+        "tracing_simulator": "Simulador de Tracing"
+      },
+      "levels_title": "Níveis de Log",
+      "levels": {
+        "debug_desc": "Informações detalhadas para debugging",
+        "info_desc": "Eventos normais do sistema",
+        "warn_desc": "Avisos sobre situações inesperadas",
+        "error_desc": "Erros que precisam de atenção"
+      },
+      "formats": {
+        "text_title": "Logs em Texto Puro",
+        "text_adv_title": "Vantagens",
+        "text_adv_items": [
+          "Fácil de ler para humanos",
+          "Menor overhead de processamento",
+          "Compatível com ferramentas legadas",
+          "Menor tamanho de arquivo"
+        ],
+        "text_disadv_title": "Desvantagens",
+        "text_disadv_items": [
+          "Difícil de parsear programaticamente",
+          "Falta de estrutura clara",
+          "Difícil de adicionar metadados",
+          "Propenso a erros de formatação"
+        ],
+        "json_title": "Logs em JSON",
+        "json_adv_title": "Vantagens",
+        "json_adv_items": [
+          "Estrutura clara e consistente",
+          "Fácil de parsear e processar",
+          "Suporte a metadados complexos",
+          "Melhor para análise automatizada"
+        ],
+        "json_disadv_title": "Desvantagens",
+        "json_disadv_items": [
+          "Maior overhead de processamento",
+          "Arquivos de log maiores",
+          "Menos legível para humanos",
+          "Pode ser excessivo para logs simples"
+        ]
+      },
+      "tracing_section": {
+        "title": "Distributed Tracing",
+        "what_is_title": "O que é Tracing?",
+        "what_is_p": "Tracing é uma técnica que permite rastrear o fluxo de uma requisição através de múltiplos serviços em um sistema distribuído. Cada requisição recebe um ID único (traceId) que é propagado entre os serviços.",
+        "components_title": "Componentes Principais",
+        "components_items": [
+          "TraceId: Identificador único da requisição",
+          "SpanId: Identificador de cada operação",
+          "ParentSpanId: Relacionamento entre operações",
+          "Tags: Metadados adicionais",
+          "Timestamps: Duração das operações"
+        ],
+        "benefits_title": "Benefícios",
+        "benefits_items": [
+          "Visualização do fluxo de requisições",
+          "Identificação de gargalos",
+          "Debugging em sistemas distribuídos",
+          "Análise de performance",
+          "Correlação de eventos"
+        ]
+      },
+      "best_practices": {
+        "title": "Boas Práticas",
+        "logging_title": "Logging",
+        "logging_items": [
+          "Use níveis de log apropriados",
+          "Inclua contexto relevante",
+          "Mantenha formato consistente",
+          "Evite logs sensíveis",
+          "Use IDs de correlação",
+          "Inclua timestamps",
+          "Estruture os metadados",
+          "Implemente rotação de logs"
+        ],
+        "tracing_title": "Tracing",
+        "tracing_items": [
+          "Propague traceId entre serviços",
+          "Use spans para operações importantes",
+          "Adicione tags relevantes",
+          "Mantenha spans concisos",
+          "Implemente sampling",
+          "Configure retenção adequada",
+          "Integre com ferramentas de análise",
+          "Monitore overhead de tracing"
+        ]
+      },
+      "tools": {
+        "title": "Ferramentas Populares",
+        "logging_title": "Logging",
+        "logging_items": [
+          "ELK Stack (Elasticsearch, Logstash, Kibana)",
+          "Graylog",
+          "Loki",
+          "Datadog",
+          "New Relic",
+          "Splunk"
+        ],
+        "tracing_title": "Tracing",
+        "tracing_items": [
+          "Jaeger",
+          "Zipkin",
+          "OpenTelemetry",
+          "Datadog APM",
+          "New Relic APM",
+          "Lightstep"
+        ]
+      }
+    },
+    "logs_simulator": {
+      "title": "Simulador de Logs",
+      "intro": "Explore como configurar e analisar logs em sistemas distribuídos. Este simulador demonstra boas e más práticas de logging.",
+      "actions": {
+        "settings": "Configurações",
+        "reset": "Reiniciar"
+      },
+      "settings_title": "Configurações",
+      "settings": {
+        "auto_advance": "Avanço Automático",
+        "delay_label": "Delay entre Eventos ({{ms}}ms)"
+      },
+      "controls": {
+        "info_title": "INFO",
+        "add_good_info": "Adicionar INFO Bom",
+        "add_bad_info": "Adicionar INFO Ruim",
+        "warn_title": "WARN",
+        "add_good_warn": "Adicionar WARN Bom",
+        "add_bad_warn": "Adicionar WARN Ruim",
+        "error_title": "ERROR",
+        "add_good_error": "Adicionar ERROR Bom",
+        "add_bad_error": "Adicionar ERROR Ruim"
+      },
+      "viewer_title": "Visualizador de Logs",
+      "badges": {
+        "good": "Bom",
+        "bad": "Ruim"
+      },
+      "best_practices_title": "Boas Práticas",
+      "best_practices_items": [
+        "Use logs estruturados (formato JSON)",
+        "Inclua IDs de correlação (traceId, spanId)",
+        "Adicione informações contextuais",
+        "Use níveis de log apropriados",
+        "Inclua timestamps",
+        "Identifique o serviço/componente",
+        "Inclua metadados relevantes",
+        "Mantenha formato consistente"
+      ],
+      "bad_practices_title": "Más Práticas",
+      "bad_practices_items": [
+        "Logar informações sensíveis",
+        "Usar formatos inconsistentes",
+        "Logar sem contexto",
+        "Usar níveis de log inadequados",
+        "Logar informações excessivas",
+        "Usar texto não estruturado",
+        "Logar sem timestamps",
+        "Misturar diferentes padrões"
+      ]
+    },
+    "tracing_simulator": {
+      "title": "Simulador de Tracing",
+      "intro": "Explore conceitos de distributed tracing e entenda como requisições fluem através de múltiplos serviços.",
+      "controls_title": "Controles",
+      "controls": {
+        "clear": "Limpar",
+        "start_request": "Iniciar Requisição",
+        "add_span": "Adicionar Span",
+        "finish_request": "Finalizar Requisição"
+      },
+      "current_request_title": "Requisição Atual",
+      "trace_id_label": "TraceId",
+      "steps_label": "Passo {{current}} de {{total}}",
+      "timeline_label": "Timeline",
+      "history_title": "Histórico de Traces",
+      "error_badge": "Erro"
+    }
+  },
+  "security": {
+    "title": "Segurança em Sistemas Distribuídos"
+  },
+  "cryptography_simulator": {
+    "title": "Simulador de Criptografia",
+    "subtitle": "Experimente diferentes tipos de criptografia, hashing e codificação na prática",
+    "text_input_label": "Texto para Processar",
+    "text_input_placeholder": "Digite o texto aqui...",
+    "key_label": "Chave (necessária apenas para AES)",
+    "key_placeholder": "Chave secreta...",
+    "operation_label": "Operação",
+    "operations": {
+      "aes": "Criptografia AES",
+      "sha256": "Hash SHA-256",
+      "md5": "Hash MD5 (Não recomendado)",
+      "base64": "Codificação Base64"
+    },
+    "process_button": "Processar",
+    "clear_button": "Limpar Resultados",
+    "results_title": "Resultados",
+    "no_results": "Os resultados aparecerão aqui após o processamento...",
+    "result_labels": {
+      "input": "Entrada:",
+      "output": "Saída:",
+      "details": "Detalhes:"
+    },
+    "error_messages": {
+      "encryption_error": "Erro na criptografia",
+      "check_key_data": "Verifique a chave e os dados",
+      "hash_error": "Erro no hash",
+      "check_data": "Verifique os dados",
+      "encoding_error": "Erro na codificação",
+      "key_required": "Erro: Chave necessária",
+      "provide_aes_key": "Forneça uma chave para criptografia AES"
+    },
+    "algorithm_details": {
+      "aes": "AES-256-CBC",
+      "sha256": "SHA-256",
+      "md5": "MD5 (Não recomendado para uso em produção)",
+      "base64": "Base64"
+    },
+    "instructions_title": "Como Usar",
+    "instructions": [
+      "Digite o texto que deseja processar no campo de entrada",
+      "Se escolher criptografia AES, forneça uma chave secreta",
+      "Selecione a operação desejada no menu suspenso",
+      "Clique em \"Processar\" para ver o resultado",
+      "Os últimos 5 resultados serão mantidos para comparação"
+    ],
+    "important_notes_title": "Notas Importantes",
+    "important_notes": [
+      "AES é um algoritmo de criptografia simétrica seguro e amplamente utilizado",
+      "SHA-256 é recomendado para hashing seguro de dados",
+      "MD5 é incluído apenas para fins educacionais - não use em produção",
+      "Base64 é uma codificação, não uma forma de criptografia"
+    ]
+  },
+  "jwt_simulator": {
+    "title": "Simulador de JWT",
+    "subtitle": "Experimente a geração e validação de tokens JWT na prática",
+    "token_configuration_title": "Configuração do Token",
+    "user_information_title": "Informações do Usuário",
+    "name_label": "Nome",
+    "email_label": "Email",
+    "role_label": "Papel",
+    "roles": {
+      "user": "Usuário",
+      "admin": "Administrador",
+      "guest": "Convidado"
+    },
+    "token_settings_title": "Configurações do Token",
+    "algorithm_label": "Algoritmo de Assinatura",
+    "expiration_label": "Tempo de Expiração (segundos)",
+    "custom_claims_title": "Claims Personalizadas",
+    "key_placeholder": "Chave",
+    "value_placeholder": "Valor",
+    "add_claim_button": "Adicionar Claim",
+    "generated_token_title": "Token Gerado",
+    "verify_token_button": "Verificar Token",
+    "no_token_message": "Configure e gere um token para visualizá-lo aqui",
+    "decoded_token_title": "Token Decodificado",
+    "header_title": "Header",
+    "payload_title": "Payload",
+    "signature_title": "Signature",
+    "verification_result_title": "Resultado da Verificação",
+    "verification_messages": {
+      "no_token": "Nenhum token para verificar",
+      "expired": "Token expirado",
+      "valid": "Token válido"
+    },
+    "how_to_use_title": "Como Usar",
+    "instructions": [
+      "Configure as informações do usuário e as configurações do token no painel esquerdo",
+      "Adicione claims personalizadas se desejar (opcional)",
+      "Clique em \"Gerar Token\" para criar um novo JWT",
+      "Visualize o token gerado e sua versão decodificada no painel direito",
+      "Use o botão \"Verificar Token\" para simular a validação do token"
+    ]
+  },
+  "attack_simulator": {
+    "back_to_attacks": "Voltar para Ataques",
+    "title": "Simulador de Ataques",
+    "subtitle": "Explore de forma interativa como diferentes tipos de ataques funcionam em sistemas distribuídos. Este simulador demonstra visualmente o comportamento e impacto dos ataques DDoS e Man-in-the-Middle.",
+    "how_to_use_title": "Como Usar o Simulador",
+    "how_to_use_steps": [
+      "Selecione o tipo de ataque que deseja simular (DDoS ou Man-in-the-Middle)",
+      "Ajuste a velocidade da simulação conforme necessário",
+      "Clique em \"Iniciar Simulação\" para começar a visualização",
+      "Observe o comportamento dos pacotes e o impacto no servidor"
+    ],
+    "simulator_elements_title": "Elementos do Simulador",
+    "simulator_elements": [
+      "Clientes legítimos tentando acessar o serviço",
+      "Servidor processando as requisições",
+      "Atacantes gerando tráfego malicioso",
+      "Pacotes legítimos (verde) e maliciosos (vermelho)"
+    ],
+    "ddos_attack_button": "Ataque DDoS",
+    "mitm_attack_button": "Man-in-the-Middle",
+    "speed_label": "Velocidade:",
+    "start_simulation": "Iniciar Simulação",
+    "stop_simulation": "Parar Simulação",
+    "ddos_simulation_title": "Simulação de Ataque DDoS",
+    "ddos_simulation_description": "Esta simulação mostra como múltiplos atacantes sobrecarregam um servidor com tráfego malicioso, dificultando o acesso de usuários legítimos ao serviço. O servidor fica sobrecarregado ao receber muitas requisições.",
+    "mitm_simulation_title": "Simulação de Ataque Man-in-the-Middle",
+    "mitm_simulation_description": "Esta simulação demonstra como um atacante pode interceptar a comunicação entre cliente e servidor se posicionando no meio da conexão. O atacante pode ler e modificar os dados transmitidos.",
+    "legitimate_traffic": "Tráfego Legítimo",
+    "malicious_traffic": "Tráfego Malicioso"
+  },
+  "simulators_extra": {
+    "replication": {
+      "title": "Simulador de Replicação",
+      "intro": "Explore como diferentes estratégias de replicação afetam a consistência e disponibilidade dos dados.",
+      "how_title": "Como usar o simulador:",
+      "steps": [
+        "Escolha o tipo de replicação: Síncrona, Semi-síncrona, ou Assíncrona",
+        "Ajuste os parâmetros: latência de rede, taxa de falha, número de réplicas",
+        "Observe os resultados: tempo de propagação, status por região, impacto de falhas"
+      ],
+      "config_title": "Configurações",
+      "replication_type": "Tipo de Replicação",
+      "sync": "Síncrona",
+      "semi_sync": "Semi-síncrona",
+      "async": "Assíncrona",
+      "network_latency_ms": "Latência de Rede (ms)",
+      "failure_rate": "Taxa de Falha",
+      "replica_count": "Número de Réplicas",
+      "manual_title": "Operação Manual",
+      "key_placeholder": "Chave",
+      "value_placeholder": "Valor",
+      "write": "Escrever",
+      "start": "Iniciar Simulação",
+      "stop": "Parar Simulação",
+      "statuses": {
+        "healthy": "saudável",
+        "failed": "falho",
+        "role": "Papel",
+        "latency": "Latência",
+        "data": "Dados",
+        "keys_label": "{{count}} chaves",
+        "replicated_after": "Replicado após {{seconds}}s"
+      },
+      "simulate_failure": "Simular Falha",
+      "recover": "Recuperar",
+      "recent_ops": "Requisições Recentes",
+      "read_label": "Leitura",
+      "write_label": "Escrita"
+    }
+  }
+}

@@ -1,0 +1,328 @@
+{
+  "logs": {
+    "title": "Logs e Tracing em Sistemas Distribuídos",
+    "intro_p1": "Logs e tracing são fundamentais para entender o comportamento, debugar problemas e manter a observabilidade em sistemas distribuídos. Eles fornecem insights detalhados sobre o fluxo de execução e o estado do sistema.",
+    "key_concept_label": "Conceito Chave",
+    "key_concept_text": "Em sistemas distribuídos, logs devem ser tratados como streams de eventos, centralizados e correlacionados para fornecer uma visão completa do sistema.",
+    "types_title": "Tipos de Logs",
+    "app_logs_title": "Logs de Aplicação",
+    "app_logs_items": [
+      "Eventos de negócio",
+      "Fluxo de execução",
+      "Erros e exceções",
+      "Ações do usuário"
+    ],
+    "sys_logs_title": "Logs de Sistema",
+    "sys_logs_items": [
+      "Inicialização/shutdown",
+      "Uso de recursos",
+      "Eventos de sistema",
+      "Problemas de hardware"
+    ],
+    "sec_logs_title": "Logs de Segurança",
+    "sec_logs_items": [
+      "Tentativas de acesso",
+      "Alterações de permissão",
+      "Eventos de auditoria",
+      "Alertas de segurança"
+    ],
+    "structured_title": "Logging Estruturado",
+    "structured_desc": "Logging estruturado trata logs como objetos de dados em vez de texto simples, facilitando a análise e a busca.",
+    "benefits_title": "Benefícios",
+    "benefits_items": [
+      {
+        "title": "Pesquisabilidade",
+        "desc": "Facilita buscas e filtros complexos"
+      },
+      {
+        "title": "Análise",
+        "desc": "Permite agregações e visualizações"
+      },
+      {
+        "title": "Padronização",
+        "desc": "Formato consistente entre serviços"
+      }
+    ],
+    "example_title": "Exemplo",
+    "aggregation_title": "Agregação de Logs",
+    "components_title": "Componentes",
+    "components_items": [
+      {
+        "title": "Coletores",
+        "desc": "Agentes que coletam logs de diferentes fontes"
+      },
+      {
+        "title": "Processadores",
+        "desc": "Filtram, transformam e enriquecem logs"
+      },
+      {
+        "title": "Armazenamento",
+        "desc": "Sistema distribuído para persistência"
+      },
+      {
+        "title": "Interface",
+        "desc": "UI para busca e análise"
+      }
+    ],
+    "elk_title": "Stack ELK",
+    "elk_items": [
+      {
+        "title": "Elasticsearch",
+        "desc": "Armazenamento e busca distribuída de logs"
+      },
+      {
+        "title": "Logstash",
+        "desc": "Pipeline de processamento de logs"
+      },
+      {
+        "title": "Kibana",
+        "desc": "Visualização e análise de logs"
+      }
+    ],
+    "tracing_title": "Tracing Distribuído",
+    "tracing_desc": "Tracing distribuído permite rastrear o fluxo de uma requisição por múltiplos serviços, fornecendo visibilidade end-to-end.",
+    "concepts_title": "Conceitos",
+    "concepts_items": [
+      {
+        "title": "Trace",
+        "desc": "Representa uma transação end-to-end"
+      },
+      {
+        "title": "Span",
+        "desc": "Unidade de trabalho dentro de um trace"
+      },
+      {
+        "title": "Context",
+        "desc": "Metadados que acompanham o trace"
+      }
+    ],
+    "tools_title": "Ferramentas",
+    "tools_items": [
+      {
+        "title": "Jaeger",
+        "desc": "Sistema de tracing distribuído de código aberto"
+      },
+      {
+        "title": "Zipkin",
+        "desc": "Focado em latência e análise de dependências"
+      },
+      {
+        "title": "OpenTelemetry",
+        "desc": "Padrão aberto para instrumentação"
+      }
+    ],
+    "best_practices_title": "Melhores Práticas",
+    "logging_title": "Logging",
+    "logging_items": [
+      {
+        "title": "Níveis Apropriados",
+        "desc": "Use níveis adequadamente (ERROR, WARN, INFO, DEBUG)"
+      },
+      {
+        "title": "Contexto",
+        "desc": "Inclua informações relevantes para debugging"
+      },
+      {
+        "title": "Sensibilidade",
+        "desc": "Evite dados sensíveis nos logs"
+      }
+    ],
+    "tracing_bp_title": "Tracing",
+    "tracing_bp_items": [
+      {
+        "title": "Amostragem",
+        "desc": "Configure taxas de amostragem adequadas"
+      },
+      {
+        "title": "Instrumentação",
+        "desc": "Use bibliotecas padrão de instrumentação"
+      },
+      {
+        "title": "Correlação",
+        "desc": "Mantenha correlação entre logs e traces"
+      }
+    ]
+  },
+  "logs_page": {
+    "title": "Logs e Tracing em Sistemas Distribuídos",
+    "intro_p1": "Em sistemas distribuídos, logs e tracing são fundamentais para monitoramento, debugging e análise de performance. Esta seção explora as melhores práticas e ferramentas para implementar um sistema robusto de observabilidade.",
+    "buttons": {
+      "logs_simulator": "Simulador de Logs",
+      "tracing_simulator": "Simulador de Tracing"
+    },
+    "levels_title": "Níveis de Log",
+    "levels": {
+      "debug_desc": "Informações detalhadas para debugging",
+      "info_desc": "Eventos normais do sistema",
+      "warn_desc": "Avisos sobre situações inesperadas",
+      "error_desc": "Erros que precisam de atenção"
+    },
+    "formats": {
+      "text_title": "Logs em Texto Puro",
+      "text_adv_title": "Vantagens",
+      "text_adv_items": [
+        "Fácil de ler para humanos",
+        "Menor overhead de processamento",
+        "Compatível com ferramentas legadas",
+        "Menor tamanho de arquivo"
+      ],
+      "text_disadv_title": "Desvantagens",
+      "text_disadv_items": [
+        "Difícil de parsear programaticamente",
+        "Falta de estrutura clara",
+        "Difícil de adicionar metadados",
+        "Propenso a erros de formatação"
+      ],
+      "json_title": "Logs em JSON",
+      "json_adv_title": "Vantagens",
+      "json_adv_items": [
+        "Estrutura clara e consistente",
+        "Fácil de parsear e processar",
+        "Suporte a metadados complexos",
+        "Melhor para análise automatizada"
+      ],
+      "json_disadv_title": "Desvantagens",
+      "json_disadv_items": [
+        "Maior overhead de processamento",
+        "Arquivos de log maiores",
+        "Menos legível para humanos",
+        "Pode ser excessivo para logs simples"
+      ]
+    },
+    "tracing_section": {
+      "title": "Distributed Tracing",
+      "what_is_title": "O que é Tracing?",
+      "what_is_p": "Tracing é uma técnica que permite rastrear o fluxo de uma requisição através de múltiplos serviços em um sistema distribuído. Cada requisição recebe um ID único (traceId) que é propagado entre os serviços.",
+      "components_title": "Componentes Principais",
+      "components_items": [
+        "TraceId: Identificador único da requisição",
+        "SpanId: Identificador de cada operação",
+        "ParentSpanId: Relacionamento entre operações",
+        "Tags: Metadados adicionais",
+        "Timestamps: Duração das operações"
+      ],
+      "benefits_title": "Benefícios",
+      "benefits_items": [
+        "Visualização do fluxo de requisições",
+        "Identificação de gargalos",
+        "Debugging em sistemas distribuídos",
+        "Análise de performance",
+        "Correlação de eventos"
+      ]
+    },
+    "best_practices": {
+      "title": "Boas Práticas",
+      "logging_title": "Logging",
+      "logging_items": [
+        "Use níveis de log apropriados",
+        "Inclua contexto relevante",
+        "Mantenha formato consistente",
+        "Evite logs sensíveis",
+        "Use IDs de correlação",
+        "Inclua timestamps",
+        "Estruture os metadados",
+        "Implemente rotação de logs"
+      ],
+      "tracing_title": "Tracing",
+      "tracing_items": [
+        "Propague traceId entre serviços",
+        "Use spans para operações importantes",
+        "Adicione tags relevantes",
+        "Mantenha spans concisos",
+        "Implemente sampling",
+        "Configure retenção adequada",
+        "Integre com ferramentas de análise",
+        "Monitore overhead de tracing"
+      ]
+    },
+    "tools": {
+      "title": "Ferramentas Populares",
+      "logging_title": "Logging",
+      "logging_items": [
+        "ELK Stack (Elasticsearch, Logstash, Kibana)",
+        "Graylog",
+        "Loki",
+        "Datadog",
+        "New Relic",
+        "Splunk"
+      ],
+      "tracing_title": "Tracing",
+      "tracing_items": [
+        "Jaeger",
+        "Zipkin",
+        "OpenTelemetry",
+        "Datadog APM",
+        "New Relic APM",
+        "Lightstep"
+      ]
+    }
+  },
+  "logs_simulator": {
+    "title": "Simulador de Logs",
+    "intro": "Explore como configurar e analisar logs em sistemas distribuídos. Este simulador demonstra boas e más práticas de logging.",
+    "actions": {
+      "settings": "Configurações",
+      "reset": "Reiniciar"
+    },
+    "settings_title": "Configurações",
+    "settings": {
+      "auto_advance": "Avanço Automático",
+      "delay_label": "Delay entre Eventos ({{ms}}ms)"
+    },
+    "controls": {
+      "info_title": "INFO",
+      "add_good_info": "Adicionar INFO Bom",
+      "add_bad_info": "Adicionar INFO Ruim",
+      "warn_title": "WARN",
+      "add_good_warn": "Adicionar WARN Bom",
+      "add_bad_warn": "Adicionar WARN Ruim",
+      "error_title": "ERROR",
+      "add_good_error": "Adicionar ERROR Bom",
+      "add_bad_error": "Adicionar ERROR Ruim"
+    },
+    "viewer_title": "Visualizador de Logs",
+    "badges": {
+      "good": "Bom",
+      "bad": "Ruim"
+    },
+    "best_practices_title": "Boas Práticas",
+    "best_practices_items": [
+      "Use logs estruturados (formato JSON)",
+      "Inclua IDs de correlação (traceId, spanId)",
+      "Adicione informações contextuais",
+      "Use níveis de log apropriados",
+      "Inclua timestamps",
+      "Identifique o serviço/componente",
+      "Inclua metadados relevantes",
+      "Mantenha formato consistente"
+    ],
+    "bad_practices_title": "Más Práticas",
+    "bad_practices_items": [
+      "Logar informações sensíveis",
+      "Usar formatos inconsistentes",
+      "Logar sem contexto",
+      "Usar níveis de log inadequados",
+      "Logar informações excessivas",
+      "Usar texto não estruturado",
+      "Logar sem timestamps",
+      "Misturar diferentes padrões"
+    ]
+  },
+  "tracing_simulator": {
+    "title": "Simulador de Tracing",
+    "intro": "Explore conceitos de distributed tracing e entenda como requisições fluem através de múltiplos serviços.",
+    "controls_title": "Controles",
+    "controls": {
+      "clear": "Limpar",
+      "start_request": "Iniciar Requisição",
+      "add_span": "Adicionar Span",
+      "finish_request": "Finalizar Requisição"
+    },
+    "current_request_title": "Requisição Atual",
+    "trace_id_label": "TraceId",
+    "steps_label": "Passo {{current}} de {{total}}",
+    "timeline_label": "Timeline",
+    "history_title": "Histórico de Traces",
+    "error_badge": "Erro"
+  }
+}

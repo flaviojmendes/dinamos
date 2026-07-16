@@ -1,0 +1,5 @@
+{
+  "mark_complete": "Mark as completed",
+  "completed_label": "Completed",
+  "reading_time": "{{minutes}} min read"
+}

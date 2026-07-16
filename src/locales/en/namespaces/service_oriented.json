@@ -1,0 +1,20 @@
+{
+  "title": "Service-Oriented Design",
+  "intro": "Explore different approaches for organizing services and their practical implications. Each architecture has its own trade-offs and ideal use cases.",
+  "sections": {
+    "advantages": "Advantages",
+    "disadvantages": "Disadvantages",
+    "example_title": "Practical Example",
+    "diagram_title": "Architecture Visualization",
+    "legend": {
+      "direct_call": "Direct call",
+      "interface": "Interface",
+      "api_events": "API/Events"
+    },
+    "module_labels": {
+      "deploy": "Deploy",
+      "communication": "Communication",
+      "database": "Database"
+    }
+  }
+}

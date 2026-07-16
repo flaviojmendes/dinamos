@@ -1,0 +1,54 @@
+{
+  "title": "Cryptography Simulator",
+  "subtitle": "Experience different types of cryptography, hashing and encoding in practice",
+  "text_input_label": "Text to Process",
+  "text_input_placeholder": "Type the text here...",
+  "key_label": "Key (required only for AES)",
+  "key_placeholder": "Secret key...",
+  "operation_label": "Operation",
+  "operations": {
+    "aes": "AES Encryption",
+    "sha256": "SHA-256 Hash",
+    "md5": "MD5 Hash (Not recommended)",
+    "base64": "Base64 Encoding"
+  },
+  "process_button": "Process",
+  "clear_button": "Clear Results",
+  "results_title": "Results",
+  "no_results": "Results will appear here after processing...",
+  "result_labels": {
+    "input": "Input:",
+    "output": "Output:",
+    "details": "Details:"
+  },
+  "error_messages": {
+    "encryption_error": "Encryption error",
+    "check_key_data": "Check the key and data",
+    "hash_error": "Hash error",
+    "check_data": "Check the data",
+    "encoding_error": "Encoding error",
+    "key_required": "Error: Key required",
+    "provide_aes_key": "Provide a key for AES encryption"
+  },
+  "algorithm_details": {
+    "aes": "AES-256-CBC",
+    "sha256": "SHA-256",
+    "md5": "MD5 (Not recommended for production use)",
+    "base64": "Base64"
+  },
+  "instructions_title": "How to Use",
+  "instructions": [
+    "Enter the text you want to process in the input field",
+    "If choosing AES encryption, provide a secret key",
+    "Select the desired operation from the dropdown menu",
+    "Click \"Process\" to see the result",
+    "The last 5 results will be kept for comparison"
+  ],
+  "important_notes_title": "Important Notes",
+  "important_notes": [
+    "AES is a secure and widely used symmetric encryption algorithm",
+    "SHA-256 is recommended for secure data hashing",
+    "MD5 is included only for educational purposes - do not use in production",
+    "Base64 is an encoding, not a form of encryption"
+  ]
+}

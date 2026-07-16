@@ -7,7 +7,7 @@ import { useContentProgress } from '../../hooks/useContentProgress';
 import { useContent } from '../../contexts/ContentContext';
 import { type ModuleDef, type Tier } from '../../config/contentRegistry';
 import { getTopics, ForumTopic } from '../../services/forumService';
-import { openCommandPalette } from '../Common/CommandPalette';
+import { openCommandPalette } from '../Common/commandPaletteEvents';
 import ProgressRing from './ProgressRing';
 import ContributionHeatmap from './ContributionHeatmap';
 import {

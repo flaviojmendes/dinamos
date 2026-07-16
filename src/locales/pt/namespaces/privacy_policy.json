@@ -1,0 +1,71 @@
+{
+  "title": "Política de Privacidade",
+  "last_updated_label": "Última atualização:",
+  "last_updated_date": "Dezembro de 2024",
+  "sections": {
+    "info_collection": {
+      "title": "1. Informações que Coletamos",
+      "description": "Coletamos informações que você fornece diretamente para nós, como quando você:",
+      "items": [
+        "Cria uma conta ou faz login",
+        "Assina nossos serviços",
+        "Entra em contato para suporte",
+        "Participa de pesquisas ou feedback"
+      ]
+    },
+    "use_info": {
+      "title": "2. Como Usamos Suas Informações",
+      "description": "Usamos as informações que coletamos para:",
+      "items": [
+        "Fornecer, manter e melhorar nossos serviços",
+        "Processar transações e enviar informações relacionadas",
+        "Enviar avisos técnicos e mensagens de suporte",
+        "Responder aos seus comentários e perguntas",
+        "Analisar padrões de uso para melhorar a experiência do usuário"
+      ]
+    },
+    "sharing": {
+      "title": "3. Compartilhamento de Informações",
+      "description": "Não vendemos, trocamos ou transferimos suas informações pessoais para terceiros sem seu consentimento, exceto conforme descrito nesta política.",
+      "items_title": "Podemos compartilhar suas informações nas seguintes situações:",
+      "items": [
+        "Com provedores de serviço que nos ajudam a operar nossos serviços",
+        "Para cumprir obrigações legais",
+        "Para proteger nossos direitos e segurança",
+        "Em conexão com uma transferência de negócio"
+      ]
+    },
+    "security": {
+      "title": "4. Segurança dos Dados",
+      "description": "Implementamos medidas de segurança apropriadas para proteger suas informações pessoais contra acesso, alteração, divulgação ou destruição não autorizada."
+    },
+    "rights": {
+      "title": "5. Seus Direitos",
+      "description": "Dependendo da sua localização, você pode ter certos direitos em relação às suas informações pessoais, incluindo:",
+      "items": [
+        "O direito de acessar suas informações pessoais",
+        "O direito de corrigir ou atualizar suas informações",
+        "O direito de excluir suas informações",
+        "O direito de restringir o processamento",
+        "O direito à portabilidade de dados"
+      ]
+    },
+    "cookies": {
+      "title": "6. Cookies e Rastreamento",
+      "description": "Utilizamos cookies e tecnologias de rastreamento similares para melhorar sua experiência. Para informações detalhadas sobre o uso de cookies, consulte nossa"
+    },
+    "contact": {
+      "title": "7. Fale Conosco",
+      "description": "Se você tiver dúvidas sobre esta Política de Privacidade, entre em contato:",
+      "items": [
+        "Email: flavio@trilha.info",
+        "Através do formulário de contato no site"
+      ]
+    }
+  },
+  "links": {
+    "terms": "Termos e Condições",
+    "cookies": "Política de Cookies",
+    "back_home": "Voltar para o Dinamos"
+  }
+}

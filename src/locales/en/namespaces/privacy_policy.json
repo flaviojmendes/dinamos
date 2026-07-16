@@ -1,0 +1,70 @@
+{
+  "title": "Privacy Policy",
+  "last_updated_label": "Last updated:",
+  "last_updated_date": "December 2024",
+  "sections": {
+    "info_collection": {
+      "title": "1. Information We Collect",
+      "description": "We collect information you provide directly to us, such as when you:",
+      "items": [
+        "Create an account or log in",
+        "Contact us for support",
+        "Participate in surveys or feedback"
+      ]
+    },
+    "use_info": {
+      "title": "2. How We Use Your Information",
+      "description": "We use the information we collect to:",
+      "items": [
+        "Provide, maintain, and improve our services",
+        "Process transactions and send related information",
+        "Send technical notices and support messages",
+        "Respond to your comments and questions",
+        "Analyze usage patterns to improve user experience"
+      ]
+    },
+    "sharing": {
+      "title": "3. Information Sharing",
+      "description": "We do not sell, trade, or otherwise transfer your personal information to third parties without your consent, except as described in this policy.",
+      "items_title": "We may share your information in the following situations:",
+      "items": [
+        "With service providers who help us operate our services",
+        "To comply with legal obligations",
+        "To protect our rights and safety",
+        "In connection with a business transfer"
+      ]
+    },
+    "security": {
+      "title": "4. Data Security",
+      "description": "We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction."
+    },
+    "rights": {
+      "title": "5. Your Rights",
+      "description": "Depending on your location, you may have certain rights regarding your personal information, including:",
+      "items": [
+        "The right to access your personal information",
+        "The right to correct or update your information",
+        "The right to delete your information",
+        "The right to restrict processing",
+        "The right to data portability"
+      ]
+    },
+    "cookies": {
+      "title": "6. Cookies and Tracking",
+      "description": "We use cookies and similar tracking technologies to enhance your experience. For detailed information about our use of cookies, please see our"
+    },
+    "contact": {
+      "title": "7. Contact Us",
+      "description": "If you have any questions about this Privacy Policy, please contact us:",
+      "items": [
+        "Email: flavio@trilha.info",
+        "Through our website contact form"
+      ]
+    }
+  },
+  "links": {
+    "terms": "Terms and Conditions",
+    "cookies": "Cookie Policy",
+    "back_home": "Back to Dinamos"
+  }
+}

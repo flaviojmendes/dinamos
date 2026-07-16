@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import api from '../../app/utils/api';
-import MdxRenderer from './MdxRenderer';
+import MdxRenderer, { mdxCacheKey } from './MdxRenderer';
 import ContentAnnotations from './ContentAnnotations';
 import { getVisitorId } from '../../utils/visitorId';
 
@@ -87,7 +87,11 @@ export default function MdxPage({ slug }: Props) {
         <p className="text-slate-500 dark:text-tactical-dim">Content not found: {slug}</p>
       )}
       {status === 'loaded' && body !== null && (
-        <MdxRenderer source={body} fallback={<ContentSkeleton />} />
+        <MdxRenderer
+          source={body}
+          cacheKey={mdxCacheKey(slug, lang, body)}
+          fallback={<ContentSkeleton />}
+        />
       )}
       {status === 'loaded' && (
         <ContentAnnotations slug={slug} path={location.pathname} containerRef={articleRef} />

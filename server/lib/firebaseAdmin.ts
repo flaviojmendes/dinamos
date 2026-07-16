@@ -1,52 +1,58 @@
-import {
-  initializeApp,
-  getApps,
-  cert,
-  type App,
-} from 'firebase-admin/app';
-import { getAuth, type Auth } from 'firebase-admin/auth';
+type FirebaseApp = import('firebase-admin/app').App;
+type FirebaseAuth = import('firebase-admin/auth').Auth;
 
-let app: App | null = null;
+let app: FirebaseApp | null = null;
+let auth: FirebaseAuth | null = null;
+let initPromise: Promise<void> | null = null;
 
-/**
- * Initialize the Firebase Admin SDK using a base64-encoded service account JSON
- * stored in FIREBASE_SERVICE_ACCOUNT_B64 (recommended for serverless), or a raw
- * JSON string in FIREBASE_SERVICE_ACCOUNT_JSON. Returns null if not configured.
- */
-export function getFirebaseApp(): App | null {
-  if (app) return app;
-  if (getApps().length > 0) {
-    app = getApps()[0]!;
-    return app;
-  }
-
+function parseServiceAccount(): Record<string, unknown> | null {
   const b64 = process.env.FIREBASE_SERVICE_ACCOUNT_B64;
   const rawJson = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
-
-  let serviceAccount: Record<string, unknown> | null = null;
   try {
-    if (b64) {
-      serviceAccount = JSON.parse(Buffer.from(b64, 'base64').toString('utf-8'));
-    } else if (rawJson) {
-      serviceAccount = JSON.parse(rawJson);
-    }
+    if (b64) return JSON.parse(Buffer.from(b64, 'base64').toString('utf-8'));
+    if (rawJson) return JSON.parse(rawJson);
   } catch (e) {
     console.error('[firebase] Failed to parse service account credentials:', e);
-    return null;
   }
+  return null;
+}
 
-  if (!serviceAccount) {
-    console.warn('[firebase] No service account configured; auth disabled');
-    return null;
-  }
+/** Lazy-load firebase-admin so CRUD routes avoid the SDK at cold start. */
+async function ensureInitialized(): Promise<void> {
+  if (app && auth) return;
+  if (initPromise) return initPromise;
 
-  app = initializeApp({ credential: cert(serviceAccount as any) });
+  initPromise = (async () => {
+    const serviceAccount = parseServiceAccount();
+    if (!serviceAccount) {
+      console.warn('[firebase] No service account configured; auth disabled');
+      return;
+    }
+
+    const { initializeApp, getApps, cert } = await import('firebase-admin/app');
+    const { getAuth } = await import('firebase-admin/auth');
+
+    if (getApps().length > 0) {
+      app = getApps()[0]!;
+    } else {
+      app = initializeApp({ credential: cert(serviceAccount as any) });
+    }
+    auth = getAuth(app);
+  })();
+
+  return initPromise;
+}
+
+/**
+ * Returns the cached Firebase app after the first authenticated request, or null
+ * if credentials are missing / initialization has not run yet.
+ */
+export function getFirebaseApp(): FirebaseApp | null {
   return app;
 }
 
-export function getFirebaseAuth(): Auth | null {
-  const a = getFirebaseApp();
-  return a ? getAuth(a) : null;
+export function getFirebaseAuth(): FirebaseAuth | null {
+  return auth;
 }
 
 export interface DecodedUser {
@@ -60,7 +66,7 @@ export interface DecodedUser {
  * Verify a Firebase ID token. Throws on invalid token.
  */
 export async function verifyIdToken(token: string): Promise<DecodedUser> {
-  const auth = getFirebaseAuth();
+  await ensureInitialized();
   if (!auth) {
     throw new Error('Firebase Admin SDK is not initialized');
   }

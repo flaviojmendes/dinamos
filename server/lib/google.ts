@@ -1,4 +1,4 @@
-import { GoogleGenAI } from '@google/genai';
+import type { GoogleGenAI } from '@google/genai';
 
 const GOOGLE_API_KEY = process.env.GEMINI_API_KEY ?? process.env.GOOGLE_API_KEY ?? '';
 export const GOOGLE_MODEL = process.env.GEMINI_MODEL ?? 'gemini-2.5-flash';
@@ -6,13 +6,25 @@ export const USE_MOCK_FEEDBACK =
   (process.env.USE_MOCK_FEEDBACK ?? 'false').toLowerCase() === 'true';
 
 let client: GoogleGenAI | null = null;
+let loadPromise: Promise<GoogleGenAI | null> | null = null;
 
-export function getGoogleAI(): GoogleGenAI | null {
+/** Lazy-load Gemini so CRUD routes do not pay the SDK cost at cold start. */
+export async function getGoogleAIAsync(): Promise<GoogleGenAI | null> {
   if (USE_MOCK_FEEDBACK) return null;
   if (!GOOGLE_API_KEY) return null;
-  if (!client) {
-    client = new GoogleGenAI({ apiKey: GOOGLE_API_KEY });
+  if (client) return client;
+  if (!loadPromise) {
+    loadPromise = import('@google/genai').then(({ GoogleGenAI }) => {
+      client = new GoogleGenAI({ apiKey: GOOGLE_API_KEY });
+      return client;
+    });
   }
+  return loadPromise;
+}
+
+/** Returns the client only after getGoogleAIAsync has resolved once. */
+export function getGoogleAI(): GoogleGenAI | null {
+  if (USE_MOCK_FEEDBACK || !GOOGLE_API_KEY) return null;
   return client;
 }
 

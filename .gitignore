@@ -11,6 +11,8 @@ node_modules
 dist
 dist-ssr
 coverage
+benchmarks/*.json
+!benchmarks/.gitkeep
 *.local
 
 # Environment files (never commit real secrets; copy .env.example -> .env)

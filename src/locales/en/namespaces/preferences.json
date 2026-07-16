@@ -1,0 +1,16 @@
+{
+  "title": "Preferences",
+  "account_info": "Account Information",
+  "email": "Email",
+  "creation_date": "Sign-up Date",
+  "privacy_cookies_title": "Privacy & Cookies",
+  "cookie_preferences_title": "Cookie Preferences",
+  "cookie_preferences_desc": "Manage how we collect and use data on our website through cookies.",
+  "manage_cookies_btn": "Manage Cookies",
+  "privacy_policy_title": "Privacy Policy",
+  "privacy_policy_desc": "Learn about how we collect, use, and protect your personal information.",
+  "view_policy_btn": "View Policy",
+  "terms_title": "Terms and Conditions",
+  "terms_desc": "Review our terms of service and user agreement.",
+  "view_terms_btn": "View Terms"
+}

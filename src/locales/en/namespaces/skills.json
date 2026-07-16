@@ -1,0 +1,20 @@
+{
+  "consensus": "Consensus",
+  "lamport_timestamps": "Lamport Timestamps",
+  "eventual_consistency": "Eventual Consistency",
+  "synchronization": "Synchronization",
+  "mutual_exclusion": "Mutual Exclusion",
+  "deadlock_prevention": "Deadlock Prevention",
+  "distributed_synchronization": "Distributed Synchronization",
+  "race_conditions": "Race Conditions",
+  "shared_resources": "Shared Resources",
+  "deadlock_detection": "Deadlock Detection",
+  "prevention": "Prevention",
+  "recovery": "Recovery",
+  "bakery_algorithm": "Bakery Algorithm",
+  "token_ring": "Token Ring",
+  "ricart_agrawala": "Ricart-Agrawala",
+  "two_phase_commit": "2PC",
+  "distributed_transactions": "Distributed Transactions",
+  "atomic_consensus": "Atomic Consensus"
+}

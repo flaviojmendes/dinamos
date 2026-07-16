@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, beforeAll, vi } from 'vitest';
 
 const google: any = {
   getGoogleAI: vi.fn(() => null as any),
+  getGoogleAIAsync: vi.fn(async () => null as any),
   GOOGLE_MODEL: 'gemini-test',
   geminiText: (res: any) => (typeof res?.text === 'string' ? res.text : ''),
 };
@@ -20,7 +21,10 @@ beforeAll(async () => {
   evaluateWithAI = mod.evaluateWithAI;
 });
 
-beforeEach(() => google.getGoogleAI.mockReset().mockReturnValue(null));
+beforeEach(() => {
+  google.getGoogleAI.mockReset().mockReturnValue(null);
+  google.getGoogleAIAsync.mockReset().mockResolvedValue(null);
+});
 
 describe('analyzeTextProposal', () => {
   it('rewards a complete proposal', () => {
@@ -92,7 +96,7 @@ describe('describeDiagram', () => {
 
 describe('evaluateWithAI', () => {
   it('returns [null, null] without a client', async () => {
-    google.getGoogleAI.mockReturnValue(null);
+    google.getGoogleAIAsync.mockResolvedValue(null);
     expect(await evaluateWithAI({ title: 'X' }, 'p', { elements: [] })).toEqual([null, null]);
   });
 
@@ -100,7 +104,9 @@ describe('evaluateWithAI', () => {
     const generateContent = vi.fn(async () => ({
       text: JSON.stringify({ strengths: ['s1'], suggestions: ['x1'] }),
     }));
-    google.getGoogleAI.mockReturnValue({ models: { generateContent } } as any);
+    const client = { models: { generateContent } } as any;
+    google.getGoogleAIAsync.mockResolvedValue(client);
+    google.getGoogleAI.mockReturnValue(client);
     const [strengths, suggestions] = await evaluateWithAI(
       { title: 'X', evaluation_prompt: 'Evaluate this', description: 'd' },
       'proposal',
@@ -113,7 +119,8 @@ describe('evaluateWithAI', () => {
 
   it('defaults strengths when the response has none', async () => {
     const generateContent = vi.fn(async () => ({ text: JSON.stringify({ suggestions: [] }) }));
-    google.getGoogleAI.mockReturnValue({ models: { generateContent } } as any);
+    const client = { models: { generateContent } } as any;
+    google.getGoogleAIAsync.mockResolvedValue(client);
     const [strengths] = await evaluateWithAI({ title: 'X' }, 'p', { elements: [] });
     expect(strengths?.[0]).toMatch(/praticando/);
   });
@@ -122,7 +129,7 @@ describe('evaluateWithAI', () => {
     const generateContent = vi.fn(async () => {
       throw new Error('boom');
     });
-    google.getGoogleAI.mockReturnValue({ models: { generateContent } } as any);
+    google.getGoogleAIAsync.mockResolvedValue({ models: { generateContent } } as any);
     expect(await evaluateWithAI({ title: 'X' }, 'p', { elements: [] })).toEqual([null, null]);
   });
 });

@@ -1,0 +1,36 @@
+{
+  "banner": {
+    "title": "We use cookies",
+    "description": "We use cookies to enhance your experience, analyze site traffic, and provide personalized content. You can choose which cookies to accept.",
+    "accept": "Accept All",
+    "reject": "Reject All",
+    "customize": "Customize"
+  },
+  "preferences": {
+    "title": "Cookie Preferences",
+    "save": "Save Preferences",
+    "accept": "Accept All",
+    "reject": "Reject All"
+  },
+  "necessary": {
+    "title": "Necessary Cookies",
+    "description": "Essential for basic website functionality, authentication, and security. Cannot be disabled."
+  },
+  "analytics": {
+    "title": "Analytics Cookies",
+    "description": "Help us understand how visitors interact with our website by collecting and reporting information anonymously."
+  },
+  "functional": {
+    "title": "Functional Cookies",
+    "description": "Enable enhanced functionality like remembering your preferences and providing personalized features."
+  },
+  "marketing": {
+    "title": "Marketing Cookies",
+    "description": "Track visitors across websites to display relevant and engaging advertisements."
+  },
+  "policy": {
+    "text": "For more information, please read our",
+    "privacy": "Privacy Policy",
+    "cookies": "Cookie Policy"
+  }
+}

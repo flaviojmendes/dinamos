@@ -1,0 +1,67 @@
+{
+  "control_center": "Central de Controle",
+  "access_denied": "Acesso Negado",
+  "hub": {
+    "title": "Central de Controle Admin",
+    "subtitle": "Tudo que você pode gerenciar, em um só lugar."
+  },
+  "sections": {
+    "content": "Conteúdo e Aprendizado",
+    "community": "Comunidade",
+    "system": "Pessoas e Sistema"
+  },
+  "cards": {
+    "organize": {
+      "title": "Organizar Conteúdo",
+      "description": "Arraste e solte módulos e lições para aninhar, reordenar e reatribuir."
+    },
+    "content": {
+      "title": "Páginas de Conteúdo",
+      "description": "Crie e edite lições MDX, títulos e simuladores por idioma."
+    },
+    "modules": {
+      "title": "Módulos",
+      "description": "Defina módulos de aprendizado, níveis e caminhos base."
+    },
+    "challenges": {
+      "title": "Desafios",
+      "description": "Gerencie desafios de system design e suas soluções."
+    },
+    "quizzes": {
+      "title": "Quizzes",
+      "description": "Crie quizzes, perguntas e temas."
+    },
+    "game": {
+      "title": "Modo Jogo",
+      "description": "Configure experiências de aprendizado gamificadas."
+    },
+    "forum_categories": {
+      "title": "Categorias do Fórum",
+      "description": "Organize as categorias de discussão do fórum da comunidade."
+    },
+    "notifications": {
+      "title": "Notificações",
+      "description": "Envie comunicados e gerencie notificações."
+    },
+    "announcements": {
+      "title": "Comunicados",
+      "description": "Publique um modal exibido aos usuários até que confirmem a leitura."
+    },
+    "users": {
+      "title": "Usuários",
+      "description": "Veja usuários e detalhes de conta."
+    },
+    "roles": {
+      "title": "Funções",
+      "description": "Gerencie funções e atribuições de permissão."
+    },
+    "analytics": {
+      "title": "Análises",
+      "description": "Métricas da plataforma, crescimento e gráficos de engajamento."
+    },
+    "settings": {
+      "title": "Configurações",
+      "description": "Configuração global da plataforma."
+    }
+  }
+}

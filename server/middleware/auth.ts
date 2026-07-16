@@ -1,7 +1,13 @@
 import type { Context, MiddlewareHandler } from 'hono';
 import { HTTPException } from 'hono/http-exception';
-import { verifyIdToken, type DecodedUser } from '../lib/firebaseAdmin.js';
 import { getUserContext, type UserContext } from '../db/repo.js';
+
+export type DecodedUser = {
+  uid: string;
+  email: string;
+  picture?: string | null;
+  name?: string | null;
+};
 
 export type AppVariables = {
   user: DecodedUser;
@@ -30,6 +36,7 @@ export const authRequired: MiddlewareHandler<{ Variables: AppVariables }> = asyn
     throw new HTTPException(401, { message: 'Authorization header missing' });
   }
   try {
+    const { verifyIdToken } = await import('../lib/firebaseAdmin.js');
     const user = await verifyIdToken(token);
     c.set('user', user);
   } catch (e) {
@@ -46,6 +53,7 @@ export const optionalAuth: MiddlewareHandler<{ Variables: AppVariables }> = asyn
   const token = extractToken(c);
   if (token) {
     try {
+      const { verifyIdToken } = await import('../lib/firebaseAdmin.js');
       const user = await verifyIdToken(token);
       c.set('user', user);
     } catch {

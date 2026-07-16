@@ -1,0 +1,42 @@
+{
+  "title": "JWT Simulator",
+  "subtitle": "Experience JWT token generation and validation in practice",
+  "token_configuration_title": "Token Configuration",
+  "user_information_title": "User Information",
+  "name_label": "Name",
+  "email_label": "Email",
+  "role_label": "Role",
+  "roles": {
+    "user": "User",
+    "admin": "Administrator",
+    "guest": "Guest"
+  },
+  "token_settings_title": "Token Settings",
+  "algorithm_label": "Signature Algorithm",
+  "expiration_label": "Expiration Time (seconds)",
+  "custom_claims_title": "Custom Claims",
+  "key_placeholder": "Key",
+  "value_placeholder": "Value",
+  "add_claim_button": "Add Claim",
+  "generated_token_title": "Generated Token",
+  "verify_token_button": "Verify Token",
+  "no_token_message": "Configure and generate a token to view it here",
+  "decoded_token_title": "Decoded Token",
+  "header_title": "Header",
+  "payload_title": "Payload",
+  "signature_title": "Signature",
+  "verification_result_title": "Verification Result",
+  "verification_messages": {
+    "no_token": "No token to verify",
+    "expired": "Token expired",
+    "valid": "Token valid"
+  },
+  "how_to_use_title": "How to Use",
+  "instructions": [
+    "Configure user information and token settings in the left panel",
+    "Add custom claims if desired (optional)",
+    "Click \"Generate Token\" to create a new JWT",
+    "View the generated token and its decoded version in the right panel",
+    "Use the \"Verify Token\" button to simulate token validation"
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "control_center": "Control Center",
+  "access_denied": "Access Denied",
+  "hub": {
+    "title": "Admin Control Center",
+    "subtitle": "Everything you can manage, in one place."
+  },
+  "sections": {
+    "content": "Content & Learning",
+    "community": "Community",
+    "system": "People & System"
+  },
+  "cards": {
+    "organize": {
+      "title": "Organize Content",
+      "description": "Drag & drop modules and lessons to nest, reorder, and reassign."
+    },
+    "content": {
+      "title": "Content Pages",
+      "description": "Create and edit MDX lessons, titles, and simulators per language."
+    },
+    "modules": {
+      "title": "Modules",
+      "description": "Define learning modules, tiers, and base paths."
+    },
+    "challenges": {
+      "title": "Challenges",
+      "description": "Manage system-design challenges and their solutions."
+    },
+    "quizzes": {
+      "title": "Quizzes",
+      "description": "Author quizzes, questions, and themes."
+    },
+    "game": {
+      "title": "Game Mode",
+      "description": "Configure gamified learning experiences."
+    },
+    "forum_categories": {
+      "title": "Forum Categories",
+      "description": "Organize discussion categories for the community forum."
+    },
+    "notifications": {
+      "title": "Notifications",
+      "description": "Broadcast announcements and manage notifications."
+    },
+    "announcements": {
+      "title": "Announcements",
+      "description": "Publish a modal shown to users until they acknowledge it."
+    },
+    "users": {
+      "title": "Users",
+      "description": "View users and account details."
+    },
+    "roles": {
+      "title": "Roles",
+      "description": "Manage roles and permission assignments."
+    },
+    "analytics": {
+      "title": "Analytics",
+      "description": "Platform metrics, growth, and engagement charts."
+    },
+    "settings": {
+      "title": "Settings",
+      "description": "Global platform configuration."
+    }
+  }
+}

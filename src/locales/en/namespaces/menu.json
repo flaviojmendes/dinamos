@@ -1,0 +1,845 @@
+{
+  "roadmap": {
+    "name": "🎯 Start Here",
+    "description": "Your step-by-step learning journey"
+  },
+  "intro": {
+    "name": "Introduction",
+    "description": "About the course and motivation"
+  },
+  "sistemas_distribuidos_101": {
+    "name": "Distributed Systems 101",
+    "description": "Fundamental concepts through analogies"
+  },
+  "system_design_101": {
+    "name": "System Design 101",
+    "description": "Fundamentals of system design"
+  },
+  "theoretical_foundations": {
+    "name": "Theoretical Foundations",
+    "description": "Core distributed systems theory and principles",
+    "cap_theorem": {
+      "name": "CAP Theorem",
+      "description": "Consistency, Availability, and Partition tolerance trade-offs",
+      "consistency": {
+        "description": "All nodes see the same data at the same time. Every read receives the most recent write or an error."
+      },
+      "availability": {
+        "description": "The system remains operational 100% of the time. Every request receives a response."
+      },
+      "partition_tolerance": {
+        "description": "The system continues to operate despite network failures between nodes."
+      },
+      "cp_systems": {
+        "description": "Prioritize data consistency over availability during network partitions"
+      },
+      "ap_systems": {
+        "description": "Prioritize system availability over immediate consistency during partitions"
+      },
+      "ca_systems": {
+        "description": "Traditional systems that sacrifice partition tolerance"
+      }
+    },
+    "consistency_models": {
+      "name": "Consistency Models",
+      "description": "Strong, eventual, and weak consistency patterns",
+      "strong_consistency": {
+        "description": "All nodes see the same data at the same time. After a write operation, all subsequent reads will return the updated value."
+      },
+      "eventual_consistency": {
+        "description": "The system will become consistent over time, given that the system doesn't receive new updates. Reads may return stale data temporarily."
+      },
+      "weak_consistency": {
+        "description": "After a write, reads may or may not see the updated value. The system makes no guarantees about when data will be consistent."
+      }
+    },
+    "distributed_challenges": {
+      "name": "Distributed Challenges",
+      "description": "Common problems in distributed systems",
+      "network_partitions": {
+        "description": "Network failures that split the system into isolated groups, forcing trade-offs between consistency and availability."
+      },
+      "clock_sync": {
+        "description": "Different nodes have different clocks, making it difficult to order events and maintain consistency."
+      },
+      "partial_failures": {
+        "description": "Some parts of the system fail while others continue working, creating inconsistent states."
+      },
+      "consensus": {
+        "description": "Getting distributed nodes to agree on a single value or decision in the presence of failures."
+      },
+      "state_management": {
+        "description": "Keeping track of system state across multiple nodes while handling concurrent updates."
+      },
+      "race_conditions": {
+        "description": "Multiple processes accessing shared resources simultaneously, leading to unpredictable results."
+      }
+    },
+    "network_partitions": {
+      "name": "Network Partitions & Failures",
+      "description": "Handling network splits and node failures",
+      "what_is": {
+        "description": "A network partition occurs when the network between nodes fails, splitting the system into isolated groups that cannot communicate with each other."
+      },
+      "causes": {
+        "description": "Network partitions can arise from various infrastructure and configuration issues that affect connectivity between distributed nodes."
+      },
+      "failure_types": {
+        "description": "Different failure modes require different detection and handling strategies in distributed systems.",
+        "fail_stop": {
+          "description": "Node stops completely and other nodes can detect the failure"
+        },
+        "fail_slow": {
+          "description": "Node becomes very slow but doesn't crash completely"
+        },
+        "byzantine": {
+          "description": "Node behaves arbitrarily or maliciously"
+        }
+      },
+      "partition_scenarios": {
+        "datacenter_split": {
+          "description": "When datacenters lose connectivity, each must decide how to handle ongoing operations"
+        },
+        "service_mesh_partition": {
+          "description": "When services in a mesh lose connectivity to subsets of other services"
+        },
+        "database_partition": {
+          "description": "When database nodes become isolated from each other"
+        }
+      },
+      "detection": {
+        "description": "Early and accurate detection of network partitions is crucial for implementing appropriate response strategies."
+      },
+      "prevention": {
+        "description": "While partitions cannot be completely prevented, their likelihood and impact can be significantly reduced through proper infrastructure design."
+      },
+      "recovery": {
+        "description": "When partitions heal, systems must carefully reconcile state and resolve any conflicts that occurred during the partition."
+      }
+    },
+    "pacelc": {
+      "name": "PACELC Theorem",
+      "description": "Beyond CAP: the latency-vs-consistency trade-off even without partitions",
+      "simulator": {
+        "name": "PACELC Simulator",
+        "description": "Classify real databases by their partition and normal-operation trade-offs"
+      }
+    },
+    "flp": {
+      "name": "FLP Impossibility",
+      "description": "Why no async consensus algorithm can guarantee termination"
+    },
+    "fallacies": {
+      "name": "Fallacies of Distributed Computing",
+      "description": "Eight false assumptions that wreck distributed systems"
+    }
+  },
+  "componentes": {
+    "name": "Basic Components",
+    "description": "Fundamental building blocks of distributed systems",
+    "banco_dados": {
+      "name": "Databases",
+      "description": "Data storage and management"
+    },
+    "cache": {
+      "name": "Cache",
+      "description": "Temporary storage for better performance",
+      "simulator": {
+        "name": "Simulator",
+        "description": "Experiment with different cache strategies"
+      }
+    },
+    "load_balancer": {
+      "name": "Load Balancer",
+      "description": "Traffic distribution across servers",
+      "simulator": {
+        "name": "Simulator",
+        "description": "Experiment with different balancing algorithms"
+      }
+    },
+    "message_queue": {
+      "name": "Message Queues",
+      "description": "Asynchronous communication between services",
+      "simulator": {
+        "name": "Simulator",
+        "description": "Experiment with message flow"
+      }
+    },
+    "cdn": {
+      "name": "CDN",
+      "description": "Global content distribution",
+      "simulator": {
+        "name": "Simulator",
+        "description": "See how CDN accelerates delivery"
+      }
+    },
+    "api_gateway": {
+      "name": "API Gateway",
+      "description": "Single entry point for APIs",
+      "simulator": {
+        "name": "Simulator",
+        "description": "Experiment with API routing and protection"
+      }
+    },
+    "firewall": {
+      "name": "Firewall",
+      "description": "Security and traffic control",
+      "simulator": {
+        "name": "Simulator",
+        "description": "Experiment with firewall rules"
+      }
+    },
+    "polling_webhooks": {
+      "name": "Polling vs Webhooks",
+      "description": "Real-time communication strategies",
+      "teoria": {
+        "name": "Theory and Concepts",
+        "description": "Fundamentals and detailed comparison"
+      },
+      "simulator": {
+        "name": "Interactive Simulator",
+        "description": "See the difference in practice"
+      }
+    },
+    "vector_database": {
+      "name": "Vector Database",
+      "description": "Store embeddings and run similarity search"
+    },
+    "model_gateway": {
+      "name": "Model Gateway",
+      "description": "Infrastructure that fronts your LLMs"
+    },
+    "kafka": {
+      "name": "Kafka & Streaming",
+      "description": "Partitioned, replayable event logs and consumer groups",
+      "simulator": {
+        "name": "Kafka Simulator",
+        "description": "Tune partitions and consumers and watch consumer lag"
+      }
+    },
+    "dns": {
+      "name": "DNS",
+      "description": "The distributed phone book that resolves names to addresses"
+    },
+    "reverse_proxy": {
+      "name": "Reverse Proxy",
+      "description": "A front door that terminates TLS, routes, and caches"
+    },
+    "service_discovery": {
+      "name": "Service Discovery",
+      "description": "How services find each other in a dynamic fleet"
+    },
+    "service_mesh": {
+      "name": "Service Mesh",
+      "description": "Sidecar proxies for traffic, security, and observability"
+    },
+    "kubernetes": {
+      "name": "Kubernetes",
+      "description": "Declarative orchestration of containers at scale"
+    },
+    "api_styles": {
+      "name": "API Styles: REST, gRPC & GraphQL",
+      "description": "Choosing how services talk: round trips, payloads, schemas",
+      "simulator": {
+        "name": "API Styles Simulator",
+        "description": "Compare round trips, payload size, and over-fetching"
+      }
+    },
+    "realtime_push": {
+      "name": "WebSockets & Real-Time Push",
+      "description": "Polling vs SSE vs WebSockets for live updates",
+      "simulator": {
+        "name": "Real-Time Push Simulator",
+        "description": "Compare delivery latency and request overhead"
+      }
+    },
+    "dead_letter_queue": {
+      "name": "Dead Letter Queues",
+      "description": "Where messages go after exhausting their retries",
+      "simulator": {
+        "name": "Dead Letter Queue Simulator",
+        "description": "Tune failure rate and retries; watch messages dead-letter"
+      }
+    },
+    "stream_processing": {
+      "name": "Stream Processing",
+      "description": "Continuous computation over event streams (Flink, Kafka Streams)"
+    }
+  },
+  "principios_design": {
+    "name": "Design Principles",
+    "description": "Essential concepts for robust systems",
+    "escalabilidade": {
+      "name": "Scalability",
+      "description": "System growth and adaptation",
+      "horizontal": {
+        "name": "Horizontal (Scale Out)",
+        "description": "Adding more machines",
+        "simulator": {
+          "name": "Simulator",
+          "description": "Experiment with horizontal scalability"
+        }
+      },
+      "vertical": {
+        "name": "Vertical (Scale Up)",
+        "description": "Increasing machine resources",
+        "simulator": {
+          "name": "Simulator",
+          "description": "Experiment with vertical scalability"
+        }
+      },
+      "latencia": {
+        "name": "Latency",
+        "description": "Measuring and optimizing latency"
+      },
+      "failover": {
+        "name": "Failover",
+        "description": "Automatic failure recovery"
+      },
+      "simulator": {
+        "name": "Complete Simulator",
+        "description": "Compare different scaling strategies"
+      }
+    },
+    "disponibilidade": {
+      "name": "High Availability",
+      "description": "Keeping the system always running",
+      "replicacao": {
+        "name": "Replication",
+        "description": "Synchronized data copies"
+      },
+      "failover": {
+        "name": "Failover",
+        "description": "Automatic failure recovery"
+      },
+      "zonas": {
+        "name": "Availability Zones",
+        "description": "Geographic distribution for resilience"
+      },
+      "disaster-recovery": {
+        "name": "Disaster Recovery",
+        "description": "Catastrophic failure recovery strategies"
+      },
+      "monitoramento": {
+        "name": "Health Monitoring",
+        "description": "Continuous system health tracking"
+      },
+      "distribuicao-carga": {
+        "name": "Load Distribution",
+        "description": "Traffic distribution across servers"
+      },
+      "simulator": {
+        "name": "Simulator",
+        "description": "Experiment with availability strategies"
+      }
+    },
+    "tolerancia_falhas": {
+      "name": "Fault Tolerance",
+      "description": "Dealing with system failures",
+      "retries": {
+        "name": "Retries",
+        "description": "Automatic retry attempts",
+        "simulator": {
+          "name": "Simulator",
+          "description": "Experiment with different retry strategies"
+        }
+      },
+      "circuit_breaker": {
+        "name": "Circuit Breaker",
+        "description": "Preventing cascading failures",
+        "simulator": {
+          "name": "Simulator",
+          "description": "See circuit breaker in action"
+        }
+      },
+      "timeout": {
+        "name": "Timeout",
+        "description": "Limiting wait time",
+        "simulator": {
+          "name": "Simulator",
+          "description": "Experiment with different timeout configurations"
+        }
+      }
+    },
+    "eventos": {
+      "name": "Event-Driven Architecture",
+      "description": "Event-based systems",
+      "simulator": {
+        "name": "Simulator",
+        "description": "Experiment with event sourcing and event-driven"
+      }
+    },
+    "servicos": {
+      "name": "Service Architecture",
+      "description": "Monolith vs Microservices"
+    },
+    "acoplamento": {
+      "name": "Coupling",
+      "description": "Dynamic and static coupling between services"
+    },
+    "orquestracao_vs_coreografia": {
+      "name": "Orchestration vs Choreography",
+      "description": "Compare orchestration and choreography patterns"
+    },
+    "canary_deployment": {
+      "name": "Canary Deployment",
+      "description": "Gradual rollout with traffic shifting and instant rollback",
+      "simulator": {
+        "name": "Canary Deployment Simulator",
+        "description": "Deploy a canary, shift traffic, and watch the metrics"
+      }
+    },
+    "cqrs": {
+      "name": "CQRS",
+      "description": "Separate write and read models via an event log",
+      "simulator": {
+        "name": "CQRS Simulator",
+        "description": "Issue commands and watch read models catch up"
+      }
+    },
+    "rate_limiting": {
+      "name": "Rate Limiting",
+      "description": "Token bucket, leaky bucket, and sliding window",
+      "simulator": {
+        "name": "Rate Limiter Simulator",
+        "description": "Compare algorithms and watch accepted vs rejected"
+      }
+    },
+    "backpressure": {
+      "name": "Backpressure",
+      "description": "Flow control when consumers can't keep up",
+      "simulator": {
+        "name": "Backpressure Simulator",
+        "description": "Throttle a producer when the queue fills up"
+      }
+    },
+    "event_sourcing": {
+      "name": "Event Sourcing",
+      "description": "Store state as an immutable log of events",
+      "simulator": {
+        "name": "Event Sourcing Simulator",
+        "description": "Append events and rebuild state from the log"
+      }
+    },
+    "outbox": {
+      "name": "Transactional Outbox",
+      "description": "Publish events reliably without dual-write inconsistency",
+      "simulator": {
+        "name": "Outbox Simulator",
+        "description": "Compare dual-write vs the outbox pattern under broker failures"
+      }
+    },
+    "bulkhead": {
+      "name": "Bulkhead Pattern",
+      "description": "Isolate resource pools so one failure can't sink the ship",
+      "simulator": {
+        "name": "Bulkhead Simulator",
+        "description": "Watch a slow dependency starve a shared pool — then isolate it"
+      }
+    },
+    "blue_green": {
+      "name": "Blue-Green Deployment",
+      "description": "Two identical environments with instant switchover and rollback",
+      "simulator": {
+        "name": "Blue-Green Simulator",
+        "description": "Shift traffic between environments and roll back instantly"
+      }
+    },
+    "feature_flags": {
+      "name": "Feature Flags",
+      "description": "Decouple deploy from release; toggle features at runtime"
+    }
+  },
+  "estrategias_de_consistencia": {
+    "name": "Consistency Strategies",
+    "description": "How to ensure consistency in distributed systems",
+    "sincronizacao": {
+      "name": "Synchronization",
+      "description": "Coordination and synchronization in distributed systems",
+      "fundamentos": {
+        "name": "Fundamentals",
+        "description": "Basic synchronization concepts using Dining Philosophers"
+      },
+      "deadlocks": {
+        "name": "Deadlocks",
+        "description": "Prevention and detection of deadlocks in Philosophers context"
+      },
+      "algoritmos": {
+        "name": "Algorithms",
+        "description": "Distributed algorithms for coordination"
+      }
+    },
+    "two_phase_commit": {
+      "name": "Two Phase Commit",
+      "description": "Consensus protocol for distributed transactions",
+      "simulador": {
+        "name": "Simulator",
+        "description": "Interactive simulation of Two Phase Commit protocol"
+      }
+    },
+    "consenso": {
+      "name": "Consensus Strategy",
+      "description": "Protocols and mechanisms to ensure agreement between nodes",
+      "simulador": {
+        "name": "Simulator",
+        "description": "Interactive simulation of consensus protocols"
+      }
+    },
+    "lamport_timestamps": {
+      "name": "Lamport Logical Clocks",
+      "description": "Event ordering in distributed systems",
+      "simulador": {
+        "name": "Simulator",
+        "description": "Visualize event ordering with Lamport timestamps"
+      }
+    },
+    "saga": {
+      "name": "Saga Pattern",
+      "description": "Long-running transactions with compensating actions",
+      "simulator": {
+        "name": "Saga Simulator",
+        "description": "Run a saga, inject a failure, and watch it roll back"
+      }
+    },
+    "delivery_semantics": {
+      "name": "Delivery Semantics",
+      "description": "At-most-once, at-least-once, and exactly-once",
+      "simulator": {
+        "name": "Delivery Semantics Simulator",
+        "description": "Toggle dedup and DLQ to control duplicates and loss"
+      }
+    },
+    "vector_clocks": {
+      "name": "Vector Clocks",
+      "description": "Track causality and detect concurrent updates"
+    },
+    "crdts": {
+      "name": "CRDTs",
+      "description": "Conflict-free replicated data types that always converge",
+      "simulator": {
+        "name": "CRDT Simulator",
+        "description": "Edit replicas independently, then merge and watch them converge"
+      }
+    },
+    "gossip": {
+      "name": "Gossip & Anti-Entropy",
+      "description": "Epidemic protocols that spread state across a cluster",
+      "simulator": {
+        "name": "Gossip Simulator",
+        "description": "Watch a rumor spread node-to-node until the cluster converges"
+      }
+    },
+    "distributed_locks": {
+      "name": "Distributed Locks & Fencing Tokens",
+      "description": "Mutual exclusion with leases and fencing against stale holders",
+      "simulator": {
+        "name": "Distributed Lock Simulator",
+        "description": "Acquire a lease, stall the holder, and watch fencing reject stale writes"
+      }
+    }
+  },
+  "monitoramento_e_manutencao": {
+    "name": "Monitoring and Maintenance",
+    "description": "Monitoring and maintenance of distributed systems",
+    "metricas": {
+      "name": "Metrics and KPIs",
+      "description": "Essential indicators for monitoring"
+    },
+    "logs": {
+      "name": "Logs and Tracing",
+      "description": "Tracking and analysis of distributed logs",
+      "simulador": {
+        "name": "Log Simulator",
+        "description": "Experiment with good and bad log examples"
+      },
+      "tracing": {
+        "name": "Tracing Simulator",
+        "description": "Experiment with event tracing"
+      }
+    },
+    "alertas": {
+      "name": "Alerts and Notifications",
+      "description": "Alert configuration and management"
+    },
+    "performance": {
+      "name": "Performance Analysis",
+      "description": "Identification and resolution of bottlenecks"
+    },
+    "health_checks": {
+      "name": "Health Checks",
+      "description": "Service health monitoring"
+    },
+    "llm_observability": {
+      "name": "LLM Observability",
+      "description": "Tokens, cost, traces, and quality evaluations"
+    },
+    "distributed_tracing": {
+      "name": "Distributed Tracing",
+      "description": "Follow a request across services with spans and context"
+    },
+    "slo_sli_sla": {
+      "name": "SLO, SLI & Error Budgets",
+      "description": "Measure reliability and spend it with burn rate"
+    },
+    "chaos_engineering": {
+      "name": "Chaos Engineering",
+      "description": "Deliberately inject failure to build confidence in resilience",
+      "simulator": {
+        "name": "Chaos Simulator",
+        "description": "Kill nodes during a game day and watch availability hold or crater"
+      }
+    },
+    "disaster_recovery": {
+      "name": "Disaster Recovery & Backups",
+      "description": "RPO, RTO, backup strategies, and recovery patterns"
+    },
+    "multi_region": {
+      "name": "Multi-Region & Geo-Replication",
+      "description": "Run across regions for latency, availability, and survival"
+    }
+  },
+  "casos_reais": {
+    "name": "Real Cases",
+    "description": "Real system design examples from major companies",
+    "youtube": {
+      "name": "YouTube",
+      "description": "How YouTube processes and distributes videos globally"
+    },
+    "spotify": {
+      "name": "Spotify",
+      "description": "Real-time music streaming architecture"
+    },
+    "bitly": {
+      "name": "Bit.ly",
+      "description": "URL shortening service design at scale"
+    },
+    "whatsapp": {
+      "name": "WhatsApp",
+      "description": "Real-time messaging system"
+    },
+    "netflix": {
+      "name": "Netflix",
+      "description": "Video streaming and content recommendation"
+    },
+    "uber": {
+      "name": "Uber",
+      "description": "Real-time geolocation and matching system"
+    },
+    "chatgpt": {
+      "name": "ChatGPT",
+      "description": "Serving LLMs to hundreds of millions with streaming"
+    },
+    "perplexity": {
+      "name": "Perplexity",
+      "description": "RAG-based answer engine with cited sources"
+    },
+    "github_copilot": {
+      "name": "GitHub Copilot",
+      "description": "Low-latency inline code completion at scale"
+    }
+  },
+  "seguranca": {
+    "name": "Security",
+    "description": "Protection and security in distributed systems",
+    "autenticacao": {
+      "name": "Authentication",
+      "description": "Identity verification in distributed systems"
+    },
+    "autorizacao": {
+      "name": "Authorization",
+      "description": "Access control and permissions"
+    },
+    "criptografia": {
+      "name": "Cryptography",
+      "description": "Data protection in transit and at rest",
+      "simulador": {
+        "name": "Simulator",
+        "description": "Experiment with different types of cryptography in practice"
+      }
+    },
+    "tokens": {
+      "name": "Tokens and JWT",
+      "description": "Session management and access tokens",
+      "simulador": {
+        "name": "Simulator",
+        "description": "Experiment with JWT generation and validation"
+      }
+    },
+    "ssl_tls": {
+      "name": "SSL/TLS",
+      "description": "Secure communication between systems"
+    },
+    "ataques": {
+      "name": "Common Attacks",
+      "description": "Prevention against attacks in distributed systems"
+    },
+    "prompt_injection": {
+      "name": "Prompt Injection",
+      "description": "LLM-specific attacks and guardrails",
+      "simulador": {
+        "name": "Prompt Injection Simulator",
+        "description": "Stack defenses and watch whether the secret leaks"
+      }
+    }
+  },
+  "ai_systems": {
+    "name": "AI & LLM Systems",
+    "description": "Serving LLMs, RAG, vector search, and agents at scale",
+    "llm_serving_fundamentals": {
+      "name": "LLM Serving Fundamentals",
+      "description": "Tokens, context windows, prefill vs decode, and the KV cache",
+      "simulator": {
+        "name": "Inference Batching Simulator",
+        "description": "See how batching trades throughput against latency"
+      }
+    },
+    "rag": {
+      "name": "RAG Architecture",
+      "description": "Ground answers in your own data with retrieval",
+      "simulator": {
+        "name": "RAG Pipeline Simulator",
+        "description": "Tune chunking, retrieval, and reranking end to end"
+      }
+    },
+    "vector_search": {
+      "name": "Vector Search",
+      "description": "Approximate nearest-neighbor search at scale",
+      "simulator": {
+        "name": "Vector Search Simulator",
+        "description": "Trade recall against latency with HNSW parameters"
+      }
+    },
+    "llm_gateway": {
+      "name": "LLM Gateway",
+      "description": "Routing, semantic caching, fallback, and cost control",
+      "simulator": {
+        "name": "LLM Gateway Simulator",
+        "description": "Route requests with caching, fallback, and rate limits"
+      }
+    },
+    "gpu_autoscaling": {
+      "name": "GPU Serving & Autoscaling",
+      "description": "Cold starts, queueing, and scale-to-zero for GPUs",
+      "simulator": {
+        "name": "GPU Autoscaler Simulator",
+        "description": "Balance cost against latency under bursty load"
+      }
+    },
+    "agentic": {
+      "name": "Agentic Systems",
+      "description": "Tool calling and multi-step orchestration",
+      "simulator": {
+        "name": "Agent Orchestration Simulator",
+        "description": "Watch an agent loop call tools, retry, and branch"
+      }
+    }
+  },
+  "data_storage": {
+    "name": "Data & Storage",
+    "description": "Partitioning, replication, and finding data at scale",
+    "consistent_hashing": {
+      "name": "Consistent Hashing",
+      "description": "Place keys on a ring so topology changes move few keys",
+      "simulator": {
+        "name": "Consistent Hashing Simulator",
+        "description": "Add and remove nodes and watch keys remap"
+      }
+    },
+    "sharding": {
+      "name": "Sharding & Partitioning",
+      "description": "Split data by range, hash, or directory — and avoid hotspots",
+      "simulator": {
+        "name": "Sharding Simulator",
+        "description": "Stream keys into shards and watch hot shards emerge"
+      }
+    },
+    "object_storage": {
+      "name": "Object & Blob Storage",
+      "description": "Durable, cheap blob storage at massive scale (S3)"
+    },
+    "distributed_file_systems": {
+      "name": "Distributed File Systems",
+      "description": "GFS/HDFS: chunked, replicated files across a cluster"
+    },
+    "inverted_index": {
+      "name": "Search & Inverted Index",
+      "description": "The data structure behind full-text search",
+      "simulator": {
+        "name": "Inverted Index Simulator",
+        "description": "Query terms and watch documents rank by score"
+      }
+    },
+    "storage_engines": {
+      "name": "Storage Engines: B-Tree vs LSM",
+      "description": "How databases physically store and update data on disk",
+      "simulator": {
+        "name": "Storage Engine Simulator",
+        "description": "Stream writes and compare write/read amplification"
+      }
+    },
+    "bloom_filters": {
+      "name": "Bloom Filters",
+      "description": "Probabilistic membership tests with no false negatives",
+      "simulator": {
+        "name": "Bloom Filter Simulator",
+        "description": "Insert keys, query them, and watch false positives appear"
+      }
+    },
+    "replication_quorums": {
+      "name": "Replication Models & Quorums",
+      "description": "Leader-follower, multi-leader, leaderless, and R + W > N",
+      "simulator": {
+        "name": "Quorum Replication Simulator",
+        "description": "Tune N, W, R and see when reads return stale data"
+      }
+    },
+    "cdc": {
+      "name": "Change Data Capture (CDC)",
+      "description": "Stream row-level changes from the database log downstream",
+      "simulator": {
+        "name": "CDC Simulator",
+        "description": "Tail a transaction log into caches, search, and analytics"
+      }
+    },
+    "oltp_olap": {
+      "name": "OLTP vs OLAP, Warehouses & Lakes",
+      "description": "Transactional vs analytical stores and the modern data stack"
+    },
+    "time_series": {
+      "name": "Time-Series Databases",
+      "description": "Storing and querying high-volume timestamped metrics"
+    }
+  },
+  "editor": {
+    "name": "System Editor",
+    "description": "Create and simulate distributed systems"
+  },
+  "forum": {
+    "name": "Community Forum",
+    "description": "Discuss and learn with the community"
+  },
+  "design_lab": {
+    "name": "Design Lab",
+    "description": "Access our design lab"
+  },
+  "home": {
+    "name": "Design Lab",
+    "description": "Simulate a system design interview with real-time AI feedback"
+  },
+  "quizzes": {
+    "name": "Quizzes",
+    "description": "Test your knowledge and earn DinaCoins"
+  },
+  "ranking": {
+    "name": "Ranking",
+    "description": "Global community leaderboard"
+  },
+  "profile": {
+    "name": "Profile",
+    "description": "Your progress, solutions and DinaCoins"
+  },
+  "notifications": {
+    "name": "Notifications",
+    "description": "Replies, mentions and announcements"
+  }
+}

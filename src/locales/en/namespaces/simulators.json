@@ -1,0 +1,1765 @@
+{
+  "cache": {
+    "title": "Cache-Aside Simulator",
+    "subtitle": "Reads check the cache first. Hits return from memory; misses fall through to the database and get stored for next time.",
+    "controls": {
+      "ttl": "TTL (entry lifetime)",
+      "db_latency": "Database latency",
+      "capacity": "Cache capacity"
+    },
+    "buttons": {
+      "auto": "Auto traffic",
+      "stop": "Stop",
+      "clear": "Clear cache",
+      "reset": "Reset"
+    },
+    "toggle": {
+      "cache_on": "Cache on",
+      "cache_off": "Cache off"
+    },
+    "stage": {
+      "client": "Client",
+      "cache": "Cache",
+      "cache_sub": "memory",
+      "db": "Database",
+      "db_sub": "disk"
+    },
+    "keys_label": "Read a key",
+    "hot": "hot",
+    "slots": "Cache slots",
+    "last_read": "Last read",
+    "served_from_memory": "served from memory",
+    "served_from_db": "from the database",
+    "legend": {
+      "fresh": "Fresh in cache",
+      "expiring": "Expiring soon",
+      "miss": "Miss / database",
+      "empty": "Empty slot"
+    },
+    "narration": {
+      "idle": "Pick a key and send a read, or turn on auto traffic. Hits come from memory; misses hit the database.",
+      "lookup": "Reading {{key}}: checking the cache first.",
+      "hit": "HIT: {{key}} served from memory in {{ms}} ms. The database was never touched.",
+      "miss": "MISS: {{key}} is not cached. Querying the database ({{ms}} ms), then storing the result.",
+      "stale": "STALE: {{key}} outlived its TTL, so it counts as a miss and gets refetched.",
+      "evict": "Cache full: evicting least-recently-used {{key}} to make room for {{incoming}}.",
+      "disabled": "Cache is off: every read goes straight to the database at {{ms}} ms."
+    },
+    "metrics": {
+      "title": "Live metrics",
+      "hit_ratio": "Hit ratio",
+      "avg_latency": "Avg latency",
+      "db_queries": "Database queries",
+      "requests": "Total reads"
+    },
+    "hint": "A cache trades freshness for speed. A high hit ratio keeps most reads in memory and shields the database; TTL and capacity decide how often you pay the slow path."
+  },
+  "consistent_hashing": {
+    "title": "Consistent Hashing Simulator",
+    "subtitle": "Keys on a ring — add/remove nodes and watch them remap",
+    "controls": {
+      "vnodes": "Virtual nodes per node",
+      "keys": "Number of keys"
+    },
+    "buttons": {
+      "add_node": "Add node",
+      "remove_node": "Remove node",
+      "shuffle": "Shuffle keys",
+      "reset": "Reset"
+    },
+    "metrics": {
+      "title": "Live Metrics",
+      "nodes": "Nodes",
+      "vnodes": "Virtual nodes",
+      "keys": "Keys",
+      "moved": "Keys moved",
+      "imbalance": "Load imbalance"
+    },
+    "labels": {
+      "node": "Node",
+      "hint": "Add or remove a node — only the highlighted keys move. More virtual nodes means smoother distribution."
+    }
+  },
+  "sharding": {
+    "title": "Sharding Simulator",
+    "subtitle": "Route keys to shards by range or hash — and watch skew",
+    "controls": {
+      "shards": "Number of shards",
+      "strategy": "Strategy",
+      "skew": "Key skew"
+    },
+    "strategies": {
+      "hash": "Hash",
+      "range": "Range"
+    },
+    "buttons": {
+      "start": "Start",
+      "stop": "Stop",
+      "reset": "Reset"
+    },
+    "metrics": {
+      "title": "Live Metrics",
+      "keys": "Keys routed",
+      "shards": "Shards",
+      "imbalance": "Load imbalance",
+      "hot_load": "Hottest shard"
+    },
+    "labels": {
+      "shard": "Shard",
+      "hint": "Crank up skew with range partitioning to create a hot shard — then switch to hash to even it out."
+    }
+  },
+  "inverted_index": {
+    "title": "Inverted Index Simulator",
+    "subtitle": "Pick query terms and watch documents rank by score",
+    "modes": {
+      "or": "OR (any term)",
+      "and": "AND (all terms)"
+    },
+    "buttons": {
+      "clear": "Clear"
+    },
+    "metrics": {
+      "title": "Live Metrics",
+      "terms": "Query terms",
+      "matched": "Matched docs",
+      "postings": "Postings scanned",
+      "corpus": "Corpus size"
+    },
+    "labels": {
+      "query": "Query terms",
+      "documents": "Documents",
+      "index": "Inverted index",
+      "results": "Ranked results",
+      "doc": "Doc",
+      "score": "score",
+      "no_matches": "No matching documents",
+      "hint": "AND intersects postings lists; OR unions them. Score counts how many query terms each document contains."
+    }
+  },
+  "storage_engine": {
+    "title": "Storage Engine Simulator",
+    "subtitle": "Stream writes through an LSM-tree or a B-tree and compare amplification",
+    "buttons": {
+      "step": "Write 1 key",
+      "start": "Auto-run",
+      "stop": "Stop",
+      "reset": "Reset"
+    },
+    "engines": {
+      "lsm": "LSM-Tree",
+      "btree": "B-Tree"
+    },
+    "wal": "Write-Ahead Log",
+    "narration": {
+      "idle": "Write keys one at a time and watch where they land. LSM appends sequentially then compacts; B-tree updates pages in place.",
+      "lsm_append": "Write appended to the in-memory memtable ({{mem}}/{{cap}}). Sequential, so writes are cheap.",
+      "lsm_flush": "Memtable is full: flushed to a new immutable L0 SSTable in one sequential write.",
+      "lsm_compact": "{{count}} L0 SSTables merged into one L1 table ({{size}} entries rewritten). This rewrite is write amplification.",
+      "btree_update": "Found the leaf page for this key and rewrote page {{page}} in place. Random I/O, but reads stay a single tree walk."
+    },
+    "lsm": {
+      "memtable": "Memtable (in-memory)",
+      "level": "Level {{n}} (SSTables on disk)"
+    },
+    "btree": {
+      "pages": "B-Tree pages (updated in place)",
+      "note": "Each write seeks to a leaf page and rewrites it — random I/O."
+    },
+    "metrics": {
+      "title": "Live Metrics",
+      "writes": "Logical writes",
+      "write_amp": "Write amplification",
+      "read_amp": "Read amplification",
+      "compactions": "Compactions"
+    },
+    "hint_lsm": "LSM-trees absorb writes sequentially into a memtable, then flush and compact SSTables — cheap writes, but reads may scan many tables until compaction.",
+    "hint_btree": "B-trees update pages in place: reads are a single tree walk (low read amplification) but writes cause random I/O."
+  },
+  "bloom_filter": {
+    "title": "Bloom Filter Simulator",
+    "subtitle": "A bit array + k hashes: fast membership tests with no false negatives",
+    "placeholder": "Type a key…",
+    "controls": {
+      "bits": "Bit array size (m)",
+      "hashes": "Hash functions (k)"
+    },
+    "buttons": {
+      "add": "Insert",
+      "query": "Query",
+      "random": "Add random",
+      "reset": "Reset"
+    },
+    "maps_to": "hashes",
+    "checks": "checks",
+    "narration": {
+      "idle": "Insert a few keys, then query one. Each key hashes to k bit positions; watch which bits get set and how queries are answered.",
+      "inserted": "Inserted \"{{word}}\": its k hashes point to bits {{positions}}, now set to 1.",
+      "maybe": "\"{{word}}\": all {{k}} hashed bits are 1, so it is probably present (could still be a collision).",
+      "false_positive": "\"{{word}}\" was never inserted, yet all its bits are 1 because other keys set them. That is a false positive.",
+      "absent": "\"{{word}}\": bit {{pos}} is 0, so it is definitely not present. Bloom filters never give false negatives."
+    },
+    "result": {
+      "maybe": "is probably present (all k bits set).",
+      "false_positive": "reads as present, but was never inserted. False positive!",
+      "definitely_not": "is definitely not present (at least one bit is 0)."
+    },
+    "metrics": {
+      "title": "Live Metrics",
+      "items": "Items inserted",
+      "bits_set": "Bits set",
+      "fill": "Fill ratio",
+      "fp_rate": "Est. false-positive rate"
+    },
+    "hint": "A query is \"maybe present\" only if every hashed bit is 1. More items or fewer bits raise the false-positive rate; there are never false negatives."
+  },
+  "quorum_replication": {
+    "title": "Quorum Replication Simulator",
+    "subtitle": "Tune replicas (N), write quorum (W), and read quorum (R)",
+    "controls": {
+      "replicas": "Replicas (N)",
+      "write_quorum": "Write quorum (W)",
+      "read_quorum": "Read quorum (R)"
+    },
+    "buttons": {
+      "write": "Write new version",
+      "read": "Read",
+      "reset": "Reset"
+    },
+    "node": "Node",
+    "legend": {
+      "write": "Write quorum (W)",
+      "read": "Read quorum (R)",
+      "overlap": "Overlap (sees latest)"
+    },
+    "narration": {
+      "idle": "Write a new version to W nodes, then read from R nodes, and watch whether the read quorum overlaps the latest write.",
+      "wrote": "Wrote v{{version}} to a write quorum of W={{w}} nodes. The other replicas still hold older versions.",
+      "read_fresh": "The read quorum R={{r}} overlapped the write quorum at {{count}} node(s), so it returned the freshest v{{value}}. R+W>N forces that overlap.",
+      "read_stale": "The read quorum R={{r}} missed every node holding the latest write, so it returned a stale v{{value}}. With R+W not greater than N the quorums can miss each other."
+    },
+    "read_returned": "Read returned",
+    "result": {
+      "stale": "stale! Missed the latest write.",
+      "fresh": "fresh, up to date."
+    },
+    "metrics": {
+      "title": "Live Metrics",
+      "replicas": "Replicas",
+      "latest": "Latest version",
+      "fault_tolerance": "Tolerated failures",
+      "strong": "Strong reads?"
+    },
+    "hint": "When R + W > N the read and write quorums always overlap, so reads see the newest write. Lower them for higher availability at the cost of stale reads."
+  },
+  "cdc": {
+    "title": "CDC Simulator",
+    "subtitle": "A connector tails the database log and ships changes to downstream sinks",
+    "controls": {
+      "write_rate": "DB writes / tick",
+      "connector_rate": "Connector throughput / tick"
+    },
+    "buttons": {
+      "step": "Tick once",
+      "start": "Auto-run",
+      "stop": "Stop",
+      "reset": "Reset"
+    },
+    "source": "Source DB transaction log",
+    "connector": "CDC connector",
+    "offset": "offset",
+    "narration": {
+      "idle": "Start the stream. The connector tails the DB log in order and ships each change to every downstream sink.",
+      "shipping": "Connector shipped {{k}} change(s) downstream. Replication lag is {{lag}}.",
+      "lagging": "Writes ({{rate}}/tick) outpace the connector ({{crate}}/tick), so the log grows behind the offset. Lag is now {{lag}}.",
+      "caught_up": "The connector is keeping up: lag is {{lag}} and the sinks are in sync with the source."
+    },
+    "wal_note": "Amber = behind the offset (not yet captured); green = already shipped downstream",
+    "sinks": {
+      "cache": "Cache invalidation",
+      "search": "Search index",
+      "warehouse": "Data warehouse"
+    },
+    "metrics": {
+      "title": "Live Metrics",
+      "produced": "Changes produced",
+      "consumed": "Changes shipped",
+      "lag": "Replication lag",
+      "pending": "Pending in log"
+    },
+    "hint": "If writes outpace the connector, lag grows and downstream sinks fall behind. CDC keeps caches, search, and analytics in sync without dual writes."
+  },
+  "kafka": {
+    "title": "Kafka Simulator",
+    "subtitle": "Producers, partitions, and a consumer group — watch the lag",
+    "controls": {
+      "partitions": "Partitions",
+      "consumers": "Consumers",
+      "produce_rate": "Produce rate",
+      "consume_rate": "Consume / consumer"
+    },
+    "buttons": {
+      "start": "Start",
+      "stop": "Stop",
+      "reset": "Reset"
+    },
+    "metrics": {
+      "title": "Live Metrics",
+      "produced": "Produced",
+      "consumed": "Consumed",
+      "lag": "Consumer lag",
+      "throughput": "Consume capacity"
+    },
+    "labels": {
+      "partition": "P",
+      "producer": "Producer",
+      "consumers": "Consumer group",
+      "consumer": "C",
+      "idle": "idle",
+      "hint": "Each partition is read by exactly one consumer. Add consumers beyond the partition count and they sit idle — partitions cap parallelism."
+    }
+  },
+  "api_styles": {
+    "title": "API Styles Simulator",
+    "subtitle": "Fetch a screen of data with REST, GraphQL, or gRPC and compare the cost",
+    "styles": {
+      "rest": "REST",
+      "graphql": "GraphQL",
+      "grpc": "gRPC"
+    },
+    "controls": {
+      "fields": "Fields the screen needs",
+      "with_orders": "Including related orders",
+      "no_orders": "User only"
+    },
+    "client": "Client",
+    "server": "Server",
+    "round_trip": "Round trip",
+    "payload_label": "Response payload",
+    "binary": "binary protobuf",
+    "used": "Used by screen",
+    "over": "Over-fetched",
+    "sinks_orders": "Related orders",
+    "narration": {
+      "rest": "REST returned all 12 user fields across {{rt}} round trip(s); the screen used {{used}}, so {{over}}% was over-fetched.",
+      "graphql": "GraphQL returned exactly the {{used}} field(s) the screen asked for in one round trip, no over-fetching.",
+      "grpc": "gRPC returned {{used}} field(s) as compact binary in one round trip, roughly a third the size of JSON."
+    },
+    "metrics": {
+      "title": "Live Metrics",
+      "round_trips": "Round trips",
+      "payload": "Payload size",
+      "over_fetch": "Over-fetched",
+      "schema": "Typed schema"
+    },
+    "hint": {
+      "rest": "REST often needs one request per resource and returns whole objects — simple and cacheable, but it over-fetches and may need several round trips.",
+      "graphql": "GraphQL gets exactly the requested fields in a single round trip — no over-fetching, at the cost of server-side query planning.",
+      "grpc": "gRPC sends compact binary Protobuf over one round trip with a strict schema — fastest on the wire, but not human-readable and harder to debug."
+    }
+  },
+  "realtime_push": {
+    "title": "Real-Time Push Simulator",
+    "subtitle": "Deliver server events with polling, SSE, or WebSockets",
+    "modes": {
+      "polling": "Polling",
+      "sse": "Server-Sent Events",
+      "websocket": "WebSocket"
+    },
+    "controls": {
+      "interval": "Poll interval (ticks)"
+    },
+    "buttons": {
+      "start": "Start",
+      "stop": "Stop",
+      "reset": "Reset"
+    },
+    "server": "Server",
+    "client": "Client",
+    "persistent": "persistent connection",
+    "repeated": "repeated requests",
+    "one_connection": "One open connection",
+    "many_requests": "Many short requests",
+    "narration": {
+      "idle": "Pick a transport and run it. Watch how server events reach the client, and what each approach costs.",
+      "poll_deliver": "A poll arrived and collected {{k}} queued event(s). They had waited up to {{interval}} ticks for this request.",
+      "poll_empty": "A poll arrived but the server had nothing new, a wasted empty request.",
+      "push": "The server pushed the event the instant it happened over the open connection, about 1 tick of latency."
+    },
+    "metrics": {
+      "title": "Live Metrics",
+      "delivered": "Events delivered",
+      "latency": "Avg delivery latency",
+      "requests": "Requests sent",
+      "empty_polls": "Wasted empty polls"
+    },
+    "hint": {
+      "polling": "Polling re-asks on a fixed interval: simple, but adds latency (up to one interval) and wastes requests when nothing changed.",
+      "sse": "Server-Sent Events push one-way over a single long-lived HTTP connection — near-instant delivery with almost no request overhead.",
+      "websocket": "WebSockets keep a full-duplex connection open — instant, bidirectional delivery ideal for chat, games, and live collaboration."
+    }
+  },
+  "dead_letter_queue": {
+    "title": "Dead Letter Queue Simulator",
+    "subtitle": "Failed messages retry, then move to the DLQ after the limit",
+    "controls": {
+      "failure_rate": "Transient failure rate",
+      "max_retries": "Max retries"
+    },
+    "buttons": {
+      "step": "Process one",
+      "start": "Auto-run",
+      "stop": "Stop",
+      "reset": "Reset"
+    },
+    "main_queue": "Main queue",
+    "dlq": "Dead Letter Queue",
+    "consumer": "Consumer",
+    "attempt": "attempt",
+    "poison": "Poison message (always fails)",
+    "narration": {
+      "idle": "Run the queue. Failed messages are retried; once they pass the retry limit they move to the DLQ so they cannot block the queue forever.",
+      "ok": "Message #{{id}} processed successfully on attempt {{n}}.",
+      "retry": "Message #{{id}} failed (attempt {{n}}/{{max}}), re-queued for another try.",
+      "dlq": "Message #{{id}} hit the retry limit after {{n}} attempts, moved to the DLQ. The queue keeps flowing."
+    },
+    "metrics": {
+      "title": "Live Metrics",
+      "processed": "Processed",
+      "retried": "Retries",
+      "dead_lettered": "Dead-lettered",
+      "success_rate": "Success rate"
+    },
+    "hint": "Transient failures are retried; once a message exceeds the retry limit (or is a poison message) it goes to the DLQ instead of blocking the queue forever."
+  },
+  "saga": {
+    "title": "Saga Simulator",
+    "subtitle": "A distributed transaction as a sequence of compensable steps",
+    "controls": {
+      "mode": "Coordination",
+      "fail_at": "Inject failure at step"
+    },
+    "modes": {
+      "orchestrated": "Orchestrated",
+      "choreographed": "Choreographed"
+    },
+    "fail_none": "None",
+    "buttons": {
+      "run": "Run saga",
+      "reset": "Reset"
+    },
+    "roles": {
+      "coordinator": "Saga Coordinator"
+    },
+    "steps": {
+      "reserve": "Reserve inventory",
+      "payment": "Charge payment",
+      "shipping": "Book shipping",
+      "confirm": "Send confirmation"
+    },
+    "status": {
+      "pending": "Pending",
+      "running": "Running",
+      "done": "Committed",
+      "failed": "Failed",
+      "compensated": "Compensated"
+    },
+    "metrics": {
+      "title": "Result",
+      "committed": "Steps committed",
+      "compensated": "Steps compensated",
+      "outcome": "Outcome"
+    },
+    "outcome": {
+      "idle": "Idle",
+      "committed": "Committed",
+      "rolled_back": "Rolled back"
+    },
+    "labels": {
+      "hint": "A saga has no global rollback. When a step fails, each completed step is undone by its own compensating action, in reverse order."
+    }
+  },
+  "delivery_semantics": {
+    "title": "Delivery Semantics Simulator",
+    "subtitle": "At-most-once vs at-least-once vs exactly-once",
+    "controls": {
+      "mode": "Semantics",
+      "dedup": "Deduplication",
+      "dlq": "Dead-letter queue"
+    },
+    "modes": {
+      "at_most_once": "At-most-once",
+      "at_least_once": "At-least-once",
+      "exactly_once": "Exactly-once"
+    },
+    "buttons": {
+      "start": "Start",
+      "stop": "Stop",
+      "reset": "Reset",
+      "on": "On",
+      "off": "Off"
+    },
+    "metrics": {
+      "title": "Live Metrics",
+      "produced": "Produced",
+      "delivered": "Delivered",
+      "duplicates": "Duplicates",
+      "filtered": "Dedup filtered",
+      "lost": "Lost",
+      "dlq": "Dead-lettered"
+    },
+    "tags": {
+      "delivered": "Delivered",
+      "duplicate": "Duplicate",
+      "lost": "Lost",
+      "dlq": "Dead-letter",
+      "filtered": "Filtered"
+    },
+    "labels": {
+      "recent": "Recent messages",
+      "empty": "No messages yet",
+      "hint": "At-most-once can lose messages; at-least-once can duplicate them. \"Exactly-once\" = at-least-once delivery plus deduplication on the consumer."
+    }
+  },
+  "crdt": {
+    "title": "CRDT Simulator (G-Counter)",
+    "subtitle": "Increment replicas independently, then merge — they always converge",
+    "buttons": {
+      "sync": "Sync (merge all)",
+      "reset": "Reset"
+    },
+    "increment": "+1 on {{replica}}",
+    "replica": "Replica",
+    "gossip_label": "Gossip:",
+    "narration": {
+      "idle": "Increment any replica. Each counts only in its own slot, so the replicas drift apart until they gossip.",
+      "increment": "Replica {{replica}} counted +1 in its own slot and now reads {{total}}. The others have not heard yet, so values diverge.",
+      "merge": "{{a}} and {{b}} gossiped: each slot becomes the max of the two. No increment is ever lost, and merge order never changes the result.",
+      "converged": "Every replica now holds the same vector and agrees on {{total}}. Eventually consistent, with zero conflict resolution."
+    },
+    "converged": "Converged",
+    "diverged": "Diverged",
+    "all_agree": "All replicas agree on the value.",
+    "need_sync": "Replicas hold different values, gossip to merge.",
+    "metrics": {
+      "title": "Live Metrics",
+      "max_value": "Counter value",
+      "merges": "Merges",
+      "converged": "Converged?",
+      "replicas": "Replicas"
+    },
+    "hint": "Each replica counts its own increments in its own slot. Merge takes the element-wise max, so increments are never lost and any merge order yields the same result."
+  },
+  "gossip": {
+    "title": "Gossip Simulator",
+    "subtitle": "One node learns an update; it spreads epidemically across the cluster",
+    "controls": {
+      "fanout": "Fanout (peers per round)",
+      "speed": "Speed"
+    },
+    "speed": {
+      "slow": "Slow",
+      "normal": "Normal",
+      "fast": "Fast"
+    },
+    "buttons": {
+      "start": "Start rumor",
+      "resume": "Resume",
+      "pause": "Pause",
+      "step": "Step",
+      "replay": "Replay",
+      "reset": "Reset"
+    },
+    "legend": {
+      "known": "Knows the update",
+      "packet": "Rumor in flight",
+      "unaware": "Unaware"
+    },
+    "narration": {
+      "idle": "One node knows the update. Press Start to let it gossip, or Step through one round at a time.",
+      "round": "Round {{round}}: {{senders}} informed node(s) gossiped to {{peers}} peer(s). Now {{known}}/{{total}} know.",
+      "converged": "Converged in {{rounds}} rounds. Coverage roughly doubles each round, so the cluster syncs in about log₂(N) rounds."
+    },
+    "chart": {
+      "title": "Coverage by round",
+      "round": "r{{n}}"
+    },
+    "metrics": {
+      "title": "Live Metrics",
+      "round": "Round",
+      "infected": "Nodes informed",
+      "converged": "Converged",
+      "nodes": "Total nodes"
+    },
+    "hint": "Each informed node tells a few random peers each round, so the update reaches everyone in about log(N) rounds, with no coordinator, and it tolerates failures."
+  },
+  "distributed_lock": {
+    "title": "Distributed Lock Simulator",
+    "subtitle": "A lease-based lock with fencing tokens that reject stale writers",
+    "buttons": {
+      "demo": "Run fencing demo",
+      "acquire": "Acquire",
+      "write": "Write",
+      "stall": "Stall (pause)",
+      "reset": "Reset"
+    },
+    "lock": "Lock",
+    "free": "Free",
+    "held_by": "Held by",
+    "token": "token",
+    "write_token": "write @ token",
+    "client": "Client",
+    "resource": "Resource",
+    "accepted": "ACCEPTED",
+    "fenced": "FENCED",
+    "stale": "(stale)",
+    "stalled_note": "stalled, lease still ticking",
+    "narration": {
+      "idle": "Acquire the lock, stall the holder until its lease expires, let another client acquire, then write from the stalled client to watch fencing reject the stale token. Or run the demo.",
+      "acquire": "Client {{client}} acquired the lock with fencing token {{token}} (a monotonically increasing number).",
+      "stall": "Client {{client}} stalled (e.g. a GC pause). Its lease keeps ticking and will expire while it is frozen.",
+      "expired": "The lease expired and the lock auto-released.",
+      "expired_stalled": "The lease expired and the lock auto-released, but the stalled holder still thinks it owns the lock.",
+      "write_ok": "Client {{client}} wrote with token {{token}} (>= resource token {{rt}}): accepted. The resource advances to {{token}}.",
+      "fenced": "Client {{client}} wrote with stale token {{token}} (< resource token {{rt}}): fenced. The resource rejects the old token."
+    },
+    "metrics": {
+      "title": "Live Metrics",
+      "tokens_issued": "Tokens issued",
+      "accepted": "Writes accepted",
+      "fenced": "Writes fenced",
+      "resource_token": "Resource token"
+    },
+    "hint": "Acquire the lock, stall the holder until its lease expires, let another client acquire (higher token), then write from the stalled client — the resource fences the stale, lower token."
+  },
+  "cqrs": {
+    "title": "CQRS Simulator",
+    "subtitle": "Commands append events; read models are projections",
+    "controls": {
+      "lag": "Projection lag"
+    },
+    "commands": {
+      "create": "Create order",
+      "add_item": "Add item",
+      "ship": "Ship order",
+      "cancel": "Cancel order"
+    },
+    "buttons": {
+      "reset": "Reset"
+    },
+    "panels": {
+      "command": "Command side (write)",
+      "log": "Event log",
+      "read": "Read models (query)"
+    },
+    "events": {
+      "created": "OrderCreated",
+      "item_added": "ItemAdded",
+      "shipped": "OrderShipped",
+      "cancelled": "OrderCancelled"
+    },
+    "read": {
+      "status": "Order status",
+      "items": "Item count",
+      "events_applied": "Events applied",
+      "pending": "Pending"
+    },
+    "status_values": {
+      "none": "—",
+      "created": "Created",
+      "shipped": "Shipped",
+      "cancelled": "Cancelled"
+    },
+    "labels": {
+      "log_empty": "No events yet — issue a command",
+      "lag_caption": "Projection caught up: {{pct}}%",
+      "hint": "Writes go to the event log instantly; read models update asynchronously. Raise the lag to see eventual consistency — the read side trails the write side."
+    }
+  },
+  "inference_batching": {
+    "title": "Inference Batching Simulator",
+    "subtitle": "Continuous batching on a single GPU — throughput vs latency",
+    "controls": {
+      "arrival_rate": "Arrival rate (req/s)",
+      "batch_capacity": "Batch capacity (KV slots)",
+      "output_tokens": "Avg output tokens"
+    },
+    "buttons": {
+      "start": "Start",
+      "stop": "Stop",
+      "reset": "Reset"
+    },
+    "panels": {
+      "batch": "Running Batch (GPU)",
+      "queue": "Admission Queue",
+      "metrics": "Live Metrics"
+    },
+    "metrics": {
+      "throughput": "Throughput (tok/s)",
+      "utilization": "Batch utilization",
+      "queue_depth": "Queue depth",
+      "avg_latency": "Avg latency",
+      "completed": "Completed",
+      "dropped": "Dropped"
+    },
+    "labels": {
+      "slot_free": "free slot",
+      "tokens": "tok",
+      "waiting": "waiting",
+      "batch_empty": "GPU idle — no requests in batch",
+      "queue_empty": "Queue empty",
+      "request": "REQ"
+    }
+  },
+  "rag_pipeline": {
+    "title": "RAG Pipeline Simulator",
+    "subtitle": "Embed → search → rerank → assemble → generate",
+    "controls": {
+      "chunk_size": "Chunk size (tokens)",
+      "top_k": "Retrieve top-K",
+      "rerank": "Reranking"
+    },
+    "buttons": {
+      "run": "Run Query",
+      "reset": "Reset",
+      "on": "On",
+      "off": "Off"
+    },
+    "stages": {
+      "embed": "Embed Query",
+      "search": "Vector Search",
+      "rerank": "Rerank",
+      "assemble": "Assemble Context",
+      "generate": "Generate"
+    },
+    "metrics": {
+      "recall": "Retrieval recall",
+      "latency": "Total latency",
+      "cost": "Cost / query",
+      "context": "Context used",
+      "quality": "Answer quality"
+    },
+    "labels": {
+      "idle": "Idle — run a query to start",
+      "chunk": "chunk",
+      "score": "score",
+      "retrieved": "Retrieved chunks",
+      "disabled": "disabled"
+    }
+  },
+  "vector_search": {
+    "title": "Vector Search Simulator",
+    "subtitle": "Approximate nearest neighbors with HNSW",
+    "controls": {
+      "ef_search": "efSearch (candidate list)",
+      "m_links": "M (graph connections)",
+      "dataset": "Dataset size"
+    },
+    "buttons": {
+      "search": "Run Search",
+      "reset": "Reset"
+    },
+    "metrics": {
+      "recall": "Recall@10",
+      "latency": "Query latency",
+      "comparisons": "Distance comps",
+      "memory": "Index memory"
+    },
+    "labels": {
+      "idle": "Run a search to probe the index",
+      "exact": "Exact (brute force)",
+      "approx": "HNSW (approximate)",
+      "found": "Neighbors found"
+    }
+  },
+  "llm_gateway": {
+    "title": "LLM Gateway Simulator",
+    "subtitle": "Semantic cache, model fallback, rate limiting & cost",
+    "controls": {
+      "cache_rate": "Cache hit rate (%)",
+      "rate_limit": "Rate limit (req/s)",
+      "primary_fail": "Primary failure (%)"
+    },
+    "buttons": {
+      "start": "Start",
+      "stop": "Stop",
+      "reset": "Reset"
+    },
+    "routes": {
+      "cache": "Served from cache",
+      "primary": "Primary model",
+      "fallback": "Fallback model",
+      "rejected": "Rate limited"
+    },
+    "metrics": {
+      "served": "Served",
+      "cache_hits": "Cache hits",
+      "fallbacks": "Fallbacks",
+      "rejected": "Rejected",
+      "cost": "Total cost"
+    },
+    "labels": {
+      "recent": "Recent requests",
+      "empty": "No requests yet"
+    }
+  },
+  "gpu_autoscaler": {
+    "title": "GPU Autoscaler Simulator",
+    "subtitle": "Cold starts, queueing & scale-to-zero",
+    "controls": {
+      "arrival_rate": "Arrival rate (req/s)",
+      "scale_threshold": "Scale-up queue threshold",
+      "cold_start": "Cold start (s)"
+    },
+    "buttons": {
+      "start": "Start",
+      "stop": "Stop",
+      "reset": "Reset"
+    },
+    "panels": {
+      "replicas": "GPU Replicas",
+      "metrics": "Live Metrics"
+    },
+    "metrics": {
+      "replicas": "Active replicas",
+      "queue": "Queue depth",
+      "latency": "Avg latency",
+      "cost": "Cost ($/min)",
+      "utilization": "Utilization"
+    },
+    "labels": {
+      "warming": "WARMING",
+      "ready": "READY",
+      "idle": "IDLE",
+      "scale_to_zero": "Scaled to zero — no active GPUs"
+    }
+  },
+  "agent_orchestration": {
+    "title": "Agent Orchestration Simulator",
+    "subtitle": "Reason → act → observe loop with tool calls",
+    "controls": {
+      "max_steps": "Max steps",
+      "tool_latency": "Tool latency (ms)",
+      "fail_rate": "Tool failure (%)"
+    },
+    "buttons": {
+      "run": "Run Agent",
+      "reset": "Reset"
+    },
+    "steps": {
+      "think": "Think",
+      "act": "Call Tool",
+      "observe": "Observe",
+      "answer": "Final Answer",
+      "retry": "Retry"
+    },
+    "tools": {
+      "search": "web_search",
+      "calculator": "calculator",
+      "database": "db_query"
+    },
+    "metrics": {
+      "steps": "Steps taken",
+      "tool_calls": "Tool calls",
+      "retries": "Retries",
+      "tokens": "Tokens used",
+      "status": "Status"
+    },
+    "labels": {
+      "idle": "Idle — run the agent to start",
+      "running": "Running",
+      "done": "Done",
+      "failed": "Failed (max steps reached)",
+      "trace": "Execution trace"
+    }
+  },
+  "gateway": {
+    "title": "API Gateway Simulator",
+    "description": "See how an API Gateway routes different types of requests to the appropriate services in a microservices architecture.",
+    "buttons": {
+      "start": "Start Simulation",
+      "stop": "Stop Simulation",
+      "show_config": "Show Settings",
+      "hide_config": "Hide Settings",
+      "reset": "Reset",
+      "restore_defaults": "Restore Defaults"
+    },
+    "config": {
+      "title": "Simulation Settings",
+      "rps": "Requests per Second: {{value}}",
+      "routing_delay": "Routing Delay: {{ms}}ms",
+      "extra_error_rate": "Additional Error Rate: {{percent}}%",
+      "removal_delay": "Removal Time: {{ms}}ms"
+    },
+    "stats": {
+      "total": "Total Requests",
+      "success": "Successful Requests",
+      "error": "Requests with Error"
+    },
+    "columns": {
+      "clients": "Clients",
+      "apigw": "API Gateway",
+      "microservices": "Microservices"
+    },
+    "items": {
+      "request_id": "Request #{{id}}",
+      "type": "Type: {{type}}",
+      "routing_to": "Routing #{{id}}",
+      "to_service": "To: {{service}}",
+      "processing_time": "Processing time: {{ms}}ms",
+      "base_error_rate": "Base error rate: {{percent}}%",
+      "error": "Error",
+      "processing": "Processing"
+    }
+  },
+  "circuit_breaker": {
+    "title": "Circuit Breaker",
+    "buttons": {
+      "settings": "Settings",
+      "start": "Start",
+      "stop": "Stop",
+      "start_errors": "Start Errors",
+      "stop_errors": "Stop Errors",
+      "reset": "Reset"
+    },
+    "labels": {
+      "rps": "Requests/s:",
+      "state": "State",
+      "reset_in": "Reset in",
+      "consecutive_failures": "Consecutive Failures",
+      "error_status": "Error Status",
+      "active_with_chance": "Active ({{percent}}% chance)",
+      "inactive": "Inactive",
+      "latest_requests": "Latest Requests",
+      "no_requests": "No requests made"
+    }
+  },
+  "polling_webhooks": {
+    "title": "Simulator: Polling vs Webhooks",
+    "subtitle": "See in practice the difference between polling and webhooks with our interactive simulation",
+    "ctas": {
+      "read_theory": "Read Full Theory First",
+      "back_to_theory": "Back to Theory",
+      "back_to_components": "Basic Components"
+    },
+    "buttons": {
+      "polling": "Polling",
+      "webhook": "Webhook",
+      "start": "Start",
+      "stop": "Stop",
+      "reset": "Reset"
+    },
+    "config": {
+      "polling_interval": "Polling Interval",
+      "data_generation": "Data Generation",
+      "network_latency": "Network Latency"
+    },
+    "flow": {
+      "title": "Communication Flow",
+      "client": "Client",
+      "server": "Server",
+      "active_mode": "Active Mode:",
+      "active_sim": "🟢 Simulation Active ({{mode}})",
+      "stopped_sim": "🔴 Simulation Stopped"
+    },
+    "stats": {
+      "title": "Real-time Statistics",
+      "total_requests": "Total Requests",
+      "empty_responses": "Empty Responses",
+      "data_transfers": "Data Transfers",
+      "webhooks_sent": "Webhooks Sent",
+      "total_bandwidth_bits": "Total Bandwidth (bits)",
+      "efficiency": "Efficiency",
+      "success_rate": "Success Rate",
+      "wasted_requests": "Wasted Requests"
+    },
+    "queue": {
+      "pending_data": "Pending Data ({{count}})",
+      "none": "No pending data"
+    },
+    "log": {
+      "title": "Message Log",
+      "with_data": "With data",
+      "start_prompt": "Start the simulation to see messages..."
+    },
+    "messages": {
+      "checking": "Checking for new data...",
+      "data_found": "Data found: {{content}}",
+      "no_data": "No new data available"
+    }
+  },
+  "message_queue_sim": {
+    "title": "Message Queue",
+    "buttons": {
+      "configure": "Configure",
+      "close_config": "Close Config",
+      "start": "Start",
+      "stop": "Stop",
+      "reset": "Reset"
+    },
+    "config": {
+      "producers": "Producers",
+      "production_rate": "Production Rate",
+      "max_queue_size": "Max Queue Size",
+      "consumers": "Consumers",
+      "consumption_rate": "Consumption Rate",
+      "process_time": "Processing Time"
+    },
+    "flow": {
+      "title": "Message Flow",
+      "queue": "Queue",
+      "more": "+{{count}} more"
+    },
+    "queue_status": {
+      "title": "Queue Status",
+      "size": "Queue Size",
+      "produced": "Produced",
+      "processed": "Processed",
+      "dropped": "Dropped",
+      "avg_time": "Avg Time"
+    },
+    "messages": {
+      "title": "Messages",
+      "none": "No messages yet"
+    }
+  },
+  "philosophers_sim": {
+    "title": "Dining Philosophers",
+    "subtitle": "Five philosophers share five forks. Eating needs both neighbouring forks, so the seats compete for the same resource. Pick a strategy and watch how it avoids — or causes — deadlock.",
+    "buttons": {
+      "configure": "Configure",
+      "close_config": "Close Config",
+      "start": "Start",
+      "pause": "Pause",
+      "step": "Step",
+      "reset": "Reset"
+    },
+    "config": {
+      "title": "Controls",
+      "strategy": "Strategy",
+      "philosophers": "Philosophers",
+      "speed": "Speed"
+    },
+    "strategies": {
+      "naive": {
+        "label": "Naive",
+        "desc": "Each philosopher grabs the left fork, then waits for the right one. If everyone picks up their left fork at once, all hold one fork forever — a textbook deadlock."
+      },
+      "hierarchy": {
+        "label": "Resource Hierarchy",
+        "desc": "Forks are numbered; a philosopher always acquires the lower-numbered fork first. Breaking the circular-wait condition makes deadlock impossible."
+      },
+      "atomic": {
+        "label": "Both or Nothing",
+        "desc": "A philosopher only picks up forks when both are free, atomically. Nobody ever holds a single fork, so there is no deadlock (starvation is still possible)."
+      },
+      "arbitrator": {
+        "label": "Central Arbitrator",
+        "desc": "A waiter lets at most N-1 philosophers reach for forks at the same time. With one seat always free, the circular wait can never close."
+      }
+    },
+    "states": {
+      "thinking": "Thinking",
+      "hungry": "Hungry",
+      "eating": "Eating"
+    },
+    "viz": {
+      "title": "The Table",
+      "tick": "tick",
+      "eating_now": "eating",
+      "fork_held": "Fork held",
+      "deadlock": "DEADLOCK",
+      "deadlock_hint": "Deadlock detected: every hungry philosopher holds one fork and waits forever for the other. Reset and try a deadlock-free strategy."
+    },
+    "roster": {
+      "title": "Philosophers"
+    },
+    "stats": {
+      "title": "Metrics",
+      "total_meals": "Total meals",
+      "eating": "Eating now",
+      "longest_wait": "Longest wait",
+      "ticks": "Ticks",
+      "running": "Running",
+      "paused": "Paused",
+      "deadlocked": "Deadlocked",
+      "meals_short": "{{n}} meals"
+    },
+    "log": {
+      "title": "Event Log",
+      "empty": "Waiting for events…",
+      "got_hungry": "{{name}} got hungry",
+      "took_left": "{{name}} picked up the left fork",
+      "took_right": "{{name}} picked up the right fork",
+      "took_low": "{{name}} picked up fork {{fork}}",
+      "started_eating": "{{name}} grabbed both forks and started eating",
+      "finished_eating": "{{name}} finished eating and released the forks",
+      "deadlock_detected": "Deadlock detected — no philosopher can make progress"
+    }
+  },
+  "rate_limiter": {
+    "title": "Rate Limiter",
+    "strategy": "Algorithm",
+    "algorithms": {
+      "token": "Token bucket",
+      "leaky": "Leaky bucket",
+      "sliding": "Sliding window"
+    },
+    "algo_desc": {
+      "token": "Tokens refill at a steady rate; each request spends one. Allows bursts up to the bucket size.",
+      "leaky": "Requests fill a fixed queue that drains at a constant rate. Smooths output; rejects when the queue is full.",
+      "sliding": "Counts requests in the trailing 1s window; rejects once the limit is reached. No bursts beyond the limit."
+    },
+    "level": {
+      "token": "Tokens available",
+      "leaky": "Queue depth",
+      "sliding": "Window count (1s)"
+    },
+    "buttons": {
+      "configure": "Configure",
+      "close_config": "Close Config",
+      "start": "Start",
+      "stop": "Stop",
+      "reset": "Reset"
+    },
+    "config": {
+      "token_rate": "Refill / leak / limit (per second)",
+      "message_rate": "Message Rate (per second)",
+      "bucket_size": "Bucket / queue size"
+    },
+    "bucket": {
+      "title": "Token Bucket",
+      "rate": "Rate: {{rate}} /s"
+    },
+    "recent": {
+      "title": "Recent Requests",
+      "rate": "Rate: {{rate}} msgs/s",
+      "accepted": "Request accepted",
+      "rejected": "Request rejected",
+      "none": "No requests yet"
+    },
+    "metrics": {
+      "total": "Total Requests",
+      "accepted": "Accepted",
+      "rejected": "Rejected"
+    }
+  },
+  "backpressure": {
+    "title": "Backpressure",
+    "buttons": {
+      "settings": "Settings",
+      "start": "Start",
+      "stop": "Stop",
+      "reset": "Reset"
+    },
+    "producer_status": {
+      "title": "Producer Status",
+      "throttled": "Throttled",
+      "normal": "Normal"
+    },
+    "labels": {
+      "produced": "Produced Messages",
+      "processed": "Processed Messages",
+      "dropped": "Dropped Messages",
+      "latest": "Latest Messages"
+    }
+  },
+  "retries": {
+    "title": "Retries Simulator",
+    "buttons": {
+      "settings": "Settings",
+      "start": "Start Simulation",
+      "simulating": "Simulating..."
+    },
+    "settings": {
+      "title": "Simulation Settings",
+      "max_retries": "Max Retries: {{value}}",
+      "base_delay": "Base Delay: {{ms}}ms",
+      "success_rate": "Success Rate: {{percent}}%"
+    },
+    "toggles": {
+      "use_exponential_backoff": "Use Exponential Backoff",
+      "add_jitter": "Add Jitter"
+    },
+    "visualization": {
+      "title": "Visualization"
+    },
+    "attempt": {
+      "label": "Attempt {{id}}",
+      "next_in": "Next attempt in {{ms}}ms"
+    },
+    "stats": {
+      "title": "Statistics",
+      "total_attempts": "Total Attempts",
+      "final_status": "Final Status",
+      "status_success": "Success",
+      "status_failure": "Failure"
+    },
+    "info": {
+      "title": "Explanation",
+      "p1": "This simulator demonstrates how retry mechanisms work in distributed systems. Each attempt has a success chance based on the configured rate.",
+      "p2": "With exponential backoff, the time between attempts increases progressively (1s, 2s, 4s, 8s...), reducing system load.",
+      "p3": "Jitter adds a random variation to the time between attempts, preventing multiple clients from retrying at the exact same time."
+    }
+  },
+  "round_robin": {
+    "title": "Load Balancer",
+    "buttons": {
+      "start": "Start Simulation",
+      "stop": "Stop Simulation"
+    },
+    "config": {
+      "strategy": "Strategy",
+      "server_count": "Number of Servers",
+      "server_capacity": "Server Capacity",
+      "rps": "Requests per Second"
+    },
+    "strategies": {
+      "round_robin": "Round Robin: Distributes requests sequentially among all servers in circular order.",
+      "least_conn": "Least Connections: Sends new requests to the server with the lowest current load.",
+      "random": "Random: Selects a server at random for each new request."
+    },
+    "server_card": {
+      "server_label": "Server {{id}}",
+      "requests": "{{current}}/{{capacity}} requests",
+      "response_time_ms": "({{ms}}ms)",
+      "response_time_label": "Response Time:"
+    }
+  },
+  "cdn": {
+    "title": "CDN Simulation",
+    "buttons": {
+      "configure": "Configure",
+      "close_config": "Close Config",
+      "reset": "Reset"
+    },
+    "config": {
+      "title": "Settings",
+      "base_latency_multiplier": "Base Latency Multiplier (No Cache)",
+      "cache_latency_multiplier": "Cache Latency Multiplier",
+      "max_logs": "Maximum Number of Logs"
+    },
+    "labels": {
+      "x_suffix": "x",
+      "logs_suffix": "logs",
+      "country_select": "Select your country:",
+      "datacenters": "Datacenters:",
+      "cache_badge": "Cache ✓",
+      "latency": "Latency"
+    },
+    "messages": {
+      "processing": "Processing request..."
+    },
+    "history": {
+      "title": "Request History:",
+      "cache_hit": "Cache Hit"
+    },
+    "info": {
+      "title": "How does it work?",
+      "i1": "Select your country to simulate a request",
+      "i2": "The nearest datacenter will be chosen automatically",
+      "i3": "First request: Fetches from origin server ({{base}}x latency)",
+      "i4": "Subsequent requests: Served from local cache ({{cache}}x latency)",
+      "i5": "Latency varies according to the distance between your country and the datacenter"
+    }
+  },
+  "firewall": {
+    "title": "Firewall Simulator",
+    "lead": "This simulator demonstrates how a firewall filters network packets based on predefined rules. Watch how different types of traffic are allowed or blocked.",
+    "rules": {
+      "title": "Firewall Rules",
+      "restore_title": "Restore initial configuration",
+      "add_rule": "Add Rule",
+      "remove_rule_title": "Remove rule"
+    },
+    "stats": {
+      "title": "Statistics",
+      "total": "Total Packets",
+      "allowed": "Allowed",
+      "blocked": "Blocked"
+    },
+    "traffic": {
+      "title": "Network Traffic",
+      "custom_packet": "Custom Packet",
+      "generate_packet": "Generate Packet",
+      "stop_autogen": "Stop",
+      "start_autogen": "Auto Generate"
+    },
+    "labels": {
+      "port": "Port",
+      "protocol": "Protocol",
+      "type": "Type",
+      "payload": "Payload",
+      "action_allow": "Allow",
+      "action_block": "Block"
+    },
+    "badges": {
+      "allow": "ALLOWED",
+      "block": "BLOCKED"
+    },
+    "empty": "No packets generated yet. Click \"Generate Packet\" to start.",
+    "add_rule_modal": {
+      "title": "New Rule",
+      "origin": "Source",
+      "destination": "Destination",
+      "port": "Port",
+      "protocol": "Protocol",
+      "type": "Type",
+      "action": "Action",
+      "placeholder_ip_or_star": "IP or *",
+      "placeholder_port_or_zero": "Port or 0",
+      "option_select": "Select",
+      "button_cancel": "Cancel",
+      "button_add": "Add"
+    },
+    "custom_packet_modal": {
+      "title": "Send Custom Packet",
+      "origin": "Source",
+      "destination": "Destination",
+      "port": "Port",
+      "protocol": "Protocol",
+      "type": "Type",
+      "payload": "Payload",
+      "placeholder_origin_ip": "IP (e.g., 192.168.1.1)",
+      "placeholder_destination_ip": "IP (e.g., 10.0.0.1)",
+      "placeholder_port": "Port (e.g., 80)",
+      "placeholder_payload": "Packet data",
+      "button_cancel": "Cancel",
+      "button_send": "Send Packet"
+    },
+    "errors": {
+      "source_required": "Source IP is required",
+      "destination_required": "Destination IP is required",
+      "port_required": "Port is required"
+    },
+    "info": {
+      "title": "How does it work?",
+      "i1": "The simulator generates random network packets with different sources, destinations and ports",
+      "i2": "Firewall rules are evaluated in order, from first to last",
+      "i3": "The first rule that matches determines whether the packet is allowed or blocked",
+      "i4": "The last rule (default) blocks all traffic not specified by previous rules",
+      "i5": "You can add your own rules and see how they affect traffic",
+      "i6": "Use the \"Auto Generate\" mode to watch a continuous flow of packets"
+    }
+  },
+  "horizontal_scaling": {
+    "title": "Horizontal Scalability Simulator",
+    "intro": "Visualize how load is distributed across multiple servers and how the system scales automatically based on demand.",
+    "controls": {
+      "request_rate": "Request Rate/s",
+      "processing_time_ms": "Processing Time (ms)",
+      "auto_scaling": "Auto-Scaling",
+      "scale_up": "Scale Up:",
+      "scale_down": "Scale Down:",
+      "percent": "%"
+    },
+    "buttons": {
+      "start": "Start",
+      "stop": "Stop",
+      "add_server": "Add Server",
+      "remove_server": "Remove Server"
+    },
+    "server_card": {
+      "server_label": "Server {{id}}",
+      "active": "Active",
+      "inactive": "Inactive",
+      "load": "Load",
+      "processed_requests": "Processed requests: {{count}}"
+    },
+    "requests": {
+      "recent": "Latest Requests",
+      "server_label": "Server {{id}}",
+      "status_completed": "Completed",
+      "status_failed": "Failed",
+      "status_processing": "Processing"
+    }
+  },
+  "vertical_scaling": {
+    "title": "Vertical Scalability Simulator",
+    "intro": "Manage server resources and observe how it handles different workloads.",
+    "level_of_total": "Level {{current}} of {{total}}",
+    "buttons": {
+      "downgrade": "Downgrade",
+      "upgrade": "Upgrade",
+      "start": "Start Simulation",
+      "stop": "Stop Simulation"
+    },
+    "resources": {
+      "cpu": "CPU ({{cores}} cores)",
+      "memory": "Memory ({{gb}} GB)",
+      "storage": "Storage ({{gb}} GB)"
+    },
+    "queue_title": "Request Queue",
+    "controls_title": "Controls",
+    "request_rate": "Request Rate ({{rate}}/s)",
+    "stats_title": "Statistics",
+    "processed": "Processed",
+    "rejected": "Rejected",
+    "success_rate": "Success Rate",
+    "uptime": "Uptime",
+    "total_cost": "Total Cost",
+    "current_load": "Current Load",
+    "statuses": {
+      "healthy": "healthy",
+      "degraded": "degraded",
+      "failed": "failed",
+      "role": "Role",
+      "data": "Data",
+      "keys": "keys",
+      "replicated_after": "Replicated after {{seconds}}s"
+    },
+    "upgrade_modal": {
+      "title": "Upgrade Server",
+      "text": "Are you sure you want to upgrade to {{tier}}? This will increase your costs to ${{cost}}/month.",
+      "cancel": "Cancel",
+      "confirm": "Upgrade"
+    }
+  },
+  "scalability": {
+    "title": "Scalability Simulator",
+    "intro": "Explore how consistency, latency and failover work in a distributed system.",
+    "how_title": "How to use the simulator:",
+    "how_steps": [
+      "Configure the consistency mode: Strong (instant replication) or Eventual (replication with latency)",
+      "Adjust network latency to see how it affects replication (higher values show eventual delays)",
+      "Try scenarios: simulate server failures (failover), compare consistency propagation, observe request effects"
+    ],
+    "config_title": "Settings",
+    "consistency_mode": "Consistency Mode",
+    "strong": "Strong",
+    "eventual": "Eventual",
+    "network_latency_ms": "Network Latency (ms)",
+    "failure_rate": "Failure Rate",
+    "auto_failover": "Auto Failover",
+    "manual_title": "Manual Operation",
+    "read": "Read",
+    "write": "Write",
+    "key_placeholder": "Key",
+    "value_placeholder": "Value",
+    "execute": "Execute",
+    "start": "Start Simulation",
+    "stop": "Stop Simulation",
+    "role": "Role",
+    "latency": "Latency",
+    "data": "Data",
+    "keys_label": "{{count}} keys",
+    "replicated_after": "Replicated after {{seconds}}s",
+    "simulate_failure": "Simulate Failure",
+    "recover": "Recover",
+    "recent_requests": "Recent Requests",
+    "read_label": "Read",
+    "write_label": "Write"
+  },
+  "timeout": {
+    "title": "Timeout Simulator",
+    "buttons": {
+      "settings": "Settings",
+      "start": "Start",
+      "stop": "Stop",
+      "reset": "Reset"
+    },
+    "settings": {
+      "title": "Simulation Settings",
+      "timeout": "Timeout: {{seconds}}s",
+      "rps": "Requests per Second: {{value}}",
+      "min_response": "Minimum Response Time: {{seconds}}s",
+      "max_response": "Maximum Response Time: {{seconds}}s",
+      "success_rate": "Success Rate: {{percent}}%"
+    },
+    "visualization": {
+      "title": "Visualization"
+    },
+    "request_label": "Request {{id}}",
+    "statuses": {
+      "success": "Request completed successfully",
+      "timeout": "Timeout: Request exceeded {{seconds}}s",
+      "error": "Server error"
+    },
+    "stats": {
+      "title": "Statistics",
+      "total": "Total Requests",
+      "timeouts": "Timeouts"
+    },
+    "info": {
+      "title": "Explanation",
+      "p1": "This simulator demonstrates how the timeout mechanism works in distributed systems. Each request has a configurable timeout to be completed.",
+      "p2": "If the response does not arrive within the timeout, the request is canceled and a timeout error is returned, preventing resources from being stuck indefinitely.",
+      "p3": "Adjust timeout, response times, and success rate to visualize impacts."
+    }
+  },
+  "outbox": {
+    "title": "Transactional Outbox Simulator",
+    "subtitle": "Dual-write vs the outbox pattern when the broker is flaky",
+    "modes": {
+      "dual-write": "Dual write",
+      "outbox": "Outbox pattern"
+    },
+    "controls": {
+      "broker_fail": "Broker failure rate"
+    },
+    "buttons": {
+      "place": "Place order",
+      "start": "Auto-run",
+      "stop": "Stop",
+      "reset": "Reset"
+    },
+    "service": "Service",
+    "orders_made": "orders placed",
+    "events_sent": "events delivered",
+    "one_transaction": "One transaction",
+    "relay": "relay",
+    "narration": {
+      "idle": "Place an order and follow it through. Raise the broker failure rate to see how each approach copes.",
+      "dual_ok": "Order #{{n}}: committed to the DB, then the event published to the broker. Both succeeded this time.",
+      "dual_lost": "Order #{{n}}: committed to the DB, but the broker was down so the publish failed. That event is lost forever, the DB and broker now disagree.",
+      "outbox_commit": "Order #{{n}}: the order and its outbox row committed in one transaction. The relay will publish it next.",
+      "outbox_drain": "Order #{{n}} committed atomically; the relay published {{k}} queued outbox row(s) to the broker.",
+      "outbox_wait": "Order #{{n}}: committed atomically. The broker is down, so the outbox row waits safely in the DB, nothing is lost."
+    },
+    "database": "Database (orders)",
+    "outbox_table": "Outbox (pending)",
+    "broker": "Broker (events)",
+    "lost": "Lost events",
+    "consistent": "Consistent",
+    "inconsistent": "Inconsistent!",
+    "metrics": {
+      "title": "Live Metrics",
+      "orders": "Orders committed",
+      "published": "Events published",
+      "lost": "Lost events",
+      "pending": "Pending in outbox"
+    },
+    "hint": {
+      "dual-write": "With a dual write, the DB commit and the publish are separate. When the broker fails after the commit, the event is lost forever — the DB and broker diverge.",
+      "outbox": "The outbox writes the event into the same transaction as the data. A relay publishes it with retries, so nothing is lost — only delayed when the broker is down."
+    }
+  },
+  "bulkhead": {
+    "title": "Bulkhead Simulator",
+    "subtitle": "One slow dependency should not sink unrelated traffic",
+    "modes": {
+      "shared": "Shared pool",
+      "bulkhead": "Isolated bulkheads"
+    },
+    "controls": {
+      "b_slow": "Dependency B slowness"
+    },
+    "buttons": {
+      "start": "Auto-run",
+      "stop": "Stop",
+      "reset": "Reset"
+    },
+    "service_a": "Service A (healthy dep)",
+    "service_b": "Service B (slow dep)",
+    "shared_pool": "Shared worker pool",
+    "pool_a": "Pool A",
+    "pool_b": "Pool B",
+    "legend_a": "Busy with A",
+    "legend_b": "Busy with B (slow)",
+    "legend_free": "Free slot",
+    "narration": {
+      "shared": "One shared pool of {{pool}} workers serves both dependencies. Right now {{used}} slots are in use.",
+      "starved": "Slow B calls are holding {{busyB}} of the shared slots, so healthy A calls now get rejected. One slow dependency sinks everything.",
+      "bulkhead": "A and B each own half the pool. B’s slowness fills only its own slots, so A keeps serving normally."
+    },
+    "healthy_dep": "Healthy dependency",
+    "slow_dep": "Slow / failing dependency",
+    "shared_note": "Shared pool: slow B calls hold every worker, so healthy A calls get rejected too.",
+    "bulkhead_note": "Bulkheads: A and B each get half the pool, so B’s slowness is contained and A keeps serving.",
+    "metrics": {
+      "title": "Live Metrics",
+      "a_health": "A success rate",
+      "b_health": "B success rate",
+      "a_rejected": "A rejected",
+      "b_rejected": "B rejected"
+    },
+    "hint": "Without isolation, a slow dependency exhausts the shared pool and takes down healthy traffic. Bulkheads cap each dependency so failures stay contained."
+  },
+  "pacelc": {
+    "title": "PACELC Simulator",
+    "subtitle": "If Partition: choose A or C. Else (normal ops): choose L or C.",
+    "presets": "Real systems",
+    "systems": {
+      "dynamo": "DynamoDB",
+      "cassandra": "Cassandra",
+      "mongo": "MongoDB",
+      "pnuts": "PNUTS",
+      "bigtable": "Bigtable / HBase"
+    },
+    "scenario": {
+      "label": "Simulate now",
+      "normal": "Normal operation",
+      "partition": "Network partition"
+    },
+    "active_now": "Governing now",
+    "root": "A request arrives",
+    "if_partition": "IF a partition (P)",
+    "else_normal": "ELSE: normal operation (E)",
+    "p_question": "Availability or Consistency?",
+    "e_question": "Latency or Consistency?",
+    "choices": {
+      "PA": "Availability",
+      "PC": "Consistency",
+      "EL": "Low latency",
+      "EC": "Consistency"
+    },
+    "classification": "Classification",
+    "outcomes": {
+      "PA": "During a partition, the system stays available and serves possibly-stale data on both sides (e.g. Dynamo, Cassandra).",
+      "PC": "During a partition, the system refuses requests on the minority side to preserve consistency (e.g. MongoDB, HBase).",
+      "EL": "In normal operation, the system answers from the nearest replica for low latency, accepting weaker consistency (e.g. Dynamo).",
+      "EC": "In normal operation, the system coordinates replicas for strong consistency, paying extra latency (e.g. MongoDB, Bigtable)."
+    },
+    "favors_latency": "Favors availability / latency",
+    "favors_consistency": "Favors consistency",
+    "hint": "PACELC extends CAP: a partition forces A-vs-C, but Else (the common case, no partition) you still trade Latency vs Consistency. Many systems pick the same side in both — PA/EL or PC/EC."
+  },
+  "chaos": {
+    "title": "Chaos Engineering Simulator",
+    "subtitle": "Inject failures into a cluster and measure whether resilience holds",
+    "buttons": {
+      "kill": "Kill a node",
+      "start": "Run game day",
+      "stop": "Pause",
+      "reset": "Reset"
+    },
+    "redundancy_toggle": "Replicas + retries (redundancy)",
+    "nodes_up": "{{up}}/{{total}} nodes up",
+    "availability": "availability",
+    "narration": {
+      "idle": "All nodes are healthy. Kill a node or run a game day to test whether the system survives failure.",
+      "resilient": "{{down}} node(s) down, but replicas and retries reroute around them, so availability holds at {{avail}}%.",
+      "degraded": "{{down}} node(s) down and requests are pinned to nodes, so availability has dropped to {{avail}}%."
+    },
+    "hint_on": "With replicas and retries, requests reroute to healthy nodes — killing a node barely dents availability. This is the goal: failures are non-events.",
+    "hint_off": "Without redundancy, requests pinned to a dead node fail outright. Every node you kill drops availability proportionally — exactly the weakness chaos testing exposes.",
+    "metrics": {
+      "title": "Live Metrics",
+      "availability": "Availability",
+      "experiments": "Faults injected",
+      "served": "Requests served",
+      "failed": "Requests failed"
+    },
+    "log": {
+      "title": "Event Log",
+      "empty": "Run a game day or kill a node to inject chaos…",
+      "killed": "CHAOS: node N{{id}} terminated",
+      "recovered": "node N{{id}} recovered"
+    }
+  },
+  "event_sourcing": {
+    "title": "Event Sourcing Simulator",
+    "buttons": {
+      "settings": "Settings",
+      "reset": "Reset",
+      "replay": "Replay"
+    },
+    "intro": "Explore how Event Sourcing works in an e-commerce system, where each state change is recorded as an immutable event.",
+    "settings": {
+      "title": "Simulation Settings",
+      "auto_advance": "Auto Advance",
+      "event_delay": "Event Delay: {{ms}}ms",
+      "show_event_data": "Show Event Data",
+      "animation_duration": "Animation Duration: {{seconds}}s"
+    },
+    "create_order": {
+      "title": "Create Order",
+      "selected_items": "Selected Items:",
+      "total": "Total: ${{amount}}",
+      "create_button": "Create Order"
+    },
+    "actions": {
+      "pay": "Confirm Payment",
+      "ship": "Ship Order",
+      "deliver": "Confirm Delivery",
+      "cancel": "Cancel Order"
+    },
+    "state": {
+      "title": "Current State",
+      "order": "Order: {{id}}",
+      "status": "Status: {{status}}",
+      "total": "Total: ${{amount}}",
+      "tracking": "Tracking: {{code}}",
+      "items": "Items:"
+    },
+    "events": {
+      "title": "Events",
+      "speed": "Speed:",
+      "speed_opts": {
+        "half": "0.5s",
+        "one": "1s",
+        "two": "2s"
+      }
+    }
+  },
+  "canary": {
+    "title": "Canary Deployment Simulator",
+    "buttons": {
+      "settings": "Settings",
+      "deploy_canary": "Deploy Canary",
+      "pause": "Pause",
+      "resume": "Resume",
+      "increase_traffic": "+10% Traffic",
+      "promote": "Promote to 100%",
+      "rollback": "Rollback",
+      "inject_errors": "Inject Errors",
+      "stop_errors": "Stop Errors",
+      "reset": "Reset"
+    },
+    "settings": {
+      "title": "Simulation Settings",
+      "canary_traffic": "Canary Traffic: {{percent}}%",
+      "canary_error_rate": "Canary Error Rate: {{percent}}%",
+      "rps": "Requests/sec: {{value}}",
+      "rollback_threshold": "Auto-Rollback Threshold: {{percent}}%"
+    },
+    "labels": {
+      "phase": "Phase",
+      "stable_servers": "Stable Servers",
+      "canary_server": "Canary Server",
+      "traffic": "traffic",
+      "requests": "Requests",
+      "errors": "Errors",
+      "metrics": "Metrics",
+      "total_requests": "Total Requests",
+      "canary_requests": "Canary Requests",
+      "canary_error_rate": "Canary Error Rate",
+      "stable_error_rate": "Stable Error Rate",
+      "live_requests": "Live Requests",
+      "no_requests": "No requests yet. Deploy a canary to start.",
+      "event_log": "Event Log",
+      "waiting_logs": "Waiting for events..."
+    },
+    "logs": {
+      "deploying_canary": "🚀 Deploying canary version...",
+      "canary_deployed": "✅ Canary deployed successfully",
+      "promoting_canary": "📈 Promoting canary to 100%...",
+      "promotion_complete": "✅ Promotion complete - canary is now stable",
+      "rolling_back": "⚠️ Rolling back to stable version...",
+      "rollback_complete": "✅ Rollback complete",
+      "simulation_reset": "🔄 Simulation reset",
+      "traffic_increased": "📈 Traffic increased to {{percent}}%",
+      "auto_rollback_triggered": "🚨 Auto-rollback triggered! Error rate: {{rate}}%"
+    },
+    "info": {
+      "title": "ℹ️ How to Use",
+      "try_this": {
+        "title": "Try This:",
+        "item1": "Deploy a canary and watch traffic distribution",
+        "item2": "Gradually increase traffic to the canary",
+        "item3": "Inject errors to see auto-rollback in action",
+        "item4": "Promote the canary when confident"
+      },
+      "observe": {
+        "title": "Observe:",
+        "item1": "Error rates for stable vs canary",
+        "item2": "Request distribution across servers",
+        "item3": "Auto-rollback when threshold is exceeded"
+      },
+      "real_world": {
+        "title": "Real World:",
+        "text": "In production, you would monitor latency, error rates, and business metrics before promoting a canary."
+      }
+    }
+  }
+}

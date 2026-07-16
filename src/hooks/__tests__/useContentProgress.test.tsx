@@ -26,7 +26,7 @@ beforeEach(() => {
   localStorage.clear();
   authState.user = null;
   api.get.mockReset().mockResolvedValue({ data: { progress: {} } });
-  api.put.mockReset().mockResolvedValue({ data: { progress: {} } });
+  api.put.mockReset().mockResolvedValue({ data: { updated: { '/a': { completed: true, completedAt: 'x' } } } });
   api.post.mockReset().mockResolvedValue({ data: { progress: {} } });
 });
 

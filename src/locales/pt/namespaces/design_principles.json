@@ -1,0 +1,405 @@
+{
+  "availability": {
+    "availability_zones_simulator": {
+      "title": "Simulador de Zonas de Disponibilidade",
+      "intro": "Explore como as zonas de disponibilidade trabalham em conjunto para garantir alta disponibilidade e tolerância a falhas.",
+      "controls": {
+        "request_rate_label": "Taxa de Requisições (por segundo)",
+        "failure_chance_label": "Chance de Falha (%)",
+        "auto_failover_label": "Auto Failover",
+        "start_simulation": "Iniciar Simulação",
+        "stop_simulation": "Parar Simulação"
+      },
+      "zone_status": {
+        "healthy": "Saudável",
+        "degraded": "Degradado",
+        "failed": "Falha"
+      },
+      "zone_info": {
+        "load": "Carga",
+        "active_servers": "Servidores Ativos",
+        "latency": "Latência",
+        "simulate_failure": "Simular Falha",
+        "recover": "Recuperar"
+      },
+      "statistics": {
+        "title": "Estatísticas",
+        "total_requests": "Total de Requisições",
+        "success_rate": "Taxa de Sucesso"
+      },
+      "recent_requests": {
+        "title": "Requisições Recentes",
+        "completed": "Concluída",
+        "failed": "Falha",
+        "processing": "Processando",
+        "pending": "Pendente"
+      }
+    }
+  },
+  "consistency_strategies": {
+    "consensus_simulator": {
+      "controls": {
+        "protocol_label": "Protocolo:",
+        "options": {
+          "raft": "Raft",
+          "paxos": "Paxos",
+          "zookeeper": "ZooKeeper"
+        },
+        "start": "Iniciar",
+        "pause": "Pausar",
+        "restart": "Reiniciar",
+        "speed_label": "Velocidade:",
+        "speed_opts": {
+          "slow": "Lento",
+          "normal": "Normal",
+          "fast": "Rápido"
+        },
+        "show_explanations": "Mostrar Explicações",
+        "hide_explanations": "Ocultar Explicações"
+      },
+      "step_prefix": "Passo",
+      "cluster_vis_title": "Visualização do Cluster",
+      "labels": {
+        "node_label": "Nó",
+        "term_label": "Termo",
+        "log_label": "Log",
+        "proposal_label": "Proposta",
+        "promised_label": "Prometido",
+        "accepted_label": "Aceito",
+        "value_label": "Valor",
+        "learned_value_label": "Valor Aprendido",
+        "zxid_label": "zxid",
+        "data_label": "Dados",
+        "watching_label": "Watching: {{path}}",
+        "last_event_label": "Último Evento: {{event}}"
+      },
+      "legend": {
+        "legend_title": "Legenda:",
+        "node_states_title": "Estados dos Nós:",
+        "message_types_title": "Tipos de Mensagens:"
+      },
+      "messages": {
+        "vote_request": "Solicitação de Voto",
+        "vote_response": "Resposta de Voto",
+        "log_replication": "Replicação de Log",
+        "prepare": "Prepare",
+        "promise": "Promise",
+        "propose": "Propose",
+        "accept": "Accept",
+        "watch": "Watch",
+        "replication": "Replicação",
+        "notification": "Notificação"
+      },
+      "progress_label": "Progresso: {{percent}}%"
+    },
+    "lamport_timestamps_simulator": {
+      "title": "Simulador de Timestamps de Lamport",
+      "subtitle": "Visualize como os timestamps lógicos são atualizados em um sistema distribuído",
+      "info": "Adicione eventos locais ou envie mensagens entre processos para ver como os timestamps de Lamport são atualizados. Observe como a ordem dos eventos é mantida através dos relógios lógicos.",
+      "controls": {
+        "reset": "Reiniciar Simulação"
+      },
+      "process_label": "Processo {{n}}",
+      "buttons": {
+        "local_event": "Evento Local",
+        "send_to": "→ {{target}}"
+      },
+      "timeline": {
+        "clock_prefix": "t = "
+      },
+      "event_labels": {
+        "local": "Evento Local",
+        "send_prefix": "→ {{target}}",
+        "receive_prefix": "← {{source}}"
+      },
+      "legend": {
+        "title": "Legenda",
+        "local": "Evento Local",
+        "sent": "Mensagem Enviada",
+        "received": "Mensagem Recebida"
+      }
+    }
+  },
+  "two_phase_commit_simulator": {
+    "title": "Simulador de Two Phase Commit",
+    "intro": "Este simulador demonstra o protocolo Two Phase Commit em uma transferência bancária distribuída. Configure as respostas dos bancos clicando neles antes de iniciar a simulação.",
+    "controls": {
+      "start": "Iniciar",
+      "pause": "Pausar",
+      "simulation": "Simulação",
+      "reset": "Reiniciar",
+      "speed_label": "Velocidade:",
+      "speed_opts": {
+        "slow": "Lenta",
+        "normal": "Normal",
+        "fast": "Rápida"
+      }
+    },
+    "nodes": {
+      "coordinator": "Coordenador",
+      "bank_n": "Banco {{n}}"
+    },
+    "node_states": {
+      "idle": "ocioso",
+      "preparing": "preparando",
+      "prepared": "preparado",
+      "committed": "confirmado",
+      "aborted": "abortado"
+    },
+    "responses": {
+      "yes": "sim",
+      "no": "não"
+    },
+    "config": {
+      "configure_response": "Configurar resposta:",
+      "approve": "Aprovar",
+      "reject": "Rejeitar",
+      "status": "Status:",
+      "will_approve": "Irá aprovar a transação",
+      "will_reject": "Irá rejeitar a transação"
+    },
+    "messages": {
+      "prepare_q": "Preparar para transferência?",
+      "vote_yes": "Sim, pronto para commit",
+      "vote_no": "Não, recursos indisponíveis",
+      "decision_commit": "Commit: execute a transferência",
+      "decision_abort": "Abort: cancele a operação",
+      "done": "Operação finalizada com sucesso"
+    },
+    "steps": {
+      "current_phase": "Fase Atual:",
+      "s0": "Clique nos bancos para configurar suas respostas e então inicie a simulação",
+      "s1": "Fase 1: Coordenador enviou 'prepare' para todos os participantes",
+      "s2": "Fase 1: Participantes responderam com seus votos",
+      "s3": "Fase 2: Coordenador tomou a decisão final",
+      "s4": "Simulação concluída! Você pode reiniciar para ver novamente."
+    }
+  },
+  "algorithms": {
+    "title": "Algoritmos de Sincronização",
+    "intro": "Existem vários algoritmos para garantir a sincronização em sistemas distribuídos. Cada um tem suas características específicas e casos de uso ideais.",
+    "key_concept_label": "Conceito Chave",
+    "key_concept_text": "A escolha do algoritmo de sincronização depende de fatores como o número de nós, a latência da rede, a tolerância a falhas e os requisitos de performance.",
+    "bakery": {
+      "title": "Algoritmo do Padeiro",
+      "concept_title": "Conceito",
+      "concept_p": "Baseado na ideia de uma padaria, onde cada cliente recebe um número de senha e é atendido em ordem crescente.",
+      "badges": {
+        "total_order": "Ordem Total",
+        "fairness": "Justo"
+      },
+      "demo_title": "Demo Interativa",
+      "labels": {
+        "process": "Processo",
+        "ticket": "Senha",
+        "request_access": "Solicitar Acesso"
+      }
+    },
+    "token_ring": {
+      "title": "Token Ring",
+      "concept_title": "Conceito",
+      "concept_p": "Um token circula entre os processos em um anel lógico, e apenas o processo que possui o token pode acessar recursos compartilhados.",
+      "badges": {
+        "single_token": "Token Único",
+        "circular_passing": "Passagem Circular"
+      },
+      "demo_title": "Demo Interativa",
+      "move_token": "Mover Token",
+      "labels": {
+        "process_prefix": "P"
+      }
+    },
+    "ricart_agrawala": {
+      "title": "Ricart-Agrawala",
+      "concept_title": "Conceito",
+      "concept_p": "Baseado em timestamps lógicos, onde processos solicitam permissão de todos os outros processos antes de acessar recursos compartilhados.",
+      "badges": {
+        "timestamps": "Timestamps",
+        "consensus": "Consenso"
+      },
+      "demo_title": "Demo Interativa",
+      "labels": {
+        "process": "Processo",
+        "request_access": "Solicitar Acesso",
+        "ts_prefix": "TS"
+      }
+    },
+    "comparison": {
+      "title": "Comparação",
+      "bakery_title": "Algoritmo do Padeiro",
+      "token_ring_title": "Token Ring",
+      "ricart_title": "Ricart-Agrawala",
+      "advantages": "Vantagens",
+      "disadvantages": "Desvantagens",
+      "bakery": {
+        "pros": "Simples e justo",
+        "cons": "Alta complexidade de mensagens"
+      },
+      "token_ring": {
+        "pros": "Baixa complexidade de mensagens",
+        "cons": "Ponto único de falha"
+      },
+      "ricart": {
+        "pros": "Robusto a falhas",
+        "cons": "Alta latência"
+      }
+    }
+  },
+  "service_oriented": {
+    "title": "Design Orientado a Serviços",
+    "intro": "Explore as diferentes abordagens de organização de serviços e suas implicações práticas. Cada arquitetura tem seus próprios trade-offs e casos de uso ideais.",
+    "sections": {
+      "advantages": "Vantagens",
+      "disadvantages": "Desvantagens",
+      "example_title": "Exemplo Prático",
+      "diagram_title": "Visualização da Arquitetura",
+      "legend": {
+        "direct_call": "Chamada direta",
+        "interface": "Interface",
+        "api_events": "API/Eventos"
+      },
+      "module_labels": {
+        "deploy": "Deploy",
+        "communication": "Comunicação",
+        "database": "Banco"
+      }
+    },
+    "architectures": {
+      "monolithic": {
+        "name": "Monolito",
+        "description": "Todas as funcionalidades em um único código base, com acoplamento forte entre módulos.",
+        "advantages": [
+          "Simplicidade de desenvolvimento inicial",
+          "Menos sobrecarga em comunicação entre componentes",
+          "Deploy único e simples",
+          "Mais fácil de testar end-to-end",
+          "Compartilhamento de recursos eficiente"
+        ],
+        "disadvantages": [
+          "Difícil de escalar partes específicas do sistema",
+          "Qualquer mudança exige redistribuição completa",
+          "Pode se tornar complexo com o crescimento",
+          "Alto acoplamento entre módulos",
+          "Difícil manutenção em times grandes"
+        ],
+        "example": "Um aplicativo simples de e-commerce onde catálogo, usuários e pedidos estão em um único código base.",
+        "modules": {
+          "auth": {
+            "name": "Autenticação",
+            "details": {
+              "deployment": "Deploy único para toda a aplicação",
+              "communication": "Chamadas de função diretas",
+              "database": "Banco de dados compartilhado"
+            }
+          },
+          "orders": {
+            "name": "Pedidos",
+            "details": {
+              "deployment": "Deploy único para toda a aplicação",
+              "communication": "Chamadas de função diretas",
+              "database": "Banco de dados compartilhado"
+            }
+          },
+          "users": {
+            "name": "Usuários",
+            "details": {
+              "deployment": "Deploy único para toda a aplicação",
+              "communication": "Chamadas de função diretas",
+              "database": "Banco de dados compartilhado"
+            }
+          }
+        }
+      },
+      "modular": {
+        "name": "Monolito Modular",
+        "description": "Código organizado em módulos bem definidos com limites claros, mas ainda em um único deploy.",
+        "advantages": [
+          "Código bem organizado e modular com limites claros",
+          "Facilidade de migração para microsserviços no futuro",
+          "Menor complexidade operacional que microsserviços",
+          "Bom equilíbrio entre simplicidade e organização",
+          "Permite evolução gradual da arquitetura"
+        ],
+        "disadvantages": [
+          "Ainda requer disciplina para manter os limites entre módulos",
+          "Escalabilidade ainda limitada por ser uma única unidade",
+          "Necessidade de coordenação entre times",
+          "Pode haver tentação de quebrar os limites dos módulos",
+          "Deploy ainda é acoplado"
+        ],
+        "example": "Um e-commerce com o código dividido em módulos independentes (catálogo, pedidos, usuários), com regras/dados próprios, porém implantados juntos como uma única aplicação.",
+        "modules": {
+          "auth": {
+            "name": "Módulo de Autenticação",
+            "details": {
+              "deployment": "Deploy único, mas módulos independentes",
+              "communication": "Interfaces bem definidas",
+              "database": "Schema separado no banco compartilhado"
+            }
+          },
+          "orders": {
+            "name": "Módulo de Pedidos",
+            "details": {
+              "deployment": "Deploy único, mas módulos independentes",
+              "communication": "Interfaces bem definidas",
+              "database": "Schema separado no banco compartilhado"
+            }
+          },
+          "users": {
+            "name": "Módulo de Usuários",
+            "details": {
+              "deployment": "Deploy único, mas módulos independentes",
+              "communication": "Interfaces bem definidas",
+              "database": "Schema separado no banco compartilhado"
+            }
+          }
+        }
+      },
+      "microservices": {
+        "name": "Microsserviços",
+        "description": "Serviços independentes que se comunicam via rede, cada um com seu próprio deploy e banco de dados.",
+        "advantages": [
+          "Flexibilidade para escalar partes específicas do sistema",
+          "Maior modularidade e facilidade de manutenção",
+          "Cada equipe pode se concentrar em um único serviço",
+          "Liberdade tecnológica por serviço",
+          "Deploys independentes e mais rápidos"
+        ],
+        "disadvantages": [
+          "Complexidade aumentada na orquestração",
+          "Requer infraestrutura robusta",
+          "Desafios de consistência de dados",
+          "Maior latência na comunicação",
+          "Custos operacionais mais altos"
+        ],
+        "example": "Um e-commerce onde pagamento, inventário e usuários são implementados como microsserviços separados.",
+        "modules": {
+          "auth": {
+            "name": "Auth Service",
+            "details": {
+              "deployment": "Deploy independente",
+              "communication": "API REST/gRPC",
+              "database": "Banco de dados próprio"
+            }
+          },
+          "orders": {
+            "name": "Orders Service",
+            "details": {
+              "deployment": "Deploy independente",
+              "communication": "API REST/gRPC",
+              "database": "Banco de dados próprio"
+            }
+          },
+          "users": {
+            "name": "Users Service",
+            "details": {
+              "deployment": "Deploy independente",
+              "communication": "API REST/gRPC",
+              "database": "Banco de dados próprio"
+            }
+          }
+        }
+      }
+    }
+  }
+}

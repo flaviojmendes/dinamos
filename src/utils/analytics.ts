@@ -1,86 +1,58 @@
 import ReactGA from 'react-ga4';
 import { CookieConsentManager } from './cookieConsent';
 
-// Google Analytics Configuration
 const GA_TRACKING_ID = 'G-FB645J9ZQH';
 
-// State management
 let isAnalyticsInitialized = false;
-let pendingEvents: Array<{ type: string; data: any }> = [];
+let pendingEvents: Array<{ type: string; data: unknown }> = [];
 
-/**
- * Initialize Google Analytics if user has given consent
- */
 export const initializeAnalytics = (): void => {
   if (!CookieConsentManager.hasAnalyticsConsent()) {
-    console.log('Analytics initialization skipped - no user consent');
     return;
   }
 
   if (isAnalyticsInitialized) {
-    console.log('Analytics already initialized');
     return;
   }
 
   try {
-    // Initialize React GA4
     ReactGA.initialize(GA_TRACKING_ID, {
       gtagOptions: {
-        // Anonymize IP addresses for privacy
         anonymize_ip: true,
-        // Respect users' Do Not Track preference
         respect_dnt: true,
-      }
+      },
     });
 
     isAnalyticsInitialized = true;
-    console.log('Google Analytics initialized');
-
-    // Process any pending events
     processPendingEvents();
-
-    // Send initial pageview
     trackPageView(window.location.pathname + window.location.search);
   } catch (error) {
     console.error('Failed to initialize Google Analytics:', error);
   }
 };
 
-/**
- * Disable and cleanup Google Analytics
- */
 export const disableAnalytics = (): void => {
   if (!isAnalyticsInitialized) {
     return;
   }
 
   try {
-    // Disable further tracking
     isAnalyticsInitialized = false;
-    
-    // Clear pending events
     pendingEvents = [];
 
-    // Send GA disable command
     if (window.gtag) {
       window.gtag('config', GA_TRACKING_ID, {
-        send_page_view: false
+        send_page_view: false,
       });
     }
-
-    console.log('Google Analytics disabled');
   } catch (error) {
     console.error('Failed to disable Google Analytics:', error);
   }
 };
 
-/**
- * Track page views
- */
-export const trackPageView = (page: string): void => {
+export const trackPageView = (page: string, title?: string): void => {
   if (!CookieConsentManager.hasAnalyticsConsent()) {
-    // Store event for later if user hasn't consented yet
-    pendingEvents.push({ type: 'pageview', data: page });
+    pendingEvents.push({ type: 'pageview', data: { page, title } });
     return;
   }
 
@@ -92,7 +64,8 @@ export const trackPageView = (page: string): void => {
     try {
       ReactGA.send({
         hitType: 'pageview',
-        page: page,
+        page,
+        title,
       });
     } catch (error) {
       console.error('Failed to track page view:', error);
@@ -100,15 +73,16 @@ export const trackPageView = (page: string): void => {
   }
 };
 
-/**
- * Track custom events
- */
-export const trackEvent = (category: string, action: string, label?: string, value?: number): void => {
+export const trackEvent = (
+  category: string,
+  action: string,
+  label?: string,
+  value?: number,
+): void => {
   if (!CookieConsentManager.hasAnalyticsConsent()) {
-    // Store event for later if user hasn't consented yet
-    pendingEvents.push({ 
-      type: 'event', 
-      data: { category, action, label, value } 
+    pendingEvents.push({
+      type: 'event',
+      data: { category, action, label, value },
     });
     return;
   }
@@ -123,7 +97,7 @@ export const trackEvent = (category: string, action: string, label?: string, val
         category,
         action,
         label,
-        value
+        value,
       });
     } catch (error) {
       console.error('Failed to track event:', error);
@@ -131,54 +105,66 @@ export const trackEvent = (category: string, action: string, label?: string, val
   }
 };
 
-/**
- * Process events that were queued before consent was given
- */
 const processPendingEvents = (): void => {
   if (!CookieConsentManager.hasAnalyticsConsent() || !isAnalyticsInitialized) {
     return;
   }
 
   try {
-    pendingEvents.forEach(event => {
+    pendingEvents.forEach((event) => {
       if (event.type === 'pageview') {
-        ReactGA.send({
-          hitType: 'pageview',
-          page: event.data,
-        });
+        const { page, title } = event.data as { page: string; title?: string };
+        ReactGA.send({ hitType: 'pageview', page, title });
       } else if (event.type === 'event') {
-        ReactGA.event(event.data);
+        ReactGA.event(event.data as Parameters<typeof ReactGA.event>[0]);
       }
     });
-
-    // Clear processed events
     pendingEvents = [];
   } catch (error) {
     console.error('Failed to process pending analytics events:', error);
   }
 };
 
-/**
- * Handle consent changes
- */
 export const handleConsentChange = (): void => {
   if (CookieConsentManager.hasAnalyticsConsent()) {
-    // User has given consent - initialize analytics
     initializeAnalytics();
   } else {
-    // User has withdrawn consent - disable analytics
     disableAnalytics();
   }
 };
 
-// Listen for consent changes
+/** @deprecated Use initializeAnalytics — kept for legacy imports. */
+export const initGA = initializeAnalytics;
+
+export const trackLogin = (method = 'email') => trackEvent('User', 'Login', method);
+export const trackSignup = (method = 'email') => trackEvent('User', 'Signup', method);
+export const trackChallengeView = (challengeId: string | number, challengeTitle?: string) =>
+  trackEvent('Challenge', 'View', challengeTitle || String(challengeId));
+export const trackChallengeStart = (challengeId: string | number, challengeTitle?: string) =>
+  trackEvent('Challenge', 'Start', challengeTitle || String(challengeId));
+export const trackChallengeSubmit = (challengeId: string | number, challengeTitle?: string) =>
+  trackEvent('Challenge', 'Submit', challengeTitle || String(challengeId));
+export const trackChallengeComplete = (challengeId: string | number, challengeTitle?: string) =>
+  trackEvent('Challenge', 'Complete', challengeTitle || String(challengeId));
+export const trackForumTopicView = (topicId: string | number, topicTitle?: string) =>
+  trackEvent('Forum', 'View Topic', topicTitle || String(topicId));
+export const trackForumTopicCreate = (category?: string) => trackEvent('Forum', 'Create Topic', category);
+export const trackForumReply = (topicId: string | number) => trackEvent('Forum', 'Reply', String(topicId));
+export const trackProfileUpdate = (field?: string) => trackEvent('Profile', 'Update', field);
+export const trackSearch = (query: string, resultsCount?: number) =>
+  trackEvent('Search', 'Query', query, resultsCount);
+export const trackNavigation = (destination: string) => trackEvent('Navigation', 'Navigate', destination);
+export const trackError = (error: string, errorInfo?: string) =>
+  trackEvent('Error', 'Occurred', errorInfo || error);
+export const trackTimeSpent = (category: string, action: string, timeInSeconds: number) =>
+  trackEvent(category, action, 'Time Spent', Math.round(timeInSeconds));
+
 if (typeof window !== 'undefined') {
   window.addEventListener('cookieConsentChange', handleConsentChange);
 }
 
-// Global type declarations for gtag
 declare global {
   interface Window {
-    gtag?: (...args: any[]) => void;
+    gtag?: (...args: unknown[]) => void;
   }
 }

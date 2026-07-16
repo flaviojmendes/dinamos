@@ -1,4 +1,4 @@
-import { GoogleAuth } from 'google-auth-library';
+import type { GoogleAuth } from 'google-auth-library';
 
 // Google Cloud Speech-to-Text (dedicated ASR). We reuse the Firebase service
 // account (a Firebase project is also a GCP project), so no extra credentials
@@ -29,18 +29,25 @@ export function isSpeechConfigured(): boolean {
 }
 
 let auth: GoogleAuth | null = null;
+let authPromise: Promise<GoogleAuth | null> | null = null;
 let projectId = '';
 
-function getAuth(): GoogleAuth | null {
+async function getAuth(): Promise<GoogleAuth | null> {
   if (auth) return auth;
-  const sa = loadServiceAccount();
-  if (!sa?.client_email || !sa?.private_key) return null;
-  projectId = sa.project_id ?? '';
-  auth = new GoogleAuth({
-    credentials: { client_email: sa.client_email, private_key: sa.private_key },
-    scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-  });
-  return auth;
+  if (!authPromise) {
+    authPromise = (async () => {
+      const sa = loadServiceAccount();
+      if (!sa?.client_email || !sa?.private_key) return null;
+      projectId = sa.project_id ?? '';
+      const { GoogleAuth: GoogleAuthClient } = await import('google-auth-library');
+      auth = new GoogleAuthClient({
+        credentials: { client_email: sa.client_email, private_key: sa.private_key },
+        scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+      });
+      return auth;
+    })();
+  }
+  return authPromise;
 }
 
 // Boost recognition of system-design jargon (mostly English terms spoken inside
@@ -69,7 +76,7 @@ export async function transcribeSpeech(
   base64Audio: string,
   mimeType: string
 ): Promise<string | null> {
-  const a = getAuth();
+  const a = await getAuth();
   if (!a) return null;
 
   const client = await a.getClient();

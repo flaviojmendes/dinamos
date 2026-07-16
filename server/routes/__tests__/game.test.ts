@@ -262,6 +262,29 @@ describe('game player routes', () => {
     const body = await res.json() as any;
     expect(body.code).toBe('ABC123');
     expect(body.joined).toBe(true);
+    expect(body.arch_hash).toBeTruthy();
+  });
+
+  it('GET /api/game/:code omits unchanged architecture when arch_hash matches', async () => {
+    const { stableHash } = await import(
+      '../../../src/components/SystemEditor/engine/stableHash.ts'
+    );
+    const arch = { nodes: [1], edges: [] };
+    const hash = stableHash(arch);
+    mockDb.setResults([[session], [{ ...player, architecture: arch }]]);
+    const res = await app.request(`/api/game/ABC123?arch_hash=${hash}`, { headers: AUTH });
+    const body = await res.json() as any;
+    expect(body.my_architecture_unchanged).toBe(true);
+    expect(body.my_architecture).toBeUndefined();
+  });
+
+  it('GET /api/game/:code omits live config during lobby', async () => {
+    mockDb.setResults([[session], [player]]);
+    const res = await app.request('/api/game/ABC123', { headers: AUTH });
+    const body = await res.json() as any;
+    expect(body.phase).toBe('lobby');
+    expect(body.load_profile).toBeUndefined();
+    expect(body.chaos_events).toEqual([]);
   });
 
   it('GET /api/game/:code 404', async () => {

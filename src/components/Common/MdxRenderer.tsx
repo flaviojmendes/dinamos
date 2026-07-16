@@ -3,21 +3,29 @@ import * as runtime from 'react/jsx-runtime';
 import remarkGfm from 'remark-gfm';
 import { mdxComponents } from '../mdx';
 
-/**
- * Runtime MDX renderer.
- *
- * Content now lives in the database (see server/db/schema.ts `content_pages`) as
- * raw MDX source instead of build-time-compiled `.mdx` files. This component
- * compiles the source string in the browser via `@mdx-js/mdx`'s `evaluate`
- * (lazy-imported so the compiler stays out of the initial bundle) and renders
- * it with the same `mdxComponents` used by the former build-time pipeline.
- *
- * Used both by the public lesson page (MdxPage) and the admin CMS live preview.
- */
+type MdxContent = React.ComponentType<{ components?: Record<string, unknown> }>;
+
+/** In-memory compile cache keyed by slug/lang/content fingerprint. */
+const compileCache = new Map<string, MdxContent>();
+
+function hashString(input: string): string {
+  let h = 2166136261;
+  for (let i = 0; i < input.length; i += 1) {
+    h ^= input.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return (h >>> 0).toString(36);
+}
+
+export function mdxCacheKey(slug: string, lang: string, source: string): string {
+  return `${slug}:${lang}:${hashString(source)}:${source.length}`;
+}
 
 interface Props {
   /** Raw MDX source to compile and render. */
   source: string;
+  /** Optional cache partition (slug + lang + body hash). */
+  cacheKey?: string;
   /** Notified with a compile error (or null when compilation succeeds). */
   onError?: (error: Error | null) => void;
   /** Rendered while the source is compiling. */
@@ -41,18 +49,26 @@ function DefaultSkeleton() {
   );
 }
 
-export default function MdxRenderer({ source, onError, fallback, components }: Props) {
-  const [Content, setContent] = useState<React.ComponentType<{
-    components?: Record<string, unknown>;
-  }> | null>(null);
+export default function MdxRenderer({ source, cacheKey, onError, fallback, components }: Props) {
+  const [Content, setContent] = useState<MdxContent | null>(() =>
+    cacheKey ? compileCache.get(cacheKey) ?? null : null,
+  );
   const [error, setError] = useState<Error | null>(null);
-  // A failed dynamic import of the compiler (e.g. a stale chunk after a
-  // redeploy) is a load failure, not an MDX syntax problem — track it so we can
-  // show an accurate message instead of "MDX compile error".
   const [loadFailed, setLoadFailed] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
+    const key = cacheKey ?? hashString(source ?? '');
+
+    const cached = compileCache.get(key);
+    if (cached) {
+      setContent(() => cached);
+      setError(null);
+      setLoadFailed(false);
+      onError?.(null);
+      return;
+    }
+
     setContent(null);
     setError(null);
     setLoadFailed(false);
@@ -62,9 +78,6 @@ export default function MdxRenderer({ source, onError, fallback, components }: P
       try {
         ({ evaluate } = await import('@mdx-js/mdx'));
       } catch (e) {
-        // Loading the compiler chunk failed (offline or stale deploy). The
-        // global `vite:preloadError` handler reloads once to recover; surface a
-        // load message rather than a misleading compile error.
         if (cancelled) return;
         const err = e instanceof Error ? e : new Error(String(e));
         setLoadFailed(true);
@@ -79,7 +92,9 @@ export default function MdxRenderer({ source, onError, fallback, components }: P
           remarkPlugins: [remarkGfm],
         } as any);
         if (cancelled) return;
-        setContent(() => mod.default as React.ComponentType<{ components?: Record<string, unknown> }>);
+        const compiled = mod.default as MdxContent;
+        compileCache.set(key, compiled);
+        setContent(() => compiled);
         setError(null);
         onError?.(null);
       } catch (e) {
@@ -94,10 +109,8 @@ export default function MdxRenderer({ source, onError, fallback, components }: P
     return () => {
       cancelled = true;
     };
-    // onError is intentionally omitted: callers pass a stable callback or accept
-    // recompilation only when the source changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [source]);
+  }, [source, cacheKey]);
 
   if (error) {
     return (

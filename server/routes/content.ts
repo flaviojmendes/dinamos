@@ -4,6 +4,7 @@ import { asc, eq } from 'drizzle-orm';
 import { db } from '../db/client.js';
 import { contentPages, contentModules } from '../db/schema.js';
 import { authRequired, adminRequired, type AppVariables } from '../middleware/auth.js';
+import { PUBLIC_READ_CACHE } from '../middleware/cache.js';
 
 export const contentRouter = new Hono<{ Variables: AppVariables }>();
 
@@ -52,6 +53,25 @@ function toIndexEntry(row: ContentRow) {
   };
 }
 
+/** Admin list entry — metadata only; bodies load on GET /api/admin/content/:id. */
+function toAdminIndexEntry(row: ContentRow) {
+  return {
+    id: row.id,
+    slug: row.slug,
+    path: row.path,
+    module_id: row.moduleId,
+    order_index: row.orderIndex,
+    simulator_key: row.simulatorKey,
+    published: row.published,
+    title_en: row.titleEn,
+    title_pt: row.titlePt,
+    has_en: Boolean(row.bodyEn && row.bodyEn.trim()),
+    has_pt: Boolean(row.bodyPt && row.bodyPt.trim()),
+    created_at: row.createdAt ? new Date(row.createdAt).toISOString() : null,
+    updated_at: row.updatedAt ? new Date(row.updatedAt).toISOString() : null,
+  };
+}
+
 /** Full row for the admin CMS (includes both language bodies). */
 function toAdminDict(row: ContentRow) {
   return {
@@ -76,11 +96,23 @@ function toAdminDict(row: ContentRow) {
 /** Index of published pages — drives dynamic routing + the nav registry. */
 contentRouter.get('/api/content', async (c) => {
   const rows = await db
-    .select()
+    .select({
+      slug: contentPages.slug,
+      path: contentPages.path,
+      moduleId: contentPages.moduleId,
+      orderIndex: contentPages.orderIndex,
+      simulatorKey: contentPages.simulatorKey,
+      titleEn: contentPages.titleEn,
+      titlePt: contentPages.titlePt,
+      bodyEn: contentPages.bodyEn,
+      bodyPt: contentPages.bodyPt,
+    })
     .from(contentPages)
     .where(eq(contentPages.published, true))
     .orderBy(asc(contentPages.orderIndex), asc(contentPages.slug));
-  return c.json({ pages: rows.map(toIndexEntry) });
+  c.header('Cache-Control', PUBLIC_READ_CACHE);
+  c.header('Vary', 'Accept-Encoding');
+  return c.json({ pages: rows.map((row) => toIndexEntry(row as ContentRow)) });
 });
 
 /** Body for a single published page, in the requested language (with fallback). */
@@ -88,7 +120,16 @@ contentRouter.get('/api/content/:slug{.+}', async (c) => {
   const slug = c.req.param('slug');
   const lang = c.req.query('lang') === 'pt' ? 'pt' : 'en';
   const rows = await db
-    .select()
+    .select({
+      slug: contentPages.slug,
+      path: contentPages.path,
+      published: contentPages.published,
+      simulatorKey: contentPages.simulatorKey,
+      titleEn: contentPages.titleEn,
+      titlePt: contentPages.titlePt,
+      bodyEn: contentPages.bodyEn,
+      bodyPt: contentPages.bodyPt,
+    })
     .from(contentPages)
     .where(eq(contentPages.slug, slug))
     .limit(1);
@@ -102,6 +143,8 @@ contentRouter.get('/api/content/:slug{.+}', async (c) => {
   const fallbackTitle = lang === 'pt' ? row.titleEn : row.titlePt;
   const body = (primaryBody && primaryBody.trim() ? primaryBody : fallbackBody) ?? '';
   const resolvedLang = primaryBody && primaryBody.trim() ? lang : lang === 'pt' ? 'en' : 'pt';
+  c.header('Cache-Control', PUBLIC_READ_CACHE);
+  c.header('Vary', 'Accept-Encoding, Accept-Language');
   return c.json({
     slug: row.slug,
     path: row.path,
@@ -119,10 +162,24 @@ contentRouter.use('/api/admin/content/*', authRequired, adminRequired);
 
 contentRouter.get('/api/admin/content', async (c) => {
   const rows = await db
-    .select()
+    .select({
+      id: contentPages.id,
+      slug: contentPages.slug,
+      path: contentPages.path,
+      moduleId: contentPages.moduleId,
+      orderIndex: contentPages.orderIndex,
+      simulatorKey: contentPages.simulatorKey,
+      published: contentPages.published,
+      titleEn: contentPages.titleEn,
+      titlePt: contentPages.titlePt,
+      bodyEn: contentPages.bodyEn,
+      bodyPt: contentPages.bodyPt,
+      createdAt: contentPages.createdAt,
+      updatedAt: contentPages.updatedAt,
+    })
     .from(contentPages)
     .orderBy(asc(contentPages.moduleId), asc(contentPages.orderIndex), asc(contentPages.slug));
-  return c.json({ pages: rows.map(toAdminDict) });
+  return c.json({ pages: rows.map((row) => toAdminIndexEntry(row as ContentRow)) });
 });
 
 contentRouter.get('/api/admin/content/:id', async (c) => {
@@ -294,6 +351,8 @@ contentRouter.get('/api/modules', async (c) => {
     .select()
     .from(contentModules)
     .orderBy(asc(contentModules.orderIndex), asc(contentModules.key));
+  c.header('Cache-Control', PUBLIC_READ_CACHE);
+  c.header('Vary', 'Accept-Encoding');
   return c.json({ modules: rows.map(toModulePublic) });
 });
 

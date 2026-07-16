@@ -14,6 +14,7 @@ import {
   optionalAuth,
   type AppVariables,
 } from '../middleware/auth.js';
+import { maxBodyBytes, rateLimit } from '../middleware/guardrails.js';
 import {
   awardTokens,
   getUserBatchAuthors,
@@ -26,10 +27,6 @@ import {
   forumCategoryToDict,
   authorToDict,
 } from '../db/serializers.js';
-import {
-  sendForumReplyNotification,
-  sendMessageReplyNotification,
-} from '../lib/email.js';
 
 export const forumRouter = new Hono<{ Variables: AppVariables }>();
 
@@ -59,8 +56,8 @@ forumRouter.get('/api/forum/categories', authRequired, async (c) => {
 forumRouter.get('/api/forum/topics', authRequired, async (c) => {
   const category = c.req.query('category');
   const sort = c.req.query('sort') ?? 'recent';
-  const skip = Number(c.req.query('skip') ?? '0');
-  const limit = Number(c.req.query('limit') ?? '100');
+  const skip = Math.max(0, Number(c.req.query('skip') ?? '0'));
+  const limit = Math.min(Math.max(1, Number(c.req.query('limit') ?? '100')), 100);
 
   const conditions = category ? [eq(forumTopics.category, category)] : [];
   let order;
@@ -100,7 +97,12 @@ forumRouter.get('/api/forum/topics', authRequired, async (c) => {
 });
 
 // Create topic --------------------------------------------------------------
-forumRouter.post('/api/forum/topics', authRequired, async (c) => {
+forumRouter.post(
+  '/api/forum/topics',
+  rateLimit({ windowMs: 60_000, max: 20, keyPrefix: 'forum-topic' }),
+  maxBodyBytes(256_000),
+  authRequired,
+  async (c) => {
   const user = c.get('user');
   const body = await c.req.json<{ title: string; content: string; category: string }>();
   const cat = await db
@@ -122,12 +124,16 @@ forumRouter.post('/api/forum/topics', authRequired, async (c) => {
   const topic = inserted[0];
   await awardTokens(user.uid, 5, 'CREATE_TOPIC', topic.id, 'topic');
   return c.json(forumTopicToDict(topic), 201);
-});
+  }
+);
 
 // Get topic + messages ------------------------------------------------------
 forumRouter.get('/api/forum/topics/:id', authRequired, async (c) => {
   const topicId = Number(c.req.param('id'));
   const sortMessages = c.req.query('sort_messages') ?? 'oldest';
+  const msgSkip = Math.max(0, Number(c.req.query('msg_skip') ?? '0'));
+  const msgLimit = Math.min(Math.max(1, Number(c.req.query('msg_limit') ?? '100')), 200);
+
   const topicRows = await db
     .select()
     .from(forumTopics)
@@ -142,11 +148,19 @@ forumRouter.get('/api/forum/topics/:id', authRequired, async (c) => {
   else if (sortMessages === 'recent') order = [desc(forumMessages.createdAt)];
   else order = [asc(forumMessages.createdAt)];
 
+  const totalRows = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(forumMessages)
+    .where(eq(forumMessages.topicId, topicId));
+  const msgTotal = Number(totalRows[0]?.count ?? 0);
+
   const messages = await db
     .select()
     .from(forumMessages)
     .where(eq(forumMessages.topicId, topicId))
-    .orderBy(...order);
+    .orderBy(...order)
+    .offset(msgSkip)
+    .limit(msgLimit);
 
   const userIds = [topic.userId, ...messages.map((m) => m.userId)];
   const authorMap = await getUserBatchAuthors(userIds);
@@ -159,23 +173,39 @@ forumRouter.get('/api/forum/topics/:id', authRequired, async (c) => {
     ...forumMessageToDict(m),
     author: authorFor(authorMap, m.userId),
   }));
-  return c.json({ topic: topicData, messages: messagesData });
+  return c.json({
+    topic: topicData,
+    messages: messagesData,
+    msg_total: msgTotal,
+    msg_skip: msgSkip,
+    msg_limit: msgLimit,
+  });
 });
 
-// Calculate message depth recursively
-async function calculateMessageDepth(messageId: number): Promise<number> {
-  const rows = await db
-    .select({ parentId: forumMessages.parentId })
-    .from(forumMessages)
-    .where(eq(forumMessages.id, messageId))
-    .limit(1);
-  const parentId = rows[0]?.parentId;
-  if (!parentId) return 0;
-  return (await calculateMessageDepth(parentId)) + 1;
+/** Parent depth via one recursive CTE instead of N round-trips. */
+async function parentMessageDepth(parentId: number): Promise<number> {
+  const rows = (await db.execute(sql`
+    WITH RECURSIVE chain AS (
+      SELECT id, parent_id, 0 AS depth
+      FROM forum_messages
+      WHERE id = ${parentId}
+      UNION ALL
+      SELECT m.id, m.parent_id, chain.depth + 1
+      FROM forum_messages m
+      INNER JOIN chain ON m.id = chain.parent_id
+    )
+    SELECT max(depth) AS depth FROM chain
+  `)) as { depth: number | string | null }[];
+  return Number(rows[0]?.depth ?? 0);
 }
 
 // Create message (reply) ----------------------------------------------------
-forumRouter.post('/api/forum/topics/:id/messages', authRequired, async (c) => {
+forumRouter.post(
+  '/api/forum/topics/:id/messages',
+  rateLimit({ windowMs: 60_000, max: 40, keyPrefix: 'forum-reply' }),
+  maxBodyBytes(512_000),
+  authRequired,
+  async (c) => {
   const user = c.get('user');
   const topicId = Number(c.req.param('id'));
   const body = await c.req.json<{
@@ -204,7 +234,7 @@ forumRouter.post('/api/forum/topics/:id/messages', authRequired, async (c) => {
       throw new HTTPException(400, {
         message: 'Parent message must belong to the same topic',
       });
-    const depth = await calculateMessageDepth(body.parent_id);
+    const depth = await parentMessageDepth(body.parent_id);
     if (depth >= 2)
       throw new HTTPException(400, { message: 'Maximum reply depth is 2 levels' });
   }
@@ -250,6 +280,9 @@ forumRouter.post('/api/forum/topics/:id/messages', authRequired, async (c) => {
 
   // Notifications (fire-and-forget, do not fail the request)
   try {
+    const { sendForumReplyNotification, sendMessageReplyNotification } = await import(
+      '../lib/email.js'
+    );
     if (body.parent_id) {
       const parentRows = await db
         .select()
@@ -310,7 +343,8 @@ forumRouter.post('/api/forum/topics/:id/messages', authRequired, async (c) => {
   }
 
   return c.json(messageData, 201);
-}); 
+  }
+);
 
 async function createReplyNotification(
   recipientUserId: string,

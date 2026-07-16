@@ -1,0 +1,16 @@
+{
+  "title": "Preferências",
+  "account_info": "Informações da Conta",
+  "email": "Email",
+  "creation_date": "Data de Inscrição",
+  "privacy_cookies_title": "Privacidade e Cookies",
+  "cookie_preferences_title": "Preferências de Cookies",
+  "cookie_preferences_desc": "Gerencie como coletamos e usamos dados em nosso site através de cookies.",
+  "manage_cookies_btn": "Gerenciar Cookies",
+  "privacy_policy_title": "Política de Privacidade",
+  "privacy_policy_desc": "Saiba como coletamos, usamos e protegemos suas informações pessoais.",
+  "view_policy_btn": "Ver Política",
+  "terms_title": "Termos e Condições",
+  "terms_desc": "Revise nossos termos de serviço e contrato de usuário.",
+  "view_terms_btn": "Ver Termos"
+}

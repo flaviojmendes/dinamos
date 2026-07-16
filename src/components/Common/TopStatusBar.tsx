@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { NavLink, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { quickAccessLinks } from '../../config/quickAccess';
-import { openCommandPalette } from './CommandPalette';
+import { openCommandPalette } from './commandPaletteEvents';
 import NotificationBell from './NotificationBell';
 
 interface TopStatusBarProps {

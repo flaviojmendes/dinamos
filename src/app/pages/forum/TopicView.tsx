@@ -1,59 +1,26 @@
 import { useState, useEffect, useCallback, memo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import MDEditor from '@uiw/react-md-editor';
 import { apiClient } from '../../utils/api';
 import { formatDate } from '../../utils/dateUtils';
 import Navbar from '../../components/Navbar';
 import VoteButton from '../../components/VoteButton';
 import UserBadge from '../../components/UserBadge';
-import ExcalidrawViewer from '../../components/ExcalidrawViewer';
-import MermaidDiagram from '../../components/MermaidDiagram';
+import ExcalidrawViewer from '../../components/forum/ForumExcalidrawViewer';
 import Poll from '../../components/Poll';
 import { ForumTopic, ForumMessage, ForumCategory, Poll as PollType } from '../../types';
-import ReactMarkdown from 'react-markdown';
-import { Excalidraw } from "@excalidraw/excalidraw";
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
-import remarkGfm from 'remark-gfm';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { trackForumTopicView, trackForumReply } from '../../utils/analytics';
 import { TacticalButton } from '../../../components/tactical';
+import ForumMarkdown from '../../components/forum/ForumMarkdown';
+import ForumMarkdownEditor from '../../components/forum/ForumMarkdownEditor';
+import ForumExcalidrawEditor from '../../components/forum/ForumExcalidrawEditor';
 
 const inputClass =
   'w-full px-3 py-2 rounded-md bg-white dark:bg-tactical-surface border border-slate-300 dark:border-tactical-border text-slate-900 dark:text-tactical-text focus:ring-brand-500 dark:focus:ring-signal-green';
 const labelClass = 'block text-xs font-sans text-slate-700 dark:text-tactical-dim mb-1';
 const sectionTitleClass =
   'text-lg font-sans font-medium text-slate-900 dark:text-tactical-text flex items-center gap-2 before:content-[\'\'] before:h-5 before:w-1 before:bg-signal-amber';
-
-// Markdown components defined outside to prevent recreation
-const MarkdownComponents: any = {
-  code({node, inline, className, children, ...props}: any) {
-    const match = /language-(\w+)/.exec(className || '')
-    const language = match ? match[1] : '';
-    
-    // Handle Mermaid diagrams
-    if (!inline && language === 'mermaid') {
-      return <MermaidDiagram chart={String(children).replace(/\n$/, '')} />;
-    }
-    
-    // Handle other code blocks with syntax highlighting
-    return !inline && match ? (
-      <SyntaxHighlighter
-        {...props}
-        style={dracula}
-        language={language}
-        PreTag="div"
-      >
-        {String(children).replace(/\n$/, '')}
-      </SyntaxHighlighter>
-    ) : (
-      <code className={className} {...props}>
-        {children}
-      </code>
-    )
-  }
-};
 
 // Message component with its own local state for reply form
 interface MessageComponentProps {
@@ -208,7 +175,7 @@ const MessageComponent = memo(({
           <div className="mb-4">
             <form onSubmit={handleSaveEdit}>
               <div className="mb-4" data-color-mode={theme}>
-                <MDEditor
+                <ForumMarkdownEditor
                   value={editContent}
                   onChange={(value) => setEditContent(value || '')}
                   preview="edit"
@@ -236,8 +203,8 @@ const MessageComponent = memo(({
               </div>
               {editShowDiagram && (
                 <div className="mt-4 border border-slate-200 dark:border-tactical-border overflow-hidden h-[400px]">
-                  <Excalidraw
-                    excalidrawAPI={(api: any) => setEditExcalidrawAPI(api)}
+                  <ForumExcalidrawEditor
+                    excalidrawAPI={(api: unknown) => setEditExcalidrawAPI(api)}
                     initialData={message.diagram_data ? {
                       elements: message.diagram_data.elements as any,
                       appState: { viewBackgroundColor: "#ffffff" }
@@ -250,12 +217,7 @@ const MessageComponent = memo(({
         ) : (
           <>
             <div className="prose prose-lg dark:prose-invert max-w-none mb-4">
-              <ReactMarkdown 
-                remarkPlugins={[remarkGfm]}
-                components={MarkdownComponents}
-              >
-                {message.content}
-              </ReactMarkdown>
+              <ForumMarkdown>{message.content}</ForumMarkdown>
             </div>
 
             {/* Render Excalidraw Diagram if present */}
@@ -322,7 +284,7 @@ const MessageComponent = memo(({
           <div className="mt-4 pt-4 border-t border-slate-200 dark:border-tactical-border">
             <form onSubmit={handleSubmit}>
               <div className="mb-4" data-color-mode={theme}>
-                <MDEditor
+                <ForumMarkdownEditor
                   value={replyContent}
                   onChange={(value) => setReplyContent(value || '')}
                   preview="edit"
@@ -350,8 +312,8 @@ const MessageComponent = memo(({
               </div>
               {showDiagram && (
                 <div className="mt-4 border border-slate-200 dark:border-tactical-border overflow-hidden h-[400px]">
-                  <Excalidraw
-                    excalidrawAPI={(api: any) => setExcalidrawAPI(api)}
+                  <ForumExcalidrawEditor
+                    excalidrawAPI={(api: unknown) => setExcalidrawAPI(api)}
                   />
                 </div>
               )}
@@ -892,7 +854,7 @@ const TopicView = () => {
                     <label className={labelClass}>
                       Conteúdo
                     </label>
-                    <MDEditor
+                    <ForumMarkdownEditor
                       value={editTopicContent}
                       onChange={(value) => setEditTopicContent(value || '')}
                       preview="edit"
@@ -914,12 +876,7 @@ const TopicView = () => {
                 </form>
               ) : (
                 <div className="prose prose-lg dark:prose-invert max-w-none">
-                  <ReactMarkdown 
-                    remarkPlugins={[remarkGfm]}
-                    components={MarkdownComponents}
-                  >
-                    {topic.content}
-                  </ReactMarkdown>
+                  <ForumMarkdown>{topic.content}</ForumMarkdown>
                 </div>
               )}
               
@@ -978,7 +935,7 @@ const TopicView = () => {
             <form onSubmit={handleMainReply}>
               <div className="mb-4" data-color-mode={theme}>
                 <div className="overflow-hidden border border-slate-300 dark:border-tactical-border">
-                  <MDEditor
+                  <ForumMarkdownEditor
                     value={replyContent}
                     onChange={(val) => setReplyContent(val || '')}
                     height={200}
@@ -1003,7 +960,7 @@ const TopicView = () => {
 
               {showExcalidraw && (
                 <div className="h-[500px] border border-slate-200 dark:border-tactical-border mb-4 overflow-hidden">
-                  <Excalidraw
+                  <ForumExcalidrawEditor
                     excalidrawAPI={(api) => setExcalidrawAPI(api)}
                     initialData={{ appState: { viewBackgroundColor: "#ffffff" } }}
                   />

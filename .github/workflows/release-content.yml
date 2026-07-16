@@ -1,0 +1,52 @@
+name: Release content & schema
+
+# Manually apply production database schema/content migrations outside the
+# Vercel build path. Requires the DATABASE_URL repository secret.
+on:
+  workflow_dispatch:
+    inputs:
+      run_db_push:
+        description: Run Drizzle schema push (npm run db:push) before content
+        type: boolean
+        default: false
+        required: false
+
+# Prevent overlapping migration runs against the same database.
+concurrency:
+  group: release-content
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Apply database migrations
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+        env:
+          NPM_CONFIG_FETCH_RETRIES: "5"
+          NPM_CONFIG_FETCH_RETRY_FACTOR: "2"
+          NPM_CONFIG_FETCH_RETRY_MINTIMEOUT: "20000"
+          NPM_CONFIG_FETCH_RETRY_MAXTIMEOUT: "120000"
+          NPM_CONFIG_FETCH_TIMEOUT: "300000"
+
+      - name: Push Drizzle schema
+        if: inputs.run_db_push
+        run: npm run db:push
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Apply content seed and fixups
+        run: npm run release:content
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}

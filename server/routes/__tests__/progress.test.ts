@@ -31,9 +31,9 @@ describe('progress routes', () => {
     expect(body.progress['/b'].completedAt).toBeNull();
   });
 
-  it('PUT /api/progress upserts target + descendants', async () => {
-    // one upsert per target (insert), then a final select
-    mockDb.setResults([undefined, undefined, [row('/a'), row('/a/b')]]);
+  it('PUT /api/progress upserts target + descendants and returns delta', async () => {
+    // one upsert per target (insert)
+    mockDb.setResults([undefined, undefined]);
     const res = await app.request('/api/progress', {
       method: 'PUT',
       headers: AUTH,
@@ -41,7 +41,21 @@ describe('progress routes', () => {
     });
     expect(res.status).toBe(200);
     const body = await res.json() as any;
-    expect(Object.keys(body.progress)).toContain('/a');
+    expect(body.updated['/a'].completed).toBe(true);
+    expect(body.updated['/a/b'].completed).toBe(true);
+    expect(body.progress).toBeUndefined();
+  });
+
+  it('PUT /api/progress can return full map when requested', async () => {
+    mockDb.setResults([undefined, undefined, [row('/a'), row('/a/b')]]);
+    const res = await app.request('/api/progress?full=true', {
+      method: 'PUT',
+      headers: AUTH,
+      body: JSON.stringify({ path: '/a', completed: true, paths: ['/a/b'] }),
+    });
+    const body = await res.json() as any;
+    expect(body.progress['/a'].completed).toBe(true);
+    expect(body.updated['/a/b'].completed).toBe(true);
   });
 
   it('PUT /api/progress 400 without a path', async () => {

@@ -66,8 +66,9 @@ describe('admin users', () => {
   it('GET /api/admin/users lists enriched users', async () => {
     asAdmin();
     mockDb.setResults([
-      [userRow], // allRows
-      [{ userId: 'u1', quizId: 1, best: 80 }], // quizStatsByUser
+      [{ count: 1 }], // SQL count
+      [userRow], // paginated rows
+      [{ userId: 'u1', quizId: 1, best: 80 }], // quiz stats for page
       [adminRole], // roleRows
     ]);
     const res = await app.request('/api/admin/users?sort_by=tokens&sort_desc=false', { headers: AUTH });
@@ -481,12 +482,21 @@ describe('admin notifications', () => {
 
   it('POST broadcast', async () => {
     asAdmin();
-    mockDb.setResults([[{ id: 'u1', email: 'u1@x.com', nickname: 'U' }], undefined]);
+    mockDb.setResults([[{ c: 1 }], [{ id: 'u1', email: 'u1@x.com', nickname: 'U' }], undefined]);
     const res = await app.request('/api/admin/notifications/broadcast', {
       method: 'POST', headers: AUTH, body: JSON.stringify({ title: 'T', message: 'M' }),
     });
     const body = await res.json() as any;
     expect(body.notifications_created).toBe(1);
+  });
+
+  it('POST broadcast 400 when user count exceeds cap', async () => {
+    asAdmin();
+    mockDb.setResults([[{ c: 501 }]]);
+    const res = await app.request('/api/admin/notifications/broadcast', {
+      method: 'POST', headers: AUTH, body: JSON.stringify({ title: 'T', message: 'M' }),
+    });
+    expect(res.status).toBe(400);
   });
 
   it('POST filtered (no role)', async () => {

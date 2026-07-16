@@ -1,0 +1,40 @@
+{
+  "replication": {
+    "title": "Simulador de Replicação",
+    "intro": "Explore como diferentes estratégias de replicação afetam a consistência e disponibilidade dos dados.",
+    "how_title": "Como usar o simulador:",
+    "steps": [
+      "Escolha o tipo de replicação: Síncrona, Semi-síncrona, ou Assíncrona",
+      "Ajuste os parâmetros: latência de rede, taxa de falha, número de réplicas",
+      "Observe os resultados: tempo de propagação, status por região, impacto de falhas"
+    ],
+    "config_title": "Configurações",
+    "replication_type": "Tipo de Replicação",
+    "sync": "Síncrona",
+    "semi_sync": "Semi-síncrona",
+    "async": "Assíncrona",
+    "network_latency_ms": "Latência de Rede (ms)",
+    "failure_rate": "Taxa de Falha",
+    "replica_count": "Número de Réplicas",
+    "manual_title": "Operação Manual",
+    "key_placeholder": "Chave",
+    "value_placeholder": "Valor",
+    "write": "Escrever",
+    "start": "Iniciar Simulação",
+    "stop": "Parar Simulação",
+    "statuses": {
+      "healthy": "saudável",
+      "failed": "falho",
+      "role": "Papel",
+      "latency": "Latência",
+      "data": "Dados",
+      "keys_label": "{{count}} chaves",
+      "replicated_after": "Replicado após {{seconds}}s"
+    },
+    "simulate_failure": "Simular Falha",
+    "recover": "Recuperar",
+    "recent_ops": "Requisições Recentes",
+    "read_label": "Leitura",
+    "write_label": "Escrita"
+  }
+}

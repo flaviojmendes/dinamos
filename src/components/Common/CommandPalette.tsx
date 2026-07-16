@@ -10,13 +10,9 @@ import {
 } from '../../config/contentRegistry';
 import { useContent } from '../../contexts/ContentContext';
 import { quickAccessLinks } from '../../config/quickAccess';
+import { COMMAND_PALETTE_OPEN_EVENT, openCommandPalette } from './commandPaletteEvents';
 
-const OPEN_EVENT = 'command-palette:open';
-
-/** Imperatively open the global command palette from anywhere. */
-export function openCommandPalette() {
-  window.dispatchEvent(new CustomEvent(OPEN_EVENT));
-}
+export { openCommandPalette };
 
 type PaletteGroup = 'nav' | ContentType;
 
@@ -70,10 +66,10 @@ export default function CommandPalette() {
     };
     const onOpen = () => setOpen(true);
     window.addEventListener('keydown', onKey);
-    window.addEventListener(OPEN_EVENT, onOpen);
+    window.addEventListener(COMMAND_PALETTE_OPEN_EVENT, onOpen);
     return () => {
       window.removeEventListener('keydown', onKey);
-      window.removeEventListener(OPEN_EVENT, onOpen);
+      window.removeEventListener(COMMAND_PALETTE_OPEN_EVENT, onOpen);
     };
   }, []);
 

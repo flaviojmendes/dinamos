@@ -1,0 +1,151 @@
+{
+  "title": "Termos e Condições",
+  "last_updated_label": "Última atualização:",
+  "last_updated_date": "Junho de 2026",
+  "sections": {
+    "acceptance": {
+      "title": "1. Aceitação dos Termos",
+      "paragraphs": [
+        "Ao acessar e usar o Dinamos (\"o Serviço\"), você aceita e concorda em estar vinculado a estes Termos. Se não concordar, não utilize o Serviço.",
+        "Podemos alterar estes Termos a qualquer momento. O uso contínuo do Serviço após alterações significa que você aceita os Termos atualizados."
+      ]
+    },
+    "description": {
+      "title": "2. Descrição do Serviço",
+      "intro": "O Dinamos é uma plataforma educacional focada em aprendizado de sistemas distribuídos. Nosso serviço inclui:",
+      "items": [
+        "Conteúdo interativo e tutoriais",
+        "Simuladores e ferramentas de system design",
+        "Materiais educacionais e documentação",
+        "Recursos de comunidade e acompanhamento de progresso"
+      ]
+    },
+    "accounts": {
+      "title": "3. Contas de Usuário",
+      "intro": "Para acessar certos recursos, é necessário registrar uma conta. Você concorda em:",
+      "items": [
+        "Fornecer informações precisas e atualizadas",
+        "Manter suas informações atualizadas",
+        "Manter a segurança da sua senha e conta",
+        "Nos notificar sobre uso não autorizado",
+        "Assumir responsabilidade por todas as atividades em sua conta"
+      ]
+    },
+    "ip_rights": {
+      "title": "4. Propriedade Intelectual e Atribuição",
+      "intro": "Todo o conteúdo educacional do Serviço é gratuito para acessar, estudar e compartilhar. Pedimos apenas uma coisa em troca: sempre dê os créditos à plataforma. Sempre que você usar, referenciar ou reproduzir nosso conteúdo — incluindo em vídeos, cursos, aulas, apresentações, artigos, redes sociais ou qualquer outro meio — você deve:",
+      "items": [
+        "Dar crédito claro e visível ao Dinamos (trilhainfo) como fonte do conteúdo",
+        "Incluir um link para a plataforma (https://instagram.com/trilhainfo) sempre que o meio permitir",
+        "Manter intactos os avisos de direitos autorais, marca ou autoria",
+        "Não apresentar nosso conteúdo como se fosse seu nem sugerir endosso, parceria ou afiliação oficial sem permissão"
+      ]
+    },
+    "conduct": {
+      "title": "5. Conduta do Usuário",
+      "intro": "Você concorda em não usar o Serviço para:",
+      "items": [
+        "Violar leis ou regulamentos",
+        "Transmitir conteúdo nocivo, ameaçador ou ofensivo",
+        "Interferir ou interromper o Serviço ou servidores",
+        "Tentar acesso não autorizado a outras contas",
+        "Compartilhar credenciais da sua conta com terceiros",
+        "Usar sistemas automatizados para acessar o Serviço"
+      ]
+    },
+    "availability": {
+      "title": "6. Disponibilidade do Serviço",
+      "intro": "Buscamos confiabilidade, mas não garantimos disponibilidade ininterrupta. O Serviço pode ficar indisponível devido a:",
+      "items": [
+        "Manutenções programadas",
+        "Dificuldades técnicas",
+        "Eventos de força maior",
+        "Interrupções de serviços de terceiros"
+      ],
+      "note": "Podemos modificar, suspender ou descontinuar o Serviço com aviso razoável."
+    },
+    "privacy": {
+      "title": "7. Privacidade e Proteção de Dados",
+      "paragraphs": [
+        "Sua privacidade é importante. A coleta e uso de informações pessoais são regidos por nossa Política de Privacidade, incorporada por referência.",
+        "Ao usar o Serviço, você consente com nossas práticas de dados conforme descritas na Política de Privacidade."
+      ]
+    },
+    "disclaimer": {
+      "title": "8. Isenção de Garantias",
+      "intro": "O Serviço é fornecido \"como está\" e \"conforme disponível\", sem garantias de qualquer tipo, incluindo:",
+      "items": [
+        "Comercialização ou adequação a um propósito específico",
+        "Não violação de direitos de terceiros",
+        "Precisão, completude ou confiabilidade do conteúdo",
+        "Operação ininterrupta ou livre de erros"
+      ]
+    },
+    "liability": {
+      "title": "9. Limitação de Responsabilidade",
+      "intro": "Na máxima extensão permitida por lei, o Dinamos não é responsável por danos indiretos, incidentais, especiais, consequenciais ou punitivos, incluindo:",
+      "items": [
+        "Perda de lucros, dados ou outros prejuízos intangíveis",
+        "Danos decorrentes do uso ou impossibilidade de uso do Serviço",
+        "Danos decorrentes de acesso não autorizado aos seus dados"
+      ],
+      "note": "A responsabilidade total é limitada ao valor pago pelo Serviço nos 12 meses anteriores à reclamação."
+    },
+    "indemnification": {
+      "title": "10. Indenização",
+      "intro": "Você concorda em indenizar e isentar o Dinamos de reivindicações, danos, perdas ou despesas decorrentes de:",
+      "items": [
+        "Seu uso do Serviço",
+        "Sua violação destes Termos",
+        "Sua violação de direitos de terceiros",
+        "Conteúdo que você enviar ou compartilhar pelo Serviço"
+      ]
+    },
+    "termination": {
+      "title": "11. Rescisão",
+      "intro": "Podemos encerrar ou suspender sua conta e acesso imediatamente, sem aviso, por motivos como:",
+      "items": [
+        "Violação destes Termos",
+        "Atividade fraudulenta ou ilegal",
+        "Períodos prolongados de inatividade"
+      ],
+      "note": "Com a rescisão, seu direito de usar o Serviço cessa imediatamente; disposições sobre propriedade intelectual, isenções e limitações permanecem vigentes."
+    },
+    "governing_law": {
+      "title": "12. Legislação Aplicável",
+      "paragraphs": [
+        "Estes Termos são regidos pelas leis do Brasil, sem considerar conflitos de leis.",
+        "Disputas estão sujeitas à jurisdição exclusiva dos tribunais do Brasil."
+      ]
+    },
+    "changes": {
+      "title": "13. Alterações nos Termos",
+      "intro": "Podemos modificar estes Termos a qualquer momento. Em caso de mudanças materiais, notificaremos você por:",
+      "items": [
+        "Publicação dos Termos atualizados nesta página",
+        "Atualização da data de \"Última atualização\"",
+        "Envio de aviso por e-mail ou pelo Serviço"
+      ],
+      "note": "O uso contínuo após as alterações constitui aceitação dos novos Termos."
+    },
+    "contact": {
+      "title": "14. Informações de Contato",
+      "intro": "Se tiver dúvidas sobre estes Termos, entre em contato:",
+      "items": [
+        "Email: flavio@trilha.info",
+        "Através do formulário de contato no site"
+      ]
+    },
+    "severability": {
+      "title": "15. Divisibilidade",
+      "paragraphs": [
+        "Se qualquer disposição for inexequível ou inválida, ela será limitada ou eliminada na extensão mínima necessária para que o restante dos Termos permaneça em pleno vigor."
+      ]
+    }
+  },
+  "links": {
+    "privacy": "Política de Privacidade",
+    "cookies": "Política de Cookies",
+    "back_home": "Voltar para o Dinamos"
+  }
+}

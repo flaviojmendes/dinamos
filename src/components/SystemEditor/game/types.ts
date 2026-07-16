@@ -75,6 +75,11 @@ export interface GameState {
   joined: boolean;
   my_architecture: GameArchitecture | null;
   my_score: number;
+  /** Present when the server omitted my_architecture because it is unchanged. */
+  my_architecture_unchanged?: boolean;
+  arch_hash?: string;
+  starting_arch_hash?: string;
+  starting_architecture_unchanged?: boolean;
   // Whether anyone with the code can join (false = invite-link only).
   join_open?: boolean;
   // Round state.
@@ -116,7 +121,7 @@ export interface GoldenSignals {
 }
 
 export interface ScoreSubmission {
-  architecture: GameArchitecture;
+  architecture?: GameArchitecture;
   score: number;
   score_breakdown?: unknown;
   metrics?: GoldenSignals;

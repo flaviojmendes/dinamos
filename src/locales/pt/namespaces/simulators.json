@@ -1,0 +1,1765 @@
+{
+  "cache": {
+    "title": "Simulador Cache-Aside",
+    "subtitle": "As leituras checam o cache primeiro. Acertos voltam da memória; erros caem para o banco e são armazenados para a próxima vez.",
+    "controls": {
+      "ttl": "TTL (vida da entrada)",
+      "db_latency": "Latência do banco",
+      "capacity": "Capacidade do cache"
+    },
+    "buttons": {
+      "auto": "Tráfego automático",
+      "stop": "Parar",
+      "clear": "Limpar cache",
+      "reset": "Resetar"
+    },
+    "toggle": {
+      "cache_on": "Cache ligado",
+      "cache_off": "Cache desligado"
+    },
+    "stage": {
+      "client": "Cliente",
+      "cache": "Cache",
+      "cache_sub": "memória",
+      "db": "Banco",
+      "db_sub": "disco"
+    },
+    "keys_label": "Ler uma chave",
+    "hot": "quente",
+    "slots": "Slots do cache",
+    "last_read": "Última leitura",
+    "served_from_memory": "servido da memória",
+    "served_from_db": "do banco de dados",
+    "legend": {
+      "fresh": "Fresco no cache",
+      "expiring": "Expirando logo",
+      "miss": "Erro / banco",
+      "empty": "Slot vazio"
+    },
+    "narration": {
+      "idle": "Escolha uma chave e envie uma leitura, ou ligue o tráfego automático. Acertos vêm da memória; erros vão ao banco.",
+      "lookup": "Lendo {{key}}: checando o cache primeiro.",
+      "hit": "HIT: {{key}} servido da memória em {{ms}} ms. O banco nunca foi tocado.",
+      "miss": "MISS: {{key}} não está no cache. Consultando o banco ({{ms}} ms) e armazenando o resultado.",
+      "stale": "STALE: {{key}} passou do TTL, então conta como erro e é buscado de novo.",
+      "evict": "Cache cheio: removendo o menos usado recentemente ({{key}}) para abrir espaço para {{incoming}}.",
+      "disabled": "Cache desligado: toda leitura vai direto ao banco a {{ms}} ms."
+    },
+    "metrics": {
+      "title": "Métricas ao vivo",
+      "hit_ratio": "Taxa de acerto",
+      "avg_latency": "Latência média",
+      "db_queries": "Consultas ao banco",
+      "requests": "Leituras totais"
+    },
+    "hint": "Um cache troca frescor por velocidade. Uma alta taxa de acerto mantém a maioria das leituras na memória e protege o banco; TTL e capacidade decidem com que frequência você paga o caminho lento."
+  },
+  "consistent_hashing": {
+    "title": "Simulador de Consistent Hashing",
+    "subtitle": "Chaves num anel — adicione/remova nós e veja o remapeamento",
+    "controls": {
+      "vnodes": "Nós virtuais por nó",
+      "keys": "Número de chaves"
+    },
+    "buttons": {
+      "add_node": "Adicionar nó",
+      "remove_node": "Remover nó",
+      "shuffle": "Embaralhar chaves",
+      "reset": "Resetar"
+    },
+    "metrics": {
+      "title": "Métricas ao Vivo",
+      "nodes": "Nós",
+      "vnodes": "Nós virtuais",
+      "keys": "Chaves",
+      "moved": "Chaves movidas",
+      "imbalance": "Desbalanceamento"
+    },
+    "labels": {
+      "node": "Nó",
+      "hint": "Adicione ou remova um nó — só as chaves destacadas se movem. Mais nós virtuais significa distribuição mais suave."
+    }
+  },
+  "sharding": {
+    "title": "Simulador de Sharding",
+    "subtitle": "Roteie chaves para shards por faixa ou hash — e veja a desigualdade",
+    "controls": {
+      "shards": "Número de shards",
+      "strategy": "Estratégia",
+      "skew": "Desigualdade"
+    },
+    "strategies": {
+      "hash": "Hash",
+      "range": "Faixa"
+    },
+    "buttons": {
+      "start": "Iniciar",
+      "stop": "Parar",
+      "reset": "Resetar"
+    },
+    "metrics": {
+      "title": "Métricas ao Vivo",
+      "keys": "Chaves roteadas",
+      "shards": "Shards",
+      "imbalance": "Desbalanceamento",
+      "hot_load": "Shard mais quente"
+    },
+    "labels": {
+      "shard": "Shard",
+      "hint": "Aumente a desigualdade com particionamento por faixa para criar um shard quente — depois mude para hash para equilibrar."
+    }
+  },
+  "inverted_index": {
+    "title": "Simulador de Índice Invertido",
+    "subtitle": "Escolha termos de consulta e veja documentos ranqueados por pontuação",
+    "modes": {
+      "or": "OR (qualquer termo)",
+      "and": "AND (todos os termos)"
+    },
+    "buttons": {
+      "clear": "Limpar"
+    },
+    "metrics": {
+      "title": "Métricas ao Vivo",
+      "terms": "Termos da consulta",
+      "matched": "Docs encontrados",
+      "postings": "Postings varridos",
+      "corpus": "Tamanho do corpus"
+    },
+    "labels": {
+      "query": "Termos da consulta",
+      "documents": "Documentos",
+      "index": "Índice invertido",
+      "results": "Resultados ranqueados",
+      "doc": "Doc",
+      "score": "pont.",
+      "no_matches": "Nenhum documento correspondente",
+      "hint": "AND intersecta as listas de postings; OR as une. A pontuação conta quantos termos da consulta cada documento contém."
+    }
+  },
+  "storage_engine": {
+    "title": "Simulador de Engine de Armazenamento",
+    "subtitle": "Envie escritas por uma LSM-tree ou uma B-tree e compare a amplificação",
+    "buttons": {
+      "step": "Escrever 1 chave",
+      "start": "Auto",
+      "stop": "Parar",
+      "reset": "Resetar"
+    },
+    "engines": {
+      "lsm": "LSM-Tree",
+      "btree": "B-Tree"
+    },
+    "wal": "Write-Ahead Log",
+    "narration": {
+      "idle": "Escreva chaves uma a uma e veja onde caem. LSM anexa sequencialmente e depois compacta; B-tree atualiza páginas no lugar.",
+      "lsm_append": "Escrita anexada à memtable em memória ({{mem}}/{{cap}}). Sequencial, então as escritas são baratas.",
+      "lsm_flush": "Memtable cheia: descarregada em uma nova SSTable L0 imutável em uma escrita sequencial.",
+      "lsm_compact": "{{count}} SSTables L0 mescladas em uma tabela L1 ({{size}} entradas reescritas). Essa reescrita é amplificação de escrita.",
+      "btree_update": "Localizou a página folha desta chave e reescreveu a página {{page}} no lugar. I/O aleatório, mas leituras continuam uma única travessia."
+    },
+    "lsm": {
+      "memtable": "Memtable (em memória)",
+      "level": "Nível {{n}} (SSTables em disco)"
+    },
+    "btree": {
+      "pages": "Páginas B-Tree (atualizadas no lugar)",
+      "note": "Cada escrita busca a página folha e a reescreve — I/O aleatório."
+    },
+    "metrics": {
+      "title": "Métricas ao Vivo",
+      "writes": "Escritas lógicas",
+      "write_amp": "Amplificação de escrita",
+      "read_amp": "Amplificação de leitura",
+      "compactions": "Compactações"
+    },
+    "hint_lsm": "LSM-trees absorvem escritas sequencialmente em uma memtable, depois fazem flush e compactam SSTables — escritas baratas, mas leituras podem varrer várias tabelas até a compactação.",
+    "hint_btree": "B-trees atualizam páginas no lugar: leituras são uma única travessia da árvore (baixa amplificação de leitura), mas escritas causam I/O aleatório."
+  },
+  "bloom_filter": {
+    "title": "Simulador de Bloom Filter",
+    "subtitle": "Um array de bits + k hashes: testes rápidos de pertencimento sem falsos negativos",
+    "placeholder": "Digite uma chave…",
+    "controls": {
+      "bits": "Tamanho do array de bits (m)",
+      "hashes": "Funções de hash (k)"
+    },
+    "buttons": {
+      "add": "Inserir",
+      "query": "Consultar",
+      "random": "Adicionar aleatório",
+      "reset": "Resetar"
+    },
+    "maps_to": "hasheia",
+    "checks": "verifica",
+    "narration": {
+      "idle": "Insira algumas chaves e consulte uma. Cada chave hasheia para k posições de bit; veja quais bits são setados e como as consultas são respondidas.",
+      "inserted": "Inseriu \"{{word}}\": seus k hashes apontam para os bits {{positions}}, agora setados em 1.",
+      "maybe": "\"{{word}}\": todos os {{k}} bits hasheados são 1, então provavelmente está presente (pode ser colisão).",
+      "false_positive": "\"{{word}}\" nunca foi inserida, mas todos os bits dela são 1 porque outras chaves os setaram. Isso é um falso positivo.",
+      "absent": "\"{{word}}\": o bit {{pos}} é 0, então definitivamente não está presente. Bloom filters nunca dão falso negativo."
+    },
+    "result": {
+      "maybe": "provavelmente está presente (todos os k bits setados).",
+      "false_positive": "aparece como presente, mas nunca foi inserida. Falso positivo!",
+      "definitely_not": "definitivamente não está presente (ao menos um bit é 0)."
+    },
+    "metrics": {
+      "title": "Métricas ao Vivo",
+      "items": "Itens inseridos",
+      "bits_set": "Bits setados",
+      "fill": "Taxa de preenchimento",
+      "fp_rate": "Taxa estimada de falso positivo"
+    },
+    "hint": "Uma consulta é \"talvez presente\" só se todos os bits hasheados forem 1. Mais itens ou menos bits aumentam a taxa de falsos positivos; nunca há falsos negativos."
+  },
+  "quorum_replication": {
+    "title": "Simulador de Quórum de Replicação",
+    "subtitle": "Ajuste réplicas (N), quórum de escrita (W) e quórum de leitura (R)",
+    "controls": {
+      "replicas": "Réplicas (N)",
+      "write_quorum": "Quórum de escrita (W)",
+      "read_quorum": "Quórum de leitura (R)"
+    },
+    "buttons": {
+      "write": "Escrever nova versão",
+      "read": "Ler",
+      "reset": "Resetar"
+    },
+    "node": "Nó",
+    "legend": {
+      "write": "Quórum de escrita (W)",
+      "read": "Quórum de leitura (R)",
+      "overlap": "Sobreposição (vê a última)"
+    },
+    "narration": {
+      "idle": "Escreva uma nova versão em W nós, depois leia de R nós, e veja se o quórum de leitura sobrepõe a última escrita.",
+      "wrote": "Escreveu v{{version}} em um quórum de escrita de W={{w}} nós. As outras réplicas ainda têm versões antigas.",
+      "read_fresh": "O quórum de leitura R={{r}} sobrepôs o quórum de escrita em {{count}} nó(s), então retornou a versão mais nova v{{value}}. R+W>N força essa sobreposição.",
+      "read_stale": "O quórum de leitura R={{r}} não tocou nenhum nó com a última escrita, então retornou um v{{value}} desatualizado. Com R+W não maior que N os quóruns podem se perder."
+    },
+    "read_returned": "Leitura retornou",
+    "result": {
+      "stale": "desatualizada! Perdeu a última escrita.",
+      "fresh": "atual, em dia."
+    },
+    "metrics": {
+      "title": "Métricas ao Vivo",
+      "replicas": "Réplicas",
+      "latest": "Última versão",
+      "fault_tolerance": "Falhas toleradas",
+      "strong": "Leituras fortes?"
+    },
+    "hint": "Quando R + W > N os quóruns de leitura e escrita sempre se sobrepõem, então leituras veem a escrita mais nova. Reduza-os para mais disponibilidade ao custo de leituras antigas."
+  },
+  "cdc": {
+    "title": "Simulador de CDC",
+    "subtitle": "Um conector lê o log do banco e envia mudanças para sistemas downstream",
+    "controls": {
+      "write_rate": "Escritas no banco / tick",
+      "connector_rate": "Vazão do conector / tick"
+    },
+    "buttons": {
+      "step": "Um tick",
+      "start": "Auto",
+      "stop": "Parar",
+      "reset": "Resetar"
+    },
+    "source": "Log de transações do banco de origem",
+    "connector": "Conector CDC",
+    "offset": "offset",
+    "narration": {
+      "idle": "Inicie o fluxo. O conector lê o log do banco em ordem e envia cada mudança para todos os sinks downstream.",
+      "shipping": "O conector enviou {{k}} mudança(s) downstream. O atraso de replicação é {{lag}}.",
+      "lagging": "As escritas ({{rate}}/tick) superam o conector ({{crate}}/tick), então o log cresce atrás do offset. O atraso agora é {{lag}}.",
+      "caught_up": "O conector está acompanhando: o atraso é {{lag}} e os sinks estão em sincronia com a origem."
+    },
+    "wal_note": "Âmbar = atrás do offset (ainda não capturado); verde = já enviado downstream",
+    "sinks": {
+      "cache": "Invalidação de cache",
+      "search": "Índice de busca",
+      "warehouse": "Data warehouse"
+    },
+    "metrics": {
+      "title": "Métricas ao Vivo",
+      "produced": "Mudanças produzidas",
+      "consumed": "Mudanças enviadas",
+      "lag": "Atraso de replicação",
+      "pending": "Pendentes no log"
+    },
+    "hint": "Se as escritas superam o conector, o atraso cresce e os sistemas downstream ficam para trás. CDC mantém caches, busca e analytics em sincronia sem escrita dupla."
+  },
+  "kafka": {
+    "title": "Simulador de Kafka",
+    "subtitle": "Produtores, partições e um consumer group — veja o lag",
+    "controls": {
+      "partitions": "Partições",
+      "consumers": "Consumidores",
+      "produce_rate": "Taxa de produção",
+      "consume_rate": "Consumo / consumidor"
+    },
+    "buttons": {
+      "start": "Iniciar",
+      "stop": "Parar",
+      "reset": "Resetar"
+    },
+    "metrics": {
+      "title": "Métricas ao Vivo",
+      "produced": "Produzidas",
+      "consumed": "Consumidas",
+      "lag": "Consumer lag",
+      "throughput": "Capacidade de consumo"
+    },
+    "labels": {
+      "partition": "P",
+      "producer": "Produtor",
+      "consumers": "Consumer group",
+      "consumer": "C",
+      "idle": "ocioso",
+      "hint": "Cada partição é lida por exatamente um consumidor. Adicione consumidores além do número de partições e eles ficam ociosos — as partições limitam o paralelismo."
+    }
+  },
+  "api_styles": {
+    "title": "Simulador de Estilos de API",
+    "subtitle": "Busque uma tela de dados com REST, GraphQL ou gRPC e compare o custo",
+    "styles": {
+      "rest": "REST",
+      "graphql": "GraphQL",
+      "grpc": "gRPC"
+    },
+    "controls": {
+      "fields": "Campos que a tela precisa",
+      "with_orders": "Incluindo pedidos relacionados",
+      "no_orders": "Apenas usuário"
+    },
+    "client": "Cliente",
+    "server": "Servidor",
+    "round_trip": "Round trip",
+    "payload_label": "Payload da resposta",
+    "binary": "protobuf binário",
+    "used": "Usado pela tela",
+    "over": "Em excesso",
+    "sinks_orders": "Pedidos relacionados",
+    "narration": {
+      "rest": "REST retornou todos os 12 campos do usuário em {{rt}} round trip(s); a tela usou {{used}}, então {{over}}% veio em excesso.",
+      "graphql": "GraphQL retornou exatamente os {{used}} campo(s) que a tela pediu em um round trip, sem excesso.",
+      "grpc": "gRPC retornou {{used}} campo(s) como binário compacto em um round trip, cerca de um terço do tamanho do JSON."
+    },
+    "metrics": {
+      "title": "Métricas ao Vivo",
+      "round_trips": "Round trips",
+      "payload": "Tamanho do payload",
+      "over_fetch": "Dados em excesso",
+      "schema": "Schema tipado"
+    },
+    "hint": {
+      "rest": "REST costuma precisar de uma requisição por recurso e retorna objetos inteiros — simples e cacheável, mas faz over-fetch e pode exigir vários round trips.",
+      "graphql": "GraphQL traz exatamente os campos pedidos em um único round trip — sem over-fetching, ao custo do planejamento de consulta no servidor.",
+      "grpc": "gRPC envia Protobuf binário compacto em um round trip com schema estrito — o mais rápido na rede, mas não legível por humanos e mais difícil de depurar."
+    }
+  },
+  "realtime_push": {
+    "title": "Simulador de Push em Tempo Real",
+    "subtitle": "Entregue eventos do servidor com polling, SSE ou WebSockets",
+    "modes": {
+      "polling": "Polling",
+      "sse": "Server-Sent Events",
+      "websocket": "WebSocket"
+    },
+    "controls": {
+      "interval": "Intervalo de polling (ticks)"
+    },
+    "buttons": {
+      "start": "Iniciar",
+      "stop": "Parar",
+      "reset": "Resetar"
+    },
+    "server": "Servidor",
+    "client": "Cliente",
+    "persistent": "conexão persistente",
+    "repeated": "requisições repetidas",
+    "one_connection": "Uma conexão aberta",
+    "many_requests": "Muitas requisições curtas",
+    "narration": {
+      "idle": "Escolha um transporte e rode. Veja como os eventos do servidor chegam ao cliente e o custo de cada abordagem.",
+      "poll_deliver": "Um poll chegou e coletou {{k}} evento(s) na fila. Eles esperaram até {{interval}} ticks por essa requisição.",
+      "poll_empty": "Um poll chegou mas o servidor não tinha nada novo, uma requisição vazia desperdiçada.",
+      "push": "O servidor empurrou o evento no instante em que aconteceu pela conexão aberta, cerca de 1 tick de latência."
+    },
+    "metrics": {
+      "title": "Métricas ao Vivo",
+      "delivered": "Eventos entregues",
+      "latency": "Latência média de entrega",
+      "requests": "Requisições enviadas",
+      "empty_polls": "Polls vazios desperdiçados"
+    },
+    "hint": {
+      "polling": "Polling pergunta de novo em intervalo fixo: simples, mas adiciona latência (até um intervalo) e desperdiça requisições quando nada mudou.",
+      "sse": "Server-Sent Events fazem push unidirecional por uma única conexão HTTP de longa duração — entrega quase instantânea com quase nenhum overhead.",
+      "websocket": "WebSockets mantêm uma conexão full-duplex aberta — entrega instantânea e bidirecional, ideal para chat, jogos e colaboração ao vivo."
+    }
+  },
+  "dead_letter_queue": {
+    "title": "Simulador de Dead Letter Queue",
+    "subtitle": "Mensagens com falha são retentadas e vão para a DLQ após o limite",
+    "controls": {
+      "failure_rate": "Taxa de falha transitória",
+      "max_retries": "Máximo de retries"
+    },
+    "buttons": {
+      "step": "Processar uma",
+      "start": "Auto",
+      "stop": "Parar",
+      "reset": "Resetar"
+    },
+    "main_queue": "Fila principal",
+    "dlq": "Dead Letter Queue",
+    "consumer": "Consumidor",
+    "attempt": "tentativa",
+    "poison": "Mensagem venenosa (sempre falha)",
+    "narration": {
+      "idle": "Rode a fila. Mensagens com falha são retentadas; ao passar do limite de retries elas vão para a DLQ para não bloquear a fila para sempre.",
+      "ok": "Mensagem #{{id}} processada com sucesso na tentativa {{n}}.",
+      "retry": "Mensagem #{{id}} falhou (tentativa {{n}}/{{max}}), recolocada na fila para nova tentativa.",
+      "dlq": "Mensagem #{{id}} atingiu o limite de retries após {{n}} tentativas, movida para a DLQ. A fila continua fluindo."
+    },
+    "metrics": {
+      "title": "Métricas ao Vivo",
+      "processed": "Processadas",
+      "retried": "Retentativas",
+      "dead_lettered": "Enviadas à DLQ",
+      "success_rate": "Taxa de sucesso"
+    },
+    "hint": "Falhas transitórias são retentadas; quando uma mensagem excede o limite de retries (ou é uma mensagem venenosa), ela vai para a DLQ em vez de bloquear a fila para sempre."
+  },
+  "saga": {
+    "title": "Simulador de Saga",
+    "subtitle": "Uma transação distribuída como uma sequência de passos compensáveis",
+    "controls": {
+      "mode": "Coordenação",
+      "fail_at": "Injetar falha no passo"
+    },
+    "modes": {
+      "orchestrated": "Orquestrada",
+      "choreographed": "Coreografada"
+    },
+    "fail_none": "Nenhuma",
+    "buttons": {
+      "run": "Rodar saga",
+      "reset": "Resetar"
+    },
+    "roles": {
+      "coordinator": "Coordenador da Saga"
+    },
+    "steps": {
+      "reserve": "Reservar estoque",
+      "payment": "Cobrar pagamento",
+      "shipping": "Agendar envio",
+      "confirm": "Enviar confirmação"
+    },
+    "status": {
+      "pending": "Pendente",
+      "running": "Executando",
+      "done": "Confirmado",
+      "failed": "Falhou",
+      "compensated": "Compensado"
+    },
+    "metrics": {
+      "title": "Resultado",
+      "committed": "Passos confirmados",
+      "compensated": "Passos compensados",
+      "outcome": "Desfecho"
+    },
+    "outcome": {
+      "idle": "Inativo",
+      "committed": "Confirmada",
+      "rolled_back": "Revertida"
+    },
+    "labels": {
+      "hint": "Uma saga não tem rollback global. Quando um passo falha, cada passo concluído é desfeito por sua própria ação compensatória, em ordem reversa."
+    }
+  },
+  "delivery_semantics": {
+    "title": "Simulador de Semânticas de Entrega",
+    "subtitle": "At-most-once vs at-least-once vs exactly-once",
+    "controls": {
+      "mode": "Semântica",
+      "dedup": "Deduplicação",
+      "dlq": "Fila de dead-letter"
+    },
+    "modes": {
+      "at_most_once": "At-most-once",
+      "at_least_once": "At-least-once",
+      "exactly_once": "Exactly-once"
+    },
+    "buttons": {
+      "start": "Iniciar",
+      "stop": "Parar",
+      "reset": "Resetar",
+      "on": "On",
+      "off": "Off"
+    },
+    "metrics": {
+      "title": "Métricas ao Vivo",
+      "produced": "Produzidas",
+      "delivered": "Entregues",
+      "duplicates": "Duplicatas",
+      "filtered": "Filtradas (dedup)",
+      "lost": "Perdidas",
+      "dlq": "Dead-lettered"
+    },
+    "tags": {
+      "delivered": "Entregue",
+      "duplicate": "Duplicata",
+      "lost": "Perdida",
+      "dlq": "Dead-letter",
+      "filtered": "Filtrada"
+    },
+    "labels": {
+      "recent": "Mensagens recentes",
+      "empty": "Nenhuma mensagem ainda",
+      "hint": "At-most-once pode perder mensagens; at-least-once pode duplicá-las. \"Exactly-once\" = entrega at-least-once mais deduplicação no consumidor."
+    }
+  },
+  "crdt": {
+    "title": "Simulador de CRDT (G-Counter)",
+    "subtitle": "Incremente réplicas de forma independente, depois mescle — sempre convergem",
+    "buttons": {
+      "sync": "Sincronizar (mesclar tudo)",
+      "reset": "Resetar"
+    },
+    "increment": "+1 em {{replica}}",
+    "replica": "Réplica",
+    "gossip_label": "Gossip:",
+    "narration": {
+      "idle": "Incremente qualquer réplica. Cada uma conta apenas no próprio slot, então as réplicas divergem até fofocarem entre si.",
+      "increment": "A réplica {{replica}} contou +1 no próprio slot e agora marca {{total}}. As outras ainda não souberam, então os valores divergem.",
+      "merge": "{{a}} e {{b}} fofocaram: cada slot vira o máximo das duas. Nenhum incremento se perde, e a ordem do merge nunca muda o resultado.",
+      "converged": "Agora todas as réplicas têm o mesmo vetor e concordam em {{total}}. Consistência eventual, com zero resolução de conflito."
+    },
+    "converged": "Convergiu",
+    "diverged": "Divergiu",
+    "all_agree": "Todas as réplicas concordam no valor.",
+    "need_sync": "As réplicas têm valores diferentes, fofoque para mesclar.",
+    "metrics": {
+      "title": "Métricas ao Vivo",
+      "max_value": "Valor do contador",
+      "merges": "Merges",
+      "converged": "Convergiu?",
+      "replicas": "Réplicas"
+    },
+    "hint": "Cada réplica conta os próprios incrementos no seu slot. O merge pega o máximo elemento a elemento, então incrementos nunca se perdem e qualquer ordem de merge dá o mesmo resultado."
+  },
+  "gossip": {
+    "title": "Simulador de Gossip",
+    "subtitle": "Um nó aprende uma atualização; ela se espalha epidemicamente pelo cluster",
+    "controls": {
+      "fanout": "Fanout (peers por rodada)",
+      "speed": "Velocidade"
+    },
+    "speed": {
+      "slow": "Lenta",
+      "normal": "Normal",
+      "fast": "Rápida"
+    },
+    "buttons": {
+      "start": "Iniciar rumor",
+      "resume": "Retomar",
+      "pause": "Pausar",
+      "step": "Passo",
+      "replay": "Repetir",
+      "reset": "Resetar"
+    },
+    "legend": {
+      "known": "Conhece a atualização",
+      "packet": "Rumor em trânsito",
+      "unaware": "Sem saber"
+    },
+    "narration": {
+      "idle": "Um nó conhece a atualização. Toque em Iniciar para ela fofocar, ou avance um Passo (rodada) por vez.",
+      "round": "Rodada {{round}}: {{senders}} nó(s) informado(s) fofocaram para {{peers}} peer(s). Agora {{known}}/{{total}} sabem.",
+      "converged": "Convergiu em {{rounds}} rodadas. A cobertura praticamente dobra a cada rodada, então o cluster sincroniza em cerca de log₂(N) rodadas."
+    },
+    "chart": {
+      "title": "Cobertura por rodada",
+      "round": "r{{n}}"
+    },
+    "metrics": {
+      "title": "Métricas ao Vivo",
+      "round": "Rodada",
+      "infected": "Nós informados",
+      "converged": "Convergência",
+      "nodes": "Total de nós"
+    },
+    "hint": "Cada nó informado avisa alguns peers aleatórios por rodada, então a atualização alcança todos em cerca de log(N) rodadas, sem coordenador, e tolerando falhas."
+  },
+  "distributed_lock": {
+    "title": "Simulador de Lock Distribuído",
+    "subtitle": "Um lock baseado em lease com fencing tokens que rejeitam escritores obsoletos",
+    "buttons": {
+      "demo": "Rodar demo de fencing",
+      "acquire": "Adquirir",
+      "write": "Escrever",
+      "stall": "Travar (pausar)",
+      "reset": "Resetar"
+    },
+    "lock": "Lock",
+    "free": "Livre",
+    "held_by": "Dono:",
+    "token": "token",
+    "write_token": "escrita @ token",
+    "client": "Cliente",
+    "resource": "Recurso",
+    "accepted": "ACEITA",
+    "fenced": "BLOQUEADA",
+    "stale": "(obsoleto)",
+    "stalled_note": "travado, lease ainda contando",
+    "narration": {
+      "idle": "Adquira o lock, trave o dono até o lease expirar, deixe outro cliente adquirir e então escreva pelo cliente travado para ver o fencing rejeitar o token obsoleto. Ou rode a demo.",
+      "acquire": "Cliente {{client}} adquiriu o lock com o fencing token {{token}} (um número monotonicamente crescente).",
+      "stall": "Cliente {{client}} travou (ex: pausa de GC). O lease continua contando e vai expirar enquanto ele está congelado.",
+      "expired": "O lease expirou e o lock foi liberado automaticamente.",
+      "expired_stalled": "O lease expirou e o lock foi liberado, mas o dono travado ainda acha que é o dono do lock.",
+      "write_ok": "Cliente {{client}} escreveu com o token {{token}} (>= token do recurso {{rt}}): aceita. O recurso avança para {{token}}.",
+      "fenced": "Cliente {{client}} escreveu com o token obsoleto {{token}} (< token do recurso {{rt}}): bloqueada. O recurso rejeita o token antigo."
+    },
+    "metrics": {
+      "title": "Métricas ao Vivo",
+      "tokens_issued": "Tokens emitidos",
+      "accepted": "Escritas aceitas",
+      "fenced": "Escritas bloqueadas",
+      "resource_token": "Token do recurso"
+    },
+    "hint": "Adquira o lock, trave o dono até o lease expirar, deixe outro cliente adquirir (token maior) e então escreva pelo cliente travado — o recurso bloqueia o token antigo e menor."
+  },
+  "cqrs": {
+    "title": "Simulador de CQRS",
+    "subtitle": "Comandos anexam eventos; read models são projeções",
+    "controls": {
+      "lag": "Lag da projeção"
+    },
+    "commands": {
+      "create": "Criar pedido",
+      "add_item": "Adicionar item",
+      "ship": "Enviar pedido",
+      "cancel": "Cancelar pedido"
+    },
+    "buttons": {
+      "reset": "Resetar"
+    },
+    "panels": {
+      "command": "Lado de comando (escrita)",
+      "log": "Log de eventos",
+      "read": "Read models (consulta)"
+    },
+    "events": {
+      "created": "OrderCreated",
+      "item_added": "ItemAdded",
+      "shipped": "OrderShipped",
+      "cancelled": "OrderCancelled"
+    },
+    "read": {
+      "status": "Status do pedido",
+      "items": "Quantidade de itens",
+      "events_applied": "Eventos aplicados",
+      "pending": "Pendentes"
+    },
+    "status_values": {
+      "none": "—",
+      "created": "Criado",
+      "shipped": "Enviado",
+      "cancelled": "Cancelado"
+    },
+    "labels": {
+      "log_empty": "Nenhum evento ainda — emita um comando",
+      "lag_caption": "Projeção atualizada: {{pct}}%",
+      "hint": "Escritas vão para o log de eventos instantaneamente; read models atualizam de forma assíncrona. Aumente o lag para ver consistência eventual — a leitura fica atrás da escrita."
+    }
+  },
+  "inference_batching": {
+    "title": "Simulador de Batching de Inferência",
+    "subtitle": "Continuous batching em uma GPU — vazão vs latência",
+    "controls": {
+      "arrival_rate": "Taxa de chegada (req/s)",
+      "batch_capacity": "Capacidade do lote (slots KV)",
+      "output_tokens": "Média de tokens de saída"
+    },
+    "buttons": {
+      "start": "Iniciar",
+      "stop": "Parar",
+      "reset": "Reiniciar"
+    },
+    "panels": {
+      "batch": "Lote em Execução (GPU)",
+      "queue": "Fila de Admissão",
+      "metrics": "Métricas ao Vivo"
+    },
+    "metrics": {
+      "throughput": "Vazão (tok/s)",
+      "utilization": "Utilização do lote",
+      "queue_depth": "Tamanho da fila",
+      "avg_latency": "Latência média",
+      "completed": "Concluídas",
+      "dropped": "Descartadas"
+    },
+    "labels": {
+      "slot_free": "slot livre",
+      "tokens": "tok",
+      "waiting": "esperando",
+      "batch_empty": "GPU ociosa — nenhuma requisição no lote",
+      "queue_empty": "Fila vazia",
+      "request": "REQ"
+    }
+  },
+  "rag_pipeline": {
+    "title": "Simulador de Pipeline RAG",
+    "subtitle": "Embeddar → buscar → reordenar → montar → gerar",
+    "controls": {
+      "chunk_size": "Tamanho do trecho (tokens)",
+      "top_k": "Recuperar top-K",
+      "rerank": "Reordenação"
+    },
+    "buttons": {
+      "run": "Executar Consulta",
+      "reset": "Reiniciar",
+      "on": "Ligado",
+      "off": "Desligado"
+    },
+    "stages": {
+      "embed": "Embeddar Consulta",
+      "search": "Busca Vetorial",
+      "rerank": "Reordenar",
+      "assemble": "Montar Contexto",
+      "generate": "Gerar"
+    },
+    "metrics": {
+      "recall": "Recall da recuperação",
+      "latency": "Latência total",
+      "cost": "Custo / consulta",
+      "context": "Contexto usado",
+      "quality": "Qualidade da resposta"
+    },
+    "labels": {
+      "idle": "Ocioso — execute uma consulta para começar",
+      "chunk": "trecho",
+      "score": "score",
+      "retrieved": "Trechos recuperados",
+      "disabled": "desativado"
+    }
+  },
+  "vector_search": {
+    "title": "Simulador de Busca Vetorial",
+    "subtitle": "Vizinhos mais próximos aproximados com HNSW",
+    "controls": {
+      "ef_search": "efSearch (lista de candidatos)",
+      "m_links": "M (conexões do grafo)",
+      "dataset": "Tamanho do dataset"
+    },
+    "buttons": {
+      "search": "Executar Busca",
+      "reset": "Reiniciar"
+    },
+    "metrics": {
+      "recall": "Recall@10",
+      "latency": "Latência da consulta",
+      "comparisons": "Comp. de distância",
+      "memory": "Memória do índice"
+    },
+    "labels": {
+      "idle": "Execute uma busca para sondar o índice",
+      "exact": "Exata (força bruta)",
+      "approx": "HNSW (aproximada)",
+      "found": "Vizinhos encontrados"
+    }
+  },
+  "llm_gateway": {
+    "title": "Simulador de Gateway de LLM",
+    "subtitle": "Cache semântico, fallback de modelo, limite de taxa e custo",
+    "controls": {
+      "cache_rate": "Taxa de acerto do cache (%)",
+      "rate_limit": "Limite de taxa (req/s)",
+      "primary_fail": "Falha do primário (%)"
+    },
+    "buttons": {
+      "start": "Iniciar",
+      "stop": "Parar",
+      "reset": "Reiniciar"
+    },
+    "routes": {
+      "cache": "Servido do cache",
+      "primary": "Modelo primário",
+      "fallback": "Modelo de fallback",
+      "rejected": "Limitado por taxa"
+    },
+    "metrics": {
+      "served": "Atendidas",
+      "cache_hits": "Acertos de cache",
+      "fallbacks": "Fallbacks",
+      "rejected": "Rejeitadas",
+      "cost": "Custo total"
+    },
+    "labels": {
+      "recent": "Requisições recentes",
+      "empty": "Nenhuma requisição ainda"
+    }
+  },
+  "gpu_autoscaler": {
+    "title": "Simulador de Autoescalonador de GPU",
+    "subtitle": "Partidas a frio, filas e escala-a-zero",
+    "controls": {
+      "arrival_rate": "Taxa de chegada (req/s)",
+      "scale_threshold": "Limiar de fila para escalar",
+      "cold_start": "Partida a frio (s)"
+    },
+    "buttons": {
+      "start": "Iniciar",
+      "stop": "Parar",
+      "reset": "Reiniciar"
+    },
+    "panels": {
+      "replicas": "Réplicas de GPU",
+      "metrics": "Métricas ao Vivo"
+    },
+    "metrics": {
+      "replicas": "Réplicas ativas",
+      "queue": "Tamanho da fila",
+      "latency": "Latência média",
+      "cost": "Custo ($/min)",
+      "utilization": "Utilização"
+    },
+    "labels": {
+      "warming": "AQUECENDO",
+      "ready": "PRONTA",
+      "idle": "OCIOSA",
+      "scale_to_zero": "Escalado a zero — nenhuma GPU ativa"
+    }
+  },
+  "agent_orchestration": {
+    "title": "Simulador de Orquestração de Agentes",
+    "subtitle": "Laço raciocinar → agir → observar com chamadas de ferramentas",
+    "controls": {
+      "max_steps": "Máx. de passos",
+      "tool_latency": "Latência da ferramenta (ms)",
+      "fail_rate": "Falha da ferramenta (%)"
+    },
+    "buttons": {
+      "run": "Executar Agente",
+      "reset": "Reiniciar"
+    },
+    "steps": {
+      "think": "Pensar",
+      "act": "Chamar Ferramenta",
+      "observe": "Observar",
+      "answer": "Resposta Final",
+      "retry": "Repetir"
+    },
+    "tools": {
+      "search": "web_search",
+      "calculator": "calculator",
+      "database": "db_query"
+    },
+    "metrics": {
+      "steps": "Passos executados",
+      "tool_calls": "Chamadas de ferramenta",
+      "retries": "Tentativas",
+      "tokens": "Tokens usados",
+      "status": "Status"
+    },
+    "labels": {
+      "idle": "Ocioso — execute o agente para começar",
+      "running": "Executando",
+      "done": "Concluído",
+      "failed": "Falhou (máx. de passos atingido)",
+      "trace": "Trace de execução"
+    }
+  },
+  "gateway": {
+    "title": "Simulador de API Gateway",
+    "description": "Visualize como um API Gateway roteia diferentes tipos de requisições para os serviços apropriados em uma arquitetura de microsserviços.",
+    "buttons": {
+      "start": "Iniciar Simulação",
+      "stop": "Parar Simulação",
+      "show_config": "Mostrar Configurações",
+      "hide_config": "Ocultar Configurações",
+      "reset": "Reiniciar",
+      "restore_defaults": "Restaurar Padrões"
+    },
+    "config": {
+      "title": "Configurações da Simulação",
+      "rps": "Requisições por Segundo: {{value}}",
+      "routing_delay": "Delay de Roteamento: {{ms}}ms",
+      "extra_error_rate": "Taxa de Erro Adicional: {{percent}}%",
+      "removal_delay": "Tempo de Remoção: {{ms}}ms"
+    },
+    "stats": {
+      "total": "Total de Requisições",
+      "success": "Requisições com Sucesso",
+      "error": "Requisições com Erro"
+    },
+    "columns": {
+      "clients": "Clientes",
+      "apigw": "API Gateway",
+      "microservices": "Microsserviços"
+    },
+    "items": {
+      "request_id": "Requisição #{{id}}",
+      "type": "Tipo: {{type}}",
+      "routing_to": "Roteando #{{id}}",
+      "to_service": "Para: {{service}}",
+      "processing_time": "Tempo de processamento: {{ms}}ms",
+      "base_error_rate": "Taxa de erro base: {{percent}}%",
+      "error": "Erro",
+      "processing": "Processando"
+    }
+  },
+  "retries": {
+    "title": "Simulador de Retries",
+    "buttons": {
+      "settings": "Configurações",
+      "start": "Iniciar Simulação",
+      "simulating": "Simulando..."
+    },
+    "settings": {
+      "title": "Configurações da Simulação",
+      "max_retries": "Máximo de Retries: {{value}}",
+      "base_delay": "Delay Base: {{ms}}ms",
+      "success_rate": "Taxa de Sucesso: {{percent}}%"
+    },
+    "toggles": {
+      "use_exponential_backoff": "Usar Backoff Exponencial",
+      "add_jitter": "Adicionar Jitter"
+    },
+    "visualization": {
+      "title": "Visualização"
+    },
+    "attempt": {
+      "label": "Tentativa {{id}}",
+      "next_in": "Próxima tentativa em {{ms}}ms"
+    },
+    "stats": {
+      "title": "Estatísticas",
+      "total_attempts": "Total de Tentativas",
+      "final_status": "Status Final",
+      "status_success": "Sucesso",
+      "status_failure": "Falha"
+    },
+    "info": {
+      "title": "Explicação",
+      "p1": "Este simulador demonstra como os mecanismos de retry funcionam em sistemas distribuídos. Cada tentativa tem uma chance de sucesso baseada na taxa configurada.",
+      "p2": "Com backoff exponencial, o tempo entre tentativas aumenta progressivamente (1s, 2s, 4s, 8s...), reduzindo a carga do sistema.",
+      "p3": "Jitter adiciona uma variação aleatória ao tempo entre tentativas, evitando que vários clientes tentem novamente ao mesmo tempo."
+    }
+  },
+  "circuit_breaker": {
+    "title": "Circuit Breaker",
+    "buttons": {
+      "settings": "Configurações",
+      "start": "Iniciar",
+      "stop": "Parar",
+      "start_errors": "Iniciar Erros",
+      "stop_errors": "Parar Erros",
+      "reset": "Resetar"
+    },
+    "labels": {
+      "rps": "Requisições/s:",
+      "state": "Estado",
+      "reset_in": "Reset em",
+      "consecutive_failures": "Falhas Consecutivas",
+      "error_status": "Status dos Erros",
+      "active_with_chance": "Ativos ({{percent}}% de chance)",
+      "inactive": "Inativos",
+      "latest_requests": "Últimas Requisições",
+      "no_requests": "Nenhuma requisição realizada"
+    }
+  },
+  "polling_webhooks": {
+    "title": "Simulador: Polling vs Webhooks",
+    "subtitle": "Veja na prática a diferença entre polling e webhooks com nossa simulação interativa",
+    "ctas": {
+      "read_theory": "Ler Teoria Completa Primeiro",
+      "back_to_theory": "Voltar para Teoria",
+      "back_to_components": "Componentes Básicos"
+    },
+    "buttons": {
+      "polling": "Polling",
+      "webhook": "Webhook",
+      "start": "Iniciar",
+      "stop": "Parar",
+      "reset": "Resetar"
+    },
+    "config": {
+      "polling_interval": "Intervalo de Polling",
+      "data_generation": "Geração de Dados",
+      "network_latency": "Latência de Rede"
+    },
+    "flow": {
+      "title": "Fluxo de Comunicação",
+      "client": "Cliente",
+      "server": "Servidor",
+      "active_mode": "Modo Ativo:",
+      "active_sim": "🟢 Simulação Ativa ({{mode}})",
+      "stopped_sim": "🔴 Simulação Parada"
+    },
+    "stats": {
+      "title": "Estatísticas em Tempo Real",
+      "total_requests": "Total de Requisições",
+      "empty_responses": "Respostas Vazias",
+      "data_transfers": "Dados Transferidos",
+      "webhooks_sent": "Webhooks Enviados",
+      "total_bandwidth_bits": "Bandwidth Total (bits)",
+      "efficiency": "Eficiência",
+      "success_rate": "Taxa de Sucesso",
+      "wasted_requests": "Requisições Desperdiçadas"
+    },
+    "queue": {
+      "pending_data": "Dados Pendentes ({{count}})",
+      "none": "Nenhum dado pendente"
+    },
+    "log": {
+      "title": "Log de Mensagens",
+      "with_data": "Com dados",
+      "start_prompt": "Inicie a simulação para ver as mensagens..."
+    },
+    "messages": {
+      "checking": "Verificando novos dados...",
+      "data_found": "Dados encontrados: {{content}}",
+      "no_data": "Nenhum dado novo disponível"
+    }
+  },
+  "message_queue_sim": {
+    "title": "Message Queue",
+    "buttons": {
+      "configure": "Configurar",
+      "close_config": "Fechar Config",
+      "start": "Iniciar",
+      "stop": "Parar",
+      "reset": "Resetar"
+    },
+    "config": {
+      "producers": "Produtores",
+      "production_rate": "Taxa de Produção",
+      "max_queue_size": "Tamanho Máximo da Fila",
+      "consumers": "Consumidores",
+      "consumption_rate": "Taxa de Consumo",
+      "process_time": "Tempo de Processamento"
+    },
+    "flow": {
+      "title": "Fluxo de Mensagens",
+      "queue": "Fila",
+      "more": "+{{count}} mais"
+    },
+    "queue_status": {
+      "title": "Status da Fila",
+      "size": "Tamanho da Fila",
+      "produced": "Produzidas",
+      "processed": "Processadas",
+      "dropped": "Descartadas",
+      "avg_time": "Tempo Médio"
+    },
+    "messages": {
+      "title": "Mensagens",
+      "none": "Nenhuma mensagem ainda"
+    }
+  },
+  "philosophers_sim": {
+    "title": "Jantar dos Filósofos",
+    "subtitle": "Cinco filósofos compartilham cinco garfos. Comer exige os dois garfos vizinhos, então os lugares competem pelo mesmo recurso. Escolha uma estratégia e veja como ela evita — ou causa — deadlock.",
+    "buttons": {
+      "configure": "Configurar",
+      "close_config": "Fechar Config",
+      "start": "Iniciar",
+      "pause": "Pausar",
+      "step": "Passo",
+      "reset": "Resetar"
+    },
+    "config": {
+      "title": "Controles",
+      "strategy": "Estratégia",
+      "philosophers": "Filósofos",
+      "speed": "Velocidade"
+    },
+    "strategies": {
+      "naive": {
+        "label": "Ingênua",
+        "desc": "Cada filósofo pega o garfo da esquerda e então espera pelo da direita. Se todos pegarem o garfo esquerdo ao mesmo tempo, todos ficam segurando um garfo para sempre — um deadlock clássico."
+      },
+      "hierarchy": {
+        "label": "Hierarquia de Recursos",
+        "desc": "Os garfos são numerados; um filósofo sempre pega primeiro o garfo de menor número. Quebrar a condição de espera circular torna o deadlock impossível."
+      },
+      "atomic": {
+        "label": "Dois ou Nenhum",
+        "desc": "Um filósofo só pega os garfos quando ambos estão livres, de forma atômica. Ninguém segura um único garfo, então não há deadlock (mas ainda pode haver inanição)."
+      },
+      "arbitrator": {
+        "label": "Árbitro Central",
+        "desc": "Um garçom permite que no máximo N-1 filósofos tentem pegar garfos ao mesmo tempo. Com um lugar sempre livre, a espera circular nunca se fecha."
+      }
+    },
+    "states": {
+      "thinking": "Pensando",
+      "hungry": "Com fome",
+      "eating": "Comendo"
+    },
+    "viz": {
+      "title": "A Mesa",
+      "tick": "ciclo",
+      "eating_now": "comendo",
+      "fork_held": "Garfo em uso",
+      "deadlock": "DEADLOCK",
+      "deadlock_hint": "Deadlock detectado: cada filósofo com fome segura um garfo e espera para sempre pelo outro. Resete e tente uma estratégia sem deadlock."
+    },
+    "roster": {
+      "title": "Filósofos"
+    },
+    "stats": {
+      "title": "Métricas",
+      "total_meals": "Refeições totais",
+      "eating": "Comendo agora",
+      "longest_wait": "Maior espera",
+      "ticks": "Ciclos",
+      "running": "Executando",
+      "paused": "Pausado",
+      "deadlocked": "Em deadlock",
+      "meals_short": "{{n}} refeições"
+    },
+    "log": {
+      "title": "Log de Eventos",
+      "empty": "Aguardando eventos…",
+      "got_hungry": "{{name}} ficou com fome",
+      "took_left": "{{name}} pegou o garfo esquerdo",
+      "took_right": "{{name}} pegou o garfo direito",
+      "took_low": "{{name}} pegou o garfo {{fork}}",
+      "started_eating": "{{name}} pegou os dois garfos e começou a comer",
+      "finished_eating": "{{name}} terminou de comer e liberou os garfos",
+      "deadlock_detected": "Deadlock detectado — nenhum filósofo consegue progredir"
+    }
+  },
+  "rate_limiter": {
+    "title": "Rate Limiter",
+    "strategy": "Algoritmo",
+    "algorithms": {
+      "token": "Token bucket",
+      "leaky": "Leaky bucket",
+      "sliding": "Janela deslizante"
+    },
+    "algo_desc": {
+      "token": "Tokens são repostos a uma taxa constante; cada requisição gasta um. Permite rajadas até o tamanho do bucket.",
+      "leaky": "Requisições preenchem uma fila fixa que drena a uma taxa constante. Suaviza a saída; rejeita quando a fila enche.",
+      "sliding": "Conta requisições na janela de 1s anterior; rejeita ao atingir o limite. Sem rajadas além do limite."
+    },
+    "level": {
+      "token": "Tokens disponíveis",
+      "leaky": "Profundidade da fila",
+      "sliding": "Contagem na janela (1s)"
+    },
+    "buttons": {
+      "configure": "Configurar",
+      "close_config": "Fechar Config",
+      "start": "Iniciar",
+      "stop": "Parar",
+      "reset": "Resetar"
+    },
+    "config": {
+      "token_rate": "Reposição / vazamento / limite (por segundo)",
+      "message_rate": "Taxa de Mensagens (por segundo)",
+      "bucket_size": "Tamanho do bucket / fila"
+    },
+    "bucket": {
+      "title": "Token Bucket",
+      "rate": "Taxa: {{rate}} /s"
+    },
+    "recent": {
+      "title": "Últimas Requisições",
+      "rate": "Taxa: {{rate}} msgs/s",
+      "accepted": "Requisição aceita",
+      "rejected": "Requisição rejeitada",
+      "none": "Nenhuma requisição ainda"
+    },
+    "metrics": {
+      "total": "Total de Requisições",
+      "accepted": "Aceitas",
+      "rejected": "Rejeitadas"
+    }
+  },
+  "backpressure": {
+    "title": "Backpressure",
+    "buttons": {
+      "settings": "Configurações",
+      "start": "Iniciar",
+      "stop": "Parar",
+      "reset": "Resetar"
+    },
+    "producer_status": {
+      "title": "Status do Produtor",
+      "throttled": "Throttled",
+      "normal": "Normal"
+    },
+    "labels": {
+      "produced": "Mensagens Produzidas",
+      "processed": "Mensagens Processadas",
+      "dropped": "Mensagens Descartadas",
+      "latest": "Últimas Mensagens"
+    }
+  },
+  "round_robin": {
+    "title": "Load Balancer",
+    "buttons": {
+      "start": "Iniciar Simulação",
+      "stop": "Parar Simulação"
+    },
+    "config": {
+      "strategy": "Estratégia",
+      "server_count": "Número de Servidores",
+      "server_capacity": "Capacidade do Servidor",
+      "rps": "Requisições por Segundo"
+    },
+    "strategies": {
+      "round_robin": "Round Robin: Distribui as requisições sequencialmente entre todos os servidores em ordem circular.",
+      "least_conn": "Least Connections: Envia novas requisições para o servidor com menor carga atual.",
+      "random": "Random: Seleciona aleatoriamente um servidor para cada nova requisição."
+    },
+    "server_card": {
+      "server_label": "Servidor {{id}}",
+      "requests": "{{current}}/{{capacity}} requisições",
+      "response_time_ms": "({{ms}}ms)",
+      "response_time_label": "Tempo de Resposta:"
+    }
+  },
+  "cdn": {
+    "title": "Simulação de CDN",
+    "buttons": {
+      "configure": "Configurar",
+      "close_config": "Fechar Config",
+      "reset": "Reiniciar"
+    },
+    "config": {
+      "title": "Configurações",
+      "base_latency_multiplier": "Multiplicador de Latência Base (Sem Cache)",
+      "cache_latency_multiplier": "Multiplicador de Latência com Cache",
+      "max_logs": "Número Máximo de Logs"
+    },
+    "labels": {
+      "x_suffix": "x",
+      "logs_suffix": "logs",
+      "country_select": "Selecione seu país:",
+      "datacenters": "Datacenters:",
+      "cache_badge": "Cache ✓",
+      "latency": "Latência"
+    },
+    "messages": {
+      "processing": "Processando requisição..."
+    },
+    "history": {
+      "title": "Histórico de Requisições:",
+      "cache_hit": "Cache Hit"
+    },
+    "info": {
+      "title": "Como funciona?",
+      "i1": "Selecione seu país para simular uma requisição",
+      "i2": "O datacenter mais próximo será escolhido automaticamente",
+      "i3": "Primeira requisição: Busca do servidor de origem ({{base}}x a latência)",
+      "i4": "Requisições subsequentes: Servidas do cache local ({{cache}}x a latência)",
+      "i5": "A latência varia de acordo com a distância entre seu país e o datacenter"
+    }
+  },
+  "firewall": {
+    "title": "Simulador de Firewall",
+    "lead": "Este simulador demonstra como um firewall filtra pacotes de rede com base em regras predefinidas. Observe como diferentes tipos de tráfego são permitidos ou bloqueados.",
+    "rules": {
+      "title": "Regras do Firewall",
+      "restore_title": "Restaurar configuração inicial",
+      "add_rule": "Adicionar Regra",
+      "remove_rule_title": "Remover regra"
+    },
+    "stats": {
+      "title": "Estatísticas",
+      "total": "Total de Pacotes",
+      "allowed": "Permitidos",
+      "blocked": "Bloqueados"
+    },
+    "traffic": {
+      "title": "Tráfego de Rede",
+      "custom_packet": "Pacote Personalizado",
+      "generate_packet": "Gerar Pacote",
+      "stop_autogen": "Parar",
+      "start_autogen": "Auto Gerar"
+    },
+    "labels": {
+      "port": "Porta",
+      "protocol": "Protocolo",
+      "type": "Tipo",
+      "payload": "Payload",
+      "action_allow": "Permitir",
+      "action_block": "Bloquear"
+    },
+    "badges": {
+      "allow": "PERMITIDO",
+      "block": "BLOQUEADO"
+    },
+    "empty": "Nenhum pacote gerado ainda. Clique em \"Gerar Pacote\" para começar.",
+    "add_rule_modal": {
+      "title": "Nova Regra",
+      "origin": "Origem",
+      "destination": "Destino",
+      "port": "Porta",
+      "protocol": "Protocolo",
+      "type": "Tipo",
+      "action": "Ação",
+      "placeholder_ip_or_star": "IP ou *",
+      "placeholder_port_or_zero": "Porta ou 0",
+      "option_select": "Selecione",
+      "button_cancel": "Cancelar",
+      "button_add": "Adicionar"
+    },
+    "custom_packet_modal": {
+      "title": "Enviar Pacote Personalizado",
+      "origin": "Origem",
+      "destination": "Destino",
+      "port": "Porta",
+      "protocol": "Protocolo",
+      "type": "Tipo",
+      "payload": "Payload",
+      "placeholder_origin_ip": "IP (ex: 192.168.1.1)",
+      "placeholder_destination_ip": "IP (ex: 10.0.0.1)",
+      "placeholder_port": "Porta (ex: 80)",
+      "placeholder_payload": "Dados do pacote",
+      "button_cancel": "Cancelar",
+      "button_send": "Enviar Pacote"
+    },
+    "errors": {
+      "source_required": "O IP de origem é obrigatório",
+      "destination_required": "O IP de destino é obrigatório",
+      "port_required": "A porta é obrigatória"
+    },
+    "info": {
+      "title": "Como funciona?",
+      "i1": "O simulador gera pacotes de rede aleatórios com diferentes origens, destinos e portas",
+      "i2": "As regras do firewall são avaliadas em ordem, da primeira à última",
+      "i3": "A primeira regra que corresponde ao pacote determina se ele será permitido ou bloqueado",
+      "i4": "A última regra (default) bloqueia todo o tráfego não especificado nas regras anteriores",
+      "i5": "Você pode adicionar suas próprias regras e ver como elas afetam o tráfego",
+      "i6": "Use o modo \"Auto Gerar\" para ver um fluxo contínuo de pacotes"
+    }
+  },
+  "horizontal_scaling": {
+    "title": "Simulador de Escalabilidade Horizontal",
+    "intro": "Visualize como a carga é distribuída entre múltiplos servidores e como o sistema escala automaticamente baseado na demanda.",
+    "controls": {
+      "request_rate": "Taxa de Requisições/s",
+      "processing_time_ms": "Tempo de Processamento (ms)",
+      "auto_scaling": "Auto-Scaling",
+      "scale_up": "Scale Up:",
+      "scale_down": "Scale Down:",
+      "percent": "%"
+    },
+    "buttons": {
+      "start": "Iniciar",
+      "stop": "Parar",
+      "add_server": "Adicionar Servidor",
+      "remove_server": "Remover Servidor"
+    },
+    "server_card": {
+      "server_label": "Servidor {{id}}",
+      "active": "Ativo",
+      "inactive": "Inativo",
+      "load": "Carga",
+      "processed_requests": "Requisições processadas: {{count}}"
+    },
+    "requests": {
+      "recent": "Últimas Requisições",
+      "server_label": "Servidor {{id}}",
+      "status_completed": "Concluído",
+      "status_failed": "Falhou",
+      "status_processing": "Processando"
+    }
+  },
+  "vertical_scaling": {
+    "title": "Simulador de Escalabilidade Vertical",
+    "intro": "Gerencie recursos do servidor e observe como ele lida com diferentes cargas de trabalho.",
+    "level_of_total": "Nível {{current}} de {{total}}",
+    "buttons": {
+      "downgrade": "Downgrade",
+      "upgrade": "Upgrade",
+      "start": "Iniciar Simulação",
+      "stop": "Stop Simulation"
+    },
+    "resources": {
+      "cpu": "CPU ({{cores}} núcleos)",
+      "memory": "Memória ({{gb}} GB)",
+      "storage": "Armazenamento ({{gb}} GB)"
+    },
+    "queue_title": "Fila de Requisições",
+    "controls_title": "Controles",
+    "request_rate": "Taxa de Requisições ({{rate}}/s)",
+    "stats_title": "Estatísticas",
+    "processed": "Processadas",
+    "rejected": "Rejeitadas",
+    "success_rate": "Taxa de Sucesso",
+    "uptime": "Tempo Ativo",
+    "total_cost": "Custo Total",
+    "current_load": "Carga Atual",
+    "statuses": {
+      "healthy": "saudável",
+      "degraded": "degradado",
+      "failed": "falho",
+      "role": "Papel",
+      "data": "Dados",
+      "keys": "chaves",
+      "replicated_after": "Replicado após {{seconds}}s"
+    },
+    "upgrade_modal": {
+      "title": "Aumentar Servidor",
+      "text": "Deseja aumentar para {{tier}}? Isso aumentará seus custos para R${{cost}}/mês.",
+      "cancel": "Cancelar",
+      "confirm": "Aumentar"
+    }
+  },
+  "scalability": {
+    "title": "Simulador de Escalabilidade",
+    "intro": "Explore como consistência, latência e failover funcionam em um sistema distribuído.",
+    "how_title": "Como usar o simulador:",
+    "how_steps": [
+      "Configure o modo de consistência: Forte (replicação instantânea) ou Eventual (replicação com latência)",
+      "Ajuste a latência de rede e veja o efeito na replicação (valores maiores mostram atrasos eventuais)",
+      "Experimente cenários: simule falhas (failover), compare propagação de consistência, observe impactos nas requisições"
+    ],
+    "config_title": "Configurações",
+    "consistency_mode": "Modo de Consistência",
+    "strong": "Forte",
+    "eventual": "Eventual",
+    "network_latency_ms": "Latência de Rede (ms)",
+    "failure_rate": "Taxa de Falha",
+    "auto_failover": "Auto Failover",
+    "manual_title": "Operação Manual",
+    "read": "Leitura",
+    "write": "Escrita",
+    "key_placeholder": "Chave",
+    "value_placeholder": "Valor",
+    "execute": "Executar",
+    "start": "Iniciar Simulação",
+    "stop": "Parar Simulação",
+    "role": "Papel",
+    "latency": "Latência",
+    "data": "Dados",
+    "keys_label": "{{count}} chaves",
+    "replicated_after": "Replicado após {{seconds}}s",
+    "simulate_failure": "Simular Falha",
+    "recover": "Recuperar",
+    "recent_requests": "Requisições Recentes",
+    "read_label": "Leitura",
+    "write_label": "Escrita"
+  },
+  "timeout": {
+    "title": "Simulador de Timeout",
+    "buttons": {
+      "settings": "Configurações",
+      "start": "Iniciar",
+      "stop": "Parar",
+      "reset": "Reiniciar"
+    },
+    "settings": {
+      "title": "Configurações da Simulação",
+      "timeout": "Timeout: {{seconds}}s",
+      "rps": "Requisições por Segundo: {{value}}",
+      "min_response": "Tempo Mínimo de Resposta: {{seconds}}s",
+      "max_response": "Tempo Máximo de Resposta: {{seconds}}s",
+      "success_rate": "Taxa de Sucesso: {{percent}}%"
+    },
+    "visualization": {
+      "title": "Visualização"
+    },
+    "request_label": "Requisição {{id}}",
+    "statuses": {
+      "success": "Requisição completada com sucesso",
+      "timeout": "Timeout: Requisição excedeu {{seconds}}s",
+      "error": "Erro do servidor"
+    },
+    "stats": {
+      "title": "Estatísticas",
+      "total": "Total de Requisições",
+      "timeouts": "Timeouts"
+    },
+    "info": {
+      "title": "Explicação",
+      "p1": "Este simulador demonstra como o mecanismo de timeout funciona em sistemas distribuídos. Cada requisição tem um tempo limite configurável para ser completada.",
+      "p2": "Se a resposta não chegar dentro do tempo limite, a requisição é cancelada e um erro de timeout é retornado, evitando que recursos fiquem presos indefinidamente.",
+      "p3": "Ajuste timeout, tempos de resposta e taxa de sucesso para visualizar impactos."
+    }
+  },
+  "outbox": {
+    "title": "Simulador de Transactional Outbox",
+    "subtitle": "Escrita dupla vs o padrão outbox quando o broker é instável",
+    "modes": {
+      "dual-write": "Escrita dupla",
+      "outbox": "Padrão outbox"
+    },
+    "controls": {
+      "broker_fail": "Taxa de falha do broker"
+    },
+    "buttons": {
+      "place": "Criar pedido",
+      "start": "Auto",
+      "stop": "Parar",
+      "reset": "Resetar"
+    },
+    "service": "Serviço",
+    "orders_made": "pedidos criados",
+    "events_sent": "eventos entregues",
+    "one_transaction": "Uma transação",
+    "relay": "relay",
+    "narration": {
+      "idle": "Crie um pedido e acompanhe o trajeto. Aumente a taxa de falha do broker para ver como cada abordagem reage.",
+      "dual_ok": "Pedido #{{n}}: confirmado no banco e o evento publicado no broker. Os dois funcionaram desta vez.",
+      "dual_lost": "Pedido #{{n}}: confirmado no banco, mas o broker estava fora e a publicação falhou. Esse evento se perdeu para sempre, banco e broker agora divergem.",
+      "outbox_commit": "Pedido #{{n}}: o pedido e a linha de outbox foram confirmados em uma transação. O relay vai publicar em seguida.",
+      "outbox_drain": "Pedido #{{n}} confirmado atomicamente; o relay publicou {{k}} linha(s) pendente(s) do outbox no broker.",
+      "outbox_wait": "Pedido #{{n}}: confirmado atomicamente. O broker está fora, então a linha de outbox espera segura no banco, nada se perde."
+    },
+    "database": "Banco (pedidos)",
+    "outbox_table": "Outbox (pendentes)",
+    "broker": "Broker (eventos)",
+    "lost": "Eventos perdidos",
+    "consistent": "Consistente",
+    "inconsistent": "Inconsistente!",
+    "metrics": {
+      "title": "Métricas ao Vivo",
+      "orders": "Pedidos confirmados",
+      "published": "Eventos publicados",
+      "lost": "Eventos perdidos",
+      "pending": "Pendentes no outbox"
+    },
+    "hint": {
+      "dual-write": "Com escrita dupla, o commit no banco e a publicação são separados. Quando o broker falha após o commit, o evento se perde para sempre — banco e broker divergem.",
+      "outbox": "O outbox grava o evento na mesma transação dos dados. Um relay o publica com retries, então nada se perde — só atrasa quando o broker está fora."
+    }
+  },
+  "bulkhead": {
+    "title": "Simulador de Bulkhead",
+    "subtitle": "Uma dependência lenta não deveria afundar o tráfego não relacionado",
+    "modes": {
+      "shared": "Pool compartilhado",
+      "bulkhead": "Bulkheads isolados"
+    },
+    "controls": {
+      "b_slow": "Lentidão da dependência B"
+    },
+    "buttons": {
+      "start": "Auto",
+      "stop": "Parar",
+      "reset": "Resetar"
+    },
+    "service_a": "Serviço A (dep saudável)",
+    "service_b": "Serviço B (dep lenta)",
+    "shared_pool": "Pool de workers compartilhado",
+    "pool_a": "Pool A",
+    "pool_b": "Pool B",
+    "legend_a": "Ocupado com A",
+    "legend_b": "Ocupado com B (lenta)",
+    "legend_free": "Slot livre",
+    "narration": {
+      "shared": "Um único pool de {{pool}} workers atende as duas dependências. Agora {{used}} slots estão em uso.",
+      "starved": "Chamadas lentas de B estão segurando {{busyB}} dos slots compartilhados, então chamadas saudáveis de A passam a ser rejeitadas. Uma dependência lenta afunda tudo.",
+      "bulkhead": "A e B têm metade do pool cada. A lentidão de B enche apenas os próprios slots, então A continua atendendo normalmente."
+    },
+    "healthy_dep": "Dependência saudável",
+    "slow_dep": "Dependência lenta / com falha",
+    "shared_note": "Pool compartilhado: chamadas lentas de B seguram todos os workers, então chamadas saudáveis de A também são rejeitadas.",
+    "bulkhead_note": "Bulkheads: A e B recebem metade do pool cada, então a lentidão de B fica contida e A continua atendendo.",
+    "metrics": {
+      "title": "Métricas ao Vivo",
+      "a_health": "Taxa de sucesso de A",
+      "b_health": "Taxa de sucesso de B",
+      "a_rejected": "A rejeitadas",
+      "b_rejected": "B rejeitadas"
+    },
+    "hint": "Sem isolamento, uma dependência lenta esgota o pool compartilhado e derruba o tráfego saudável. Bulkheads limitam cada dependência para que falhas fiquem contidas."
+  },
+  "pacelc": {
+    "title": "Simulador PACELC",
+    "subtitle": "Se Partição: escolha A ou C. Senão (operação normal): escolha L ou C.",
+    "presets": "Sistemas reais",
+    "systems": {
+      "dynamo": "DynamoDB",
+      "cassandra": "Cassandra",
+      "mongo": "MongoDB",
+      "pnuts": "PNUTS",
+      "bigtable": "Bigtable / HBase"
+    },
+    "scenario": {
+      "label": "Simular agora",
+      "normal": "Operação normal",
+      "partition": "Partição de rede"
+    },
+    "active_now": "Governando agora",
+    "root": "Chega uma requisição",
+    "if_partition": "SE há partição (P)",
+    "else_normal": "SENÃO: operação normal (E)",
+    "p_question": "Disponibilidade ou Consistência?",
+    "e_question": "Latência ou Consistência?",
+    "choices": {
+      "PA": "Disponibilidade",
+      "PC": "Consistência",
+      "EL": "Baixa latência",
+      "EC": "Consistência"
+    },
+    "classification": "Classificação",
+    "outcomes": {
+      "PA": "Durante uma partição, o sistema permanece disponível e serve dados possivelmente desatualizados nos dois lados (ex: Dynamo, Cassandra).",
+      "PC": "Durante uma partição, o sistema recusa requisições no lado minoritário para preservar a consistência (ex: MongoDB, HBase).",
+      "EL": "Em operação normal, o sistema responde da réplica mais próxima para baixa latência, aceitando consistência mais fraca (ex: Dynamo).",
+      "EC": "Em operação normal, o sistema coordena réplicas para consistência forte, pagando latência extra (ex: MongoDB, Bigtable)."
+    },
+    "favors_latency": "Favorece disponibilidade / latência",
+    "favors_consistency": "Favorece consistência",
+    "hint": "PACELC estende o CAP: uma partição força A-vs-C, mas no Senão (o caso comum, sem partição) você ainda troca Latência vs Consistência. Muitos sistemas escolhem o mesmo lado nos dois — PA/EL ou PC/EC."
+  },
+  "chaos": {
+    "title": "Simulador de Chaos Engineering",
+    "subtitle": "Injete falhas em um cluster e meça se a resiliência se mantém",
+    "buttons": {
+      "kill": "Matar um nó",
+      "start": "Rodar game day",
+      "stop": "Pausar",
+      "reset": "Resetar"
+    },
+    "redundancy_toggle": "Réplicas + retries (redundância)",
+    "nodes_up": "{{up}}/{{total}} nós ativos",
+    "availability": "disponibilidade",
+    "narration": {
+      "idle": "Todos os nós estão saudáveis. Mate um nó ou rode um game day para testar se o sistema sobrevive a falhas.",
+      "resilient": "{{down}} nó(s) fora, mas réplicas e retries desviam ao redor deles, então a disponibilidade se mantém em {{avail}}%.",
+      "degraded": "{{down}} nó(s) fora e as requisições estão presas aos nós, então a disponibilidade caiu para {{avail}}%."
+    },
+    "hint_on": "Com réplicas e retries, requisições são redirecionadas para nós saudáveis — matar um nó mal afeta a disponibilidade. Esse é o objetivo: falhas viram não-eventos.",
+    "hint_off": "Sem redundância, requisições presas a um nó morto falham direto. Cada nó que você mata derruba a disponibilidade proporcionalmente — exatamente a fraqueza que o teste de chaos expõe.",
+    "metrics": {
+      "title": "Métricas ao Vivo",
+      "availability": "Disponibilidade",
+      "experiments": "Falhas injetadas",
+      "served": "Requisições atendidas",
+      "failed": "Requisições falhas"
+    },
+    "log": {
+      "title": "Log de Eventos",
+      "empty": "Rode um game day ou mate um nó para injetar chaos…",
+      "killed": "CHAOS: nó N{{id}} terminado",
+      "recovered": "nó N{{id}} recuperado"
+    }
+  },
+  "event_sourcing": {
+    "title": "Simulador de Event Sourcing",
+    "buttons": {
+      "settings": "Configurações",
+      "reset": "Reiniciar",
+      "replay": "Replay"
+    },
+    "intro": "Explore como o Event Sourcing funciona em um sistema de e-commerce, onde cada mudança de estado é registrada como um evento imutável.",
+    "settings": {
+      "title": "Configurações da Simulação",
+      "auto_advance": "Avançar automaticamente",
+      "event_delay": "Delay entre Eventos: {{ms}}ms",
+      "show_event_data": "Mostrar dados dos eventos",
+      "animation_duration": "Duração da Animação: {{seconds}}s"
+    },
+    "create_order": {
+      "title": "Criar Pedido",
+      "selected_items": "Itens Selecionados:",
+      "total": "Total: R$ {{amount}}",
+      "create_button": "Criar Pedido"
+    },
+    "actions": {
+      "pay": "Confirmar Pagamento",
+      "ship": "Enviar Pedido",
+      "deliver": "Confirmar Entrega",
+      "cancel": "Cancelar Pedido"
+    },
+    "state": {
+      "title": "Estado Atual",
+      "order": "Pedido: {{id}}",
+      "status": "Status: {{status}}",
+      "total": "Total: R$ {{amount}}",
+      "tracking": "Rastreamento: {{code}}",
+      "items": "Itens:"
+    },
+    "events": {
+      "title": "Eventos",
+      "speed": "Velocidade:",
+      "speed_opts": {
+        "half": "0.5s",
+        "one": "1s",
+        "two": "2s"
+      }
+    }
+  },
+  "canary": {
+    "title": "Simulador de Canary Deployment",
+    "buttons": {
+      "settings": "Configurações",
+      "deploy_canary": "Deploy Canary",
+      "pause": "Pausar",
+      "resume": "Retomar",
+      "increase_traffic": "+10% Tráfego",
+      "promote": "Promover para 100%",
+      "rollback": "Rollback",
+      "inject_errors": "Injetar Erros",
+      "stop_errors": "Parar Erros",
+      "reset": "Resetar"
+    },
+    "settings": {
+      "title": "Configurações da Simulação",
+      "canary_traffic": "Tráfego Canary: {{percent}}%",
+      "canary_error_rate": "Taxa de Erro Canary: {{percent}}%",
+      "rps": "Requisições/seg: {{value}}",
+      "rollback_threshold": "Limite para Auto-Rollback: {{percent}}%"
+    },
+    "labels": {
+      "phase": "Fase",
+      "stable_servers": "Servidores Estáveis",
+      "canary_server": "Servidor Canary",
+      "traffic": "tráfego",
+      "requests": "Requisições",
+      "errors": "Erros",
+      "metrics": "Métricas",
+      "total_requests": "Total de Requisições",
+      "canary_requests": "Requisições Canary",
+      "canary_error_rate": "Taxa de Erro Canary",
+      "stable_error_rate": "Taxa de Erro Estável",
+      "live_requests": "Requisições em Tempo Real",
+      "no_requests": "Nenhuma requisição ainda. Faça deploy de um canary para começar.",
+      "event_log": "Log de Eventos",
+      "waiting_logs": "Aguardando eventos..."
+    },
+    "logs": {
+      "deploying_canary": "🚀 Fazendo deploy da versão canary...",
+      "canary_deployed": "✅ Canary implantado com sucesso",
+      "promoting_canary": "📈 Promovendo canary para 100%...",
+      "promotion_complete": "✅ Promoção completa - canary agora é estável",
+      "rolling_back": "⚠️ Revertendo para versão estável...",
+      "rollback_complete": "✅ Rollback completo",
+      "simulation_reset": "🔄 Simulação reiniciada",
+      "traffic_increased": "📈 Tráfego aumentado para {{percent}}%",
+      "auto_rollback_triggered": "🚨 Auto-rollback ativado! Taxa de erro: {{rate}}%"
+    },
+    "info": {
+      "title": "ℹ️ Como Usar",
+      "try_this": {
+        "title": "Experimente:",
+        "item1": "Faça deploy de um canary e observe a distribuição de tráfego",
+        "item2": "Aumente gradualmente o tráfego para o canary",
+        "item3": "Injete erros para ver o auto-rollback em ação",
+        "item4": "Promova o canary quando estiver confiante"
+      },
+      "observe": {
+        "title": "Observe:",
+        "item1": "Taxas de erro entre estável e canary",
+        "item2": "Distribuição de requisições entre servidores",
+        "item3": "Auto-rollback quando o limite é excedido"
+      },
+      "real_world": {
+        "title": "Mundo Real:",
+        "text": "Em produção, você monitoraria latência, taxas de erro e métricas de negócio antes de promover um canary."
+      }
+    }
+  }
+}
