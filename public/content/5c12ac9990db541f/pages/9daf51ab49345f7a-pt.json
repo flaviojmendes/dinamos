@@ -1,0 +1,8 @@
+{
+  "slug": "components/message-queue",
+  "path": "/componentes/message-queue",
+  "lang": "pt",
+  "title": "Filas de Mensagens",
+  "simulator_key": "message-queue",
+  "body": "# Filas de Mensagens\n\nFilas de mensagens são sistemas usados para comunicação assíncrona entre diferentes partes de um sistema, garantindo que mensagens possam ser enviadas e processadas de forma confiável.\n\n### Kafka\n\nUm sistema de mensagens distribuído projetado para processar grandes volumes de dados em tempo real. Usado em pipelines de dados e sistemas de streaming.\n\n### RabbitMQ\n\nUm broker de mensagens que suporta uma ampla variedade de padrões de mensagens, como filas e troca de mensagens, usado para comunicação entre microsserviços.\n\n### Amazon SQS\n\nServiço de fila de mensagens da AWS, que oferece uma solução de fila escalável e gerenciada na nuvem.\n\n## Pub/Sub e Sistemas de Fila\n\n### Pub/Sub (Publicação/Assinatura)\n\nUm padrão onde os produtores de mensagens (publicadores) enviam mensagens para um canal, e os consumidores (assinantes) se inscrevem para receber essas mensagens. O modelo Pub/Sub permite um desacoplamento entre produtores e consumidores.\n\n### Sistemas de Fila\n\nAs mensagens são colocadas em uma fila e processadas de forma FIFO (first-in, first-out), garantindo que as mensagens sejam entregues e processadas na ordem em que foram recebidas.\n\n<Callout type=\"info\" title=\"Simulador Interativo\">\n\nTry our interactive message queue simulation to understand asynchronous communication between producers and consumers.\n\n[Access Simulator](/componentes/message-queue/simulator)\n\n</Callout>\n"
+}

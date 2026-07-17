@@ -21,14 +21,19 @@
     "db:seed-content": "tsx --env-file=.env server/scripts/seedContent.ts",
     "db:seed-modules": "tsx --env-file=.env server/scripts/seedModules.ts",
     "db:export-content": "tsx --env-file=.env server/scripts/exportContentSql.ts",
+    "content:export-static": "tsx --env-file=.env server/scripts/exportStaticContent.ts",
     "db:apply-content": "tsx server/scripts/applyContentSeed.ts",
     "baseline": "node scripts/capture-baseline.mjs",
     "baseline:bundle": "node scripts/report-bundle-baseline.mjs",
     "baseline:bundle-budget": "node scripts/check-bundle-budget.mjs",
     "locales:split": "node scripts/split-locales.mjs",
     "baseline:game-rate": "node scripts/estimate-game-request-rate.mjs",
+    "baseline:scoring": "node scripts/measure-scoring-baseline.mjs",
+    "baseline:scoring-budget": "node scripts/check-scoring-budget.mjs",
     "baseline:build": "node scripts/measure-build-baseline.mjs",
-    "baseline:lighthouse": "node scripts/run-lighthouse-baseline.mjs"
+    "baseline:lighthouse": "node scripts/run-lighthouse-baseline.mjs",
+    "test:e2e": "PLAYWRIGHT_BROWSERS_PATH=.playwright-browsers playwright test",
+    "test:e2e:install": "node scripts/install-playwright-chromium.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -96,6 +101,7 @@
     "tsx": "^4.22.4",
     "typescript": "^5.3.3",
     "vite": "^5.1.4",
-    "vitest": "^2.1.9"
+    "vitest": "^2.1.9",
+    "@playwright/test": "^1.51.0"
   }
 }

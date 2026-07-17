@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Panel, StatusBadge, TacticalButton } from '../tactical';
+import { Legend, NarrationBar } from '../simulators/teaching';
 
 interface RequestAttempt {
   id: number;
@@ -136,6 +137,31 @@ export default function RetriesSimulator() {
           </motion.div>
         </div>
       </div>
+
+      <NarrationBar
+        tone={isSimulating ? 'active' : attempts.some((a) => a.status === 'success') ? 'success' : 'idle'}
+        stepKey={`${isSimulating}-${attempts.length}`}
+      >
+        {isSimulating
+          ? t('simulators.retries.narration.running', {
+              defaultValue: 'Attempt {{n}} in flight — watch how backoff spacing grows between retries.',
+              n: currentAttempt + 1,
+            })
+          : attempts.length === 0
+          ? t('simulators.retries.narration.idle', {
+              defaultValue: 'Start the simulation to see retry spacing, jitter, and how failures amplify load.',
+            })
+          : t('simulators.retries.narration.done', {
+              defaultValue: 'Each retry adds load to an already struggling dependency — that is the retry-storm trade-off.',
+            })}
+      </NarrationBar>
+      <Legend
+        items={[
+          { swatch: 'bg-signal-green', label: t('simulators.retries.legend.success', { defaultValue: 'Success' }) },
+          { swatch: 'bg-signal-amber', label: t('simulators.retries.legend.pending', { defaultValue: 'Pending / waiting' }) },
+          { swatch: 'bg-signal-red', label: t('simulators.retries.legend.error', { defaultValue: 'Failed attempt' }) },
+        ]}
+      />
 
       <AnimatePresence>
         {showSettings && (

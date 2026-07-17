@@ -1,0 +1,8 @@
+{
+  "slug": "design-principles/fault-tolerance",
+  "path": "/principios-design/tolerancia-falhas",
+  "lang": "en",
+  "title": "Fault Tolerance",
+  "simulator_key": null,
+  "body": "# Fault Tolerance\n\nDesigning systems that can recover or continue operating in the face of failures is essential to maintain reliability and high availability.\n\n<Cards cols={2}>\n\n<Card title=\"Retries\" accent=\"brand\">\n\nWhen an operation fails, the system attempts it again, increasing the chance of success in case of transient failures.\n\n**Practical Example**\n\nIn an online shopping app, if order confirmation fails due to a network issue, the app automatically retries the request.\n\n</Card>\n\n<Card title=\"Circuit Breakers\" accent=\"brand\">\n\nPrevents cascading failures by detecting problems and temporarily stopping calls to a troubled service.\n\n**Practical Example**\n\nWhen an image server is overloaded, the circuit breaker blocks new requests for a while, allowing the server to recover.\n\n</Card>\n\n<Card title=\"Timeout\" accent=\"brand\">\n\nDefines a maximum time for an operation to complete, avoiding waiting indefinitely for a response.\n\n**Practical Example**\n\nWhen submitting a form, if the server does not respond within 30 seconds, the operation is canceled and an error message is shown.\n\n</Card>\n\n<Card title=\"Fallback\" accent=\"brand\">\n\nProvides an alternative when the primary operation fails, ensuring the system continues to function in a degraded mode.\n\n**Practical Example**\n\nIn a maps app, if GPS fails, the system uses Wi‑Fi network location as an alternative to show an approximate position.\n\n</Card>\n\n</Cards>\n"
+}

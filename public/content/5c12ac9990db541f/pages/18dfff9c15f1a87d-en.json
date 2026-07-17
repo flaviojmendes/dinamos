@@ -1,0 +1,8 @@
+{
+  "slug": "design-principles/scalability",
+  "path": "/principios-design/escalabilidade",
+  "lang": "en",
+  "title": "Design for Scalability",
+  "simulator_key": "scalability",
+  "body": "# Design for Scalability\n\nScalability is the ability of a system to handle increased workload either by adding hardware capacity or distributing the load across multiple instances.\n\n<Cards cols={3}>\n\n<Card title=\"Horizontal Scalability\" accent=\"brand\">\n\nDistribute load across multiple servers by adding more machines.\n\n[Horizontal Scalability](/principios-design/escalabilidade/horizontal)\n\n</Card>\n\n<Card title=\"Vertical Scalability\" accent=\"brand\">\n\nIncrease resources on a single server such as RAM, CPU, or storage.\n\n[Vertical Scalability](/principios-design/escalabilidade/vertical)\n\n</Card>\n\n<Card title=\"Data Consistency\" accent=\"brand\">\n\nEnsure that all copies of data are synchronized across servers.\n\n[Data Consistency](/principios-design/escalabilidade/consistencia)\n\n</Card>\n\n<Card title=\"Latency\" accent=\"brand\">\n\nManage delays in delivering data or responses across the system.\n\n[Latency](/principios-design/escalabilidade/latencia)\n\n</Card>\n\n<Card title=\"Failover\" accent=\"brand\">\n\nAutomatically switch to a backup system in case of failure.\n\n[Failover](/principios-design/escalabilidade/failover)\n\n</Card>\n\n</Cards>\n\n[Explore Scalability Simulator](/principios-design/escalabilidade/simulator)\n"
+}

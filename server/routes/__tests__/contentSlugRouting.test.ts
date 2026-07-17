@@ -24,6 +24,17 @@ const nestedPage = {
   bodyEn: '# Distributed Systems Challenges',
   bodyPt: '# Desafios de Sistemas Distribuídos',
 };
+const nestedIndexPage = {
+  slug: nestedPage.slug,
+  path: nestedPage.path,
+  moduleId: null as string | null,
+  orderIndex: 0,
+  simulatorKey: nestedPage.simulatorKey,
+  titleEn: nestedPage.titleEn,
+  titlePt: nestedPage.titlePt,
+  hasEn: true,
+  hasPt: true,
+};
 
 beforeEach(() => {
   mockDb.reset();
@@ -63,7 +74,7 @@ describe('GET /api/content/:slug nested paths', () => {
   });
 
   it('includes the full slug in the index entry', async () => {
-    mockDb.setResults([[nestedPage]]);
+    mockDb.setResults([[nestedIndexPage]]);
     const res = await app.request('/api/content');
     const json = (await res.json()) as { pages: { slug: string }[] };
     expect(json.pages[0].slug).toBe('theoretical-foundations/distributed-challenges');

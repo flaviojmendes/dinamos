@@ -31,6 +31,7 @@ import { MATCH_SCENARIOS, getMatchScenario } from '../components/SystemEditor/ga
 import { DEFAULT_SCORING } from '../components/SystemEditor/engine/scoring';
 import GameLeaderboard from '../components/SystemEditor/game/GameLeaderboard';
 import AdminSpectator from '../components/SystemEditor/game/AdminSpectator';
+import MatchPolicies from '../components/SystemEditor/game/MatchPolicies';
 import type { LeaderboardEntry } from '../components/SystemEditor/game/types';
 
 function fmtClock(totalSec: number): string {
@@ -93,11 +94,16 @@ interface AdminSession {
   total_rounds?: number;
   round_started_at?: string | null;
   round_ends_at?: string | null;
+  interval_started_at?: string | null;
+  interval_ends_at?: string | null;
+  seconds_until_deadline?: number | null;
+  is_paused?: boolean;
   leaderboard?: LeaderboardEntry[];
   announcement?: string | null;
   join_open?: boolean;
   listed?: boolean;
   join_key?: string | null;
+  max_players?: number;
   server_time?: string;
 }
 
@@ -112,8 +118,69 @@ function inviteUrl(session: AdminSession): string {
   return matchUrl(session.code, session.join_open === false ? session.join_key : null);
 }
 
-function stageUrl(code: string): string {
-  return `${window.location.origin}/editor/game/${code}/stage`;
+function stageUrl(code: string, token: string): string {
+  return `${window.location.origin}/editor/game/${code}/stage?token=${encodeURIComponent(token)}`;
+}
+
+function StageShare({ code }: { code: string }) {
+  const { t } = useTranslation();
+  const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const rotate = async () => {
+    setLoading(true);
+    try {
+      const res = await apiClient.post(`/api/games/host/${code}/stage-token`);
+      setToken((res.data?.stage_token as string) ?? null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const url = token ? stageUrl(code, token) : null;
+
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <button
+        type="button"
+        onClick={() => void rotate()}
+        disabled={loading}
+        className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md border border-tactical-border text-tactical-dim hover:border-signal-amber hover:text-signal-amber font-sans text-xs transition-colors disabled:opacity-50"
+      >
+        <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+        {token
+          ? t('editor.game.rotate_stage', { defaultValue: 'Rotate stage link' })
+          : t('editor.game.generate_stage', { defaultValue: 'Generate stage link' })}
+      </button>
+      {url && (
+        <>
+          <a
+            href={url}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md border border-tactical-border text-tactical-dim hover:border-signal-amber hover:text-signal-amber font-sans text-xs transition-colors"
+          >
+            <MonitorPlay className="w-3.5 h-3.5" /> {t('editor.game.stage', { defaultValue: 'Stage' })}
+          </a>
+          <button
+            type="button"
+            onClick={() => {
+              navigator.clipboard.writeText(url);
+              setCopied(true);
+              setTimeout(() => setCopied(false), 1500);
+            }}
+            className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md border border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan font-sans text-xs transition-colors"
+          >
+            {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+            {copied
+              ? t('editor.game.copied', { defaultValue: 'Copied' })
+              : t('editor.game.copy_stage', { defaultValue: 'Copy stage link' })}
+          </button>
+        </>
+      )}
+    </div>
+  );
 }
 
 function CopyButton({ text }: { text: string }) {
@@ -515,8 +582,16 @@ function ManageMatch({ code }: { code: string }) {
   const serverNow = now + offsetRef.current;
   const startsMs = session.starts_at ? new Date(session.starts_at).getTime() : null;
   const roundEndsMs = session.round_ends_at ? new Date(session.round_ends_at).getTime() : null;
-  const countdownSec = startsMs ? (startsMs - serverNow) / 1000 : null;
-  const roundLeftSec = roundEndsMs ? (roundEndsMs - serverNow) / 1000 : null;
+  const intervalEndsMs = session.interval_ends_at ? new Date(session.interval_ends_at).getTime() : null;
+  const countdownSec =
+    session.seconds_until_deadline ??
+    (phase === 'lobby' && startsMs ? (startsMs - serverNow) / 1000 : null);
+  const roundLeftSec =
+    session.seconds_until_deadline ??
+    (phase === 'round' && roundEndsMs ? (roundEndsMs - serverNow) / 1000 : null);
+  const buildLeftSec =
+    session.seconds_until_deadline ??
+    (phase === 'interval' && intervalEndsMs ? (intervalEndsMs - serverNow) / 1000 : null);
 
   // Shift the scheduled lobby-open time, never into the past.
   const shiftStart = (deltaSec: number) => {
@@ -547,13 +622,22 @@ function ManageMatch({ code }: { code: string }) {
         {phase !== 'round' && phase !== 'ended' && hasNextRound && (
           <>
             {phase === 'lobby' && (
-              <button onClick={() => patch({ action: 'open_interval' })} className={`${btn} border-signal-cyan text-signal-cyan hover:bg-signal-cyan/10`}>
-                <Hammer className="w-3.5 h-3.5" /> {t('editor.game.open_build', { defaultValue: 'Open build phase' })}
+              <>
+                <button onClick={() => patch({ action: 'open_interval' })} className={`${btn} border-signal-cyan text-signal-cyan hover:bg-signal-cyan/10`}>
+                  <Hammer className="w-3.5 h-3.5" /> {t('editor.game.open_build', { defaultValue: 'Open build phase' })}
+                </button>
+                <span className="font-sans text-[11px] text-tactical-dim max-w-xs">
+                  {t('editor.game.first_build_hint', {
+                    defaultValue: 'Matches always start with a build phase. Open build before starting round 1.',
+                  })}
+                </span>
+              </>
+            )}
+            {phase === 'interval' && (
+              <button onClick={() => patch({ action: 'start_round' })} className={`${btn} border-signal-green text-signal-green hover:bg-signal-green/10`}>
+                <Play className="w-3.5 h-3.5" /> {t('editor.game.start_round', { defaultValue: 'Start round {{n}}', n: nextRound })}
               </button>
             )}
-            <button onClick={() => patch({ action: 'start_round' })} className={`${btn} border-signal-green text-signal-green hover:bg-signal-green/10`}>
-              <Play className="w-3.5 h-3.5" /> {t('editor.game.start_round', { defaultValue: 'Start round {{n}}', n: nextRound })}
-            </button>
           </>
         )}
 
@@ -637,6 +721,8 @@ function ManageMatch({ code }: { code: string }) {
         </label>
       </div>
 
+      <MatchPolicies state={{ max_players: session.max_players }} compact />
+
       {/* Time controls: lobby countdown / live round time + fine adjustments */}
       <div className="flex flex-wrap items-center gap-3 mb-4 bg-tactical-raised/40 border border-tactical-border rounded-lg p-3">
         <div className="inline-flex items-center gap-2">
@@ -645,12 +731,19 @@ function ManageMatch({ code }: { code: string }) {
             <span className="font-sans text-sm text-tactical-text">
               {roundLeftSec !== null ? (
                 <>
-                  {t('editor.game.round_time_left', { defaultValue: 'Round time left' })}{' '}
+                  {session.is_paused
+                    ? t('editor.game.paused', { defaultValue: 'Paused' })
+                    : t('editor.game.round_time_left', { defaultValue: 'Round time left' })}{' '}
                   <span className="font-bold text-signal-amber tabular-nums">{fmtClock(roundLeftSec)}</span>
                 </>
               ) : (
                 t('editor.game.open_ended', { defaultValue: 'Open-ended' })
               )}
+            </span>
+          ) : phase === 'interval' && buildLeftSec !== null ? (
+            <span className="font-sans text-sm text-tactical-text">
+              {t('editor.game.build_time_left', { defaultValue: 'Build time left' })}{' '}
+              <span className="font-bold text-signal-cyan tabular-nums">{fmtClock(buildLeftSec)}</span>
             </span>
           ) : phase === 'lobby' && countdownSec !== null ? (
             <span className="font-sans text-sm text-tactical-text">
@@ -815,15 +908,7 @@ function MatchRow({ session, onChanged }: { session: AdminSession; onChanged: ()
         )}
         <div className="ml-auto flex items-center gap-2">
           <CopyButton text={inviteUrl(session)} />
-          <a
-            href={stageUrl(session.code)}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md border border-tactical-border text-tactical-dim hover:border-signal-amber hover:text-signal-amber font-sans text-xs transition-colors"
-            title={stageUrl(session.code)}
-          >
-            <MonitorPlay className="w-3.5 h-3.5" /> {t('editor.game.stage', { defaultValue: 'Stage' })}
-          </a>
+          <StageShare code={session.code} />
           <button
             onClick={() => setOpen((o) => !o)}
             aria-expanded={open}

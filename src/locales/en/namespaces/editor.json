@@ -283,7 +283,9 @@
     "tools": "Tools",
     "arrange": "Arrange",
     "vertical": "Vertical",
-    "horizontal": "Horizontal"
+    "horizontal": "Horizontal",
+    "close": "Close",
+    "sheet": "Panel"
   },
   "canvas": {
     "empty_title": "Build your first system",
@@ -369,6 +371,94 @@
       "up_next": "Up next: {{name}}",
       "close_final": "Close standings",
       "back_to_build": "Back to building"
+    },
+    "lobby": "Lobby",
+    "live": "Live",
+    "build": "Build",
+    "paused": "Paused",
+    "ended": "Ended",
+    "mode": "Game mode",
+    "round": "Round",
+    "traffic": "Traffic",
+    "players": "Players",
+    "your_score": "Your score",
+    "throughput": "Throughput",
+    "availability": "Availability",
+    "leaderboard": "Leaderboard",
+    "anon": "Anonymous",
+    "you": "you",
+    "verified": "Verified",
+    "provisional": "est.",
+    "provisional_total_hint": "Provisional total — verified after the round",
+    "provisional_score_hint": "Provisional score — verified after the round",
+    "provisional_leaderboard_hint": "Live scores are provisional until the server verifies them.",
+    "not_found": "Match not found",
+    "go_editor": "Go to the editor",
+    "untitled_match": "Distributed Systems Match",
+    "saturation": "Saturation",
+    "retry": "Retry",
+    "no_players": "No players yet.",
+    "waiting_host": "Waiting for the host to start…",
+    "lobby_build_hint": "Build phase: refine your architecture before the next round starts.",
+    "locked_components": "Locked parts",
+    "joined_players": "Players in the lobby",
+    "generate_stage": "Generate stage link",
+    "rotate_stage": "Rotate stage link",
+    "copy_stage": "Copy stage link",
+    "open_build": "Open build phase",
+    "first_build_hint": "Matches always start with a build phase. Open build before starting round 1.",
+    "start_round": "Start round {{n}}",
+    "pause": "Pause",
+    "resume": "Resume",
+    "finish_match": "Finish match",
+    "end_round": "End round",
+    "end": "End match",
+    "traffic_intensity": "Traffic ×",
+    "allow_delete_live": "Players can delete components",
+    "round_time_left": "Round time left",
+    "starts_in": "Starts in",
+    "build_time_left": "Build time left",
+    "status": "Status",
+    "sync_offline": "You are offline. Match sync will resume when you reconnect.",
+    "sync_stale": "Match state may be stale. Tap retry to refresh.",
+    "leaderboard_open": "Open leaderboard. You are rank {{rank}}.",
+    "scoring": {
+      "title": "How scoring works",
+      "subtitle": "Points accrue every simulated second while your architecture stays valid and healthy. Leaderboard totals may be verified by the server after each round.",
+      "throughput": "Throughput: +{{w}} pts per req/s served",
+      "availability": "Availability: up to +{{w}}×100 per second when errors stay low",
+      "latency": "Latency target: p95 under {{ms}} ms (penalty ×{{w}} above target)",
+      "budget": "Spend budget: ${{budget}}/hr (penalty ×{{w}} when over)",
+      "streak": "SLO streak: hold errors <1% and p95 under target for {{sec}}s to reach ×{{mult}} on positive points",
+      "weights": "Weighted rounds: {{list}}"
+    },
+    "policies": {
+      "title": "Match policies",
+      "subtitle": "Competitive rules enforced by the server. Leaderboard totals use verified recomputation unless an emergency rollback flag is active.",
+      "tie": {
+        "title": "Tie-break order",
+        "body": "Verified score, then best SLO streak, earliest verified submission, join time, then user ID."
+      },
+      "late_join": {
+        "title": "Late join",
+        "body": "Players who join mid-round receive a frozen architecture snapshot and score only from eligible simulation seconds after they joined."
+      },
+      "pause": {
+        "title": "Pause & host override",
+        "body": "Host pause freezes simulation eligibility and countdowns. Resume extends deadlines by the paused duration. Hosts may start early, extend, or end rounds."
+      },
+      "kick": {
+        "title": "Kick & rejoin",
+        "body": "Removed players cannot rejoin the same match. The host can open or close joins and share invite links for private matches."
+      },
+      "spectator": {
+        "title": "Spectators & stage",
+        "body": "Live architectures are hidden from public spectators during rounds. The rotatable stage link shows rankings and countdowns only."
+      },
+      "capacity": {
+        "title": "Capacity",
+        "body": "This match accepts up to {{max}} players. Join is blocked when full."
+      }
     }
   },
   "stage": {
@@ -381,6 +471,9 @@
     "join_at": "Join at",
     "champion": "Champion",
     "standings": "Standings",
-    "waiting_players": "Waiting for players to join…"
+    "waiting_players": "Waiting for players to join…",
+    "token_required_title": "Stage link required",
+    "token_required_body": "Ask the host for the audience screen link. It includes a read-only access token.",
+    "architectures_hidden": "Live architectures hidden until the round ends"
   }
 }

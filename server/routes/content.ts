@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
-import { asc, eq } from 'drizzle-orm';
+import { asc, eq, sql } from 'drizzle-orm';
 import { db } from '../db/client.js';
 import { contentPages, contentModules } from '../db/schema.js';
 import { authRequired, adminRequired, type AppVariables } from '../middleware/auth.js';
@@ -38,8 +38,25 @@ function toModuleAdminDict(row: ModuleRow) {
   };
 }
 
+type PublicIndexRow = {
+  slug: string;
+  path: string;
+  moduleId: string | null;
+  orderIndex: number;
+  simulatorKey: string | null;
+  titleEn: string | null;
+  titlePt: string | null;
+  hasEn: boolean;
+  hasPt: boolean;
+};
+
+/** True when a language body column is non-null and not whitespace-only. */
+function hasNonEmptyBody(column: typeof contentPages.bodyEn | typeof contentPages.bodyPt) {
+  return sql<boolean>`(${column} IS NOT NULL AND TRIM(${column}) <> '')`;
+}
+
 /** Public index entry — just what routing + the navigation registry need. */
-function toIndexEntry(row: ContentRow) {
+function toIndexEntry(row: PublicIndexRow) {
   return {
     slug: row.slug,
     path: row.path,
@@ -48,8 +65,8 @@ function toIndexEntry(row: ContentRow) {
     simulatorKey: row.simulatorKey,
     titleEn: row.titleEn,
     titlePt: row.titlePt,
-    hasEn: Boolean(row.bodyEn && row.bodyEn.trim()),
-    hasPt: Boolean(row.bodyPt && row.bodyPt.trim()),
+    hasEn: row.hasEn,
+    hasPt: row.hasPt,
   };
 }
 
@@ -178,15 +195,15 @@ contentRouter.get('/api/content', async (c) => {
       simulatorKey: contentPages.simulatorKey,
       titleEn: contentPages.titleEn,
       titlePt: contentPages.titlePt,
-      bodyEn: contentPages.bodyEn,
-      bodyPt: contentPages.bodyPt,
+      hasEn: hasNonEmptyBody(contentPages.bodyEn).as('hasEn'),
+      hasPt: hasNonEmptyBody(contentPages.bodyPt).as('hasPt'),
     })
     .from(contentPages)
     .where(eq(contentPages.published, true))
     .orderBy(asc(contentPages.orderIndex), asc(contentPages.slug));
   c.header('Cache-Control', PUBLIC_READ_CACHE);
   c.header('Vary', 'Accept-Encoding');
-  return c.json({ pages: rows.map((row) => toIndexEntry(row as ContentRow)) });
+  return c.json({ pages: rows.map((row) => toIndexEntry(row)) });
 });
 
 /**

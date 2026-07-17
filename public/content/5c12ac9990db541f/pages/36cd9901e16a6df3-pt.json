@@ -1,0 +1,8 @@
+{
+  "slug": "design-principles/vertical-scaling",
+  "path": "/principios-design/escalabilidade/vertical",
+  "lang": "pt",
+  "title": "Escalabilidade Vertical (Scale-Up)",
+  "simulator_key": "vertical-scaling",
+  "body": "# Escalabilidade Vertical (Scale-Up)\n\nEstratégia que melhora o desempenho de um único servidor adicionando recursos como RAM, armazenamento ou processadores mais rápidos.\n\n## Como Funciona\n\nÉ como trocar um carro pequeno por um maior para transportar mais passageiros. Embora simples de implementar, há um limite físico: o servidor atinge sua capacidade máxima.\n\n<Callout type=\"neutral\" title=\"Exemplo Prático\">\n\nUma loja virtual que usa um servidor básico faz upgrade para um mais potente por aumento de tráfego. Resolve no curto prazo, mas com crescimento contínuo pode não ser suficiente.\n\n</Callout>\n\n## Vantagens\n\n- **Simplicidade**: Fácil de implementar e gerenciar\n- **Menor Complexidade**: Não requer mudanças na arquitetura\n- **Solução Rápida**: Ideal para problemas imediatos de performance\n\n## Limitações\n\n- **Limite Físico**: Há um máximo de melhorias possíveis em um servidor\n- **Custo**: Hardware mais potente custa exponencialmente mais\n- **Ponto Único de Falha**: Se falhar, todo o sistema cai\n\n## Quando Usar\n\n- **Aplicações Pequenas**: Tráfego moderado e crescimento previsível\n- **Solução Temporária**: Correção rápida para performance\n- **Sistemas Monolíticos**: Aplicações não projetadas para distribuição\n\n[Explorar Simulador de Escalabilidade](/principios-design/escalabilidade/simulator)\n"
+}

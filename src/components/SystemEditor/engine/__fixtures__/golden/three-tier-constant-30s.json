@@ -1,0 +1,158 @@
+{
+  "id": "three-tier-constant-30s",
+  "description": "Three-tier preset, constant load, 30 simulated seconds",
+  "architecture": {
+    "nodes": [
+      {
+        "id": "c1",
+        "position": {
+          "x": 400,
+          "y": 0
+        },
+        "config": {
+          "id": "c1",
+          "kind": "client",
+          "label": "Users",
+          "serviceTimeMs": 0,
+          "concurrency": 1,
+          "replicas": 1,
+          "failureRate": 0,
+          "timeoutMs": 2000,
+          "latencyDistribution": "lognormal",
+          "latencyCv": 0.5,
+          "queueCapacity": null,
+          "baseRate": 120,
+          "origin": "seed"
+        }
+      },
+      {
+        "id": "lb",
+        "position": {
+          "x": 400,
+          "y": 140
+        },
+        "config": {
+          "id": "lb",
+          "kind": "loadBalancer",
+          "label": "Load Balancer",
+          "serviceTimeMs": 2,
+          "concurrency": 16,
+          "replicas": 1,
+          "failureRate": 0,
+          "timeoutMs": 1000,
+          "latencyDistribution": "lognormal",
+          "latencyCv": 0.5,
+          "queueCapacity": null,
+          "strategy": "roundRobin",
+          "origin": "seed"
+        }
+      },
+      {
+        "id": "s1",
+        "position": {
+          "x": 200,
+          "y": 300
+        },
+        "config": {
+          "id": "s1",
+          "kind": "server",
+          "label": "App Server 1",
+          "serviceTimeMs": 30,
+          "concurrency": 4,
+          "replicas": 1,
+          "failureRate": 0,
+          "timeoutMs": 1000,
+          "latencyDistribution": "lognormal",
+          "latencyCv": 0.5,
+          "queueCapacity": null,
+          "origin": "seed"
+        }
+      },
+      {
+        "id": "s2",
+        "position": {
+          "x": 600,
+          "y": 300
+        },
+        "config": {
+          "id": "s2",
+          "kind": "server",
+          "label": "App Server 2",
+          "serviceTimeMs": 30,
+          "concurrency": 4,
+          "replicas": 1,
+          "failureRate": 0,
+          "timeoutMs": 1000,
+          "latencyDistribution": "lognormal",
+          "latencyCv": 0.5,
+          "queueCapacity": null,
+          "origin": "seed"
+        }
+      },
+      {
+        "id": "db",
+        "position": {
+          "x": 400,
+          "y": 460
+        },
+        "config": {
+          "id": "db",
+          "kind": "database",
+          "label": "Database",
+          "serviceTimeMs": 15,
+          "concurrency": 8,
+          "replicas": 1,
+          "failureRate": 0,
+          "timeoutMs": 1000,
+          "latencyDistribution": "lognormal",
+          "latencyCv": 0.5,
+          "queueCapacity": null,
+          "writeFraction": 0.2,
+          "origin": "seed"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "e-c1-lb",
+        "source": "c1",
+        "target": "lb"
+      },
+      {
+        "id": "e-lb-s1",
+        "source": "lb",
+        "target": "s1"
+      },
+      {
+        "id": "e-lb-s2",
+        "source": "lb",
+        "target": "s2"
+      },
+      {
+        "id": "e-s1-db",
+        "source": "s1",
+        "target": "db"
+      },
+      {
+        "id": "e-s2-db",
+        "source": "s2",
+        "target": "db"
+      }
+    ]
+  },
+  "seed": 1,
+  "loadProfile": {
+    "type": "constant"
+  },
+  "chaosEvents": [],
+  "scoringConfig": {},
+  "tickCount": 30,
+  "expected": {
+    "roundedScore": 12080,
+    "ticks": 30,
+    "bestStreak": 30,
+    "nonCompliantTicks": 0,
+    "finalP95": 80.67431226170507,
+    "finalThroughput": 119.99999999999748
+  }
+}

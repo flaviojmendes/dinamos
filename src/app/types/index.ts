@@ -271,3 +271,15 @@ export interface LeaderboardEntry {
 export interface UserRanking extends LeaderboardEntry {
   message?: string
 }
+
+export interface ArenaLeaderboardEntry {
+  rank: number
+  user_id: string
+  nickname: string | null
+  avatar_image: string | null
+  arena_matches_played: number
+  arena_wins: number
+  arena_podiums: number
+  win_rate: number
+  message?: string
+}

@@ -19,6 +19,10 @@ vi.mock('../../lib/email', () => email);
 vi.mock('../../lib/firebaseAdmin', () => ({
   verifyIdToken: vi.fn(async () => ({ uid: 'u1', email: 'u1@example.com' })),
 }));
+vi.mock('../../lib/rateLimitStore.js', () => ({
+  incrementRateLimitBucket: vi.fn(async () => ({ allowed: true, count: 1 })),
+  resetMemoryRateLimitBuckets: vi.fn(),
+}));
 
 let app: Hono;
 beforeAll(async () => {
@@ -258,11 +262,10 @@ describe('forum routes', () => {
 
   it('POST vote adds an upvote on a topic', async () => {
     mockDb.setResults([
+      [{ id: 1, userId: 'u1', upvotes: 0, createdAt: new Date() }], // target topic
       [], // existing vote
-      [{ id: 1, userId: 'owner', upvotes: 0, createdAt: new Date() }], // target topic
       undefined, // insert vote
-      [{ count: 1 }], // recent votes
-      undefined, // update upvotes
+      [{ upvotes: 1 }], // atomic update returning
     ]);
     const res = await app.request('/api/forum/vote', {
       method: 'POST',
@@ -276,10 +279,10 @@ describe('forum routes', () => {
 
   it('POST vote removes an existing upvote', async () => {
     mockDb.setResults([
+      [{ id: 1, userId: 'u1', upvotes: 5, createdAt: new Date() }], // target
       [{ id: 99 }], // existing vote
-      [{ id: 1, userId: 'owner', upvotes: 5, createdAt: new Date() }], // target
       undefined, // delete vote
-      undefined, // update upvotes
+      [{ upvotes: 4 }], // atomic update returning
     ]);
     const res = await app.request('/api/forum/vote', {
       method: 'POST',

@@ -26,6 +26,7 @@ import {
   SimulationFrame,
   defaultsForKind,
 } from './engine/types';
+import { SIM_DT_SECONDS, SIM_TRACE_SAMPLES } from './engine/constants';
 import { Simulator } from './engine/simulator';
 import { makeLoadProfile, LoadProfileType, ChaosEvent, getPreset } from './engine/scenarios';
 import { CloudProvider, estimateCostFromMetrics } from './engine/costModel';
@@ -53,8 +54,9 @@ import {
 } from './engine/scoring';
 import { evaluateCompliance, type ComplianceResult } from './engine/compliance';
 import { stableHash } from './engine/stableHash';
-import GameBanner from './game/GameBanner';
+import GameBanner, { type LiveRoundStats } from './game/GameBanner';
 import GameLeaderboard from './game/GameLeaderboard';
+import GameSyncAlerts from './game/GameSyncAlerts';
 import RoundFX from './game/RoundFX';
 import RoundResults from './game/RoundResults';
 import { useIsTouchLayout } from './ui/useIsTouchLayout';
@@ -346,6 +348,13 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
   // intervals (and the lobby). Non-game sessions are always editable. Read-only
   // (embed/share view) freezes editing the same way a live round does.
   const frozen = (gameActive && gameState?.phase === 'round') || !!readOnly;
+
+  useEffect(() => {
+    if (frozen) {
+      setMenu(null);
+      setSheet(null);
+    }
+  }, [frozen]);
   const initial = useMemo(() => presetToRF('three-tier'), []);
 
   const [nodes, setNodes, onNodesChange] = useNodesState<SimNodeData>(initial.nodes);
@@ -392,6 +401,12 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
   const isTouch = useIsTouchLayout();
   type MobileSheet = 'palette' | 'scenario' | 'tools' | 'inspector' | null;
   const [sheet, setSheet] = useState<MobileSheet>(null);
+  const [lbSheetOpen, setLbSheetOpen] = useState(false);
+  const [liveRoundStats, setLiveRoundStats] = useState<LiveRoundStats>({
+    score: 0,
+    streak: 0,
+    multiplier: 1,
+  });
   const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
 
   const simRef = useRef<Simulator | null>(null);
@@ -487,6 +502,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
   // Ignored while typing in form fields so native text undo keeps working.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (isFrozen()) return;
       if (!(e.metaKey || e.ctrlKey)) return;
       const target = e.target as HTMLElement | null;
       const tag = target?.tagName;
@@ -502,7 +518,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [undo, redo]);
+  }, [undo, redo, isFrozen]);
 
   // Map ReactFlow graph -> engine config.
   const buildConfig = useCallback(
@@ -510,8 +526,8 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
       nodes: nodes.map((n) => n.data.config),
       edges: edges.map((e) => ({ id: e.id, source: e.source, target: e.target })),
       seed,
-      dtSeconds: 1,
-      traceSamples: 2000,
+      dtSeconds: SIM_DT_SECONDS,
+      traceSamples: SIM_TRACE_SAMPLES,
     }),
     [nodes, edges, seed],
   );
@@ -685,46 +701,69 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
 
   // Synced round loop: drive the deterministic sim by wall-clock round-time so
   // all players experience the same traffic/chaos at the same simulated second.
-  // Runs only while the round is live (not during build intervals).
+  const catchUpRoundSim = useCallback(() => {
+    const g = gameRef.current;
+    const gs = gameStateRef.current;
+    if (!g || !gs || gs.phase !== 'round' || gs.status !== 'running' || gs.is_paused) return;
+    if (!gs.round_started_at) return;
+
+    const startedMs = new Date(gs.round_started_at).getTime();
+    const offset = g.serverOffsetMs ?? 0;
+    let target = Math.floor((Date.now() + offset - startedMs) / 1000);
+    if (gs.round_ends_at) {
+      const endTick = Math.floor((new Date(gs.round_ends_at).getTime() - startedMs) / 1000);
+      if (target > endTick) target = endTick;
+    }
+
+    const scoringCfg = normalizeScoring(gs.scoring_config);
+    let guard = 0;
+    let last = lastFrameRef.current;
+    while ((simRef.current?.currentTime ?? 0) < target && guard < 600) {
+      const frame = simRef.current?.tick();
+      if (frame) {
+        last = frame;
+        scoreRef.current = accumulate(
+          scoreRef.current,
+          applyCompliance(frameScore(frame.system, scoringCfg), complianceRef.current.ok),
+        );
+      }
+      guard++;
+    }
+    if (last && last !== lastFrameRef.current) {
+      lastFrameRef.current = last;
+      applyFrame(last);
+    }
+    setLiveRoundStats({
+      score: scoreRef.current.total,
+      streak: scoreRef.current.streak,
+      multiplier: scoreRef.current.multiplier,
+    });
+  }, [applyFrame]);
+
   useEffect(() => {
     if (!gameActive) return;
     if (gameState?.phase !== 'round' || gameState?.status !== 'running' || !gameState.round_started_at)
       return;
-    const startedMs = new Date(gameState.round_started_at).getTime();
-    const id = setInterval(() => {
-      const g = gameRef.current;
-      const gs = gameStateRef.current;
-      if (!g || !gs || gs.phase !== 'round') return;
-      const offset = g.serverOffsetMs ?? 0;
-      let target = Math.floor((Date.now() + offset - startedMs) / 1000);
-      if (gs.round_ends_at) {
-        const endTick = Math.floor((new Date(gs.round_ends_at).getTime() - startedMs) / 1000);
-        if (target > endTick) target = endTick;
-      }
-      const scoringCfg = normalizeScoring(gs.scoring_config);
-      let guard = 0;
-      let last = lastFrameRef.current;
-      while ((simRef.current?.currentTime ?? 0) < target && guard < 600) {
-        const frame = simRef.current?.tick();
-        if (frame) {
-          last = frame;
-          scoreRef.current = accumulate(
-            scoreRef.current,
-            applyCompliance(
-              frameScore(frame.system, scoringCfg),
-              complianceRef.current.ok,
-            ),
-          );
-        }
-        guard++;
-      }
-      if (last && last !== lastFrameRef.current) {
-        lastFrameRef.current = last;
-        applyFrame(last);
-      }
-    }, 1000);
+    const id = setInterval(catchUpRoundSim, 1000);
     return () => clearInterval(id);
-  }, [gameActive, gameState?.phase, gameState?.status, gameState?.round_started_at, applyFrame]);
+  }, [
+    gameActive,
+    gameState?.phase,
+    gameState?.status,
+    gameState?.round_started_at,
+    gameState?.is_paused,
+    catchUpRoundSim,
+  ]);
+
+  // Fast-forward preview ticks when returning from a background tab.
+  useEffect(() => {
+    if (!gameActive) return;
+    const onVisibility = () => {
+      if (!document.hidden) catchUpRoundSim();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => document.removeEventListener('visibilitychange', onVisibility);
+  }, [gameActive, catchUpRoundSim]);
 
   // Snapshot the latest "golden signals" from the most recent sim frame.
   const gameMetrics = useCallback(() => {
@@ -918,6 +957,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
 
   const openMenuAt = useCallback((kind: 'node' | 'edge' | 'pane', id: string, event: React.MouseEvent) => {
     event.preventDefault();
+    if (isFrozen()) return;
     // On touch we replace context menus with the SelectionActionBar / tools sheet.
     if (isTouch) return;
     const bounds = canvasRef.current?.getBoundingClientRect();
@@ -927,7 +967,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
       x: event.clientX - (bounds?.left ?? 0),
       y: event.clientY - (bounds?.top ?? 0),
     });
-  }, [isTouch]);
+  }, [isTouch, isFrozen]);
 
   const onNodeContextMenu = useCallback(
     (event: React.MouseEvent, node: Node) => {
@@ -1007,11 +1047,12 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
 
   const onNodesDelete = useCallback(
     (deleted: Node[]) => {
+      if (isFrozen()) return;
       takeSnapshot();
       setEdges((eds) => eds.filter((e) => !deleted.some((n) => n.id === e.source || n.id === e.target)));
       if (deleted.some((n) => n.id === selectedId)) setSelectedId(null);
     },
-    [setEdges, selectedId, takeSnapshot],
+    [setEdges, selectedId, takeSnapshot, isFrozen],
   );
 
   // Snapshot before edges are removed (keyboard delete) and before a node drag
@@ -1335,14 +1376,10 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
 
         {/* Game-mode status bar (replaces manual sim controls when in a match) */}
         {gameActive && (
-          <GameBanner
-            liveRound={{
-              score: scoreRef.current.total,
-              streak: scoreRef.current.streak,
-              multiplier: scoreRef.current.multiplier,
-            }}
-            compliance={compliance}
-          />
+          <>
+            <GameSyncAlerts />
+            <GameBanner liveRound={liveRoundStats} compliance={compliance} />
+          </>
         )}
         {/* Round splashes, chaos telegraphs, countdowns and rank toasts. */}
         {gameActive && <RoundFX nodeLabels={nodeLabels} />}
@@ -1518,7 +1555,11 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
           {isTouch && (
             <>
               <div className="border-l border-tactical-line h-8 mx-1 shrink-0" />
-              <button onClick={() => setSheet('palette')} className={`${btn} border-signal-cyan text-signal-cyan hover:bg-signal-cyan/10`}>
+              <button
+                onClick={() => !frozen && setSheet('palette')}
+                disabled={frozen}
+                className={`${btn} border-signal-cyan text-signal-cyan hover:bg-signal-cyan/10 disabled:opacity-40 disabled:cursor-not-allowed`}
+              >
                 <Plus className="w-4 h-4" /> {t('editor.labels.components', { defaultValue: 'Components' })}
               </button>
               {!gameActive && (
@@ -1681,8 +1722,23 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
               )}
               {gameActive && game && !isTouch && (
                 <Panel position="top-right" className="w-60">
-                  <GameLeaderboard entries={game.leaderboard} currentUserId={user?.uid} />
+                  <GameLeaderboard
+                    entries={game.leaderboard}
+                    currentUserId={user?.uid}
+                    scoresVerified={game.leaderboardVerified}
+                  />
                 </Panel>
+              )}
+              {gameActive && game && isTouch && (
+                <GameLeaderboard
+                  entries={game.leaderboard}
+                  currentUserId={user?.uid}
+                  scoresVerified={game.leaderboardVerified}
+                  mobileRankChip
+                  mobileSheetOpen={lbSheetOpen}
+                  onMobileSheetOpen={() => setLbSheetOpen(true)}
+                  onMobileSheetClose={() => setLbSheetOpen(false)}
+                />
               )}
               <Controls className={isTouch ? 'rf-controls-touch' : undefined} showInteractive={!isTouch} />
               {!isTouch && <MiniMap nodeColor={(n) => NODE_CATALOG[(n.type as NodeKind) ?? 'server']?.hex ?? '#64748b'} />}
@@ -1708,7 +1764,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
             )}
 
             {/* Touch: floating action bar replaces right-click context menus. */}
-            {isTouch && selectedId && (
+            {isTouch && selectedId && !frozen && (
               <SelectionActionBar
                 mode="node"
                 canDelete={!isNodeLocked(selectedId)}
@@ -1720,7 +1776,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
                 onClose={() => setSelectedId(null)}
               />
             )}
-            {isTouch && selectedEdgeId && (
+            {isTouch && selectedEdgeId && !frozen && (
               <SelectionActionBar
                 mode="edge"
                 onDelete={() => { deleteEdge(selectedEdgeId); setSelectedEdgeId(null); }}
@@ -1728,7 +1784,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
               />
             )}
 
-            {menu && (
+            {menu && !frozen && (
               <div
                 className="absolute z-50 min-w-[180px] bg-white dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-lg shadow-lg py-1"
                 style={{
@@ -1775,7 +1831,14 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
                   onClose={() => setShowBill(false)}
                 />
               ) : (
-                <InspectorPanel config={selectedConfig} onChange={patchSelected} onDelete={deleteSelected} canDelete={!selectedConfig?.locked} readOnly={gameActive && selectedConfig?.kind === 'client'} gameMode={gameActive} />
+                <InspectorPanel
+                  config={selectedConfig}
+                  onChange={patchSelected}
+                  onDelete={deleteSelected}
+                  canDelete={!selectedConfig?.locked}
+                  readOnly={frozen || (gameActive && selectedConfig?.kind === 'client')}
+                  gameMode={gameActive}
+                />
               )}
             </div>
           )}
@@ -1799,7 +1862,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
         {isTouch && (
           <>
             <BottomSheet
-              open={sheet === 'palette'}
+              open={sheet === 'palette' && !frozen}
               onClose={() => setSheet(null)}
               title={t('editor.labels.components', { defaultValue: 'Components' })}
             >
@@ -1820,7 +1883,14 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
                   onClose={() => { setShowBill(false); setSheet(null); }}
                 />
               ) : (
-                <InspectorPanel config={selectedConfig} onChange={patchSelected} onDelete={() => { deleteSelected(); setSheet(null); }} canDelete={!selectedConfig?.locked} readOnly={gameActive && selectedConfig?.kind === 'client'} gameMode={gameActive} />
+                <InspectorPanel
+                  config={selectedConfig}
+                  onChange={patchSelected}
+                  onDelete={() => { deleteSelected(); setSheet(null); }}
+                  canDelete={!selectedConfig?.locked}
+                  readOnly={frozen || (gameActive && selectedConfig?.kind === 'client')}
+                  gameMode={gameActive}
+                />
               )}
             </BottomSheet>
 
@@ -1857,10 +1927,18 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
                     <div>
                       <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-2">{t('editor.mobile.arrange', { defaultValue: 'Arrange' })}</div>
                       <div className="flex gap-2">
-                        <button onClick={() => { applyLayout('vertical'); setSheet(null); }} className={`${btn} flex-1 justify-center border-tactical-border text-tactical-dim`}>
+                        <button
+                          onClick={() => { if (!frozen) { applyLayout('vertical'); setSheet(null); } }}
+                          disabled={frozen}
+                          className={`${btn} flex-1 justify-center border-tactical-border text-tactical-dim disabled:opacity-40`}
+                        >
                           <ArrowDownUp className="w-4 h-4" /> {t('editor.mobile.vertical', { defaultValue: 'Vertical' })}
                         </button>
-                        <button onClick={() => { applyLayout('horizontal'); setSheet(null); }} className={`${btn} flex-1 justify-center border-tactical-border text-tactical-dim`}>
+                        <button
+                          onClick={() => { if (!frozen) { applyLayout('horizontal'); setSheet(null); } }}
+                          disabled={frozen}
+                          className={`${btn} flex-1 justify-center border-tactical-border text-tactical-dim disabled:opacity-40`}
+                        >
                           <ArrowLeftRight className="w-4 h-4" /> {t('editor.mobile.horizontal', { defaultValue: 'Horizontal' })}
                         </button>
                       </div>

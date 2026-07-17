@@ -63,13 +63,32 @@ describe('getUserContext', () => {
   });
 });
 
-describe('createUser', () => {
+describe('createUser / ensureUser', () => {
   it('creates a user with the default role', async () => {
     mockDb.setResults([
+      [], // getUserRow miss
       [{ id: 2, name: 'Estudante' }], // getRoleByName
       [{ ...user }], // insert returning
     ]);
     const created = await repo.createUser('u1', 'u1@x.com', 'Uno');
+    expect(created.id).toBe('u1');
+  });
+
+  it('ensureUser returns an existing row without inserting', async () => {
+    mockDb.setResults([[user]]);
+    const existing = await repo.ensureUser('u1', 'u1@x.com', 'Uno');
+    expect(existing.id).toBe('u1');
+    expect(mockDb.calls.filter((c) => c.op === 'insert')).toHaveLength(0);
+  });
+
+  it('ensureUser resolves races via onConflictDoNothing', async () => {
+    mockDb.setResults([
+      [], // initial miss
+      [{ id: 2, name: 'Estudante' }], // role
+      [], // insert conflict
+      [user], // re-read
+    ]);
+    const created = await repo.ensureUser('u1', 'u1@x.com', 'Uno');
     expect(created.id).toBe('u1');
   });
 });

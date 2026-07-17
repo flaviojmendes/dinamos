@@ -1,0 +1,8 @@
+{
+  "slug": "design-principles/horizontal-scaling",
+  "path": "/principios-design/escalabilidade/horizontal",
+  "lang": "en",
+  "title": "Horizontal Scalability (Scale-Out)",
+  "simulator_key": "horizontal-scaling",
+  "body": "# Horizontal Scalability (Scale-Out)\n\nA method that adds more servers to work together, dividing the workload among them.\n\n## How It Works\n\nIt is like using multiple cars to transport passengers instead of relying on a single larger car. This approach is common in modern systems, especially in cloud environments.\n\n<Callout type=\"neutral\" title=\"Practical Example\">\n\nA video streaming network that started with a single server sees global audience growth. To meet demand, it adds servers in various regions, sharing the load and delivering content faster, even to distant users.\n\n</Callout>\n\n## Advantages\n\n- **Unlimited Scalability**: You can add more servers as needed\n- **High Availability**: If one server fails, others continue operating\n- **Cost-Effective**: Can use simpler, commodity hardware\n\n## Important Considerations\n\n- **Data Distribution**: Plan how data will be distributed and synchronized\n- **Complexity**: Requires coordination and load balancing mechanisms\n- **Consistency**: Keeping data consistent across servers is challenging\n\n## Best Practices\n\n- **Automation**: Automate adding/removing servers from the cluster\n- **Monitoring**: Implement robust monitoring to identify bottlenecks and issues\n- **Redundancy**: Maintain appropriate redundancy to ensure high availability\n\n[Explore Scalability Simulator](/principios-design/escalabilidade/simulator)\n"
+}

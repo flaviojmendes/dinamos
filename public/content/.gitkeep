@@ -1,0 +1,3 @@
+# Versioned lesson snapshots are generated here by `npm run content:export-static`.
+# `manifest.json` points at the current content hash; the previous hash directory
+# is retained briefly so clients with a stale manifest can still load bodies.

@@ -6,6 +6,7 @@ const mockDb = createDbMock();
 const repo = {
   getUserRow: vi.fn(),
   createUser: vi.fn(),
+  ensureUser: vi.fn(),
   getUserContext: vi.fn(),
 };
 
@@ -41,6 +42,7 @@ beforeEach(() => {
   mockDb.reset();
   repo.getUserRow.mockReset();
   repo.createUser.mockReset();
+  repo.ensureUser.mockReset();
   repo.getUserContext.mockReset();
   repo.getUserContext.mockResolvedValue(ctx);
 });
@@ -56,14 +58,14 @@ describe('users routes', () => {
     expect(res.status).toBe(200);
     const body = await res.json() as any;
     expect(body.id).toBe('u1');
-    expect(repo.createUser).not.toHaveBeenCalled();
+    expect(repo.ensureUser).not.toHaveBeenCalled();
   });
 
   it('GET /api/users/me creates the user on first sign-in', async () => {
     repo.getUserRow.mockResolvedValue(null);
     const res = await app.request('/api/users/me', { headers: AUTH });
     expect(res.status).toBe(200);
-    expect(repo.createUser).toHaveBeenCalled();
+    expect(repo.ensureUser).toHaveBeenCalled();
   });
 
   it('PUT onboarding-complete updates the row', async () => {
@@ -98,14 +100,14 @@ describe('users routes', () => {
 
   it('PUT /api/users/me creates the user when missing then updates nothing', async () => {
     repo.getUserRow.mockResolvedValue(null);
-    repo.createUser.mockResolvedValue(userRow);
+    repo.ensureUser.mockResolvedValue(userRow);
     const res = await app.request('/api/users/me', {
       method: 'PUT',
       headers: AUTH,
       body: JSON.stringify({}),
     });
     expect(res.status).toBe(200);
-    expect(repo.createUser).toHaveBeenCalled();
+    expect(repo.ensureUser).toHaveBeenCalled();
   });
 
   it('GET /api/user/solutions lists serialized solutions', async () => {

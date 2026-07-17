@@ -99,9 +99,9 @@ forumRouter.get('/api/forum/topics', authRequired, async (c) => {
 // Create topic --------------------------------------------------------------
 forumRouter.post(
   '/api/forum/topics',
+  authRequired,
   rateLimit({ windowMs: 60_000, max: 20, keyPrefix: 'forum-topic' }),
   maxBodyBytes(256_000),
-  authRequired,
   async (c) => {
   const user = c.get('user');
   const body = await c.req.json<{ title: string; content: string; category: string }>();
@@ -202,9 +202,9 @@ async function parentMessageDepth(parentId: number): Promise<number> {
 // Create message (reply) ----------------------------------------------------
 forumRouter.post(
   '/api/forum/topics/:id/messages',
+  authRequired,
   rateLimit({ windowMs: 60_000, max: 40, keyPrefix: 'forum-reply' }),
   maxBodyBytes(512_000),
-  authRequired,
   async (c) => {
   const user = c.get('user');
   const topicId = Number(c.req.param('id'));
@@ -515,69 +515,84 @@ async function toggleVote(
   topicId: number | null,
   messageId: number | null
 ) {
-  const existingRows = await db
-    .select()
-    .from(votes)
-    .where(
-      and(
-        eq(votes.userId, userId),
-        topicId ? eq(votes.topicId, topicId) : eq(votes.messageId, messageId!)
+  return db.transaction(async (tx) => {
+    const table = topicId ? forumTopics : forumMessages;
+    const targetId = (topicId ?? messageId)!;
+
+    const targetRows = await tx
+      .select()
+      .from(table as typeof forumTopics)
+      .where(eq((table as typeof forumTopics).id, targetId))
+      .limit(1);
+    const target = targetRows[0];
+    if (!target) return { upvotes: 0, has_voted: false };
+
+    const existingRows = await tx
+      .select()
+      .from(votes)
+      .where(
+        and(
+          eq(votes.userId, userId),
+          topicId ? eq(votes.topicId, topicId) : eq(votes.messageId, messageId!),
+        ),
       )
-    )
-    .limit(1);
+      .limit(1);
 
-  const table = topicId ? forumTopics : forumMessages;
-  const targetId = (topicId ?? messageId)!;
-  const targetRows = await db
-    .select()
-    .from(table as any)
-    .where(eq((table as any).id, targetId))
-    .limit(1);
-  const target = targetRows[0] as any;
-  if (!target) return { upvotes: 0, has_voted: false };
+    let hasVoted: boolean;
+    let newUpvotes: number;
 
-  let hasVoted: boolean;
-  let newUpvotes: number;
-  if (existingRows[0]) {
-    await db.delete(votes).where(eq(votes.id, existingRows[0].id));
-    newUpvotes = Math.max(0, (target.upvotes ?? 0) - 1);
-    hasVoted = false;
-  } else {
-    await db.insert(votes).values({ userId, topicId, messageId });
-    newUpvotes = (target.upvotes ?? 0) + 1;
-    hasVoted = true;
+    if (existingRows[0]) {
+      await tx.delete(votes).where(eq(votes.id, existingRows[0].id));
+      const updated = await tx
+        .update(table as typeof forumTopics)
+        .set({
+          upvotes: sql`GREATEST(0, COALESCE(${(table as typeof forumTopics).upvotes}, 0) - 1)`,
+        })
+        .where(eq((table as typeof forumTopics).id, targetId))
+        .returning({ upvotes: (table as typeof forumTopics).upvotes });
+      newUpvotes = Number(updated[0]?.upvotes ?? 0);
+      hasVoted = false;
+    } else {
+      await tx.insert(votes).values({ userId, topicId, messageId });
+      const updated = await tx
+        .update(table as typeof forumTopics)
+        .set({
+          upvotes: sql`COALESCE(${(table as typeof forumTopics).upvotes}, 0) + 1`,
+        })
+        .where(eq((table as typeof forumTopics).id, targetId))
+        .returning({ upvotes: (table as typeof forumTopics).upvotes });
+      newUpvotes = Number(updated[0]?.upvotes ?? 0);
+      hasVoted = true;
 
-    if (target.userId !== userId) {
-      const created = target.createdAt ? new Date(target.createdAt) : new Date();
-      const ageDays = (Date.now() - created.getTime()) / 86400000;
-      if (ageDays < 90) {
-        if (topicId) {
-          await awardTokens(target.userId, 3, 'RECEIVE_UPVOTE_TOPIC', topicId, 'topic');
-          const last24h = new Date(Date.now() - 24 * 3600 * 1000);
-          const recentRows = await db
-            .select({ count: sql<number>`count(*)` })
-            .from(votes)
-            .where(and(eq(votes.topicId, topicId), gte(votes.createdAt, last24h)));
-          if (Number(recentRows[0]?.count ?? 0) >= 10)
-            await awardTokens(target.userId, 20, 'QUALITY_BONUS', topicId, 'topic');
-        } else if (messageId) {
-          await awardTokens(
-            target.userId,
-            1,
-            'RECEIVE_UPVOTE_COMMENT',
-            messageId,
-            'message'
-          );
+      if (target.userId !== userId) {
+        const created = target.createdAt ? new Date(target.createdAt) : new Date();
+        const ageDays = (Date.now() - created.getTime()) / 86400000;
+        if (ageDays < 90) {
+          if (topicId) {
+            await awardTokens(target.userId, 3, 'RECEIVE_UPVOTE_TOPIC', topicId, 'topic');
+            const last24h = new Date(Date.now() - 24 * 3600 * 1000);
+            const recentRows = await tx
+              .select({ count: sql<number>`count(*)` })
+              .from(votes)
+              .where(and(eq(votes.topicId, topicId), gte(votes.createdAt, last24h)));
+            if (Number(recentRows[0]?.count ?? 0) >= 10) {
+              await awardTokens(target.userId, 20, 'QUALITY_BONUS', topicId, 'topic');
+            }
+          } else if (messageId) {
+            await awardTokens(
+              target.userId,
+              1,
+              'RECEIVE_UPVOTE_COMMENT',
+              messageId,
+              'message',
+            );
+          }
         }
       }
     }
-  }
 
-  await db
-    .update(table as any)
-    .set({ upvotes: newUpvotes })
-    .where(eq((table as any).id, targetId));
-  return { upvotes: newUpvotes, has_voted: hasVoted };
+    return { upvotes: newUpvotes, has_voted: hasVoted };
+  });
 }
 
 // User votes ----------------------------------------------------------------

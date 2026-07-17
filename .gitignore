@@ -13,6 +13,9 @@ dist-ssr
 coverage
 benchmarks/*.json
 !benchmarks/.gitkeep
+.playwright-browsers
+test-results
+playwright-report
 *.local
 
 # Environment files (never commit real secrets; copy .env.example -> .env)

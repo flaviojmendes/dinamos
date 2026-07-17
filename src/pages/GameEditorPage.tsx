@@ -7,6 +7,7 @@ import {
   useGameContext,
 } from '../components/SystemEditor/game/GameContext';
 import GameLobby from '../components/SystemEditor/game/GameLobby';
+import GameSyncAlerts from '../components/SystemEditor/game/GameSyncAlerts';
 import SystemEditorV2 from '../components/SystemEditor/SystemEditorV2';
 
 function Spinner({ label }: { label: string }) {
@@ -72,11 +73,20 @@ function GameEditorContent({ code }: { code: string }) {
     return <Spinner label={t('editor.game.loading', { defaultValue: 'Loading match…' })} />;
   }
 
-  if (game.state?.status === 'lobby') {
-    return <GameLobby currentUserId={user?.uid} />;
+  if (game.joinStatus === 'joining') {
+    return <Spinner label={t('editor.game.joining', { defaultValue: 'Joining match…' })} />;
   }
 
-  return <SystemEditorV2 gameId={code} />;
+  return (
+    <div className="max-w-[1600px] mx-auto px-4 pt-4">
+      <GameSyncAlerts />
+      {game.state?.status === 'lobby' ? (
+        <GameLobby currentUserId={user?.uid} />
+      ) : (
+        <SystemEditorV2 gameId={code} />
+      )}
+    </div>
+  );
 }
 
 export default function GameEditorPage() {

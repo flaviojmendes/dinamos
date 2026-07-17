@@ -141,6 +141,7 @@ export default function GameArenaPage() {
   const reduceMotion = useReducedMotion();
   const [matches, setMatches] = useState<LiveMatch[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [joinCode, setJoinCode] = useState('');
   const [now, setNow] = useState(Date.now());
   const offsetRef = useRef(0);
@@ -152,12 +153,17 @@ export default function GameArenaPage() {
       if (res.data?.server_time) {
         offsetRef.current = new Date(res.data.server_time).getTime() - Date.now();
       }
+      setFetchError(null);
     } catch {
-      /* the rail just stays empty on transient errors */
+      setFetchError(
+        t('arena.fetch_error', {
+          defaultValue: 'Could not load live matches. Check your connection and try again.',
+        }),
+      );
     } finally {
       setLoaded(true);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     fetchLive();
@@ -325,6 +331,20 @@ export default function GameArenaPage() {
             <MatchCardSkeleton />
             <MatchCardSkeleton />
             <MatchCardSkeleton />
+          </div>
+        ) : fetchError ? (
+          <div className="border border-signal-red/40 rounded-lg p-8 text-center">
+            <div className="font-sans text-sm text-signal-red mb-4">{fetchError}</div>
+            <button
+              type="button"
+              onClick={() => {
+                setLoaded(false);
+                fetchLive();
+              }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-signal-cyan text-signal-cyan hover:bg-signal-cyan/10 font-sans text-sm font-medium transition-colors"
+            >
+              {t('editor.game.retry', { defaultValue: 'Retry' })}
+            </button>
           </div>
         ) : matches.length === 0 ? (
           <div className="border border-dashed border-tactical-border rounded-lg p-8 text-center">

@@ -8,23 +8,22 @@ import {
   optionalAuth,
   type AppVariables,
 } from '../middleware/auth.js';
+import { maxBodyBytes, rateLimit } from '../middleware/guardrails.js';
 import { savedArchitectureToDict } from '../db/serializers.js';
+import { validateDesignPayload } from '../../src/components/SystemEditor/engine/designSchema.js';
 
 export const architecturesRouter = new Hono<{ Variables: AppVariables }>();
 
 const VISIBILITIES = ['private', 'unlisted', 'public'] as const;
 type Visibility = (typeof VISIBILITIES)[number];
 
+const writeGuard = [
+  maxBodyBytes(512_000),
+  rateLimit({ windowMs: 60_000, max: 60, keyPrefix: 'architectures' }),
+] as const;
+
 function normalizeVisibility(value: unknown): Visibility {
   return VISIBILITIES.includes(value as Visibility) ? (value as Visibility) : 'private';
-}
-
-// Minimal shape guard: a design must be an object carrying node/edge arrays.
-// We store the blob verbatim (DesignV2), so this only rejects obvious garbage.
-function isValidDesign(design: unknown): boolean {
-  if (!design || typeof design !== 'object') return false;
-  const d = design as { nodes?: unknown; edges?: unknown };
-  return Array.isArray(d.nodes) && Array.isArray(d.edges);
 }
 
 function normalizeTitle(value: unknown): string | null {
@@ -34,7 +33,11 @@ function normalizeTitle(value: unknown): string | null {
 }
 
 // List the current user's saved designs (no heavy design blob).
-architecturesRouter.get('/api/architectures', authRequired, async (c) => {
+architecturesRouter.get(
+  '/api/architectures',
+  authRequired,
+  rateLimit({ windowMs: 60_000, max: 60, keyPrefix: 'architectures' }),
+  async (c) => {
   const user = c.get('user');
   const rows = await db
     .select({
@@ -52,7 +55,11 @@ architecturesRouter.get('/api/architectures', authRequired, async (c) => {
 });
 
 // Create a new saved design owned by the current user.
-architecturesRouter.post('/api/architectures', authRequired, async (c) => {
+architecturesRouter.post(
+  '/api/architectures',
+  authRequired,
+  ...writeGuard,
+  async (c) => {
   const user = c.get('user');
   const body = await c.req.json<{
     title?: string;
@@ -60,7 +67,10 @@ architecturesRouter.post('/api/architectures', authRequired, async (c) => {
     design?: unknown;
   }>();
 
-  if (!isValidDesign(body.design)) {
+  let design: object;
+  try {
+    design = validateDesignPayload(body.design);
+  } catch {
     throw new HTTPException(400, { message: 'Invalid design payload' });
   }
 
@@ -70,7 +80,7 @@ architecturesRouter.post('/api/architectures', authRequired, async (c) => {
       userId: user.uid,
       title: normalizeTitle(body.title),
       visibility: normalizeVisibility(body.visibility),
-      design: body.design as object,
+      design,
     })
     .returning();
 
@@ -79,7 +89,11 @@ architecturesRouter.post('/api/architectures', authRequired, async (c) => {
 
 // Read a single design. Owners can read any of theirs; everyone else can only
 // read unlisted/public rows (powers share links and embeds).
-architecturesRouter.get('/api/architectures/:id', optionalAuth, async (c) => {
+architecturesRouter.get(
+  '/api/architectures/:id',
+  optionalAuth,
+  rateLimit({ windowMs: 60_000, max: 120, keyPrefix: 'architectures-read' }),
+  async (c) => {
   const id = c.req.param('id');
   const user = c.get('user');
   const rows = await db
@@ -98,7 +112,11 @@ architecturesRouter.get('/api/architectures/:id', optionalAuth, async (c) => {
 });
 
 // Update an existing design. Owner-only.
-architecturesRouter.put('/api/architectures/:id', authRequired, async (c) => {
+architecturesRouter.put(
+  '/api/architectures/:id',
+  authRequired,
+  ...writeGuard,
+  async (c) => {
   const id = c.req.param('id');
   const user = c.get('user');
   const body = await c.req.json<{
@@ -119,10 +137,11 @@ architecturesRouter.put('/api/architectures/:id', authRequired, async (c) => {
 
   const update: Record<string, unknown> = { updatedAt: new Date() };
   if (body.design !== undefined) {
-    if (!isValidDesign(body.design)) {
+    try {
+      update.design = validateDesignPayload(body.design);
+    } catch {
       throw new HTTPException(400, { message: 'Invalid design payload' });
     }
-    update.design = body.design;
   }
   if (body.title !== undefined) update.title = normalizeTitle(body.title);
   if (body.visibility !== undefined) update.visibility = normalizeVisibility(body.visibility);
@@ -137,7 +156,11 @@ architecturesRouter.put('/api/architectures/:id', authRequired, async (c) => {
 });
 
 // Delete a design. Owner-only.
-architecturesRouter.delete('/api/architectures/:id', authRequired, async (c) => {
+architecturesRouter.delete(
+  '/api/architectures/:id',
+  authRequired,
+  rateLimit({ windowMs: 60_000, max: 60, keyPrefix: 'architectures' }),
+  async (c) => {
   const id = c.req.param('id');
   const user = c.get('user');
   const result = await db

@@ -1,21 +1,28 @@
 import { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
 import api from '../utils/api'
-import type { LeaderboardEntry, UserRanking } from '../types'
+import type { ArenaLeaderboardEntry, LeaderboardEntry, UserRanking } from '../types'
 import { useAuth } from '../contexts/AuthContext'
-import { Trophy, Crown, Coins, Brain, Target, Sparkles, TrendingUp } from 'lucide-react'
+import { Trophy, Crown, Coins, Brain, Target, Sparkles, TrendingUp, Gamepad2, Medal } from 'lucide-react'
 import { TacticalButton } from '../../components/tactical'
+
+type LeaderboardTab = 'learning' | 'arena'
 
 function Leaderboard() {
   const { appUser } = useAuth()
+  const [tab, setTab] = useState<LeaderboardTab>('learning')
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
+  const [arenaLeaderboard, setArenaLeaderboard] = useState<ArenaLeaderboardEntry[]>([])
   const [myRanking, setMyRanking] = useState<UserRanking | null>(null)
+  const [myArenaRanking, setMyArenaRanking] = useState<ArenaLeaderboardEntry | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     fetchLeaderboard()
     fetchMyRanking()
+    fetchArenaLeaderboard()
+    fetchMyArenaRanking()
   }, [])
 
   const fetchLeaderboard = async () => {
@@ -38,6 +45,28 @@ function Leaderboard() {
     } catch (error) {
       console.error('Erro ao buscar sua posição:', error)
     }
+  }
+
+  const fetchArenaLeaderboard = async () => {
+    try {
+      const response = await api.get<{ leaderboard: ArenaLeaderboardEntry[] }>('/api/leaderboard/arena?limit=50')
+      setArenaLeaderboard(response.data.leaderboard)
+    } catch (error) {
+      console.error('Erro ao buscar ranking Arena:', error)
+    }
+  }
+
+  const fetchMyArenaRanking = async () => {
+    try {
+      const response = await api.get<ArenaLeaderboardEntry>('/api/leaderboard/arena/me')
+      setMyArenaRanking(response.data)
+    } catch (error) {
+      console.error('Erro ao buscar posição Arena:', error)
+    }
+  }
+
+  const refreshAll = async () => {
+    await Promise.all([fetchLeaderboard(), fetchArenaLeaderboard()])
   }
 
   const restOfLeaderboard = leaderboard.slice(3)
@@ -70,12 +99,30 @@ function Leaderboard() {
                 </div>
                 <p className="mt-2 text-lg text-slate-600 dark:text-tactical-dim flex items-center gap-2">
                   <Sparkles className="h-5 w-5 text-brand-600 dark:text-signal-cyan" />
-                  Classificação baseada em performance nos quizzes e DinaCoins
+                  {tab === 'learning'
+                    ? 'Classificação baseada em performance nos quizzes e DinaCoins'
+                    : 'Vitórias, pódios e participação nas partidas Arena'}
                 </p>
+                <div className="mt-4 inline-flex rounded-lg border border-slate-200 dark:border-tactical-border p-1 bg-white/60 dark:bg-tactical-raised/40">
+                  <button
+                    type="button"
+                    onClick={() => setTab('learning')}
+                    className={`px-3 py-1.5 rounded-md font-sans text-sm inline-flex items-center gap-1.5 ${tab === 'learning' ? 'bg-signal-amber/15 text-signal-amber' : 'text-tactical-dim hover:text-tactical-text'}`}
+                  >
+                    <Brain className="w-4 h-4" /> Quizzes & DinaCoins
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTab('arena')}
+                    className={`px-3 py-1.5 rounded-md font-sans text-sm inline-flex items-center gap-1.5 ${tab === 'arena' ? 'bg-signal-cyan/15 text-signal-cyan' : 'text-tactical-dim hover:text-tactical-text'}`}
+                  >
+                    <Gamepad2 className="w-4 h-4" /> Arena
+                  </button>
+                </div>
               </div>
 
               {/* User's Position Card */}
-              {myRanking && myRanking.rank && (
+              {tab === 'learning' && myRanking && myRanking.rank && (
                 <div className="tactical-panel rounded-xl p-4">
                   <div className="label-mono mb-2 flex items-center gap-1">
                     <TrendingUp className="h-3.5 w-3.5" />
@@ -103,6 +150,23 @@ function Leaderboard() {
                   </div>
                 </div>
               )}
+              {tab === 'arena' && myArenaRanking && myArenaRanking.rank && (
+                <div className="tactical-panel rounded-xl p-4">
+                  <div className="label-mono mb-2 flex items-center gap-1">
+                    <Medal className="h-3.5 w-3.5" />
+                    Arena
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center justify-center w-14 h-14 rounded-lg border border-signal-cyan/40 bg-signal-cyan/10 text-signal-cyan font-mono font-bold text-2xl tabular-nums">
+                      #{myArenaRanking.rank}
+                    </div>
+                    <div className="flex flex-col text-xs font-mono tabular-nums text-slate-500 dark:text-tactical-dim gap-1">
+                      <span>{myArenaRanking.arena_wins} vitórias · {myArenaRanking.arena_podiums} pódios</span>
+                      <span>{myArenaRanking.arena_matches_played} partidas · {myArenaRanking.win_rate}% win rate</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -118,10 +182,52 @@ function Leaderboard() {
               <div className="text-signal-red text-4xl mb-4">⚠️</div>
               <h2 className="font-sans text-xl font-bold text-slate-900 dark:text-tactical-text mb-2">Erro ao carregar</h2>
               <p className="text-slate-600 dark:text-tactical-dim mb-6">{error}</p>
-              <TacticalButton variant="primary" onClick={fetchLeaderboard} className="">
+              <TacticalButton variant="primary" onClick={refreshAll} className="">
                 Tentar Novamente
               </TacticalButton>
             </div>
+          ) : tab === 'arena' ? (
+            arenaLeaderboard.length === 0 ? (
+              <div className="text-center py-16">
+                <Gamepad2 className="w-12 h-12 mx-auto text-signal-cyan mb-4" />
+                <h3 className="font-sans text-xl font-bold text-slate-900 dark:text-tactical-text mb-2">
+                  Nenhuma partida Arena concluída ainda
+                </h3>
+                <p className="text-slate-600 dark:text-tactical-dim">
+                  Jogue uma partida Arena para aparecer neste ranking separado.
+                </p>
+              </div>
+            ) : (
+              <div className="tactical-panel overflow-hidden">
+                <table className="w-full text-left font-sans text-sm">
+                  <thead className="border-b border-tactical-border text-tactical-dim">
+                    <tr>
+                      <th className="px-4 py-3">#</th>
+                      <th className="px-4 py-3">Jogador</th>
+                      <th className="px-4 py-3">Vitórias</th>
+                      <th className="px-4 py-3">Pódios</th>
+                      <th className="px-4 py-3">Partidas</th>
+                      <th className="px-4 py-3">Win rate</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {arenaLeaderboard.map((entry) => (
+                      <tr
+                        key={entry.user_id}
+                        className={`border-b border-tactical-border/50 ${entry.user_id === appUser?.id ? 'bg-signal-cyan/5' : ''}`}
+                      >
+                        <td className="px-4 py-3 font-mono tabular-nums">{entry.rank}</td>
+                        <td className="px-4 py-3">{entry.nickname || 'Anônimo'}</td>
+                        <td className="px-4 py-3 font-mono tabular-nums">{entry.arena_wins}</td>
+                        <td className="px-4 py-3 font-mono tabular-nums">{entry.arena_podiums}</td>
+                        <td className="px-4 py-3 font-mono tabular-nums">{entry.arena_matches_played}</td>
+                        <td className="px-4 py-3 font-mono tabular-nums">{entry.win_rate}%</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )
           ) : leaderboard.length === 0 ? (
             <div className="text-center py-16">
               <div className="text-6xl mb-4">🏆</div>

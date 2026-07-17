@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface AudioRecorderProps {
   onTranscriptionComplete: (transcription: string) => void
@@ -22,6 +23,7 @@ function blobToBase64(blob: Blob): Promise<string> {
 }
 
 function AudioRecorder({ onTranscriptionComplete, maxDuration = 60, initialTranscription = '' }: AudioRecorderProps) {
+  const { t } = useTranslation()
   const [isRecording, setIsRecording] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
   const [recordingTime, setRecordingTime] = useState(0)
@@ -109,7 +111,7 @@ function AudioRecorder({ onTranscriptionComplete, maxDuration = 60, initialTrans
       }, 1000)
     } catch (err) {
       console.error('Error starting recording:', err)
-      setError('Erro ao acessar o microfone. Por favor, permita o acesso.')
+      setError(t('challenges.audio.mic_error', { defaultValue: 'Could not access the microphone. Please allow access.' }))
     }
   }
 
@@ -183,7 +185,7 @@ function AudioRecorder({ onTranscriptionComplete, maxDuration = 60, initialTrans
       })
 
       if (!response.ok) {
-        throw new Error('Falha na transcrição do áudio')
+        throw new Error(t('challenges.audio.transcribe_error', { defaultValue: 'Could not transcribe the audio. Try again.' }))
       }
 
       const data = await response.json()
@@ -191,7 +193,7 @@ function AudioRecorder({ onTranscriptionComplete, maxDuration = 60, initialTrans
       onTranscriptionComplete(data.transcription)
     } catch (err) {
       console.error('Error transcribing audio:', err)
-      setError('Erro ao transcrever o áudio. Tente novamente.')
+      setError(t('challenges.audio.transcribe_error', { defaultValue: 'Could not transcribe the audio. Try again.' }))
     } finally {
       setIsTranscribing(false)
     }
@@ -206,15 +208,23 @@ function AudioRecorder({ onTranscriptionComplete, maxDuration = 60, initialTrans
   const remainingTime = maxDuration - recordingTime
   const progressPercentage = (recordingTime / maxDuration) * 100
 
+  const durationLabel = maxDuration >= 60 ? `${Math.floor(maxDuration / 60)} min` : `${maxDuration}s`
+  const instructionLines = [
+    t('challenges.audio.instruction_duration', { duration: durationLabel, defaultValue: 'Record up to {{duration}} explaining your design' }),
+    t('challenges.audio.instruction_decisions', { defaultValue: 'Talk about architectural decisions and trade-offs' }),
+    t('challenges.audio.instruction_submit', { defaultValue: 'Audio is transcribed automatically and submitted with your solution' }),
+    t('challenges.audio.instruction_pause', { defaultValue: 'You can pause and resume recording at any time' }),
+  ]
+
   return (
     <div className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg p-6 transition-colors duration-200">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-          🎤 Gravação de Áudio
+          {t('challenges.audio.title', { defaultValue: 'Audio recording' })}
         </h3>
         {isRecording && (
-          <div className="flex items-center space-x-2">
-            <div className={`w-3 h-3 rounded-full ${isPaused ? 'bg-yellow-500' : 'bg-red-500 animate-pulse'}`}></div>
+          <div className="flex items-center space-x-2" aria-live="polite">
+            <div className={`w-3 h-3 rounded-full ${isPaused ? 'bg-yellow-500' : 'bg-red-500 animate-pulse motion-reduce:animate-none'}`} aria-hidden />
             <span className="text-sm font-mono text-gray-700 dark:text-gray-300">
               {formatTime(recordingTime)} / {formatTime(maxDuration)}
             </span>
@@ -234,7 +244,7 @@ function AudioRecorder({ onTranscriptionComplete, maxDuration = 60, initialTrans
             ></div>
           </div>
           <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-            Tempo restante: {formatTime(remainingTime)}
+            {t('challenges.audio.remaining', { defaultValue: 'Time remaining: {{time}}', time: formatTime(remainingTime) })}
           </p>
         </div>
       )}
@@ -257,7 +267,7 @@ function AudioRecorder({ onTranscriptionComplete, maxDuration = 60, initialTrans
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clipRule="evenodd" />
             </svg>
-            <span>Iniciar Gravação</span>
+            <span>{t('challenges.audio.start', { defaultValue: 'Start recording' })}</span>
           </button>
         )}
 
@@ -271,7 +281,7 @@ function AudioRecorder({ onTranscriptionComplete, maxDuration = 60, initialTrans
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
                 </svg>
-                <span>Pausar</span>
+                <span>{t('challenges.audio.pause', { defaultValue: 'Pause' })}</span>
               </button>
             ) : (
               <button
@@ -281,7 +291,7 @@ function AudioRecorder({ onTranscriptionComplete, maxDuration = 60, initialTrans
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
                 </svg>
-                <span>Retomar</span>
+                <span>{t('challenges.audio.resume', { defaultValue: 'Resume' })}</span>
               </button>
             )}
             
@@ -292,14 +302,14 @@ function AudioRecorder({ onTranscriptionComplete, maxDuration = 60, initialTrans
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clipRule="evenodd" />
               </svg>
-              <span>Parar</span>
+              <span>{t('challenges.audio.stop', { defaultValue: 'Stop' })}</span>
             </button>
 
             <button
               onClick={cancelRecording}
               className="bg-gray-500 text-white px-5 py-3 rounded-lg hover:bg-gray-600 transition-colors duration-200 font-medium"
             >
-              Cancelar
+              {t('challenges.audio.cancel', { defaultValue: 'Cancel' })}
             </button>
           </>
         )}
@@ -313,7 +323,7 @@ function AudioRecorder({ onTranscriptionComplete, maxDuration = 60, initialTrans
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            <span className="text-sm text-gray-700 dark:text-gray-300">Transcrevendo áudio...</span>
+            <span className="text-sm text-gray-700 dark:text-gray-300">{t('challenges.audio.transcribing', { defaultValue: 'Transcribing audio…' })}</span>
           </div>
         </div>
       )}
@@ -326,12 +336,12 @@ function AudioRecorder({ onTranscriptionComplete, maxDuration = 60, initialTrans
               <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
-              <span className="font-semibold text-green-900 dark:text-green-200">Transcrição concluída!</span>
+              <span className="font-semibold text-green-900 dark:text-green-200">{t('challenges.audio.done', { defaultValue: 'Transcription complete!' })}</span>
             </div>
           </div>
           
           <div className="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg p-4 transition-colors duration-200">
-            <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">Texto transcrito:</h4>
+            <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">{t('challenges.audio.transcript_label', { defaultValue: 'Transcribed text:' })}</h4>
             <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{transcription}</p>
           </div>
 
@@ -342,7 +352,7 @@ function AudioRecorder({ onTranscriptionComplete, maxDuration = 60, initialTrans
             }}
             className="mt-3 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium transition-colors duration-200"
           >
-            🔄 Gravar novamente
+            {t('challenges.audio.record_again', { defaultValue: 'Record again' })}
           </button>
         </div>
       )}
@@ -351,13 +361,12 @@ function AudioRecorder({ onTranscriptionComplete, maxDuration = 60, initialTrans
       {!isRecording && !transcription && !isTranscribing && (
         <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mt-4 transition-colors duration-200">
           <p className="text-sm text-blue-900 dark:text-blue-200 mb-2">
-            <strong>Instruções:</strong>
+            <strong>{t('challenges.audio.instructions_title', { defaultValue: 'Instructions:' })}</strong>
           </p>
           <ul className="text-xs text-blue-800 dark:text-blue-300 space-y-1">
-            <li>• Grave um áudio de até {maxDuration >= 60 ? `${Math.floor(maxDuration / 60)} min` : `${maxDuration}s`} explicando seu design</li>
-            <li>• Fale sobre as decisões arquiteturais e justificativas</li>
-            <li>• O áudio será automaticamente transcrito e enviado com sua solução</li>
-            <li>• Você pode pausar e retomar a gravação a qualquer momento</li>
+            {instructionLines.map((line) => (
+              <li key={line}>• {line}</li>
+            ))}
           </ul>
         </div>
       )}

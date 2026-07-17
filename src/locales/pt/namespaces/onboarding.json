@@ -1,0 +1,64 @@
+{
+  "welcome": {
+    "title": "Bem-vindo ao Design Lab!",
+    "description": "Vamos fazer um tour rápido pelas principais funcionalidades da plataforma.",
+    "features": [
+      "Pratique System Design com desafios reais",
+      "Participe de uma comunidade ativa",
+      "Teste seus conhecimentos com quizzes"
+    ]
+  },
+  "challenges": {
+    "title": "Desafios de System Design",
+    "description": "Aqui você encontra problemas reais de arquitetura para resolver. Selecione um desafio, projete sua solução usando a lousa virtual e receba feedback detalhado com IA.",
+    "features": [
+      "Lousa virtual para diagramas",
+      "Avaliação com inteligência artificial",
+      "Múltiplas tentativas permitidas"
+    ]
+  },
+  "forum": {
+    "title": "Fórum & Gamificação",
+    "description": "Conecte-se com a comunidade! Crie tópicos, tire dúvidas e compartilhe conhecimento. Você ganha tokens por cada contribuição e pode subir no ranking.",
+    "features": [
+      "Ganhe tokens participando",
+      "Sistema de votos e reputação",
+      "Diagramas inline nas respostas"
+    ]
+  },
+  "quizzes": {
+    "title": "Quizzes Interativos",
+    "description": "Teste e reforce seus conhecimentos em System Design com quizzes cronometrados. Compare seu desempenho no ranking e acompanhe sua evolução.",
+    "features": [
+      "Questões por tema",
+      "Ranking e leaderboard",
+      "Acompanhe seu progresso"
+    ]
+  },
+  "workflow": {
+    "title": "Fluxo de Trabalho",
+    "description": "Cada desafio segue um fluxo estruturado: análise de requisitos, design da arquitetura e feedback automático. É assim que você evolui!",
+    "features": [
+      "Requisitos → Design → Feedback",
+      "Aprenda fazendo",
+      "Melhore a cada iteração"
+    ]
+  },
+  "ready": {
+    "title": "Tudo pronto!",
+    "description": "Agora você conhece as principais funcionalidades. Comece explorando um desafio ou navegue pelo fórum para conhecer a comunidade.",
+    "features": [
+      "Explore os desafios disponíveis",
+      "Participe das discussões no fórum",
+      "Teste-se nos quizzes"
+    ]
+  },
+  "nav": {
+    "skip": "Pular tour",
+    "back": "Voltar",
+    "next": "Próximo",
+    "finish": "Começar",
+    "step_of": "Passo {{current}} de {{total}}"
+  },
+  "close": "Fechar onboarding"
+}

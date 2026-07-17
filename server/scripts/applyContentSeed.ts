@@ -51,6 +51,16 @@ const REPOINT_FILE = resolve('server/db/migrations/0013_repoint_simulator_links.
 // anon-based hashes and break distinct-visitor counting.
 const ANONYMIZE_VIEWS_FILE = resolve('server/db/migrations/0015_anonymize_view_history.sql');
 
+// Idempotent schema addenda applied on every deploy (Arena integrity, privacy, etc.).
+const SCHEMA_ADDENDA: string[] = [
+  '0025_add_game_privacy.sql',
+  '0026_add_saved_architectures.sql',
+  '0027_add_generated_challenges.sql',
+  '0028_arena_integrity.sql',
+  '0029_adjacent_hardening.sql',
+  '0030_arena_progression.sql',
+].map((f) => resolve('server/db/migrations', f));
+
 // Incremental content additions that live in their own migration files (one per
 // module) instead of being folded into the giant 0008 seed. Each is an
 // idempotent `INSERT ... ON CONFLICT DO UPDATE`, so re-running on every deploy is
@@ -314,6 +324,12 @@ async function main(): Promise<void> {
 
     console.log('[seed] Ensuring content schema…');
     await client.unsafe(SCHEMA_DDL);
+
+    for (const file of SCHEMA_ADDENDA) {
+      if (!existsSync(file)) continue;
+      console.log(`[seed] Applying schema addendum ${basename(file)}…`);
+      await client.unsafe(readFileSync(file, 'utf8'));
+    }
 
     // Tiny single-row table recording which seed hash is already applied.
     await client.unsafe(`

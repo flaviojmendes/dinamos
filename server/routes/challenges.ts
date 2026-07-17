@@ -16,17 +16,15 @@ export const challengesRouter = new Hono<{ Variables: AppVariables }>();
 
 challengesRouter.use(
   '/api/feedback',
+  authRequired,
   maxBodyBytes(256_000),
-  rateLimit({ windowMs: 60_000, max: 20, keyPrefix: 'feedback' })
+  rateLimit({ windowMs: 60_000, max: 20, keyPrefix: 'feedback' }),
 );
 challengesRouter.use(
   '/api/transcribe-audio',
+  authRequired,
   maxBodyBytes(1_500_000),
-  rateLimit({ windowMs: 60_000, max: 15, keyPrefix: 'transcribe' })
-);
-challengesRouter.use(
-  '/api/challenges/generate',
-  rateLimit({ windowMs: 60_000, max: 10, keyPrefix: 'challenge-gen' })
+  rateLimit({ windowMs: 60_000, max: 15, keyPrefix: 'transcribe' }),
 );
 
 challengesRouter.get('/api/challenges', authRequired, async (c) => {
@@ -69,7 +67,11 @@ challengesRouter.get('/api/challenges', authRequired, async (c) => {
 // private challenge owned by the current user, and return it. The problem then
 // flows through the exact same challenge workspace + AI-feedback pipeline as any
 // other challenge (keyed only by its id).
-challengesRouter.post('/api/challenges/generate', authRequired, async (c) => {
+challengesRouter.post(
+  '/api/challenges/generate',
+  authRequired,
+  rateLimit({ windowMs: 60_000, max: 10, keyPrefix: 'challenge-gen' }),
+  async (c) => {
   const user = c.get('user');
   if (!user.uid || user.uid === 'anonymous') {
     throw new HTTPException(401, { message: 'Authentication required' });

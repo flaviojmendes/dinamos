@@ -31,6 +31,17 @@ const page = {
   createdAt: new Date('2024-01-01'),
   updatedAt: null,
 };
+const indexPage = {
+  slug: page.slug,
+  path: page.path,
+  moduleId: page.moduleId,
+  orderIndex: page.orderIndex,
+  simulatorKey: page.simulatorKey,
+  titleEn: page.titleEn,
+  titlePt: page.titlePt,
+  hasEn: true,
+  hasPt: true,
+};
 const moduleRow = {
   id: 1,
   key: 'mod1',
@@ -54,12 +65,35 @@ beforeEach(() => {
 
 describe('content routes (public)', () => {
   it('GET /api/content returns the published index with CDN cache headers', async () => {
-    mockDb.setResults([[page]]);
+    mockDb.setResults([[indexPage]]);
     const res = await app.request('/api/content');
     const body = await res.json() as any;
     expect(body.pages[0].slug).toBe('intro');
     expect(body.pages[0].hasEn).toBe(true);
     expect(res.headers.get('cache-control')).toContain('max-age=300');
+  });
+
+  it('GET /api/content index query computes hasEn/hasPt in SQL without body columns', async () => {
+    mockDb.setResults([[{ ...indexPage, hasEn: false, hasPt: true }]]);
+    const res = await app.request('/api/content');
+    const body = await res.json() as { pages: Record<string, unknown>[] };
+    expect(body.pages[0]).toEqual({
+      slug: 'intro',
+      path: '/intro',
+      moduleId: 'mod1',
+      orderIndex: 0,
+      simulatorKey: null,
+      titleEn: 'Intro',
+      titlePt: 'Introducao',
+      hasEn: false,
+      hasPt: true,
+    });
+    const selectCall = mockDb.calls.find((c) => c.op === 'select');
+    const fields = selectCall?.args[0] as Record<string, unknown>;
+    expect(fields).not.toHaveProperty('bodyEn');
+    expect(fields).not.toHaveProperty('bodyPt');
+    expect(fields).toHaveProperty('hasEn');
+    expect(fields).toHaveProperty('hasPt');
   });
 
   it('GET /api/content/:slug returns the requested language', async () => {

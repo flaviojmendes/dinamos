@@ -17,7 +17,7 @@ jobs:
   test:
     name: Type-check, build & test
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
@@ -49,8 +49,19 @@ jobs:
       - name: Bundle budget
         run: npm run baseline:bundle && npm run baseline:bundle-budget
 
+      - name: Scoring performance budget
+        run: npm run baseline:scoring && npm run baseline:scoring-budget
+
       - name: Run tests with coverage
         run: npm run test:coverage
+
+      - name: Install Playwright Chromium
+        run: PLAYWRIGHT_BROWSERS_PATH=.playwright-browsers npx playwright install chromium --with-deps
+
+      - name: E2E smoke (Arena)
+        run: npm run test:e2e
+        env:
+          CI: true
 
       - name: Upload coverage to Codecov
         if: always()

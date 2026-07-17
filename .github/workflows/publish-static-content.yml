@@ -1,0 +1,64 @@
+name: Publish static content to CDN
+
+# Manual CMS publish: read production Postgres once, export versioned JSON under
+# public/content/, validate, run focused checks, then commit and push to main.
+# The push triggers the normal Vercel deployment (DB-free build).
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Prevent overlapping publishes that could race on manifest/content-hash commits.
+concurrency:
+  group: publish-static-content
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Export, validate, and commit snapshot
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+        env:
+          NPM_CONFIG_FETCH_RETRIES: "5"
+          NPM_CONFIG_FETCH_RETRY_FACTOR: "2"
+          NPM_CONFIG_FETCH_RETRY_MINTIMEOUT: "20000"
+          NPM_CONFIG_FETCH_RETRY_MAXTIMEOUT: "120000"
+          NPM_CONFIG_FETCH_TIMEOUT: "300000"
+
+      - name: Export static content snapshot
+        run: touch .env && npm run content:export-static
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Validate exported snapshot
+        run: node .github/scripts/validatePublishedContent.mjs
+
+      - name: Run static content exporter tests
+        run: npm run test -- server/scripts/staticContent/__tests__/exportStaticContent.test.ts
+        env:
+          DATABASE_URL: ""
+
+      - name: Verify DB-free production build
+        run: npm run vercel-build
+        env:
+          DATABASE_URL: ""
+
+      - name: Commit and push snapshot
+        run: bash .github/scripts/commitStaticContentSnapshot.sh

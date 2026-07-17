@@ -1,12 +1,41 @@
 {
   "title": "Desafios de System Design",
   "subtitle": "Pratique suas habilidades com problemas reais de sistemas distribuídos",
-  "view_all": "Ver Todos",
-  "start_challenge": "Iniciar Desafio",
+  "view_all": "Ver todos",
+  "start_challenge": "Iniciar desafio",
   "attempt": "tentativa",
   "attempts": "tentativas",
-  "has_video": "Tem vídeo de solução",
+  "has_video": "Tem solução em vídeo",
   "cta_title": "Pronto para testar seus conhecimentos?",
   "cta_description": "Acesse o Design Lab para praticar system design com feedback de IA.",
-  "go_to_lab": "Ir para o Design Lab"
+  "go_to_lab": "Ir para o Design Lab",
+  "history": {
+    "title": "Histórico de tentativas",
+    "empty": "Nenhuma tentativa anterior encontrada.",
+    "attempt": "Tentativa #{{id}}",
+    "strengths": "Pontos fortes",
+    "suggestions": "Sugestões",
+    "no_feedback": "Sem feedback disponível para esta tentativa.",
+    "close": "Fechar histórico"
+  },
+  "audio": {
+    "title": "Gravação de áudio",
+    "start": "Iniciar gravação",
+    "pause": "Pausar",
+    "resume": "Retomar",
+    "stop": "Parar",
+    "cancel": "Cancelar",
+    "transcribing": "Transcrevendo áudio…",
+    "done": "Transcrição concluída!",
+    "transcript_label": "Texto transcrito:",
+    "record_again": "Gravar novamente",
+    "remaining": "Tempo restante: {{time}}",
+    "mic_error": "Erro ao acessar o microfone. Por favor, permita o acesso.",
+    "transcribe_error": "Erro ao transcrever o áudio. Tente novamente.",
+    "instructions_title": "Instruções:",
+    "instruction_duration": "Grave um áudio de até {{duration}} explicando seu design",
+    "instruction_decisions": "Fale sobre decisões arquiteturais e trade-offs",
+    "instruction_submit": "O áudio será transcrito automaticamente e enviado com sua solução",
+    "instruction_pause": "Você pode pausar e retomar a gravação a qualquer momento"
+  }
 }

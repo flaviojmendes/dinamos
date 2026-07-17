@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Panel, TacticalButton } from '../tactical';
 import { AnimatedMetric, GridBackdrop } from '../AISystems/motion';
+import { ConvergenceChart, Legend, NarrationBar } from '../simulators/teaching';
 
 const PALETTE = ['#22c55e', '#06b6d4', '#f59e0b', '#a855f7', '#ef4444', '#3b82f6', '#ec4899', '#14b8a6'];
 
@@ -38,6 +39,7 @@ export default function ConsistentHashingSimulator() {
 
   const [movedSet, setMovedSet] = useState<Set<number>>(new Set());
   const [movedPct, setMovedPct] = useState(0);
+  const [moveHistory, setMoveHistory] = useState<number[]>([0]);
   const prevOwners = useRef<Map<number, number>>(new Map());
 
   const ring: VNode[] = useMemo(() => {
@@ -79,7 +81,9 @@ export default function ConsistentHashingSimulator() {
     });
     if (prev.size > 0) {
       setMovedSet(moved);
-      setMovedPct(keys.length > 0 ? Math.round((moved.size / keys.length) * 100) : 0);
+      const pct = keys.length > 0 ? Math.round((moved.size / keys.length) * 100) : 0;
+      setMovedPct(pct);
+      setMoveHistory((h) => [...h.slice(-19), pct]);
     }
     prevOwners.current = new Map(owners);
     const timer = window.setTimeout(() => setMovedSet(new Set()), 1400);
@@ -103,6 +107,7 @@ export default function ConsistentHashingSimulator() {
     setSeed(1);
     setMovedSet(new Set());
     setMovedPct(0);
+    setMoveHistory([0]);
   };
 
   const rangeClass = 'flex-1 h-2 bg-slate-200 dark:bg-tactical-border appearance-none cursor-pointer accent-signal-green';
@@ -125,7 +130,32 @@ export default function ConsistentHashingSimulator() {
           </div>
         }
       >
-        <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
+        <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim mb-4">{t(`${base}.subtitle`)}</p>
+
+        <NarrationBar tone={movedPct > 25 ? 'active' : 'success'} stepKey={`${nodeCount}-${movedPct}`}>
+          {movedPct > 0
+            ? t(`${base}.narration.moved`, {
+                defaultValue: '{{pct}}% of keys moved to new nodes — consistent hashing keeps remapping bounded when the ring changes.',
+                pct: movedPct,
+              })
+            : t(`${base}.narration.steady`, {
+                defaultValue: 'Add or remove a node to see how few keys need to move compared with naive modulo sharding.',
+              })}
+        </NarrationBar>
+        <div className="mb-4 grid grid-cols-1 lg:grid-cols-[1fr_160px] gap-4 items-end">
+          <Legend
+            items={[
+              { swatch: 'bg-signal-cyan', label: t(`${base}.legend.node`, { defaultValue: 'Physical node' }) },
+              { swatch: 'bg-signal-amber', label: t(`${base}.legend.moved`, { defaultValue: 'Key that changed owner' }) },
+            ]}
+          />
+          <div>
+            <p className="font-sans text-[10px] text-slate-500 dark:text-tactical-label mb-1">
+              {t(`${base}.chart_label`, { defaultValue: 'Keys remapped after topology change' })}
+            </p>
+            <ConvergenceChart data={moveHistory} total={100} accent="amber" height={72} />
+          </div>
+        </div>
 
         <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">

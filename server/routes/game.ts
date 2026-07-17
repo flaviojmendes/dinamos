@@ -4,158 +4,97 @@ import { and, desc, eq, inArray } from 'drizzle-orm';
 import { db } from '../db/client.js';
 import { gameSessions, gamePlayers, users } from '../db/schema.js';
 import { getUserContext } from '../db/repo.js';
-import { authRequired, type AppVariables } from '../middleware/auth.js';
+import { authRequired, optionalAuth, type AppVariables } from '../middleware/auth.js';
 import { maxBodyBytes, rateLimit } from '../middleware/guardrails.js';
-// Shared with the client engine: the module is dependency-free on purpose.
-import { evaluateCompliance } from '../../src/components/SystemEditor/engine/compliance.js';
 import { stableHash } from '../../src/components/SystemEditor/engine/stableHash.js';
+import { generateJoinKey, generateMatchCode, generateStageToken, hashStageToken } from '../lib/game/crypto.js';
+import { isStageTokenValid, stageTokenExpiresAt } from '../lib/game/stageToken.js';
+import {
+  assertArchitectureEditablePhase,
+  assertCapacity,
+  assertExistingPlayer,
+  assertJoinAuthorized,
+  assertMatchNotEnded,
+  assertNotKicked,
+  assertRoundIndexInRange,
+  assertScoreWritePhase,
+} from '../lib/game/guards.js';
+import {
+  clockFromSession,
+  computeEligibilityWindow,
+  secondsUntilDeadline,
+} from '../lib/game/eligibility.js';
+import { rankSessionPlayers } from '../lib/game/leaderboard.js';
+import {
+  applyHostLifecycleAction,
+  LifecycleError,
+  mapLegacyHostAction,
+  lifecyclePatchToSessionUpdates,
+  snapshotLateJoiner,
+  recomputePlayerVerifiedScore,
+} from '../lib/game/lifecycle/service.js';
+import {
+  activeRoundIndex,
+  DEFAULT_LOAD_PROFILE,
+  DEFAULT_MAX_PLAYERS,
+  DEFAULT_SCORING,
+  getRoundsFromSession,
+  normalizeRound,
+  publicRounds,
+} from '../lib/game/rounds.js';
+import {
+  getPlayerArchSnapshot,
+  readPlayerArchSnapshots,
+  readVerifiedRoundScores,
+} from '../lib/game/snapshots.js';
+import { applyHostLifecycleToDb, syncSessionLifecycle } from '../lib/game/sync.js';
+import {
+  architecturesEqual,
+  assertLockedNodesPreserved,
+  architectureCompliant,
+} from '../lib/game/validation/architecture.js';
+import {
+  assertClientScoreNotForged,
+  computeVerifiedAggregate,
+  emitVerifiedScoreComposition,
+  requiresServerVerification,
+} from '../lib/game/scoring/recompute.js';
+import { isAuthoritativeScoringEnabled, isClientScoreTrustEnabled, isHostInCanary, isCanaryRestricted } from '../lib/game/config.js';
+import { emitGameTelemetry } from '../lib/game/telemetry.js';
+import type { RoundConfig } from '../../src/components/SystemEditor/game/types';
 
 export const gameRouter = new Hono<{ Variables: AppVariables }>();
 
-// /api/games/live is public (the arena landing page lists running matches
-// without a login). Everything else requires a signed-in user; host mutations
-// additionally require being the match creator (or a platform Admin).
 gameRouter.use('/api/games/host', authRequired);
 gameRouter.use('/api/games/host/*', authRequired);
-// Player-facing routes only require a logged-in user.
-gameRouter.use('/api/game/*', authRequired);
+gameRouter.use('/api/game/*', async (c, next) => {
+  if (c.req.path.endsWith('/spectate')) return next();
+  return authRequired(c, next);
+});
 
-// Guard expensive polling and large architecture writes before DB work.
 gameRouter.use(
   '/api/game/:code',
-  rateLimit({ windowMs: 60_000, max: 120, keyPrefix: 'game-poll' })
+  rateLimit({ windowMs: 60_000, max: 120, keyPrefix: 'game-poll' }),
 );
 gameRouter.use(
   '/api/game/:code/architecture',
   maxBodyBytes(512_000),
-  rateLimit({ windowMs: 60_000, max: 90, keyPrefix: 'game-arch' })
+  rateLimit({ windowMs: 60_000, max: 90, keyPrefix: 'game-arch' }),
 );
 gameRouter.use(
   '/api/game/:code/leaderboard',
-  rateLimit({ windowMs: 60_000, max: 90, keyPrefix: 'game-lb' })
+  rateLimit({ windowMs: 60_000, max: 90, keyPrefix: 'game-lb' }),
 );
 
 type SessionRow = typeof gameSessions.$inferSelect;
 
-/**
- * Server-side mirror of the client's house-rules gate. A submission whose
- * architecture breaks the rules (no database, cache-only, client wired into
- * the DB, ...) can never raise the recorded score, so tampering with the
- * client-side check gains nothing.
- */
-function architectureCompliant(arch: unknown): boolean {
-  const a = arch as {
-    nodes?: { id?: unknown; config?: { kind?: unknown } }[];
-    edges?: { source?: unknown; target?: unknown }[];
-  } | null;
-  if (!a || !Array.isArray(a.nodes) || a.nodes.length === 0) return false;
-  const nodes = a.nodes
-    .filter((n) => n && typeof n.id === 'string' && typeof n.config?.kind === 'string')
-    .map((n) => ({ id: n.id as string, kind: n.config!.kind as string }));
-  const edges = (Array.isArray(a.edges) ? a.edges : [])
-    .filter((e) => e && typeof e.source === 'string' && typeof e.target === 'string')
-    .map((e) => ({ source: e.source as string, target: e.target as string }));
-  return evaluateCompliance(nodes, edges).ok;
-}
-
-const DEFAULT_SCORING = {
-  wThroughput: 1,
-  wSuccess: 2,
-  wLatency: 1,
-  wCost: 1,
-  latencyTargetMs: 250,
-  budgetPerHour: 0,
-};
-
-const DEFAULT_LOAD_PROFILE = { type: 'constant' as const };
-
-interface RoundConfig {
-  name?: string;
-  /** Player-facing one-liner describing the round's scenario beat. */
-  story?: string;
-  /** Build window (seconds) before this round goes live. Informational. */
-  intervalSec: number;
-  /** Live round length in seconds. */
-  durationSec: number;
-  loadProfile: { type: string };
-  chaosEvents: unknown[];
-  scoringConfig: Record<string, number>;
-  /** Multiplier applied to this round's score in the weighted aggregate. */
-  weight: number;
-}
-
-function normalizeRound(raw: Partial<RoundConfig> | undefined, idx: number): RoundConfig {
-  return {
-    name: raw?.name ?? `Round ${idx + 1}`,
-    story: raw?.story,
-    intervalSec: Number(raw?.intervalSec ?? 60),
-    durationSec: Number(raw?.durationSec ?? 120),
-    loadProfile: raw?.loadProfile ?? DEFAULT_LOAD_PROFILE,
-    chaosEvents: Array.isArray(raw?.chaosEvents) ? raw!.chaosEvents : [],
-    scoringConfig: { ...DEFAULT_SCORING, ...(raw?.scoringConfig ?? {}) },
-    weight: Number(raw?.weight ?? 1),
-  };
-}
-
-/** Non-sensitive round metadata safe to show players and the audience. */
-function publicRounds(rounds: RoundConfig[]) {
-  return rounds.map((r) => ({
-    name: r.name ?? null,
-    story: r.story ?? null,
-    interval_sec: r.intervalSec,
-    duration_sec: r.durationSec,
-    weight: r.weight,
-  }));
-}
-
-/** Read the (possibly null) rounds column as a typed array. */
 function getRounds(session: SessionRow): RoundConfig[] {
-  const raw = session.rounds;
-  if (!Array.isArray(raw)) return [];
-  return raw.map((r, i) => normalizeRound(r as Partial<RoundConfig>, i));
-}
-
-/**
- * Weighted aggregate across rounds: total = Σ weight_i * roundScore_i.
- * `roundScores` is the per-player map { [roundIndex]: { score, ... } }.
- */
-function computeAggregate(
-  rounds: RoundConfig[],
-  roundScores: Record<string, { score?: number }> | null | undefined
-): number {
-  if (!roundScores) return 0;
-  let total = 0;
-  for (const [key, val] of Object.entries(roundScores)) {
-    const idx = Number(key);
-    const weight = rounds[idx]?.weight ?? 1;
-    total += weight * (val?.score ?? 0);
-  }
-  return total;
-}
-
-/** Short, unambiguous, URL-friendly match code (no easily confused chars). */
-function generateCode(): string {
-  const alphabet = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
-  let out = '';
-  for (let i = 0; i < 6; i++) {
-    out += alphabet[Math.floor(Math.random() * alphabet.length)];
-  }
-  return out;
-}
-
-/** Secret for private-match invite links. */
-function generateJoinKey(): string {
-  const alphabet = 'abcdefghijkmnpqrstuvwxyz23456789';
-  let out = '';
-  for (let i = 0; i < 16; i++) {
-    out += alphabet[Math.floor(Math.random() * alphabet.length)];
-  }
-  return out;
+  return getRoundsFromSession(session);
 }
 
 async function generateUniqueCode(): Promise<string> {
   for (let attempt = 0; attempt < 8; attempt++) {
-    const code = generateCode();
+    const code = generateMatchCode();
     const existing = await db
       .select({ id: gameSessions.id })
       .from(gameSessions)
@@ -163,8 +102,7 @@ async function generateUniqueCode(): Promise<string> {
       .limit(1);
     if (existing.length === 0) return code;
   }
-  // Fall back to a longer code if we keep colliding.
-  return `${generateCode()}${Math.floor(Math.random() * 90 + 10)}`;
+  return `${generateMatchCode()}${generateMatchCode().slice(0, 2)}`;
 }
 
 async function getSessionByCode(code: string): Promise<SessionRow | null> {
@@ -176,18 +114,21 @@ async function getSessionByCode(code: string): Promise<SessionRow | null> {
   return rows[0] ?? null;
 }
 
+async function getSyncedSession(code: string): Promise<SessionRow | null> {
+  const session = await getSessionByCode(code);
+  if (!session) return null;
+  const { session: synced } = await syncSessionLifecycle(session);
+  return synced;
+}
+
 async function isAdmin(userId: string): Promise<boolean> {
   const ctx = await getUserContext(userId);
   const roleName = ctx?.role?.name ?? ctx?.user.role ?? '';
   return roleName === 'Admin';
 }
 
-/**
- * Load a match for host-side management: 404 when missing, 403 unless the
- * requester created it (or is a platform Admin).
- */
 async function getManagedSession(code: string, userId: string): Promise<SessionRow> {
-  const session = await getSessionByCode(code);
+  const session = await getSyncedSession(code);
   if (!session) throw new HTTPException(404, { message: 'Match not found' });
   if (session.createdBy !== userId && !(await isAdmin(userId))) {
     throw new HTTPException(403, { message: 'Only the match host can manage it' });
@@ -200,19 +141,29 @@ function toIso(value: Date | string | null | undefined): string | null {
   return value instanceof Date ? value.toISOString() : new Date(value).toISOString();
 }
 
-/**
- * Seconds elapsed within the current round. The player's sim restarts at t=0
- * each round, so chaos must be scheduled relative to the round start (not the
- * match start) or it would never fire.
- */
-function roundElapsedSec(session: SessionRow): number {
-  const anchor = session.roundStartedAt ?? session.startedAt;
-  if (!anchor) return 0;
-  const started = new Date(anchor).getTime();
-  return Math.max(0, Math.floor((Date.now() - started) / 1000));
+function lifecycleFields(session: SessionRow, nowMs = Date.now()) {
+  const clock = clockFromSession({
+    nowMs,
+    intervalStartedAt: session.intervalStartedAt,
+    intervalEndsAt: session.intervalEndsAt,
+    roundStartedAt: session.roundStartedAt,
+    roundEndsAt: session.roundEndsAt,
+    pausedAt: session.pausedAt,
+    totalPausedMs: session.totalPausedMs,
+  });
+  const phase = session.phase ?? 'lobby';
+  return {
+    interval_started_at: toIso(session.intervalStartedAt),
+    interval_ends_at: toIso(session.intervalEndsAt),
+    paused_at: toIso(session.pausedAt),
+    total_paused_ms: session.totalPausedMs ?? 0,
+    lifecycle_version: session.lifecycleVersion ?? 0,
+    auto_transitions: session.autoTransitions ?? true,
+    seconds_until_deadline: secondsUntilDeadline(phase, clock),
+    is_paused: session.pausedAt != null,
+  };
 }
 
-/** Admin-facing serialization (includes everything). */
 function adminSessionToDict(session: SessionRow) {
   return {
     id: session.id,
@@ -242,17 +193,45 @@ function adminSessionToDict(session: SessionRow) {
     join_open: session.joinOpen ?? true,
     listed: session.listed ?? true,
     join_key: session.joinKey ?? null,
+    max_players: session.maxPlayers ?? DEFAULT_MAX_PLAYERS,
+    kicked_user_ids: session.kickedUserIds ?? [],
+    stage_token_expires_at: toIso(session.stageTokenExpiresAt),
+    has_stage_token: Boolean(session.stageTokenHash),
     created_by: session.createdBy,
     created_at: toIso(session.createdAt),
     updated_at: toIso(session.updatedAt),
     server_time: new Date().toISOString(),
+    ...lifecycleFields(session),
   };
+}
+
+function assertSpectateAccess(
+  c: { req: { query: (k: string) => string | undefined }; get: (k: 'user') => { uid: string } | undefined },
+  session: SessionRow,
+) {
+  const token = c.req.query('token');
+  if (token) {
+    if (!isStageTokenValid(token, session.stageTokenHash, session.stageTokenExpiresAt)) {
+      throw new HTTPException(403, { message: 'Invalid or expired stage token' });
+    }
+    return;
+  }
+  if (!c.get('user')) {
+    throw new HTTPException(401, { message: 'Stage token or authorization required' });
+  }
+}
+
+function roundElapsedSec(session: SessionRow): number {
+  const anchor = session.roundStartedAt ?? session.startedAt;
+  if (!anchor) return 0;
+  const started = new Date(anchor).getTime();
+  const pausedMs = session.pausedAt ? Date.now() - new Date(session.pausedAt).getTime() : 0;
+  const totalPaused = (session.totalPausedMs ?? 0) + (session.pausedAt ? pausedMs : 0);
+  return Math.max(0, Math.floor((Date.now() - started - totalPaused) / 1000));
 }
 
 // ==================== Public discovery ====================
 
-// Live matches for the arena landing page. Public (no auth): exposes only
-// non-sensitive metadata so a marketing page can show what's happening now.
 gameRouter.get('/api/games/live', async (c) => {
   const rows = await db
     .select()
@@ -260,8 +239,8 @@ gameRouter.get('/api/games/live', async (c) => {
     .where(
       and(
         inArray(gameSessions.status, ['lobby', 'running', 'paused']),
-        eq(gameSessions.listed, true)
-      )
+        eq(gameSessions.listed, true),
+      ),
     )
     .orderBy(desc(gameSessions.createdAt))
     .limit(24);
@@ -291,6 +270,7 @@ gameRouter.get('/api/games/live', async (c) => {
       player_count: counts.get(s.id) ?? 0,
       starts_at: toIso(s.startsAt),
       round_ends_at: toIso(s.roundEndsAt),
+      interval_ends_at: toIso(s.intervalEndsAt),
       created_at: toIso(s.createdAt),
     })),
   });
@@ -298,7 +278,6 @@ gameRouter.get('/api/games/live', async (c) => {
 
 // ==================== Host endpoints ====================
 
-// List the requester's matches (platform Admins see everything).
 gameRouter.get('/api/games/host', async (c) => {
   const user = c.get('user');
   const admin = await isAdmin(user.uid);
@@ -311,9 +290,13 @@ gameRouter.get('/api/games/host', async (c) => {
   return c.json({ sessions: rows.map(adminSessionToDict) });
 });
 
-// Create a new match. Any signed-in user can host.
 gameRouter.post('/api/games/host', async (c) => {
   const user = c.get('user');
+  if (isCanaryRestricted() && !isHostInCanary(user.uid)) {
+    throw new HTTPException(403, {
+      message: 'Arena authoritative scoring is in canary rollout for selected hosts only',
+    });
+  }
   const body = await c.req.json<{
     name?: string;
     seed?: number;
@@ -328,29 +311,33 @@ gameRouter.post('/api/games/host', async (c) => {
     rounds?: Partial<RoundConfig>[];
     join_open?: boolean;
     listed?: boolean;
+    max_players?: number;
   }>();
 
-  // Normalize the rounds. If none provided, derive a single round from the
-  // flat config so older clients keep working.
-  const rawRounds = Array.isArray(body.rounds) && body.rounds.length > 0
-    ? body.rounds
-    : [
-        {
-          intervalSec: 60,
-          durationSec: body.duration_sec ?? 120,
-          loadProfile: body.load_profile ?? DEFAULT_LOAD_PROFILE,
-          chaosEvents: [],
-          scoringConfig: body.scoring_config ?? DEFAULT_SCORING,
-          weight: 1,
-        },
-      ];
-  const rounds = rawRounds.map((r, i) => normalizeRound(r, i));
+  const rawRounds =
+    Array.isArray(body.rounds) && body.rounds.length > 0
+      ? body.rounds
+      : [
+          {
+            intervalSec: 60,
+            durationSec: body.duration_sec ?? 120,
+            loadProfile: (body.load_profile ?? DEFAULT_LOAD_PROFILE) as RoundConfig['loadProfile'],
+            chaosEvents: [],
+            scoringConfig: body.scoring_config ?? DEFAULT_SCORING,
+            weight: 1,
+          },
+        ];
+  const rounds = rawRounds.map((r, i) => normalizeRound(r as Partial<RoundConfig>, i));
 
   const code = await generateUniqueCode();
+  const stageRaw = generateStageToken();
+  const stageExpires = stageTokenExpiresAt();
   const inserted = await db
     .insert(gameSessions)
     .values({
       code,
+      stageTokenHash: hashStageToken(stageRaw),
+      stageTokenExpiresAt: stageExpires,
       name: body.name ?? null,
       status: 'lobby',
       phase: 'lobby',
@@ -360,7 +347,6 @@ gameRouter.post('/api/games/host', async (c) => {
       startingArchitecture: (body.starting_architecture ?? null) as object | null,
       lockedNodeIds: (body.locked_node_ids ?? []) as object,
       allowDeleteStarting: body.allow_delete_starting ?? true,
-      // Mirror the first round's live config so the lobby preview is correct.
       loadProfile: (rounds[0].loadProfile ?? DEFAULT_LOAD_PROFILE) as object,
       chaosEvents: [] as object,
       scoringConfig: (rounds[0].scoringConfig ?? DEFAULT_SCORING) as object,
@@ -369,29 +355,102 @@ gameRouter.post('/api/games/host', async (c) => {
       rounds: rounds as object,
       joinOpen: body.join_open ?? true,
       listed: body.listed ?? true,
-      // Every match gets a key; it is only enforced when joinOpen is false.
       joinKey: generateJoinKey(),
+      maxPlayers: body.max_players ?? DEFAULT_MAX_PLAYERS,
+      kickedUserIds: [] as object,
+      autoTransitions: true,
+      lifecycleVersion: 0,
+      totalPausedMs: 0,
       createdBy: user.uid,
     })
     .returning();
 
-  return c.json(adminSessionToDict(inserted[0]), 201);
+  return c.json(
+    {
+      ...adminSessionToDict(inserted[0]),
+      stage_token: stageRaw,
+      stage_url: null,
+      authoritative_scoring: isAuthoritativeScoringEnabled(),
+      client_score_trust: isClientScoreTrustEnabled(),
+    },
+    201,
+  );
 });
 
-// Full host view of a single match (config + live leaderboard).
+gameRouter.post('/api/games/host/:code/stage-token', async (c) => {
+  const session = await getManagedSession(c.req.param('code'), c.get('user').uid);
+  const raw = generateStageToken();
+  const expiresAt = stageTokenExpiresAt();
+  await db
+    .update(gameSessions)
+    .set({
+      stageTokenHash: hashStageToken(raw),
+      stageTokenExpiresAt: expiresAt,
+      updatedAt: new Date(),
+    })
+    .where(eq(gameSessions.id, session.id));
+  return c.json({
+    stage_token: raw,
+    stage_token_expires_at: expiresAt.toISOString(),
+  });
+});
+
+interface LeaderboardEntry {
+  rank: number;
+  user_id: string;
+  nickname: string | null;
+  avatar_image: string | null;
+  score: number;
+  score_breakdown: unknown;
+  last_submitted_at: string | null;
+  verified: boolean;
+}
+
+async function buildLeaderboard(session: SessionRow): Promise<LeaderboardEntry[]> {
+  const players = await db
+    .select()
+    .from(gamePlayers)
+    .where(eq(gamePlayers.sessionId, session.id));
+
+  const userIds = players.map((p) => p.userId);
+  const userRows = userIds.length
+    ? await db
+        .select({
+          id: users.id,
+          nickname: users.nickname,
+          avatarImage: users.avatarImage,
+        })
+        .from(users)
+        .where(inArray(users.id, userIds))
+    : [];
+  const userMap = new Map(userRows.map((u) => [u.id, u]));
+  const ranked = rankSessionPlayers(session, players, { provisionalOk: session.phase === 'round' });
+  const playerMap = new Map(players.map((p) => [p.userId, p]));
+  return ranked.map((r) => {
+    const p = playerMap.get(r.user_id);
+    return {
+      rank: r.rank,
+      user_id: r.user_id,
+      nickname: userMap.get(r.user_id)?.nickname ?? null,
+      avatar_image: userMap.get(r.user_id)?.avatarImage ?? null,
+      score: r.score,
+      score_breakdown: p?.scoreBreakdown ?? null,
+      last_submitted_at: toIso(p?.lastSubmittedAt ?? null),
+      verified: r.verified,
+    };
+  });
+}
+
 gameRouter.get('/api/games/host/:code', async (c) => {
   const session = await getManagedSession(c.req.param('code'), c.get('user').uid);
-  const leaderboard = await buildLeaderboard(session.id);
+  const leaderboard = await buildLeaderboard(session);
   return c.json({ ...adminSessionToDict(session), leaderboard });
 });
 
-// Update a match: status transitions, broadcast traffic, schedule, etc.
 gameRouter.patch('/api/games/host/:code', async (c) => {
-  const session = await getManagedSession(c.req.param('code'), c.get('user').uid);
+  let session = await getManagedSession(c.req.param('code'), c.get('user').uid);
 
   const body = await c.req.json<{
-    // 'start'/'pause'/'resume'/'end' are legacy flat-match controls.
-    // 'open_interval'/'start_round'/'end_round' drive the round state machine.
     action?:
       | 'start'
       | 'pause'
@@ -404,7 +463,6 @@ gameRouter.patch('/api/games/host/:code', async (c) => {
     seed?: number;
     starts_at?: string | null;
     duration_sec?: number | null;
-    // Shift the active round's end time by this many seconds (+/-).
     add_sec?: number;
     load_profile?: { type: string };
     scoring_config?: Record<string, number>;
@@ -413,6 +471,7 @@ gameRouter.patch('/api/games/host/:code', async (c) => {
     rounds?: Partial<RoundConfig>[];
     join_open?: boolean;
     listed?: boolean;
+    max_players?: number;
   }>();
 
   const updates: Partial<typeof gameSessions.$inferInsert> = { updatedAt: new Date() };
@@ -421,6 +480,7 @@ gameRouter.patch('/api/games/host/:code', async (c) => {
   if (body.join_open !== undefined) updates.joinOpen = body.join_open;
   if (body.listed !== undefined) updates.listed = body.listed;
   if (body.seed !== undefined) updates.seed = body.seed;
+  if (body.max_players !== undefined) updates.maxPlayers = body.max_players;
   if (body.starts_at !== undefined)
     updates.startsAt = body.starts_at ? new Date(body.starts_at) : null;
   if (body.duration_sec !== undefined) updates.durationSec = body.duration_sec;
@@ -434,95 +494,81 @@ gameRouter.patch('/api/games/host/:code', async (c) => {
   if (body.rounds !== undefined)
     updates.rounds = body.rounds.map((r, i) => normalizeRound(r, i)) as object;
 
-  const rounds = body.rounds
-    ? body.rounds.map((r, i) => normalizeRound(r, i))
-    : getRounds(session);
-  const totalRounds = rounds.length;
-  const curRound = session.currentRound ?? 0;
+  const phase = session.phase ?? 'lobby';
   const action = body.action;
+  let enteredRound = false;
+  let enteredRoundIndex: number | null = null;
 
-  // Begin the next round: freeze players, mirror the round's config into the
-  // live columns the client engine reads, and time-box it.
-  const beginRound = (next: number) => {
-    const round = rounds[next - 1];
-    if (!round) throw new HTTPException(400, { message: 'No such round' });
-    const now = new Date();
-    updates.currentRound = next;
-    updates.phase = 'round';
-    updates.status = 'running';
-    updates.roundStartedAt = now;
-    updates.roundEndsAt = new Date(now.getTime() + round.durationSec * 1000);
-    updates.loadProfile = round.loadProfile as object;
-    updates.chaosEvents = round.chaosEvents as object;
-    updates.scoringConfig = round.scoringConfig as object;
-    if (!session.startedAt) updates.startedAt = now;
-  };
+  if (action) {
+    const mapped = mapLegacyHostAction(action, phase, body.add_sec);
 
-  if (action === 'start_round') {
-    beginRound(Math.min(totalRounds, curRound + 1));
-  } else if (action === 'start') {
-    // Legacy "start now": route to round 1 when the match has rounds.
-    if (totalRounds > 0) {
-      beginRound(curRound > 0 ? curRound : 1);
-    } else {
+    if (action === 'start_round' && phase === 'lobby') {
+      throw new HTTPException(400, {
+        message: 'Lobby must enter a build interval before starting a round',
+      });
+    }
+
+    if (mapped) {
+      try {
+        const prevPhase = phase;
+        const nextState = applyHostLifecycleAction(session, mapped);
+        Object.assign(updates, lifecyclePatchToSessionUpdates(nextState, session));
+        emitGameTelemetry({
+          type: 'lifecycle_transition',
+          sessionCode: session.code,
+          fromPhase: phase,
+          toPhase: nextState.phase,
+          lifecycleVersion: nextState.lifecycleVersion,
+          trigger: 'host',
+        });
+        enteredRound = prevPhase !== 'round' && nextState.phase === 'round';
+        if (enteredRound) enteredRoundIndex = activeRoundIndex(nextState.currentRound);
+      } catch (err) {
+        if (err instanceof LifecycleError) {
+          throw new HTTPException(400, { message: err.message });
+        }
+        throw err;
+      }
+    } else if (action === 'start' && getRounds(session).length === 0) {
       updates.status = 'running';
       const startedAt = new Date();
       updates.startedAt = startedAt;
       if (!body.starts_at) updates.startsAt = startedAt;
     }
-  } else if (action === 'open_interval') {
-    // Build window before the next round; sim paused, editing enabled.
-    updates.phase = 'interval';
-    updates.status = 'paused';
-    updates.roundEndsAt = null;
-  } else if (action === 'end_round') {
-    const now = new Date();
-    if (curRound >= totalRounds) {
-      updates.phase = 'ended';
-      updates.status = 'ended';
-      updates.endsAt = now;
-      updates.roundEndsAt = null;
-    } else {
-      updates.phase = 'interval';
-      updates.status = 'paused';
-      updates.roundEndsAt = null;
-    }
-  } else if (action === 'pause') {
-    updates.status = 'paused';
-  } else if (action === 'resume') {
-    updates.status = 'running';
-  } else if (action === 'end') {
-    updates.status = 'ended';
-    updates.phase = 'ended';
-    updates.endsAt = new Date();
-    updates.roundEndsAt = null;
   }
 
-  // Adjust the active round's end time (admin fine-tuning during a round).
   if (body.add_sec !== undefined && body.add_sec !== 0) {
     const effectivePhase = (updates.phase ?? session.phase) as string;
-    if (effectivePhase === 'round') {
-      const base = updates.roundEndsAt ?? session.roundEndsAt;
-      const baseMs = base ? new Date(base).getTime() : Date.now();
-      updates.roundEndsAt = new Date(baseMs + body.add_sec * 1000);
-    } else {
-      // Legacy flat-match end-time shift.
+    if (!action) {
+      const extendAction =
+        effectivePhase === 'interval'
+          ? ({ type: 'extend_interval', addSec: body.add_sec } as const)
+          : effectivePhase === 'round'
+            ? ({ type: 'extend_round', addSec: body.add_sec } as const)
+            : null;
+      if (extendAction) {
+        const nextState = applyHostLifecycleAction(session, extendAction);
+        Object.assign(updates, lifecyclePatchToSessionUpdates(nextState, session));
+      } else if (effectivePhase === 'round') {
+        const base = updates.roundEndsAt ?? session.roundEndsAt;
+        const baseMs = base ? new Date(base).getTime() : Date.now();
+        updates.roundEndsAt = new Date(baseMs + body.add_sec * 1000);
+      } else {
+        const baseEnds = updates.endsAt ?? session.endsAt;
+        const baseMs = baseEnds ? new Date(baseEnds).getTime() : Date.now();
+        updates.endsAt = new Date(baseMs + body.add_sec * 1000);
+      }
+    } else if (action === 'end_round') {
       const baseEnds = updates.endsAt ?? session.endsAt;
       const baseMs = baseEnds ? new Date(baseEnds).getTime() : Date.now();
       updates.endsAt = new Date(baseMs + body.add_sec * 1000);
     }
   }
 
-  const updated = await db
-    .update(gameSessions)
-    .set(updates)
-    .where(eq(gameSessions.id, session.id))
-    .returning();
-
-  return c.json(adminSessionToDict(updated[0]));
+  session = await applyHostLifecycleToDb(session, updates, enteredRound, enteredRoundIndex);
+  return c.json(adminSessionToDict(session));
 });
 
-// Inject a chaos event into the live broadcast timeline.
 gameRouter.post('/api/games/host/:code/chaos', async (c) => {
   const session = await getManagedSession(c.req.param('code'), c.get('user').uid);
 
@@ -535,8 +581,6 @@ gameRouter.post('/api/games/host/:code/chaos', async (c) => {
   if (!body.type || !body.targetId)
     throw new HTTPException(400, { message: 'type and targetId are required' });
 
-  // Schedule a couple of seconds into the future so every client picks it up.
-  // Round-relative: clients reset the sim clock to 0 at the start of each round.
   const startSec = roundElapsedSec(session) + 2;
   const event = {
     id: `chaos-${Date.now()}`,
@@ -560,13 +604,14 @@ gameRouter.post('/api/games/host/:code/chaos', async (c) => {
   return c.json({ chaos_events: chaosEvents });
 });
 
-/** Per-player live state shared by the admin spectator and the audience stage. */
-async function buildSpectatorPlayers(sessionId: number) {
+async function buildSpectatorPlayers(session: SessionRow, redactLiveArch: boolean) {
   const players = await db
     .select()
     .from(gamePlayers)
-    .where(eq(gamePlayers.sessionId, sessionId))
-    .orderBy(desc(gamePlayers.score));
+    .where(eq(gamePlayers.sessionId, session.id));
+
+  const ranked = rankSessionPlayers(session, players, { provisionalOk: true });
+  const rankMap = new Map(ranked.map((r) => [r.user_id, r]));
 
   const userIds = players.map((p) => p.userId);
   const userRows = userIds.length
@@ -581,39 +626,40 @@ async function buildSpectatorPlayers(sessionId: number) {
     : [];
   const userMap = new Map(userRows.map((u) => [u.id, u]));
 
-  return players.map((p, i) => {
+  return players.map((p) => {
     const arch = (p.architecture ?? null) as {
       nodes?: unknown[];
       edges?: unknown[];
     } | null;
     const nodeCount = Array.isArray(arch?.nodes) ? arch!.nodes.length : 0;
     const edgeCount = Array.isArray(arch?.edges) ? arch!.edges.length : 0;
+    const rank = rankMap.get(p.userId);
+    const hideArch = redactLiveArch && session.phase === 'round';
     return {
-      rank: i + 1,
+      rank: rank?.rank ?? 0,
       user_id: p.userId,
       nickname: userMap.get(p.userId)?.nickname ?? null,
       avatar_image: userMap.get(p.userId)?.avatarImage ?? null,
-      score: p.score ?? 0,
+      score: rank?.score ?? p.score ?? 0,
+      score_verified: rank?.verified ?? false,
       score_breakdown: p.scoreBreakdown ?? null,
       round_scores: p.roundScores ?? {},
       metrics: p.metrics ?? null,
-      architecture: p.architecture ?? null,
+      architecture: hideArch ? undefined : (p.architecture ?? null),
       node_count: nodeCount,
       edge_count: edgeCount,
       joined_at: toIso(p.joinedAt),
       last_submitted_at: toIso(p.lastSubmittedAt),
     };
-  });
+  }).sort((a, b) => a.rank - b.rank);
 }
 
-// Live spectator view: every player's current architecture + activity stats.
 gameRouter.get('/api/games/host/:code/players', async (c) => {
   const session = await getManagedSession(c.req.param('code'), c.get('user').uid);
-  const result = await buildSpectatorPlayers(session.id);
+  const result = await buildSpectatorPlayers(session, false);
   return c.json({ server_time: new Date().toISOString(), players: result });
 });
 
-// Broadcast (or clear) an announcement shown to all players in the match.
 gameRouter.post('/api/games/host/:code/announce', async (c) => {
   const session = await getManagedSession(c.req.param('code'), c.get('user').uid);
 
@@ -632,21 +678,25 @@ gameRouter.post('/api/games/host/:code/announce', async (c) => {
   return c.json({ announcement: message || null });
 });
 
-// Remove a player from a match (kick). They can re-join unless the match ended.
 gameRouter.delete('/api/games/host/:code/players/:userId', async (c) => {
   const session = await getManagedSession(c.req.param('code'), c.get('user').uid);
   const userId = c.req.param('userId');
 
+  const kicked = (session.kickedUserIds ?? []) as string[];
+  const nextKicked = kicked.includes(userId) ? kicked : [...kicked, userId];
+
+  await db
+    .update(gameSessions)
+    .set({ kickedUserIds: nextKicked as object, updatedAt: new Date() })
+    .where(eq(gameSessions.id, session.id));
+
   await db
     .delete(gamePlayers)
-    .where(
-      and(eq(gamePlayers.sessionId, session.id), eq(gamePlayers.userId, userId))
-    );
+    .where(and(eq(gamePlayers.sessionId, session.id), eq(gamePlayers.userId, userId)));
 
   return c.json({ ok: true });
 });
 
-// Delete a match.
 gameRouter.delete('/api/games/host/:code', async (c) => {
   const session = await getManagedSession(c.req.param('code'), c.get('user').uid);
   await db.delete(gameSessions).where(eq(gameSessions.id, session.id));
@@ -655,53 +705,10 @@ gameRouter.delete('/api/games/host/:code', async (c) => {
 
 // ==================== Player endpoints ====================
 
-interface LeaderboardEntry {
-  rank: number;
-  user_id: string;
-  nickname: string | null;
-  avatar_image: string | null;
-  score: number;
-  score_breakdown: unknown;
-  last_submitted_at: string | null;
-}
-
-async function buildLeaderboard(sessionId: number): Promise<LeaderboardEntry[]> {
-  const players = await db
-    .select()
-    .from(gamePlayers)
-    .where(eq(gamePlayers.sessionId, sessionId));
-
-  const userIds = players.map((p) => p.userId);
-  const userRows = userIds.length
-    ? await db
-        .select({
-          id: users.id,
-          nickname: users.nickname,
-          avatarImage: users.avatarImage,
-        })
-        .from(users)
-        .where(inArray(users.id, userIds))
-    : [];
-  const userMap = new Map(userRows.map((u) => [u.id, u]));
-
-  return players
-    .map((p) => ({
-      user_id: p.userId,
-      nickname: userMap.get(p.userId)?.nickname ?? null,
-      avatar_image: userMap.get(p.userId)?.avatarImage ?? null,
-      score: p.score ?? 0,
-      score_breakdown: p.scoreBreakdown ?? null,
-      last_submitted_at: toIso(p.lastSubmittedAt),
-    }))
-    .sort((a, b) => b.score - a.score)
-    .map((entry, i) => ({ rank: i + 1, ...entry }));
-}
-
-/** Player-facing control state for the polling client. */
 async function playerSessionToDict(
   session: SessionRow,
   userId: string,
-  thin?: { archHash?: string; startingArchHash?: string }
+  thin?: { archHash?: string; startingArchHash?: string },
 ) {
   const playerRows = await db
     .select()
@@ -709,6 +716,35 @@ async function playerSessionToDict(
     .where(eq(gamePlayers.sessionId, session.id));
   const me = playerRows.find((p) => p.userId === userId) ?? null;
   const phase = session.phase ?? 'lobby';
+  const nowMs = Date.now();
+  const rounds = getRounds(session);
+
+  const verified = readVerifiedRoundScores(me?.verifiedRoundScores);
+  const hasVerified = Object.keys(verified).length > 0;
+  const provisionalScore = me?.roundScores
+    ? Object.entries(me.roundScores as Record<string, { score?: number }>).reduce(
+        (sum, [key, val]) => sum + (rounds[Number(key)]?.weight ?? 1) * (val?.score ?? 0),
+        0,
+      )
+    : 0;
+
+  let simTiming: Record<string, number> = {};
+  if (phase === 'round' && me) {
+    const roundIndex = activeRoundIndex(session.currentRound ?? 0);
+    const round = rounds[roundIndex];
+    const window = computeEligibilityWindow({
+      roundStartedAt: session.roundStartedAt,
+      joinedAt: me.joinedAt,
+      nowMs,
+      pausedAt: session.pausedAt,
+      totalPausedMs: session.totalPausedMs ?? 0,
+      roundDurationSec: round?.durationSec ?? 120,
+    });
+    simTiming = {
+      sim_elapsed_sec: window.simElapsedSec,
+      eligible_from_sec: window.eligibleFromSec,
+    };
+  }
 
   const payload: Record<string, unknown> = {
     code: session.code,
@@ -724,20 +760,25 @@ async function playerSessionToDict(
     allow_delete_starting: session.allowDeleteStarting ?? true,
     phase,
     join_open: session.joinOpen ?? true,
+    max_players: session.maxPlayers ?? DEFAULT_MAX_PLAYERS,
     current_round: session.currentRound ?? 0,
-    total_rounds: getRounds(session).length,
-    rounds_public: publicRounds(getRounds(session)),
+    total_rounds: rounds.length,
+    rounds_public: publicRounds(rounds),
     round_started_at: toIso(session.roundStartedAt),
     round_ends_at: toIso(session.roundEndsAt),
     announcement: session.announcement ?? null,
     announcement_at: toIso(session.announcementAt),
     player_count: playerRows.length,
     joined: !!me,
-    my_score: me?.score ?? 0,
+    my_score: hasVerified ? computeVerifiedAggregate(rounds, verified) : me?.score ?? 0,
+    my_provisional_score: provisionalScore,
+    scores_verified: hasVerified,
     my_round_scores: me?.roundScores ?? {},
+    my_verified_round_scores: verified,
+    ...lifecycleFields(session, nowMs),
+    ...simTiming,
   };
 
-  // Live-round fields only — omit during lobby to shrink poll payloads.
   if (phase === 'round' || phase === 'interval') {
     payload.load_profile = session.loadProfile ?? DEFAULT_LOAD_PROFILE;
     payload.scoring_config = session.scoringConfig ?? DEFAULT_SCORING;
@@ -770,10 +811,9 @@ async function playerSessionToDict(
   return payload;
 }
 
-// Poll the control state for a match.
 gameRouter.get('/api/game/:code', async (c) => {
   const user = c.get('user');
-  const session = await getSessionByCode(c.req.param('code'));
+  const session = await getSyncedSession(c.req.param('code'));
   if (!session) throw new HTTPException(404, { message: 'Match not found' });
   const thin = {
     archHash: c.req.query('arch_hash') || undefined,
@@ -782,13 +822,11 @@ gameRouter.get('/api/game/:code', async (c) => {
   return c.json(await playerSessionToDict(session, user.uid, thin));
 });
 
-// Join a match (idempotent). Seeds the player's architecture from the start.
 gameRouter.post('/api/game/:code/join', async (c) => {
   const user = c.get('user');
-  const session = await getSessionByCode(c.req.param('code'));
+  let session = await getSessionByCode(c.req.param('code'));
   if (!session) throw new HTTPException(404, { message: 'Match not found' });
-  if (session.status === 'ended')
-    throw new HTTPException(409, { message: 'This match has already ended' });
+  assertMatchNotEnded(session, { sessionCode: session.code, userId: user.uid });
 
   const body = await c.req
     .json<{ key?: string }>()
@@ -797,23 +835,18 @@ gameRouter.post('/api/game/:code/join', async (c) => {
   const existing = await db
     .select()
     .from(gamePlayers)
-    .where(
-      and(eq(gamePlayers.sessionId, session.id), eq(gamePlayers.userId, user.uid))
-    )
+    .where(and(eq(gamePlayers.sessionId, session.id), eq(gamePlayers.userId, user.uid)))
     .limit(1);
 
-  // Private matches require the invite key. Players already in the match (and
-  // the host) can always rejoin, e.g. after a refresh without the key.
-  if (
-    existing.length === 0 &&
-    session.joinOpen === false &&
-    session.createdBy !== user.uid &&
-    (!session.joinKey || body.key !== session.joinKey)
-  ) {
-    throw new HTTPException(403, { message: 'This match is invite-only' });
-  }
+  assertJoinAuthorized(session, user.uid, existing.length > 0, body.key);
 
   if (existing.length === 0) {
+    const countRows = await db
+      .select()
+      .from(gamePlayers)
+      .where(eq(gamePlayers.sessionId, session.id));
+    assertCapacity(session, countRows.length);
+
     await db
       .insert(gamePlayers)
       .values({
@@ -823,132 +856,216 @@ gameRouter.post('/api/game/:code/join', async (c) => {
         score: 0,
       })
       .onConflictDoNothing();
+
+    if (session.phase === 'round') {
+      const roundIndex = activeRoundIndex(session.currentRound ?? 0);
+      const [player] = await db
+        .select()
+        .from(gamePlayers)
+        .where(and(eq(gamePlayers.sessionId, session.id), eq(gamePlayers.userId, user.uid)))
+        .limit(1);
+      if (player) {
+        const snaps = snapshotLateJoiner(player, roundIndex);
+        const round = getRounds(session)[roundIndex];
+        emitGameTelemetry({
+          type: 'late_join',
+          sessionCode: session.code,
+          userId: user.uid,
+          roundIndex,
+          eligibleFromSec: round?.durationSec ?? 120,
+        });
+        await db
+          .update(gamePlayers)
+          .set({ roundArchSnapshots: snaps as object })
+          .where(and(eq(gamePlayers.sessionId, session.id), eq(gamePlayers.userId, user.uid)));
+      }
+    }
   }
 
-  return c.json(await playerSessionToDict(session, user.uid));
+  const { session: synced } = await syncSessionLifecycle(session).catch(() => ({
+    session,
+    lifecycleChanged: false,
+    scoreUpdates: 0,
+  }));
+  return c.json(await playerSessionToDict(synced, user.uid));
 });
 
-// Submit the player's current architecture and computed score.
 gameRouter.put('/api/game/:code/architecture', async (c) => {
   const user = c.get('user');
   const session = await getSessionByCode(c.req.param('code'));
   if (!session) throw new HTTPException(404, { message: 'Match not found' });
+  assertMatchNotEnded(session, { sessionCode: session.code, userId: user.uid });
 
   const body = await c.req.json<{
     architecture?: unknown;
     score?: number;
     score_breakdown?: unknown;
     metrics?: unknown;
-    // Round-based submission: per-round score recorded under round_index, with
-    // the aggregate recomputed server-side from all rounds' weights.
     round_index?: number;
     round_score?: number;
     round_breakdown?: unknown;
   }>();
 
   const rounds = getRounds(session);
-
-  // Load the existing player row so we can merge round scores.
   const existingRows = await db
     .select()
     .from(gamePlayers)
-    .where(
-      and(eq(gamePlayers.sessionId, session.id), eq(gamePlayers.userId, user.uid))
-    )
+    .where(and(eq(gamePlayers.sessionId, session.id), eq(gamePlayers.userId, user.uid)))
     .limit(1);
   const existing = existingRows[0] ?? null;
+  assertExistingPlayer(existing, user.uid, session);
 
-  // House-rules guard: submissions with a non-compliant architecture cannot
-  // raise any recorded score (they may still lower it, e.g. via penalties).
-  // Submissions without an architecture are trusted; our client always sends it.
-  const compliant =
-    body.architecture === undefined || architectureCompliant(body.architecture);
+  const phase = session.phase ?? 'lobby';
+  const lockedIds = (session.lockedNodeIds ?? []) as string[];
 
-  // Merge the new round result into the per-round map.
-  const prevRoundScores = (existing?.roundScores ?? {}) as Record<
-    string,
-    { score?: number; breakdown?: unknown; metrics?: unknown }
-  >;
-  let roundScores = prevRoundScores;
-  let aggregate: number | null = null;
-  if (body.round_index !== undefined && body.round_score !== undefined) {
-    const prevRound = prevRoundScores[String(body.round_index)]?.score ?? 0;
-    const roundScore = compliant
-      ? body.round_score
-      : Math.min(body.round_score, prevRound);
-    roundScores = {
+  if (body.round_index !== undefined || body.round_score !== undefined) {
+    assertScoreWritePhase(session);
+    assertRoundIndexInRange(body.round_index ?? -1, rounds.length, session, user.uid);
+
+    const roundIndex = body.round_index!;
+    const archSnapshots = readPlayerArchSnapshots(existing.roundArchSnapshots);
+    const archSnapshot = getPlayerArchSnapshot(archSnapshots, roundIndex);
+    if (!archSnapshot) {
+      throw new HTTPException(403, { message: 'No architecture snapshot for this round' });
+    }
+
+    if (body.architecture !== undefined && !architecturesEqual(body.architecture, archSnapshot.architecture)) {
+      throw new HTTPException(409, { message: 'Architecture is frozen during a live round' });
+    }
+
+    const nowMs = Date.now();
+    const useLegacyClientTrust =
+      isClientScoreTrustEnabled() && !isAuthoritativeScoringEnabled();
+
+    let verifiedScore: number;
+    let verifiedRoundScores: Record<string, import('../lib/game/types.js').VerifiedRoundScore>;
+    let aggregateScore: number;
+    let eligibleFromSec: number;
+
+    if (useLegacyClientTrust) {
+      verifiedScore = body.round_score ?? 0;
+      verifiedRoundScores = {
+        ...(existing.verifiedRoundScores as object ?? {}),
+        [String(roundIndex)]: {
+          roundIndex,
+          score: verifiedScore,
+          breakdown: body.round_breakdown ?? null,
+          verifiedAt: new Date().toISOString(),
+          lifecycleVersion: session.lifecycleVersion ?? 0,
+          simElapsedSec: 0,
+          eligibleFromSec: existing.eligibleFromSec ?? 0,
+        },
+      } as Record<string, import('../lib/game/types.js').VerifiedRoundScore>;
+      aggregateScore = computeVerifiedAggregate(rounds, verifiedRoundScores);
+      eligibleFromSec = existing.eligibleFromSec ?? 0;
+    } else {
+      const t0 = Date.now();
+      const verifiedUpdate = recomputePlayerVerifiedScore(session, existing, roundIndex, nowMs, true);
+      if (!verifiedUpdate) {
+        throw new HTTPException(403, { message: 'Unable to verify score for this round' });
+      }
+      emitGameTelemetry({
+        type: 'recompute_duration',
+        sessionCode: session.code,
+        roundIndex,
+        playerCount: 1,
+        durationMs: Date.now() - t0,
+        trigger: 'submit',
+      });
+      verifiedRoundScores = verifiedUpdate.verifiedRoundScores;
+      verifiedScore = verifiedUpdate.verifiedRoundScores[String(roundIndex)].score;
+      aggregateScore = verifiedUpdate.score;
+      eligibleFromSec = verifiedUpdate.eligibleFromSec;
+      emitVerifiedScoreComposition(session.code, user.uid, roundIndex, verifiedUpdate.verifiedRoundScores[String(roundIndex)]);
+      assertClientScoreNotForged(body.round_score, verifiedScore, {
+        sessionCode: session.code,
+        userId: user.uid,
+        roundIndex,
+      });
+    }
+
+    const prevRoundScores = (existing.roundScores ?? {}) as Record<
+      string,
+      { score?: number; clientScore?: number; breakdown?: unknown; metrics?: unknown }
+    >;
+    const roundScores = {
       ...prevRoundScores,
-      [String(body.round_index)]: {
-        score: roundScore,
+      [String(roundIndex)]: {
+        score: verifiedScore,
+        clientScore: body.round_score,
         breakdown: body.round_breakdown ?? null,
         metrics: body.metrics ?? null,
       },
     };
-    aggregate = computeAggregate(rounds, roundScores);
-  }
 
-  const updates: Partial<typeof gamePlayers.$inferInsert> = {
-    lastSubmittedAt: new Date(),
-  };
-  if (body.architecture !== undefined)
-    updates.architecture = body.architecture as object;
-  if (body.score_breakdown !== undefined)
-    updates.scoreBreakdown = body.score_breakdown as object;
-  if (body.metrics !== undefined) updates.metrics = body.metrics as object;
-  if (aggregate !== null) {
-    updates.score = aggregate;
-    updates.roundScores = roundScores as object;
-  } else if (body.score !== undefined) {
-    // Flat (legacy / non-round) submission, same no-gains-while-invalid rule.
-    updates.score = compliant
-      ? body.score
-      : Math.min(body.score, existing?.score ?? 0);
-  }
-
-  if (!existing) {
-    await db.insert(gamePlayers).values({
-      sessionId: session.id,
-      userId: user.uid,
-      architecture: (body.architecture ?? session.startingArchitecture ?? null) as
-        | object
-        | null,
-      score: aggregate ?? (compliant ? body.score ?? 0 : 0),
-      scoreBreakdown: (body.score_breakdown ?? null) as object | null,
-      roundScores: roundScores as object,
-      metrics: (body.metrics ?? null) as object | null,
-      lastSubmittedAt: new Date(),
-    });
-  } else {
     await db
       .update(gamePlayers)
-      .set(updates)
-      .where(
-        and(
-          eq(gamePlayers.sessionId, session.id),
-          eq(gamePlayers.userId, user.uid)
-        )
-      );
+      .set({
+        lastSubmittedAt: new Date(),
+        verifiedRoundScores: verifiedRoundScores as object,
+        score: aggregateScore,
+        eligibleFromSec,
+        roundScores: roundScores as object,
+        scoreBreakdown: (body.score_breakdown ?? existing.scoreBreakdown ?? null) as object | null,
+        metrics: (body.metrics ?? existing.metrics ?? null) as object | null,
+      })
+      .where(and(eq(gamePlayers.sessionId, session.id), eq(gamePlayers.userId, user.uid)));
+
+    return c.json({
+      ok: true,
+      verified: requiresServerVerification(),
+      legacy_client_trust: useLegacyClientTrust,
+      score: aggregateScore,
+    });
+  }
+
+  if (body.architecture !== undefined) {
+    assertArchitectureEditablePhase(session, user.uid);
+    assertLockedNodesPreserved(body.architecture, lockedIds);
+    if (!architectureCompliant(body.architecture)) {
+      // Allow saving non-compliant builds during interval; they score zero when live.
+    }
+
+    await db
+      .update(gamePlayers)
+      .set({
+        architecture: body.architecture as object,
+        lastSubmittedAt: new Date(),
+        scoreBreakdown: (body.score_breakdown ?? existing.scoreBreakdown ?? null) as object | null,
+        metrics: (body.metrics ?? existing.metrics ?? null) as object | null,
+      })
+      .where(and(eq(gamePlayers.sessionId, session.id), eq(gamePlayers.userId, user.uid)));
+  } else if (body.metrics !== undefined || body.score_breakdown !== undefined) {
+    await db
+      .update(gamePlayers)
+      .set({
+        lastSubmittedAt: new Date(),
+        scoreBreakdown: (body.score_breakdown ?? existing.scoreBreakdown ?? null) as object | null,
+        metrics: (body.metrics ?? existing.metrics ?? null) as object | null,
+      })
+      .where(and(eq(gamePlayers.sessionId, session.id), eq(gamePlayers.userId, user.uid)));
   }
 
   return c.json({ ok: true });
 });
 
-// Ranked leaderboard for a match.
 gameRouter.get('/api/game/:code/leaderboard', async (c) => {
-  const session = await getSessionByCode(c.req.param('code'));
+  const session = await getSyncedSession(c.req.param('code'));
   if (!session) throw new HTTPException(404, { message: 'Match not found' });
-  const leaderboard = await buildLeaderboard(session.id);
-  return c.json({ leaderboard });
+  const leaderboard = await buildLeaderboard(session);
+  return c.json({
+    leaderboard,
+    scores_verified: session.phase !== 'round',
+    lifecycle_version: session.lifecycleVersion ?? 0,
+  });
 });
 
-// Audience stage view: full live state for projecting scores to a room.
-// Requires login (any user), not admin, so a venue screen can stay open on a
-// regular account while the host drives the match from the admin console.
-gameRouter.get('/api/game/:code/spectate', async (c) => {
-  const session = await getSessionByCode(c.req.param('code'));
+gameRouter.get('/api/game/:code/spectate', optionalAuth, async (c) => {
+  const session = await getSyncedSession(c.req.param('code'));
   if (!session) throw new HTTPException(404, { message: 'Match not found' });
+  assertSpectateAccess(c, session);
 
-  const players = await buildSpectatorPlayers(session.id);
+  const players = await buildSpectatorPlayers(session, true);
   const rounds = getRounds(session);
 
   return c.json({
@@ -967,6 +1084,8 @@ gameRouter.get('/api/game/:code/spectate', async (c) => {
     announcement_at: toIso(session.announcementAt),
     player_count: players.length,
     server_time: new Date().toISOString(),
+    scores_verified: session.phase !== 'round',
+    ...lifecycleFields(session),
     players,
   });
 });

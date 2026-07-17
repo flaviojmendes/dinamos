@@ -11,8 +11,11 @@ import {
   doublePrecision,
   unique,
   index,
+  uniqueIndex,
+  bigint,
   uuid,
 } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
 
 // ==================== Roles & Permissions ====================
 
@@ -58,6 +61,10 @@ export const users = pgTable('users', {
   avatarImage: text('avatar_image'),
   githubUsername: varchar('github_username', { length: 255 }),
   tokens: integer('tokens').default(0),
+  /** Arena match participation — separate from quiz/coins ranking. */
+  arenaMatchesPlayed: integer('arena_matches_played').notNull().default(0),
+  arenaWins: integer('arena_wins').notNull().default(0),
+  arenaPodiums: integer('arena_podiums').notNull().default(0),
   onboardingCompleted: boolean('onboarding_completed').default(false),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
@@ -159,13 +166,24 @@ export const forumMessages = pgTable('forum_messages', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 });
 
-export const votes = pgTable('votes', {
-  id: serial('id').primaryKey(),
-  userId: varchar('user_id', { length: 255 }).notNull(),
-  topicId: integer('topic_id'),
-  messageId: integer('message_id'),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-});
+export const votes = pgTable(
+  'votes',
+  {
+    id: serial('id').primaryKey(),
+    userId: varchar('user_id', { length: 255 }).notNull(),
+    topicId: integer('topic_id'),
+    messageId: integer('message_id'),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  },
+  (t) => ({
+    userTopicUnique: uniqueIndex('votes_user_topic_unique')
+      .on(t.userId, t.topicId)
+      .where(sql`${t.topicId} is not null`),
+    userMessageUnique: uniqueIndex('votes_user_message_unique')
+      .on(t.userId, t.messageId)
+      .where(sql`${t.messageId} is not null`),
+  }),
+);
 
 // ==================== Notifications ====================
 
@@ -259,17 +277,27 @@ export const pollOptions = pgTable('poll_options', {
   voteCount: integer('vote_count').default(0),
 });
 
-export const pollVotes = pgTable('poll_votes', {
-  id: serial('id').primaryKey(),
-  pollId: integer('poll_id')
-    .notNull()
-    .references(() => polls.id, { onDelete: 'cascade' }),
-  optionId: integer('option_id')
-    .notNull()
-    .references(() => pollOptions.id, { onDelete: 'cascade' }),
-  userId: varchar('user_id', { length: 255 }).notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-});
+export const pollVotes = pgTable(
+  'poll_votes',
+  {
+    id: serial('id').primaryKey(),
+    pollId: integer('poll_id')
+      .notNull()
+      .references(() => polls.id, { onDelete: 'cascade' }),
+    optionId: integer('option_id')
+      .notNull()
+      .references(() => pollOptions.id, { onDelete: 'cascade' }),
+    userId: varchar('user_id', { length: 255 }).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  },
+  (t) => ({
+    pollUserOptionUnique: uniqueIndex('poll_votes_poll_user_option_unique').on(
+      t.pollId,
+      t.userId,
+      t.optionId,
+    ),
+  }),
+);
 
 // ==================== App Settings ====================
 // New table (not in the Python backend): persists runtime config as key/value
@@ -280,6 +308,18 @@ export const appSettings = pgTable('app_settings', {
   value: text('value'),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 });
+
+export const rateLimitBuckets = pgTable(
+  'rate_limit_buckets',
+  {
+    bucketKey: varchar('bucket_key', { length: 255 }).primaryKey(),
+    count: integer('count').notNull().default(0),
+    resetAt: timestamp('reset_at', { withTimezone: true }).notNull(),
+  },
+  (t) => ({
+    resetAtIdx: index('rate_limit_buckets_reset_at_idx').on(t.resetAt),
+  }),
+);
 
 // ==================== Editor Game Mode ====================
 // A "match" of the /editor game: the admin defines a starting architecture,
@@ -331,6 +371,26 @@ export const gameSessions = pgTable('game_sessions', {
   listed: boolean('listed').notNull().default(true),
   // Secret appended to invite links when joinOpen is false.
   joinKey: varchar('join_key', { length: 32 }),
+  // Build-interval timing (phase = 'interval').
+  intervalStartedAt: timestamp('interval_started_at', { withTimezone: true }),
+  intervalEndsAt: timestamp('interval_ends_at', { withTimezone: true }),
+  // Pause accounting: frozen simulation eligibility and extended deadlines.
+  pausedAt: timestamp('paused_at', { withTimezone: true }),
+  totalPausedMs: bigint('total_paused_ms', { mode: 'number' }).notNull().default(0),
+  // When true, catchUpAutoTransitions advances overdue phase changes.
+  autoTransitions: boolean('auto_transitions').notNull().default(true),
+  // Monotonic version bumped on every lifecycle mutation for idempotency.
+  lifecycleVersion: integer('lifecycle_version').notNull().default(0),
+  // Immutable per-round config snapshots keyed by round index string.
+  roundSnapshots: jsonb('round_snapshots'),
+  // Match-scoped kick bans (user ids).
+  kickedUserIds: jsonb('kicked_user_ids').notNull().default([]),
+  maxPlayers: integer('max_players').notNull().default(32),
+  // Hashed read-only stage token for public audience screens.
+  stageTokenHash: varchar('stage_token_hash', { length: 128 }),
+  stageTokenExpiresAt: timestamp('stage_token_expires_at', { withTimezone: true }),
+  /** Idempotent guard so match-end progression is recorded once. */
+  progressionRecorded: boolean('progression_recorded').notNull().default(false),
   createdBy: varchar('created_by', { length: 255 }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
@@ -352,6 +412,12 @@ export const gamePlayers = pgTable(
     // Per-round results keyed by round index:
     // { [roundIndex]: { score, breakdown, metrics } }
     roundScores: jsonb('round_scores'),
+    // Simulated seconds eligible for scoring this round (late-join offset).
+    eligibleFromSec: doublePrecision('eligible_from_sec'),
+    // Immutable architecture snapshots keyed by round index string.
+    roundArchSnapshots: jsonb('round_arch_snapshots'),
+    // Server-verified per-round scores keyed by round index string.
+    verifiedRoundScores: jsonb('verified_round_scores'),
     // Latest "golden signals" snapshot: latency, traffic, errors, saturation.
     metrics: jsonb('metrics'),
     lastSubmittedAt: timestamp('last_submitted_at', { withTimezone: true }),

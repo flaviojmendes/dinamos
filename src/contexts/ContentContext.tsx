@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import api from '../app/utils/api';
+import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { loadContentIndex, reloadContentFromApi } from '../contentDelivery';
 import {
   setRegistryLessons,
   setRegistryModules,
@@ -8,10 +8,9 @@ import {
 } from '../config/contentRegistry';
 
 /**
- * ContentContext — loads the lesson index from the content API once at startup
- * and feeds it to the navigation registry. Lesson pages are now DB-backed, so
- * routing (App.tsx) and the sidebar/search/nav (contentRegistry) derive from
- * this fetched list instead of a static manifest.
+ * ContentContext — loads the lesson index CDN-first from `/content/manifest.json`
+ * and feeds it to the navigation registry. Falls back to the content API when the
+ * manifest is missing or invalid. Admin `reload()` always refreshes from the API.
  */
 
 interface ContentContextValue {
@@ -31,47 +30,28 @@ const ContentContext = createContext<ContentContextValue>({
   reload: () => {},
 });
 
-interface ApiIndexEntry {
-  slug: string;
-  path: string;
-  moduleId: string | null;
-  orderIndex: number;
-  simulatorKey: string | null;
-  titleEn: string | null;
-  titlePt: string | null;
-}
-
-interface ApiModuleEntry {
-  id: string;
-  label: string;
-  tier: ModuleDef['tier'];
-  base: string;
-  paths?: string[];
-  orderIndex: number;
-}
-
 export function ContentProvider({ children }: { children: React.ReactNode }) {
   const [pages, setPages] = useState<LessonEntry[]>([]);
   const [modules, setModules] = useState<ModuleDef[]>([]);
   const [loading, setLoading] = useState(true);
   const [ready, setReady] = useState(false);
   const [nonce, setNonce] = useState(0);
+  const forceApiRef = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
+    const forceApi = forceApiRef.current;
+    forceApiRef.current = false;
     setLoading(true);
     // Modules must be applied before lessons, since the lesson registry derives
     // tiers/module-by-path from the module list.
-    Promise.all([
-      api.get<{ modules: ApiModuleEntry[] }>('/api/modules'),
-      api.get<{ pages: ApiIndexEntry[] }>('/api/content'),
-    ])
-      .then(([modRes, pageRes]) => {
+    loadContentIndex({ forceApi })
+      .then((index) => {
         if (cancelled) return;
-        const mods: ModuleDef[] = (modRes.data?.modules ?? []).map((m) => ({
+        const mods: ModuleDef[] = (index.modules ?? []).map((m) => ({
           id: m.id,
           label: m.label,
-          tier: m.tier,
+          tier: m.tier as ModuleDef['tier'],
           base: m.base,
           paths: m.paths,
           orderIndex: m.orderIndex,
@@ -79,7 +59,7 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
         setRegistryModules(mods);
         setModules(mods);
 
-        const list: LessonEntry[] = (pageRes.data?.pages ?? []).map((p) => ({
+        const list: LessonEntry[] = (index.pages ?? []).map((p) => ({
           path: p.path,
           slug: p.slug,
           moduleId: p.moduleId,
@@ -110,7 +90,17 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
   }, [nonce]);
 
   const value = useMemo<ContentContextValue>(
-    () => ({ pages, modules, loading, ready, reload: () => setNonce((n) => n + 1) }),
+    () => ({
+      pages,
+      modules,
+      loading,
+      ready,
+      reload: () => {
+        reloadContentFromApi();
+        forceApiRef.current = true;
+        setNonce((n) => n + 1);
+      },
+    }),
     [pages, modules, loading, ready]
   );
 

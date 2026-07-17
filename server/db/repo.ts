@@ -58,6 +58,19 @@ export async function createUser(
   nickname: string | null,
   avatarImage: string | null = null
 ) {
+  return ensureUser(userId, email, nickname, avatarImage);
+}
+
+/** Idempotent first-login bootstrap: safe under concurrent sign-in requests. */
+export async function ensureUser(
+  userId: string,
+  email: string,
+  nickname: string | null,
+  avatarImage: string | null = null
+) {
+  const existing = await getUserRow(userId);
+  if (existing) return existing;
+
   const defaultRole = await getRoleByName('Estudante');
   const inserted = await db
     .insert(users)
@@ -69,8 +82,16 @@ export async function createUser(
       roleId: defaultRole?.id ?? null,
       avatarImage,
     })
+    .onConflictDoNothing({ target: users.id })
     .returning();
-  return inserted[0];
+
+  if (inserted[0]) return inserted[0];
+
+  const raced = await getUserRow(userId);
+  if (!raced) {
+    throw new Error(`Failed to create user ${userId}`);
+  }
+  return raced;
 }
 
 const DAILY_CAPS: Record<string, number> = {

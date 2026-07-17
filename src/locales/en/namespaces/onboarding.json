@@ -1,0 +1,64 @@
+{
+  "welcome": {
+    "title": "Welcome to Design Lab!",
+    "description": "Let's take a quick tour of the platform's main features.",
+    "features": [
+      "Practice System Design with real challenges",
+      "Join an active community",
+      "Test your knowledge with quizzes"
+    ]
+  },
+  "challenges": {
+    "title": "System Design Challenges",
+    "description": "Find real architecture problems to solve. Pick a challenge, design your solution on the virtual whiteboard, and get detailed AI feedback.",
+    "features": [
+      "Virtual whiteboard for diagrams",
+      "AI-powered evaluation",
+      "Multiple attempts allowed"
+    ]
+  },
+  "forum": {
+    "title": "Forum & Gamification",
+    "description": "Connect with the community! Create topics, ask questions, and share knowledge. Earn tokens for contributions and climb the leaderboard.",
+    "features": [
+      "Earn tokens by participating",
+      "Votes and reputation system",
+      "Inline diagrams in replies"
+    ]
+  },
+  "quizzes": {
+    "title": "Interactive Quizzes",
+    "description": "Test and reinforce your System Design knowledge with timed quizzes. Compare your performance on the leaderboard and track your progress.",
+    "features": [
+      "Questions by topic",
+      "Ranking and leaderboard",
+      "Track your progress"
+    ]
+  },
+  "workflow": {
+    "title": "Workflow",
+    "description": "Each challenge follows a structured flow: requirements analysis, architecture design, and automatic feedback. That's how you improve!",
+    "features": [
+      "Requirements → Design → Feedback",
+      "Learn by doing",
+      "Improve with each iteration"
+    ]
+  },
+  "ready": {
+    "title": "You're all set!",
+    "description": "You now know the main features. Start by exploring a challenge or browse the forum to meet the community.",
+    "features": [
+      "Explore available challenges",
+      "Join forum discussions",
+      "Try the quizzes"
+    ]
+  },
+  "nav": {
+    "skip": "Skip tour",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Get started",
+    "step_of": "Step {{current}} of {{total}}"
+  },
+  "close": "Close onboarding"
+}

@@ -41,14 +41,25 @@ const SLO_P95_MS = 250;
 const SLO_SUCCESS = 0.99;
 
 function Stat({ label, value, tone, onClick, title }: { label: string; value: string; tone?: string; onClick?: () => void; title?: string }) {
-  return (
-    <div
-      onClick={onClick}
-      title={title}
-      className={`border border-tactical-border bg-tactical-raised rounded-lg px-3 py-2 ${onClick ? 'cursor-pointer hover:border-signal-cyan transition-colors' : ''}`}
-    >
+  const className = `border border-tactical-border bg-tactical-raised rounded-lg px-3 py-2 text-left w-full ${
+    onClick ? 'cursor-pointer hover:border-signal-cyan transition-colors' : ''
+  }`;
+  const inner = (
+    <>
       <div className="font-sans text-[10px] font-medium text-slate-500 dark:text-tactical-label">{label}</div>
       <div className={`font-mono text-lg font-bold ${tone ?? 'text-tactical-text'}`}>{value}</div>
+    </>
+  );
+  if (onClick) {
+    return (
+      <button type="button" onClick={onClick} title={title} className={className} aria-label={`${label}: ${value}`}>
+        {inner}
+      </button>
+    );
+  }
+  return (
+    <div title={title} className={className}>
+      {inner}
     </div>
   );
 }
@@ -73,14 +84,18 @@ function GoldenSignal({
   dataKey: string;
 }) {
   return (
-    <div className="border border-tactical-border bg-tactical-raised rounded-lg px-3 py-2.5">
+    <div
+      className="border border-tactical-border bg-tactical-raised rounded-lg px-3 py-2.5"
+      role="group"
+      aria-label={`${label}: ${value} ${unit}. ${hint}`}
+    >
       <div className="font-sans text-[10px] font-medium text-slate-500 dark:text-tactical-label">{label}</div>
       <div className={`font-mono font-bold leading-none mt-1 ${tone}`}>
         <span className="text-2xl">{value}</span>
         <span className="text-xs text-tactical-label ml-1">{unit}</span>
       </div>
       <div className="font-sans text-[10px] text-slate-500 dark:text-tactical-label mt-1">{hint}</div>
-      <div style={{ width: '100%', height: 36 }} className="mt-2">
+      <div style={{ width: '100%', height: 36 }} className="mt-2" aria-hidden>
         <ResponsiveContainer>
           <AreaChart data={series} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
             <Area type="monotone" dataKey={dataKey} stroke={accent} fill={`${accent}22`} strokeWidth={1.5} dot={false} isAnimationActive={false} />
@@ -203,7 +218,14 @@ export default function Dashboard({ history, totalCost, costPerHour, successCoun
           <span>{t('editor.dashboard.error_budget', { slo: SLO_SUCCESS * 100 })}</span>
           <span>{errorBudgetUsed.toFixed(0)}%</span>
         </div>
-        <div className="h-2 bg-tactical-line overflow-hidden">
+        <div
+          className="h-2 bg-tactical-line overflow-hidden"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(errorBudgetUsed)}
+          aria-label={t('editor.dashboard.error_budget', { slo: SLO_SUCCESS * 100 })}
+        >
           <div
             className="h-full transition-all"
             style={{ width: `${errorBudgetUsed}%`, backgroundColor: errorBudgetUsed >= 100 ? '#ef4444' : errorBudgetUsed >= 70 ? '#eab308' : '#22c55e' }}
@@ -272,7 +294,7 @@ const tooltipStyle = {
 
 function ChartCard({ title, children }: { title: string; children: React.ReactElement }) {
   return (
-    <div className="border border-tactical-border bg-tactical-surface rounded-lg p-2">
+    <div className="border border-tactical-border bg-tactical-surface rounded-lg p-2" role="group" aria-label={title}>
       <div className="font-sans text-[10px] font-medium text-slate-500 dark:text-tactical-label mb-1">{title}</div>
       <div style={{ width: '100%', height: 160 }}>
         <ResponsiveContainer>{children}</ResponsiveContainer>

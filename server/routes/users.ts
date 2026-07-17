@@ -14,7 +14,7 @@ import {
   authRequired,
   type AppVariables,
 } from '../middleware/auth.js';
-import { createUser, getUserContext, getUserRow } from '../db/repo.js';
+import { ensureUser, getUserContext, getUserRow } from '../db/repo.js';
 import { userToDict, solutionToDict } from '../db/serializers.js';
 
 export const usersRouter = new Hono<{ Variables: AppVariables }>();
@@ -31,7 +31,7 @@ usersRouter.get('/api/users/me', authRequired, async (c) => {
   if (!dbUser) {
     const email = user.email || `${user.uid}@email.com`;
     const nickname = email.split('@')[0] || 'User';
-    await createUser(user.uid, email, nickname);
+    await ensureUser(user.uid, email, nickname);
   }
   const result = await serializeCurrentUser(user.uid);
   return c.json(result);
@@ -62,7 +62,7 @@ usersRouter.put('/api/users/me', authRequired, async (c) => {
   if (!dbUser) {
     const email = user.email || body.email || `${user.uid}@email.com`;
     const nickname = email.split('@')[0] || 'User';
-    dbUser = await createUser(user.uid, email, nickname);
+    dbUser = await ensureUser(user.uid, email, nickname);
   }
 
   const updates: Record<string, unknown> = {};

@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
-import { and, asc, eq, inArray } from 'drizzle-orm';
+import { and, asc, eq, inArray, sql } from 'drizzle-orm';
 import { db } from '../db/client.js';
 import { polls, pollOptions, pollVotes, forumTopics } from '../db/schema.js';
 import {
@@ -114,45 +114,39 @@ pollsRouter.post('/api/forum/polls/:id/vote', authRequired, async (c) => {
   if (validOptions.length !== body.option_ids.length)
     throw new HTTPException(400, { message: 'Invalid option(s)' });
 
-  const currentVotes = await db
-    .select()
-    .from(pollVotes)
-    .where(and(eq(pollVotes.pollId, pollId), eq(pollVotes.userId, user.uid)));
-  const currentIds = new Set(currentVotes.map((v) => v.optionId));
   const newIds = new Set(body.option_ids);
 
-  // Remove de-selected
-  for (const v of currentVotes) {
-    if (!newIds.has(v.optionId)) {
-      const opt = await db
-        .select()
-        .from(pollOptions)
-        .where(eq(pollOptions.id, v.optionId))
-        .limit(1);
-      if (opt[0])
-        await db
+  await db.transaction(async (tx) => {
+    const currentVotes = await tx
+      .select()
+      .from(pollVotes)
+      .where(and(eq(pollVotes.pollId, pollId), eq(pollVotes.userId, user.uid)));
+    const currentIds = new Set(currentVotes.map((v) => v.optionId));
+
+    for (const v of currentVotes) {
+      if (!newIds.has(v.optionId)) {
+        await tx
           .update(pollOptions)
-          .set({ voteCount: Math.max(0, (opt[0].voteCount ?? 0) - 1) })
+          .set({
+            voteCount: sql`GREATEST(0, COALESCE(${pollOptions.voteCount}, 0) - 1)`,
+          })
           .where(eq(pollOptions.id, v.optionId));
-      await db.delete(pollVotes).where(eq(pollVotes.id, v.id));
+        await tx.delete(pollVotes).where(eq(pollVotes.id, v.id));
+      }
     }
-  }
-  // Add new
-  for (const optionId of newIds) {
-    if (!currentIds.has(optionId)) {
-      await db.insert(pollVotes).values({ pollId, optionId, userId: user.uid });
-      const opt = await db
-        .select()
-        .from(pollOptions)
-        .where(eq(pollOptions.id, optionId))
-        .limit(1);
-      if (opt[0])
-        await db
+
+    for (const optionId of newIds) {
+      if (!currentIds.has(optionId)) {
+        await tx.insert(pollVotes).values({ pollId, optionId, userId: user.uid });
+        await tx
           .update(pollOptions)
-          .set({ voteCount: (opt[0].voteCount ?? 0) + 1 })
+          .set({
+            voteCount: sql`COALESCE(${pollOptions.voteCount}, 0) + 1`,
+          })
           .where(eq(pollOptions.id, optionId));
+      }
     }
-  }
+  });
 
   const reloaded = await loadPollWithOptions(pollId);
   return c.json(pollToDict(reloaded!.poll, reloaded!.options, Array.from(newIds)));

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Panel, StatusBadge, TacticalButton } from '../tactical';
+import { Legend, NarrationBar } from '../simulators/teaching';
 
 /// <reference types="node" />
 
@@ -169,6 +170,23 @@ export default function TimeoutSimulator() {
           </motion.div>
         </div>
       </div>
+
+      <NarrationBar tone={isSimulating ? 'active' : requests.some((r) => r.status === 'timeout') ? 'active' : 'idle'} stepKey={`${isSimulating}-${requests.length}`}>
+        {isSimulating
+          ? t('simulators.timeout.narration.running', {
+              defaultValue: 'Requests race the timeout clock — slow responses become failures even when the server would eventually answer.',
+            })
+          : t('simulators.timeout.narration.idle', {
+              defaultValue: 'Tune timeout vs latency: too short wastes good responses; too long ties up callers.',
+            })}
+      </NarrationBar>
+      <Legend
+        items={[
+          { swatch: 'bg-signal-green', label: t('simulators.timeout.legend.success', { defaultValue: 'Success' }) },
+          { swatch: 'bg-signal-amber', label: t('simulators.timeout.legend.pending', { defaultValue: 'In flight' }) },
+          { swatch: 'bg-signal-red', label: t('simulators.timeout.legend.timeout', { defaultValue: 'Timed out' }) },
+        ]}
+      />
 
       <AnimatePresence>
         {showSettings && (

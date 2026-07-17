@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import { apiClient } from '../utils/api'
 import { TacticalButton } from '../../components/tactical'
 
@@ -9,21 +10,16 @@ interface OnboardingProps {
 
 interface OnboardingStep {
   id: string
-  targetId: string | null // Element ID to highlight, null for welcome/end screens
-  title: string
-  description: string
-  icon: React.ReactNode
+  targetId: string | null
   gradient: string
-  position: 'center' | 'bottom' | 'top' // Where to show the tooltip relative to viewport
-  features?: string[]
+  position: 'center' | 'bottom' | 'top'
+  icon: React.ReactNode
 }
 
 const onboardingSteps: OnboardingStep[] = [
   {
     id: 'welcome',
     targetId: null,
-    title: 'Bem-vindo ao Design Lab! 🚀',
-    description: 'Vamos fazer um tour rápido pelas principais funcionalidades da plataforma.',
     gradient: 'from-violet-600 via-purple-600 to-indigo-700',
     position: 'center',
     icon: (
@@ -33,17 +29,10 @@ const onboardingSteps: OnboardingStep[] = [
         <path d="M24 28L32 20L40 28M32 20V44" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
-    features: [
-      'Pratique System Design com desafios reais',
-      'Participe de uma comunidade ativa',
-      'Teste seus conhecimentos com quizzes'
-    ]
   },
   {
     id: 'challenges',
     targetId: 'onboarding-challenges',
-    title: '🎯 Desafios de System Design',
-    description: 'Aqui você encontra problemas reais de arquitetura para resolver. Selecione um desafio, projete sua solução usando a lousa virtual e receba feedback detalhado com IA.',
     gradient: 'from-sky-500 via-cyan-500 to-teal-500',
     position: 'bottom',
     icon: (
@@ -55,17 +44,10 @@ const onboardingSteps: OnboardingStep[] = [
         <path d="M33 22V24H24V26" stroke="currentColor" strokeWidth="2" />
       </svg>
     ),
-    features: [
-      'Lousa virtual para diagramas',
-      'Avaliação com inteligência artificial',
-      'Múltiplas tentativas permitidas'
-    ]
   },
   {
     id: 'forum',
     targetId: 'onboarding-forum',
-    title: '💬 Fórum & Gamificação',
-    description: 'Conecte-se com a comunidade! Crie tópicos, tire dúvidas e compartilhe conhecimento. Você ganha tokens por cada contribuição e pode subir no ranking.',
     gradient: 'from-amber-500 via-orange-500 to-red-500',
     position: 'bottom',
     icon: (
@@ -77,17 +59,10 @@ const onboardingSteps: OnboardingStep[] = [
         <text x="36" y="15" textAnchor="middle" fill="currentColor" fontSize="8" fontWeight="bold">🪙</text>
       </svg>
     ),
-    features: [
-      'Ganhe tokens participando',
-      'Sistema de votos e reputação',
-      'Diagramas inline nas respostas'
-    ]
   },
   {
     id: 'quizzes',
     targetId: 'onboarding-quizzes',
-    title: '🧠 Quizzes Interativos',
-    description: 'Teste e reforce seus conhecimentos em System Design com quizzes cronometrados. Compare seu desempenho no ranking e acompanhe sua evolução.',
     gradient: 'from-emerald-500 via-green-500 to-lime-500',
     position: 'bottom',
     icon: (
@@ -97,17 +72,10 @@ const onboardingSteps: OnboardingStep[] = [
         <circle cx="24" cy="24" r="14" stroke="currentColor" strokeWidth="2" strokeDasharray="4 4" className="animate-pulse" />
       </svg>
     ),
-    features: [
-      'Questões por tema',
-      'Ranking e leaderboard',
-      'Acompanhe seu progresso'
-    ]
   },
   {
     id: 'workflow',
     targetId: 'onboarding-workflow',
-    title: '📋 Fluxo de Trabalho',
-    description: 'Cada desafio segue um fluxo estruturado: análise de requisitos, design da arquitetura e feedback automático. É assim que você evolui!',
     gradient: 'from-indigo-500 via-blue-500 to-cyan-500',
     position: 'top',
     icon: (
@@ -119,17 +87,10 @@ const onboardingSteps: OnboardingStep[] = [
         <path d="M30 24H30.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
       </svg>
     ),
-    features: [
-      'Requisitos → Design → Feedback',
-      'Aprenda fazendo',
-      'Melhore a cada iteração'
-    ]
   },
   {
     id: 'ready',
     targetId: null,
-    title: 'Tudo pronto! 🎉',
-    description: 'Agora você conhece as principais funcionalidades. Comece explorando um desafio ou navegue pelo fórum para conhecer a comunidade.',
     gradient: 'from-fuchsia-500 via-pink-500 to-rose-500',
     position: 'center',
     icon: (
@@ -142,20 +103,21 @@ const onboardingSteps: OnboardingStep[] = [
         <path d="M50 32H56" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
       </svg>
     ),
-    features: [
-      'Explore os desafios disponíveis',
-      'Participe das discussões no fórum',
-      'Teste-se nos quizzes'
-    ]
-  }
+  },
 ]
 
 export default function Onboarding({ onComplete }: OnboardingProps) {
+  const { t } = useTranslation()
+  const reduceMotion = useReducedMotion()
   const [currentStep, setCurrentStep] = useState(0)
   const [isExiting, setIsExiting] = useState(false)
   const [highlightRect, setHighlightRect] = useState<DOMRect | null>(null)
 
   const step = onboardingSteps[currentStep]
+  const stepTitle = t(`onboarding.${step.id}.title`, { defaultValue: step.id })
+  const stepDescription = t(`onboarding.${step.id}.description`, { defaultValue: '' })
+  const stepFeatures = t(`onboarding.${step.id}.features`, { returnObjects: true, defaultValue: [] }) as string[]
+  const titleId = 'onboarding-step-title'
   const isLastStep = currentStep === onboardingSteps.length - 1
   const isFirstStep = currentStep === 0
   const isCenterStep = step.targetId === null
@@ -168,7 +130,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
         // Scroll element into view with offset
         const yOffset = -100
         const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset
-        window.scrollTo({ top: y, behavior: 'smooth' })
+        window.scrollTo({ top: y, behavior: reduceMotion ? 'auto' : 'smooth' })
         
         // Update highlight position after scroll
         setTimeout(() => {
@@ -178,9 +140,19 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
       }
     } else {
       setHighlightRect(null)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' })
     }
-  }, [step.targetId])
+  }, [step.targetId, reduceMotion])
+
+  useEffect(() => {
+    if (isExiting) return
+    const { body } = document
+    const prev = body.style.overflow
+    body.style.overflow = 'hidden'
+    return () => {
+      body.style.overflow = prev
+    }
+  }, [isExiting])
 
   useEffect(() => {
     scrollToTarget()
@@ -261,6 +233,9 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[9999] pointer-events-none"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={titleId}
         >
           {/* Dark overlay with cutout for highlighted element */}
           <div className="absolute inset-0 pointer-events-auto">
@@ -309,7 +284,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
                   height: highlightRect.height + 24,
                 }}
               >
-                <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${step.gradient} opacity-30 animate-pulse`} />
+                <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${step.gradient} opacity-30 ${reduceMotion ? '' : 'animate-pulse motion-reduce:animate-none'}`} />
                 <div className="absolute inset-0 rounded-2xl border-2 border-signal-green/50 dark:border-signal-green" />
               </motion.div>
             )}
@@ -357,19 +332,19 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
                     {step.icon}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h2 className="font-sans text-xl font-bold text-slate-900 dark:text-tactical-text mb-2">
-                      {step.title}
+                    <h2 id={titleId} className="font-sans text-xl font-bold text-slate-900 dark:text-tactical-text mb-2">
+                      {stepTitle}
                     </h2>
                     <p className="text-slate-600 dark:text-tactical-dim text-sm leading-relaxed">
-                      {step.description}
+                      {stepDescription}
                     </p>
                   </div>
                 </div>
 
                 {/* Features */}
-                {step.features && (
+                {stepFeatures.length > 0 && (
                   <div className="grid gap-2 mb-5 pl-16">
-                    {step.features.map((feature, index) => (
+                    {stepFeatures.map((feature, index) => (
                       <motion.div
                         key={feature}
                         initial={{ opacity: 0, x: -10 }}
@@ -408,7 +383,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
                 {/* Navigation */}
                 <div className="flex items-center justify-between">
                   <TacticalButton variant="ghost" size="sm" onClick={handleSkip} className="">
-                    Pular
+                    {t('onboarding.nav.skip', { defaultValue: 'Skip tour' })}
                   </TacticalButton>
 
                   <div className="flex gap-2">
@@ -417,12 +392,14 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                         </svg>
-                        Anterior
+                        {t('onboarding.nav.back', { defaultValue: 'Back' })}
                       </TacticalButton>
                     )}
 
                     <TacticalButton variant="primary" size="sm" onClick={handleNext} className="">
-                      {isLastStep ? 'Começar!' : 'Próximo'}
+                      {isLastStep
+                        ? t('onboarding.nav.finish', { defaultValue: 'Get started' })
+                        : t('onboarding.nav.next', { defaultValue: 'Next' })}
                       {!isLastStep ? (
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -438,7 +415,11 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
 
                 <div className="mt-3 text-center">
                   <span className="font-sans text-xs text-slate-500 dark:text-tactical-label">
-                    {currentStep + 1} de {onboardingSteps.length} • Use ← → para navegar
+                    {t('onboarding.nav.step_of', {
+                      current: currentStep + 1,
+                      total: onboardingSteps.length,
+                      defaultValue: 'Step {{current}} of {{total}}',
+                    })}
                   </span>
                 </div>
               </div>

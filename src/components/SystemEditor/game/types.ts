@@ -24,6 +24,8 @@ export interface GameLoadProfile {
 /** Per-round configuration set by the admin. */
 export interface RoundConfig {
   name?: string;
+  /** Player-facing one-liner describing the round's scenario beat. */
+  story?: string;
   /** Build window (seconds) before this round goes live. */
   intervalSec: number;
   /** Live round length in seconds. */
@@ -90,6 +92,21 @@ export interface GameState {
   round_started_at: string | null;
   round_ends_at: string | null;
   my_round_scores: Record<string, RoundScore>;
+  /** Server-verified weighted total (authoritative when scores_verified). */
+  my_provisional_score?: number;
+  my_verified_round_scores?: Record<string, unknown>;
+  scores_verified?: boolean;
+  sim_elapsed_sec?: number;
+  eligible_from_sec?: number;
+  interval_started_at?: string | null;
+  interval_ends_at?: string | null;
+  paused_at?: string | null;
+  total_paused_ms?: number;
+  lifecycle_version?: number;
+  auto_transitions?: boolean;
+  seconds_until_deadline?: number | null;
+  is_paused?: boolean;
+  max_players?: number;
 }
 
 export interface LeaderboardEntry {
@@ -100,6 +117,8 @@ export interface LeaderboardEntry {
   score: number;
   score_breakdown: unknown;
   last_submitted_at: string | null;
+  /** True when the score comes from server recomputation. */
+  verified?: boolean;
 }
 
 /** The "golden signals" snapshot from a player's live simulation. */

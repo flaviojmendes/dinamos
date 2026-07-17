@@ -9,6 +9,10 @@ vi.mock('../../db/repo', () => repo);
 vi.mock('../../lib/firebaseAdmin', () => ({
   verifyIdToken: vi.fn(async () => ({ uid: 'admin', email: 'a@example.com' })),
 }));
+vi.mock('../../lib/rateLimitStore.js', () => ({
+  incrementRateLimitBucket: vi.fn(async () => ({ allowed: true, count: 1 })),
+  resetMemoryRateLimitBuckets: vi.fn(),
+}));
 
 let app: Hono;
 beforeAll(async () => {
@@ -141,20 +145,39 @@ describe('game host routes', () => {
     expect((await app.request('/api/games/host/NOPE', { headers: AUTH })).status).toBe(404);
   });
 
-  it('PATCH /api/games/host/:code start_round', async () => {
+  it('PATCH /api/games/host/:code start_round from lobby requires build interval first', async () => {
     asStudent();
-    mockDb.setResults([[session], [{ ...session, phase: 'round', status: 'running', currentRound: 1 }]]);
+    mockDb.setResults([[session]]);
     const res = await app.request('/api/games/host/ABC123', {
       method: 'PATCH',
       headers: AUTH,
       body: JSON.stringify({ action: 'start_round' }),
+    });
+    expect(res.status).toBe(400);
+  });
+
+  it('PATCH /api/games/host/:code open_interval from lobby', async () => {
+    asStudent();
+    mockDb.setResults([
+      [session],
+      [{ ...session, phase: 'interval', status: 'paused', currentRound: 1, lifecycleVersion: 1 }],
+      [session],
+    ]);
+    const res = await app.request('/api/games/host/ABC123', {
+      method: 'PATCH',
+      headers: AUTH,
+      body: JSON.stringify({ action: 'open_interval' }),
     });
     expect(res.status).toBe(200);
   });
 
   it('PATCH /api/games/host/:code end action with add_sec', async () => {
     asStudent();
-    mockDb.setResults([[{ ...session, phase: 'round', roundEndsAt: new Date() }], [session]]);
+    mockDb.setResults([
+      [{ ...session, phase: 'round', status: 'running', currentRound: 1, roundEndsAt: new Date(Date.now() + 60_000) }],
+      [{ ...session, phase: 'interval', status: 'paused', currentRound: 1 }],
+      [session],
+    ]);
     const res = await app.request('/api/games/host/ABC123', {
       method: 'PATCH',
       headers: AUTH,
@@ -293,7 +316,7 @@ describe('game player routes', () => {
   });
 
   it('POST /api/game/:code/join (new player)', async () => {
-    mockDb.setResults([[session], [], undefined, [player]]);
+    mockDb.setResults([[session], [], [], undefined, [session], [player]]);
     const res = await app.request('/api/game/ABC123/join', { method: 'POST', headers: AUTH });
     expect(res.status).toBe(200);
   });
@@ -328,7 +351,7 @@ describe('game player routes', () => {
   });
 
   it('POST /api/game/:code/join joins a private match with the invite key', async () => {
-    mockDb.setResults([[privateSession], [], undefined, [player]]);
+    mockDb.setResults([[privateSession], [], [], undefined, [privateSession], [player]]);
     const res = await app.request('/api/game/ABC123/join', {
       method: 'POST',
       headers: AUTH,
@@ -344,19 +367,19 @@ describe('game player routes', () => {
   });
 
   it('POST /api/game/:code/join lets the host join their private match without the key', async () => {
-    mockDb.setResults([[{ ...privateSession, createdBy: 'admin' }], [], undefined, [player]]);
+    mockDb.setResults([[{ ...privateSession, createdBy: 'admin' }], [], [], undefined, [{ ...privateSession, createdBy: 'admin' }], [player]]);
     const res = await app.request('/api/game/ABC123/join', { method: 'POST', headers: AUTH });
     expect(res.status).toBe(200);
   });
 
-  it('PUT /api/game/:code/architecture (new player, round submission)', async () => {
-    mockDb.setResults([[session], [], undefined]);
+  it('PUT /api/game/:code/architecture requires join first', async () => {
+    mockDb.setResults([[session], []]);
     const res = await app.request('/api/game/ABC123/architecture', {
       method: 'PUT',
       headers: AUTH,
       body: JSON.stringify({ architecture: { nodes: [], edges: [] }, round_index: 0, round_score: 50, metrics: {}, score_breakdown: {} }),
     });
-    expect((await res.json() as any).ok).toBe(true);
+    expect(res.status).toBe(403);
   });
 
   it('PUT /api/game/:code/architecture (existing player, flat score)', async () => {
@@ -392,43 +415,14 @@ describe('game player routes', () => {
   };
   const playerWithRound = { ...player, roundScores: { '0': { score: 100 } } };
 
-  it('PUT architecture clamps round score gains when the architecture breaks the rules', async () => {
-    mockDb.setResults([[session], [playerWithRound], undefined]);
+  it('PUT architecture during interval saves compliant builds for joined players', async () => {
+    mockDb.setResults([[{ ...session, phase: 'interval', status: 'paused', currentRound: 1 }], [player], undefined]);
     const res = await app.request('/api/game/ABC123/architecture', {
       method: 'PUT',
       headers: AUTH,
-      body: JSON.stringify({ architecture: cacheOnlyArch, round_index: 0, round_score: 500 }),
+      body: JSON.stringify({ architecture: compliantArch }),
     });
     expect((await res.json() as any).ok).toBe(true);
-    const set = mockDb.calls.find((c) => c.op === 'set');
-    const updates = set?.args[0] as any;
-    expect(updates.roundScores['0'].score).toBe(100);
-  });
-
-  it('PUT architecture accepts round score gains when the architecture is compliant', async () => {
-    mockDb.setResults([[session], [playerWithRound], undefined]);
-    const res = await app.request('/api/game/ABC123/architecture', {
-      method: 'PUT',
-      headers: AUTH,
-      body: JSON.stringify({ architecture: compliantArch, round_index: 0, round_score: 500 }),
-    });
-    expect((await res.json() as any).ok).toBe(true);
-    const set = mockDb.calls.find((c) => c.op === 'set');
-    const updates = set?.args[0] as any;
-    expect(updates.roundScores['0'].score).toBe(500);
-  });
-
-  it('PUT architecture clamps flat score gains when non-compliant', async () => {
-    mockDb.setResults([[session], [player], undefined]);
-    const res = await app.request('/api/game/ABC123/architecture', {
-      method: 'PUT',
-      headers: AUTH,
-      body: JSON.stringify({ architecture: cacheOnlyArch, score: 9999 }),
-    });
-    expect((await res.json() as any).ok).toBe(true);
-    const set = mockDb.calls.find((c) => c.op === 'set');
-    const updates = set?.args[0] as any;
-    expect(updates.score).toBe(player.score);
   });
 
   it('GET /api/game/:code/leaderboard', async () => {
@@ -437,7 +431,7 @@ describe('game player routes', () => {
     expect((await res.json() as any).leaderboard).toHaveLength(1);
   });
 
-  it('GET /api/game/:code/spectate returns the audience stage state', async () => {
+  it('GET /api/game/:code/spectate returns the audience stage state for authenticated hosts', async () => {
     mockDb.setResults([[session], [player], [{ id: 'admin', nickname: 'A', avatarImage: null }]]);
     const res = await app.request('/api/game/ABC123/spectate', { headers: AUTH });
     const body = await res.json() as any;
@@ -449,7 +443,8 @@ describe('game player routes', () => {
     expect(body.players[0].node_count).toBe(1);
   });
 
-  it('GET /api/game/:code/spectate requires auth', async () => {
+  it('GET /api/game/:code/spectate requires auth or stage token', async () => {
+    mockDb.setResults([[session]]);
     expect((await app.request('/api/game/ABC123/spectate')).status).toBe(401);
   });
 

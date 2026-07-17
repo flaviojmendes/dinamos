@@ -14,6 +14,10 @@ vi.mock('../../lib/google', () => google);
 vi.mock('../../lib/firebaseAdmin', () => ({
   verifyIdToken: vi.fn(async () => ({ uid: 'u1', email: 'u1@example.com' })),
 }));
+vi.mock('../../lib/rateLimitStore.js', () => ({
+  incrementRateLimitBucket: vi.fn(async () => ({ allowed: true, count: 1 })),
+  resetMemoryRateLimitBuckets: vi.fn(),
+}));
 
 let app: Hono;
 beforeAll(async () => {

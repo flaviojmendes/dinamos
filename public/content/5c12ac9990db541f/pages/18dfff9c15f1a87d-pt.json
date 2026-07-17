@@ -1,0 +1,8 @@
+{
+  "slug": "design-principles/scalability",
+  "path": "/principios-design/escalabilidade",
+  "lang": "pt",
+  "title": "Design para Escalabilidade",
+  "simulator_key": "scalability",
+  "body": "# Design para Escalabilidade\n\nEscalabilidade é a capacidade de um sistema lidar com aumento de carga, seja aumentando a capacidade de hardware ou distribuindo a carga entre várias instâncias.\n\n<Cards cols={3}>\n\n<Card title=\"Escalabilidade Horizontal\" accent=\"brand\">\n\nDistribua a carga entre múltiplos servidores adicionando mais máquinas.\n\n[Escalabilidade Horizontal](/principios-design/escalabilidade/horizontal)\n\n</Card>\n\n<Card title=\"Escalabilidade Vertical\" accent=\"brand\">\n\nAumente recursos em um único servidor como RAM, CPU, ou armazenamento.\n\n[Escalabilidade Vertical](/principios-design/escalabilidade/vertical)\n\n</Card>\n\n<Card title=\"Consistência de Dados\" accent=\"brand\">\n\nGaranta que todas as cópias de dados estejam sincronizadas entre servidores.\n\n[Consistência de Dados](/principios-design/escalabilidade/consistencia)\n\n</Card>\n\n<Card title=\"Latência\" accent=\"brand\">\n\nGerencie atrasos na entrega de dados ou respostas no sistema.\n\n[Latência](/principios-design/escalabilidade/latencia)\n\n</Card>\n\n<Card title=\"Failover\" accent=\"brand\">\n\nAlternativa automática para sistema de backup em caso de falha.\n\n[Failover](/principios-design/escalabilidade/failover)\n\n</Card>\n\n</Cards>\n\n[Explorar Simulador de Escalabilidade](/principios-design/escalabilidade/simulator)\n"
+}

@@ -144,3 +144,30 @@ leaderboardRouter.get('/api/leaderboard/me', authRequired, async (c) => {
     ranking_score: r.ranking_score,
   });
 });
+
+/** Arena wins/podiums/participation — separate from quiz/coins formula. */
+leaderboardRouter.get('/api/leaderboard/arena', authRequired, async (c) => {
+  const limit = Math.min(Number(c.req.query('limit') ?? '50'), 100);
+  const { computeArenaRankings } = await import('../lib/game/progression.js');
+  const leaderboard = await computeArenaRankings(limit);
+  return c.json({ leaderboard });
+});
+
+leaderboardRouter.get('/api/leaderboard/arena/me', authRequired, async (c) => {
+  const user = c.get('user');
+  const { computeArenaRankings } = await import('../lib/game/progression.js');
+  const ranked = await computeArenaRankings(500);
+  const idx = ranked.findIndex((r) => r.user_id === user.uid);
+  if (idx === -1) {
+    return c.json({
+      rank: null,
+      user_id: user.uid,
+      arena_matches_played: 0,
+      arena_wins: 0,
+      arena_podiums: 0,
+      win_rate: 0,
+      message: 'Play an Arena match to appear on the Arena leaderboard!',
+    });
+  }
+  return c.json(ranked[idx]);
+});

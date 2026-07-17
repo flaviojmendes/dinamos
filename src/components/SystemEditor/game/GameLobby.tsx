@@ -5,6 +5,8 @@ import { Gamepad2, Clock, Users, Lock, Activity, MonitorPlay, ShieldCheck } from
 import { useGameContext } from './GameContext';
 import GameLeaderboard from './GameLeaderboard';
 import GameAnnouncement from './GameAnnouncement';
+import ScoringExplainer from './ScoringExplainer';
+import MatchPolicies from './MatchPolicies';
 
 function fmtCountdown(totalSec: number): string {
   const s = Math.max(0, Math.floor(totalSec));
@@ -29,8 +31,9 @@ export default function GameLobby({ currentUserId }: { currentUserId?: string | 
   if (!game?.state) return null;
   const st = game.state;
   const serverNow = now + game.serverOffsetMs;
-  const startsMs = st.starts_at ? new Date(st.starts_at).getTime() : null;
-  const remaining = startsMs ? (startsMs - serverNow) / 1000 : null;
+  const remaining =
+    st.seconds_until_deadline ??
+    (st.starts_at ? (new Date(st.starts_at).getTime() - serverNow) / 1000 : null);
   const nodeCount = st.starting_architecture?.nodes?.length ?? 0;
   const lockedCount = st.allow_delete_starting ? (st.locked_node_ids?.length ?? 0) : nodeCount;
 
@@ -120,6 +123,10 @@ export default function GameLobby({ currentUserId }: { currentUserId?: string | 
         </ul>
       </div>
 
+      <ScoringExplainer state={st} />
+
+      <MatchPolicies state={st} />
+
       <div className="flex items-center gap-2 mb-2 font-sans text-xs text-tactical-dim">
         <Clock className="w-3.5 h-3.5" />
         {t('editor.game.joined_players', { defaultValue: 'Players in the lobby' })}
@@ -132,7 +139,11 @@ export default function GameLobby({ currentUserId }: { currentUserId?: string | 
           {t('editor.game.open_stage', { defaultValue: 'Audience screen' })}
         </Link>
       </div>
-      <GameLeaderboard entries={game.leaderboard} currentUserId={currentUserId} />
+      <GameLeaderboard
+        entries={game.leaderboard}
+        currentUserId={currentUserId}
+        scoresVerified={game.leaderboardVerified}
+      />
     </div>
   );
 }

@@ -1,14 +1,14 @@
+import SHA256 from 'crypto-js/sha256';
+import Hex from 'crypto-js/enc-hex';
+import Utf8 from 'crypto-js/enc-utf8';
+
 /**
- * Fast, dependency-free stable hash for architecture snapshots.
- * Used by the game client and server to skip unchanged blob transfers.
+ * Collision-resistant stable digest for architecture snapshots.
+ * Uses SHA-256 over a key-sorted JSON representation so browser and server agree.
  */
 export function stableHash(value: unknown): string {
   const json = stableStringify(value);
-  let h = 5381;
-  for (let i = 0; i < json.length; i++) {
-    h = ((h << 5) + h) ^ json.charCodeAt(i);
-  }
-  return (h >>> 0).toString(36);
+  return SHA256(Utf8.parse(json)).toString(Hex);
 }
 
 function stableStringify(value: unknown): string {

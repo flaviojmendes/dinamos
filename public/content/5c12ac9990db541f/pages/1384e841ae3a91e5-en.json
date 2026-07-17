@@ -1,0 +1,8 @@
+{
+  "slug": "components/cdn",
+  "path": "/componentes/cdn",
+  "lang": "en",
+  "title": "CDN (Content Delivery Network)",
+  "simulator_key": "cdn",
+  "body": "# CDN (Content Delivery Network)\n\n## What is a CDN?\n\nA CDN is a geographically distributed network of servers used to deliver content (such as image files, videos, or web pages) quickly to users. CDNs store copies of content on multiple servers around the world, reducing latency by serving content from a location closer to the user.\n\n## Benefits of Using a CDN\n\n### Latency Reduction\n\nData is delivered from a server near the user, decreasing response time.\n\n### Load Distribution\n\nThe CDN distributes load across multiple servers, preventing overload on central servers.\n\n### Higher Availability\n\nIf a server fails, the CDN can redirect traffic to another server, ensuring high availability.\n\n<Callout type=\"neutral\" title=\"Example:\">\n\nUse a CDN like Cloudflare to speed up page loading for a global website.\n\n</Callout>\n\n<Callout type=\"info\" title=\"Interactive Simulator\">\n\nTry our interactive CDN simulation to better understand how geographic distribution affects latency and availability.\n\n[Access Simulator](/componentes/cdn/simulator)\n\n</Callout>\n"
+}

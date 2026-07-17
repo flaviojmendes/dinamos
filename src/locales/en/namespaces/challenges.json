@@ -8,5 +8,34 @@
   "has_video": "Has video solution",
   "cta_title": "Ready to test your knowledge?",
   "cta_description": "Access the Design Lab to practice system design with AI feedback.",
-  "go_to_lab": "Go to Design Lab"
+  "go_to_lab": "Go to Design Lab",
+  "history": {
+    "title": "Attempt history",
+    "empty": "No previous attempts found.",
+    "attempt": "Attempt #{{id}}",
+    "strengths": "Strengths",
+    "suggestions": "Suggestions",
+    "no_feedback": "No feedback available for this attempt.",
+    "close": "Close history"
+  },
+  "audio": {
+    "title": "Audio recording",
+    "start": "Start recording",
+    "pause": "Pause",
+    "resume": "Resume",
+    "stop": "Stop",
+    "cancel": "Cancel",
+    "transcribing": "Transcribing audio…",
+    "done": "Transcription complete!",
+    "transcript_label": "Transcribed text:",
+    "record_again": "Record again",
+    "remaining": "Time remaining: {{time}}",
+    "mic_error": "Could not access the microphone. Please allow access.",
+    "transcribe_error": "Could not transcribe the audio. Try again.",
+    "instructions_title": "Instructions:",
+    "instruction_duration": "Record up to {{duration}} explaining your design",
+    "instruction_decisions": "Talk about architectural decisions and trade-offs",
+    "instruction_submit": "Audio is transcribed automatically and submitted with your solution",
+    "instruction_pause": "You can pause and resume recording at any time"
+  }
 }

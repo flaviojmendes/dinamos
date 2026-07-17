@@ -283,7 +283,9 @@
     "tools": "Ferramentas",
     "arrange": "Organizar",
     "vertical": "Vertical",
-    "horizontal": "Horizontal"
+    "horizontal": "Horizontal",
+    "close": "Fechar",
+    "sheet": "Painel"
   },
   "canvas": {
     "empty_title": "Monte seu primeiro sistema",
@@ -369,6 +371,94 @@
       "up_next": "A seguir: {{name}}",
       "close_final": "Fechar classificação",
       "back_to_build": "Voltar a construir"
+    },
+    "lobby": "Lobby",
+    "live": "Ao vivo",
+    "build": "Construção",
+    "paused": "Pausado",
+    "ended": "Encerrada",
+    "mode": "Modo partida",
+    "round": "Rodada",
+    "traffic": "Tráfego",
+    "players": "Jogadores",
+    "your_score": "Sua pontuação",
+    "throughput": "Throughput",
+    "availability": "Disponibilidade",
+    "leaderboard": "Classificação",
+    "anon": "Anônimo",
+    "you": "você",
+    "verified": "Verificado",
+    "provisional": "est.",
+    "provisional_total_hint": "Total provisório — verificado após a rodada",
+    "provisional_score_hint": "Pontuação provisória — verificada após a rodada",
+    "provisional_leaderboard_hint": "Pontuações ao vivo são provisórias até o servidor verificar.",
+    "not_found": "Partida não encontrada",
+    "go_editor": "Ir para o editor",
+    "untitled_match": "Partida de Sistemas Distribuídos",
+    "saturation": "Saturação",
+    "retry": "Tentar de novo",
+    "no_players": "Nenhum jogador ainda.",
+    "waiting_host": "Aguardando o anfitrião iniciar…",
+    "lobby_build_hint": "Fase de construção: refine sua arquitetura antes da próxima rodada.",
+    "locked_components": "Peças bloqueadas",
+    "joined_players": "Jogadores no lobby",
+    "generate_stage": "Gerar link do telão",
+    "rotate_stage": "Rotacionar link do telão",
+    "copy_stage": "Copiar link do telão",
+    "open_build": "Abrir fase de construção",
+    "first_build_hint": "Partidas sempre começam com uma fase de construção. Abra a construção antes da rodada 1.",
+    "start_round": "Iniciar rodada {{n}}",
+    "pause": "Pausar",
+    "resume": "Retomar",
+    "finish_match": "Encerrar partida",
+    "end_round": "Encerrar rodada",
+    "end": "Encerrar partida",
+    "traffic_intensity": "Tráfego ×",
+    "allow_delete_live": "Jogadores podem excluir componentes",
+    "round_time_left": "Tempo restante da rodada",
+    "starts_in": "Começa em",
+    "build_time_left": "Tempo de construção restante",
+    "status": "Status",
+    "sync_offline": "Você está offline. A sincronização retoma quando reconectar.",
+    "sync_stale": "O estado da partida pode estar desatualizado. Toque em tentar de novo.",
+    "leaderboard_open": "Abrir classificação. Você está em #{{rank}}.",
+    "scoring": {
+      "title": "Como funciona a pontuação",
+      "subtitle": "Os pontos acumulam a cada segundo simulado enquanto sua arquitetura permanece válida e saudável. Totais da classificação podem ser verificados pelo servidor após cada rodada.",
+      "throughput": "Throughput: +{{w}} pts por req/s atendida",
+      "availability": "Disponibilidade: até +{{w}}×100 por segundo com erros baixos",
+      "latency": "Meta de latência: p95 abaixo de {{ms}} ms (penalidade ×{{w}} acima da meta)",
+      "budget": "Orçamento: ${{budget}}/hr (penalidade ×{{w}} quando excedido)",
+      "streak": "Streak SLO: mantenha erros <1% e p95 na meta por {{sec}}s para atingir ×{{mult}} nos pontos positivos",
+      "weights": "Rodadas ponderadas: {{list}}"
+    },
+    "policies": {
+      "title": "Políticas da partida",
+      "subtitle": "Regras competitivas aplicadas pelo servidor. Totais usam recomputação verificada, salvo rollback de emergência.",
+      "tie": {
+        "title": "Desempate",
+        "body": "Pontuação verificada, melhor streak SLO, envio verificado mais cedo, horário de entrada, depois ID do usuário."
+      },
+      "late_join": {
+        "title": "Entrada tardia",
+        "body": "Quem entra no meio da rodada recebe snapshot congelado da arquitetura e pontua só pelos segundos elegíveis após entrar."
+      },
+      "pause": {
+        "title": "Pausa e override do host",
+        "body": "Pausa congela elegibilidade e contagem regressiva. Retomar estende prazos pelo tempo pausado. O host pode iniciar cedo, estender ou encerrar rodadas."
+      },
+      "kick": {
+        "title": "Remoção e reentrada",
+        "body": "Jogadores removidos não podem reentrar na mesma partida. O host controla joins abertos e links de convite."
+      },
+      "spectator": {
+        "title": "Espectadores e palco",
+        "body": "Arquiteturas ao vivo ficam ocultas para espectadores durante rodadas. O link rotativo do palco mostra ranking e contagem."
+      },
+      "capacity": {
+        "title": "Capacidade",
+        "body": "Esta partida aceita até {{max}} jogadores. Entrada bloqueada quando lotada."
+      }
     }
   },
   "stage": {
@@ -381,6 +471,9 @@
     "join_at": "Entre em",
     "champion": "Campeão",
     "standings": "Classificação",
-    "waiting_players": "Aguardando jogadores entrarem…"
+    "waiting_players": "Aguardando jogadores entrarem…",
+    "token_required_title": "Link do telão necessário",
+    "token_required_body": "Peça ao anfitrião o link da tela da plateia. Ele inclui um token de acesso somente leitura.",
+    "architectures_hidden": "Arquiteturas ao vivo ocultas até o fim da rodada"
   }
 }

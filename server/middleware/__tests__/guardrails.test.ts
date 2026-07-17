@@ -1,10 +1,11 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Hono } from 'hono';
 import { maxBodyBytes, rateLimit } from '../guardrails.js';
+import { resetMemoryRateLimitBuckets } from '../../lib/rateLimitStore.js';
 
 describe('guardrails middleware', () => {
   beforeEach(() => {
-    vi.useFakeTimers();
+    resetMemoryRateLimitBuckets();
   });
 
   it('rateLimit returns 429 after max requests in the window', async () => {
@@ -29,14 +30,30 @@ describe('guardrails middleware', () => {
     });
     expect(res.status).toBe(413);
   });
-});
 
-describe('stableHash', () => {
-  it('produces stable hashes for equivalent object key order', async () => {
-    const { stableHash } = await import(
-      '../../../src/components/SystemEditor/engine/stableHash.ts'
-    );
-    expect(stableHash({ a: 1, b: 2 })).toBe(stableHash({ b: 2, a: 1 }));
-    expect(stableHash(null)).toBe(stableHash(undefined));
+  it('maxBodyBytes rejects streamed bodies without Content-Length', async () => {
+    const app = new Hono();
+    app.use('/post', maxBodyBytes(10));
+    app.post('/post', (c) => c.json({ ok: true }));
+
+    const res = await app.request('/post', {
+      method: 'POST',
+      body: '012345678901',
+    });
+    expect(res.status).toBe(413);
+  });
+
+  it('maxBodyBytes preserves parsed JSON for downstream handlers', async () => {
+    const app = new Hono();
+    app.use('/post', maxBodyBytes(100));
+    app.post('/post', async (c) => c.json(await c.req.json()));
+
+    const res = await app.request('/post', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ok: true }),
+    });
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ ok: true });
   });
 });

@@ -9,6 +9,10 @@ vi.mock('../../db/repo', () => repo);
 vi.mock('../../lib/firebaseAdmin', () => ({
   verifyIdToken: vi.fn(async () => ({ uid: 'u1', email: 'u1@example.com' })),
 }));
+vi.mock('../../lib/rateLimitStore.js', () => ({
+  incrementRateLimitBucket: vi.fn(async () => ({ allowed: true, count: 1 })),
+  resetMemoryRateLimitBuckets: vi.fn(),
+}));
 
 let app: Hono;
 beforeAll(async () => {
@@ -109,10 +113,9 @@ describe('polls routes', () => {
       [poll], // loadPoll pollRows
       options, // loadPoll options
       [options[0]], // valid options
-      [], // current votes
+      [], // current votes (transaction)
       undefined, // insert vote
-      [options[0]], // opt lookup
-      undefined, // update voteCount
+      undefined, // atomic increment
       [poll], // reload pollRows
       options, // reload options
     ]);

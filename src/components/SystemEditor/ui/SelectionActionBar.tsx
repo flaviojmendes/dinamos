@@ -39,12 +39,13 @@ function Action({
     <button
       type="button"
       onClick={onClick}
+      aria-label={label}
       className={`flex flex-col items-center justify-center gap-1 min-w-[60px] min-h-[52px] px-2 font-sans text-[10px] active:bg-slate-100 dark:active:bg-tactical-line transition-colors ${
         tone ?? 'text-slate-700 dark:text-tactical-text'
       }`}
     >
-      <Icon className="w-5 h-5" />
-      {label}
+      <Icon className="w-5 h-5" aria-hidden />
+      <span aria-hidden>{label}</span>
     </button>
   );
 }
@@ -53,7 +54,11 @@ export default function SelectionActionBar(props: Props) {
   const { t } = useTranslation();
 
   return (
-    <div className="absolute z-50 left-1/2 -translate-x-1/2 bottom-3 max-w-[calc(100%-1rem)]">
+    <div
+      className="absolute z-50 left-1/2 -translate-x-1/2 bottom-3 max-w-[calc(100%-1rem)]"
+      role="toolbar"
+      aria-label={t('editor.menu.edit', { defaultValue: 'Selection actions' })}
+    >
       <div className="flex items-stretch divide-x divide-slate-200 dark:divide-tactical-border bg-white/95 dark:bg-tactical-surface/95 border border-slate-200 dark:border-tactical-border rounded-xl shadow-lg backdrop-blur-sm overflow-x-auto">
         {props.mode === 'node' ? (
           <>

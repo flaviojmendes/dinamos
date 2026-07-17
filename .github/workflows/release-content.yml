@@ -1,28 +1,36 @@
-name: Release content & schema
+name: Restore content seed (recovery)
 
-# Manually apply production database schema/content migrations outside the
-# Vercel build path. Requires the DATABASE_URL repository secret.
+# RECOVERY / SEED ONLY — re-applies idempotent content seed SQL and post-seed
+# fixups to production Postgres. This does NOT publish CMS edits to the CDN.
+# To ship published lesson snapshots, run "Publish static content to CDN".
 on:
   workflow_dispatch:
     inputs:
-      run_db_push:
-        description: Run Drizzle schema push (npm run db:push) before content
+      confirm_recovery:
+        description: I understand this re-applies DB seed/fixups (not CDN publish)
         type: boolean
         default: false
-        required: false
+        required: true
 
-# Prevent overlapping migration runs against the same database.
+# Prevent overlapping recovery runs against the same database.
 concurrency:
   group: release-content
   cancel-in-progress: false
 
 jobs:
-  release:
-    name: Apply database migrations
+  restore:
+    name: Apply content seed and fixups
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    environment: production
 
     steps:
+      - name: Require explicit confirmation
+        if: ${{ !inputs.confirm_recovery }}
+        run: |
+          echo "Recovery aborted: enable confirm_recovery to re-apply DB seed/fixups."
+          exit 1
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -39,12 +47,6 @@ jobs:
           NPM_CONFIG_FETCH_RETRY_MINTIMEOUT: "20000"
           NPM_CONFIG_FETCH_RETRY_MAXTIMEOUT: "120000"
           NPM_CONFIG_FETCH_TIMEOUT: "300000"
-
-      - name: Push Drizzle schema
-        if: inputs.run_db_push
-        run: npm run db:push
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Apply content seed and fixups
         run: npm run release:content

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Excalidraw } from '@excalidraw/excalidraw'
 // Excalidraw 0.18 does not auto-inject its styles; without this import the
 // toolbar/icons render unstyled at full size, breaking the editor.
@@ -12,6 +13,7 @@ type NormalizedZoomValue = number & { _brand: 'normalizedZoom' }
 import Stepper from '../components/Stepper'
 import { TacticalButton } from '../../components/tactical'
 import AudioRecorder from '../components/AudioRecorder'
+import AccessibleOverlay from '../../components/a11y/AccessibleOverlay'
 import api from '../utils/api'
 import { trackChallengeView, trackChallengeStart, trackChallengeSubmit } from '../utils/analytics'
 
@@ -36,6 +38,7 @@ interface StepContent {
 function Challenge() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [challenge, setChallenge] = useState<Challenge | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -974,14 +977,21 @@ function Challenge() {
         </div>
       </div>
       
-      {/* History Modal */}
-      {showHistory && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-          <div className="tactical-panel rounded-xl card-shadow dark:shadow-none max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col">
+      <AccessibleOverlay
+        open={showHistory}
+        onClose={() => setShowHistory(false)}
+        title={t('challenges.history.title', { defaultValue: 'Attempt history' })}
+        closeLabel={t('challenges.history.close', { defaultValue: 'Close history' })}
+        panelClassName="tactical-panel rounded-xl card-shadow dark:shadow-none max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col bg-white dark:bg-tactical-surface"
+      >
             <div className="p-4 border-b border-slate-200 dark:border-tactical-border flex justify-between items-center bg-slate-50 dark:bg-tactical-raised">
-              <h3 className="text-lg font-sans font-bold text-slate-900 dark:text-tactical-text">Histórico de tentativas</h3>
-              <button 
-                onClick={() => setShowHistory(false)} 
+              <h3 className="text-lg font-sans font-bold text-slate-900 dark:text-tactical-text">
+                {t('challenges.history.title', { defaultValue: 'Attempt history' })}
+              </h3>
+              <button
+                type="button"
+                onClick={() => setShowHistory(false)}
+                aria-label={t('challenges.history.close', { defaultValue: 'Close history' })}
                 className="text-slate-500 hover:text-slate-700 dark:text-tactical-label dark:hover:text-tactical-text transition-colors font-sans"
               >
                 ✕
@@ -990,8 +1000,8 @@ function Challenge() {
             <div className="p-4 overflow-y-auto">
               {historySolutions.length === 0 ? (
                  <div className="text-center py-12 text-slate-500 dark:text-tactical-label">
-                   <p className="text-4xl mb-2">📭</p>
-                   <p>Nenhuma tentativa anterior encontrada.</p>
+                   <p className="text-4xl mb-2" aria-hidden>📭</p>
+                   <p>{t('challenges.history.empty', { defaultValue: 'No previous attempts found.' })}</p>
                  </div>
               ) : (
                  <div className="space-y-4">
@@ -999,7 +1009,7 @@ function Challenge() {
                      <div key={sol.id} className="border border-slate-200 dark:border-tactical-border rounded-lg p-4 bg-slate-50 dark:bg-tactical-raised hover:bg-slate-100 dark:hover:bg-tactical-surface transition-colors">
                        <div className="flex justify-between mb-3 border-b border-slate-200 dark:border-tactical-border pb-2">
                          <span className="text-sm font-sans font-medium text-slate-700 dark:text-tactical-text">
-                           Tentativa #{sol.id}
+                           {t('challenges.history.attempt', { defaultValue: 'Attempt #{{id}}', id: sol.id })}
                          </span>
                          <span className="text-xs text-slate-500 dark:text-tactical-label font-sans">
                            {new Date(sol.created_at).toLocaleString()}
@@ -1010,12 +1020,12 @@ function Challenge() {
                            {sol.feedback.strengths.length > 0 && (
                              <div className="border border-signal-green/40 bg-signal-green/10 rounded-lg p-3">
                                <p className="text-xs font-sans font-bold text-signal-green mb-2 flex items-center">
-                                 <span className="mr-1">✓</span> Pontos fortes
+                                 <span className="mr-1" aria-hidden>✓</span> {t('challenges.history.strengths', { defaultValue: 'Strengths' })}
                                </p>
                                <ul className="space-y-1">
                                  {sol.feedback.strengths.map((s, i) => (
                                    <li key={i} className="text-xs text-slate-600 dark:text-tactical-dim leading-relaxed flex items-start">
-                                     <span className="mr-1.5 mt-0.5 opacity-50">•</span>
+                                     <span className="mr-1.5 mt-0.5 opacity-50" aria-hidden>•</span>
                                      <span>{s}</span>
                                    </li>
                                  ))}
@@ -1025,12 +1035,12 @@ function Challenge() {
                            {sol.feedback.suggestions.length > 0 && (
                              <div className="border border-signal-cyan/40 bg-signal-cyan/10 rounded-lg p-3">
                                <p className="text-xs font-sans font-bold text-brand-600 dark:text-signal-cyan mb-2 flex items-center">
-                                 <span className="mr-1">💡</span> Sugestões
+                                 <span className="mr-1" aria-hidden>💡</span> {t('challenges.history.suggestions', { defaultValue: 'Suggestions' })}
                                </p>
                                <ul className="space-y-1">
                                  {sol.feedback.suggestions.map((s, i) => (
                                    <li key={i} className="text-xs text-slate-600 dark:text-tactical-dim leading-relaxed flex items-start">
-                                     <span className="mr-1.5 mt-0.5 opacity-50">•</span>
+                                     <span className="mr-1.5 mt-0.5 opacity-50" aria-hidden>•</span>
                                      <span>{s}</span>
                                    </li>
                                  ))}
@@ -1039,16 +1049,16 @@ function Challenge() {
                            )}
                          </div>
                        ) : (
-                         <p className="text-sm italic text-slate-500 dark:text-tactical-label text-center py-2">Feedback não disponível para esta tentativa.</p>
+                         <p className="text-sm italic text-slate-500 dark:text-tactical-label text-center py-2">
+                           {t('challenges.history.no_feedback', { defaultValue: 'No feedback available for this attempt.' })}
+                         </p>
                        )}
                      </div>
                    ))}
                  </div>
               )}
             </div>
-          </div>
-        </div>
-      )}
+      </AccessibleOverlay>
     </div>
   )
 }

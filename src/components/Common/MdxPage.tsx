@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import api from '../../app/utils/api';
+import { loadPageBody, shouldUseContentApi } from '../../contentDelivery';
 import MdxRenderer, { mdxCacheKey } from './MdxRenderer';
 import ContentAnnotations from './ContentAnnotations';
 import { getVisitorId } from '../../utils/visitorId';
@@ -27,11 +28,9 @@ interface Props {
 /**
  * Renders a DB-backed MDX content page for the current language.
  *
- * The MDX source now lives in Postgres (content_pages) and is fetched from the
- * content API, then compiled in the browser by MdxRenderer. Breadcrumb and
- * prev/next/related navigation are provided by ContentLayout (registry-driven),
- * so this component only owns the document body. Used by the manifest-driven
- * content route in App.tsx.
+ * Lesson bodies load CDN-first from manifest body URLs; view tracking and user
+ * progress remain on authenticated APIs. Breadcrumb and prev/next navigation
+ * come from ContentLayout (registry-driven).
  */
 export default function MdxPage({ slug }: Props) {
   const { i18n } = useTranslation();
@@ -47,11 +46,10 @@ export default function MdxPage({ slug }: Props) {
     setStatus('loading');
     setBody(null);
     const contentPath = location.pathname;
-    api
-      .get<{ body: string }>('/api/content/body', { params: { path: contentPath, lang } })
-      .then((res) => {
+    loadPageBody({ path: contentPath, lang, forceApi: shouldUseContentApi() })
+      .then((text) => {
         if (cancelled) return;
-        setBody(res.data?.body ?? '');
+        setBody(text);
         setStatus('loaded');
       })
       .catch((err) => {

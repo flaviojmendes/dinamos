@@ -159,6 +159,22 @@ export const trackError = (error: string, errorInfo?: string) =>
 export const trackTimeSpent = (category: string, action: string, timeInSeconds: number) =>
   trackEvent(category, action, 'Time Spent', Math.round(timeInSeconds));
 
+/** Structured Arena client telemetry (GA4 when consent granted). */
+export const trackArenaTelemetry = (
+  action: string,
+  label?: string,
+  value?: number,
+) => trackEvent('Arena', action, label, value);
+
+export const trackArenaSyncFailure = (operation: string, detail?: string) =>
+  trackArenaTelemetry('SyncFailure', detail || operation);
+
+export const trackArenaScoreDrift = (roundIndex: number, drift: number) =>
+  trackArenaTelemetry('ScoreDrift', `round-${roundIndex}`, Math.round(drift));
+
+export const trackArenaLifecycle = (transition: string) =>
+  trackArenaTelemetry('Lifecycle', transition);
+
 if (typeof window !== 'undefined') {
   window.addEventListener('cookieConsentChange', handleConsentChange);
 }

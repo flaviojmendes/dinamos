@@ -102,7 +102,9 @@ export default function RoundFX({ nodeLabels }: { nodeLabels: Record<string, str
   const roundStartedMs = st.round_started_at ? new Date(st.round_started_at).getTime() : null;
   const roundEndsMs = st.round_ends_at ? new Date(st.round_ends_at).getTime() : null;
   const elapsed = isLive && roundStartedMs ? (serverNow - roundStartedMs) / 1000 : null;
-  const remaining = isLive && roundEndsMs ? (roundEndsMs - serverNow) / 1000 : null;
+  const remaining =
+    st.seconds_until_deadline ??
+    (isLive && roundEndsMs ? (roundEndsMs - serverNow) / 1000 : null);
 
   // Chaos telegraphs: events arriving within 6s, and currently active ones.
   const chaosNotices: { ev: ChaosEvent; mode: 'incoming' | 'active'; sec: number }[] = [];

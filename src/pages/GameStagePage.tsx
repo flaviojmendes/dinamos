@@ -5,7 +5,7 @@
 // admin controls, safe to leave open on a venue screen.
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useParams, Navigate, Link } from 'react-router-dom';
+import { useParams, Link, useSearchParams, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import {
@@ -22,8 +22,6 @@ import {
   Trophy,
   Users,
 } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { apiClient } from '../app/utils/api';
 import MiniArchitecture from '../components/SystemEditor/game/MiniArchitecture';
 import type { GoldenSignals, SpectatorPlayer, StageState } from '../components/SystemEditor/game/types';
 
@@ -122,7 +120,7 @@ function PodiumCard({
   );
 }
 
-function StageInner({ code }: { code: string }) {
+function StageInner({ code, stageToken }: { code: string; stageToken: string | null }) {
   const { t } = useTranslation();
   const reduceMotion = useReducedMotion();
   const [stage, setStage] = useState<StageState | null>(null);
@@ -135,8 +133,16 @@ function StageInner({ code }: { code: string }) {
 
   const fetchStage = useCallback(async () => {
     try {
-      const res = await apiClient.get(`/api/game/${code}/spectate`);
-      const data = res.data as StageState;
+      const qs = stageToken ? `?token=${encodeURIComponent(stageToken)}` : '';
+      const res = await fetch(`/api/game/${code}/spectate${qs}`, {
+        headers: { Accept: 'application/json' },
+      });
+      if (res.status === 404) {
+        setNotFound(true);
+        return;
+      }
+      if (!res.ok) return;
+      const data = (await res.json()) as StageState;
       if (data.server_time) {
         offsetRef.current = new Date(data.server_time).getTime() - Date.now();
       }
@@ -151,10 +157,10 @@ function StageInner({ code }: { code: string }) {
       prevRanksRef.current = next;
       if (nextDeltas.size > 0) setDeltas(nextDeltas);
       setStage(data);
-    } catch (err: any) {
-      if (err?.response?.status === 404) setNotFound(true);
+    } catch {
+      /* ignore transient poll errors */
     }
-  }, [code]);
+  }, [code, stageToken]);
 
   useEffect(() => {
     fetchStage();
@@ -412,21 +418,33 @@ function StageInner({ code }: { code: string }) {
 }
 
 export default function GameStagePage() {
+  const { t } = useTranslation();
   const { code } = useParams<{ code: string }>();
-  const { currentUser, loading } = useAuth();
+  const [searchParams] = useSearchParams();
+  const stageToken = searchParams.get('token');
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-tactical-bg flex items-center justify-center">
-        <div className="animate-spin rounded-full h-10 w-10 border-2 border-signal-green border-t-transparent" aria-label="Loading" />
-      </div>
-    );
-  }
-  if (!currentUser) {
-    return <Navigate to="/login" replace state={{ from: `/editor/game/${code ?? ''}/stage` }} />;
-  }
   if (!code) {
     return <Navigate to="/editor" replace />;
   }
-  return <StageInner code={code} />;
+
+  if (!stageToken) {
+    return (
+      <div className="min-h-screen bg-tactical-bg flex items-center justify-center px-6">
+        <div className="text-center max-w-md">
+          <AlertTriangle className="w-10 h-10 text-signal-amber mx-auto mb-4" />
+          <div className="font-sans text-xl font-bold text-tactical-text mb-2">
+            {t('editor.stage.token_required_title', { defaultValue: 'Stage link required' })}
+          </div>
+          <p className="font-sans text-sm text-tactical-dim">
+            {t('editor.stage.token_required_body', {
+              defaultValue:
+                'Ask the host for the audience screen link. It includes a read-only access token.',
+            })}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return <StageInner code={code} stageToken={stageToken} />;
 }

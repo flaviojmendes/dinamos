@@ -1,0 +1,8 @@
+{
+  "slug": "design-principles/index",
+  "path": "/principios-design",
+  "lang": "en",
+  "title": "Design Principles",
+  "simulator_key": null,
+  "body": "# Design Principles\n\nExplore the fundamental principles that guide the creation of distributed systems\n\n<Callout type=\"info\">\n\nEach principle addresses crucial aspects of modern distributed systems design. Understand how to apply them to build scalable and resilient systems.\n\n</Callout>\n\n<Cards cols={2}>\n\n<Card emoji=\"🔽\" title=\"Event-Driven Development\" accent=\"purple\">\n\nEvent Sourcing and distributed event systems.\n\n[Event-Driven Development](/principios-design/eventos)\n\n- Events\n- Asynchronous\n\n</Card>\n\n<Card emoji=\"🧩\" title=\"Service-Oriented Design\" accent=\"green\">\n\nMicroservices vs Monolithic Architecture.\n\n[Service-Oriented Design](/principios-design/servicos)\n\n- Services\n- Architecture\n\n</Card>\n\n<Card emoji=\"⚠️\" title=\"Fault Tolerance\" accent=\"yellow\">\n\nRetries, Circuit Breakers, Timeout and Fallback.\n\n[Fault Tolerance](/principios-design/tolerancia-falhas)\n\n- Resilience\n- Recovery\n\n</Card>\n\n<Card emoji=\"📈\" title=\"Design for Scalability\" accent=\"red\">\n\nHorizontal and vertical scalability.\n\n[Design for Scalability](/principios-design/escalabilidade)\n\n- Growth\n- Performance\n\n</Card>\n\n<Card emoji=\"✅\" title=\"High Availability\" accent=\"brand\">\n\nAvailability zones and replication.\n\n[High Availability](/principios-design/disponibilidade)\n\n- Uptime\n- Replication\n\n</Card>\n\n</Cards>\n"
+}
