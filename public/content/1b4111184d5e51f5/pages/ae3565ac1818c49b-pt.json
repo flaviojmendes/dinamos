@@ -1,0 +1,8 @@
+{
+  "slug": "design-principles/timeout",
+  "path": "/principios-design/tolerancia-falhas/timeout",
+  "lang": "pt",
+  "title": "Timeout (Tempo Limite)",
+  "simulator_key": "timeout",
+  "body": "# Timeout (Tempo Limite)\n\nEstratégia fundamental para evitar que operações lentas ou travadas prejudiquem a experiência do usuário e a saúde do sistema.\n\n## Como Funciona\n\nImagine que você está em um restaurante: se o pedido demora, você cancela e vai embora. O Timeout funciona de forma similar.\n\nDefine um tempo máximo para concluir uma operação. Se exceder, o sistema assume problema e interrompe.\n\n## Benefícios\n\n<Cards cols={3}>\n\n<Card title=\"Melhor Experiência do Usuário\" accent=\"green\">\n\nEvita que usuários fiquem esperando indefinidamente.\n\n</Card>\n\n<Card title=\"Liberação de Recursos\" accent=\"green\">\n\nLibera recursos que poderiam ficar presos.\n\n</Card>\n\n<Card title=\"Prevenção de Falhas\" accent=\"green\">\n\nEvita que problemas em um serviço afetem outros.\n\n</Card>\n\n</Cards>\n\n<Callout type=\"neutral\" title=\"Exemplo do Mundo Real\">\n\nAo enviar um formulário, se o servidor estiver lento/indisponível, um timeout de 30s cancela o envio e exibe erro em vez de esperar indefinidamente.\n\n</Callout>\n\n## Melhores Práticas\n\n<Cards cols={3}>\n\n<Card title=\"Tempos Apropriados\" accent=\"slate\">\n\nDefina timeouts realistas conforme operação e expectativa.\n\n</Card>\n\n<Card title=\"Mensagens Claras\" accent=\"slate\">\n\nInforme o que ocorreu e o que fazer a seguir.\n\n</Card>\n\n<Card title=\"Retry Strategy\" accent=\"slate\">\n\nCombine timeouts com retries para maior resiliência.\n\n</Card>\n\n</Cards>\n\n[Explorar Simulador de Timeout](/principios-design/tolerancia-falhas/timeout/simulator)\n"
+}

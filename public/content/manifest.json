@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "contentHash": "5c12ac9990db541f",
-  "generatedAt": "2026-07-16T23:43:53.079Z",
+  "contentHash": "1b4111184d5e51f5",
+  "generatedAt": "2026-07-17T08:44:58.328Z",
   "modules": [
     {
       "id": "fundamentals",
@@ -112,8 +112,8 @@
       "titlePt": "Introdução",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/c432b372e0e30267-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/c432b372e0e30267-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/c432b372e0e30267-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/c432b372e0e30267-pt.json"
     },
     {
       "slug": "distributed-systems-101",
@@ -125,8 +125,8 @@
       "titlePt": "Sistemas Distribuídos 101",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/45d02b9754a73708-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/45d02b9754a73708-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/45d02b9754a73708-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/45d02b9754a73708-pt.json"
     },
     {
       "slug": "system-design-101",
@@ -138,8 +138,8 @@
       "titlePt": "System Design 101",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/633e66c52dedb092-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/633e66c52dedb092-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/633e66c52dedb092-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/633e66c52dedb092-pt.json"
     },
     {
       "slug": "theoretical-foundations/index",
@@ -151,8 +151,8 @@
       "titlePt": "Fundamentos Teóricos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/cfbc2c819ba48840-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/cfbc2c819ba48840-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/cfbc2c819ba48840-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/cfbc2c819ba48840-pt.json"
     },
     {
       "slug": "theoretical-foundations/cap-theorem",
@@ -164,8 +164,8 @@
       "titlePt": "Teorema CAP",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/bf96b5abe465e343-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/bf96b5abe465e343-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/bf96b5abe465e343-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/bf96b5abe465e343-pt.json"
     },
     {
       "slug": "theoretical-foundations/consistency-models",
@@ -177,8 +177,8 @@
       "titlePt": "Modelos de Consistência",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/741a3f4924e9ddd7-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/741a3f4924e9ddd7-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/741a3f4924e9ddd7-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/741a3f4924e9ddd7-pt.json"
     },
     {
       "slug": "theoretical-foundations/distributed-challenges",
@@ -190,8 +190,8 @@
       "titlePt": "Desafios de Sistemas Distribuídos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/a3a4f9df0b315846-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/a3a4f9df0b315846-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/a3a4f9df0b315846-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/a3a4f9df0b315846-pt.json"
     },
     {
       "slug": "theoretical-foundations/network-partitions",
@@ -203,8 +203,8 @@
       "titlePt": "Partições de Rede e Falhas",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/02ac3a0790f5f710-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/02ac3a0790f5f710-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/02ac3a0790f5f710-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/02ac3a0790f5f710-pt.json"
     },
     {
       "slug": "components/index",
@@ -216,8 +216,8 @@
       "titlePt": "Componentes Básicos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/db2c68f925d65cd9-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/db2c68f925d65cd9-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/db2c68f925d65cd9-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/db2c68f925d65cd9-pt.json"
     },
     {
       "slug": "theoretical-foundations/pacelc",
@@ -229,8 +229,8 @@
       "titlePt": "O Teorema PACELC",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/4401896c7e0b4cbf-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/4401896c7e0b4cbf-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/4401896c7e0b4cbf-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/4401896c7e0b4cbf-pt.json"
     },
     {
       "slug": "components/database",
@@ -242,8 +242,8 @@
       "titlePt": "Bancos de Dados",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/578624704d2c513b-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/578624704d2c513b-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/578624704d2c513b-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/578624704d2c513b-pt.json"
     },
     {
       "slug": "theoretical-foundations/flp-impossibility",
@@ -255,8 +255,8 @@
       "titlePt": "A Impossibilidade FLP",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/e7907037a9c79ea6-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/e7907037a9c79ea6-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/e7907037a9c79ea6-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/e7907037a9c79ea6-pt.json"
     },
     {
       "slug": "components/cache",
@@ -268,8 +268,8 @@
       "titlePt": "Cache",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/c4c401a6686ea6a5-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/c4c401a6686ea6a5-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/c4c401a6686ea6a5-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/c4c401a6686ea6a5-pt.json"
     },
     {
       "slug": "theoretical-foundations/fallacies",
@@ -281,8 +281,8 @@
       "titlePt": "Falácias da Computação Distribuída",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/9c2fa40c29901692-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/9c2fa40c29901692-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/9c2fa40c29901692-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/9c2fa40c29901692-pt.json"
     },
     {
       "slug": "components/load-balancer",
@@ -294,8 +294,8 @@
       "titlePt": "Balanceadores de Carga",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/0f1e715f65d7006c-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/0f1e715f65d7006c-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/0f1e715f65d7006c-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/0f1e715f65d7006c-pt.json"
     },
     {
       "slug": "components/message-queue",
@@ -307,8 +307,8 @@
       "titlePt": "Filas de Mensagens",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/9daf51ab49345f7a-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/9daf51ab49345f7a-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/9daf51ab49345f7a-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/9daf51ab49345f7a-pt.json"
     },
     {
       "slug": "components/cdn",
@@ -320,8 +320,8 @@
       "titlePt": "CDN (Content Delivery Network)",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/1384e841ae3a91e5-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/1384e841ae3a91e5-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/1384e841ae3a91e5-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/1384e841ae3a91e5-pt.json"
     },
     {
       "slug": "components/api-gateway",
@@ -333,8 +333,8 @@
       "titlePt": "API Gateway",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/d7d0b63fc08e3f38-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/d7d0b63fc08e3f38-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/d7d0b63fc08e3f38-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/d7d0b63fc08e3f38-pt.json"
     },
     {
       "slug": "components/firewall",
@@ -346,8 +346,8 @@
       "titlePt": "Firewall",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/2a4ad73d53c400c1-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/2a4ad73d53c400c1-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/2a4ad73d53c400c1-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/2a4ad73d53c400c1-pt.json"
     },
     {
       "slug": "components/polling-webhooks",
@@ -359,8 +359,8 @@
       "titlePt": "Polling vs Webhooks",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/d0ef9bbbe1d512ee-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/d0ef9bbbe1d512ee-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/d0ef9bbbe1d512ee-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/d0ef9bbbe1d512ee-pt.json"
     },
     {
       "slug": "components/vector-database",
@@ -372,8 +372,8 @@
       "titlePt": "Banco de Dados Vetorial",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/683692f64a8cfbda-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/683692f64a8cfbda-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/683692f64a8cfbda-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/683692f64a8cfbda-pt.json"
     },
     {
       "slug": "components/model-gateway",
@@ -385,8 +385,8 @@
       "titlePt": "Gateway de Modelos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/741206ed4ee3cb71-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/741206ed4ee3cb71-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/741206ed4ee3cb71-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/741206ed4ee3cb71-pt.json"
     },
     {
       "slug": "components/kafka-streaming",
@@ -398,8 +398,8 @@
       "titlePt": "Kafka e Streaming de Eventos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/7d2d963225e10bb7-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/7d2d963225e10bb7-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/7d2d963225e10bb7-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/7d2d963225e10bb7-pt.json"
     },
     {
       "slug": "components/dns",
@@ -411,8 +411,8 @@
       "titlePt": "DNS — A Lista Telefônica Distribuída",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/1e4b9d8b8ba9abdb-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/1e4b9d8b8ba9abdb-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/1e4b9d8b8ba9abdb-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/1e4b9d8b8ba9abdb-pt.json"
     },
     {
       "slug": "components/reverse-proxy",
@@ -424,8 +424,8 @@
       "titlePt": "Reverse Proxy",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/0676a187a80a3cd8-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/0676a187a80a3cd8-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/0676a187a80a3cd8-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/0676a187a80a3cd8-pt.json"
     },
     {
       "slug": "components/service-discovery",
@@ -437,8 +437,8 @@
       "titlePt": "Service Discovery",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/944f87691ae52998-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/944f87691ae52998-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/944f87691ae52998-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/944f87691ae52998-pt.json"
     },
     {
       "slug": "components/service-mesh",
@@ -450,8 +450,8 @@
       "titlePt": "Service Mesh",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/4c8c2c5219534665-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/4c8c2c5219534665-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/4c8c2c5219534665-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/4c8c2c5219534665-pt.json"
     },
     {
       "slug": "components/kubernetes",
@@ -463,8 +463,8 @@
       "titlePt": "Kubernetes",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/030143beb37cc06a-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/030143beb37cc06a-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/030143beb37cc06a-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/030143beb37cc06a-pt.json"
     },
     {
       "slug": "design-principles/index",
@@ -476,8 +476,8 @@
       "titlePt": "Princípios de Design",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/705e5a531025ab85-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/705e5a531025ab85-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/705e5a531025ab85-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/705e5a531025ab85-pt.json"
     },
     {
       "slug": "design-principles/event-driven",
@@ -489,8 +489,8 @@
       "titlePt": "Desenvolvimento Orientado a Eventos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/7ce02e854f24885d-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/7ce02e854f24885d-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/7ce02e854f24885d-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/7ce02e854f24885d-pt.json"
     },
     {
       "slug": "design-principles/coupling",
@@ -502,21 +502,8 @@
       "titlePt": "Acoplamento em Sistemas Distribuídos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/e5e2821da3e85873-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/e5e2821da3e85873-pt.json"
-    },
-    {
-      "slug": "design-principles/service-oriented",
-      "path": "/principios-design/servicos",
-      "moduleId": "design",
-      "orderIndex": 27,
-      "simulatorKey": "service-architecture",
-      "titleEn": "Service-Oriented Design",
-      "titlePt": "Design Orientado a Serviços",
-      "hasEn": true,
-      "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/acfea65e985d4ab1-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/acfea65e985d4ab1-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/e5e2821da3e85873-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/e5e2821da3e85873-pt.json"
     },
     {
       "slug": "design-principles/orchestration-vs-choreography",
@@ -528,8 +515,8 @@
       "titlePt": "Orquestração vs Coreografia",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/533029d39df2918c-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/533029d39df2918c-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/533029d39df2918c-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/533029d39df2918c-pt.json"
     },
     {
       "slug": "design-principles/canary-deployment",
@@ -541,8 +528,8 @@
       "titlePt": "Canary Deployment",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/1c19bf3d6252b36d-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/1c19bf3d6252b36d-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/1c19bf3d6252b36d-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/1c19bf3d6252b36d-pt.json"
     },
     {
       "slug": "design-principles/cqrs",
@@ -554,8 +541,8 @@
       "titlePt": "CQRS — Command Query Responsibility Segregation",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/a548057cc9caee56-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/a548057cc9caee56-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/a548057cc9caee56-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/a548057cc9caee56-pt.json"
     },
     {
       "slug": "design-principles/rate-limiting",
@@ -567,8 +554,8 @@
       "titlePt": "Rate Limiting",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/7abf40db9f52dc4a-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/7abf40db9f52dc4a-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/7abf40db9f52dc4a-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/7abf40db9f52dc4a-pt.json"
     },
     {
       "slug": "design-principles/backpressure",
@@ -580,8 +567,8 @@
       "titlePt": "Backpressure",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/0bc5f3ec4b4dc81a-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/0bc5f3ec4b4dc81a-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/0bc5f3ec4b4dc81a-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/0bc5f3ec4b4dc81a-pt.json"
     },
     {
       "slug": "design-principles/fault-tolerance",
@@ -593,8 +580,8 @@
       "titlePt": "Tolerância a Falhas",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/75047075e93d6a3f-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/75047075e93d6a3f-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/75047075e93d6a3f-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/75047075e93d6a3f-pt.json"
     },
     {
       "slug": "design-principles/retries",
@@ -606,8 +593,8 @@
       "titlePt": "Retries",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/e7deab36454736ed-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/e7deab36454736ed-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/e7deab36454736ed-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/e7deab36454736ed-pt.json"
     },
     {
       "slug": "design-principles/circuit-breaker",
@@ -619,8 +606,8 @@
       "titlePt": "Circuit Breaker (Disjuntor)",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/bc6d026b4adf54cd-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/bc6d026b4adf54cd-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/bc6d026b4adf54cd-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/bc6d026b4adf54cd-pt.json"
     },
     {
       "slug": "design-principles/timeout",
@@ -632,8 +619,8 @@
       "titlePt": "Timeout (Tempo Limite)",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/ae3565ac1818c49b-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/ae3565ac1818c49b-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/ae3565ac1818c49b-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/ae3565ac1818c49b-pt.json"
     },
     {
       "slug": "design-principles/fallback",
@@ -645,8 +632,8 @@
       "titlePt": "Fallback (Plano B)",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/826a0e8d89f8009e-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/826a0e8d89f8009e-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/826a0e8d89f8009e-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/826a0e8d89f8009e-pt.json"
     },
     {
       "slug": "design-principles/scalability",
@@ -658,8 +645,8 @@
       "titlePt": "Design para Escalabilidade",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/18dfff9c15f1a87d-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/18dfff9c15f1a87d-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/18dfff9c15f1a87d-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/18dfff9c15f1a87d-pt.json"
     },
     {
       "slug": "design-principles/horizontal-scaling",
@@ -671,8 +658,8 @@
       "titlePt": "Escalabilidade Horizontal (Scale-Out)",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/91cb55f5c270baed-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/91cb55f5c270baed-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/91cb55f5c270baed-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/91cb55f5c270baed-pt.json"
     },
     {
       "slug": "design-principles/vertical-scaling",
@@ -684,8 +671,8 @@
       "titlePt": "Escalabilidade Vertical (Scale-Up)",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/36cd9901e16a6df3-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/36cd9901e16a6df3-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/36cd9901e16a6df3-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/36cd9901e16a6df3-pt.json"
     },
     {
       "slug": "design-principles/data-consistency",
@@ -697,8 +684,8 @@
       "titlePt": "Consistência de Dados",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/ff4a1b50ecaa5b7b-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/ff4a1b50ecaa5b7b-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/ff4a1b50ecaa5b7b-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/ff4a1b50ecaa5b7b-pt.json"
     },
     {
       "slug": "design-principles/latency",
@@ -710,8 +697,8 @@
       "titlePt": "Latência",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/986a4bad880f38b9-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/986a4bad880f38b9-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/986a4bad880f38b9-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/986a4bad880f38b9-pt.json"
     },
     {
       "slug": "design-principles/failover",
@@ -723,8 +710,8 @@
       "titlePt": "Failover em Sistemas Distribuídos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/c246046753db7025-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/c246046753db7025-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/c246046753db7025-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/c246046753db7025-pt.json"
     },
     {
       "slug": "design-principles/availability",
@@ -736,8 +723,8 @@
       "titlePt": "Alta Disponibilidade",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/59485f8bc31a05d0-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/59485f8bc31a05d0-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/59485f8bc31a05d0-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/59485f8bc31a05d0-pt.json"
     },
     {
       "slug": "design-principles/replication",
@@ -749,8 +736,8 @@
       "titlePt": "Replicação em Sistemas Distribuídos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/7e730e21777ead15-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/7e730e21777ead15-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/7e730e21777ead15-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/7e730e21777ead15-pt.json"
     },
     {
       "slug": "design-principles/availability-zones",
@@ -762,8 +749,8 @@
       "titlePt": "Zonas de Disponibilidade",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/a254652b32bb7b53-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/a254652b32bb7b53-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/a254652b32bb7b53-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/a254652b32bb7b53-pt.json"
     },
     {
       "slug": "consistency-strategies/index",
@@ -775,8 +762,8 @@
       "titlePt": "Estratégias de Consistência",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/edcbfe690fb76853-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/edcbfe690fb76853-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/edcbfe690fb76853-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/edcbfe690fb76853-pt.json"
     },
     {
       "slug": "consistency-strategies/consensus",
@@ -788,8 +775,8 @@
       "titlePt": "Estratégias de Consenso",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/7c13946747727159-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/7c13946747727159-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/7c13946747727159-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/7c13946747727159-pt.json"
     },
     {
       "slug": "consistency-strategies/lamport-timestamps",
@@ -801,8 +788,8 @@
       "titlePt": "Relógios Lógicos de Lamport",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/7a1c45ca996be0bc-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/7a1c45ca996be0bc-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/7a1c45ca996be0bc-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/7a1c45ca996be0bc-pt.json"
     },
     {
       "slug": "consistency-strategies/two-phase-commit",
@@ -814,8 +801,8 @@
       "titlePt": "Two-Phase Commit (2PC)",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/5c6677c1b7445864-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/5c6677c1b7445864-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/5c6677c1b7445864-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/5c6677c1b7445864-pt.json"
     },
     {
       "slug": "consistency-strategies/synchronization",
@@ -827,8 +814,8 @@
       "titlePt": "Sincronização em Sistemas Distribuídos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/1e8742892661f010-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/1e8742892661f010-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/1e8742892661f010-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/1e8742892661f010-pt.json"
     },
     {
       "slug": "consistency-strategies/synchronization-fundamentals",
@@ -840,21 +827,21 @@
       "titlePt": "Fundamentos da Sincronização",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/722b956c71c92447-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/722b956c71c92447-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/722b956c71c92447-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/722b956c71c92447-pt.json"
     },
     {
       "slug": "consistency-strategies/synchronization-deadlocks",
       "path": "/estrategias-de-consistencia/sincronizacao/deadlocks",
       "moduleId": "consistency",
       "orderIndex": 53,
-      "simulatorKey": null,
+      "simulatorKey": "synchronization",
       "titleEn": "Deadlocks in Distributed Systems",
       "titlePt": "Deadlocks em Sistemas Distribuídos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/1d096c98cde6c2cd-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/1d096c98cde6c2cd-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/1d096c98cde6c2cd-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/1d096c98cde6c2cd-pt.json"
     },
     {
       "slug": "consistency-strategies/saga",
@@ -866,8 +853,8 @@
       "titlePt": "O Padrão Saga",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/af961bc54c803206-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/af961bc54c803206-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/af961bc54c803206-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/af961bc54c803206-pt.json"
     },
     {
       "slug": "consistency-strategies/delivery-semantics",
@@ -879,8 +866,8 @@
       "titlePt": "Semânticas de Entrega",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/d54098af363c3676-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/d54098af363c3676-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/d54098af363c3676-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/d54098af363c3676-pt.json"
     },
     {
       "slug": "consistency-strategies/vector-clocks",
@@ -892,8 +879,8 @@
       "titlePt": "Relógios Vetoriais",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/96d5a32d5ffcdaed-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/96d5a32d5ffcdaed-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/96d5a32d5ffcdaed-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/96d5a32d5ffcdaed-pt.json"
     },
     {
       "slug": "security/index",
@@ -905,8 +892,8 @@
       "titlePt": "Segurança em Sistemas Distribuídos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/b558e7bd9a72b5d3-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/b558e7bd9a72b5d3-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/b558e7bd9a72b5d3-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/b558e7bd9a72b5d3-pt.json"
     },
     {
       "slug": "security/authentication",
@@ -918,8 +905,8 @@
       "titlePt": "Autenticação em Sistemas Distribuídos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/c2ace50b1fef13dc-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/c2ace50b1fef13dc-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/c2ace50b1fef13dc-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/c2ace50b1fef13dc-pt.json"
     },
     {
       "slug": "security/authorization",
@@ -931,8 +918,8 @@
       "titlePt": "Autorização em Sistemas Distribuídos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/f437f4b4ac271577-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/f437f4b4ac271577-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/f437f4b4ac271577-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/f437f4b4ac271577-pt.json"
     },
     {
       "slug": "security/cryptography",
@@ -944,8 +931,8 @@
       "titlePt": "Criptografia em Sistemas Distribuídos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/fe57169fbc2e7689-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/fe57169fbc2e7689-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/fe57169fbc2e7689-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/fe57169fbc2e7689-pt.json"
     },
     {
       "slug": "security/tokens",
@@ -957,8 +944,8 @@
       "titlePt": "Tokens e JWT em Sistemas Distribuídos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/4deddb66b8ae5bec-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/4deddb66b8ae5bec-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/4deddb66b8ae5bec-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/4deddb66b8ae5bec-pt.json"
     },
     {
       "slug": "security/ssl-tls",
@@ -970,8 +957,8 @@
       "titlePt": "SSL/TLS em Sistemas Distribuídos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/08e67497382fd6de-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/08e67497382fd6de-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/08e67497382fd6de-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/08e67497382fd6de-pt.json"
     },
     {
       "slug": "security/common-attacks",
@@ -983,8 +970,8 @@
       "titlePt": "Ataques em Sistemas Distribuídos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/d6467114b02fe5f2-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/d6467114b02fe5f2-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/d6467114b02fe5f2-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/d6467114b02fe5f2-pt.json"
     },
     {
       "slug": "security/prompt-injection",
@@ -996,8 +983,8 @@
       "titlePt": "Prompt Injection e Guardrails de LLM",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/cd21a8fd3f439deb-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/cd21a8fd3f439deb-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/cd21a8fd3f439deb-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/cd21a8fd3f439deb-pt.json"
     },
     {
       "slug": "monitoring/index",
@@ -1009,8 +996,8 @@
       "titlePt": "Monitoramento e Manutenção de Sistemas Distribuídos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/ef2695c6aad9e7cb-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/ef2695c6aad9e7cb-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/ef2695c6aad9e7cb-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/ef2695c6aad9e7cb-pt.json"
     },
     {
       "slug": "monitoring/metrics",
@@ -1022,8 +1009,8 @@
       "titlePt": "Métricas e KPIs em Sistemas Distribuídos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/d80f68909ddbc227-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/d80f68909ddbc227-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/d80f68909ddbc227-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/d80f68909ddbc227-pt.json"
     },
     {
       "slug": "monitoring/logs",
@@ -1035,8 +1022,8 @@
       "titlePt": "Logs e Tracing em Sistemas Distribuídos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/99950bbd0d30ca20-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/99950bbd0d30ca20-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/99950bbd0d30ca20-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/99950bbd0d30ca20-pt.json"
     },
     {
       "slug": "monitoring/alerts",
@@ -1048,8 +1035,8 @@
       "titlePt": "Alertas e Notificações em Sistemas Distribuídos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/95e5e930fd5185ac-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/95e5e930fd5185ac-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/95e5e930fd5185ac-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/95e5e930fd5185ac-pt.json"
     },
     {
       "slug": "monitoring/performance",
@@ -1061,8 +1048,8 @@
       "titlePt": "Análise de Performance em Sistemas Distribuídos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/65459d78884d2acb-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/65459d78884d2acb-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/65459d78884d2acb-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/65459d78884d2acb-pt.json"
     },
     {
       "slug": "monitoring/health-checks",
@@ -1074,8 +1061,8 @@
       "titlePt": "Health Checks em Sistemas Distribuídos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/175147c0973de809-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/175147c0973de809-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/175147c0973de809-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/175147c0973de809-pt.json"
     },
     {
       "slug": "monitoring/llm-observability",
@@ -1087,8 +1074,8 @@
       "titlePt": "Observabilidade de LLM",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/bc4fe74147146f67-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/bc4fe74147146f67-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/bc4fe74147146f67-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/bc4fe74147146f67-pt.json"
     },
     {
       "slug": "monitoring/distributed-tracing",
@@ -1100,8 +1087,8 @@
       "titlePt": "Distributed Tracing",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/dbd109c3e81c0445-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/dbd109c3e81c0445-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/dbd109c3e81c0445-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/dbd109c3e81c0445-pt.json"
     },
     {
       "slug": "monitoring/slo-sli-sla",
@@ -1113,8 +1100,8 @@
       "titlePt": "SLO, SLI e Error Budgets",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/ac796067264c15b1-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/ac796067264c15b1-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/ac796067264c15b1-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/ac796067264c15b1-pt.json"
     },
     {
       "slug": "ai-systems/index",
@@ -1126,8 +1113,8 @@
       "titlePt": "Sistemas de IA e LLMs",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/6b57cda270edce9e-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/6b57cda270edce9e-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/6b57cda270edce9e-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/6b57cda270edce9e-pt.json"
     },
     {
       "slug": "monitoring/chaos-engineering",
@@ -1139,8 +1126,8 @@
       "titlePt": "Chaos Engineering",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/2fc5fd0ea900f430-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/2fc5fd0ea900f430-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/2fc5fd0ea900f430-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/2fc5fd0ea900f430-pt.json"
     },
     {
       "slug": "ai-systems/llm-serving-fundamentals",
@@ -1152,8 +1139,8 @@
       "titlePt": "Fundamentos de Serving de LLM",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/25ed2bc20df7e55a-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/25ed2bc20df7e55a-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/25ed2bc20df7e55a-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/25ed2bc20df7e55a-pt.json"
     },
     {
       "slug": "monitoring/disaster-recovery",
@@ -1165,8 +1152,8 @@
       "titlePt": "Disaster Recovery & Backups",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/2d781c7ca3b12ca7-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/2d781c7ca3b12ca7-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/2d781c7ca3b12ca7-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/2d781c7ca3b12ca7-pt.json"
     },
     {
       "slug": "ai-systems/rag",
@@ -1178,8 +1165,8 @@
       "titlePt": "Geração Aumentada por Recuperação (RAG)",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/5585f1c0013d2409-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/5585f1c0013d2409-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/5585f1c0013d2409-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/5585f1c0013d2409-pt.json"
     },
     {
       "slug": "monitoring/multi-region",
@@ -1191,8 +1178,8 @@
       "titlePt": "Multi-Região & Geo-Replicação",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/dda3fd0c4a3f9e9c-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/dda3fd0c4a3f9e9c-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/dda3fd0c4a3f9e9c-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/dda3fd0c4a3f9e9c-pt.json"
     },
     {
       "slug": "ai-systems/vector-search",
@@ -1204,8 +1191,8 @@
       "titlePt": "Busca Vetorial",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/a0f9b257e8ece22b-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/a0f9b257e8ece22b-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/a0f9b257e8ece22b-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/a0f9b257e8ece22b-pt.json"
     },
     {
       "slug": "ai-systems/llm-gateway",
@@ -1217,8 +1204,8 @@
       "titlePt": "Gateway de LLM",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/7fbf63816d0f3c0d-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/7fbf63816d0f3c0d-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/7fbf63816d0f3c0d-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/7fbf63816d0f3c0d-pt.json"
     },
     {
       "slug": "ai-systems/gpu-autoscaling",
@@ -1230,8 +1217,8 @@
       "titlePt": "Serving de GPU e Autoescalonamento",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/9b3343b808ac44b9-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/9b3343b808ac44b9-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/9b3343b808ac44b9-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/9b3343b808ac44b9-pt.json"
     },
     {
       "slug": "ai-systems/agentic-systems",
@@ -1243,8 +1230,8 @@
       "titlePt": "Sistemas com Agentes",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/c39302a689e12a01-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/c39302a689e12a01-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/c39302a689e12a01-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/c39302a689e12a01-pt.json"
     },
     {
       "slug": "data-storage/index",
@@ -1256,8 +1243,8 @@
       "titlePt": "Dados e Armazenamento",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/bc095e93ce011f2f-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/bc095e93ce011f2f-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/bc095e93ce011f2f-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/bc095e93ce011f2f-pt.json"
     },
     {
       "slug": "data-storage/consistent-hashing",
@@ -1269,8 +1256,8 @@
       "titlePt": "Consistent Hashing",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/d43c41922e19718e-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/d43c41922e19718e-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/d43c41922e19718e-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/d43c41922e19718e-pt.json"
     },
     {
       "slug": "data-storage/sharding-partitioning",
@@ -1282,8 +1269,8 @@
       "titlePt": "Sharding e Particionamento",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/62a11804e0fb1a44-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/62a11804e0fb1a44-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/62a11804e0fb1a44-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/62a11804e0fb1a44-pt.json"
     },
     {
       "slug": "data-storage/object-storage",
@@ -1295,8 +1282,8 @@
       "titlePt": "Object & Blob Storage",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/9f227fefb43cd394-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/9f227fefb43cd394-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/9f227fefb43cd394-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/9f227fefb43cd394-pt.json"
     },
     {
       "slug": "data-storage/distributed-file-systems",
@@ -1308,8 +1295,8 @@
       "titlePt": "Sistemas de Arquivos Distribuídos",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/3a7ded8fbb18a979-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/3a7ded8fbb18a979-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/3a7ded8fbb18a979-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/3a7ded8fbb18a979-pt.json"
     },
     {
       "slug": "data-storage/search-inverted-index",
@@ -1321,8 +1308,8 @@
       "titlePt": "Busca e o Índice Invertido",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/68b35bcabb200b16-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/68b35bcabb200b16-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/68b35bcabb200b16-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/68b35bcabb200b16-pt.json"
     },
     {
       "slug": "real-cases/index",
@@ -1334,8 +1321,8 @@
       "titlePt": "Aprenda com os Gigantes",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/2812b290f8a8f6e4-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/2812b290f8a8f6e4-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/2812b290f8a8f6e4-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/2812b290f8a8f6e4-pt.json"
     },
     {
       "slug": "real-cases/youtube",
@@ -1347,8 +1334,8 @@
       "titlePt": "YouTube System Design",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/26018f3c6a2743c3-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/26018f3c6a2743c3-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/26018f3c6a2743c3-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/26018f3c6a2743c3-pt.json"
     },
     {
       "slug": "real-cases/spotify",
@@ -1360,8 +1347,8 @@
       "titlePt": "Spotify System Design",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/b0677fcd4435435c-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/b0677fcd4435435c-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/b0677fcd4435435c-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/b0677fcd4435435c-pt.json"
     },
     {
       "slug": "real-cases/whatsapp",
@@ -1373,8 +1360,8 @@
       "titlePt": "WhatsApp System Design",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/90c76b2d6cd636ee-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/90c76b2d6cd636ee-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/90c76b2d6cd636ee-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/90c76b2d6cd636ee-pt.json"
     },
     {
       "slug": "real-cases/bitly",
@@ -1386,8 +1373,8 @@
       "titlePt": "Bit.ly System Design",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/0ea98a678e20b1b0-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/0ea98a678e20b1b0-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/0ea98a678e20b1b0-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/0ea98a678e20b1b0-pt.json"
     },
     {
       "slug": "real-cases/netflix",
@@ -1399,8 +1386,8 @@
       "titlePt": "Netflix System Design",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/911a82377665f3b3-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/911a82377665f3b3-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/911a82377665f3b3-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/911a82377665f3b3-pt.json"
     },
     {
       "slug": "real-cases/uber",
@@ -1412,8 +1399,8 @@
       "titlePt": "Uber System Design",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/8c02497b0f1ef0cc-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/8c02497b0f1ef0cc-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/8c02497b0f1ef0cc-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/8c02497b0f1ef0cc-pt.json"
     },
     {
       "slug": "real-cases/chatgpt",
@@ -1425,8 +1412,8 @@
       "titlePt": "System Design do ChatGPT",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/345dee3feb87cf63-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/345dee3feb87cf63-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/345dee3feb87cf63-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/345dee3feb87cf63-pt.json"
     },
     {
       "slug": "real-cases/perplexity",
@@ -1438,8 +1425,8 @@
       "titlePt": "System Design do Perplexity",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/8eb849dea9d57c4d-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/8eb849dea9d57c4d-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/8eb849dea9d57c4d-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/8eb849dea9d57c4d-pt.json"
     },
     {
       "slug": "real-cases/github-copilot",
@@ -1451,8 +1438,8 @@
       "titlePt": "System Design do GitHub Copilot",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/2f93d60d8817c5bb-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/2f93d60d8817c5bb-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/2f93d60d8817c5bb-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/2f93d60d8817c5bb-pt.json"
     },
     {
       "slug": "data-storage/storage-engines",
@@ -1464,8 +1451,8 @@
       "titlePt": "Engines de Armazenamento: B-Tree vs LSM-Tree",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/7d38ae47fe135868-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/7d38ae47fe135868-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/7d38ae47fe135868-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/7d38ae47fe135868-pt.json"
     },
     {
       "slug": "data-storage/bloom-filters",
@@ -1477,8 +1464,8 @@
       "titlePt": "Bloom Filters",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/7093b0bfa1571d3b-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/7093b0bfa1571d3b-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/7093b0bfa1571d3b-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/7093b0bfa1571d3b-pt.json"
     },
     {
       "slug": "data-storage/replication-quorums",
@@ -1490,8 +1477,8 @@
       "titlePt": "Modelos de Replicação e Quóruns",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/6b6de99fdbe231f2-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/6b6de99fdbe231f2-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/6b6de99fdbe231f2-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/6b6de99fdbe231f2-pt.json"
     },
     {
       "slug": "data-storage/change-data-capture",
@@ -1503,8 +1490,8 @@
       "titlePt": "Change Data Capture (CDC)",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/7d36122e0e729513-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/7d36122e0e729513-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/7d36122e0e729513-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/7d36122e0e729513-pt.json"
     },
     {
       "slug": "data-storage/oltp-olap",
@@ -1516,8 +1503,8 @@
       "titlePt": "OLTP vs OLAP, Warehouses e Lakes",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/769fe362d6698678-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/769fe362d6698678-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/769fe362d6698678-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/769fe362d6698678-pt.json"
     },
     {
       "slug": "data-storage/time-series-databases",
@@ -1529,8 +1516,8 @@
       "titlePt": "Bancos de Séries Temporais",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/8b35ef2f7acf4a80-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/8b35ef2f7acf4a80-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/8b35ef2f7acf4a80-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/8b35ef2f7acf4a80-pt.json"
     },
     {
       "slug": "components/api-styles",
@@ -1542,8 +1529,8 @@
       "titlePt": "Estilos de API: REST, gRPC e GraphQL",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/14ec5f496741eb11-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/14ec5f496741eb11-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/14ec5f496741eb11-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/14ec5f496741eb11-pt.json"
     },
     {
       "slug": "components/realtime-push",
@@ -1555,8 +1542,8 @@
       "titlePt": "WebSockets e Push em Tempo Real",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/376e0aae6851810e-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/376e0aae6851810e-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/376e0aae6851810e-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/376e0aae6851810e-pt.json"
     },
     {
       "slug": "components/dead-letter-queue",
@@ -1568,8 +1555,8 @@
       "titlePt": "Dead Letter Queues",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/4bab0c16be5396df-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/4bab0c16be5396df-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/4bab0c16be5396df-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/4bab0c16be5396df-pt.json"
     },
     {
       "slug": "components/stream-processing",
@@ -1581,8 +1568,8 @@
       "titlePt": "Processamento de Streams",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/9dbb5598f107440a-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/9dbb5598f107440a-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/9dbb5598f107440a-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/9dbb5598f107440a-pt.json"
     },
     {
       "slug": "consistency-strategies/crdts",
@@ -1594,8 +1581,8 @@
       "titlePt": "CRDTs (Tipos de Dados Replicados Sem Conflito)",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/9686458390558840-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/9686458390558840-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/9686458390558840-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/9686458390558840-pt.json"
     },
     {
       "slug": "consistency-strategies/gossip",
@@ -1607,8 +1594,8 @@
       "titlePt": "Protocolos de Gossip e Anti-Entropia",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/4150182a7f0adb84-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/4150182a7f0adb84-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/4150182a7f0adb84-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/4150182a7f0adb84-pt.json"
     },
     {
       "slug": "consistency-strategies/distributed-locks",
@@ -1620,8 +1607,8 @@
       "titlePt": "Locks Distribuídos, Leases e Fencing Tokens",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/76cecad582ba4bda-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/76cecad582ba4bda-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/76cecad582ba4bda-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/76cecad582ba4bda-pt.json"
     },
     {
       "slug": "design-principles/event-sourcing",
@@ -1633,8 +1620,8 @@
       "titlePt": "Event Sourcing",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/ed86609679caed09-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/ed86609679caed09-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/ed86609679caed09-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/ed86609679caed09-pt.json"
     },
     {
       "slug": "design-principles/outbox",
@@ -1646,8 +1633,8 @@
       "titlePt": "Transactional Outbox",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/876134c782569580-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/876134c782569580-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/876134c782569580-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/876134c782569580-pt.json"
     },
     {
       "slug": "design-principles/bulkhead",
@@ -1659,8 +1646,8 @@
       "titlePt": "O Padrão Bulkhead",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/374b6fd652396500-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/374b6fd652396500-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/374b6fd652396500-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/374b6fd652396500-pt.json"
     },
     {
       "slug": "design-principles/blue-green",
@@ -1672,8 +1659,8 @@
       "titlePt": "Deploy Blue-Green",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/3197523a5bdf0408-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/3197523a5bdf0408-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/3197523a5bdf0408-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/3197523a5bdf0408-pt.json"
     },
     {
       "slug": "design-principles/feature-flags",
@@ -1685,8 +1672,8 @@
       "titlePt": "Feature Flags",
       "hasEn": true,
       "hasPt": true,
-      "bodyEnUrl": "/content/5c12ac9990db541f/pages/7a001127fc805ed4-en.json",
-      "bodyPtUrl": "/content/5c12ac9990db541f/pages/7a001127fc805ed4-pt.json"
+      "bodyEnUrl": "/content/1b4111184d5e51f5/pages/7a001127fc805ed4-en.json",
+      "bodyPtUrl": "/content/1b4111184d5e51f5/pages/7a001127fc805ed4-pt.json"
     }
   ]
 }

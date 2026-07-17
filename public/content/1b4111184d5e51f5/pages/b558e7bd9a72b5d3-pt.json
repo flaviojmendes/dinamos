@@ -1,0 +1,8 @@
+{
+  "slug": "security/index",
+  "path": "/seguranca",
+  "lang": "pt",
+  "title": "Segurança em Sistemas Distribuídos",
+  "simulator_key": null,
+  "body": "# Segurança em Sistemas Distribuídos\n\nExplore os principais conceitos e práticas de segurança em sistemas distribuídos\n\n<Callout type=\"info\">\n\nA segurança é um aspecto crítico em sistemas distribuídos. Entenda os principais desafios e soluções para proteger seus sistemas.\n\n</Callout>\n\n<Cards cols={2}>\n\n<Card emoji=\"🔑\" title=\"Autenticação\" accent=\"purple\">\n\nAprenda como verificar a identidade dos usuários e sistemas de forma segura e escalável.\n\n- Identidade\n- Segurança\n\n</Card>\n\n<Card emoji=\"🛡️\" title=\"Autorização\" accent=\"green\">\n\nDescubra como implementar controle de acesso granular e gerenciar permissões.\n\n- Permissões\n- Controle\n\n</Card>\n\n<Card emoji=\"🔒\" title=\"Criptografia\" accent=\"yellow\">\n\nEntenda como proteger dados em trânsito e em repouso usando criptografia.\n\n- Proteção\n- Privacidade\n\n</Card>\n\n<Card emoji=\"🎫\" title=\"Tokens e JWT\" accent=\"brand\">\n\nAprenda sobre gerenciamento de sessões e tokens de acesso em sistemas distribuídos.\n\n- Sessões\n- Stateless\n\n</Card>\n\n<Card emoji=\"🔐\" title=\"SSL/TLS\" accent=\"green\">\n\nExplore como estabelecer comunicação segura entre sistemas usando SSL/TLS.\n\n- HTTPS\n- Certificados\n\n</Card>\n\n<Card emoji=\"⚠️\" title=\"Ataques Comuns\" accent=\"red\">\n\nConheça os ataques mais comuns e aprenda como proteger seus sistemas.\n\n- Prevenção\n- Mitigação\n\n</Card>\n\n</Cards>\n"
+}

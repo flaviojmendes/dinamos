@@ -1,0 +1,8 @@
+{
+  "slug": "design-principles/latency",
+  "path": "/principios-design/escalabilidade/latencia",
+  "lang": "en",
+  "title": "Latency",
+  "simulator_key": null,
+  "body": "# Latency\n\nLatency is the delay in delivering data or responses within a system. In distributed systems, especially those across multiple regions, latency can increase due to physical distance or communication complexity.\n\n## The Impact of Latency\n\nLatency can significantly affect user experience and overall system performance. Even small delays may have a large impact on user satisfaction and business metrics.\n\n<Callout type=\"neutral\" title=\"Exemplo\">\n\nA user in Ireland accessing servers in the US may experience delays due to geographic distance and network hops.\n\n</Callout>\n\n## Types of Latency\n\n- **Network Latency**: Time required for a data packet to travel between two points on the network.\n- **Processing Latency**: Time the system takes to process a request and produce a response.\n- **Storage Latency**: Time required to read or write data in a storage system.\n\n## Optimization Strategies\n\n- **CDN**: Use content delivery networks to bring data closer to users.\n- **Caching**: Store frequently accessed data closer to the user.\n- **Edge Computing**: Process data near the source to reduce delay.\n\n## Best Practices\n\n- **Monitoring**: Implement detailed metrics to identify and resolve latency bottlenecks.\n- **Code Optimization**: Keep code efficient to minimize processing time.\n- **Geographic Distribution**: Distribute resources in different regions to serve users locally.\n\n[Explore Scalability Simulator](/principios-design/escalabilidade/simulator)\n"
+}

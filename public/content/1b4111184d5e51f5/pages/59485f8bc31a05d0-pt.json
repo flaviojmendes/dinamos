@@ -1,0 +1,8 @@
+{
+  "slug": "design-principles/availability",
+  "path": "/principios-design/disponibilidade",
+  "lang": "pt",
+  "title": "Alta Disponibilidade",
+  "simulator_key": null,
+  "body": "# Alta Disponibilidade\n\nAlta disponibilidade é a capacidade de um sistema manter-se operacional e acessível mesmo em situações de falha, garantindo continuidade do serviço por meio de redundância e recuperação automática.\n\n<Cards cols={3}>\n\n<Card title=\"Replicação\" accent=\"brand\">\n\nMantenha cópias sincronizadas de dados/serviços para redundância e distribuição de carga.\n\n[Replicação](/principios-design/disponibilidade/replicacao)\n\n</Card>\n\n<Card title=\"Failover\" accent=\"brand\">\n\nMecanismos automáticos de recuperação que detectam falhas e redirecionam tráfego.\n\n[Failover](/principios-design/disponibilidade/failover)\n\n</Card>\n\n<Card title=\"Zonas de Disponibilidade\" accent=\"brand\">\n\nDistribua a aplicação em várias zonas para proteger contra falhas localizadas.\n\n[Zonas de Disponibilidade](/principios-design/disponibilidade/zonas)\n\n</Card>\n\n</Cards>\n\n[Explorar Simulador de Alta Disponibilidade](/principios-design/disponibilidade/zonas/simulator)\n"
+}

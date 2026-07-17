@@ -1,0 +1,8 @@
+{
+  "slug": "design-principles/vertical-scaling",
+  "path": "/principios-design/escalabilidade/vertical",
+  "lang": "en",
+  "title": "Vertical Scalability (Scale-Up)",
+  "simulator_key": "vertical-scaling",
+  "body": "# Vertical Scalability (Scale-Up)\n\nA strategy that improves the performance of a single server by adding more resources such as RAM, storage, or faster processors.\n\n## How It Works\n\nIt is like replacing a small car with a bigger one to carry more passengers. While simple to implement, it has a physical limit: a server can only be upgraded up to a point before reaching maximum capacity.\n\n<Callout type=\"neutral\" title=\"Practical Example\">\n\nAn online store initially using a basic server upgrades to a more powerful one due to increased traffic. This solves the problem in the short term, but as visitors continue to grow, this approach may no longer suffice.\n\n</Callout>\n\n## Advantages\n\n- **Simplicity**: Easy to implement and manage\n- **Lower Complexity**: No changes to system architecture\n- **Quick Solution**: Ideal for immediate performance issues\n\n## Limitations\n\n- **Physical Limit**: There is a maximum to how much a single server can be improved\n- **Cost**: More powerful hardware generally costs exponentially more\n- **Single Point of Failure**: If the server fails, the entire system is down\n\n## When to Use\n\n- **Small Applications**: Moderate traffic and predictable growth\n- **Temporary Solution**: Quick fix for performance problems\n- **Monolithic Systems**: Apps not designed for distribution\n\n[Explore Scalability Simulator](/principios-design/escalabilidade/simulator)\n"
+}

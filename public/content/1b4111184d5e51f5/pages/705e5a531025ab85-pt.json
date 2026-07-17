@@ -1,0 +1,8 @@
+{
+  "slug": "design-principles/index",
+  "path": "/principios-design",
+  "lang": "pt",
+  "title": "Princípios de Design",
+  "simulator_key": null,
+  "body": "# Princípios de Design\n\nExplore os princípios fundamentais que orientam a criação de sistemas distribuídos\n\n<Callout type=\"info\">\n\nCada princípio aborda aspectos cruciais do design de sistemas distribuídos modernos. Entenda como aplicá-los para criar sistemas escaláveis e resilientes.\n\n</Callout>\n\n<Cards cols={2}>\n\n<Card emoji=\"🔽\" title=\"Desenvolvimento Orientado a Eventos\" accent=\"purple\">\n\nEvent Sourcing e sistemas de eventos distribuídos.\n\n[Desenvolvimento Orientado a Eventos](/principios-design/eventos)\n\n- Eventos\n- Assíncrono\n\n</Card>\n\n<Card emoji=\"🧩\" title=\"Design Orientado a Serviços\" accent=\"green\">\n\nMicrosserviços vs Arquitetura Monolítica.\n\n[Design Orientado a Serviços](/principios-design/servicos)\n\n- Serviços\n- Arquitetura\n\n</Card>\n\n<Card emoji=\"⚠️\" title=\"Tolerância a Falhas\" accent=\"yellow\">\n\nRetries, Circuit Breakers, Timeout e Fallback.\n\n[Tolerância a Falhas](/principios-design/tolerancia-falhas)\n\n- Resiliência\n- Recuperação\n\n</Card>\n\n<Card emoji=\"📈\" title=\"Design para Escalabilidade\" accent=\"red\">\n\nEscalabilidade horizontal e vertical.\n\n[Design para Escalabilidade](/principios-design/escalabilidade)\n\n- Crescimento\n- Performance\n\n</Card>\n\n<Card emoji=\"✅\" title=\"Alta Disponibilidade\" accent=\"brand\">\n\nZonas de disponibilidade e replicação.\n\n[Alta Disponibilidade](/principios-design/disponibilidade)\n\n- Uptime\n- Replicação\n\n</Card>\n\n</Cards>\n"
+}

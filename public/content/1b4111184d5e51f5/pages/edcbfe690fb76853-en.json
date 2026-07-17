@@ -1,0 +1,8 @@
+{
+  "slug": "consistency-strategies/index",
+  "path": "/estrategias-de-consistencia",
+  "lang": "en",
+  "title": "Consistency Strategies",
+  "simulator_key": null,
+  "body": "# Consistency Strategies\n\nExplore different mechanisms to ensure consistency in distributed systems\n\n<Callout type=\"info\">\n\nConsistency is one of the main challenges in distributed systems. Learn how different strategies help keep data ordered and coherent.\n\n</Callout>\n\n<Cards cols={2}>\n\n<Card title=\"Two-Phase Commit\" accent=\"brand\">\n\nEnsure consistency in distributed transactions using the Two-Phase Commit (2PC) protocol.\n\n[Two-Phase Commit](/estrategias-de-consistencia/two-phase-commit)\n\n</Card>\n\n<Card title=\"Consensus Strategy\" accent=\"purple\">\n\nUnderstand how distributed systems reach agreement in critical decisions using consensus protocols.\n\n[Consensus Strategy](/estrategias-de-consistencia/consenso)\n\n</Card>\n\n<Card title=\"Lamport Logical Clocks\" accent=\"brand\">\n\nLearn how Lamport timestamps order distributed events and maintain causal consistency.\n\n[Lamport Logical Clocks](/estrategias-de-consistencia/lamport-timestamps)\n\n</Card>\n\n</Cards>\n\n## Coming Soon\n\nMore consistency strategies will be added soon, including:\n\n- Vector Clocks\n- Eventual Consistency\n"
+}

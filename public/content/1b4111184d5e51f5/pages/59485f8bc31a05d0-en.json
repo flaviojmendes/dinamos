@@ -1,0 +1,8 @@
+{
+  "slug": "design-principles/availability",
+  "path": "/principios-design/disponibilidade",
+  "lang": "en",
+  "title": "High Availability",
+  "simulator_key": null,
+  "body": "# High Availability\n\nHigh availability is a system's ability to remain operational and accessible even under failures, ensuring service continuity through redundancy and automatic recovery.\n\n<Cards cols={3}>\n\n<Card title=\"Replication\" accent=\"brand\">\n\nKeep synchronized copies of data/services across servers to ensure redundancy and load distribution.\n\n[Replication](/principios-design/disponibilidade/replicacao)\n\n</Card>\n\n<Card title=\"Failover\" accent=\"brand\">\n\nAutomatic recovery mechanisms that detect failures and redirect traffic to backup systems.\n\n[Failover](/principios-design/disponibilidade/failover)\n\n</Card>\n\n<Card title=\"Availability Zones\" accent=\"brand\">\n\nDeploy across multiple zones to protect against localized infrastructure failures.\n\n[Availability Zones](/principios-design/disponibilidade/zonas)\n\n</Card>\n\n</Cards>\n\n[Explore High Availability Simulator](/principios-design/disponibilidade/zonas/simulator)\n"
+}

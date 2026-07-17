@@ -1,0 +1,8 @@
+{
+  "slug": "components/firewall",
+  "path": "/componentes/firewall",
+  "lang": "en",
+  "title": "Firewall",
+  "simulator_key": "firewall",
+  "body": "# Firewall\n\n## What is a Firewall?\n\nA Firewall is an essential security component that monitors and controls network traffic based on predefined rules. It acts as a barrier between a trusted network and untrusted networks (such as the Internet), protecting against unauthorized access and cyber threats.\n\n## Main Features\n\n### Packet Filtering\n\nAnalyzes and filters network packets based on predefined rules such as IP addresses, ports, and protocols.\n\n### Stateful Inspection\n\nKeeps track of the state of active connections and makes decisions based on the communication context.\n\n### Intrusion Prevention\n\nDetects and blocks attack attempts and malicious behavior on the network.\n\n## Types of Firewall\n\n### Network Firewall\n\nOperates at the network layer, filtering packets based on IP addresses and ports.\n\n### Application Firewall\n\nAnalyzes traffic at the application level, offering more granular and specific protection.\n\n<Callout type=\"neutral\" title=\"Example:\">\n\nConfigure a firewall to allow only HTTPS traffic (port 443) to a web server, blocking all other ports.\n\n</Callout>\n\n<Callout type=\"info\" title=\"Interactive Simulator\">\n\nTry our interactive Firewall simulation to understand how security rules affect network traffic.\n\n[Access Simulator](/componentes/firewall/simulator)\n\n</Callout>\n"
+}

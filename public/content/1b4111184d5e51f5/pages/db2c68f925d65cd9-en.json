@@ -1,0 +1,8 @@
+{
+  "slug": "components/index",
+  "path": "/componentes",
+  "lang": "en",
+  "title": "Basic Components",
+  "simulator_key": null,
+  "body": "# Basic Components\n\nExplore the fundamental building blocks of distributed systems\n\n<Callout type=\"info\">\n\nEach component plays a specific role in building distributed systems. Understand their characteristics, advantages, and challenges.\n\n</Callout>\n\n<Cards cols={2}>\n\n<Card emoji=\"🗄️\" title=\"Databases\" accent=\"green\">\n\n[Data storage and management in distributed systems.](/componentes/banco-dados)\n\n- Persistence\n- Data\n\n</Card>\n\n<Card emoji=\"⚡\" title=\"Cache\" accent=\"yellow\">\n\n[Temporary storage to improve performance and reduce latency.](/componentes/cache)\n\n- Performance\n- Speed\n\n</Card>\n\n<Card emoji=\"🔀\" title=\"Load Balancer\" accent=\"purple\">\n\n[Intelligent traffic distribution across multiple servers.](/componentes/load-balancer)\n\n- Distribution\n- Scalability\n\n</Card>\n\n<Card emoji=\"📨\" title=\"Message Queues\" accent=\"brand\">\n\n[Asynchronous and decoupled communication between services.](/componentes/message-queue)\n\n- Asynchronous\n- Messaging\n\n</Card>\n\n<Card emoji=\"🌐\" title=\"CDN\" accent=\"red\">\n\n[Global content distribution for better performance.](/componentes/cdn)\n\n- Global\n- Content\n\n</Card>\n\n<Card emoji=\"🛡️\" title=\"API Gateway\" accent=\"slate\">\n\n[Single entry point for API management.](/componentes/api-gateway)\n\n- Routing\n- Security\n\n</Card>\n\n<Card emoji=\"🔥\" title=\"Firewall\" accent=\"yellow\">\n\n[Traffic protection and control in distributed systems.](/componentes/firewall)\n\n- Security\n- Control\n\n</Card>\n\n</Cards>\n"
+}
