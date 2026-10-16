@@ -8,12 +8,12 @@ interface FieldProps {
   children?: React.ReactNode;
 }
 
-/** Uppercase muted label stacked over a mono value (MISSION NAME / MISSION ID). */
+/** Muted label stacked over a readable value. */
 export function Field({ label, value, className, children }: FieldProps) {
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
       <span className="label-mono">{label}</span>
-      <div className="font-mono text-sm text-slate-900 dark:text-tactical-text">
+      <div className="font-sans text-sm tabular-nums text-slate-900 dark:text-tactical-text">
         {children ?? value ?? '-'}
       </div>
     </div>

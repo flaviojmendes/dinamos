@@ -86,7 +86,7 @@ export const CookiePreferences: React.FC<CookiePreferencesProps> = ({ onSave }) 
   if (!consent) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="text-slate-500 dark:text-slate-400">Loading preferences...</div>
+        <div className="text-slate-500 dark:text-tactical-label">Loading preferences...</div>
       </div>
     );
   }
@@ -146,12 +146,12 @@ export const CookiePreferences: React.FC<CookiePreferencesProps> = ({ onSave }) 
       transition={{ duration: 0.3 }}
       className="max-w-4xl mx-auto"
     >
-      <div className="bg-white dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200 dark:border-slate-800/50 rounded-xl p-6">
+      <div className="bg-white dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-xl p-6">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold text-white mb-2">
+          <h2 className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-tactical-text mb-2">
             {t('cookies.preferences.title')}
           </h2>
-          <p className="text-slate-600 dark:text-slate-300">
+          <p className="text-slate-600 dark:text-tactical-dim">
             Manage your cookie preferences and control how we collect and use data on our website.
           </p>
         </div>
@@ -160,26 +160,26 @@ export const CookiePreferences: React.FC<CookiePreferencesProps> = ({ onSave }) 
           {cookieTypes.map((type) => (
             <div 
               key={type.key}
-              className="flex items-start gap-4 p-6 bg-slate-100 dark:bg-slate-800/50 rounded-lg border border-slate-300 dark:border-slate-700/50"
+              className="flex items-start gap-4 p-6 bg-slate-100 dark:bg-tactical-raised rounded-lg border border-slate-300 dark:border-tactical-border"
             >
-              <div className="flex-shrink-0 p-3 bg-zinc-700/50 rounded-lg text-slate-600 dark:text-slate-300">
+              <div className="flex-shrink-0 p-3 bg-slate-200 dark:bg-tactical-surface rounded-lg text-slate-600 dark:text-tactical-dim">
                 {type.icon}
               </div>
               
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-semibold text-white">
+                  <h3 className="font-display text-lg font-semibold tracking-tight text-slate-900 dark:text-tactical-text">
                     {type.title}
                   </h3>
                   {type.required ? (
-                    <div className="px-3 py-1 bg-green-600/20 border border-green-600/50 rounded-full">
-                      <span className="text-green-400 text-sm font-medium">Required</span>
+                    <div className="px-3 py-1 bg-emerald-50 dark:bg-signal-green/10 border border-emerald-200 dark:border-signal-green/30 rounded-md">
+                      <span className="text-emerald-700 dark:text-signal-green text-sm font-medium">Required</span>
                     </div>
                   ) : (
                     <button
                       onClick={() => handleToggle(type.key)}
                       className={`w-12 h-6 rounded-full flex items-center transition-colors ${
-                        consent[type.key] ? 'bg-blue-600' : 'bg-zinc-600'
+                        consent[type.key] ? 'bg-brand-600 dark:bg-brand-300' : 'bg-slate-300 dark:bg-tactical-line'
                       }`}
                     >
                       <div className={`w-5 h-5 bg-white rounded-full transition-transform ${
@@ -188,7 +188,7 @@ export const CookiePreferences: React.FC<CookiePreferencesProps> = ({ onSave }) 
                     </button>
                   )}
                 </div>
-                <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+                <p className="text-slate-600 dark:text-tactical-dim text-sm leading-relaxed">
                   {type.description}
                 </p>
               </div>
@@ -196,15 +196,15 @@ export const CookiePreferences: React.FC<CookiePreferencesProps> = ({ onSave }) 
           ))}
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-between items-center pt-6 border-t border-slate-300 dark:border-slate-700/50">
-          <div className="text-sm text-slate-500 dark:text-slate-400">
+        <div className="flex flex-col sm:flex-row gap-4 justify-between items-center pt-6 border-t border-slate-300 dark:border-tactical-border">
+          <div className="text-sm text-slate-500 dark:text-tactical-label">
             Last updated: {new Date(consent.timestamp).toLocaleDateString()}
           </div>
           
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={handleRejectAll}
-              className="px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:text-white border border-zinc-600 hover:border-zinc-500 rounded-lg transition-colors"
+              className="px-4 py-2 text-sm text-slate-700 dark:text-tactical-dim hover:text-brand-700 dark:hover:text-brand-300 border border-slate-300 dark:border-tactical-line hover:border-brand-500 dark:hover:border-brand-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 rounded-lg transition-colors"
             >
               {t('cookies.preferences.reject')}
             </button>
@@ -214,8 +214,8 @@ export const CookiePreferences: React.FC<CookiePreferencesProps> = ({ onSave }) 
               disabled={!hasChanges}
               className={`px-6 py-2 text-sm rounded-lg transition-colors ${
                 hasChanges
-                  ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                  : 'bg-zinc-700 text-slate-500 dark:text-slate-400 cursor-not-allowed'
+                  ? 'bg-brand-600 hover:bg-brand-700 text-white dark:bg-brand-300 dark:text-tactical-bg dark:hover:bg-brand-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500'
+                  : 'bg-slate-100 dark:bg-tactical-raised text-slate-500 dark:text-tactical-label cursor-not-allowed'
               }`}
             >
               {t('cookies.preferences.save')}
@@ -223,33 +223,33 @@ export const CookiePreferences: React.FC<CookiePreferencesProps> = ({ onSave }) 
             
             <button
               onClick={handleAcceptAll}
-              className="px-6 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+              className="px-6 py-2 text-sm bg-brand-600 hover:bg-brand-700 text-white dark:bg-brand-300 dark:text-tactical-bg dark:hover:bg-brand-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 rounded-lg transition-colors"
             >
               {t('cookies.preferences.accept')}
             </button>
           </div>
         </div>
 
-        <div className="mt-6 pt-6 border-t border-slate-300 dark:border-slate-700/50">
-          <p className="text-xs text-slate-500 dark:text-slate-400 text-center">
+        <div className="mt-6 pt-6 border-t border-slate-300 dark:border-tactical-border">
+          <p className="text-xs text-slate-500 dark:text-tactical-label text-center">
             {t('cookies.policy.text')}{' '}
             <a 
               href="/terms-and-conditions" 
-              className="text-brand-600 dark:text-brand-400 hover:text-brand-600 dark:text-brand-300 underline"
+              className="text-brand-700 dark:text-brand-300 hover:text-brand-600 dark:hover:text-brand-200 underline"
             >
               Terms and Conditions
             </a>
             {', '}
             <a 
               href="/privacy-policy" 
-              className="text-brand-600 dark:text-brand-400 hover:text-brand-600 dark:text-brand-300 underline"
+              className="text-brand-700 dark:text-brand-300 hover:text-brand-600 dark:hover:text-brand-200 underline"
             >
               {t('cookies.policy.privacy')}
             </a>
             {' '}and{' '}
             <a 
               href="/cookie-policy.html" 
-              className="text-brand-600 dark:text-brand-400 hover:text-brand-600 dark:text-brand-300 underline"
+              className="text-brand-700 dark:text-brand-300 hover:text-brand-600 dark:hover:text-brand-200 underline"
             >
               {t('cookies.policy.cookies')}
             </a>

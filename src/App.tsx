@@ -4,7 +4,6 @@ import {
   Route,
   Navigate,
   NavLink,
-  Link,
   useLocation,
   useNavigate,
 } from "react-router-dom";
@@ -58,7 +57,7 @@ function DesignLabRouteFallback() {
   return (
     <div className="min-h-[60vh] flex items-center justify-center">
       <div className="inline-flex items-center space-x-3">
-        <div className="animate-spin rounded-full h-8 w-8 border-2 border-brand-600 dark:border-signal-green border-t-transparent" aria-hidden />
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-brand-600 dark:border-brand-300 border-t-transparent" aria-hidden />
         <span className="font-mono uppercase tracking-wider text-sm text-slate-600 dark:text-tactical-dim">
           Carregando...
         </span>
@@ -105,6 +104,7 @@ import { openCommandPalette } from "./components/Common/commandPaletteEvents";
 import { useTranslation } from 'react-i18next';
 import CookieConsentBanner from './components/Common/CookieConsentBanner';
 import Footer from "./components/Common/Footer";
+import Brand from "./components/Common/Brand";
 import { CookieConsentManager } from './utils/cookieConsent';
 import CookiePreferencesPage from './pages/CookiePreferencesPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
@@ -135,9 +135,6 @@ const createMenuItems = (t: any): MenuItem[] => [
     path: "/roadmap",
     name: t('menu.roadmap.name'),
     description: t('menu.roadmap.description'),
-    customStyle:
-      "bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border-l-4 border-blue-500",
-    customHoverStyle: "hover:from-zinc-800 hover:to-zinc-900",
     icon: (
       <svg
         className="w-6 h-6 text-blue-500"
@@ -1626,19 +1623,18 @@ export default function App() {
       return badgeText;
     };
 
-    // Minimal menu item: rounded hover/active highlight, sans label, no per-item
-    // description, no accent bars or type glyphs.
+    // Keep navigation quiet, with the Trilha pink reserved for selected items.
     const itemBase =
-      'group flex-1 flex flex-col gap-0.5 px-3 py-2 rounded-lg transition-colors relative';
+      'group flex-1 flex flex-col gap-0.5 px-3 py-2 rounded-lg transition-colors relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500';
     const itemInactive =
       'text-slate-600 dark:text-tactical-dim hover:bg-slate-100 dark:hover:bg-tactical-raised hover:text-slate-900 dark:hover:text-tactical-text';
     const itemActive =
-      'bg-slate-100 dark:bg-tactical-raised text-slate-900 dark:text-tactical-text font-medium';
+      'bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-brand-300 font-semibold';
 
     const TypeMarker = () => null;
 
     const CompletedMark = () => (
-      <span className="ml-auto flex-shrink-0 text-signal-green" title="completed">
+      <span className="ml-auto flex-shrink-0 text-brand-600 dark:text-brand-300" title="completed">
         <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
           <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
         </svg>
@@ -1649,7 +1645,7 @@ export default function App() {
       item.badges ? (
         <div className="flex gap-1.5 mt-1">
           {item.badges.map((badge, index) => (
-            <span key={index} className="rounded-full bg-emerald-50 px-1.5 py-0.5 font-sans text-[10px] font-medium text-emerald-700 dark:rounded-sm dark:bg-signal-green/10 dark:text-signal-green">
+            <span key={index} className="rounded-full bg-brand-50 px-1.5 py-0.5 font-sans text-[10px] font-medium text-brand-700 dark:bg-brand-500/10 dark:text-brand-300">
               {translatedBadge(badge.text)}
             </span>
           ))}
@@ -1718,7 +1714,7 @@ export default function App() {
                 trackEvent("User", "Clicked on Menu Item", displayName);
               }}
               className={`px-2 text-slate-400 dark:text-tactical-label hover:text-slate-900 dark:hover:text-tactical-text hover:bg-slate-100 dark:hover:bg-tactical-raised transition-colors ${
-                isActive ? "text-slate-900 dark:text-tactical-text" : ""
+                isActive ? "text-brand-700 dark:text-brand-300" : ""
               }`}
               aria-label={isExpanded ? 'Collapse' : 'Expand'}
             >
@@ -1796,15 +1792,17 @@ export default function App() {
         {isMobile && user && !chromeless && (
           <div className="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-tactical-surface/95 backdrop-blur-xl border-b border-slate-200 dark:border-tactical-border px-4 py-3">
             <div className="flex items-center justify-between">
-              <Link to="/" className="text-xl font-bold bg-gradient-to-r from-brand-500 to-brand-700 bg-clip-text text-transparent">
-                <img src="/logo.png" alt="Logo" className="h-12" />
-              </Link>
+              <Brand linked className="max-[420px]:[&_.dinamos-brand-name]:hidden" />
               <div className="flex items-center gap-2">
                 <ThemeToggle />
                 <LanguageSwitcher />
                 <button
                   onClick={toggleSidebar}
-                  className="p-2 text-slate-500 hover:text-slate-900 dark:text-tactical-dim dark:hover:text-tactical-text rounded-lg hover:bg-slate-100 dark:hover:bg-tactical-raised"
+                  aria-label={isSidebarOpen
+                    ? t('nav.collapse_sidebar', { defaultValue: 'Collapse menu' })
+                    : t('nav.expand_sidebar', { defaultValue: 'Expand menu' })}
+                  aria-expanded={isSidebarOpen}
+                  className="p-2 text-slate-500 hover:text-brand-700 dark:text-tactical-dim dark:hover:text-brand-300 rounded-lg hover:bg-brand-50 dark:hover:bg-brand-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
                 >
                   {isSidebarOpen ? (
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1837,14 +1835,11 @@ export default function App() {
               <div className="p-4">
                 {!isMobile && (
                   <div className="flex items-center justify-between mb-5 px-2">
-                    <Link to="/" className="flex items-center gap-2">
-                      <img src="/logo.png" alt="Logo" className="h-9" />
-                      <span className="font-sans text-base font-semibold tracking-tight text-slate-900 dark:text-tactical-text">Dinamos</span>
-                    </Link>
+                    <Brand linked />
                   </div>
                 )}
                 <div className="flex items-center justify-between mb-4 px-2">
-                  <span className="label-mono">Navigation</span>
+                  <span className="label-mono">{t('nav.navigation', { defaultValue: 'Navigation' })}</span>
                   <div className="flex gap-2">
                     <ThemeToggle />
                     <LanguageSwitcher />
@@ -1866,7 +1861,7 @@ export default function App() {
                 {/* Global search: prominent trigger for the command palette */}
                 <button
                   onClick={() => openCommandPalette()}
-                  className="mb-4 flex w-full cursor-pointer items-center gap-2 rounded-lg border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2 text-left text-slate-500 dark:text-tactical-dim transition-colors hover:border-brand-500 dark:hover:border-signal-green hover:text-slate-900 dark:hover:text-tactical-text"
+                  className="mb-4 flex w-full cursor-pointer items-center gap-2 rounded-lg border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2.5 text-left text-slate-500 dark:text-tactical-dim transition-colors hover:border-brand-500 dark:hover:border-brand-500 hover:text-brand-700 dark:hover:text-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
                   aria-label={t('command_center.search_aria')}
                 >
                   <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1885,7 +1880,7 @@ export default function App() {
                     onChange={(e) => setNavFilter(e.target.value)}
                     placeholder={t('nav.filter_placeholder', { defaultValue: 'Filter navigation…' })}
                     aria-label={t('nav.filter_placeholder', { defaultValue: 'Filter navigation' })}
-                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 font-sans text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none dark:border-tactical-border dark:bg-tactical-raised dark:text-tactical-text dark:placeholder:text-tactical-label dark:focus:border-signal-green"
+                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-sans text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-tactical-border dark:bg-tactical-raised dark:text-tactical-text dark:placeholder:text-tactical-label dark:focus:border-brand-500"
                   />
                 </div>
 
@@ -1904,7 +1899,7 @@ export default function App() {
                           className={({ isActive }: { isActive: boolean }) =>
                             `flex items-center gap-2 rounded-lg px-3 py-2 font-sans text-sm transition-colors ${
                               isActive
-                                ? 'bg-slate-100 font-medium text-slate-900 dark:bg-tactical-raised dark:text-tactical-text'
+                                ? 'bg-brand-50 font-semibold text-brand-700 dark:bg-brand-500/10 dark:text-brand-300'
                                 : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-tactical-dim dark:hover:bg-tactical-raised dark:hover:text-tactical-text'
                             }`
                           }
@@ -1957,11 +1952,11 @@ export default function App() {
                     <img
                       src={user.photoURL}
                       alt="Profile"
-                      className="w-10 h-10 rounded-full border border-slate-200 dark:border-signal-green"
+                      className="w-10 h-10 rounded-full border border-brand-200 dark:border-brand-500/40"
                     />
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-brand-500 dark:bg-tactical-bg dark:border dark:border-signal-green flex items-center justify-center">
-                      <span className="text-lg font-semibold font-sans text-white dark:text-signal-green">
+                    <div className="w-10 h-10 rounded-full bg-brand-100 dark:bg-brand-500/10 border border-brand-200 dark:border-brand-500/30 flex items-center justify-center">
+                      <span className="text-lg font-semibold font-display text-brand-700 dark:text-brand-300">
                         {user.email?.charAt(0).toUpperCase()}
                       </span>
                     </div>
@@ -2016,7 +2011,7 @@ export default function App() {
         )}
 
         {/* Main content */}
-        <main className={`flex-1 overflow-y-auto bg-canvas-paper dark:bg-canvas-dark ${isMobile && !chromeless ? 'pt-16' : ''}`}>
+        <main className={`flex-1 overflow-y-auto scroll-smooth motion-reduce:scroll-auto bg-canvas-paper dark:bg-canvas-dark ${isMobile && user && !chromeless ? 'pt-16' : ''}`}>
           {user && !chromeless && <TopStatusBar isSidebarOpen={isSidebarOpen} onToggleSidebar={toggleSidebar} />}
           <React.Suspense fallback={<DesignLabRouteFallback />}>
           <Routes>

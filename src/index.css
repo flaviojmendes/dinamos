@@ -3,10 +3,33 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --site-canvas: #101218;
+    --site-surface: #1b202c;
+    --site-panel: #151821;
+    --site-ink: #f2f4f8;
+    --site-muted: #a6b0c3;
+    --site-line: #323b4f;
+    --site-accent: #ff8ab5;
+    --site-brand: #f23d7f;
+    --site-ai: #6ee7c8;
+    --site-display: 'Bricolage Grotesque', 'Hanken Grotesk', system-ui, sans-serif;
+    font-family: 'Hanken Grotesk', system-ui, sans-serif;
+    color-scheme: light;
+    scroll-behavior: smooth;
+    scroll-padding-top: 88px;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
   body {
     background-color: theme('colors.canvas.paper');
     color: theme('colors.slate.900');
-    min-height: 100vh;
+    min-height: 100dvh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   :is(.dark body) {
@@ -16,7 +39,57 @@
   
   h1, h2, h3, h4, h5, h6 {
     @apply font-sans tracking-tight;
+    text-wrap: balance;
   }
+
+  :focus-visible {
+    outline: 2px solid theme('colors.brand.600');
+    outline-offset: 4px;
+  }
+
+  .dark :focus-visible {
+    outline-color: var(--site-accent);
+  }
+
+  ::selection {
+    background: rgb(242 61 127 / 0.35);
+    color: inherit;
+  }
+}
+
+.dinamos-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  min-height: 44px;
+  color: theme('colors.brand.600');
+  border-radius: 8px;
+}
+.dark .dinamos-brand {
+  color: var(--site-accent);
+}
+.dinamos-brand-symbol {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+}
+.dinamos-brand-name {
+  font-family: var(--site-display);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  color: theme('colors.slate.900');
+}
+.dark .dinamos-brand-name {
+  color: var(--site-ink);
+}
+.dinamos-brand-name > span {
+  color: theme('colors.brand.600');
+}
+.dark .dinamos-brand-name > span {
+  color: var(--site-accent);
 }
 
 @layer utilities {
@@ -59,22 +132,9 @@
     background-color: currentColor;
   }
 
-  /* Faint scanline overlay for hero / live-feed panels. */
+  /* Existing simulation wrappers retain their positioning without decoration. */
   .scanline {
     position: relative;
-  }
-  .scanline::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background-image: repeating-linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.025) 0px,
-      rgba(255, 255, 255, 0.025) 1px,
-      transparent 1px,
-      transparent 3px
-    );
   }
 
   /* Blinking terminal caret. */
@@ -85,6 +145,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   .scanline::after {
     background-image: none;
   }
@@ -108,6 +171,23 @@
 .sim-scope select,
 .sim-scope progress {
   accent-color: theme('colors.brand.500');
+}
+
+/* Older simulators use blue utilities for their action buttons. Keep those
+   controls in the shared identity without changing diagram or health colors. */
+.sim-scope button:is(.bg-blue-500, .bg-blue-600, .bg-indigo-500, .bg-indigo-600) {
+  background-color: theme('colors.brand.600');
+  color: white;
+}
+.sim-scope button:is(.bg-blue-500, .bg-blue-600, .bg-indigo-500, .bg-indigo-600):hover:not(:disabled) {
+  background-color: theme('colors.brand.700');
+}
+.dark .sim-scope button:is(.bg-blue-500, .bg-blue-600, .bg-indigo-500, .bg-indigo-600) {
+  background-color: theme('colors.brand.300');
+  color: theme('colors.tactical.bg');
+}
+.dark .sim-scope button:is(.bg-blue-500, .bg-blue-600, .bg-indigo-500, .bg-indigo-600):hover:not(:disabled) {
+  background-color: theme('colors.brand.200');
 }
 
 /* ---- Dark theme: near-black tactical palette ---- */

@@ -12,10 +12,7 @@ interface TopStatusBarProps {
   onToggleSidebar?: () => void;
 }
 
-/**
- * Persistent command-interface status bar shown at the top of the main content
- * area on desktop. Mirrors the reference "CIA CONTROL INTERFACE" header.
- */
+/** Persistent navigation tools for the desktop learning workspace. */
 export default function TopStatusBar({ isSidebarOpen, onToggleSidebar }: TopStatusBarProps = {}) {
   const { t } = useTranslation();
   const { user, appUser } = useAuth();
@@ -25,7 +22,7 @@ export default function TopStatusBar({ isSidebarOpen, onToggleSidebar }: TopStat
   const isAdmin = appUser?.role === 'Admin';
 
   return (
-    <div className="hidden md:flex items-center justify-between gap-4 border-b border-slate-200 dark:border-tactical-border bg-white/80 dark:bg-tactical-surface/90 backdrop-blur px-5 py-2.5">
+    <div className="hidden md:flex items-center justify-between gap-4 border-b border-slate-200 dark:border-tactical-border bg-white/90 dark:bg-tactical-surface/95 backdrop-blur px-5 py-3">
       <div className="flex items-center gap-3 min-w-0">
         {onToggleSidebar && (
           <button
@@ -37,7 +34,7 @@ export default function TopStatusBar({ isSidebarOpen, onToggleSidebar }: TopStat
             aria-label={isSidebarOpen
               ? t('nav.collapse_sidebar', { defaultValue: 'Collapse menu' })
               : t('nav.expand_sidebar', { defaultValue: 'Expand menu' })}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-transparent text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-tactical-dim dark:hover:bg-tactical-raised dark:hover:text-tactical-text cursor-pointer"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-transparent text-slate-500 transition-colors hover:bg-brand-50 hover:text-brand-700 dark:text-tactical-dim dark:hover:bg-brand-500/10 dark:hover:text-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 cursor-pointer"
           >
             <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <rect x="3" y="4" width="18" height="16" rx="1" strokeWidth={1.8} />
@@ -52,7 +49,7 @@ export default function TopStatusBar({ isSidebarOpen, onToggleSidebar }: TopStat
           onClick={() => openCommandPalette()}
           title={t('command_center.search_aria')}
           aria-label={t('command_center.search_aria')}
-          className="flex h-8 w-8 items-center justify-center rounded-lg border border-transparent text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-tactical-dim dark:hover:bg-tactical-raised dark:hover:text-tactical-text cursor-pointer"
+          className="flex h-8 w-8 items-center justify-center rounded-lg border border-transparent text-slate-500 transition-colors hover:bg-brand-50 hover:text-brand-700 dark:text-tactical-dim dark:hover:bg-brand-500/10 dark:hover:text-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 cursor-pointer"
         >
           <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
@@ -66,9 +63,9 @@ export default function TopStatusBar({ isSidebarOpen, onToggleSidebar }: TopStat
             title={t(`quick_access.${labelKey}`, { defaultValue: label })}
             aria-label={t(`quick_access.${labelKey}`, { defaultValue: label })}
             className={({ isActive }: { isActive: boolean }) =>
-              `flex items-center justify-center h-8 w-8 rounded-lg border transition-colors ${
+              `flex items-center justify-center h-8 w-8 rounded-lg border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${
                 isActive
-                  ? 'border-brand-600 dark:border-signal-green text-brand-700 dark:text-signal-green bg-brand-50 dark:bg-tactical-raised'
+                  ? 'border-brand-200 dark:border-brand-500/30 text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-500/10'
                   : 'border-transparent text-slate-500 dark:text-tactical-dim hover:text-slate-900 dark:hover:text-tactical-text hover:bg-slate-100 dark:hover:bg-tactical-raised'
               }`
             }
@@ -85,7 +82,7 @@ export default function TopStatusBar({ isSidebarOpen, onToggleSidebar }: TopStat
           to="/profile"
           title={t('gamification.coins', { defaultValue: 'DinaCoins' })}
           aria-label={`${appUser?.tokens ?? 0} DinaCoins`}
-          className="flex h-8 items-center gap-1.5 rounded-lg border border-signal-amber/30 bg-signal-amber/10 px-2 font-sans text-signal-amber transition-colors hover:bg-signal-amber/20"
+          className="flex h-8 items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2 font-sans text-brand-700 transition-colors hover:border-brand-300 hover:bg-brand-50 dark:border-tactical-border dark:bg-tactical-raised dark:text-brand-300 dark:hover:border-brand-500/40 dark:hover:bg-brand-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
         >
           <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
             <circle cx="12" cy="12" r="8" strokeWidth={1.8} />
@@ -102,10 +99,10 @@ export default function TopStatusBar({ isSidebarOpen, onToggleSidebar }: TopStat
             end
             title={t('admin.control_center', { defaultValue: 'Control Center' })}
             className={({ isActive }: { isActive: boolean }) =>
-              `flex h-8 items-center gap-1 rounded-lg border px-2 font-sans text-[11px] font-medium transition-colors ${
+              `flex h-8 items-center gap-1 rounded-lg border px-2 font-sans text-[11px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${
                 isActive
-                  ? 'border-signal-amber/40 bg-signal-amber/20 text-signal-amber'
-                  : 'border-signal-amber/30 bg-signal-amber/10 text-signal-amber hover:bg-signal-amber/20'
+                  ? 'border-brand-200 bg-brand-50 text-brand-700 dark:border-brand-500/30 dark:bg-brand-500/10 dark:text-brand-300'
+                  : 'border-slate-200 bg-slate-50 text-slate-600 hover:border-brand-300 hover:text-brand-700 dark:border-tactical-border dark:bg-tactical-raised dark:text-tactical-dim dark:hover:border-brand-500/40 dark:hover:text-brand-300'
               }`
             }
           >

@@ -11,16 +11,16 @@ interface PanelHeaderProps {
   className?: string;
 }
 
-/** Clean section header with a sans title. `action` renders on the right. */
+/** Shared section header. `action` renders on the right. */
 export function PanelHeader({ title, action, className }: PanelHeaderProps) {
   return (
     <div
       className={cn(
-        'flex items-center justify-between gap-3 border-b border-slate-200 dark:border-tactical-border px-4 py-3',
+        'flex items-center justify-between gap-3 border-b border-slate-200 dark:border-tactical-border px-5 py-4',
         className,
       )}
     >
-      <h2 className="min-w-0 truncate font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text">
+      <h2 className="min-w-0 font-display text-base font-semibold tracking-tight text-slate-900 dark:text-tactical-text">
         {title}
       </h2>
       {action && <div className="shrink-0 text-xs">{action}</div>}
@@ -37,7 +37,7 @@ interface PanelProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'>
   bodyClassName?: string;
 }
 
-/** Bordered tactical panel with an optional header. */
+/** Shared content panel with an optional header. */
 export function Panel({
   title,
   accent = 'amber',
@@ -51,7 +51,7 @@ export function Panel({
   return (
     <div className={cn('tactical-panel', className)} {...rest}>
       {title && <PanelHeader title={title} accent={accent} action={action} />}
-      <div className={cn(padded && 'p-4', bodyClassName)}>{children}</div>
+      <div className={cn(padded && 'p-5', bodyClassName)}>{children}</div>
     </div>
   );
 }

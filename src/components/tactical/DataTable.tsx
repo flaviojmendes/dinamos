@@ -24,7 +24,7 @@ interface DataTableProps<T> {
 
 const alignClass = { left: 'text-left', right: 'text-right', center: 'text-center' } as const;
 
-/** Tactical data table with a sticky uppercase mono header and optional expandable rows. */
+/** Data table with a sticky header and optional expandable rows. */
 export function DataTable<T>({
   columns,
   rows,

@@ -1,3 +1,5 @@
+import Brand from '../../components/Common/Brand';
+
 interface LogoProps {
   size?: 'small' | 'medium' | 'large';
   showSubtitle?: boolean;
@@ -7,20 +9,15 @@ interface LogoProps {
 
 export default function Logo({ size = 'medium', className = '', forceWhite = false }: LogoProps) {
   const sizeClasses = {
-    small: 'h-8 w-8',
-    medium: 'h-16 w-16',
-    large: 'h-32 w-32'
+    small: '[&_svg]:h-7 [&_svg]:w-7',
+    medium: '[&_svg]:h-9 [&_svg]:w-9',
+    large: '[&_svg]:h-12 [&_svg]:w-12 [&_.brand-wordmark]:text-4xl'
   };
 
-
   return (
-    <div className={`flex items-center space-x-3 ${className}`}>
-      <img 
-        src="/logo.png" 
-        alt="Dinamos Lab Logo" 
-        className={`${sizeClasses[size]} object-contain ${!forceWhite ? 'brightness-0 dark:brightness-100' : ''}`}
-      />
-  
-    </div>
+    <Brand
+      linked={false}
+      className={`${sizeClasses[size]} ${forceWhite ? '[&_.brand-wordmark]:text-white' : ''} ${className}`}
+    />
   );
 }

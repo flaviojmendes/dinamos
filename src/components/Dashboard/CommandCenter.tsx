@@ -23,14 +23,14 @@ import {
 
 // Learning modules come from the shared content registry (single source of
 // truth, now DB-backed). Tool/community destinations are excluded from the
-// mission table; the list is derived per-render from the content context.
+// module table; the list is derived per-render from the content context.
 
 const tierColor: Record<Tier, string> = {
-  FOUNDATIONAL: 'text-signal-cyan',
-  CORE: 'text-signal-green',
-  ADVANCED: 'text-signal-amber',
-  APPLIED: 'text-signal-red',
-  TOOLS: 'text-slate-400 dark:text-tactical-label',
+  FOUNDATIONAL: 'text-slate-500 dark:text-tactical-dim',
+  CORE: 'text-slate-500 dark:text-tactical-dim',
+  ADVANCED: 'text-slate-500 dark:text-tactical-dim',
+  APPLIED: 'text-slate-500 dark:text-tactical-dim',
+  TOOLS: 'text-slate-500 dark:text-tactical-dim',
 };
 
 // Merged designLab destinations, surfaced as quick-launch cards on the dashboard.
@@ -51,7 +51,7 @@ const PRACTICE_LINKS: PracticeLink[] = [
     name: 'Design Lab',
     descKey: 'menu.home.description',
     desc: 'Simulate a system design interview with real-time AI feedback',
-    color: 'text-signal-green',
+    color: 'text-brand-700 dark:text-brand-300',
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 3v6l-5.5 9.5A1.5 1.5 0 005 21h14a1.5 1.5 0 001.3-2.5L15 9V3M8 3h8M9 14h6" />
@@ -64,7 +64,7 @@ const PRACTICE_LINKS: PracticeLink[] = [
     name: 'Quizzes',
     descKey: 'menu.quizzes.description',
     desc: 'Test your knowledge and earn DinaCoins',
-    color: 'text-signal-amber',
+    color: 'text-brand-700 dark:text-brand-300',
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -77,7 +77,7 @@ const PRACTICE_LINKS: PracticeLink[] = [
     name: 'Ranking',
     descKey: 'menu.ranking.description',
     desc: 'Global community leaderboard',
-    color: 'text-signal-cyan',
+    color: 'text-brand-700 dark:text-brand-300',
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -90,7 +90,7 @@ const PRACTICE_LINKS: PracticeLink[] = [
     name: 'Forum',
     descKey: 'menu.forum.description',
     desc: 'Discuss and learn with the community',
-    color: 'text-signal-green',
+    color: 'text-brand-700 dark:text-brand-300',
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586M7 4h8a2 2 0 012 2v6a2 2 0 01-2 2H9l-4 4V6a2 2 0 012-2z" />
@@ -103,7 +103,7 @@ const PRACTICE_LINKS: PracticeLink[] = [
     name: 'Notifications',
     descKey: 'menu.notifications.description',
     desc: 'Replies, mentions and announcements',
-    color: 'text-signal-red',
+    color: 'text-brand-700 dark:text-brand-300',
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -116,7 +116,7 @@ const PRACTICE_LINKS: PracticeLink[] = [
     name: 'Profile',
     descKey: 'menu.profile.description',
     desc: 'Your progress, solutions and DinaCoins',
-    color: 'text-slate-400 dark:text-tactical-label',
+    color: 'text-brand-700 dark:text-brand-300',
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -206,7 +206,7 @@ export default function CommandCenter() {
     return { total, done, modulesDone, inProgress, moduleCount, pct };
   }, [rows]);
 
-  // First incomplete lesson across modules = recommended next operation.
+  // Recommend the first incomplete lesson across modules.
   const recommended = useMemo(() => {
     for (const r of rows) {
       if (r.nextPath) return { path: r.nextPath, module: r.label, id: r.id };
@@ -280,14 +280,14 @@ export default function CommandCenter() {
 
   const greeting = (appUser?.nickname || user?.displayName || user?.email || t('command_center.operator')).split('@')[0];
   const avatarUrl = appUser?.avatar_image ?? null;
-  const roleColor = appUser?.role_color || '#34d399';
+  const roleColor = appUser?.role_color || '#ff8ab5';
   const coins = appUser?.tokens;
   const resumeLabel = totals.done > 0 ? t('command_center.action_resume') : t('command_center.deploy');
 
   return (
-    <div className="mx-auto max-w-[1400px] px-4 py-6 sm:px-6 lg:px-8">
-      {/* Briefing header */}
-      <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
+    <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8">
+      {/* Learning dashboard header */}
+      <header className="mb-8 flex flex-wrap items-center justify-between gap-5">
         <div className="flex min-w-0 items-center gap-3">
           {avatarUrl ? (
             <img
@@ -298,7 +298,7 @@ export default function CommandCenter() {
             />
           ) : (
             <div
-              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full font-sans text-lg font-bold text-white"
+              className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full font-sans text-lg font-bold ${appUser?.role_color ? 'text-white' : 'text-tactical-bg'}`}
               style={{ backgroundColor: roleColor }}
               aria-hidden
             >
@@ -307,7 +307,7 @@ export default function CommandCenter() {
           )}
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="font-sans text-2xl font-bold tracking-tight text-slate-900 dark:text-tactical-text">
+              <h1 className="font-display text-3xl font-bold leading-tight tracking-tight text-slate-900 dark:text-tactical-text sm:text-4xl">
                 {t('command_center.title')}
               </h1>
               <Tag color="green">{t('command_center.session_active')}</Tag>
@@ -323,7 +323,7 @@ export default function CommandCenter() {
           {typeof coins === 'number' && (
             <div className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 dark:border-tactical-border dark:bg-tactical-surface">
               <Coins className="h-4 w-4 text-signal-amber" />
-              <span className="font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-tactical-text">
+              <span className="font-sans text-sm font-semibold tabular-nums text-slate-900 dark:text-tactical-text">
                 {coins.toLocaleString()}
               </span>
               <span className="label-mono hidden sm:inline">{t('command_center.coins_label')}</span>
@@ -336,7 +336,7 @@ export default function CommandCenter() {
         </div>
       </header>
 
-      {/* Briefing hero: up-next + progress overview */}
+      {/* Next lesson and progress overview */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Panel title={t('command_center.operation_activity')} accent="cyan" className="lg:col-span-2">
           {contentLoading ? (
@@ -349,7 +349,7 @@ export default function CommandCenter() {
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div className="min-w-0 flex-1">
                 <span className="label-mono">{t('command_center.recommended_next')}</span>
-                <p className="mt-1 font-sans text-lg font-semibold leading-snug text-slate-900 dark:text-tactical-text">
+                <p className="mt-2 max-w-xl font-display text-2xl font-semibold leading-tight tracking-tight text-slate-900 dark:text-tactical-text">
                   {lessonLabel(recommended.path)}
                 </p>
                 <p className="mt-0.5 font-sans text-xs text-slate-500 dark:text-tactical-dim">
@@ -358,7 +358,7 @@ export default function CommandCenter() {
                 <SegmentBar
                   value={totals.done}
                   max={totals.total || 1}
-                  color="cyan"
+                  color="green"
                   caption={`${totals.pct}%`}
                   className="mt-3 max-w-md"
                 />
@@ -404,7 +404,7 @@ export default function CommandCenter() {
                   { value: `${totals.inProgress}`, label: t('command_center.stat_in_progress') },
                 ].map((s, i) => (
                   <div key={i}>
-                    <div className="font-sans text-base font-bold tabular-nums leading-none text-slate-900 dark:text-tactical-text">
+                    <div className="font-display text-lg font-semibold tabular-nums leading-none text-slate-900 dark:text-tactical-text">
                       {s.value}
                     </div>
                     <div className="label-mono mt-1">{s.label}</div>
@@ -416,8 +416,8 @@ export default function CommandCenter() {
         </Panel>
       </div>
 
-      {/* Activity mosaic: contribution graph of the operator's own work */}
-      <div className="mt-4">
+      {/* Personal learning activity */}
+      <div className="mt-5">
         <Panel
           title={t('heatmap.title')}
           accent="green"
@@ -431,10 +431,10 @@ export default function CommandCenter() {
         </Panel>
       </div>
 
-      {/* Practice Arena: merged designLab destinations, elevated as the focal section */}
-      <div className="mt-5">
+      {/* Practice and community destinations */}
+      <div className="mt-6">
         <Panel
-          title={t('command_center.modules.practice', { defaultValue: 'Practice Arena' })}
+          title={t('command_center.modules.practice', { defaultValue: 'Practice' })}
           accent="amber"
           bodyClassName="p-4"
           action={
@@ -442,28 +442,27 @@ export default function CommandCenter() {
               {t('command_center.practice_arena_subtitle')}
             </span>
           }
-          className="ring-1 ring-signal-amber/30 dark:ring-signal-amber/25"
         >
           {/* Featured: Design Lab system-design interview simulator */}
           <button
             onClick={() => navigate(designLab.path)}
-            className="group mb-3 flex w-full cursor-pointer items-center gap-4 rounded-xl border border-emerald-300/70 bg-gradient-to-r from-emerald-50 to-transparent p-4 text-left transition-all hover:-translate-y-0.5 hover:border-emerald-400 hover:shadow-md dark:border-signal-green/30 dark:from-signal-green/10 dark:hover:border-signal-green"
+            className="group mb-4 flex w-full cursor-pointer items-center gap-4 rounded-xl border border-brand-200 bg-brand-50 p-5 text-left transition-colors duration-200 hover:border-brand-400 hover:bg-brand-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 dark:border-brand-500/30 dark:bg-brand-500/5 dark:hover:border-brand-400 dark:hover:bg-brand-500/10"
           >
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-emerald-300/70 bg-white text-signal-green dark:border-signal-green/40 dark:bg-tactical-surface">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-100 text-brand-700 dark:bg-brand-500/15 dark:text-brand-300">
               {designLab.icon}
             </span>
             <span className="min-w-0 flex-1">
               <span className="flex flex-wrap items-center gap-2">
-                <span className="font-sans text-base font-bold text-slate-900 dark:text-tactical-text">
+                <span className="font-display text-xl font-semibold tracking-tight text-slate-900 dark:text-tactical-text">
                   {t(designLab.nameKey, { defaultValue: designLab.name })}
                 </span>
-                <Tag color="green">{t('command_center.design_lab_badge')}</Tag>
+                <Tag>{t('command_center.design_lab_badge')}</Tag>
               </span>
               <span className="mt-0.5 block font-sans text-sm text-slate-600 dark:text-tactical-dim">
                 {t(designLab.descKey, { defaultValue: designLab.desc })}
               </span>
             </span>
-            <span className="hidden shrink-0 items-center gap-1.5 font-sans text-sm font-semibold text-emerald-600 dark:text-signal-green sm:flex">
+            <span className="hidden shrink-0 items-center gap-1.5 font-sans text-sm font-semibold text-brand-700 dark:text-brand-300 sm:flex">
               {t('command_center.design_lab_cta')}
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </span>
@@ -474,7 +473,7 @@ export default function CommandCenter() {
               <button
                 key={p.path}
                 onClick={() => navigate(p.path)}
-                className="group flex cursor-pointer items-center gap-3 rounded-lg border border-slate-200 bg-white p-3 text-left transition-all hover:-translate-y-0.5 hover:border-brand-500 hover:shadow-sm dark:border-tactical-border dark:bg-tactical-surface dark:hover:border-signal-green dark:hover:shadow-none"
+                className="group flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 text-left transition-colors duration-200 hover:border-brand-400 hover:bg-brand-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 dark:border-tactical-border dark:bg-tactical-surface dark:hover:border-brand-400 dark:hover:bg-tactical-raised"
               >
                 <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 dark:border-tactical-border ${p.color}`}>
                   {p.icon}
@@ -487,15 +486,15 @@ export default function CommandCenter() {
                     {t(p.descKey, { defaultValue: p.desc })}
                   </span>
                 </span>
-                <ChevronRight className="h-4 w-4 shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-brand-500 dark:text-tactical-label dark:group-hover:text-signal-green" />
+                <ChevronRight className="h-4 w-4 shrink-0 text-slate-400 transition-colors group-hover:text-brand-700 dark:text-tactical-label dark:group-hover:text-brand-300" />
               </button>
             ))}
           </div>
         </Panel>
       </div>
 
-      {/* Mission table + feed */}
-      <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+      {/* Modules and recent discussions */}
+      <div className="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-3">
         <Panel title={t('command_center.mission_table')} className="lg:col-span-2" padded={false}>
           {contentLoading ? (
             <div className="space-y-3 p-4">
@@ -586,7 +585,7 @@ export default function CommandCenter() {
                       <span className="shrink-0 font-sans text-[10px] text-slate-400 dark:text-tactical-label">{formatRelativeTime(tp.created_at, t('command_center.time_now'))}</span>
                     </div>
                     <div className="mt-1 flex items-center gap-2">
-                      <Tag color="cyan">{tp.category}</Tag>
+                      <Tag>{tp.category}</Tag>
                       <span className="font-sans text-[10px] text-slate-400 dark:text-tactical-label">{t('command_center.replies', { count: tp.comment_count ?? 0 })}</span>
                     </div>
                   </button>

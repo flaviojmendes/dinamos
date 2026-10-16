@@ -70,8 +70,7 @@ export default function ContentLayout({ children, hideCompletion = false, childP
         {useConsoleFrame ? (
           <div className="p-4 md:p-6">
             <SimulatorConsole
-              title={`${simulatorTitle} // Simulation Console`}
-              subtitle={currentPath}
+              title={simulatorTitle}
             >
               {children}
             </SimulatorConsole>
@@ -91,11 +90,11 @@ export default function ContentLayout({ children, hideCompletion = false, childP
         {!isRoadmapPage && !isSimulator && !isForumPage && (
           <ReadingTime contentRef={contentRef} />
         )}
-        
+
         {!hideCompletion && !isRoadmapPage && !isForumPage && (
           <CompletionButton path={currentPath} childPaths={childPaths} />
         )}
       </div>
     </div>
   );
-} 
+}

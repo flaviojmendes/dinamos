@@ -71,7 +71,7 @@ export default function ProgressRing({
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="font-sans text-3xl font-bold tabular-nums leading-none text-slate-900 dark:text-tactical-text">
+        <span className="font-display text-3xl font-semibold tracking-tight tabular-nums leading-none text-slate-900 dark:text-tactical-text">
           {clamped}%
         </span>
         {label && (

@@ -22,11 +22,10 @@ interface ActivityResponse {
 
 const DAYS = 364; // 52 full weeks.
 
-// Flat, tactical color ramps. Level 0 is a quiet neutral; higher levels ramp
-// toward the app's success color (emerald in light, signal-green in dark).
+// Learning activity uses the shared mint progress palette.
 const THEME = {
-  light: ['#eef2f6', '#a7f3d0', '#6ee7b7', '#34d399', '#059669'],
-  dark: ['#1b1b21', '#0e3f2c', '#17694a', '#23a06f', '#34d399'],
+  light: ['#eef2f6', '#c8f7e9', '#8ce9ce', '#35b995', '#107b60'],
+  dark: ['#1b202c', '#194438', '#26715d', '#40ae8e', '#6ee7c8'],
 };
 
 function toISODate(d: Date): string {
@@ -154,7 +153,7 @@ export default function ContributionHeatmap({ className }: HeatmapProps) {
     return `${when} — ${parts.join(' · ')}`;
   }
 
-  const microLabel = 'text-[10px] font-medium uppercase tracking-wide text-slate-400 dark:text-tactical-label';
+  const microLabel = 'font-sans text-xs font-medium text-slate-500 dark:text-tactical-dim';
 
   if (!user) {
     return (
@@ -207,7 +206,7 @@ export default function ContributionHeatmap({ className }: HeatmapProps) {
         {statItems.map((s) => (
           <div key={s.label}>
             <dd className="flex items-baseline gap-1">
-              <span className="font-sans text-2xl font-bold leading-none tabular-nums text-slate-900 dark:text-tactical-text">
+              <span className="font-display text-2xl font-semibold leading-none tracking-tight tabular-nums text-slate-900 dark:text-tactical-text">
                 {s.value}
               </span>
               <span className="font-sans text-xs text-slate-400 dark:text-tactical-label">{s.unit}</span>

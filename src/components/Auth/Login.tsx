@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import Brand from '../Common/Brand';
+import { TacticalButton } from '../tactical';
 
 export default function Login() {
   const { signInWithGoogle, signInWithGithub } = useAuth();
@@ -62,15 +64,14 @@ export default function Login() {
         transition={{ duration: 0.5 }}
         className="max-w-md w-full"
       >
+        <div className="mb-8 flex justify-center">
+          <Brand linked />
+        </div>
         <div className="tactical-panel">
-          <div className="flex items-center justify-between border-b border-slate-200 dark:border-tactical-border px-5 py-3">
-            <div className="flex items-center gap-2.5">
-              <span className="h-3.5 w-1 bg-signal-amber" aria-hidden />
-              <h2 className="font-sans text-sm font-semibold">
-                {t('auth.welcome_title')}
-              </h2>
-            </div>
-            <span className="rounded-full bg-slate-100 px-2 py-0.5 font-sans text-[11px] text-slate-500 dark:bg-tactical-raised dark:text-tactical-dim">Sign in</span>
+          <div className="border-b border-slate-200 dark:border-tactical-border px-6 py-5">
+            <h2 className="font-display text-2xl font-semibold tracking-tight">
+              {t('auth.welcome_title')}
+            </h2>
           </div>
 
           <div className="p-6">
@@ -92,10 +93,11 @@ export default function Login() {
             </AnimatePresence>
 
             <div className="space-y-3">
-              <button
+              <TacticalButton
+                variant="primary"
                 onClick={handleGoogleLogin}
                 disabled={isLoading}
-                className="w-full rounded-lg bg-slate-900 dark:bg-white text-white dark:text-black py-3 px-4 font-sans text-sm font-medium hover:bg-slate-700 dark:hover:bg-slate-200 transition-colors flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3 gap-3"
               >
                 {isLoading ? (
                   <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
@@ -108,12 +110,12 @@ export default function Login() {
                   </svg>
                 )}
                 {t('auth.login_google')}
-              </button>
+              </TacticalButton>
 
-              <button
+              <TacticalButton
                 onClick={handleGithubLogin}
                 disabled={isLoading}
-                className="w-full rounded-lg bg-transparent border border-slate-300 dark:border-tactical-line text-slate-900 dark:text-tactical-text py-3 px-4 font-sans text-sm font-medium hover:border-slate-900 dark:hover:border-signal-green hover:bg-slate-100 dark:hover:bg-tactical-raised transition-colors flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3 gap-3"
               >
                 {isLoading ? (
                   <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
@@ -126,7 +128,7 @@ export default function Login() {
                   </svg>
                 )}
                 {t('auth.login_github')}
-              </button>
+              </TacticalButton>
             </div>
 
             <p className="font-sans text-[11px] text-slate-400 dark:text-tactical-label text-center mt-8">
@@ -137,4 +139,4 @@ export default function Login() {
       </motion.div>
     </div>
   );
-} 
+}

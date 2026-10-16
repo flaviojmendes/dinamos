@@ -105,7 +105,7 @@ export default function NotificationBell() {
       className={({ isActive }: { isActive: boolean }) =>
         `relative flex h-8 w-8 items-center justify-center border transition-colors ${
           isActive
-            ? 'border-brand-600 dark:border-signal-green text-brand-700 dark:text-signal-green bg-brand-50 dark:bg-tactical-raised'
+            ? 'border-brand-600 dark:border-brand-400 text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-tactical-raised'
             : 'border-transparent text-slate-500 dark:text-tactical-dim hover:text-slate-900 dark:hover:text-tactical-text hover:bg-slate-100 dark:hover:bg-tactical-raised'
         }`
       }

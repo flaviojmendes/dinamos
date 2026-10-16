@@ -22,7 +22,7 @@ export function Tag({ children, color = 'default', className }: TagProps) {
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-full px-2 py-0.5 font-sans text-[11px] font-medium whitespace-nowrap dark:rounded-sm',
+        'inline-flex items-center rounded-md px-2 py-0.5 font-sans text-[11px] font-medium whitespace-nowrap',
         colors[color],
         className,
       )}

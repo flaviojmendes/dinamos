@@ -14,7 +14,9 @@ Dinamos is a free, hands-on platform for mastering distributed systems. Its core
 
 ## Brand Personality
 
-Calm, precise, engineer-native. The UI reads like a well-kept command center: dark tactical surfaces, muted signal accents, monospace for data. Confidence comes from legibility and density done right, never from neon or alarm aesthetics.
+Curious, approachable, and precise. Dinamos shares Trilha Info's visual identity: Hanken Grotesk for the interface, Bricolage Grotesque for expressive headings, deep blue-black surfaces, bright pink actions, and mint progress cues. The learning workspace feels welcoming while keeping complex systems and telemetry legible.
+
+The dark palette uses `#101218` for the canvas, `#151821` for panels, `#1b202c` for raised surfaces, `#f2f4f8` for primary text, `#a6b0c3` for supporting text, and `#323b4f` for borders. Pink (`#f23d7f`, with `#ff8ab5` for lighter accents) marks actions and selection. Mint (`#6ee7c8`) supports learning progress and healthy system states. Light mode carries the same typography and pink identity onto soft neutral surfaces.
 
 ## Anti-references
 
@@ -24,15 +26,15 @@ Calm, precise, engineer-native. The UI reads like a well-kept command center: da
 
 ## Design Principles
 
-1. **Show, don't tell.** Every concept earns a live visualization; telemetry beats explanation.
+1. **Make concepts observable.** Every concept earns a live visualization; telemetry supports explanation.
 2. **The tool disappears into the task.** Standard affordances, consistent component vocabulary, no invented controls.
 3. **Density with hierarchy.** Engineers want the numbers; give them dense data with clear scanning order.
-4. **State is sacred.** Running/paused, healthy/saturated/failed, locked/editable: every state visibly distinct and color-consistent (green/amber/red/cyan signal semantics).
+4. **Give color a clear job.** Pink identifies actions and selection. Mint/amber/red/cyan distinguish system health and learning progress, with labels and icons supporting every state. Categories and ordinary navigation stay neutral.
 5. **Fast feedback.** Edits reflect in the sim immediately; motion conveys state change in 150-250ms, nothing decorative.
 
 ## Accessibility & Inclusion
 
-- WCAG AA contrast target (tactical-label and dim tones are tuned for AA on their surfaces).
+- WCAG AA contrast target; supporting text stays legible on its surface, and bright pink primary buttons use dark text for contrast.
 - Touch layout parity: 44px minimum hit targets, bottom sheets replace hover/context-menu interactions.
 - Reduced motion respected for all non-essential animation.
 - i18n first-class (en/pt-BR via i18next); no text baked into imagery.

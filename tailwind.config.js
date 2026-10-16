@@ -6,45 +6,59 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          300: '#7dd3fc',
-          400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7',
-          700: '#0369a1',
-          800: '#075985',
-          900: '#0c4a6e',
-          950: '#082f49',
+          50: '#fff1f6',
+          100: '#ffe2ed',
+          200: '#ffc5dc',
+          300: '#ff8ab5',
+          400: '#ff639c',
+          500: '#f23d7f',
+          600: '#ce205f',
+          700: '#ad174f',
+          800: '#8f1745',
+          900: '#77183d',
+          950: '#49091f',
+        },
+        slate: {
+          50: '#f7f8fb',
+          100: '#edf0f6',
+          200: '#dde2eb',
+          300: '#c6cedd',
+          400: '#a6b0c3',
+          500: '#647087',
+          600: '#5a667d',
+          700: '#323b4f',
+          800: '#232a3a',
+          900: '#151821',
+          950: '#101218',
         },
         canvas: {
           light: '#ffffff',
-          dark: '#0a0a0b', // Tactical near-black
-          paper: '#f8fafc', // Slate 50
+          dark: '#101218',
+          paper: '#f7f8fb',
         },
-        // Tactical command-center palette (dark theme is the default).
+        // Trilha Info's shared dark surfaces. Existing utility names stay stable.
         tactical: {
-          bg: '#0a0a0b',       // app background
-          surface: '#101012',  // panels
-          raised: '#16161a',   // raised cells / hover
-          border: '#26262b',   // hairline borders
-          line: '#2f2f36',     // dividers / stronger lines
-          label: '#8a909c',    // uppercase muted labels (AA on surface)
-          dim: '#aab0bb',      // secondary text
-          text: '#e5e7eb',     // primary text
+          bg: '#101218',
+          surface: '#151821',
+          raised: '#1b202c',
+          border: '#323b4f',
+          line: '#323b4f',
+          label: '#a6b0c3',
+          dim: '#a6b0c3',
+          text: '#f2f4f8',
         },
         // Muted accent palette. Calmer than neon so the UI reads minimal, not
         // like an alarm panel; still distinct enough to carry semantic meaning.
         signal: {
-          green: '#34d399', // online / success / completed
+          green: '#6ee7c8', // online / success / completed
           amber: '#d9a441', // section accent / warning / in-progress
           red: '#e5645f',   // classified / danger
           cyan: '#56b6c8',  // info / assessment
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Hanken Grotesk', 'system-ui', 'sans-serif'],
+        display: ['Bricolage Grotesque', 'Hanken Grotesk', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
         hand: ['Kalam', 'cursive'],
       },

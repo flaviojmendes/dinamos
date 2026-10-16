@@ -37,14 +37,14 @@ const compactMdx = {
   ol: (p: ElProps) => <ol className="my-3 list-decimal space-y-2 pl-5 text-sm text-slate-600 dark:text-tactical-dim" {...p} />,
   li: (p: ElProps) => (
     <li
-      className="pl-5 -indent-5 text-sm leading-relaxed text-slate-600 before:mr-2 before:font-semibold before:text-brand-500 before:content-['▸'] dark:text-tactical-dim dark:before:text-signal-green"
+      className="pl-5 -indent-5 text-sm leading-relaxed text-slate-600 before:mr-2 before:font-semibold before:text-brand-500 before:content-['▸'] dark:text-tactical-dim dark:before:text-brand-300"
       {...p}
     />
   ),
   a: ({ href = '#', ...p }: ElProps) => (
     <a
       href={href}
-      className="font-medium text-brand-600 underline-offset-2 hover:underline dark:text-signal-green"
+      className="font-medium text-brand-600 underline-offset-2 hover:underline dark:text-brand-300"
       {...p}
     />
   ),
@@ -231,7 +231,7 @@ export default function AnnouncementModal() {
             />
 
             <header className="flex shrink-0 items-start gap-3.5 px-5 py-4 sm:px-6">
-              <span className="mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-600 ring-1 ring-brand-100 dark:bg-signal-green/10 dark:text-signal-green dark:ring-signal-green/20">
+              <span className="mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-600 ring-1 ring-brand-100 dark:bg-brand-500/10 dark:text-brand-300 dark:ring-brand-500/20">
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
                   <path
                     strokeLinecap="round"
@@ -256,7 +256,7 @@ export default function AnnouncementModal() {
                 type="button"
                 onClick={() => void acknowledge()}
                 aria-label={t('announcement.acknowledge', { defaultValue: 'Got it' })}
-                className="-mr-1.5 -mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 dark:text-tactical-label dark:hover:bg-tactical-raised dark:hover:text-tactical-text dark:focus-visible:ring-signal-green"
+                className="-mr-1.5 -mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 dark:text-tactical-label dark:hover:bg-tactical-raised dark:hover:text-tactical-text dark:focus-visible:ring-brand-400"
               >
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 6l12 12M18 6L6 18" />
@@ -309,7 +309,7 @@ export default function AnnouncementModal() {
                 type="button"
                 onClick={() => void acknowledge()}
                 disabled={acking}
-                className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-brand-500 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-50 dark:bg-signal-green dark:text-canvas-dark dark:hover:bg-signal-green/90 dark:focus-visible:ring-signal-green dark:focus-visible:ring-offset-tactical-surface"
+                className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-brand-500 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-50 dark:bg-brand-300 dark:text-canvas-dark dark:hover:bg-brand-200 dark:focus-visible:ring-brand-400 dark:focus-visible:ring-offset-tactical-surface"
               >
                 {acking ? (
                   <>

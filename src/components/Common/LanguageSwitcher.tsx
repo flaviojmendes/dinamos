@@ -29,9 +29,9 @@ const LanguageSwitcher: React.FC = () => {
             onClick={() => setLang(lng)}
             aria-pressed={active}
             title={lng === 'pt' ? 'Mudar para Português' : 'Switch to English'}
-            className={`px-2.5 py-1.5 font-mono text-xs font-medium uppercase tracking-wider transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 dark:focus-visible:ring-signal-green ${
+            className={`min-h-10 min-w-10 px-2.5 py-1.5 font-sans text-xs font-semibold uppercase transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 dark:focus-visible:ring-brand-300 ${
               active
-                ? 'bg-brand-500 text-white dark:bg-signal-green dark:text-black'
+                ? 'bg-brand-100 text-brand-800 dark:bg-brand-500/15 dark:text-brand-300'
                 : 'bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:bg-tactical-surface dark:text-tactical-label dark:hover:bg-tactical-raised dark:hover:text-tactical-text'
             }`}
           >
@@ -43,4 +43,4 @@ const LanguageSwitcher: React.FC = () => {
   );
 };
 
-export default LanguageSwitcher; 
+export default LanguageSwitcher;

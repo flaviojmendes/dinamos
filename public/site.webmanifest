@@ -4,9 +4,10 @@
   "description": "Aprenda de uma vez por todas sobre Sistemas Distribuídos.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#0f172a",
+  "background_color": "#101218",
+  "theme_color": "#101218",
   "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
     { "src": "/favicon.png", "sizes": "192x192", "type": "image/png" },
     { "src": "/favicon.png", "sizes": "512x512", "type": "image/png" }
   ]

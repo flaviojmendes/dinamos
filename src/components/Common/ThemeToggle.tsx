@@ -6,7 +6,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="p-2 rounded-lg border border-transparent dark:border-tactical-border bg-slate-100 dark:bg-tactical-surface hover:bg-slate-200 dark:hover:bg-tactical-raised transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 dark:focus:ring-signal-green focus:ring-brand-500"
+      className="min-h-10 min-w-10 p-2 rounded-lg border border-transparent dark:border-tactical-border bg-slate-100 dark:bg-tactical-surface hover:bg-slate-200 dark:hover:bg-tactical-raised transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 dark:focus-visible:ring-brand-300"
       aria-label="Toggle theme"
       title={theme === 'light' ? 'Ativar modo escuro' : 'Ativar modo claro'}
     >
@@ -26,7 +26,7 @@ export default function ThemeToggle() {
         </svg>
       ) : (
         <svg
-          className="w-5 h-5 text-yellow-400"
+          className="w-5 h-5 text-tactical-dim"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -42,4 +42,3 @@ export default function ThemeToggle() {
     </button>
   );
 }
-

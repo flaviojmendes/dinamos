@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { apiClient } from '../app/utils/api';
 import { MATCH_SCENARIOS } from '../components/SystemEditor/game/matchScenarios';
+import Brand from '../components/Common/Brand';
 
 const POLL_MS = 5000;
 
@@ -65,7 +66,7 @@ function MatchCard({ m, serverNowMs }: { m: LiveMatch; serverNowMs: number }) {
   const joinable = m.join_open !== false;
 
   return (
-    <div className="tactical-panel p-4 flex flex-col gap-3 border border-tactical-border hover:border-signal-cyan/60 transition-colors">
+    <div className="tactical-panel p-4 flex flex-col gap-3 border border-tactical-border hover:border-brand-400/60 transition-colors">
       <div className="flex items-center gap-2">
         <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border font-sans text-[10px] font-bold tracking-wide ${chip.cls}`}>
           <ChipIcon className={`w-3 h-3 ${chip.pulse ? 'animate-pulse motion-reduce:animate-none' : ''}`} />
@@ -97,14 +98,14 @@ function MatchCard({ m, serverNowMs }: { m: LiveMatch; serverNowMs: number }) {
       <div className="flex items-center gap-2 mt-auto">
         <Link
           to={`/editor/game/${m.code}/stage`}
-          className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-md border border-tactical-border text-tactical-dim hover:border-signal-amber hover:text-signal-amber font-sans text-xs font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-amber"
+          className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-md border border-tactical-border text-tactical-dim hover:border-brand-400 hover:text-brand-300 font-sans text-xs font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-400"
         >
           <Eye className="w-3.5 h-3.5" /> {t('arena.watch', { defaultValue: 'Watch' })}
         </Link>
         {joinable ? (
           <Link
             to={`/editor/game/${m.code}`}
-            className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-md border border-signal-green text-signal-green hover:bg-signal-green/10 font-sans text-xs font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-green"
+            className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-md border border-brand-400 text-brand-300 hover:bg-brand-500/10 font-sans text-xs font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-400"
           >
             <Gamepad2 className="w-3.5 h-3.5" /> {t('arena.join', { defaultValue: 'Join' })}
           </Link>
@@ -208,30 +209,30 @@ export default function GameArenaPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-tactical-bg text-tactical-text">
+    <div className="dark min-h-screen bg-tactical-bg text-tactical-text [color-scheme:dark]">
       {/* Top bar: identity + the way back to the main product. */}
       <header className="sticky top-0 z-40 border-b border-tactical-border bg-tactical-bg/95">
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center gap-3">
           <a
             href="https://dinamos.net"
-            className="flex items-center gap-2.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-cyan rounded-sm"
+            className="flex items-center gap-2.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-400 rounded-sm"
           >
-            <img src="/logo.png" alt="Dinamos" className="h-8 w-auto" />
+            <Brand />
           </a>
-          <span className="font-mono text-[10px] font-bold tracking-[0.2em] text-signal-cyan border border-signal-cyan/40 rounded px-1.5 py-0.5">
+          <span className="font-sans text-[11px] font-semibold tracking-wide text-brand-300 border border-brand-400/40 rounded px-1.5 py-0.5">
             {t('arena.badge', { defaultValue: 'ARENA' })}
           </span>
           <div className="ml-auto flex items-center gap-2">
             <a
               href="https://dinamos.net"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-tactical-border text-tactical-dim hover:border-signal-cyan hover:text-signal-cyan font-sans text-xs font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-cyan"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-tactical-border text-tactical-dim hover:border-brand-400 hover:text-brand-300 font-sans text-xs font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-400"
             >
               {t('arena.cta_dinamos', { defaultValue: 'Learn on dinamos.net' })}
               <ArrowUpRight className="w-3.5 h-3.5" />
             </a>
             <Link
               to="/arena/host"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-signal-green text-signal-green hover:bg-signal-green/10 font-sans text-xs font-bold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-green"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-brand-400 text-brand-300 hover:bg-brand-500/10 font-sans text-xs font-bold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-400"
             >
               <Gamepad2 className="w-3.5 h-3.5" />
               {t('arena.cta_host', { defaultValue: 'Host a match' })}
@@ -246,7 +247,7 @@ export default function GameArenaPage() {
           aria-hidden
           className="absolute inset-0 opacity-40"
           style={{
-            backgroundImage: 'radial-gradient(circle at 1px 1px, rgb(51 65 85 / 0.45) 1px, transparent 0)',
+            backgroundImage: 'radial-gradient(circle at 1px 1px, rgb(50 59 79 / 0.45) 1px, transparent 0)',
             backgroundSize: '28px 28px',
           }}
         />
@@ -255,7 +256,7 @@ export default function GameArenaPage() {
             <motion.div {...fadeUp(0)} className="mb-5">
               <a
                 href="#live"
-                className="inline-flex items-center gap-2 rounded-full border border-signal-green/50 px-3 py-1 font-sans text-xs text-signal-green hover:bg-signal-green/10 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-green"
+                className="inline-flex items-center gap-2 rounded-full border border-signal-green/50 px-3 py-1 font-sans text-xs text-signal-green hover:bg-signal-green/10 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-400"
               >
                 <span className="w-2 h-2 rounded-full bg-signal-green animate-pulse motion-reduce:animate-none" />
                 {t('arena.live_chip', { defaultValue: '{{count}} match live right now', count: liveCount })}
@@ -264,10 +265,10 @@ export default function GameArenaPage() {
           )}
           <motion.h1
             {...fadeUp(0.08)}
-            className="font-sans text-4xl md:text-6xl font-bold tracking-tight max-w-3xl leading-[1.05] mb-5 [text-wrap:balance]"
+            className="font-display text-4xl md:text-6xl font-bold tracking-tight max-w-3xl leading-[1.05] mb-5 [text-wrap:balance]"
           >
             {t('arena.headline', { defaultValue: 'Build systems. Survive chaos.' })}{' '}
-            <span className="text-signal-green">{t('arena.headline_accent', { defaultValue: 'Top the leaderboard.' })}</span>
+            <span className="text-brand-300">{t('arena.headline_accent', { defaultValue: 'Top the leaderboard.' })}</span>
           </motion.h1>
           <motion.p {...fadeUp(0.16)} className="font-sans text-base md:text-lg text-tactical-dim max-w-2xl leading-relaxed mb-8">
             {t('arena.subhead', {
@@ -278,14 +279,14 @@ export default function GameArenaPage() {
           <motion.div {...fadeUp(0.24)} className="flex flex-wrap items-center gap-3">
             <Link
               to="/arena/host"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-md bg-signal-green/15 border border-signal-green text-signal-green hover:bg-signal-green/25 font-sans text-sm font-bold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-green"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-md bg-brand-300 border border-brand-300 text-tactical-bg hover:bg-brand-200 font-sans text-sm font-bold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-400"
             >
               <Gamepad2 className="w-4 h-4" />
               {t('arena.cta_host', { defaultValue: 'Host a match' })}
             </Link>
             <a
               href="#live"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-md border border-tactical-border text-tactical-text hover:border-signal-amber hover:text-signal-amber font-sans text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-amber"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-md border border-tactical-border text-tactical-text hover:border-brand-400 hover:text-brand-300 font-sans text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-400"
             >
               <MonitorPlay className="w-4 h-4" />
               {t('arena.cta_watch', { defaultValue: 'Watch live matches' })}
@@ -301,12 +302,12 @@ export default function GameArenaPage() {
                 onKeyDown={(e) => e.key === 'Enter' && join()}
                 placeholder={t('arena.code_ph', { defaultValue: 'MATCH CODE' })}
                 maxLength={8}
-                className="w-36 bg-tactical-raised border border-tactical-border rounded-l-md px-3 py-3 font-mono text-sm text-tactical-text tracking-widest placeholder:text-tactical-label focus:outline-none focus-visible:ring-2 focus-visible:ring-signal-cyan/70"
+                className="w-36 bg-tactical-raised border border-tactical-border rounded-l-md px-3 py-3 font-mono text-sm text-tactical-text tracking-widest placeholder:text-tactical-label focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/70"
               />
               <button
                 onClick={join}
                 disabled={!joinCode.trim()}
-                className="px-4 py-3 rounded-r-md border border-l-0 border-signal-cyan text-signal-cyan hover:bg-signal-cyan/10 font-sans text-sm font-medium transition-colors disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-cyan"
+                className="px-4 py-3 rounded-r-md border border-l-0 border-brand-400 text-brand-300 hover:bg-brand-500/10 font-sans text-sm font-medium transition-colors disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-400"
               >
                 {t('arena.cta_join', { defaultValue: 'Join' })}
               </button>
@@ -319,7 +320,7 @@ export default function GameArenaPage() {
       <div id="live" className="max-w-6xl mx-auto px-6 py-12 scroll-mt-16">
         <div className="flex items-center gap-2 mb-1">
           <span className={`w-2.5 h-2.5 rounded-full ${matches.length > 0 ? 'bg-signal-green animate-pulse motion-reduce:animate-none' : 'bg-tactical-line'}`} />
-          <h2 className="font-sans text-xl font-bold tracking-tight">
+          <h2 className="font-display text-2xl font-semibold tracking-tight">
             {t('arena.live_title', { defaultValue: 'Happening now' })}
           </h2>
         </div>
@@ -341,7 +342,7 @@ export default function GameArenaPage() {
                 setLoaded(false);
                 fetchLive();
               }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-signal-cyan text-signal-cyan hover:bg-signal-cyan/10 font-sans text-sm font-medium transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-brand-400 text-brand-300 hover:bg-brand-500/10 font-sans text-sm font-medium transition-colors"
             >
               {t('editor.game.retry', { defaultValue: 'Retry' })}
             </button>
@@ -354,7 +355,7 @@ export default function GameArenaPage() {
             </div>
             <Link
               to="/arena/host"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-signal-green text-signal-green hover:bg-signal-green/10 font-sans text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-green"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-brand-400 text-brand-300 hover:bg-brand-500/10 font-sans text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-400"
             >
               <Gamepad2 className="w-4 h-4" /> {t('arena.cta_host', { defaultValue: 'Host a match' })}
             </Link>
@@ -370,18 +371,18 @@ export default function GameArenaPage() {
 
       {/* How it works: a real sequence, rendered as one. */}
       <div className="max-w-6xl mx-auto px-6 py-12">
-        <h2 className="font-sans text-xl font-bold tracking-tight mb-5">
+        <h2 className="font-display text-2xl font-semibold tracking-tight mb-5">
           {t('arena.how_title', { defaultValue: 'How a match works' })}
         </h2>
         <div className="tactical-panel divide-y divide-tactical-border">
           {steps.map((s, i) => (
             <div key={i} className="flex items-start gap-5 p-5 md:p-6">
               <div className="shrink-0 w-10 text-right">
-                <span className="font-mono text-2xl font-bold text-signal-cyan/80 tabular-nums leading-none">{i + 1}</span>
+                <span className="font-display text-3xl font-semibold text-brand-300 tabular-nums leading-none">{i + 1}</span>
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-2 mb-1.5">
-                  <s.icon className="w-4 h-4 text-signal-cyan" />
+                  <s.icon className="w-4 h-4 text-brand-300" />
                   <span className="font-sans text-base font-bold text-tactical-text">{s.title}</span>
                 </div>
                 <p className="font-sans text-sm text-tactical-dim leading-relaxed max-w-2xl">{s.body}</p>
@@ -393,7 +394,7 @@ export default function GameArenaPage() {
 
       {/* Scenario library: dense rows, engineer-native. */}
       <div className="max-w-6xl mx-auto px-6 py-12">
-        <h2 className="font-sans text-xl font-bold tracking-tight mb-1">
+        <h2 className="font-display text-2xl font-semibold tracking-tight mb-1">
           {t('arena.scenarios_title', { defaultValue: 'Battle-tested scenarios' })}
         </h2>
         <p className="font-sans text-sm text-tactical-dim mb-5">
@@ -424,9 +425,9 @@ export default function GameArenaPage() {
 
       {/* Closing CTA */}
       <div className="max-w-6xl mx-auto px-6 pb-16 pt-4">
-        <div className="tactical-panel border border-signal-green/40 p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center gap-6">
+        <div className="tactical-panel border border-brand-400/30 p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center gap-6">
           <div className="flex-1">
-            <div className="font-sans text-2xl font-bold tracking-tight mb-1">
+            <div className="font-display text-3xl font-semibold tracking-tight mb-1">
               {t('arena.closing_title', { defaultValue: 'Your move, architect.' })}
             </div>
             <p className="font-sans text-sm text-tactical-dim max-w-xl">
@@ -435,7 +436,7 @@ export default function GameArenaPage() {
           </div>
           <Link
             to="/arena/host"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-md bg-signal-green/15 border border-signal-green text-signal-green hover:bg-signal-green/25 font-sans text-sm font-bold transition-colors shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-green"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-md bg-brand-300 border border-brand-300 text-tactical-bg hover:bg-brand-200 font-sans text-sm font-bold transition-colors shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-400"
           >
             {t('arena.cta_host', { defaultValue: 'Host a match' })}
             <ArrowRight className="w-4 h-4" />
@@ -451,7 +452,7 @@ export default function GameArenaPage() {
           </span>
           <a
             href="https://dinamos.net"
-            className="sm:ml-auto inline-flex items-center gap-1.5 font-sans text-xs font-medium text-signal-cyan hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-cyan"
+            className="sm:ml-auto inline-flex items-center gap-1.5 font-sans text-xs font-medium text-brand-300 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-400"
           >
             {t('arena.footer_cta', { defaultValue: 'Explore the lessons on dinamos.net' })}
             <ArrowUpRight className="w-3.5 h-3.5" />

@@ -17,12 +17,12 @@ export const Typography: React.FC<TypographyProps> = ({
   color = '',
 }) => {
   const baseClasses = clsx({
-    'text-4xl font-bold font-mono tracking-tight': variant === 'h1',
-    'text-3xl font-semibold font-mono tracking-tight': variant === 'h2',
-    'text-2xl font-semibold font-mono tracking-tight': variant === 'h3',
-    'text-xl font-medium font-mono tracking-tight': variant === 'h4',
-    'text-lg font-medium font-mono tracking-tight': variant === 'h5',
-    'text-base font-medium font-mono tracking-tight': variant === 'h6',
+    'text-3xl sm:text-4xl font-bold font-display tracking-tight leading-tight': variant === 'h1',
+    'text-3xl font-semibold font-display tracking-tight leading-tight': variant === 'h2',
+    'text-2xl font-semibold font-display tracking-tight leading-tight': variant === 'h3',
+    'text-xl font-semibold font-display tracking-tight': variant === 'h4',
+    'text-lg font-semibold font-display tracking-tight': variant === 'h5',
+    'text-base font-semibold font-display tracking-tight': variant === 'h6',
     'text-base font-sans leading-relaxed': variant === 'p',
     'text-sm font-sans': variant === 'small',
   });
@@ -30,7 +30,7 @@ export const Typography: React.FC<TypographyProps> = ({
   // Only apply default colors if no color prop is provided and no text color class is in className
   const hasColorClass = className.includes('text-');
   const defaultColorClass = (!color && !hasColorClass) 
-    ? (variant === 'p' || variant === 'small' ? 'text-slate-600 dark:text-slate-300' : 'text-slate-900 dark:text-slate-100')
+    ? (variant === 'p' || variant === 'small' ? 'text-slate-600 dark:text-tactical-dim' : 'text-slate-900 dark:text-tactical-text')
     : '';
 
   const colorClass = color ? `text-${color}` : '';

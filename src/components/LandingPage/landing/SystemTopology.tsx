@@ -4,24 +4,24 @@ import { motion, useReducedMotion, type Variants } from 'framer-motion';
 type Pt = { x: number; y: number };
 
 const NODES = {
-  client: { x: 70, y: 210 },
-  lb: { x: 280, y: 210 },
-  a: { x: 520, y: 96 },
-  b: { x: 520, y: 210 },
-  c: { x: 520, y: 324 },
-  cache: { x: 770, y: 130 },
-  db: { x: 770, y: 300 },
+  client: { x: 280, y: 55 },
+  lb: { x: 280, y: 155 },
+  a: { x: 110, y: 265 },
+  b: { x: 280, y: 265 },
+  c: { x: 450, y: 265 },
+  cache: { x: 175, y: 385 },
+  db: { x: 385, y: 385 },
 } satisfies Record<string, Pt>;
 
 const EDGES: { from: Pt; to: Pt; color: string; delay: number }[] = [
-  { from: NODES.client, to: NODES.lb, color: '#56b6c8', delay: 0 },
-  { from: NODES.lb, to: NODES.a, color: '#34d399', delay: 0.5 },
-  { from: NODES.lb, to: NODES.b, color: '#34d399', delay: 0.9 },
-  { from: NODES.lb, to: NODES.c, color: '#34d399', delay: 1.3 },
-  { from: NODES.a, to: NODES.cache, color: '#d9a441', delay: 1.7 },
-  { from: NODES.b, to: NODES.cache, color: '#d9a441', delay: 2.1 },
-  { from: NODES.c, to: NODES.db, color: '#56b6c8', delay: 2.5 },
-  { from: NODES.b, to: NODES.db, color: '#56b6c8', delay: 2.9 },
+  { from: NODES.client, to: NODES.lb, color: '#ff8ab5', delay: 0 },
+  { from: NODES.lb, to: NODES.a, color: '#ff8ab5', delay: 0.5 },
+  { from: NODES.lb, to: NODES.b, color: '#ff8ab5', delay: 0.9 },
+  { from: NODES.lb, to: NODES.c, color: '#ff8ab5', delay: 1.3 },
+  { from: NODES.a, to: NODES.cache, color: '#6ee7c8', delay: 1.7 },
+  { from: NODES.b, to: NODES.cache, color: '#6ee7c8', delay: 2.1 },
+  { from: NODES.c, to: NODES.db, color: '#6ee7c8', delay: 2.5 },
+  { from: NODES.b, to: NODES.db, color: '#6ee7c8', delay: 2.9 },
 ];
 
 const groupVariants: Variants = {
@@ -30,12 +30,12 @@ const groupVariants: Variants = {
 };
 
 const nodeVariants: Variants = {
-  hidden: { opacity: 0, scale: 0.7 },
+  hidden: { opacity: 1, scale: 1 },
   show: { opacity: 1, scale: 1, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
 };
 
 const edgeVariants: Variants = {
-  hidden: { pathLength: 0, opacity: 0 },
+  hidden: { pathLength: 1, opacity: 1 },
   show: { pathLength: 1, opacity: 1, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
 };
 
@@ -82,17 +82,17 @@ function NodeBox({ x, y, w = 96, h = 52, label, sub, color }: NodeBoxProps) {
         width={w}
         height={h}
         rx={8}
-        className="fill-white dark:fill-tactical-surface"
-        stroke={color}
-        strokeWidth={1.5}
+        className="fill-white stroke-slate-300 dark:fill-tactical-raised dark:stroke-tactical-line"
+        strokeWidth={1}
       />
+      <circle cx={x - w / 2 + 10} cy={y - h / 2 + 10} r={2} fill={color} />
       <text
         x={x}
         y={sub ? y - 3 : y + 1}
         textAnchor="middle"
         dominantBaseline="middle"
         className="fill-slate-900 dark:fill-tactical-text"
-        style={{ fontSize: 13, fontWeight: 700, fontFamily: 'JetBrains Mono, monospace' }}
+        style={{ fontSize: 14, fontWeight: 600, fontFamily: 'Hanken Grotesk, sans-serif' }}
       >
         {label}
       </text>
@@ -102,8 +102,8 @@ function NodeBox({ x, y, w = 96, h = 52, label, sub, color }: NodeBoxProps) {
           y={y + 13}
           textAnchor="middle"
           dominantBaseline="middle"
-          fill={color}
-          style={{ fontSize: 9.5, fontFamily: 'JetBrains Mono, monospace' }}
+          className="fill-slate-600 dark:fill-tactical-dim"
+          style={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace' }}
         >
           {sub}
         </text>
@@ -119,6 +119,7 @@ interface SystemTopologyProps {
     nodeLb: string;
     nodeCache: string;
     nodeDb: string;
+    description?: string;
   };
 }
 
@@ -132,10 +133,10 @@ export default function SystemTopology({ copy }: SystemTopologyProps) {
 
   return (
     <motion.svg
-      viewBox="0 0 840 420"
+      viewBox="0 0 560 455"
       className="w-full h-auto"
       role="img"
-      aria-label="Diagram: client requests routed through a load balancer to three service nodes backed by a cache and a database."
+      aria-label={copy.description ?? 'Client requests routed through a load balancer to three service nodes backed by a cache and a database.'}
       variants={groupVariants}
       initial={reduce ? 'show' : 'hidden'}
       whileInView="show"
@@ -165,13 +166,13 @@ export default function SystemTopology({ copy }: SystemTopologyProps) {
       )}
 
       {/* nodes */}
-      <NodeBox x={NODES.client.x} y={NODES.client.y} w={84} label={copy.nodeClient} sub="1.5B+/yr" color="#56b6c8" />
-      <NodeBox x={NODES.lb.x} y={NODES.lb.y} label={copy.nodeLb} sub="round-robin" color="#34d399" />
-      <NodeBox x={NODES.a.x} y={NODES.a.y} w={88} label="node-01" sub="healthy" color="#34d399" />
-      <NodeBox x={NODES.b.x} y={NODES.b.y} w={88} label="node-02" sub="healthy" color="#34d399" />
-      <NodeBox x={NODES.c.x} y={NODES.c.y} w={88} label="node-03" sub="healthy" color="#34d399" />
-      <NodeBox x={NODES.cache.x} y={NODES.cache.y} w={84} label={copy.nodeCache} sub="96% hit" color="#d9a441" />
-      <NodeBox x={NODES.db.x} y={NODES.db.y} w={84} label={copy.nodeDb} sub="replicated" color="#56b6c8" />
+      <NodeBox x={NODES.client.x} y={NODES.client.y} w={108} label={copy.nodeClient} sub="HTTP request" color="#ff8ab5" />
+      <NodeBox x={NODES.lb.x} y={NODES.lb.y} w={140} label={copy.nodeLb} sub="round-robin" color="#ff8ab5" />
+      <NodeBox x={NODES.a.x} y={NODES.a.y} w={104} label="node-01" sub="replica A" color="#6ee7c8" />
+      <NodeBox x={NODES.b.x} y={NODES.b.y} w={104} label="node-02" sub="replica B" color="#6ee7c8" />
+      <NodeBox x={NODES.c.x} y={NODES.c.y} w={104} label="node-03" sub="replica C" color="#6ee7c8" />
+      <NodeBox x={NODES.cache.x} y={NODES.cache.y} w={108} label={copy.nodeCache} sub="in-memory" color="#6ee7c8" />
+      <NodeBox x={NODES.db.x} y={NODES.db.y} w={124} label={copy.nodeDb} sub="persistent" color="#6ee7c8" />
     </motion.svg>
   );
 }

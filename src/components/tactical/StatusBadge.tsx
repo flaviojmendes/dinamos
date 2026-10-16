@@ -62,13 +62,13 @@ interface StatusBadgeProps {
   className?: string;
 }
 
-/** Uppercase mono status pill with a colored dot and hairline box. */
+/** Status label with a semantic color and optional dot. */
 export function StatusBadge({ variant, label, dot = true, className }: StatusBadgeProps) {
   const v = variants[variant];
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 font-sans text-[11px] font-medium dark:rounded-sm',
+        'inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 font-sans text-[11px] font-medium',
         v.box,
         className,
       )}
