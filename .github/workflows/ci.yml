@@ -45,6 +45,14 @@ jobs:
         run: npm run vercel-build
         env:
           DATABASE_URL: ''
+          # Initialize the real Firebase SDK for unauthenticated smoke tests.
+          # These placeholders cannot authenticate against a production project.
+          VITE_FIREBASE_API_KEY: 'ci-smoke-test-api-key'
+          VITE_FIREBASE_AUTH_DOMAIN: 'demo-dinamos-ci.firebaseapp.com'
+          VITE_FIREBASE_PROJECT_ID: 'demo-dinamos-ci'
+          VITE_FIREBASE_STORAGE_BUCKET: 'demo-dinamos-ci.appspot.com'
+          VITE_FIREBASE_MESSAGING_SENDER_ID: '1234567890'
+          VITE_FIREBASE_APP_ID: '1:1234567890:web:ci-smoke-test'
 
       - name: Bundle budget
         run: npm run baseline:bundle && npm run baseline:bundle-budget
