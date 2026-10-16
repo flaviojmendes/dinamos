@@ -218,7 +218,7 @@ export default function QuorumReplicationSimulator() {
           <AnimatedMetric value={n} label={t(`${base}.metrics.replicas`)} color="default" />
           <AnimatedMetric value={latest} label={t(`${base}.metrics.latest`)} color="cyan" />
           <AnimatedMetric value={faultTolerance} label={t(`${base}.metrics.fault_tolerance`)} color={faultTolerance > 0 ? 'green' : 'red'} />
-          <AnimatedMetric value={strong ? 1 : 0} format={() => (strong ? 'YES' : 'NO')} label={t(`${base}.metrics.strong`)} color={strong ? 'green' : 'amber'} />
+          <AnimatedMetric value={strong ? 1 : 0} format={() => (t(strong ? 'common.yes' : 'common.no'))} label={t(`${base}.metrics.strong`)} color={strong ? 'green' : 'amber'} />
         </div>
         <p className="mt-4 font-sans text-[11px] text-slate-500 dark:text-tactical-dim">{t(`${base}.hint`)}</p>
       </Panel>

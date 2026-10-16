@@ -23,7 +23,7 @@ interface Request {
 
 const SERVER_TIERS: ServerTier[] = [
   {
-    name: 'Básico',
+    name: 'basic',
     cpu: 2,
     memory: 4,
     storage: 100,
@@ -31,7 +31,7 @@ const SERVER_TIERS: ServerTier[] = [
     maxRequests: 4
   },
   {
-    name: 'Padrão',
+    name: 'standard',
     cpu: 4,
     memory: 8,
     storage: 200,
@@ -39,7 +39,7 @@ const SERVER_TIERS: ServerTier[] = [
     maxRequests: 8
   },
   {
-    name: 'Premium',
+    name: 'premium',
     cpu: 8,
     memory: 16,
     storage: 400,
@@ -47,7 +47,7 @@ const SERVER_TIERS: ServerTier[] = [
     maxRequests: 16
   },
   {
-    name: 'Empresarial',
+    name: 'enterprise',
     cpu: 16,
     memory: 32,
     storage: 800,
@@ -204,7 +204,7 @@ export default function VerticalScalingSimulator() {
           animate={{ opacity: 1, x: 0 }}
         >
           <Panel
-            title={currentServer.name}
+            title={t(`simulators.vertical_scaling.tiers.${currentServer.name}`)}
             accent="cyan"
             action={
               <div className="flex gap-2">
@@ -390,7 +390,7 @@ export default function VerticalScalingSimulator() {
             >
               <h2 className="font-sans text-lg font-semibold tracking-tight mb-4 text-slate-900 dark:text-slate-100">{t('simulators.vertical_scaling.upgrade_modal.title')}</h2>
               <p className="font-sans text-sm text-slate-600 dark:text-slate-400 mb-6">
-                {t('simulators.vertical_scaling.upgrade_modal.text', { tier: SERVER_TIERS[currentTier + 1]?.name, cost: SERVER_TIERS[currentTier + 1]?.cost })}
+                {t('simulators.vertical_scaling.upgrade_modal.text', { tier: t(`simulators.vertical_scaling.tiers.${SERVER_TIERS[currentTier + 1]?.name}`), cost: SERVER_TIERS[currentTier + 1]?.cost })}
               </p>
               <div className="flex justify-end gap-3">
                 <TacticalButton variant="ghost" onClick={() => setShowUpgradeModal(false)}>

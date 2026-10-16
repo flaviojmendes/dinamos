@@ -21,5 +21,13 @@
     "more_in_module": "Mais em {{module}}",
     "explore": "Explorar"
   },
-  "simulator_interactive": "Simulador interativo"
+  "simulator_interactive": "Simulador interativo",
+  "translation_unavailable": "Esta aula ainda não está disponível em português.",
+  "not_found": "Conteúdo não encontrado: {{slug}}",
+  "burger_analogy_title": "Na nossa hamburgueria",
+  "load_error_title": "Falha ao carregar o conteúdo",
+  "compile_error_title": "Não foi possível exibir o conteúdo",
+  "load_error_message": "Não foi possível carregar o conteúdo. Isso costuma acontecer após uma atualização do site.",
+  "reload": "Recarregar página",
+  "video": "Vídeo da aula"
 }

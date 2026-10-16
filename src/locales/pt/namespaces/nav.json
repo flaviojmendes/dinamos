@@ -1,0 +1,9 @@
+{
+  "tier_tools": "Ferramentas e comunidade",
+  "collapse_sidebar": "Recolher menu",
+  "expand_sidebar": "Expandir menu",
+  "navigation": "Navegação",
+  "filter_placeholder": "Filtrar navegação…",
+  "collapse_section": "Recolher {{section}}",
+  "expand_section": "Expandir {{section}}"
+}

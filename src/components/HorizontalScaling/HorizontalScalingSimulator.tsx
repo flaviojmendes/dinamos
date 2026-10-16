@@ -28,7 +28,7 @@ interface SimulationConfig {
 }
 
 export default function HorizontalScalingSimulator() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [servers, setServers] = useState<Server[]>([
     { id: 1, load: 0, status: 'active', requests: 0 }
   ]);
@@ -239,7 +239,7 @@ export default function HorizontalScalingSimulator() {
               className="flex items-center gap-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2"
             >
               <span className="text-slate-500 dark:text-tactical-dim">
-                {new Date(request.timestamp).toLocaleTimeString()}
+                {new Date(request.timestamp).toLocaleTimeString(i18n?.resolvedLanguage || i18n?.language)}
               </span>
               <span className="font-sans text-sm text-slate-900 dark:text-slate-100">{t('simulators.horizontal_scaling.requests.server_label', { id: request.server })}</span>
               <StatusBadge

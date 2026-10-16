@@ -4,6 +4,7 @@ export {
   reloadContentFromApi,
   resetContentDeliveryForTests,
   getCachedManifestForTests,
+  ContentTranslationUnavailableError,
 } from './loadContent';
 export type { LoadContentIndexOptions, LoadPageBodyOptions } from './loadContent';
 export { isForceContentApi, MANIFEST_URL } from './config';

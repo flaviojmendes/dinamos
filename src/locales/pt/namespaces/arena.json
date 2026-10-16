@@ -36,5 +36,7 @@
   "closing_title": "Sua vez, arquiteto.",
   "closing_sub": "Grátis, no navegador, sem instalação. Crie uma partida para seu time, sua turma ou seu meetup, e coloque o telão da plateia no projetor.",
   "footer_tag": "A Arena roda no Dinamos, a plataforma gratuita e prática de sistemas distribuídos.",
-  "footer_cta": "Explore as lições no dinamos.net"
+  "footer_cta": "Explore as lições no dinamos.net",
+  "fetch_error": "Não foi possível carregar as partidas ao vivo. Verifique sua conexão e tente novamente.",
+  "live_chip": "{{count}} partida ao vivo agora"
 }

@@ -146,7 +146,7 @@ export default function CircuitBreaker() {
         {isConfigOpen && (
           <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 gap-4 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 rounded-lg">
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">Limite de falhas</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">{t('simulators.circuit_breaker.config.failure_threshold')}</label>
               <input
                 type="number"
                 value={config.failureThreshold}
@@ -155,7 +155,7 @@ export default function CircuitBreaker() {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">Timeout de reset (ms)</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">{t('simulators.circuit_breaker.config.reset_timeout')}</label>
               <input
                 type="number"
                 value={config.resetTimeout}
@@ -164,7 +164,7 @@ export default function CircuitBreaker() {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">Taxa de erro (%)</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">{t('simulators.circuit_breaker.config.error_rate')}</label>
               <input
                 type="number"
                 value={config.errorRate}
@@ -216,7 +216,7 @@ export default function CircuitBreaker() {
               <path d="M0 28H14M50 28H64" stroke="currentColor" strokeWidth="2" /><circle cx="16" cy="28" r="3" stroke="currentColor" strokeWidth="2" /><circle cx="48" cy="28" r="3" stroke="currentColor" strokeWidth="2" />
               <motion.line x1="19" y1="28" x2="45" animate={{ y2: circuitState === 'OPEN' ? 6 : circuitState === 'HALF_OPEN' ? 16 : 28 }} transition={transition} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
             </svg>
-            <span className="font-mono text-xs">{circuitState}</span>
+            <span className="font-mono text-xs">{t(`simulators.circuit_breaker.states.${circuitState}`)}</span>
           </div>
           <FlowLink active={isRunning && circuitState !== 'OPEN'} tone={errorsEnabled ? 'amber' : 'green'} eventKey={requests[0]?.id ?? 0} />
           <div className="flex min-w-0 flex-col items-center gap-2 text-center text-xs sm:text-sm"><Server size={24} aria-hidden="true" />{t('simulators.motion.service')}</div>
@@ -224,7 +224,7 @@ export default function CircuitBreaker() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg">
             <div className="flex flex-wrap items-center gap-4 mb-4">
-              <StatusBadge variant={circuitStateVariant(circuitState)} label={circuitState} />
+              <StatusBadge variant={circuitStateVariant(circuitState)} label={t(`simulators.circuit_breaker.states.${circuitState}`)} />
               {circuitState === 'OPEN' && resetCountdown > 0 && (
                 <div>
                   <div className="text-xs font-medium text-slate-500 dark:text-tactical-label">{t('simulators.circuit_breaker.labels.reset_in')}</div>
@@ -260,7 +260,7 @@ export default function CircuitBreaker() {
               <div className="flex items-center gap-2">
                 <StatusBadge
                   variant={request.status === 'success' ? 'active' : 'classified'}
-                  label={request.status.toUpperCase()}
+                  label={t(`simulators.circuit_breaker.request_status.${request.status}`)}
                 />
               </div>
               <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim tabular-nums">{request.duration.toFixed(0)}ms</span>

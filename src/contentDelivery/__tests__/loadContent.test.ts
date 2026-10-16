@@ -10,6 +10,7 @@ vi.mock('../config', () => ({
 }));
 
 import {
+  ContentTranslationUnavailableError,
   loadContentIndex,
   loadPageBody,
   reloadContentFromApi,
@@ -39,6 +40,10 @@ const manifest = {
     },
   ],
 };
+
+function pagePayload(body: string, lang = 'en') {
+  return { slug: 's1', path: '/p1', lang, title: 'T', simulator_key: null, body };
+}
 
 function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -142,7 +147,7 @@ describe('loadPageBody', () => {
   it('falls back to the API when the CDN body fetch fails', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
     vi.mocked(fetch).mockResolvedValueOnce(new Response('', { status: 404 }));
-    api.get.mockResolvedValueOnce({ data: { body: '# API body' } });
+    api.get.mockResolvedValueOnce({ data: pagePayload('# API body') });
 
     const body = await loadPageBody({ path: '/p1', lang: 'en' });
     expect(body).toBe('# API body');
@@ -151,6 +156,32 @@ describe('loadPageBody', () => {
     });
     expect(warn).toHaveBeenCalledTimes(1);
     warn.mockRestore();
+  });
+
+  it('rejects the wrong CDN locale and retrieves the requested API locale', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.mocked(fetch).mockResolvedValueOnce(jsonResponse(pagePayload('# Portuguese', 'pt')));
+    api.get.mockResolvedValueOnce({ data: pagePayload('# English') });
+    expect(await loadPageBody({ path: '/p1', lang: 'en' })).toBe('# English');
+    expect(api.get).toHaveBeenCalledOnce();
+    warn.mockRestore();
+  });
+
+  it.each([
+    pagePayload('# Wrong language', 'pt'),
+    pagePayload('   '),
+    { body: '# Body without locale metadata' },
+    { ...pagePayload('# Another lesson'), path: '/other' },
+  ])('never displays invalid or mismatched API content: %j', async (payload) => {
+    forceApi.enabled = true;
+    api.get.mockResolvedValueOnce({ data: payload });
+    await expect(loadPageBody({ path: '/p1', lang: 'en' })).rejects.toThrow();
+  });
+
+  it('preserves a missing translation error from the API', async () => {
+    forceApi.enabled = true;
+    api.get.mockRejectedValueOnce({ response: { data: { detail: 'translation_unavailable' } } });
+    await expect(loadPageBody({ path: '/p1', lang: 'pt' })).rejects.toBeInstanceOf(ContentTranslationUnavailableError);
   });
 
   it('uses manifest body URLs rather than deriving paths from slug', async () => {
@@ -181,7 +212,7 @@ describe('reloadContentFromApi', () => {
         return Promise.resolve({ data: { modules: manifest.modules } });
       }
       if (url === '/api/content/body') {
-        return Promise.resolve({ data: { body: '# API' } });
+        return Promise.resolve({ data: pagePayload('# API') });
       }
       return Promise.resolve({ data: { pages: [] } });
     });

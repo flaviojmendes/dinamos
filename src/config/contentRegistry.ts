@@ -104,9 +104,25 @@ export function getModule(id: string): ModuleDef | undefined {
   return moduleById.get(id);
 }
 
-/** i18n key for a path, matching the sidebar convention (menu.<dotted>.name). */
+const LEGACY_MENU_PATHS: Record<string, string> = {
+  '/backpressure': 'principios_design.backpressure.simulator',
+  '/circuit-breaker': 'principios_design.tolerancia_falhas.circuit_breaker.simulator',
+  '/rate-limiter': 'principios_design.rate_limiting.simulator',
+  '/cdn': 'componentes.cdn.simulator',
+  '/horizontal-scaling': 'principios_design.escalabilidade.horizontal.simulator',
+};
+
+/** Resolve URL segments to the stable translation IDs used throughout the app. */
 export function menuKey(path: string, field: 'name' | 'description'): string {
-  return `menu.${path.replace(/^\//, '').replace(/\//g, '.')}.${field}`;
+  const normalized = path.replace(/\/+$/, '') || '/';
+  const legacy = LEGACY_MENU_PATHS[normalized];
+  const segments = normalized.split('/').filter(Boolean).map(segment => segment.replace(/-/g, '_'));
+  if (segments[0] === 'sistemas_ia') segments[0] = 'ai_systems';
+  if (segments[0] === 'dados_armazenamento') segments[0] = 'data_storage';
+  if (segments[0] === 'ai_systems' && segments[1] === 'agentic_systems') segments[1] = 'agentic';
+  if (segments[0] === 'theoretical_foundations' && segments[1] === 'flp_impossibility') segments[1] = 'flp';
+  if (segments[segments.length - 1] === 'simulador') segments[segments.length - 1] = 'simulator';
+  return `menu.${legacy ?? segments.join('.')}.${field}`;
 }
 
 function prettify(seg: string): string {
@@ -335,8 +351,7 @@ export function moduleOf(path: string): ModuleDef | undefined {
  * a module has no explicit `orderIndex` yet (e.g. before the index loads).
  */
 /**
- * DB-driven display title for a path, in the requested language (with fallback
- * to the other language). Lesson/case pages carry their title from the CMS
+ * DB-driven display title for a path in the requested language. Lesson/case pages carry their title from the CMS
  * (content_pages.title_en / title_pt); items without a DB title (simulators,
  * tools, module roots) return undefined so callers fall back to i18n keys.
  */
@@ -345,8 +360,7 @@ export function titleForPath(path: string, lang: string): string | undefined {
   if (!item) return undefined;
   const pt = lang.toLowerCase().startsWith('pt');
   const primary = pt ? item.titlePt : item.titleEn;
-  const fallback = pt ? item.titleEn : item.titlePt;
-  const resolved = (primary && primary.trim()) || (fallback && fallback.trim()) || '';
+  const resolved = primary?.trim() || '';
   return resolved || undefined;
 }
 

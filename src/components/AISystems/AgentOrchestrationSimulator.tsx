@@ -36,7 +36,7 @@ const entryVariant: Record<EntryType, StatusVariant> = {
 };
 
 export default function AgentOrchestrationSimulator() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { reducedMotion, transition, duration } = useSimulationMotion();
   const [maxSteps, setMaxSteps] = useState(6);
   const [toolLatency, setToolLatency] = useState(400);
@@ -246,7 +246,7 @@ export default function AgentOrchestrationSimulator() {
             <AnimatedMetric value={summary.steps} label={t(`${base}.metrics.steps`)} color="default" />
             <AnimatedMetric value={summary.toolCalls} label={t(`${base}.metrics.tool_calls`)} color="cyan" />
             <AnimatedMetric value={summary.retries} label={t(`${base}.metrics.retries`)} color={summary.retries > 0 ? 'amber' : 'default'} />
-            <AnimatedMetric value={summary.tokens} format={(v) => Math.round(v).toLocaleString()} label={t(`${base}.metrics.tokens`)} color="default" />
+            <AnimatedMetric value={summary.tokens} format={(v) => Math.round(v).toLocaleString(i18n?.resolvedLanguage || i18n?.language)} label={t(`${base}.metrics.tokens`)} color="default" />
             <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 flex flex-col justify-center">
               <StatusBadge variant={summary.success ? 'completed' : 'classified'} label={statusLabel} />
               <div className="font-sans text-[11px] font-medium mt-2 text-slate-500 dark:text-tactical-label">{t(`${base}.metrics.status`)}</div>

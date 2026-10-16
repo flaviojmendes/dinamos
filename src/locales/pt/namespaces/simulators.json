@@ -78,7 +78,16 @@
     "labels": {
       "node": "Nó",
       "hint": "Adicione ou remova um nó — só as chaves destacadas se movem. Mais nós virtuais significa distribuição mais suave."
-    }
+    },
+    "narration": {
+      "moved": "{{pct}}% das chaves mudaram de nó. O hashing consistente limita o remapeamento quando o anel muda.",
+      "steady": "Adicione ou remova um nó para ver quantas chaves precisam mudar em comparação com o particionamento por módulo."
+    },
+    "legend": {
+      "node": "Nó físico",
+      "moved": "Chave que mudou de nó"
+    },
+    "chart_label": "Chaves remapeadas após a mudança de topologia"
   },
   "sharding": {
     "title": "Simulador de Sharding",
@@ -135,6 +144,16 @@
       "score": "pont.",
       "no_matches": "Nenhum documento correspondente",
       "hint": "AND intersecta as listas de postings; OR as une. A pontuação conta quantos termos da consulta cada documento contém."
+    },
+    "terms": {
+      "cache": "cache",
+      "network": "rede",
+      "data": "dados",
+      "replica": "réplica",
+      "consensus": "consenso",
+      "partition": "partição",
+      "shard": "fragmento",
+      "queue": "fila"
     }
   },
   "storage_engine": {
@@ -250,7 +269,9 @@
       "fault_tolerance": "Falhas toleradas",
       "strong": "Leituras fortes?"
     },
-    "hint": "Quando R + W > N os quóruns de leitura e escrita sempre se sobrepõem, então leituras veem a escrita mais nova. Reduza-os para mais disponibilidade ao custo de leituras antigas."
+    "hint": "Quando R + W > N os quóruns de leitura e escrita sempre se sobrepõem, então leituras veem a escrita mais nova. Reduza-os para mais disponibilidade ao custo de leituras antigas.",
+    "strong": "Consistência forte",
+    "eventual": "Consistência eventual"
   },
   "cdc": {
     "title": "Simulador de CDC",
@@ -397,7 +418,8 @@
       "polling": "Polling pergunta de novo em intervalo fixo: simples, mas adiciona latência (até um intervalo) e desperdiça requisições quando nada mudou.",
       "sse": "Server-Sent Events fazem push unidirecional por uma única conexão HTTP de longa duração — entrega quase instantânea com quase nenhum overhead.",
       "websocket": "WebSockets mantêm uma conexão full-duplex aberta — entrega instantânea e bidirecional, ideal para chat, jogos e colaboração ao vivo."
-    }
+    },
+    "tick_unit": "ciclos"
   },
   "dead_letter_queue": {
     "title": "Simulador de Dead Letter Queue",
@@ -910,6 +932,30 @@
       "base_error_rate": "Taxa de erro base: {{percent}}%",
       "error": "Erro",
       "processing": "Processando"
+    },
+    "services": {
+      "auth": {
+        "name": "Serviço de autenticação",
+        "description": "Autenticação e autorização"
+      },
+      "products": {
+        "name": "Serviço de produtos",
+        "description": "Catálogo de produtos"
+      },
+      "orders": {
+        "name": "Serviço de pedidos",
+        "description": "Gerenciamento de pedidos"
+      },
+      "payments": {
+        "name": "Serviço de pagamentos",
+        "description": "Processamento de pagamentos"
+      }
+    },
+    "types": {
+      "auth": "Autenticação",
+      "products": "Produtos",
+      "orders": "Pedidos",
+      "payments": "Pagamentos"
     }
   },
   "retries": {
@@ -948,6 +994,16 @@
       "p1": "Este simulador demonstra como os mecanismos de retry funcionam em sistemas distribuídos. Cada tentativa tem uma chance de sucesso baseada na taxa configurada.",
       "p2": "Com backoff exponencial, o tempo entre tentativas aumenta progressivamente (1s, 2s, 4s, 8s...), reduzindo a carga do sistema.",
       "p3": "Jitter adiciona uma variação aleatória ao tempo entre tentativas, evitando que vários clientes tentem novamente ao mesmo tempo."
+    },
+    "narration": {
+      "running": "Tentativa {{n}} em andamento. Observe o intervalo crescente entre as novas tentativas.",
+      "idle": "Inicie a simulação para explorar os intervalos, a variação aleatória e a carga adicional das novas tentativas.",
+      "done": "Cada nova tentativa aumenta a carga de uma dependência que já enfrenta problemas. Esse é o risco de uma tempestade de tentativas."
+    },
+    "legend": {
+      "success": "Sucesso",
+      "pending": "Aguardando",
+      "error": "Tentativa falhou"
     }
   },
   "circuit_breaker": {
@@ -970,6 +1026,21 @@
       "inactive": "Inativos",
       "latest_requests": "Últimas Requisições",
       "no_requests": "Nenhuma requisição realizada"
+    },
+    "config": {
+      "failure_threshold": "Limite de falhas",
+      "reset_timeout": "Timeout de reset (ms)",
+      "error_rate": "Taxa de erro (%)"
+    },
+    "request_status": {
+      "success": "Sucesso",
+      "error": "Erro",
+      "timeout": "Prazo excedido"
+    },
+    "states": {
+      "CLOSED": "Fechado",
+      "OPEN": "Aberto",
+      "HALF_OPEN": "Semiaberto"
     }
   },
   "polling_webhooks": {
@@ -998,7 +1069,8 @@
       "server": "Servidor",
       "active_mode": "Modo Ativo:",
       "active_sim": "🟢 Simulação Ativa ({{mode}})",
-      "stopped_sim": "🔴 Simulação Parada"
+      "stopped_sim": "🔴 Simulação Parada",
+      "more": "e mais {{count}}…"
     },
     "stats": {
       "title": "Estatísticas em Tempo Real",
@@ -1006,7 +1078,7 @@
       "empty_responses": "Respostas Vazias",
       "data_transfers": "Dados Transferidos",
       "webhooks_sent": "Webhooks Enviados",
-      "total_bandwidth_bits": "Bandwidth Total (bits)",
+      "total_bandwidth_bits": "Volume total (bits)",
       "efficiency": "Eficiência",
       "success_rate": "Taxa de Sucesso",
       "wasted_requests": "Requisições Desperdiçadas"
@@ -1023,8 +1095,19 @@
     "messages": {
       "checking": "Verificando novos dados...",
       "data_found": "Dados encontrados: {{content}}",
-      "no_data": "Nenhum dado novo disponível"
-    }
+      "no_data": "Nenhum dado novo disponível",
+      "generated": "Novos dados disponíveis: {{content}}"
+    },
+    "samples": [
+      "Novo pedido #1234 recebido",
+      "João entrou na conta",
+      "Pagamento de R$ 50,00 processado",
+      "Envio do arquivo concluído",
+      "Temperatura de 23 °C registrada",
+      "Cópia de segurança concluída",
+      "Nova mensagem de Alice",
+      "Estoque atualizado: 15 itens"
+    ]
   },
   "message_queue_sim": {
     "title": "Message Queue",
@@ -1059,6 +1142,12 @@
     "messages": {
       "title": "Mensagens",
       "none": "Nenhuma mensagem ainda"
+    },
+    "status": {
+      "produced": "Produzida",
+      "queued": "Na fila",
+      "processing": "Processando",
+      "completed": "Concluída"
     }
   },
   "philosophers_sim": {
@@ -1133,6 +1222,17 @@
       "started_eating": "{{name}} pegou os dois garfos e começou a comer",
       "finished_eating": "{{name}} terminou de comer e liberou os garfos",
       "deadlock_detected": "Deadlock detectado — nenhum filósofo consegue progredir"
+    },
+    "fork_left": "Garfo esquerdo",
+    "fork_right": "Garfo direito",
+    "names": {
+      "plato": "Platão",
+      "aristotle": "Aristóteles",
+      "socrates": "Sócrates",
+      "descartes": "Descartes",
+      "kant": "Kant",
+      "nietzsche": "Nietzsche",
+      "confucius": "Confúcio"
     }
   },
   "rate_limiter": {
@@ -1200,6 +1300,36 @@
       "processed": "Mensagens Processadas",
       "dropped": "Mensagens Descartadas",
       "latest": "Últimas Mensagens"
+    },
+    "explanation": {
+      "title": "O que é backpressure?",
+      "definition": "Backpressure é um mecanismo fundamental em sistemas distribuídos que lida com situações onde um componente não consegue processar dados na mesma velocidade em que os recebe. É como uma válvula de pressão que regula o fluxo de dados para evitar sobrecarga.",
+      "example": "No mundo real, isso acontece quando, por exemplo, um serviço de processamento de pedidos recebe mais requisições do que consegue processar. Sem backpressure, o sistema poderia falhar, perder dados ou consumir memória indefinidamente.",
+      "how": "Como funciona o simulador",
+      "producer": "Produtor:",
+      "producer_description": "Gera mensagens em uma taxa configurável (mensagens/segundo)",
+      "queue": "Fila:",
+      "queue_description": "Armazena mensagens até um limite máximo configurável",
+      "consumer": "Consumidor:",
+      "consumer_description": "Processa mensagens em sua própria velocidade",
+      "mechanisms": "Mecanismos de Backpressure:",
+      "throttle": "Quando a fila atinge 80% da capacidade, o produtor é throttled (desacelerado)",
+      "overflow": "Se a fila encher completamente, novas mensagens são descartadas",
+      "resume": "Quando a fila esvazia, o produtor volta ao ritmo normal",
+      "experiment": "Experimente configurar diferentes taxas de produção e consumo para ver como o sistema reage à pressão e se adapta para manter a estabilidade."
+    },
+    "config": {
+      "production_rate": "Taxa de produção (msg/s)",
+      "consumption_rate": "Taxa de consumo (msg/s)",
+      "queue_capacity": "Tamanho máximo da fila"
+    },
+    "empty": "Nenhuma mensagem recente",
+    "seconds_ago": "há {{seconds}} s",
+    "status": {
+      "queued": "Na fila",
+      "processing": "Processando",
+      "completed": "Concluída",
+      "dropped": "Descartada"
     }
   },
   "round_robin": {
@@ -1216,14 +1346,19 @@
     },
     "strategies": {
       "round_robin": "Round Robin: Distribui as requisições sequencialmente entre todos os servidores em ordem circular.",
-      "least_conn": "Least Connections: Envia novas requisições para o servidor com menor carga atual.",
-      "random": "Random: Seleciona aleatoriamente um servidor para cada nova requisição."
+      "least_conn": "Menos conexões: envia novas requisições ao servidor com a menor carga atual.",
+      "random": "Aleatório: seleciona um servidor ao acaso para cada nova requisição.",
+      "least_connections": "Menos conexões"
     },
     "server_card": {
       "server_label": "Servidor {{id}}",
       "requests": "{{current}}/{{capacity}} requisições",
       "response_time_ms": "({{ms}}ms)",
       "response_time_label": "Tempo de Resposta:"
+    },
+    "strategy_names": {
+      "round_robin": "Round Robin",
+      "random": "Aleatório"
     }
   },
   "cdn": {
@@ -1243,7 +1378,7 @@
       "x_suffix": "x",
       "logs_suffix": "logs",
       "country_select": "Selecione seu país:",
-      "datacenters": "Datacenters:",
+      "datacenters": "Centros de dados",
       "cache_badge": "Cache ✓",
       "latency": "Latência"
     },
@@ -1252,7 +1387,7 @@
     },
     "history": {
       "title": "Histórico de Requisições:",
-      "cache_hit": "Cache Hit"
+      "cache_hit": "Encontrado no cache"
     },
     "info": {
       "title": "Como funciona?",
@@ -1261,6 +1396,46 @@
       "i3": "Primeira requisição: Busca do servidor de origem ({{base}}x a latência)",
       "i4": "Requisições subsequentes: Servidas do cache local ({{cache}}x a latência)",
       "i5": "A latência varia de acordo com a distância entre seu país e o datacenter"
+    },
+    "countries": {
+      "br": {
+        "name": "Brasil",
+        "region": "América do Sul"
+      },
+      "ar": {
+        "name": "Argentina",
+        "region": "América do Sul"
+      },
+      "mx": {
+        "name": "México",
+        "region": "América do Norte"
+      },
+      "es": {
+        "name": "Espanha",
+        "region": "Europa"
+      },
+      "jp": {
+        "name": "Japão",
+        "region": "Ásia"
+      }
+    },
+    "datacenters": {
+      "us": {
+        "name": "Estados Unidos",
+        "location": "Virgínia"
+      },
+      "br": {
+        "name": "Brasil",
+        "location": "São Paulo"
+      },
+      "eu": {
+        "name": "Europa",
+        "location": "Frankfurt"
+      },
+      "sg": {
+        "name": "Ásia",
+        "location": "Singapura"
+      }
     }
   },
   "firewall": {
@@ -1340,7 +1515,14 @@
       "i4": "A última regra (default) bloqueia todo o tráfego não especificado nas regras anteriores",
       "i5": "Você pode adicionar suas próprias regras e ver como elas afetam o tráfego",
       "i6": "Use o modo \"Auto Gerar\" para ver um fluxo contínuo de pacotes"
-    }
+    },
+    "buttons": {
+      "reset": "Reiniciar"
+    },
+    "auto": "Automático",
+    "port_or_any": "Porta ou 0 para todas",
+    "port_placeholder": "Porta (ex.: 80)",
+    "packet_data": "Dados do pacote"
   },
   "horizontal_scaling": {
     "title": "Simulador de Escalabilidade Horizontal",
@@ -1413,6 +1595,12 @@
       "text": "Deseja aumentar para {{tier}}? Isso aumentará seus custos para R${{cost}}/mês.",
       "cancel": "Cancelar",
       "confirm": "Aumentar"
+    },
+    "tiers": {
+      "basic": "Básico",
+      "standard": "Padrão",
+      "premium": "Premium",
+      "enterprise": "Empresarial"
     }
   },
   "scalability": {
@@ -1448,7 +1636,23 @@
     "recover": "Recuperar",
     "recent_requests": "Requisições Recentes",
     "read_label": "Leitura",
-    "write_label": "Escrita"
+    "write_label": "Escrita",
+    "server": "Servidor {{id}}",
+    "regions": {
+      "us_east": "Leste dos EUA",
+      "us_west": "Oeste dos EUA",
+      "europe": "Europa"
+    },
+    "roles": {
+      "primary": "Primário",
+      "secondary": "Secundário"
+    },
+    "request_status": {
+      "pending": "Pendente",
+      "processing": "Processando",
+      "completed": "Concluída",
+      "failed": "Falhou"
+    }
   },
   "timeout": {
     "title": "Simulador de Timeout",
@@ -1485,6 +1689,15 @@
       "p1": "Este simulador demonstra como o mecanismo de timeout funciona em sistemas distribuídos. Cada requisição tem um tempo limite configurável para ser completada.",
       "p2": "Se a resposta não chegar dentro do tempo limite, a requisição é cancelada e um erro de timeout é retornado, evitando que recursos fiquem presos indefinidamente.",
       "p3": "Ajuste timeout, tempos de resposta e taxa de sucesso para visualizar impactos."
+    },
+    "narration": {
+      "running": "As requisições disputam com o prazo limite. Respostas lentas viram falhas mesmo que o servidor pudesse responder depois.",
+      "idle": "Ajuste o prazo em relação à latência: prazos curtos desperdiçam respostas válidas; prazos longos mantêm o cliente esperando."
+    },
+    "legend": {
+      "success": "Sucesso",
+      "pending": "Em andamento",
+      "timeout": "Prazo excedido"
     }
   },
   "outbox": {
@@ -1690,6 +1903,14 @@
         "one": "1s",
         "two": "2s"
       }
+    },
+    "cancellation_reason": "Cliente cancelou o pedido",
+    "statuses": {
+      "PENDING": "Pendente",
+      "PAID": "Pago",
+      "SHIPPED": "Enviado",
+      "DELIVERED": "Entregue",
+      "CANCELLED": "Cancelado"
     }
   },
   "canary": {
@@ -1760,6 +1981,15 @@
         "title": "Mundo Real:",
         "text": "Em produção, você monitoraria latência, taxas de erro e métricas de negócio antes de promover um canary."
       }
+    },
+    "phases": {
+      "stable": "Estável",
+      "canary_deploying": "Implantando versão canário",
+      "canary_testing": "Testando versão canário",
+      "promoting": "Promovendo versão",
+      "rolling_back": "Revertendo versão",
+      "completed": "Concluído",
+      "rolled_back": "Versão revertida"
     }
   },
   "motion": {
@@ -1776,5 +2006,332 @@
     "consumer": "Consumidor",
     "accepted": "Aceitas",
     "limited": "Limitadas"
+  },
+  "async_sync": {
+    "controls": "Controles",
+    "send": "Enviar Mensagem",
+    "reset": "Reiniciar",
+    "sync": "Síncrono",
+    "async": "Assíncrono",
+    "blocking": "Bloqueante",
+    "visualization": "Visualização",
+    "client": "Cliente",
+    "server": "Servidor",
+    "database": "DB",
+    "waiting": "Aguardando...",
+    "sync_legend": "Síncrono (Bloqueante)",
+    "async_legend": "Assíncrono (Não Bloqueante)",
+    "message": "✉️ Mensagem",
+    "processed": "✅ Processado",
+    "about": "Sobre o simulador",
+    "sync_label": "Síncrono:",
+    "async_label": "Assíncrono:",
+    "sync_description": "A mensagem é enviada e o cliente espera a resposta.",
+    "async_description": "A mensagem é enviada e o cliente não espera a resposta."
+  },
+  "replication": {
+    "title": "Simulador de replicação e failover",
+    "subtitle": "Explore como a replicação de dados e o failover automático funcionam em um ambiente distribuído.",
+    "controls": "Controles",
+    "write_rate": "Taxa de escrita (por segundo)",
+    "read_rate": "Taxa de leitura (por segundo)",
+    "mode": "Modo de replicação",
+    "sync": "Síncrona",
+    "async": "Assíncrona",
+    "automatic_failover": "Failover automático",
+    "load": "Carga",
+    "transactions": "transações",
+    "lag": "Lag de replicação",
+    "fail": "Simular falha",
+    "recover": "Recuperar",
+    "statistics": "Estatísticas",
+    "total": "Total de transações",
+    "success_rate": "Taxa de sucesso",
+    "average_lag": "Lag médio de replicação",
+    "recent": "Transações Recentes",
+    "start": "Iniciar simulação",
+    "stop": "Parar simulação",
+    "primary": "Primário",
+    "secondary": "Secundário",
+    "online": "Online",
+    "degraded": "Degradado",
+    "offline": "Offline",
+    "completed": "Concluída",
+    "failed": "Falha",
+    "processing": "Processando",
+    "pending": "Pendente",
+    "write": "Escrita",
+    "read": "Leitura",
+    "servers": {
+      "primary": "Servidor principal",
+      "replica1": "Réplica 1",
+      "replica2": "Réplica 2"
+    }
+  },
+  "service_architecture": {
+    "architectures": [
+      {
+        "type": "monolithic",
+        "name": "Monolito",
+        "description": "Todas as funcionalidades em um único código base, com acoplamento forte entre módulos.",
+        "modules": [
+          {
+            "id": "auth",
+            "name": "Autenticação",
+            "color": "bg-purple-500",
+            "details": {
+              "deployment": "Deploy único para toda a aplicação",
+              "communication": "Chamadas de função diretas",
+              "database": "Banco de dados compartilhado",
+              "scaling": "Escala vertical (toda a aplicação)",
+              "development": "Desenvolvimento mais simples inicialmente",
+              "maintenance": "Pode se tornar complexo com o crescimento"
+            }
+          },
+          {
+            "id": "catalog",
+            "name": "Catálogo",
+            "color": "bg-blue-500",
+            "details": {
+              "deployment": "Deploy único para toda a aplicação",
+              "communication": "Acesso direto a outros módulos",
+              "database": "Compartilha mesmo banco de dados",
+              "scaling": "Não pode escalar independentemente",
+              "development": "Rápido para desenvolver features",
+              "maintenance": "Mudanças afetam todo o sistema"
+            }
+          },
+          {
+            "id": "cart",
+            "name": "Carrinho",
+            "color": "bg-green-500",
+            "dependencies": [
+              "auth",
+              "catalog"
+            ],
+            "details": {
+              "deployment": "Deploy único para toda a aplicação",
+              "communication": "Acesso direto aos módulos de Auth e Catálogo",
+              "database": "Mesmo banco de dados",
+              "scaling": "Escala com toda a aplicação",
+              "development": "Fácil integração com outros módulos",
+              "maintenance": "Alto acoplamento"
+            }
+          },
+          {
+            "id": "payment",
+            "name": "Pagamento",
+            "color": "bg-yellow-500",
+            "dependencies": [
+              "auth",
+              "cart"
+            ],
+            "details": {
+              "deployment": "Deploy único",
+              "communication": "Chamadas síncronas diretas",
+              "database": "Banco compartilhado",
+              "scaling": "Escala com o todo",
+              "development": "Simples para testar",
+              "maintenance": "Difícil de modificar isoladamente"
+            }
+          },
+          {
+            "id": "shipping",
+            "name": "Entrega",
+            "color": "bg-red-500",
+            "dependencies": [
+              "auth",
+              "cart"
+            ],
+            "details": {
+              "deployment": "Deploy único",
+              "communication": "Acesso direto a dados",
+              "database": "Banco compartilhado",
+              "scaling": "Não escala independentemente",
+              "development": "Rápido para implementar",
+              "maintenance": "Complexo para manter"
+            }
+          }
+        ]
+      },
+      {
+        "type": "modular",
+        "name": "Monolito Modular",
+        "description": "Código organizado em módulos bem definidos com limites claros, mas ainda em um único deploy.",
+        "modules": [
+          {
+            "id": "auth",
+            "name": "Módulo de Autenticação",
+            "color": "bg-purple-500",
+            "details": {
+              "deployment": "Deploy único, mas módulos independentes",
+              "communication": "Interfaces bem definidas",
+              "database": "Schema separado no banco compartilhado",
+              "scaling": "Escala com a aplicação",
+              "development": "Organizado e modular",
+              "maintenance": "Mais fácil de manter que monolito"
+            }
+          },
+          {
+            "id": "catalog",
+            "name": "Módulo de Catálogo",
+            "color": "bg-blue-500",
+            "details": {
+              "deployment": "Deploy único com outros módulos",
+              "communication": "API interna bem definida",
+              "database": "Schema isolado",
+              "scaling": "Escala com o sistema",
+              "development": "Independente com interfaces claras",
+              "maintenance": "Baixo acoplamento com outros módulos"
+            }
+          },
+          {
+            "id": "cart",
+            "name": "Módulo de Carrinho",
+            "color": "bg-green-500",
+            "dependencies": [
+              "auth",
+              "catalog"
+            ],
+            "details": {
+              "deployment": "Deploy conjunto",
+              "communication": "Interfaces entre módulos",
+              "database": "Schema próprio",
+              "scaling": "Vertical com aplicação",
+              "development": "Limites claros com outros módulos",
+              "maintenance": "Fácil de manter e evoluir"
+            }
+          },
+          {
+            "id": "payment",
+            "name": "Módulo de Pagamento",
+            "color": "bg-yellow-500",
+            "dependencies": [
+              "auth",
+              "cart"
+            ],
+            "details": {
+              "deployment": "Deploy único",
+              "communication": "Interfaces bem definidas",
+              "database": "Schema isolado",
+              "scaling": "Com a aplicação",
+              "development": "Independente com contratos claros",
+              "maintenance": "Manutenção simplificada"
+            }
+          },
+          {
+            "id": "shipping",
+            "name": "Módulo de Entrega",
+            "color": "bg-red-500",
+            "dependencies": [
+              "auth",
+              "cart"
+            ],
+            "details": {
+              "deployment": "Deploy com outros módulos",
+              "communication": "Interfaces internas",
+              "database": "Schema próprio",
+              "scaling": "Com o sistema todo",
+              "development": "Módulo independente",
+              "maintenance": "Fácil de manter"
+            }
+          }
+        ]
+      },
+      {
+        "type": "microservices",
+        "name": "Microsserviços",
+        "description": "Serviços independentes que se comunicam via rede, cada um com seu próprio deploy e banco de dados.",
+        "modules": [
+          {
+            "id": "auth",
+            "name": "Serviço de autenticação",
+            "color": "bg-purple-500",
+            "details": {
+              "deployment": "Deploy independente",
+              "communication": "API REST/gRPC",
+              "database": "Banco de dados próprio",
+              "scaling": "Escala independentemente",
+              "development": "Time dedicado",
+              "maintenance": "Totalmente independente"
+            }
+          },
+          {
+            "id": "catalog",
+            "name": "Serviço de catálogo",
+            "color": "bg-blue-500",
+            "details": {
+              "deployment": "CI/CD próprio",
+              "communication": "APIs e eventos",
+              "database": "Banco dedicado",
+              "scaling": "Auto-scaling individual",
+              "development": "Stack própria",
+              "maintenance": "Independente de outros serviços"
+            }
+          },
+          {
+            "id": "cart",
+            "name": "Serviço de carrinho",
+            "color": "bg-green-500",
+            "dependencies": [
+              "auth",
+              "catalog"
+            ],
+            "details": {
+              "deployment": "Deploy automatizado próprio",
+              "communication": "REST e mensageria",
+              "database": "Banco NoSQL dedicado",
+              "scaling": "Escala horizontalmente",
+              "development": "Time e stack próprios",
+              "maintenance": "Manutenção independente"
+            }
+          },
+          {
+            "id": "payment",
+            "name": "Serviço de pagamento",
+            "color": "bg-yellow-500",
+            "dependencies": [
+              "auth",
+              "cart"
+            ],
+            "details": {
+              "deployment": "Deploy independente",
+              "communication": "APIs e eventos assíncronos",
+              "database": "Banco próprio",
+              "scaling": "Auto-scaling",
+              "development": "Tecnologia específica",
+              "maintenance": "Isolado de outros serviços"
+            }
+          },
+          {
+            "id": "shipping",
+            "name": "Serviço de entrega",
+            "color": "bg-red-500",
+            "dependencies": [
+              "auth",
+              "cart"
+            ],
+            "details": {
+              "deployment": "Pipeline próprio",
+              "communication": "APIs e filas",
+              "database": "Banco dedicado",
+              "scaling": "Escala por demanda",
+              "development": "Stack otimizada",
+              "maintenance": "Independente"
+            }
+          }
+        ]
+      }
+    ],
+    "title": "Simulador de arquiteturas de serviços",
+    "subtitle": "Compare as diferentes abordagens de organização de código e suas implicações.",
+    "deployment": "Deploy:",
+    "communication": "Comunicação:",
+    "database": "Banco:",
+    "scaling": "Escala:",
+    "development": "Desenvolvimento:",
+    "maintenance": "Manutenção:",
+    "hint": "Passe o mouse sobre os módulos para visualizar suas dependências.",
+    "depends_on": "Depende de:"
   }
 }

@@ -151,7 +151,7 @@ export default function ConsensusSimulator() {
       }},
       { title: t('design_principles.consistency_strategies.consensus.step_watch', 'Watch Request'), description: t('design_principles.consistency_strategies.consensus.step_watch_desc', 'Um participante registra interesse em mudanças.'), action: () => {
         addMessage(4, 0, 'watch', '/path/data');
-        setNodes(prev => prev.map(node => node.id === 4 ? { ...node, value: 'watching /path/data' } : node));
+        setNodes(prev => prev.map(node => node.id === 4 ? { ...node, value: t('design_principles.consistency_strategies.consensus_simulator.watching_event', { path: '/path/data' }) } : node));
       }},
       { title: t('design_principles.consistency_strategies.consensus.step_update', 'Atualização de Dados'), description: t('design_principles.consistency_strategies.consensus.step_update_desc', 'O líder propaga uma atualização para os seguidores.'), action: () => {
         setNodes(prev => prev.map(node => node.role === 'leader' ? { ...node, term: node.term + 1, log: [...node.log, '/path/data=newValue'] } : node));
@@ -162,7 +162,7 @@ export default function ConsensusSimulator() {
       }},
       { title: t('design_principles.consistency_strategies.consensus.step_notify', 'Notificação'), description: t('design_principles.consistency_strategies.consensus.step_notify_desc', 'O líder notifica o participante sobre a mudança.'), action: () => {
         addMessage(0, 4, 'notify', 'changed=/path/data');
-        setNodes(prev => prev.map(node => node.id === 4 ? { ...node, value: 'notified: /path/data changed' } : node));
+        setNodes(prev => prev.map(node => node.id === 4 ? { ...node, value: t('design_principles.consistency_strategies.consensus_simulator.notified_event', { path: '/path/data' }) } : node));
       }},
     ],
   };

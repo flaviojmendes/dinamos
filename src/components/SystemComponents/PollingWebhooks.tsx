@@ -36,7 +36,7 @@ interface SimulationStats {
 }
 
 export default function PollingWebhooks() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { reducedMotion, transition } = useSimulationMotion();
   const [mode, setMode] = useState<'polling' | 'webhook'>('polling');
   const [isRunning, setIsRunning] = useState(false);
@@ -66,16 +66,7 @@ export default function PollingWebhooks() {
     deliveryTimers.current.add(id);
   }, []);
 
-  const sampleData = [
-    'New order #1234 received',
-    'User John logged in',
-    'Payment of $50.00 processed',
-    'File upload completed',
-    'Temperature: 23°C recorded',
-    'Backup process finished',
-    'New message from Alice',
-    'Stock level updated: 15 items'
-  ];
+  const sampleData = t('simulators.polling_webhooks.samples', { returnObjects: true }) as string[];
 
   const generateData = useCallback(() => {
     const content = sampleData[Math.floor(Math.random() * sampleData.length)];
@@ -90,7 +81,7 @@ export default function PollingWebhooks() {
     addMessage({
       type: 'data-generated',
       direction: 'server-internal',
-      content: `New data available: ${content}`,
+      content: t('simulators.polling_webhooks.messages.generated', { content }),
       hasData: true,
       data: content,
       dataId: dataItem.id
@@ -117,7 +108,7 @@ export default function PollingWebhooks() {
         }));
       }, config.networkLatency);
     }
-  }, [mode, isRunning, config.networkLatency, scheduleDelivery]);
+  }, [mode, isRunning, config.networkLatency, scheduleDelivery, t]);
 
   const performPollingRequest = useCallback(() => {
     addMessage({
@@ -402,7 +393,7 @@ export default function PollingWebhooks() {
             <AnimatePresence>
               {messages.slice(-15).reverse().map((message) => (
                 <motion.div key={message.id} initial={{ opacity: 0, y: reducedMotion ? 0 : -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={transition} className={`break-words rounded-lg font-sans text-sm mb-2 p-3 border ${getMessageColor(message.type)}`}>
-                  <span className="text-slate-500 dark:text-tactical-label text-xs">[{new Date(message.timestamp).toLocaleTimeString()}]</span>{' '}
+                  <span className="text-slate-500 dark:text-tactical-label text-xs">[{new Date(message.timestamp).toLocaleTimeString(i18n?.resolvedLanguage || i18n?.language)}]</span>{' '}
                   <span className="inline-flex align-middle">{getMessageIcon(message.type)}</span>{' '}
                   <span>{message.content}</span>
                   {message.hasData && (

@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import CompletionButton from './CompletionButton';
 import ReadingTime from './ReadingTime';
-import { getItem, getModule } from '../../config/contentRegistry';
+import { getItem, getModule, menuKey, titleForPath } from '../../config/contentRegistry';
 import { ContentBreadcrumb, ContentFooterNav } from './ContentNav';
 const SimulatorConsole = React.lazy(() => import('../simulation/SimulatorWorkspace'));
 
@@ -51,8 +51,8 @@ export default function ContentLayout({ children, hideCompletion = false, childP
     const tail = segs[segs.length - 1] ?? '';
     const baseSegs = TRAILING_SEGMENTS.includes(tail) ? segs.slice(0, -1) : segs;
     const fallback = prettify(baseSegs[baseSegs.length - 1] ?? tail);
-    const key = `menu.${baseSegs.join('.')}.name`;
-    return t(key, { defaultValue: fallback });
+    const basePath = `/${baseSegs.join('/')}`;
+    return titleForPath(basePath, i18n.resolvedLanguage || i18n.language) ?? t(menuKey(basePath, 'name'), { defaultValue: fallback });
   }, [currentPath, t, i18n.resolvedLanguage, i18n.language]);
 
   // Registry-driven breadcrumb + prev/next/related, shown on real content

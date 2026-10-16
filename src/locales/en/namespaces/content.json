@@ -21,5 +21,13 @@
     "more_in_module": "More in {{module}}",
     "explore": "Explore"
   },
-  "simulator_interactive": "Interactive simulator"
+  "simulator_interactive": "Interactive simulator",
+  "translation_unavailable": "This lesson is not available in English yet.",
+  "not_found": "Content not found: {{slug}}",
+  "burger_analogy_title": "At our burger restaurant",
+  "load_error_title": "Unable to load the content",
+  "compile_error_title": "Unable to display the content",
+  "load_error_message": "The content could not be loaded. This can happen after the site is updated.",
+  "reload": "Reload page",
+  "video": "Lesson video"
 }

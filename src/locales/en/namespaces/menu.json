@@ -306,7 +306,11 @@
       "description": "Keeping the system always running",
       "replicacao": {
         "name": "Replication",
-        "description": "Synchronized data copies"
+        "description": "Synchronized data copies",
+        "simulator": {
+          "name": "Replication simulator",
+          "description": "Observe data replication and failover between servers."
+        }
       },
       "failover": {
         "name": "Failover",
@@ -314,7 +318,11 @@
       },
       "zonas": {
         "name": "Availability Zones",
-        "description": "Geographic distribution for resilience"
+        "description": "Geographic distribution for resilience",
+        "simulator": {
+          "name": "Simulator",
+          "description": "Experiment with availability strategies"
+        }
       },
       "disaster-recovery": {
         "name": "Disaster Recovery",
@@ -331,6 +339,14 @@
       "simulator": {
         "name": "Simulator",
         "description": "Experiment with availability strategies"
+      },
+      "disaster_recovery": {
+        "name": "Disaster recovery",
+        "description": "Strategies for recovering service after a major failure."
+      },
+      "distribuicao_carga": {
+        "name": "Load distribution",
+        "description": "Distribute traffic across available servers."
       }
     },
     "tolerancia_falhas": {
@@ -475,6 +491,10 @@
       "simulador": {
         "name": "Simulator",
         "description": "Interactive simulation of Two Phase Commit protocol"
+      },
+      "simulator": {
+        "name": "Simulator",
+        "description": "Interactive simulation of Two Phase Commit protocol"
       }
     },
     "consenso": {
@@ -483,12 +503,20 @@
       "simulador": {
         "name": "Simulator",
         "description": "Interactive simulation of consensus protocols"
+      },
+      "simulator": {
+        "name": "Simulator",
+        "description": "Interactive simulation of consensus protocols"
       }
     },
     "lamport_timestamps": {
       "name": "Lamport Logical Clocks",
       "description": "Event ordering in distributed systems",
       "simulador": {
+        "name": "Simulator",
+        "description": "Visualize event ordering with Lamport timestamps"
+      },
+      "simulator": {
         "name": "Simulator",
         "description": "Visualize event ordering with Lamport timestamps"
       }
@@ -555,6 +583,10 @@
       "tracing": {
         "name": "Tracing Simulator",
         "description": "Experiment with event tracing"
+      },
+      "simulator": {
+        "name": "Log Simulator",
+        "description": "Experiment with good and bad log examples"
       }
     },
     "alertas": {
@@ -655,12 +687,20 @@
       "simulador": {
         "name": "Simulator",
         "description": "Experiment with different types of cryptography in practice"
+      },
+      "simulator": {
+        "name": "Simulator",
+        "description": "Experiment with different types of cryptography in practice"
       }
     },
     "tokens": {
       "name": "Tokens and JWT",
       "description": "Session management and access tokens",
       "simulador": {
+        "name": "Simulator",
+        "description": "Experiment with JWT generation and validation"
+      },
+      "simulator": {
         "name": "Simulator",
         "description": "Experiment with JWT generation and validation"
       }
@@ -671,12 +711,20 @@
     },
     "ataques": {
       "name": "Common Attacks",
-      "description": "Prevention against attacks in distributed systems"
+      "description": "Prevention against attacks in distributed systems",
+      "simulator": {
+        "name": "Attack simulator",
+        "description": "Explore common attacks and their effects on distributed systems."
+      }
     },
     "prompt_injection": {
       "name": "Prompt Injection",
       "description": "LLM-specific attacks and guardrails",
       "simulador": {
+        "name": "Prompt Injection Simulator",
+        "description": "Stack defenses and watch whether the secret leaks"
+      },
+      "simulator": {
         "name": "Prompt Injection Simulator",
         "description": "Stack defenses and watch whether the secret leaks"
       }
@@ -841,5 +889,9 @@
   "notifications": {
     "name": "Notifications",
     "description": "Replies, mentions and announcements"
+  },
+  "async_sync": {
+    "name": "Synchronous and asynchronous communication",
+    "description": "Compare client blocking and message processing."
   }
 }

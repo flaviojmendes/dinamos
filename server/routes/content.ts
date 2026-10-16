@@ -5,6 +5,7 @@ import { db } from '../db/client.js';
 import { contentPages, contentModules } from '../db/schema.js';
 import { authRequired, adminRequired, type AppVariables } from '../middleware/auth.js';
 import { PUBLIC_READ_CACHE } from '../middleware/cache.js';
+import { applyCourseRelease, courseTitle } from '../content/courseRelease.js';
 
 export const contentRouter = new Hono<{ Variables: AppVariables }>();
 
@@ -63,8 +64,8 @@ function toIndexEntry(row: PublicIndexRow) {
     moduleId: row.moduleId,
     orderIndex: row.orderIndex,
     simulatorKey: row.simulatorKey,
-    titleEn: row.titleEn,
-    titlePt: row.titlePt,
+    titleEn: courseTitle(row.slug, 'en', row.titleEn),
+    titlePt: courseTitle(row.slug, 'pt', row.titlePt),
     hasEn: row.hasEn,
     hasPt: row.hasPt,
   };
@@ -96,20 +97,15 @@ function resolveLang(raw: string | undefined): 'en' | 'pt' {
   return raw === 'pt' ? 'pt' : 'en';
 }
 
-function pageBodyResponse(row: PageBodyRow, lang: 'en' | 'pt') {
-  const primaryBody = lang === 'pt' ? row.bodyPt : row.bodyEn;
-  const fallbackBody = lang === 'pt' ? row.bodyEn : row.bodyPt;
-  const primaryTitle = lang === 'pt' ? row.titlePt : row.titleEn;
-  const fallbackTitle = lang === 'pt' ? row.titleEn : row.titlePt;
-  const body = (primaryBody && primaryBody.trim() ? primaryBody : fallbackBody) ?? '';
-  const resolvedLang = primaryBody && primaryBody.trim() ? lang : lang === 'pt' ? 'en' : 'pt';
+function pageBodyResponse(source: PageBodyRow, lang: 'en' | 'pt') {
+  const row = applyCourseRelease(source);
   return {
     slug: row.slug,
     path: row.path,
-    lang: resolvedLang,
-    title: primaryTitle ?? fallbackTitle ?? null,
+    lang,
+    title: lang === 'pt' ? row.titlePt : row.titleEn,
     simulator_key: row.simulatorKey,
-    body,
+    body: (lang === 'pt' ? row.bodyPt : row.bodyEn) ?? '',
   };
 }
 
@@ -133,9 +129,14 @@ async function fetchPublishedPageBody(filter: {
 }
 
 function sendPageBody(c: { header: (name: string, value: string) => void; json: (data: unknown) => Response }, row: PageBodyRow, lang: 'en' | 'pt') {
+  const payload = pageBodyResponse(row, lang);
+  if (!payload.body.trim()) {
+    c.header('Cache-Control', 'no-store');
+    throw new HTTPException(404, { message: 'translation_unavailable' });
+  }
   c.header('Cache-Control', PUBLIC_READ_CACHE);
   c.header('Vary', 'Accept-Encoding, Accept-Language');
-  return c.json(pageBodyResponse(row, lang));
+  return c.json(payload);
 }
 
 function rejectPageNotFound(c: { header: (name: string, value: string) => void }): never {
@@ -154,8 +155,8 @@ function toAdminIndexEntry(row: ContentRow) {
     order_index: row.orderIndex,
     simulator_key: row.simulatorKey,
     published: row.published,
-    title_en: row.titleEn,
-    title_pt: row.titlePt,
+    title_en: courseTitle(row.slug, 'en', row.titleEn),
+    title_pt: courseTitle(row.slug, 'pt', row.titlePt),
     has_en: Boolean(row.bodyEn && row.bodyEn.trim()),
     has_pt: Boolean(row.bodyPt && row.bodyPt.trim()),
     created_at: row.createdAt ? new Date(row.createdAt).toISOString() : null,
@@ -164,7 +165,8 @@ function toAdminIndexEntry(row: ContentRow) {
 }
 
 /** Full row for the admin CMS (includes both language bodies). */
-function toAdminDict(row: ContentRow) {
+function toAdminDict(source: ContentRow) {
+  const row = applyCourseRelease(source);
   return {
     id: row.id,
     slug: row.slug,
@@ -173,8 +175,8 @@ function toAdminDict(row: ContentRow) {
     order_index: row.orderIndex,
     simulator_key: row.simulatorKey,
     published: row.published,
-    title_en: row.titleEn,
-    title_pt: row.titlePt,
+    title_en: courseTitle(row.slug, 'en', row.titleEn),
+    title_pt: courseTitle(row.slug, 'pt', row.titlePt),
     body_en: row.bodyEn,
     body_pt: row.bodyPt,
     created_at: row.createdAt ? new Date(row.createdAt).toISOString() : null,
@@ -225,7 +227,7 @@ contentRouter.get('/api/content/body', async (c) => {
   return sendPageBody(c, row, lang);
 });
 
-/** Body for a single published page, in the requested language (with fallback). */
+/** Body for a single published page, in the requested language. Missing translations never use a different language. */
 contentRouter.get('/api/content/:slug{.+}', async (c) => {
   const slug = c.req.param('slug');
   const lang = resolveLang(c.req.query('lang'));

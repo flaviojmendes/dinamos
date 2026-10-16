@@ -6,6 +6,7 @@ import {
   getModule,
   menuKey,
   fallbackLabel,
+  titleForPath,
   MODULES,
   TIER_ORDER,
   type ContentType,
@@ -27,7 +28,7 @@ const TYPE_ORDER: ContentType[] = ['lesson', 'simulator', 'case', 'tool'];
 
 export default function ExplorePage() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { isCompleted, updateTrigger } = useContentProgress();
   const { pages: contentPages } = useContent();
 
@@ -40,7 +41,7 @@ export default function ExplorePage() {
   // Enrich registry items with translated labels for searching/rendering.
   const enriched = useMemo(() => {
     return contentRegistry.map((i) => {
-      const label = t(menuKey(i.path, 'name'), { defaultValue: fallbackLabel(i.path) });
+      const label = titleForPath(i.path, i18n.resolvedLanguage || i18n.language) ?? t(menuKey(i.path, 'name'), { defaultValue: fallbackLabel(i.path) });
       const description = t(menuKey(i.path, 'description'), { defaultValue: '' });
       const mod = getModule(i.moduleId);
       const moduleLabel = mod ? t(`command_center.modules.${mod.id}`, { defaultValue: mod.label }) : '';
@@ -54,7 +55,7 @@ export default function ExplorePage() {
     });
     // contentPages drives the live registry; recompute once it loads.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [t, contentPages]);
+  }, [t, contentPages, i18n.resolvedLanguage, i18n.language]);
 
   const tokens = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
 

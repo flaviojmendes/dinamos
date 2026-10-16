@@ -37,16 +37,13 @@ export function hasLanguageBody(body: string | null | undefined): boolean {
 /** Mirrors server/routes/content.ts pageBodyResponse for CDN body files. */
 export function resolvePageBody(row: ContentPageRow, lang: 'en' | 'pt'): PageBodyPayload {
   const primaryBody = lang === 'pt' ? row.bodyPt : row.bodyEn;
-  const fallbackBody = lang === 'pt' ? row.bodyEn : row.bodyPt;
   const primaryTitle = lang === 'pt' ? row.titlePt : row.titleEn;
-  const fallbackTitle = lang === 'pt' ? row.titleEn : row.titlePt;
-  const body = (primaryBody && primaryBody.trim() ? primaryBody : fallbackBody) ?? '';
-  const resolvedLang = primaryBody && primaryBody.trim() ? lang : lang === 'pt' ? 'en' : 'pt';
+  const body = primaryBody?.trim() ? primaryBody : '';
   return {
     slug: row.slug,
     path: row.path,
-    lang: resolvedLang,
-    title: primaryTitle ?? fallbackTitle ?? null,
+    lang,
+    title: primaryTitle,
     simulator_key: row.simulatorKey,
     body,
   };

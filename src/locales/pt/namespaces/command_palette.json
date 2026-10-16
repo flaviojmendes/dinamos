@@ -1,0 +1,12 @@
+{
+  "group_nav": "Navegação",
+  "group_lesson": "Aulas",
+  "group_simulator": "Simuladores",
+  "group_case": "Estudos de caso",
+  "group_tool": "Ferramentas",
+  "hint_move": "Mover",
+  "hint_open": "Abrir",
+  "result_count": "{{count}} resultados",
+  "result_count_one": "{{count}} resultado",
+  "result_count_other": "{{count}} resultados"
+}

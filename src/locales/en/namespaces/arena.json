@@ -36,5 +36,7 @@
   "closing_title": "Your move, architect.",
   "closing_sub": "Free, in the browser, no setup. Host a match for your team, your class, or your meetup, and put the audience screen on the projector.",
   "footer_tag": "The Arena runs on Dinamos, the free hands-on platform for distributed systems.",
-  "footer_cta": "Explore the lessons on dinamos.net"
+  "footer_cta": "Explore the lessons on dinamos.net",
+  "fetch_error": "Could not load live matches. Check your connection and try again.",
+  "live_chip": "{{count}} match live right now"
 }

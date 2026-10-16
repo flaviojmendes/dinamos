@@ -95,7 +95,7 @@ export default function NotificationBell() {
 
   if (!user) return null;
 
-  const label = t('notifications.title', { defaultValue: 'Notificações' });
+  const label = t('common.notifications');
 
   return (
     <NavLink

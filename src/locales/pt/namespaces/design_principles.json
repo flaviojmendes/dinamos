@@ -90,7 +90,18 @@
         "replication": "Replicação",
         "notification": "Notificação"
       },
-      "progress_label": "Progresso: {{percent}}%"
+      "progress_label": "Progresso: {{percent}}%",
+      "roles": {
+        "follower": "Seguidor",
+        "candidate": "Candidato",
+        "leader": "Líder",
+        "proposer": "Proponente",
+        "acceptor": "Aceitador",
+        "learner": "Aprendiz",
+        "participant": "Participante"
+      },
+      "watching_event": "Observando {{path}}",
+      "notified_event": "Mudança recebida em {{path}}"
     },
     "lamport_timestamps_simulator": {
       "title": "Simulador de Timestamps de Lamport",
@@ -118,6 +129,40 @@
         "sent": "Mensagem Enviada",
         "received": "Mensagem Recebida"
       }
+    },
+    "consensus": {
+      "step_initial_raft": "Estado inicial (Raft)",
+      "step_initial_raft_desc": "Todos os nós começam como seguidores no termo 0.",
+      "step_timeout_election": "Prazo excedido e eleição",
+      "step_timeout_election_desc": "O Nó 2 detecta que não há líder e inicia uma eleição, tornando-se candidato.",
+      "step_vote_request": "Solicitação de votos",
+      "step_vote_request_desc": "O candidato (Nó 2) solicita votos dos outros nós.",
+      "step_receive_votes": "Recebimento de votos",
+      "step_receive_votes_desc": "Os outros nós votam no candidato se não votaram neste termo.",
+      "step_leader_elected": "Líder eleito",
+      "step_leader_elected_desc": "O Nó 2 recebe a maioria dos votos e se torna líder.",
+      "step_log_replication": "Replicação do registro",
+      "step_log_replication_desc": "O líder adiciona uma entrada ao registro e a replica para todos os seguidores.",
+      "step_commit": "Confirmação",
+      "step_commit_desc": "A entrada é confirmada quando a maioria dos nós a registra.",
+      "step_initial_paxos": "Estado inicial (Paxos)",
+      "step_initial_paxos_desc": "Configuração inicial com proponente, aceitadores e aprendizes.",
+      "step_paxos_1a": "Fase 1a: preparação",
+      "step_paxos_1a_desc": "O proponente envia mensagens de preparação aos aceitadores.",
+      "step_paxos_1b": "Fase 1b: promessa",
+      "step_paxos_1b_desc": "Os aceitadores prometem responder se ainda não prometeram a uma proposta com número maior.",
+      "step_paxos_2a": "Fase 2a: proposta",
+      "step_paxos_2a_desc": "O proponente envia o valor proposto aos aceitadores.",
+      "step_paxos_2b": "Fase 2b: aceitação",
+      "step_paxos_2b_desc": "Os aceitadores aceitam o valor e notificam os aprendizes.",
+      "step_initial_zk": "Estado inicial (ZooKeeper)",
+      "step_initial_zk_desc": "Configuração inicial com um líder e seguidores.",
+      "step_watch": "Observação de mudanças",
+      "step_watch_desc": "Um participante registra interesse em mudanças.",
+      "step_update": "Atualização de dados",
+      "step_update_desc": "O líder propaga uma atualização para os seguidores.",
+      "step_notify": "Notificação",
+      "step_notify_desc": "O líder notifica o participante sobre a mudança."
     }
   },
   "two_phase_commit_simulator": {
@@ -193,7 +238,8 @@
         "process": "Processo",
         "ticket": "Senha",
         "request_access": "Solicitar Acesso"
-      }
+      },
+      "code": "// Estrutura do processo\ntype Process = {\n  id: number;\n  number: number | null;  // Número da senha\n  choosing: boolean;      // Está pegando senha?\n}\n\n// Pegar uma senha\nfunction getNumber(process: Process, processes: Process[]) {\n  process.choosing = true;\n  process.number = 1 + Math.max(\n    ...processes.map(p => p.number ?? 0)\n  );\n  process.choosing = false;\n}\n\n// Tentar entrar na seção crítica\nfunction enterCriticalSection(process: Process, processes: Process[]) {\n  getNumber(process, processes);\n  \n  // Esperar outros processos\n  for (const other of processes) {\n    // Esperar se outro está escolhendo número\n    while (other.choosing) { /* aguardar */ }\n    \n    // Esperar processos com prioridade maior\n    while (\n      other.number !== null && (\n        other.number < process.number ||\n        (other.number === process.number && \n         other.id < process.id)\n      )\n    ) { /* aguardar */ }\n  }\n}"
     },
     "token_ring": {
       "title": "Token Ring",
@@ -207,7 +253,8 @@
       "move_token": "Mover Token",
       "labels": {
         "process_prefix": "P"
-      }
+      },
+      "code": "// Estrutura do processo\ntype Process = {\n  id: number;\n  hasToken: boolean;\n  nextProcess: Process;\n}\n\n// Implementação do Token Ring\nclass TokenRing {\n  private processes: Process[];\n  \n  constructor(numProcesses: number) {\n    // Criar anel de processos\n    this.processes = Array.from(\n      { length: numProcesses },\n      (_, i) => ({\n        id: i,\n        hasToken: i === 0, // Processo 0 inicia com token\n        nextProcess: null\n      })\n    );\n    \n    // Conectar processos em anel\n    for (let i = 0; i < numProcesses; i++) {\n      this.processes[i].nextProcess = \n        this.processes[(i + 1) % numProcesses];\n    }\n  }\n  \n  // Passar token para próximo processo\n  passToken(process: Process) {\n    if (process.hasToken) {\n      process.hasToken = false;\n      process.nextProcess.hasToken = true;\n    }\n  }\n}"
     },
     "ricart_agrawala": {
       "title": "Ricart-Agrawala",
@@ -222,7 +269,8 @@
         "process": "Processo",
         "request_access": "Solicitar Acesso",
         "ts_prefix": "TS"
-      }
+      },
+      "code": "// Estrutura do processo\ntype Process = {\n  id: number;\n  timestamp: number;\n  state: 'idle' | 'requesting' | 'executing';\n  requestQueue: Request[];\n}\n\ntype Request = {\n  processId: number;\n  timestamp: number;\n}\n\n// Implementação do algoritmo\nclass RicartAgrawala {\n  requestCriticalSection(process: Process) {\n    process.timestamp = Date.now();\n    process.state = 'requesting';\n    \n    // Enviar requisição para todos\n    broadcastRequest(process);\n    \n    // Esperar respostas\n    waitForResponses(process);\n  }\n  \n  handleRequest(process: Process, request: Request) {\n    if (process.state === 'idle' ||\n        request.timestamp < process.timestamp ||\n        (request.timestamp === process.timestamp && \n         request.processId < process.id)) {\n      // Enviar OK imediatamente\n      sendOK(request.processId);\n    } else {\n      // Adicionar à fila de requisições\n      process.requestQueue.push(request);\n    }\n  }\n  \n  releaseCriticalSection(process: Process) {\n    process.state = 'idle';\n    // Responder todas requisições na fila\n    process.requestQueue.forEach(req => \n      sendOK(req.processId)\n    );\n    process.requestQueue = [];\n  }\n}"
     },
     "comparison": {
       "title": "Comparação",
@@ -375,7 +423,7 @@
         "example": "Um e-commerce onde pagamento, inventário e usuários são implementados como microsserviços separados.",
         "modules": {
           "auth": {
-            "name": "Auth Service",
+            "name": "Serviço de autenticação",
             "details": {
               "deployment": "Deploy independente",
               "communication": "API REST/gRPC",
@@ -383,7 +431,7 @@
             }
           },
           "orders": {
-            "name": "Orders Service",
+            "name": "Serviço de pedidos",
             "details": {
               "deployment": "Deploy independente",
               "communication": "API REST/gRPC",
@@ -391,7 +439,7 @@
             }
           },
           "users": {
-            "name": "Users Service",
+            "name": "Serviço de usuários",
             "details": {
               "deployment": "Deploy independente",
               "communication": "API REST/gRPC",

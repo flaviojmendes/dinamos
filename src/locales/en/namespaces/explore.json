@@ -1,0 +1,19 @@
+{
+  "title": "Explore",
+  "subtitle": "Search and filter every lesson, simulator, and case study in one place.",
+  "clear": "Clear",
+  "filter_type": "Type",
+  "filter_tier": "Level",
+  "filter_module": "Module",
+  "filter_other": "More",
+  "progress_todo": "Not started",
+  "progress_done": "Completed",
+  "results": "{{count}} results",
+  "results_one": "{{count}} result",
+  "results_other": "{{count}} results",
+  "badge_done": "Done",
+  "type_lesson": "Lesson",
+  "type_simulator": "Simulator",
+  "type_case": "Case study",
+  "type_tool": "Tool"
+}

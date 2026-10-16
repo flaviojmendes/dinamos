@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import * as runtime from 'react/jsx-runtime';
 import remarkGfm from 'remark-gfm';
 import { mdxComponents } from '../mdx';
+import { useTranslation } from 'react-i18next';
 
 type MdxContent = React.ComponentType<{ components?: Record<string, unknown> }>;
 
@@ -50,6 +51,7 @@ function DefaultSkeleton() {
 }
 
 export default function MdxRenderer({ source, cacheKey, onError, fallback, components }: Props) {
+  const { t } = useTranslation();
   const [Content, setContent] = useState<MdxContent | null>(() =>
     cacheKey ? compileCache.get(cacheKey) ?? null : null,
   );
@@ -116,20 +118,19 @@ export default function MdxRenderer({ source, cacheKey, onError, fallback, compo
     return (
       <div className="my-6 border border-red-300 dark:border-signal-red/40 bg-red-50 dark:bg-signal-red/5 p-4">
         <div className="font-mono uppercase tracking-wider text-xs font-semibold text-red-600 dark:text-signal-red mb-2">
-          {loadFailed ? 'Falha ao carregar o conteúdo' : 'MDX compile error'}
+          {t(loadFailed ? 'content.load_error_title' : 'content.compile_error_title')}
         </div>
         {loadFailed ? (
           <div className="text-sm text-red-700 dark:text-signal-red">
             <p className="mb-3">
-              Não foi possível carregar o conteúdo. Isso costuma acontecer após
-              uma atualização do site.
+              {t('content.load_error_message')}
             </p>
             <button
               type="button"
               onClick={() => window.location.reload()}
               className="rounded-md border border-red-400 dark:border-signal-red/50 px-3 py-1.5 text-xs font-medium hover:bg-red-100 dark:hover:bg-signal-red/10"
             >
-              Recarregar página
+              {t('content.reload')}
             </button>
           </div>
         ) : (

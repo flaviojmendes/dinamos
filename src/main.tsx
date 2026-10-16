@@ -7,7 +7,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { ContentProvider } from "./contexts/ContentContext";
 import { ContentProgressProvider } from "./hooks/useContentProgress";
-import { whenI18nReady } from "./config/i18n";
+import { loadLocale, whenI18nReady } from "./config/i18n";
 
 const RELOAD_FLAG = "vite-preload-reloaded";
 window.addEventListener("vite:preloadError", (event) => {
@@ -36,7 +36,10 @@ function Bootstrap() {
   );
 }
 
-whenI18nReady().then(() => {
+whenI18nReady().then(async (i18n) => {
+  if (!["/", "/login"].includes(window.location.pathname)) {
+    await loadLocale(i18n.resolvedLanguage || i18n.language, { extended: true });
+  }
   ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
       <Bootstrap />

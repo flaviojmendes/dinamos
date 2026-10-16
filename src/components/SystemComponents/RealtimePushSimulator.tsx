@@ -197,7 +197,7 @@ export default function RealtimePushSimulator() {
       <Panel title={t(`${base}.metrics.title`)} accent="green">
         <div className="sim-metrics grid grid-cols-2 gap-3 lg:grid-cols-4">
           <AnimatedMetric value={delivered} label={t(`${base}.metrics.delivered`)} color="green" pulse={running} />
-          <AnimatedMetric value={avgLatency} suffix=" ticks" label={t(`${base}.metrics.latency`)} color={avgLatency > 3 ? 'red' : 'green'} decimals={1} />
+          <AnimatedMetric value={avgLatency} suffix={` ${t(`${base}.tick_unit`)}`} label={t(`${base}.metrics.latency`)} color={avgLatency > 3 ? 'red' : 'green'} decimals={1} />
           <AnimatedMetric value={requests} label={t(`${base}.metrics.requests`)} color={mode === 'polling' ? 'amber' : 'green'} />
           <AnimatedMetric value={emptyPolls} label={t(`${base}.metrics.empty_polls`)} color={emptyPolls > 0 ? 'red' : 'default'} />
         </div>

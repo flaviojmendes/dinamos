@@ -2,6 +2,7 @@ import { AnimatedNumber } from '../AISystems/motion';
 import { SimulationActivity, FlowLink } from '../simulation';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Panel, StatusBadge, TacticalButton } from '../tactical';
 
 interface Server {
@@ -45,10 +46,11 @@ const transactionStatusVariant = (status: Transaction['status']) => {
 };
 
 export default function ReplicationSimulator() {
+  const { t } = useTranslation();
   const [servers, setServers] = useState<Server[]>([
     {
       id: 'srv1',
-      name: 'Servidor Principal',
+      name: 'primary',
       role: 'primary',
       status: 'online',
       load: 0,
@@ -57,7 +59,7 @@ export default function ReplicationSimulator() {
     },
     {
       id: 'srv2',
-      name: 'Réplica 1',
+      name: 'replica1',
       role: 'secondary',
       status: 'online',
       load: 0,
@@ -66,7 +68,7 @@ export default function ReplicationSimulator() {
     },
     {
       id: 'srv3',
-      name: 'Réplica 2',
+      name: 'replica2',
       role: 'secondary',
       status: 'online',
       load: 0,
@@ -261,20 +263,19 @@ export default function ReplicationSimulator() {
           animate={{ opacity: 1, y: 0 }}
         >
           <h2 className="text-base font-semibold tracking-tight text-slate-900 dark:text-tactical-text mb-2">
-            Simulador de replicação e failover
+            {t('simulators.replication.title')}
           </h2>
           <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
-            Explore como a replicação de dados e o failover automático funcionam em um 
-            ambiente distribuído.
+            {t('simulators.replication.subtitle')}
           </p>
         </motion.div>
       </div>
 
-      <Panel title="Controles" accent="cyan">
+      <Panel title={t('simulators.replication.controls')} accent="cyan">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
           <div>
             <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">
-              Taxa de escrita (por segundo)
+              {t('simulators.replication.write_rate')}
             </label>
             <input
               type="range"
@@ -292,7 +293,7 @@ export default function ReplicationSimulator() {
           </div>
           <div>
             <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">
-              Taxa de leitura (por segundo)
+              {t('simulators.replication.read_rate')}
             </label>
             <input
               type="range"
@@ -310,7 +311,7 @@ export default function ReplicationSimulator() {
           </div>
           <div>
             <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">
-              Modo de replicação
+              {t('simulators.replication.mode')}
             </label>
             <select
               value={config.replicationMode}
@@ -320,8 +321,8 @@ export default function ReplicationSimulator() {
               }))}
               className={inputClass}
             >
-              <option value="sync">Síncrona</option>
-              <option value="async">Assíncrona</option>
+              <option value="sync">{t('simulators.replication.sync')}</option>
+              <option value="async">{t('simulators.replication.async')}</option>
             </select>
           </div>
           <div className="flex items-center space-x-2">
@@ -334,7 +335,7 @@ export default function ReplicationSimulator() {
               }))}
               className="rounded"
             />
-            <label className="font-sans text-sm text-slate-600 dark:text-tactical-dim">Failover automático</label>
+            <label className="font-sans text-sm text-slate-600 dark:text-tactical-dim">{t('simulators.replication.automatic_failover')}</label>
           </div>
           <div className="flex items-end">
             <TacticalButton
@@ -342,7 +343,7 @@ export default function ReplicationSimulator() {
               className="w-full"
               onClick={() => setIsRunning(!isRunning)}
             >
-              {isRunning ? 'Parar simulação' : 'Iniciar simulação'}
+              {t(`simulators.replication.${isRunning ? 'stop' : 'start'}`)}
             </TacticalButton>
           </div>
         </div>
@@ -355,18 +356,14 @@ export default function ReplicationSimulator() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
           >
-            <Panel title={server.name} accent={server.role === 'primary' ? 'green' : 'cyan'}>
+            <Panel title={t(`simulators.replication.servers.${server.name}`)} accent={server.role === 'primary' ? 'green' : 'cyan'}>
               <div className="flex justify-between items-start mb-4">
                 <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim">{server.region}</p>
                 <div className="flex flex-col items-end gap-1">
                   <StatusBadge
                     variant={serverStatusVariant(server.status)}
                     label={
-                      server.status === 'online'
-                        ? 'Online'
-                        : server.status === 'degraded'
-                        ? 'Degradado'
-                        : 'Offline'
+                      t(`simulators.replication.${server.status}`)
                     }
                   />
                   <span className={`font-sans text-xs ${
@@ -374,7 +371,7 @@ export default function ReplicationSimulator() {
                       ? 'text-emerald-600 dark:text-signal-green' 
                       : 'text-slate-500 dark:text-tactical-label'
                   }`}>
-                    {server.role === 'primary' ? 'Primário' : 'Secundário'}
+                    {t(`simulators.replication.${server.role}`)}
                   </span>
                 </div>
               </div>
@@ -383,8 +380,8 @@ export default function ReplicationSimulator() {
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between text-xs mb-1 text-slate-600 dark:text-tactical-dim">
-                    <span className="font-sans">Carga</span>
-                    <span className="font-mono tabular-nums">{server.load} transações</span>
+                    <span className="font-sans">{t('simulators.replication.load')}</span>
+                    <span className="font-mono tabular-nums">{server.load} {t('simulators.replication.transactions')}</span>
                   </div>
                   <div className="h-2 bg-slate-100 dark:bg-tactical-raised overflow-hidden">
                     <motion.div
@@ -398,7 +395,7 @@ export default function ReplicationSimulator() {
                 {server.role === 'secondary' && (
                   <div>
                     <div className="flex justify-between text-xs mb-1 text-slate-600 dark:text-tactical-dim">
-                      <span className="font-sans">Lag de replicação</span>
+                      <span className="font-sans">{t('simulators.replication.lag')}</span>
                       <span className="font-mono tabular-nums">{Math.round(server.replicationLag)}ms</span>
                     </div>
                     <div className="h-2 bg-slate-100 dark:bg-tactical-raised overflow-hidden">
@@ -418,7 +415,7 @@ export default function ReplicationSimulator() {
                     className="w-full"
                     onClick={() => simulateServerFailure(server.id)}
                   >
-                    Simular falha
+                    {t('simulators.replication.fail')}
                   </TacticalButton>
                 ) : (
                   <TacticalButton
@@ -427,7 +424,7 @@ export default function ReplicationSimulator() {
                     className="w-full"
                     onClick={() => recoverServer(server.id)}
                   >
-                    Recuperar
+                    {t('simulators.replication.recover')}
                   </TacticalButton>
                 )}
               </div>
@@ -441,15 +438,15 @@ export default function ReplicationSimulator() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <Panel title="Estatísticas" accent="green">
+          <Panel title={t('simulators.replication.statistics')} accent="green">
             <div className="grid grid-cols-1 gap-4">
               <div className="border border-slate-200 dark:border-tactical-border rounded-lg px-3 py-3">
                 <div className="font-mono text-3xl font-bold tabular-nums leading-none text-slate-900 dark:text-tactical-text"><AnimatedNumber value={stats.total} /></div>
-                <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">Total de transações</div>
+                <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.replication.total')}</div>
               </div>
               <div>
                 <div className="flex justify-between text-xs mb-1 text-slate-600 dark:text-tactical-dim">
-                  <span className="font-sans">Taxa de sucesso</span>
+                  <span className="font-sans">{t('simulators.replication.success_rate')}</span>
                   <span className="font-mono tabular-nums">
                     {stats.total > 0 
                       ? `${Math.round((stats.successful / stats.total) * 100)}%`
@@ -470,7 +467,7 @@ export default function ReplicationSimulator() {
               </div>
               <div>
                 <div className="flex justify-between text-xs mb-1 text-slate-600 dark:text-tactical-dim">
-                  <span className="font-sans">Lag médio de replicação</span>
+                  <span className="font-sans">{t('simulators.replication.average_lag')}</span>
                   <span className="font-mono tabular-nums">{Math.round(stats.avgReplicationLag)}ms</span>
                 </div>
                 <div className="h-2 bg-slate-100 dark:bg-tactical-raised overflow-hidden">
@@ -489,7 +486,7 @@ export default function ReplicationSimulator() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <Panel title="Transações Recentes" accent="amber">
+          <Panel title={t('simulators.replication.recent')} accent="amber">
             <div className="space-y-2">
               <AnimatePresence>
                 {transactions.slice(-5).map((transaction) => (
@@ -504,25 +501,19 @@ export default function ReplicationSimulator() {
                       <StatusBadge
                         variant={transactionStatusVariant(transaction.status)}
                         label={
-                          transaction.status === 'completed'
-                            ? 'Concluída'
-                            : transaction.status === 'failed'
-                            ? 'Falha'
-                            : transaction.status === 'processing'
-                            ? 'Processando'
-                            : 'Pendente'
+                          t(`simulators.replication.${transaction.status}`)
                         }
                       />
                       <div className="flex flex-col min-w-0">
                         <span className="font-sans text-xs text-slate-900 dark:text-tactical-text truncate">
-                          {servers.find(s => s.id === transaction.server)?.name}
+                          {t(`simulators.replication.servers.${servers.find(s => s.id === transaction.server)?.name}`)}
                         </span>
                         <span className={`font-sans text-[11px] ${
                           transaction.type === 'write' 
                             ? 'text-slate-600 dark:text-slate-300' 
                             : 'text-emerald-600 dark:text-signal-green'
                         }`}>
-                          {transaction.type === 'write' ? 'Escrita' : 'Leitura'}
+                          {t(`simulators.replication.${transaction.type}`)}
                         </span>
                       </div>
                     </div>

@@ -89,7 +89,7 @@ export default function InvertedIndexSimulator() {
             const active = query.has(term);
             return (
               <button
-                key={term}
+                key={t(`${base}.terms.${term}`)}
                 type="button"
                 aria-pressed={active}
                 onClick={() => toggleTerm(term)}
@@ -99,7 +99,7 @@ export default function InvertedIndexSimulator() {
                     : 'border-slate-200 text-slate-500 hover:border-slate-400 dark:border-tactical-border dark:text-tactical-dim'
                 }`}
               >
-                {term}
+                {t(`${base}.terms.${term}`)}
               </button>
             );
           })}
@@ -129,8 +129,8 @@ export default function InvertedIndexSimulator() {
                     </div>
                     <div className="mt-1 flex flex-wrap gap-1">
                       {d.terms.map(term => (
-                        <span key={term} className={`font-sans text-[10px] ${query.has(term) ? 'text-signal-cyan' : 'text-slate-400 dark:text-tactical-label'}`}>
-                          {term}
+                        <span key={t(`${base}.terms.${term}`)} className={`font-sans text-[10px] ${query.has(term) ? 'text-signal-cyan' : 'text-slate-400 dark:text-tactical-label'}`}>
+                          {t(`${base}.terms.${term}`)}
                         </span>
                       ))}
                     </div>
@@ -147,8 +147,8 @@ export default function InvertedIndexSimulator() {
               {VOCAB.map(term => {
                 const active = query.has(term);
                 return (
-                  <div key={term} className={`flex items-center gap-2 rounded-md border px-2 py-1 ${active ? 'border-signal-cyan/60 bg-signal-cyan/5' : 'border-slate-200 dark:border-tactical-border'}`}>
-                    <span className={`w-20 shrink-0 font-sans text-[11px] ${active ? 'text-signal-cyan' : 'text-slate-500 dark:text-tactical-dim'}`}>{term}</span>
+                  <div key={t(`${base}.terms.${term}`)} className={`flex items-center gap-2 rounded-md border px-2 py-1 ${active ? 'border-signal-cyan/60 bg-signal-cyan/5' : 'border-slate-200 dark:border-tactical-border'}`}>
+                    <span className={`w-20 shrink-0 font-sans text-[11px] ${active ? 'text-signal-cyan' : 'text-slate-500 dark:text-tactical-dim'}`}>{t(`${base}.terms.${term}`)}</span>
                     <FlowLink active={active} eventKey={`${Array.from(query).join('-')}-${mode}`} count={1} className="max-w-6" />
                     <div className="flex flex-wrap gap-1">
                       {index[term].map(id => (

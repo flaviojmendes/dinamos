@@ -209,7 +209,7 @@ export default function CrdtSimulator() {
           <AnimatedMetric value={merges} label={t(`${base}.metrics.merges`)} color="default" />
           <AnimatedMetric
             value={converged ? 1 : 0}
-            format={() => (converged ? 'YES' : 'NO')}
+            format={() => (t(converged ? 'common.yes' : 'common.no'))}
             label={t(`${base}.metrics.converged`)}
             color={converged ? 'green' : 'amber'}
           />

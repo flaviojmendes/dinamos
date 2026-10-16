@@ -7,6 +7,17 @@ import type { ContentIndex, ContentManifest, PageBodyPayload } from './types';
 let cachedManifest: ContentManifest | null = null;
 let fallbackWarned = false;
 
+export class ContentTranslationUnavailableError extends Error {
+  constructor() { super('translation_unavailable'); this.name = 'ContentTranslationUnavailableError'; }
+}
+
+function requestedBody(payload: unknown, path: string, lang: 'en' | 'pt'): string {
+  if (!isPageBodyPayload(payload)) throw new Error('invalid body schema');
+  if (payload.path !== path) throw new Error('unexpected content path');
+  if (payload.lang !== lang || !payload.body.trim()) throw new ContentTranslationUnavailableError();
+  return payload.body;
+}
+
 function warnFallbackOnce(reason: string): void {
   if (fallbackWarned || isForceContentApi()) return;
   fallbackWarned = true;
@@ -105,27 +116,25 @@ export interface LoadPageBodyOptions {
   forceApi?: boolean;
 }
 
-async function fetchBodyFromCdn(url: string): Promise<string> {
+async function fetchBodyFromCdn(url: string, path: string, lang: 'en' | 'pt'): Promise<string> {
   const res = await fetch(url);
   if (!res.ok) {
     throw new Error(`body HTTP ${res.status}`);
   }
   const data: unknown = await res.json();
-  if (!isPageBodyPayload(data)) {
-    throw new Error('invalid body schema');
-  }
-  return data.body;
+  return requestedBody(data, path, lang);
 }
 
 async function fetchBodyFromApi(path: string, lang: 'en' | 'pt'): Promise<string> {
-  const res = await api.get<PageBodyPayload | { body: string }>('/api/content/body', {
-    params: { path, lang },
-  });
-  const payload = res.data;
-  if (payload && typeof payload === 'object' && 'body' in payload && typeof payload.body === 'string') {
-    return payload.body;
+  try {
+    const res = await api.get<PageBodyPayload>('/api/content/body', { params: { path, lang } });
+    return requestedBody(res.data, path, lang);
+  } catch (error) {
+    if ((error as { response?: { data?: { detail?: string } } })?.response?.data?.detail === 'translation_unavailable') {
+      throw new ContentTranslationUnavailableError();
+    }
+    throw error;
   }
-  return '';
 }
 
 function resolveBodyUrl(manifest: ContentManifest, path: string, lang: 'en' | 'pt'): string | null {
@@ -153,7 +162,7 @@ export async function loadPageBody(options: LoadPageBodyOptions): Promise<string
       const bodyUrl = resolveBodyUrl(manifest, path, lang);
       if (bodyUrl) {
         try {
-          return await fetchBodyFromCdn(bodyUrl);
+          return await fetchBodyFromCdn(bodyUrl, path, lang);
         } catch (err) {
           warnFallbackOnce(err instanceof Error ? err.message : String(err));
         }

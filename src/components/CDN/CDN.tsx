@@ -7,15 +7,11 @@ import { Panel, StatusBadge, TacticalButton } from '../tactical';
 
 interface Datacenter {
   id: string;
-  name: string;
-  location: string;
   hasCache: boolean;
 }
 
 interface Country {
   id: string;
-  name: string;
-  region: string;
   latencyToDatacenters: Record<string, number>;
 }
 
@@ -51,41 +47,31 @@ export default function CDN() {
   });
   
   const [datacenters, setDatacenters] = useState<Datacenter[]>([
-    { id: 'us', name: 'Estados Unidos', location: 'Virginia', hasCache: false },
-    { id: 'br', name: 'Brasil', location: 'São Paulo', hasCache: false },
-    { id: 'eu', name: 'Europa', location: 'Frankfurt', hasCache: false },
-    { id: 'sg', name: 'Ásia', location: 'Singapura', hasCache: false }
+    { id: 'us', hasCache: false },
+    { id: 'br', hasCache: false },
+    { id: 'eu', hasCache: false },
+    { id: 'sg', hasCache: false }
   ]);
 
   const [countries] = useState<Country[]>([
     { 
       id: 'br', 
-      name: 'Brasil',
-      region: 'América do Sul',
       latencyToDatacenters: { us: 120, br: 20, eu: 180, sg: 300 }
     },
     { 
       id: 'ar', 
-      name: 'Argentina',
-      region: 'América do Sul',
       latencyToDatacenters: { us: 140, br: 40, eu: 200, sg: 320 }
     },
     { 
       id: 'mx', 
-      name: 'México',
-      region: 'América do Norte',
       latencyToDatacenters: { us: 60, br: 160, eu: 180, sg: 280 }
     },
     { 
       id: 'es', 
-      name: 'Espanha',
-      region: 'Europa',
       latencyToDatacenters: { us: 120, br: 180, eu: 40, sg: 240 }
     },
     { 
       id: 'jp', 
-      name: 'Japão',
-      region: 'Ásia',
       latencyToDatacenters: { us: 160, br: 280, eu: 220, sg: 80 }
     }
   ]);
@@ -148,8 +134,8 @@ export default function CDN() {
     const logEntry: RequestLog = {
       id: Date.now(),
       timestamp: new Date(),
-      country: t(`simulators.cdn.countries.${country.id}.name`, { defaultValue: country.name }),
-      datacenter: t(`simulators.cdn.datacenters.${datacenter.id}.name`, { defaultValue: datacenter.name }),
+      country: country.id,
+      datacenter: datacenter.id,
       latency,
       fromCache: datacenter.hasCache
     };
@@ -280,8 +266,8 @@ export default function CDN() {
               aria-pressed={selectedCountry === country.id}
               className="!flex-col !items-start !h-auto !py-3 !normal-case !tracking-normal"
             >
-              <span className="flex items-center gap-2 font-sans text-sm font-semibold"><ArrowDownToLine size={14} aria-hidden="true" />{t(`simulators.cdn.countries.${country.id}.name`, { defaultValue: country.name })}</span>
-              <span className="font-sans text-xs text-slate-500 dark:text-tactical-dim font-normal">{t(`simulators.cdn.countries.${country.id}.region`, { defaultValue: country.region })}</span>
+              <span className="flex items-center gap-2 font-sans text-sm font-semibold"><ArrowDownToLine size={14} aria-hidden="true" />{t(`simulators.cdn.countries.${country.id}.name`)}</span>
+              <span className="font-sans text-xs text-slate-500 dark:text-tactical-dim font-normal">{t(`simulators.cdn.countries.${country.id}.region`)}</span>
             </TacticalButton>
           ))}
         </div>
@@ -301,8 +287,8 @@ export default function CDN() {
                   : 'border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised'
               }`}
             >
-              <div className="font-sans text-sm font-medium text-slate-900 dark:text-tactical-text">{t(`simulators.cdn.datacenters.${dc.id}.name`, { defaultValue: dc.name })}</div>
-              <div className="font-sans text-xs text-slate-500 dark:text-tactical-dim mt-0.5">{t(`simulators.cdn.datacenters.${dc.id}.location`, { defaultValue: dc.location })}</div>
+              <div className="font-sans text-sm font-medium text-slate-900 dark:text-tactical-text">{t(`simulators.cdn.datacenters.${dc.id}.name`)}</div>
+              <div className="font-sans text-xs text-slate-500 dark:text-tactical-dim mt-0.5">{t(`simulators.cdn.datacenters.${dc.id}.location`)}</div>
               {dc.hasCache && (
                 <div className="mt-2">
                   <StatusBadge variant="active" label={t('simulators.cdn.labels.cache_badge')} />
@@ -331,9 +317,9 @@ export default function CDN() {
                   <div className="font-mono text-sm text-slate-900 dark:text-tactical-text">
                     <span className="text-slate-500 dark:text-tactical-dim">{formatTime(log.timestamp)}</span>
                     <span className="mx-2 text-slate-300 dark:text-tactical-line">|</span>
-                    <span>{log.country}</span>
+                    <span>{t(`simulators.cdn.countries.${log.country}.name`)}</span>
                     <span className="mx-2 text-slate-300 dark:text-tactical-line">→</span>
-                    <span>{log.datacenter}</span>
+                    <span>{t(`simulators.cdn.datacenters.${log.datacenter}.name`)}</span>
                   </div>
                   <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim mt-1 flex items-center gap-2">
                     <span>{t('simulators.cdn.labels.latency')}: {log.latency}ms</span>

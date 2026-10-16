@@ -57,13 +57,13 @@ interface SimState {
 }
 
 const NAMES = [
-  'Platão',
-  'Aristóteles',
-  'Sócrates',
-  'Descartes',
-  'Kant',
-  'Nietzsche',
-  'Confúcio',
+  'plato',
+  'aristotle',
+  'socrates',
+  'descartes',
+  'kant',
+  'nietzsche',
+  'confucius',
 ];
 
 const STALL_THRESHOLD = 6;
@@ -335,7 +335,9 @@ export default function PhilosophersSimulator() {
   const [showConfig, setShowConfig] = React.useState(true);
 
   const tk = (k: string, params?: Record<string, string | number>) =>
-    t(`simulators.philosophers_sim.${k}`, params);
+    t(`simulators.philosophers_sim.${k}`, params?.name
+      ? { ...params, name: t(`simulators.philosophers_sim.names.${params.name}`) }
+      : params);
 
   useEffect(() => {
     if (!isRunning) return;
@@ -590,7 +592,7 @@ export default function PhilosophersSimulator() {
                   const tone = TONE[STATE_TONE[p.state]];
                   return (
                     <g key={p.id}>
-                      <title>{p.name}</title>
+                      <title>{tk(`names.${p.name}`)}</title>
                       {isRunning && !reducedMotion && p.state === 'eating' && (
                         <motion.circle
                           cx={pos.x}
@@ -622,7 +624,7 @@ export default function PhilosophersSimulator() {
                         className="font-mono font-semibold"
                         fontSize="4.2"
                       >
-                        {p.name.charAt(0)}
+                        {tk(`names.${tk(`names.${p.name}`)}`).charAt(0)}
                       </text>
                     </g>
                   );
@@ -673,11 +675,11 @@ export default function PhilosophersSimulator() {
                     <span
                       className={`grid h-7 w-7 shrink-0 place-items-center rounded-full ${tone.soft} border ${tone.ring} font-mono text-xs font-semibold ${tone.text}`}
                     >
-                      {p.name.charAt(0)}
+                      {tk(`names.${tk(`names.${p.name}`)}`).charAt(0)}
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="font-sans text-sm text-slate-900 dark:text-tactical-text truncate">{p.name}</span>
+                        <span className="font-sans text-sm text-slate-900 dark:text-tactical-text truncate">{tk(`names.${p.name}`)}</span>
                         <span className={`font-mono text-[10px] uppercase tracking-wide ${tone.text}`}>{tk(`states.${p.state}`)}</span>
                       </div>
                       <div className="mt-1 flex items-center gap-2">
@@ -690,8 +692,8 @@ export default function PhilosophersSimulator() {
                         </div>
                         <span className="font-mono text-[10px] tabular-nums text-slate-400 dark:text-tactical-label w-4 text-right">{p.meals}</span>
                         <span className="flex items-center gap-1" aria-hidden>
-                          <span className={`h-2.5 w-1 rounded-sm ${holdsLeft(p.id) ? 'bg-signal-amber' : 'bg-slate-200 dark:bg-tactical-line'}`} title="left fork" />
-                          <span className={`h-2.5 w-1 rounded-sm ${holdsRight(p.id) ? 'bg-signal-amber' : 'bg-slate-200 dark:bg-tactical-line'}`} title="right fork" />
+                          <span className={`h-2.5 w-1 rounded-sm ${holdsLeft(p.id) ? 'bg-signal-amber' : 'bg-slate-200 dark:bg-tactical-line'}`} title={tk('fork_left')} />
+                          <span className={`h-2.5 w-1 rounded-sm ${holdsRight(p.id) ? 'bg-signal-amber' : 'bg-slate-200 dark:bg-tactical-line'}`} title={tk('fork_right')} />
                         </span>
                       </div>
                     </div>

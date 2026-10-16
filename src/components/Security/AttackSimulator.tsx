@@ -301,7 +301,7 @@ export default function AttackSimulator() {
                   />
                 )}
               </svg>
-              <span className="absolute top-full mt-2 font-mono text-[10px] text-slate-600 dark:text-tactical-dim">{node.id}</span>
+              <span className="absolute top-full mt-2 font-mono text-[10px] text-slate-600 dark:text-tactical-dim">{t(`${base}.nodes.${node.type}`)} {node.id.replace(/^[a-z]+/, '')}</span>
             </motion.div>
           ))}
 

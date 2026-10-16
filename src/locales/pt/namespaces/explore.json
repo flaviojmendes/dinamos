@@ -1,0 +1,19 @@
+{
+  "title": "Explorar",
+  "subtitle": "Encontre e filtre todas as aulas, simuladores e estudos de caso em um só lugar.",
+  "clear": "Limpar",
+  "filter_type": "Tipo",
+  "filter_tier": "Nível",
+  "filter_module": "Módulo",
+  "filter_other": "Mais",
+  "progress_todo": "Não iniciado",
+  "progress_done": "Concluído",
+  "results": "{{count}} resultados",
+  "results_one": "{{count}} resultado",
+  "results_other": "{{count}} resultados",
+  "badge_done": "Concluído",
+  "type_lesson": "Aula",
+  "type_simulator": "Simulador",
+  "type_case": "Estudo de caso",
+  "type_tool": "Ferramenta"
+}

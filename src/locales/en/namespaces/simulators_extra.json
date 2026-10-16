@@ -1,0 +1,41 @@
+{
+  "replication": {
+    "title": "Replication simulator",
+    "intro": "Explore how replication strategies affect data consistency and availability.",
+    "how_title": "How to use the simulator:",
+    "steps": [
+      "Choose synchronous, semi-synchronous, or asynchronous replication.",
+      "Adjust network latency, failure rate, and the number of replicas.",
+      "Observe propagation times, regional status, and the impact of failures."
+    ],
+    "config_title": "Settings",
+    "replication_type": "Replication type",
+    "sync": "Synchronous",
+    "semi_sync": "Semi-synchronous",
+    "async": "Asynchronous",
+    "network_latency_ms": "Network latency (ms)",
+    "failure_rate": "Failure rate",
+    "replica_count": "Replica count",
+    "manual_title": "Manual operation",
+    "key_placeholder": "Key",
+    "value_placeholder": "Value",
+    "write": "Write",
+    "start": "Start simulation",
+    "stop": "Stop simulation",
+    "statuses": {
+      "healthy": "healthy",
+      "failed": "failed",
+      "role": "Role",
+      "latency": "Latency",
+      "data": "Data",
+      "keys_label": "{{count}} keys",
+      "replicated_after": "Replicated after {{seconds}}s"
+    },
+    "simulate_failure": "Simulate failure",
+    "recover": "Recover",
+    "recent_ops": "Recent requests",
+    "read_label": "Read",
+    "write_label": "Write",
+    "keys_label": "{{count}} keys"
+  }
+}

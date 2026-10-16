@@ -1,5 +1,6 @@
 import { SimulationActivity, FlowLink, useSimulationMotion } from '../simulation';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Panel, StatusBadge, TacticalButton } from '../tactical';
 
@@ -18,6 +19,7 @@ interface UserAction {
 }
 
 export default function AsyncSync() {
+  const { t } = useTranslation();
   const { reducedMotion, transition } = useSimulationMotion();
   const [communicationType, setCommunicationType] = useState<'sync' | 'async'>('sync');
   const [requests, setRequests] = useState<Request[]>([]);
@@ -135,7 +137,7 @@ export default function AsyncSync() {
   return (
     <div className="simulation-workspace space-y-6">
       <div className="sim-controls"><SimulationActivity active={requests.some(request => request.status !== 'served')} /></div>
-      <Panel title="Controles" accent="cyan">
+      <Panel title={t('simulators.async_sync.controls')} accent="cyan">
         <div className="flex flex-col gap-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-2">
@@ -145,10 +147,10 @@ export default function AsyncSync() {
                 onClick={placeOrder}
                 disabled={communicationType === 'sync' && isButtonDisabled}
               >
-                Enviar Mensagem {nextId}
+                {t('simulators.async_sync.send')} {nextId}
               </TacticalButton>
               <TacticalButton size="sm" variant="ghost" onClick={resetSimulation}>
-                Reiniciar
+                {t('simulators.async_sync.reset')}
               </TacticalButton>
             </div>
             <div className="flex items-center gap-2">
@@ -160,7 +162,7 @@ export default function AsyncSync() {
                   resetSimulation();
                 }}
               >
-                Síncrono
+                {t('simulators.async_sync.sync')}
               </TacticalButton>
               <TacticalButton
                 size="sm"
@@ -170,23 +172,23 @@ export default function AsyncSync() {
                   resetSimulation();
                 }}
               >
-                Assíncrono
+                {t('simulators.async_sync.async')}
               </TacticalButton>
             </div>
           </div>
           {communicationType === 'sync' && isButtonDisabled && (
-            <StatusBadge variant="in-progress" label="Bloqueante" />
+            <StatusBadge variant="in-progress" label={t('simulators.async_sync.blocking')} />
           )}
         </div>
       </Panel>
 
-      <Panel title="Visualização" accent="green">
+      <Panel title={t('simulators.async_sync.visualization')} accent="green">
         <div className="sim-stage relative h-[300px]">
           <div className="absolute inset-0 flex flex-col">
             <div className="flex h-8 text-xs font-medium text-slate-500 dark:text-tactical-label border-b border-slate-200 dark:border-tactical-border">
-              <div className="w-1/3 text-center">Cliente</div>
-              <div className="w-1/3 text-center border-l border-slate-200 dark:border-tactical-border">Servidor</div>
-              <div className="w-1/3 text-center border-l border-slate-200 dark:border-tactical-border">DB</div>
+              <div className="w-1/3 text-center">{t('simulators.async_sync.client')}</div>
+              <div className="w-1/3 text-center border-l border-slate-200 dark:border-tactical-border">{t('simulators.async_sync.server')}</div>
+              <div className="w-1/3 text-center border-l border-slate-200 dark:border-tactical-border">{t('simulators.async_sync.database')}</div>
             </div>
 
             <div className="flex-1 relative">
@@ -235,7 +237,7 @@ export default function AsyncSync() {
                         exit={{ opacity: 0 }}
                       >
                         <div className="absolute inset-0 flex items-center justify-center font-sans text-signal-red text-xs rounded-md">
-                          Aguardando...
+                          {t('simulators.async_sync.waiting')}
                         </div>
                       </motion.div>
                     )}
@@ -277,26 +279,26 @@ export default function AsyncSync() {
         <div className="flex flex-wrap justify-center gap-6 mt-4 font-sans text-xs text-slate-500 dark:text-tactical-dim">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-signal-cyan"></div>
-            <span>Síncrono (Bloqueante)</span>
+            <span>{t('simulators.async_sync.sync_legend')}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-signal-amber"></div>
-            <span>Assíncrono (Não Bloqueante)</span>
+            <span>{t('simulators.async_sync.async_legend')}</span>
           </div>
           <div className="flex items-center gap-2">
-            <span>✉️ Mensagem</span>
+            <span>{t('simulators.async_sync.message')}</span>
           </div>
           <div className="flex items-center gap-2">
-            <span>✅ Processado</span>
+            <span>{t('simulators.async_sync.processed')}</span>
           </div>
         </div>
       </Panel>
 
       <div className="bg-slate-50 dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-xl p-5">
-        <h3 className="text-sm font-semibold text-slate-900 dark:text-tactical-text mb-3">Sobre o simulador</h3>
+        <h3 className="text-sm font-semibold text-slate-900 dark:text-tactical-text mb-3">{t('simulators.async_sync.about')}</h3>
         <div className="space-y-1.5 font-sans text-sm text-slate-600 dark:text-tactical-dim">
-          <p><strong>Síncrono:</strong> A mensagem é enviada e o cliente espera a resposta.</p>
-          <p><strong>Assíncrono:</strong> A mensagem é enviada e o cliente não espera a resposta.</p>
+          <p><strong>{t('simulators.async_sync.sync_label')}</strong> {t('simulators.async_sync.sync_description')}</p>
+          <p><strong>{t('simulators.async_sync.async_label')}</strong> {t('simulators.async_sync.async_description')}</p>
         </div>
       </div>
     </div>

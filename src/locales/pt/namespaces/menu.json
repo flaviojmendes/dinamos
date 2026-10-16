@@ -306,7 +306,11 @@
       "description": "Mantendo o sistema sempre funcionando",
       "replicacao": {
         "name": "Replicação",
-        "description": "Cópias sincronizadas dos dados"
+        "description": "Cópias sincronizadas dos dados",
+        "simulator": {
+          "name": "Simulador de replicação",
+          "description": "Observe a replicação de dados e o failover entre servidores."
+        }
       },
       "failover": {
         "name": "Failover",
@@ -314,7 +318,11 @@
       },
       "zonas": {
         "name": "Zonas de Disponibilidade",
-        "description": "Distribuição geográfica para resiliência"
+        "description": "Distribuição geográfica para resiliência",
+        "simulator": {
+          "name": "Simulador",
+          "description": "Experimente estratégias de disponibilidade"
+        }
       },
       "disaster-recovery": {
         "name": "Recuperação de Desastres",
@@ -331,6 +339,14 @@
       "simulator": {
         "name": "Simulador",
         "description": "Experimente estratégias de disponibilidade"
+      },
+      "disaster_recovery": {
+        "name": "Recuperação de desastres",
+        "description": "Estratégias para recuperar o serviço após uma falha grave."
+      },
+      "distribuicao_carga": {
+        "name": "Distribuição de carga",
+        "description": "Distribua o tráfego entre servidores disponíveis."
       }
     },
     "tolerancia_falhas": {
@@ -475,6 +491,10 @@
       "simulador": {
         "name": "Simulador",
         "description": "Simulação interativa do protocolo Two Phase Commit"
+      },
+      "simulator": {
+        "name": "Simulador",
+        "description": "Simulação interativa do protocolo Two Phase Commit"
       }
     },
     "consenso": {
@@ -483,12 +503,20 @@
       "simulador": {
         "name": "Simulador",
         "description": "Simulação interativa dos protocolos de consenso"
+      },
+      "simulator": {
+        "name": "Simulador",
+        "description": "Simulação interativa dos protocolos de consenso"
       }
     },
     "lamport_timestamps": {
       "name": "Relógios Lógicos de Lamport",
       "description": "Ordenação de eventos em sistemas distribuídos",
       "simulador": {
+        "name": "Simulador",
+        "description": "Visualize a ordenação de eventos com timestamps de Lamport"
+      },
+      "simulator": {
         "name": "Simulador",
         "description": "Visualize a ordenação de eventos com timestamps de Lamport"
       }
@@ -555,6 +583,10 @@
       "tracing": {
         "name": "Tracing Simulator",
         "description": "Experimente o rastreamento de eventos"
+      },
+      "simulator": {
+        "name": "Simulador de Logs",
+        "description": "Experimente com bons e maus exemplos de logs"
       }
     },
     "alertas": {
@@ -655,12 +687,20 @@
       "simulador": {
         "name": "Simulador",
         "description": "Experimente diferentes tipos de criptografia na prática"
+      },
+      "simulator": {
+        "name": "Simulador",
+        "description": "Experimente diferentes tipos de criptografia na prática"
       }
     },
     "tokens": {
       "name": "Tokens e JWT",
       "description": "Gerenciamento de sessões e tokens de acesso",
       "simulador": {
+        "name": "Simulador",
+        "description": "Experimente a geração e validação de JWTs"
+      },
+      "simulator": {
         "name": "Simulador",
         "description": "Experimente a geração e validação de JWTs"
       }
@@ -671,12 +711,20 @@
     },
     "ataques": {
       "name": "Ataques Comuns",
-      "description": "Prevenção contra ataques em sistemas distribuídos"
+      "description": "Prevenção contra ataques em sistemas distribuídos",
+      "simulator": {
+        "name": "Simulador de ataques",
+        "description": "Explore ataques comuns e seus efeitos em sistemas distribuídos."
+      }
     },
     "prompt_injection": {
       "name": "Prompt Injection",
       "description": "Ataques específicos de LLM e guardrails",
       "simulador": {
+        "name": "Simulador de Prompt Injection",
+        "description": "Combine defesas e veja se o segredo vaza"
+      },
+      "simulator": {
         "name": "Simulador de Prompt Injection",
         "description": "Combine defesas e veja se o segredo vaza"
       }
@@ -841,5 +889,9 @@
   "notifications": {
     "name": "Notificações",
     "description": "Respostas, menções e anúncios"
+  },
+  "async_sync": {
+    "name": "Comunicação síncrona e assíncrona",
+    "description": "Compare o bloqueio do cliente e o processamento de mensagens."
   }
 }

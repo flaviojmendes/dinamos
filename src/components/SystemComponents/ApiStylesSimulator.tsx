@@ -148,7 +148,7 @@ export default function ApiStylesSimulator() {
           <AnimatedMetric value={stats.roundTrips} label={t(`${base}.metrics.round_trips`)} color={stats.roundTrips > 1 ? 'amber' : 'green'} />
           <AnimatedMetric value={stats.payload} suffix=" B" label={t(`${base}.metrics.payload`)} color="cyan" />
           <AnimatedMetric value={stats.overFetch} suffix="%" label={t(`${base}.metrics.over_fetch`)} color={stats.overFetch > 30 ? 'red' : 'green'} />
-          <AnimatedMetric value={stats.schema ? 1 : 0} format={() => (stats.schema ? 'YES' : 'NO')} label={t(`${base}.metrics.schema`)} color="default" />
+          <AnimatedMetric value={stats.schema ? 1 : 0} format={() => (t(stats.schema ? 'common.yes' : 'common.no'))} label={t(`${base}.metrics.schema`)} color="default" />
         </div>
         <p className="mt-4 font-sans text-[11px] text-slate-500 dark:text-tactical-dim">{t(`${base}.hint.${style}`)}</p>
       </Panel>

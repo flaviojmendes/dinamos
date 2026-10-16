@@ -38,6 +38,10 @@ vi.mock('../../../config/contentRegistry', () => {
   ];
   return {
     getItem: (path: string) => items.find((item) => item.path === path),
+    titleForPath: (path: string, language: string) => {
+      const item = items.find(item => item.path === path);
+      return language.startsWith('pt') ? item?.titlePt : item?.titleEn;
+    },
     getModule: () => ({ id: 'theory', label: 'Theory', base: '/theory' }),
     moduleSequence: () => items,
     relatedItems: () => [],

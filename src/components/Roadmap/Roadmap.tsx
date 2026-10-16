@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useContent } from '../../contexts/ContentContext';
-import { titleForPath, fallbackLabel } from '../../config/contentRegistry';
+import { titleForPath, fallbackLabel, menuKey } from '../../config/contentRegistry';
 import { useContentProgress } from '../../hooks/useContentProgress';
 import ContentLayout from '../Common/ContentLayout';
 import { motion } from 'framer-motion';
@@ -79,8 +79,6 @@ export default function Roadmap() {
     return () => window.clearTimeout(timer);
   }, [location, contentPages]);
 
-  const makeMenuKey = (path: string, field: 'name' | 'description') =>
-    `menu.${path.replace(/^\//, '').replace(/\//g, '.')}.${field}`;
 
   // Top-level modules only (exclude the roadmap itself, editors and external tools).
   const roadmapItems = menuItems.filter(item =>
@@ -177,8 +175,8 @@ export default function Roadmap() {
               item.name && !item.name.startsWith('menu.') ? item.name : fallbackLabel(item.path);
             const displayName =
               titleForPath(item.path, i18n.language) ??
-              t(makeMenuKey(item.path, 'name'), { defaultValue: staticName });
-            const displayDescription = t(makeMenuKey(item.path, 'description'), { defaultValue: item.description });
+              t(menuKey(item.path, 'name'), { defaultValue: staticName });
+            const displayDescription = t(menuKey(item.path, 'description'), { defaultValue: item.description });
             const isOpen = expanded === item.path;
             const accent = status === 'completed' ? 'green' : status === 'in-progress' ? 'amber' : 'cyan';
 
@@ -283,7 +281,7 @@ export default function Roadmap() {
                               : fallbackLabel(child.path);
                           const childName =
                             titleForPath(child.path, i18n.language) ??
-                            t(makeMenuKey(child.path, 'name'), { defaultValue: childStaticName });
+                            t(menuKey(child.path, 'name'), { defaultValue: childStaticName });
                           const childDone = isCompleted(child.path);
                           return (
                             <Link

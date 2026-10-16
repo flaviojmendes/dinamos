@@ -34,35 +34,37 @@ interface Props {
  * come from ContentLayout (registry-driven).
  */
 export default function MdxPage({ slug }: Props) {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const location = useLocation();
-  const lang: Lang = i18n.language?.startsWith('pt') ? 'pt' : 'en';
+  const lang: Lang = (i18n.resolvedLanguage || i18n.language)?.startsWith('pt') ? 'pt' : 'en';
+  const requestKey = `${slug}:${lang}:${location.pathname}`;
 
-  const [body, setBody] = useState<string | null>(null);
-  const [status, setStatus] = useState<'loading' | 'loaded' | 'notfound'>('loading');
+  const [result, setResult] = useState<{
+    key: string; body: string | null; status: 'loading' | 'loaded' | 'notfound' | 'unavailable';
+  }>({ key: '', body: null, status: 'loading' });
+  const { body, status } = result.key === requestKey ? result : { body: null, status: 'loading' };
   const articleRef = useRef<HTMLElement>(null);
   const contentKey = useMemo(() => mdxCacheKey(slug, lang, body ?? ''), [slug, lang, body]);
 
   useEffect(() => {
     let cancelled = false;
-    setStatus('loading');
-    setBody(null);
+    setResult({ key: requestKey, body: null, status: 'loading' });
     const contentPath = location.pathname;
     loadPageBody({ path: contentPath, lang, forceApi: shouldUseContentApi() })
       .then((text) => {
         if (cancelled) return;
-        setBody(text);
-        setStatus('loaded');
+        setResult({ key: requestKey, body: text, status: 'loaded' });
       })
       .catch((err) => {
         if (cancelled) return;
-        console.error(`[content] Failed to load "${slug}" (${contentPath}):`, err);
-        setStatus('notfound');
+        const unavailable = err instanceof Error && err.name === 'ContentTranslationUnavailableError';
+        if (!unavailable) console.error(`[content] Failed to load "${slug}" (${contentPath}):`, err);
+        setResult({ key: requestKey, body: null, status: unavailable ? 'unavailable' : 'notfound' });
       });
     return () => {
       cancelled = true;
     };
-  }, [slug, lang, location.pathname]);
+  }, [slug, lang, location.pathname, requestKey]);
 
   // Record an anonymized page view once per session+path. Failures are silent —
   // analytics must never interfere with rendering the lesson.
@@ -83,13 +85,15 @@ export default function MdxPage({ slug }: Props) {
 
   return (
     <div className="lesson-layout">
-      <article ref={articleRef} className="lesson-article">
+      <article ref={articleRef} className="lesson-article" lang={lang === 'pt' ? 'pt-BR' : 'en'}>
         {status === 'loading' && <ContentSkeleton />}
         {status === 'notfound' && (
-          <p className="text-slate-500 dark:text-tactical-dim">Content not found: {slug}</p>
+          <p className="text-slate-500 dark:text-tactical-dim">{t('content.not_found', { slug })}</p>
         )}
+        {status === 'unavailable' && <p role="status" className="text-slate-500 dark:text-tactical-dim">{t('content.translation_unavailable')}</p>}
         {status === 'loaded' && body !== null && (
           <MdxRenderer
+            key={contentKey}
             source={body}
             cacheKey={contentKey}
             fallback={<ContentSkeleton />}

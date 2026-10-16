@@ -5,6 +5,7 @@ import {
   getModule,
   menuKey,
   fallbackLabel,
+  titleForPath,
   moduleSequence,
   relatedItems,
 } from '../../config/contentRegistry';
@@ -19,11 +20,7 @@ import {
 function useLabel() {
   const { t, i18n } = useTranslation();
   return (path: string) => {
-    const item = getItem(path);
-    const localizedTitle = (i18n.resolvedLanguage || i18n.language).startsWith('pt')
-      ? item?.titlePt
-      : item?.titleEn;
-    return localizedTitle || t(menuKey(path, 'name'), { defaultValue: fallbackLabel(path) });
+    return titleForPath(path, i18n.resolvedLanguage || i18n.language) ?? t(menuKey(path, 'name'), { defaultValue: fallbackLabel(path) });
   };
 }
 

@@ -22,9 +22,9 @@
   "verify_token_button": "Verificar Token",
   "no_token_message": "Configure e gere um token para visualizá-lo aqui",
   "decoded_token_title": "Token Decodificado",
-  "header_title": "Header",
-  "payload_title": "Payload",
-  "signature_title": "Signature",
+  "header_title": "Cabeçalho",
+  "payload_title": "Dados",
+  "signature_title": "Assinatura",
   "verification_result_title": "Resultado da Verificação",
   "verification_messages": {
     "no_token": "Nenhum token para verificar",

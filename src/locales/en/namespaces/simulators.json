@@ -78,7 +78,16 @@
     "labels": {
       "node": "Node",
       "hint": "Add or remove a node — only the highlighted keys move. More virtual nodes means smoother distribution."
-    }
+    },
+    "narration": {
+      "moved": "{{pct}}% of keys moved to new nodes. Consistent hashing limits remapping when the ring changes.",
+      "steady": "Add or remove a node to compare how few keys move with naive modulo sharding."
+    },
+    "legend": {
+      "node": "Physical node",
+      "moved": "Key that changed owner"
+    },
+    "chart_label": "Keys remapped after the topology changed"
   },
   "sharding": {
     "title": "Sharding Simulator",
@@ -135,6 +144,16 @@
       "score": "score",
       "no_matches": "No matching documents",
       "hint": "AND intersects postings lists; OR unions them. Score counts how many query terms each document contains."
+    },
+    "terms": {
+      "cache": "cache",
+      "network": "network",
+      "data": "data",
+      "replica": "replica",
+      "consensus": "consensus",
+      "partition": "partition",
+      "shard": "shard",
+      "queue": "queue"
     }
   },
   "storage_engine": {
@@ -250,7 +269,9 @@
       "fault_tolerance": "Tolerated failures",
       "strong": "Strong reads?"
     },
-    "hint": "When R + W > N the read and write quorums always overlap, so reads see the newest write. Lower them for higher availability at the cost of stale reads."
+    "hint": "When R + W > N the read and write quorums always overlap, so reads see the newest write. Lower them for higher availability at the cost of stale reads.",
+    "strong": "Strong consistency",
+    "eventual": "Eventual consistency"
   },
   "cdc": {
     "title": "CDC Simulator",
@@ -389,7 +410,7 @@
     "metrics": {
       "title": "Live Metrics",
       "delivered": "Events delivered",
-      "latency": "Avg delivery latency",
+      "latency": "Average delivery latency",
       "requests": "Requests sent",
       "empty_polls": "Wasted empty polls"
     },
@@ -397,7 +418,8 @@
       "polling": "Polling re-asks on a fixed interval: simple, but adds latency (up to one interval) and wastes requests when nothing changed.",
       "sse": "Server-Sent Events push one-way over a single long-lived HTTP connection — near-instant delivery with almost no request overhead.",
       "websocket": "WebSockets keep a full-duplex connection open — instant, bidirectional delivery ideal for chat, games, and live collaboration."
-    }
+    },
+    "tick_unit": "ticks"
   },
   "dead_letter_queue": {
     "title": "Dead Letter Queue Simulator",
@@ -910,6 +932,30 @@
       "base_error_rate": "Base error rate: {{percent}}%",
       "error": "Error",
       "processing": "Processing"
+    },
+    "services": {
+      "auth": {
+        "name": "Authentication service",
+        "description": "Authentication and authorization"
+      },
+      "products": {
+        "name": "Product service",
+        "description": "Product catalog"
+      },
+      "orders": {
+        "name": "Order service",
+        "description": "Order management"
+      },
+      "payments": {
+        "name": "Payment service",
+        "description": "Payment processing"
+      }
+    },
+    "types": {
+      "auth": "Authentication",
+      "products": "Products",
+      "orders": "Orders",
+      "payments": "Payments"
     }
   },
   "circuit_breaker": {
@@ -932,6 +978,21 @@
       "inactive": "Inactive",
       "latest_requests": "Latest Requests",
       "no_requests": "No requests made"
+    },
+    "config": {
+      "failure_threshold": "Failure threshold",
+      "reset_timeout": "Reset timeout (ms)",
+      "error_rate": "Error rate (%)"
+    },
+    "request_status": {
+      "success": "Success",
+      "error": "Error",
+      "timeout": "Timed out"
+    },
+    "states": {
+      "CLOSED": "Closed",
+      "OPEN": "Open",
+      "HALF_OPEN": "Half-open"
     }
   },
   "polling_webhooks": {
@@ -960,7 +1021,8 @@
       "server": "Server",
       "active_mode": "Active Mode:",
       "active_sim": "🟢 Simulation Active ({{mode}})",
-      "stopped_sim": "🔴 Simulation Stopped"
+      "stopped_sim": "🔴 Simulation Stopped",
+      "more": "and {{count}} more…"
     },
     "stats": {
       "title": "Real-time Statistics",
@@ -968,7 +1030,7 @@
       "empty_responses": "Empty Responses",
       "data_transfers": "Data Transfers",
       "webhooks_sent": "Webhooks Sent",
-      "total_bandwidth_bits": "Total Bandwidth (bits)",
+      "total_bandwidth_bits": "Total bandwidth (bits)",
       "efficiency": "Efficiency",
       "success_rate": "Success Rate",
       "wasted_requests": "Wasted Requests"
@@ -985,8 +1047,19 @@
     "messages": {
       "checking": "Checking for new data...",
       "data_found": "Data found: {{content}}",
-      "no_data": "No new data available"
-    }
+      "no_data": "No new data available",
+      "generated": "New data available: {{content}}"
+    },
+    "samples": [
+      "New order #1234 received",
+      "John logged in",
+      "Payment of $50.00 processed",
+      "File upload completed",
+      "Temperature of 23°C recorded",
+      "Backup completed",
+      "New message from Alice",
+      "Stock updated: 15 items"
+    ]
   },
   "message_queue_sim": {
     "title": "Message Queue",
@@ -1021,6 +1094,12 @@
     "messages": {
       "title": "Messages",
       "none": "No messages yet"
+    },
+    "status": {
+      "produced": "Produced",
+      "queued": "Queued",
+      "processing": "Processing",
+      "completed": "Completed"
     }
   },
   "philosophers_sim": {
@@ -1095,6 +1174,17 @@
       "started_eating": "{{name}} grabbed both forks and started eating",
       "finished_eating": "{{name}} finished eating and released the forks",
       "deadlock_detected": "Deadlock detected — no philosopher can make progress"
+    },
+    "fork_left": "Left fork",
+    "fork_right": "Right fork",
+    "names": {
+      "plato": "Plato",
+      "aristotle": "Aristotle",
+      "socrates": "Socrates",
+      "descartes": "Descartes",
+      "kant": "Kant",
+      "nietzsche": "Nietzsche",
+      "confucius": "Confucius"
     }
   },
   "rate_limiter": {
@@ -1162,6 +1252,36 @@
       "processed": "Processed Messages",
       "dropped": "Dropped Messages",
       "latest": "Latest Messages"
+    },
+    "explanation": {
+      "title": "What is backpressure?",
+      "definition": "Backpressure manages situations where a component receives data faster than it can process it. It regulates the incoming flow to avoid overload.",
+      "example": "For example, an order service may receive more requests than it can handle. Without backpressure, the system could fail, lose data, or keep consuming memory.",
+      "how": "How the simulator works",
+      "producer": "Producer:",
+      "producer_description": "Generates messages at a configurable rate (messages/second)",
+      "queue": "Queue:",
+      "queue_description": "Stores messages up to a configurable capacity",
+      "consumer": "Consumer:",
+      "consumer_description": "Processes messages at its own rate",
+      "mechanisms": "Backpressure mechanisms:",
+      "throttle": "When the queue exceeds 80% capacity, the producer is throttled (slowed down)",
+      "overflow": "If the queue fills completely, new messages are dropped",
+      "resume": "When the queue empties, the producer returns to its normal rate",
+      "experiment": "Try different production and consumption rates to see how the system responds to pressure and maintains stability."
+    },
+    "config": {
+      "production_rate": "Production rate (msg/s)",
+      "consumption_rate": "Consumption rate (msg/s)",
+      "queue_capacity": "Maximum queue size"
+    },
+    "empty": "No recent messages",
+    "seconds_ago": "{{seconds}} s ago",
+    "status": {
+      "queued": "Queued",
+      "processing": "Processing",
+      "completed": "Completed",
+      "dropped": "Dropped"
     }
   },
   "retries": {
@@ -1200,6 +1320,16 @@
       "p1": "This simulator demonstrates how retry mechanisms work in distributed systems. Each attempt has a success chance based on the configured rate.",
       "p2": "With exponential backoff, the time between attempts increases progressively (1s, 2s, 4s, 8s...), reducing system load.",
       "p3": "Jitter adds a random variation to the time between attempts, preventing multiple clients from retrying at the exact same time."
+    },
+    "narration": {
+      "running": "Attempt {{n}} is in flight. Watch the growing delay between retries.",
+      "idle": "Start the simulation to explore retry spacing, jitter, and the extra load from retries.",
+      "done": "Every retry adds load to a dependency that is already struggling. This is the risk of a retry storm."
+    },
+    "legend": {
+      "success": "Success",
+      "pending": "Waiting",
+      "error": "Failed attempt"
     }
   },
   "round_robin": {
@@ -1216,14 +1346,19 @@
     },
     "strategies": {
       "round_robin": "Round Robin: Distributes requests sequentially among all servers in circular order.",
-      "least_conn": "Least Connections: Sends new requests to the server with the lowest current load.",
-      "random": "Random: Selects a server at random for each new request."
+      "least_conn": "Least connections: sends new requests to the server with the lowest current load.",
+      "random": "Random: selects a server at random for each new request.",
+      "least_connections": "Least connections"
     },
     "server_card": {
       "server_label": "Server {{id}}",
       "requests": "{{current}}/{{capacity}} requests",
       "response_time_ms": "({{ms}}ms)",
       "response_time_label": "Response Time:"
+    },
+    "strategy_names": {
+      "round_robin": "Round Robin",
+      "random": "Random"
     }
   },
   "cdn": {
@@ -1243,7 +1378,7 @@
       "x_suffix": "x",
       "logs_suffix": "logs",
       "country_select": "Select your country:",
-      "datacenters": "Datacenters:",
+      "datacenters": "Datacenters",
       "cache_badge": "Cache ✓",
       "latency": "Latency"
     },
@@ -1252,7 +1387,7 @@
     },
     "history": {
       "title": "Request History:",
-      "cache_hit": "Cache Hit"
+      "cache_hit": "Cache hit"
     },
     "info": {
       "title": "How does it work?",
@@ -1261,6 +1396,46 @@
       "i3": "First request: Fetches from origin server ({{base}}x latency)",
       "i4": "Subsequent requests: Served from local cache ({{cache}}x latency)",
       "i5": "Latency varies according to the distance between your country and the datacenter"
+    },
+    "countries": {
+      "br": {
+        "name": "Brazil",
+        "region": "South America"
+      },
+      "ar": {
+        "name": "Argentina",
+        "region": "South America"
+      },
+      "mx": {
+        "name": "Mexico",
+        "region": "North America"
+      },
+      "es": {
+        "name": "Spain",
+        "region": "Europe"
+      },
+      "jp": {
+        "name": "Japan",
+        "region": "Asia"
+      }
+    },
+    "datacenters": {
+      "us": {
+        "name": "United States",
+        "location": "Virginia"
+      },
+      "br": {
+        "name": "Brazil",
+        "location": "São Paulo"
+      },
+      "eu": {
+        "name": "Europe",
+        "location": "Frankfurt"
+      },
+      "sg": {
+        "name": "Asia",
+        "location": "Singapore"
+      }
     }
   },
   "firewall": {
@@ -1340,7 +1515,14 @@
       "i4": "The last rule (default) blocks all traffic not specified by previous rules",
       "i5": "You can add your own rules and see how they affect traffic",
       "i6": "Use the \"Auto Generate\" mode to watch a continuous flow of packets"
-    }
+    },
+    "buttons": {
+      "reset": "Reset"
+    },
+    "auto": "Automatic",
+    "port_or_any": "Port or 0 for any",
+    "port_placeholder": "Port (e.g., 80)",
+    "packet_data": "Packet data"
   },
   "horizontal_scaling": {
     "title": "Horizontal Scalability Simulator",
@@ -1413,6 +1595,12 @@
       "text": "Are you sure you want to upgrade to {{tier}}? This will increase your costs to ${{cost}}/month.",
       "cancel": "Cancel",
       "confirm": "Upgrade"
+    },
+    "tiers": {
+      "basic": "Basic",
+      "standard": "Standard",
+      "premium": "Premium",
+      "enterprise": "Enterprise"
     }
   },
   "scalability": {
@@ -1448,7 +1636,23 @@
     "recover": "Recover",
     "recent_requests": "Recent Requests",
     "read_label": "Read",
-    "write_label": "Write"
+    "write_label": "Write",
+    "server": "Server {{id}}",
+    "regions": {
+      "us_east": "US East",
+      "us_west": "US West",
+      "europe": "Europe"
+    },
+    "roles": {
+      "primary": "Primary",
+      "secondary": "Secondary"
+    },
+    "request_status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "completed": "Completed",
+      "failed": "Failed"
+    }
   },
   "timeout": {
     "title": "Timeout Simulator",
@@ -1485,6 +1689,15 @@
       "p1": "This simulator demonstrates how the timeout mechanism works in distributed systems. Each request has a configurable timeout to be completed.",
       "p2": "If the response does not arrive within the timeout, the request is canceled and a timeout error is returned, preventing resources from being stuck indefinitely.",
       "p3": "Adjust timeout, response times, and success rate to visualize impacts."
+    },
+    "narration": {
+      "running": "Requests race the timeout clock. Slow responses become failures even if the server could eventually answer.",
+      "idle": "Tune timeout against latency: short timeouts waste good responses; long ones tie up callers."
+    },
+    "legend": {
+      "success": "Success",
+      "pending": "In flight",
+      "timeout": "Timed out"
     }
   },
   "outbox": {
@@ -1690,6 +1903,14 @@
         "one": "1s",
         "two": "2s"
       }
+    },
+    "cancellation_reason": "Customer canceled the order",
+    "statuses": {
+      "PENDING": "Pending",
+      "PAID": "Paid",
+      "SHIPPED": "Shipped",
+      "DELIVERED": "Delivered",
+      "CANCELLED": "Canceled"
     }
   },
   "canary": {
@@ -1760,6 +1981,15 @@
         "title": "Real World:",
         "text": "In production, you would monitor latency, error rates, and business metrics before promoting a canary."
       }
+    },
+    "phases": {
+      "stable": "Stable",
+      "canary_deploying": "Deploying canary",
+      "canary_testing": "Testing canary",
+      "promoting": "Promoting",
+      "rolling_back": "Rolling back",
+      "completed": "Completed",
+      "rolled_back": "Rolled back"
     }
   },
   "motion": {
@@ -1776,5 +2006,332 @@
     "consumer": "Consumer",
     "accepted": "Accepted",
     "limited": "Rate limited"
+  },
+  "async_sync": {
+    "controls": "Controls",
+    "send": "Send message",
+    "reset": "Reset",
+    "sync": "Synchronous",
+    "async": "Asynchronous",
+    "blocking": "Blocking",
+    "visualization": "Visualization",
+    "client": "Client",
+    "server": "Server",
+    "database": "Database",
+    "waiting": "Waiting…",
+    "sync_legend": "Synchronous (blocking)",
+    "async_legend": "Asynchronous (non-blocking)",
+    "message": "✉️ Message",
+    "processed": "✅ Processed",
+    "about": "About this simulator",
+    "sync_label": "Synchronous:",
+    "async_label": "Asynchronous:",
+    "sync_description": "The message is sent and the client waits for the response.",
+    "async_description": "The message is sent and the client continues without waiting for the response."
+  },
+  "replication": {
+    "title": "Replication and failover simulator",
+    "subtitle": "Explore how data replication and automatic failover work in a distributed system.",
+    "controls": "Controls",
+    "write_rate": "Writes per second",
+    "read_rate": "Reads per second",
+    "mode": "Replication mode",
+    "sync": "Synchronous",
+    "async": "Asynchronous",
+    "automatic_failover": "Automatic failover",
+    "load": "Load",
+    "transactions": "transactions",
+    "lag": "Replication lag",
+    "fail": "Simulate failure",
+    "recover": "Recover",
+    "statistics": "Statistics",
+    "total": "Total transactions",
+    "success_rate": "Success rate",
+    "average_lag": "Average replication lag",
+    "recent": "Recent transactions",
+    "start": "Start simulation",
+    "stop": "Stop simulation",
+    "primary": "Primary",
+    "secondary": "Secondary",
+    "online": "Online",
+    "degraded": "Degraded",
+    "offline": "Offline",
+    "completed": "Completed",
+    "failed": "Failed",
+    "processing": "Processing",
+    "pending": "Pending",
+    "write": "Write",
+    "read": "Read",
+    "servers": {
+      "primary": "Primary server",
+      "replica1": "Replica 1",
+      "replica2": "Replica 2"
+    }
+  },
+  "service_architecture": {
+    "architectures": [
+      {
+        "type": "monolithic",
+        "name": "Monolith",
+        "description": "All features live in a single codebase, with tight coupling between modules.",
+        "modules": [
+          {
+            "id": "auth",
+            "name": "Authentication",
+            "color": "bg-purple-500",
+            "details": {
+              "deployment": "One deployment for the whole application",
+              "communication": "Direct function calls",
+              "database": "Shared database",
+              "scaling": "Vertical scaling for the whole application",
+              "development": "Simpler initial development",
+              "maintenance": "Can become complex as it grows"
+            }
+          },
+          {
+            "id": "catalog",
+            "name": "Catalog",
+            "color": "bg-blue-500",
+            "details": {
+              "deployment": "One deployment for the whole application",
+              "communication": "Direct access to other modules",
+              "database": "Shares the same database",
+              "scaling": "Cannot scale independently",
+              "development": "Fast feature development",
+              "maintenance": "Changes affect the whole system"
+            }
+          },
+          {
+            "id": "cart",
+            "name": "Cart",
+            "color": "bg-green-500",
+            "dependencies": [
+              "auth",
+              "catalog"
+            ],
+            "details": {
+              "deployment": "One deployment for the whole application",
+              "communication": "Direct access to authentication and catalog modules",
+              "database": "Same database",
+              "scaling": "Scales with the whole application",
+              "development": "Easy integration with other modules",
+              "maintenance": "Tight coupling"
+            }
+          },
+          {
+            "id": "payment",
+            "name": "Payment",
+            "color": "bg-yellow-500",
+            "dependencies": [
+              "auth",
+              "cart"
+            ],
+            "details": {
+              "deployment": "Single deployment",
+              "communication": "Direct synchronous calls",
+              "database": "Shared database",
+              "scaling": "Scales with the whole application",
+              "development": "Simple to test",
+              "maintenance": "Difficult to change in isolation"
+            }
+          },
+          {
+            "id": "shipping",
+            "name": "Shipping",
+            "color": "bg-red-500",
+            "dependencies": [
+              "auth",
+              "cart"
+            ],
+            "details": {
+              "deployment": "Single deployment",
+              "communication": "Direct data access",
+              "database": "Shared database",
+              "scaling": "Does not scale independently",
+              "development": "Quick to implement",
+              "maintenance": "Complex to maintain"
+            }
+          }
+        ]
+      },
+      {
+        "type": "modular",
+        "name": "Modular monolith",
+        "description": "Code is organized into well-defined modules with clear boundaries, within one deployment.",
+        "modules": [
+          {
+            "id": "auth",
+            "name": "Authentication module",
+            "color": "bg-purple-500",
+            "details": {
+              "deployment": "One deployment with independent modules",
+              "communication": "Well-defined interfaces",
+              "database": "Separate schema in a shared database",
+              "scaling": "Scales with the application",
+              "development": "Organized and modular",
+              "maintenance": "Easier to maintain than a monolith"
+            }
+          },
+          {
+            "id": "catalog",
+            "name": "Catalog module",
+            "color": "bg-blue-500",
+            "details": {
+              "deployment": "Deployed together with other modules",
+              "communication": "Well-defined internal API",
+              "database": "Isolated schema",
+              "scaling": "Scales with the system",
+              "development": "Independent, with clear interfaces",
+              "maintenance": "Loose coupling with other modules"
+            }
+          },
+          {
+            "id": "cart",
+            "name": "Cart module",
+            "color": "bg-green-500",
+            "dependencies": [
+              "auth",
+              "catalog"
+            ],
+            "details": {
+              "deployment": "Joint deployment",
+              "communication": "Interfaces between modules",
+              "database": "Own schema",
+              "scaling": "Vertical scaling with the application",
+              "development": "Clear boundaries with other modules",
+              "maintenance": "Easy to maintain and evolve"
+            }
+          },
+          {
+            "id": "payment",
+            "name": "Payment module",
+            "color": "bg-yellow-500",
+            "dependencies": [
+              "auth",
+              "cart"
+            ],
+            "details": {
+              "deployment": "Single deployment",
+              "communication": "Well-defined interfaces",
+              "database": "Isolated schema",
+              "scaling": "Together with the application",
+              "development": "Independent, with clear contracts",
+              "maintenance": "Simpler maintenance"
+            }
+          },
+          {
+            "id": "shipping",
+            "name": "Shipping module",
+            "color": "bg-red-500",
+            "dependencies": [
+              "auth",
+              "cart"
+            ],
+            "details": {
+              "deployment": "Deployed with other modules",
+              "communication": "Internal interfaces",
+              "database": "Own schema",
+              "scaling": "Together with the whole system",
+              "development": "Independent module",
+              "maintenance": "Easy to maintain"
+            }
+          }
+        ]
+      },
+      {
+        "type": "microservices",
+        "name": "Microservices",
+        "description": "Independent services communicate over the network, each with its own deployment and database.",
+        "modules": [
+          {
+            "id": "auth",
+            "name": "Authentication service",
+            "color": "bg-purple-500",
+            "details": {
+              "deployment": "Independent deployment",
+              "communication": "REST/gRPC API",
+              "database": "Own database",
+              "scaling": "Scales independently",
+              "development": "Dedicated team",
+              "maintenance": "Fully independent"
+            }
+          },
+          {
+            "id": "catalog",
+            "name": "Catalog service",
+            "color": "bg-blue-500",
+            "details": {
+              "deployment": "Own CI/CD pipeline",
+              "communication": "APIs and events",
+              "database": "Dedicated database",
+              "scaling": "Independent autoscaling",
+              "development": "Own technology stack",
+              "maintenance": "Independent of other services"
+            }
+          },
+          {
+            "id": "cart",
+            "name": "Cart service",
+            "color": "bg-green-500",
+            "dependencies": [
+              "auth",
+              "catalog"
+            ],
+            "details": {
+              "deployment": "Own automated deployment",
+              "communication": "REST and messaging",
+              "database": "Dedicated NoSQL database",
+              "scaling": "Scales horizontally",
+              "development": "Own team and technology stack",
+              "maintenance": "Independent maintenance"
+            }
+          },
+          {
+            "id": "payment",
+            "name": "Payment service",
+            "color": "bg-yellow-500",
+            "dependencies": [
+              "auth",
+              "cart"
+            ],
+            "details": {
+              "deployment": "Independent deployment",
+              "communication": "APIs and asynchronous events",
+              "database": "Own database",
+              "scaling": "Autoscaling",
+              "development": "Purpose-built technology",
+              "maintenance": "Isolated from other services"
+            }
+          },
+          {
+            "id": "shipping",
+            "name": "Shipping service",
+            "color": "bg-red-500",
+            "dependencies": [
+              "auth",
+              "cart"
+            ],
+            "details": {
+              "deployment": "Own deployment pipeline",
+              "communication": "APIs and queues",
+              "database": "Dedicated database",
+              "scaling": "Scales on demand",
+              "development": "Optimized technology stack",
+              "maintenance": "Independent"
+            }
+          }
+        ]
+      }
+    ],
+    "title": "Service architecture simulator",
+    "subtitle": "Compare approaches to organizing code and their implications.",
+    "deployment": "Deployment:",
+    "communication": "Communication:",
+    "database": "Database:",
+    "scaling": "Scaling:",
+    "development": "Development:",
+    "maintenance": "Maintenance:",
+    "hint": "Hover over or focus a module to see its dependencies.",
+    "depends_on": "Depends on:"
   }
 }

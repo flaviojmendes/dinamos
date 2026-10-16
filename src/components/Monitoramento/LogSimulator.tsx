@@ -46,7 +46,7 @@ const exemplosLogs = {
     traceId: 'trace-123',
     usuarioId: 'usuario-456',
     acao: 'login_usuario',
-    mensagem: 'Usuário logado com sucesso',
+    mensagem: 'monitoring_maintenance.logs_simulator.samples.login_success',
     metadados: {
       ip: '192.168.1.1',
       userAgent: 'Mozilla/5.0...',
@@ -60,7 +60,7 @@ const exemplosLogs = {
     traceId: 'trace-123',
     usuarioId: 'usuario-456',
     acao: 'login_usuario',
-    mensagem: 'Usuário fez login',
+    mensagem: 'monitoring_maintenance.logs_simulator.samples.login_brief',
     metadados: {}
   },
   warnBom: {
@@ -70,7 +70,7 @@ const exemplosLogs = {
     traceId: 'trace-789',
     usuarioId: 'sistema',
     acao: 'cache_miss',
-    mensagem: 'Cache miss detectado - performance pode ser afetada',
+    mensagem: 'monitoring_maintenance.logs_simulator.samples.cache_warning',
     metadados: {
       chave: 'produto-123',
       duracao: '450ms',
@@ -84,7 +84,7 @@ const exemplosLogs = {
     traceId: 'trace-789',
     usuarioId: 'sistema',
     acao: 'cache_miss',
-    mensagem: 'Alerta: cache não encontrado',
+    mensagem: 'monitoring_maintenance.logs_simulator.samples.cache_brief',
     metadados: {}
   },
   erroBom: {
@@ -94,11 +94,11 @@ const exemplosLogs = {
     traceId: 'trace-789',
     usuarioId: 'usuario-456',
     acao: 'processar_pagamento',
-    mensagem: 'Falha ao processar pagamento',
+    mensagem: 'monitoring_maintenance.logs_simulator.samples.payment_error',
     metadados: {
       erro: {
         codigo: 'PAYMENT_FAILED',
-        descricao: 'Cartão recusado',
+        descricao: 'monitoring_maintenance.logs_simulator.samples.payment_reason',
         stack: 'Error: Payment failed\n    at processPayment (/app/services/payment.js:45:12)'
       },
       tentativa: 3,
@@ -112,7 +112,7 @@ const exemplosLogs = {
     traceId: 'trace-789',
     usuarioId: 'usuario-456',
     acao: 'processar_pagamento',
-    mensagem: 'Deu erro no pagamento',
+    mensagem: 'monitoring_maintenance.logs_simulator.samples.payment_brief',
     metadados: {}
   }
 };
@@ -300,7 +300,13 @@ export default function LogSimulator() {
                       <StatusBadge variant="classified" label={t(`${base}.badges.bad`)} />
                     )}
                   </div>
-                  <pre className="whitespace-pre-wrap break-words text-slate-700 dark:text-tactical-dim text-xs leading-relaxed">{JSON.stringify(log, null, 2)}</pre>
+                  <pre className="whitespace-pre-wrap break-words text-slate-700 dark:text-tactical-dim text-xs leading-relaxed">{JSON.stringify({
+                    ...log,
+                    mensagem: t(log.mensagem),
+                    metadados: log.metadados.erro
+                      ? { ...log.metadados, erro: { ...log.metadados.erro, descricao: t(log.metadados.erro.descricao) } }
+                      : log.metadados,
+                  }, null, 2)}</pre>
                 </motion.div>
               );
             })

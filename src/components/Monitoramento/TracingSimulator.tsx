@@ -79,7 +79,7 @@ const TimelineView = ({ spans }: { spans: Span[] }) => {
 
 const SpanView = ({ span, hasChildren, isLast }: { span: Span; hasChildren: boolean; isLast: boolean }) => {
   const { reducedMotion, transition } = useSimulationMotion();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const base = 'monitoring_maintenance.tracing_simulator';
   return (
     <motion.div initial={reducedMotion ? false : { opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={transition} className="relative pl-7">
@@ -98,7 +98,7 @@ const SpanView = ({ span, hasChildren, isLast }: { span: Span; hasChildren: bool
 };
 
 export default function TracingSimulator() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const base = 'monitoring_maintenance.tracing_simulator';
 
   const [requests, setRequests] = useState<Request[]>([]);
@@ -232,7 +232,7 @@ export default function TracingSimulator() {
             <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
               <div>
                 <h3 className="font-mono text-sm font-bold text-signal-cyan">Trace ID: {currentRequest.id}</h3>
-                <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{t('common.start_time', { defaultValue: 'Start' })}: {new Date(currentRequest.startTime).toLocaleTimeString()}</p>
+                <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{t('common.start_time', { defaultValue: 'Start' })}: {new Date(currentRequest.startTime).toLocaleTimeString(i18n?.resolvedLanguage || i18n?.language)}</p>
               </div>
               <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
                 {t(`${base}.steps_label`, { current: currentRequest.currentStep, total: 5 })}
@@ -269,7 +269,7 @@ export default function TracingSimulator() {
                 <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                   <div>
                     <h3 className="font-mono text-sm font-bold text-signal-cyan">Trace ID: {request.id}</h3>
-                    <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{t('common.start_time', { defaultValue: 'Start' })}: {new Date(request.startTime).toLocaleTimeString()}</p>
+                    <p className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{t('common.start_time', { defaultValue: 'Start' })}: {new Date(request.startTime).toLocaleTimeString(i18n?.resolvedLanguage || i18n?.language)}</p>
                   </div>
                 </div>
 

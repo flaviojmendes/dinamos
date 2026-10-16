@@ -143,7 +143,7 @@ function KindExtras({ kind, config, metrics, t }: { kind: string; config: NodeCo
   if (kind === 'circuitBreaker' && metrics) {
     const state = metrics.circuitState ?? 'closed';
     const tone = state === 'open' ? 'text-red-400' : state === 'halfOpen' ? 'text-yellow-300' : 'text-green-400';
-    return <MetricRow label={t('editor.node.breaker')} value={state === 'halfOpen' ? 'Half-open' : state.charAt(0).toUpperCase() + state.slice(1)} tone={tone} />;
+    return <MetricRow label={t('editor.node.breaker')} value={t(`editor.node.breaker_state.${state === 'halfOpen' ? 'half-open' : state}`)} tone={tone} />;
   }
   if (kind === 'apiGateway' && metrics) {
     return <MetricRow label={t('editor.node.dropped_s')} value={`${metrics.droppedRate}`} tone="text-orange-300" />;

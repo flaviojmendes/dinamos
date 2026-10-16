@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Panel, TacticalButton } from '../tactical';
 import { FlowLink, useSimulationMotion } from '../simulation';
+import { useTranslation } from 'react-i18next';
 
 interface Module {
   id: string;
@@ -25,247 +26,22 @@ interface Architecture {
   description: string;
 }
 
-const architectures: Architecture[] = [
-  {
-    type: 'monolithic',
-    name: 'Monolito',
-    description: 'Todas as funcionalidades em um único código base, com acoplamento forte entre módulos.',
-    modules: [
-      { 
-        id: 'auth', 
-        name: 'Autenticação', 
-        color: 'bg-purple-500',
-        details: {
-          deployment: 'Deploy único para toda a aplicação',
-          communication: 'Chamadas de função diretas',
-          database: 'Banco de dados compartilhado',
-          scaling: 'Escala vertical (toda a aplicação)',
-          development: 'Desenvolvimento mais simples inicialmente',
-          maintenance: 'Pode se tornar complexo com o crescimento'
-        }
-      },
-      { 
-        id: 'catalog', 
-        name: 'Catálogo', 
-        color: 'bg-blue-500',
-        details: {
-          deployment: 'Deploy único para toda a aplicação',
-          communication: 'Acesso direto a outros módulos',
-          database: 'Compartilha mesmo banco de dados',
-          scaling: 'Não pode escalar independentemente',
-          development: 'Rápido para desenvolver features',
-          maintenance: 'Mudanças afetam todo o sistema'
-        }
-      },
-      { 
-        id: 'cart', 
-        name: 'Carrinho', 
-        color: 'bg-green-500', 
-        dependencies: ['auth', 'catalog'],
-        details: {
-          deployment: 'Deploy único para toda a aplicação',
-          communication: 'Acesso direto aos módulos de Auth e Catálogo',
-          database: 'Mesmo banco de dados',
-          scaling: 'Escala com toda a aplicação',
-          development: 'Fácil integração com outros módulos',
-          maintenance: 'Alto acoplamento'
-        }
-      },
-      { 
-        id: 'payment', 
-        name: 'Pagamento', 
-        color: 'bg-yellow-500', 
-        dependencies: ['auth', 'cart'],
-        details: {
-          deployment: 'Deploy único',
-          communication: 'Chamadas síncronas diretas',
-          database: 'Banco compartilhado',
-          scaling: 'Escala com o todo',
-          development: 'Simples para testar',
-          maintenance: 'Difícil de modificar isoladamente'
-        }
-      },
-      { 
-        id: 'shipping', 
-        name: 'Entrega', 
-        color: 'bg-red-500', 
-        dependencies: ['auth', 'cart'],
-        details: {
-          deployment: 'Deploy único',
-          communication: 'Acesso direto a dados',
-          database: 'Banco compartilhado',
-          scaling: 'Não escala independentemente',
-          development: 'Rápido para implementar',
-          maintenance: 'Complexo para manter'
-        }
-      },
-    ]
-  },
-  {
-    type: 'modular',
-    name: 'Monolito Modular',
-    description: 'Código organizado em módulos bem definidos com limites claros, mas ainda em um único deploy.',
-    modules: [
-      { 
-        id: 'auth', 
-        name: 'Módulo de Autenticação', 
-        color: 'bg-purple-500',
-        details: {
-          deployment: 'Deploy único, mas módulos independentes',
-          communication: 'Interfaces bem definidas',
-          database: 'Schema separado no banco compartilhado',
-          scaling: 'Escala com a aplicação',
-          development: 'Organizado e modular',
-          maintenance: 'Mais fácil de manter que monolito'
-        }
-      },
-      { 
-        id: 'catalog', 
-        name: 'Módulo de Catálogo', 
-        color: 'bg-blue-500',
-        details: {
-          deployment: 'Deploy único com outros módulos',
-          communication: 'API interna bem definida',
-          database: 'Schema isolado',
-          scaling: 'Escala com o sistema',
-          development: 'Independente com interfaces claras',
-          maintenance: 'Baixo acoplamento com outros módulos'
-        }
-      },
-      { 
-        id: 'cart', 
-        name: 'Módulo de Carrinho', 
-        color: 'bg-green-500', 
-        dependencies: ['auth', 'catalog'],
-        details: {
-          deployment: 'Deploy conjunto',
-          communication: 'Interfaces entre módulos',
-          database: 'Schema próprio',
-          scaling: 'Vertical com aplicação',
-          development: 'Limites claros com outros módulos',
-          maintenance: 'Fácil de manter e evoluir'
-        }
-      },
-      { 
-        id: 'payment', 
-        name: 'Módulo de Pagamento', 
-        color: 'bg-yellow-500', 
-        dependencies: ['auth', 'cart'],
-        details: {
-          deployment: 'Deploy único',
-          communication: 'Interfaces bem definidas',
-          database: 'Schema isolado',
-          scaling: 'Com a aplicação',
-          development: 'Independente com contratos claros',
-          maintenance: 'Manutenção simplificada'
-        }
-      },
-      { 
-        id: 'shipping', 
-        name: 'Módulo de Entrega', 
-        color: 'bg-red-500', 
-        dependencies: ['auth', 'cart'],
-        details: {
-          deployment: 'Deploy com outros módulos',
-          communication: 'Interfaces internas',
-          database: 'Schema próprio',
-          scaling: 'Com o sistema todo',
-          development: 'Módulo independente',
-          maintenance: 'Fácil de manter'
-        }
-      },
-    ]
-  },
-  {
-    type: 'microservices',
-    name: 'Microsserviços',
-    description: 'Serviços independentes que se comunicam via rede, cada um com seu próprio deploy e banco de dados.',
-    modules: [
-      { 
-        id: 'auth', 
-        name: 'Auth Service', 
-        color: 'bg-purple-500',
-        details: {
-          deployment: 'Deploy independente',
-          communication: 'API REST/gRPC',
-          database: 'Banco de dados próprio',
-          scaling: 'Escala independentemente',
-          development: 'Time dedicado',
-          maintenance: 'Totalmente independente'
-        }
-      },
-      { 
-        id: 'catalog', 
-        name: 'Catalog Service', 
-        color: 'bg-blue-500',
-        details: {
-          deployment: 'CI/CD próprio',
-          communication: 'APIs e eventos',
-          database: 'Banco dedicado',
-          scaling: 'Auto-scaling individual',
-          development: 'Stack própria',
-          maintenance: 'Independente de outros serviços'
-        }
-      },
-      { 
-        id: 'cart', 
-        name: 'Cart Service', 
-        color: 'bg-green-500', 
-        dependencies: ['auth', 'catalog'],
-        details: {
-          deployment: 'Deploy automatizado próprio',
-          communication: 'REST e mensageria',
-          database: 'Banco NoSQL dedicado',
-          scaling: 'Escala horizontalmente',
-          development: 'Time e stack próprios',
-          maintenance: 'Manutenção independente'
-        }
-      },
-      { 
-        id: 'payment', 
-        name: 'Payment Service', 
-        color: 'bg-yellow-500', 
-        dependencies: ['auth', 'cart'],
-        details: {
-          deployment: 'Deploy independente',
-          communication: 'APIs e eventos assíncronos',
-          database: 'Banco próprio',
-          scaling: 'Auto-scaling',
-          development: 'Tecnologia específica',
-          maintenance: 'Isolado de outros serviços'
-        }
-      },
-      { 
-        id: 'shipping', 
-        name: 'Shipping Service', 
-        color: 'bg-red-500', 
-        dependencies: ['auth', 'cart'],
-        details: {
-          deployment: 'Pipeline próprio',
-          communication: 'APIs e filas',
-          database: 'Banco dedicado',
-          scaling: 'Escala por demanda',
-          development: 'Stack otimizada',
-          maintenance: 'Independente'
-        }
-      },
-    ]
-  }
-];
-
 export default function ServiceArchitectureSimulator() {
   const { reducedMotion, transition } = useSimulationMotion();
-  const [selectedArch, setSelectedArch] = useState<Architecture>(architectures[0]);
+  const { t } = useTranslation();
+  const architectures = t('simulators.service_architecture.architectures', { returnObjects: true }) as Architecture[];
+  const [selectedType, setSelectedType] = useState<Architecture['type']>('monolithic');
+  const selectedArch = architectures.find(architecture => architecture.type === selectedType)!;
   const [hoveredModule, setHoveredModule] = useState<string | null>(null);
 
   return (
     <div className="simulation-workspace space-y-6">
       <div className="max-w-3xl">
         <h2 className="text-base font-semibold tracking-tight text-slate-900 dark:text-tactical-text mb-2">
-          Simulador de arquiteturas de serviços
+          {t('simulators.service_architecture.title')}
         </h2>
         <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim mb-6">
-          Compare as diferentes abordagens de organização de código e suas implicações.
+          {t('simulators.service_architecture.subtitle')}
         </p>
 
         <div className="flex flex-wrap gap-2 mb-6">
@@ -278,7 +54,7 @@ export default function ServiceArchitectureSimulator() {
               <TacticalButton
                 size="sm"
                 variant={selectedArch.type === arch.type ? 'primary' : 'secondary'}
-                onClick={() => setSelectedArch(arch)}
+                onClick={() => setSelectedType(arch.type)}
               >
                 {arch.name}
               </TacticalButton>
@@ -332,27 +108,27 @@ export default function ServiceArchitectureSimulator() {
                 {module.details && (
                   <div className="font-sans text-xs text-slate-600 dark:text-tactical-dim space-y-2">
                     <div className="flex flex-wrap items-start gap-2">
-                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label w-28 shrink-0">Deploy:</span>
+                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label w-28 shrink-0">{t('simulators.service_architecture.deployment')}</span>
                       <span>{module.details.deployment}</span>
                     </div>
                     <div className="flex flex-wrap items-start gap-2">
-                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label w-28 shrink-0">Comunicação:</span>
+                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label w-28 shrink-0">{t('simulators.service_architecture.communication')}</span>
                       <span>{module.details.communication}</span>
                     </div>
                     <div className="flex flex-wrap items-start gap-2">
-                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label w-28 shrink-0">Banco:</span>
+                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label w-28 shrink-0">{t('simulators.service_architecture.database')}</span>
                       <span>{module.details.database}</span>
                     </div>
                     <div className="flex flex-wrap items-start gap-2">
-                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label w-28 shrink-0">Escala:</span>
+                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label w-28 shrink-0">{t('simulators.service_architecture.scaling')}</span>
                       <span>{module.details.scaling}</span>
                     </div>
                     <div className="flex flex-wrap items-start gap-2">
-                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label w-28 shrink-0">Desenvolvimento:</span>
+                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label w-28 shrink-0">{t('simulators.service_architecture.development')}</span>
                       <span>{module.details.development}</span>
                     </div>
                     <div className="flex flex-wrap items-start gap-2">
-                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label w-28 shrink-0">Manutenção:</span>
+                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label w-28 shrink-0">{t('simulators.service_architecture.maintenance')}</span>
                       <span>{module.details.maintenance}</span>
                     </div>
                   </div>
@@ -360,7 +136,7 @@ export default function ServiceArchitectureSimulator() {
 
                 {module.dependencies && (
                   <div className="font-sans text-xs text-slate-500 dark:text-tactical-dim mt-4 pt-4 border-t border-slate-200 dark:border-tactical-border">
-                    Depende de: {module.dependencies.map(dep => {
+                    {t('simulators.service_architecture.depends_on')} {module.dependencies.map(dep => {
                       const depModule = selectedArch.modules.find(m => m.id === dep);
                       return depModule?.name;
                     }).join(', ')}
@@ -383,7 +159,7 @@ export default function ServiceArchitectureSimulator() {
 
         <div className="rounded-xl border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-5 text-center">
           <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim">
-            Passe o mouse sobre os módulos para visualizar suas dependências.
+            {t('simulators.service_architecture.hint')}
           </p>
         </div>
       </motion.div>

@@ -53,7 +53,18 @@
         "replication": "Replication",
         "notification": "Notification"
       },
-      "progress_label": "Progress: {{percent}}%"
+      "progress_label": "Progress: {{percent}}%",
+      "roles": {
+        "follower": "Follower",
+        "candidate": "Candidate",
+        "leader": "Leader",
+        "proposer": "Proposer",
+        "acceptor": "Acceptor",
+        "learner": "Learner",
+        "participant": "Participant"
+      },
+      "watching_event": "Watching {{path}}",
+      "notified_event": "Notified of a change to {{path}}"
     },
     "lamport_timestamps_simulator": {
       "title": "Lamport Timestamps Simulator",
@@ -81,6 +92,40 @@
         "sent": "Message Sent",
         "received": "Message Received"
       }
+    },
+    "consensus": {
+      "step_initial_raft": "Initial state (Raft)",
+      "step_initial_raft_desc": "All nodes start as followers in term 0.",
+      "step_timeout_election": "Timeout and election",
+      "step_timeout_election_desc": "Node 2 detects that there is no leader and starts an election, becoming a candidate.",
+      "step_vote_request": "Requesting votes",
+      "step_vote_request_desc": "The candidate (Node 2) requests votes from the other nodes.",
+      "step_receive_votes": "Receiving votes",
+      "step_receive_votes_desc": "The other nodes vote for the candidate if they have not voted in this term.",
+      "step_leader_elected": "Leader elected",
+      "step_leader_elected_desc": "Node 2 receives a majority of votes and becomes the leader.",
+      "step_log_replication": "Log replication",
+      "step_log_replication_desc": "The leader adds a log entry and replicates it to all followers.",
+      "step_commit": "Commit",
+      "step_commit_desc": "The entry is committed when a majority of nodes record it.",
+      "step_initial_paxos": "Initial state (Paxos)",
+      "step_initial_paxos_desc": "Initial configuration with a proposer, acceptors, and a learner.",
+      "step_paxos_1a": "Phase 1a: prepare",
+      "step_paxos_1a_desc": "The proposer sends prepare messages to the acceptors.",
+      "step_paxos_1b": "Phase 1b: promise",
+      "step_paxos_1b_desc": "Acceptors send a promise if they have not already promised a higher proposal number.",
+      "step_paxos_2a": "Phase 2a: propose",
+      "step_paxos_2a_desc": "The proposer sends the proposed value to the acceptors.",
+      "step_paxos_2b": "Phase 2b: accept",
+      "step_paxos_2b_desc": "The acceptors accept the value and notify the learner.",
+      "step_initial_zk": "Initial state (ZooKeeper)",
+      "step_initial_zk_desc": "Initial configuration with a leader and followers.",
+      "step_watch": "Watch request",
+      "step_watch_desc": "A participant registers an interest in changes.",
+      "step_update": "Data update",
+      "step_update_desc": "The leader propagates an update to the followers.",
+      "step_notify": "Notification",
+      "step_notify_desc": "The leader notifies the participant about the change."
     }
   },
   "two_phase_commit_simulator": {
@@ -156,7 +201,8 @@
         "process": "Process",
         "ticket": "Ticket",
         "request_access": "Request Access"
-      }
+      },
+      "code": "// Process structure\ntype Process = {\n  id: number;\n  number: number | null;  // Ticket number\n  choosing: boolean;      // Choosing a ticket?\n}\n\n// Take a ticket\nfunction getNumber(process: Process, processes: Process[]) {\n  process.choosing = true;\n  process.number = 1 + Math.max(\n    ...processes.map(p => p.number ?? 0)\n  );\n  process.choosing = false;\n}\n\n// Try to enter the critical section\nfunction enterCriticalSection(process: Process, processes: Process[]) {\n  getNumber(process, processes);\n  \n  // Wait for other processes\n  for (const other of processes) {\n    // Wait while another process chooses a ticket\n    while (other.choosing) { /* wait */ }\n    \n    // Wait for higher-priority processes\n    while (\n      other.number !== null && (\n        other.number < process.number ||\n        (other.number === process.number && \n         other.id < process.id)\n      )\n    ) { /* wait */ }\n  }\n}"
     },
     "token_ring": {
       "title": "Token Ring",
@@ -170,7 +216,8 @@
       "move_token": "Move Token",
       "labels": {
         "process_prefix": "P"
-      }
+      },
+      "code": "// Process structure\ntype Process = {\n  id: number;\n  hasToken: boolean;\n  nextProcess: Process;\n}\n\n// Token Ring implementation\nclass TokenRing {\n  private processes: Process[];\n  \n  constructor(numProcesses: number) {\n    // Create the process ring\n    this.processes = Array.from(\n      { length: numProcesses },\n      (_, i) => ({\n        id: i,\n        hasToken: i === 0, // Process 0 starts with the token\n        nextProcess: null\n      })\n    );\n    \n    // Connect processes in a ring\n    for (let i = 0; i < numProcesses; i++) {\n      this.processes[i].nextProcess = \n        this.processes[(i + 1) % numProcesses];\n    }\n  }\n  \n  // Pass the token to the next process\n  passToken(process: Process) {\n    if (process.hasToken) {\n      process.hasToken = false;\n      process.nextProcess.hasToken = true;\n    }\n  }\n}"
     },
     "ricart_agrawala": {
       "title": "Ricart-Agrawala",
@@ -185,7 +232,8 @@
         "process": "Process",
         "request_access": "Request Access",
         "ts_prefix": "TS"
-      }
+      },
+      "code": "// Process structure\ntype Process = {\n  id: number;\n  timestamp: number;\n  state: 'idle' | 'requesting' | 'executing';\n  requestQueue: Request[];\n}\n\ntype Request = {\n  processId: number;\n  timestamp: number;\n}\n\n// Algorithm implementation\nclass RicartAgrawala {\n  requestCriticalSection(process: Process) {\n    process.timestamp = Date.now();\n    process.state = 'requesting';\n    \n    // Send the request to all processes\n    broadcastRequest(process);\n    \n    // Wait for replies\n    waitForResponses(process);\n  }\n  \n  handleRequest(process: Process, request: Request) {\n    if (process.state === 'idle' ||\n        request.timestamp < process.timestamp ||\n        (request.timestamp === process.timestamp && \n         request.processId < process.id)) {\n      // Send OK immediately\n      sendOK(request.processId);\n    } else {\n      // Add to the request queue\n      process.requestQueue.push(request);\n    }\n  }\n  \n  releaseCriticalSection(process: Process) {\n    process.state = 'idle';\n    // Reply to all queued requests\n    process.requestQueue.forEach(req => \n      sendOK(req.processId)\n    );\n    process.requestQueue = [];\n  }\n}"
     },
     "comparison": {
       "title": "Comparison",
@@ -242,6 +290,163 @@
         "failed": "Failed",
         "processing": "Processing",
         "pending": "Pending"
+      }
+    }
+  },
+  "service_oriented": {
+    "title": "Service-oriented design",
+    "intro": "Explore different approaches to organizing services and their practical implications. Each architecture has trade-offs and suitable use cases.",
+    "sections": {
+      "advantages": "Advantages",
+      "disadvantages": "Disadvantages",
+      "example_title": "Practical example",
+      "diagram_title": "Architecture visualization",
+      "legend": {
+        "direct_call": "Direct call",
+        "interface": "Interface",
+        "api_events": "API/Events"
+      },
+      "module_labels": {
+        "deploy": "Deployment",
+        "communication": "Communication",
+        "database": "Database"
+      }
+    },
+    "architectures": {
+      "monolithic": {
+        "name": "Monolith",
+        "description": "All features live in a single codebase, with tight coupling between modules.",
+        "advantages": [
+          "Simple initial development",
+          "Less communication overhead between components",
+          "One simple deployment",
+          "Easier to test end to end",
+          "Efficient resource sharing"
+        ],
+        "disadvantages": [
+          "Difficult to scale individual parts of the system",
+          "Every change requires a full redeployment",
+          "Can become complex as it grows",
+          "Tight coupling between modules",
+          "Difficult maintenance for large teams"
+        ],
+        "example": "A simple online store with catalog, user, and order features in one codebase.",
+        "modules": {
+          "auth": {
+            "name": "Authentication",
+            "details": {
+              "deployment": "One deployment for the whole application",
+              "communication": "Direct function calls",
+              "database": "Shared database"
+            }
+          },
+          "orders": {
+            "name": "Orders",
+            "details": {
+              "deployment": "One deployment for the whole application",
+              "communication": "Direct function calls",
+              "database": "Shared database"
+            }
+          },
+          "users": {
+            "name": "Users",
+            "details": {
+              "deployment": "One deployment for the whole application",
+              "communication": "Direct function calls",
+              "database": "Shared database"
+            }
+          }
+        }
+      },
+      "modular": {
+        "name": "Modular monolith",
+        "description": "Code is organized into well-defined modules with clear boundaries, within one deployment.",
+        "advantages": [
+          "Well-organized modular code with clear boundaries",
+          "Easier migration to microservices in the future",
+          "Less operational complexity than microservices",
+          "A useful balance between simplicity and organization",
+          "Supports gradual architectural evolution"
+        ],
+        "disadvantages": [
+          "Still requires discipline to preserve module boundaries",
+          "Scalability is still limited by a single deployment unit",
+          "Requires coordination between teams",
+          "Developers may be tempted to bypass module boundaries",
+          "Deployments are still coupled"
+        ],
+        "example": "An online store divided into independent catalog, order, and user modules. Each owns its rules and data, but all deploy together as one application.",
+        "modules": {
+          "auth": {
+            "name": "Authentication module",
+            "details": {
+              "deployment": "One deployment with independent modules",
+              "communication": "Well-defined interfaces",
+              "database": "Separate schema in a shared database"
+            }
+          },
+          "orders": {
+            "name": "Orders module",
+            "details": {
+              "deployment": "One deployment with independent modules",
+              "communication": "Well-defined interfaces",
+              "database": "Separate schema in a shared database"
+            }
+          },
+          "users": {
+            "name": "Users module",
+            "details": {
+              "deployment": "One deployment with independent modules",
+              "communication": "Well-defined interfaces",
+              "database": "Separate schema in a shared database"
+            }
+          }
+        }
+      },
+      "microservices": {
+        "name": "Microservices",
+        "description": "Independent services communicate over the network, each with its own deployment and database.",
+        "advantages": [
+          "Flexibility to scale individual parts of the system",
+          "Greater modularity and easier maintenance",
+          "Each team can focus on one service",
+          "Technology choices for each service",
+          "Faster, independent deployments"
+        ],
+        "disadvantages": [
+          "More complex orchestration",
+          "Requires robust infrastructure",
+          "Data consistency challenges",
+          "Higher communication latency",
+          "Higher operating costs"
+        ],
+        "example": "An online store with separate payment, inventory, and user microservices.",
+        "modules": {
+          "auth": {
+            "name": "Authentication service",
+            "details": {
+              "deployment": "Independent deployment",
+              "communication": "REST/gRPC API",
+              "database": "Own database"
+            }
+          },
+          "orders": {
+            "name": "Orders service",
+            "details": {
+              "deployment": "Independent deployment",
+              "communication": "REST/gRPC API",
+              "database": "Own database"
+            }
+          },
+          "users": {
+            "name": "Users service",
+            "details": {
+              "deployment": "Independent deployment",
+              "communication": "REST/gRPC API",
+              "database": "Own database"
+            }
+          }
+        }
       }
     }
   }

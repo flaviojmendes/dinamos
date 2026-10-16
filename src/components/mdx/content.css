@@ -93,6 +93,28 @@
 }
 .lesson-summary > :first-child, .lesson-callout-body > :first-child, .lesson-section-body > :first-child { margin-top: 0; }
 .lesson-summary > :last-child, .lesson-callout-body > :last-child, .lesson-section-body > :last-child { margin-bottom: 0; }
+.lesson-burger {
+  margin: 28px 0 32px;
+  padding: 22px 24px;
+  border: 1px solid var(--lesson-line);
+  border-radius: 12px;
+  background: var(--lesson-surface);
+  color: var(--lesson-body);
+  font-size: 16px;
+  line-height: 1.8;
+}
+.lesson-burger-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  color: var(--lesson-link);
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.5;
+}
+.lesson-burger-title svg { flex-shrink: 0; }
+.lesson-burger p { margin: 0; }
 .lesson-section { margin-top: 44px; padding-top: 32px; border-top: 1px solid var(--lesson-line); }
 .lesson-section-heading { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
 .lesson-section-heading .lesson-heading, .lesson-section-heading .lesson-card-title { margin: 0; }

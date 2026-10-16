@@ -20,6 +20,11 @@ const BOOTSTRAP_NAMESPACES = [
   'quick_access',
   'content',
   'preferences',
+  'nav',
+  'command_palette',
+  'menu',
+  'annotations',
+  'explore',
 ] as const;
 
 const manifestLoaders: Record<AppLocale, () => Promise<{ default: string[] }>> = {
@@ -34,6 +39,9 @@ const namespaceLoaders = {
 
 const loadedLocales = new Set<string>();
 const loadedNamespaces = new Map<string, Set<string>>();
+const namespaceLoads = new Map<string, Promise<void>>();
+const bootstrapLoads = new Map<AppLocale, Promise<void>>();
+let languageChoice = 0;
 
 function localeKey(lng: string): AppLocale {
   return lng.startsWith('pt') ? 'pt' : 'en';
@@ -47,15 +55,22 @@ async function loadNamespace(lng: AppLocale, namespace: string): Promise<void> {
   if (namespace === '_manifest') return;
   const loaded = loadedNamespaces.get(lng) ?? new Set<string>();
   if (loaded.has(namespace)) return;
+  loadedNamespaces.set(lng, loaded);
+  const key = nsKey(lng, namespace);
+  const pending = namespaceLoads.get(key);
+  if (pending) return pending;
 
   const path = `../locales/${lng}/namespaces/${namespace}.json`;
   const loader = namespaceLoaders[lng][path];
   if (!loader) return;
 
-  const mod = await loader();
-  i18n.addResourceBundle(lng, 'translation', { [namespace]: mod.default }, true, true);
-  loaded.add(namespace);
-  loadedNamespaces.set(lng, loaded);
+  const task = (async () => {
+    const mod = await loader();
+    i18n.addResourceBundle(lng, 'translation', { [namespace]: mod.default }, true, true);
+    loaded.add(namespace);
+  })();
+  namespaceLoads.set(key, task);
+  try { await task; } finally { namespaceLoads.delete(key); }
 }
 
 export async function loadLocale(lng: string, options?: { extended?: boolean }): Promise<AppLocale> {
@@ -63,9 +78,14 @@ export async function loadLocale(lng: string, options?: { extended?: boolean }):
   const extended = options?.extended ?? false;
 
   if (!loadedLocales.has(normalized)) {
-    loadedNamespaces.set(normalized, new Set());
-    await Promise.all(BOOTSTRAP_NAMESPACES.map((ns) => loadNamespace(normalized, ns)));
-    loadedLocales.add(normalized);
+    let pending = bootstrapLoads.get(normalized);
+    if (!pending) {
+      pending = Promise.all(BOOTSTRAP_NAMESPACES.map(ns => loadNamespace(normalized, ns))).then(() => {
+        loadedLocales.add(normalized);
+      });
+      bootstrapLoads.set(normalized, pending);
+    }
+    try { await pending; } finally { bootstrapLoads.delete(normalized); }
   }
 
   if (extended) {
@@ -79,6 +99,16 @@ export async function loadLocale(lng: string, options?: { extended?: boolean }):
   return normalized;
 }
 
+/** Commit a language choice only after its UI resources are ready. */
+export async function changeAppLanguage(lng: string): Promise<boolean> {
+  const choice = ++languageChoice;
+  const locale = await loadLocale(lng, { extended: true });
+  if (choice !== languageChoice) return false;
+  await i18n.changeLanguage(locale);
+  try { localStorage.setItem('i18nextLng', locale); } catch { /* private storage */ }
+  return true;
+}
+
 /** Preload bootstrap namespaces for primary + fallback locale. */
 export async function ensureI18nReady(initialLng?: string): Promise<void> {
   const primary = initialLng?.startsWith('pt') ? 'pt' : initialLng?.startsWith('en') ? 'en' : 'pt';
@@ -89,7 +119,7 @@ export async function ensureI18nReady(initialLng?: string): Promise<void> {
   }
 
   const scheduleExtended = () => {
-    void Promise.all([loadLocale(primary, { extended: true }), loadLocale(fallback, { extended: true })]);
+    void Promise.all([loadLocale(primary, { extended: true }), loadLocale(fallback, { extended: true })]).catch(() => { /* Retry when the locale is requested. */ });
   };
   if (typeof requestIdleCallback === 'function') {
     requestIdleCallback(scheduleExtended, { timeout: 4000 });
@@ -104,7 +134,8 @@ const initPromise = (async () => {
     .use(initReactI18next)
     .init({
       resources: {},
-      fallbackLng: 'pt',
+      // A missing English resource must never silently turn into Portuguese.
+      fallbackLng: false,
       load: 'languageOnly',
       supportedLngs: ['en', 'pt'],
       nonExplicitSupportedLngs: true,
@@ -117,11 +148,17 @@ const initPromise = (async () => {
       },
     });
 
+  const updateDocumentLanguage = (lng: string) => {
+    if (typeof document !== 'undefined') document.documentElement.lang = localeKey(lng) === 'pt' ? 'pt-BR' : 'en';
+  };
+  i18n.on('languageChanged', updateDocumentLanguage);
+
   const detected = i18n.language || 'pt';
   await ensureI18nReady(detected);
+  updateDocumentLanguage(i18n.resolvedLanguage || i18n.language);
 
   i18n.on('languageChanged', (lng) => {
-    void loadLocale(lng, { extended: true });
+    void loadLocale(lng, { extended: true }).catch(() => { /* Explicit choices surface failures in the switcher. */ });
   });
 })();
 

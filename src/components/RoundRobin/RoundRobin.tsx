@@ -186,9 +186,9 @@ export default function RoundRobin() {
               }
               className={selectClass}
             >
-              <option value="roundRobin">Round Robin</option>
-              <option value="leastConnections">Least Connections</option>
-              <option value="random">Random</option>
+              <option value="roundRobin">{t('simulators.round_robin.strategy_names.round_robin')}</option>
+              <option value="leastConnections">{t('simulators.round_robin.strategies.least_connections')}</option>
+              <option value="random">{t('simulators.round_robin.strategy_names.random')}</option>
             </select>
           </div>
 

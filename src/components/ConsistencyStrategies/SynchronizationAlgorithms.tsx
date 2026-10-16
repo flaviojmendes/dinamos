@@ -147,41 +147,7 @@ export default function SynchronizationAlgorithms() {
               <div className="tactical-panel border border-slate-200 dark:border-tactical-border p-4 mb-4">
                 <pre className="text-sm overflow-x-auto">
                   <code className="font-mono text-signal-cyan">
-{`// Estrutura do processo
-type Process = {
-  id: number;
-  number: number | null;  // Número da senha
-  choosing: boolean;      // Está pegando senha?
-}
-
-// Pegar uma senha
-function getNumber(process: Process, processes: Process[]) {
-  process.choosing = true;
-  process.number = 1 + Math.max(
-    ...processes.map(p => p.number ?? 0)
-  );
-  process.choosing = false;
-}
-
-// Tentar entrar na seção crítica
-function enterCriticalSection(process: Process, processes: Process[]) {
-  getNumber(process, processes);
-  
-  // Esperar outros processos
-  for (const other of processes) {
-    // Esperar se outro está escolhendo número
-    while (other.choosing) { /* wait */ }
-    
-    // Esperar processos com prioridade maior
-    while (
-      other.number !== null && (
-        other.number < process.number ||
-        (other.number === process.number && 
-         other.id < process.id)
-      )
-    ) { /* wait */ }
-  }
-}`}
+{t('design_principles.algorithms.bakery.code')}
                   </code>
                 </pre>
               </div>
@@ -250,43 +216,7 @@ function enterCriticalSection(process: Process, processes: Process[]) {
               <div className="tactical-panel border border-slate-200 dark:border-tactical-border p-4 mb-4">
                 <pre className="text-sm overflow-x-auto">
                   <code className="font-mono text-signal-green">
-{`// Estrutura do processo
-type Process = {
-  id: number;
-  hasToken: boolean;
-  nextProcess: Process;
-}
-
-// Implementação do Token Ring
-class TokenRing {
-  private processes: Process[];
-  
-  constructor(numProcesses: number) {
-    // Criar anel de processos
-    this.processes = Array.from(
-      { length: numProcesses },
-      (_, i) => ({
-        id: i,
-        hasToken: i === 0, // Processo 0 inicia com token
-        nextProcess: null
-      })
-    );
-    
-    // Conectar processos em anel
-    for (let i = 0; i < numProcesses; i++) {
-      this.processes[i].nextProcess = 
-        this.processes[(i + 1) % numProcesses];
-    }
-  }
-  
-  // Passar token para próximo processo
-  passToken(process: Process) {
-    if (process.hasToken) {
-      process.hasToken = false;
-      process.nextProcess.hasToken = true;
-    }
-  }
-}`}
+{t('design_principles.algorithms.token_ring.code')}
                   </code>
                 </pre>
               </div>
@@ -355,54 +285,7 @@ class TokenRing {
               <div className="tactical-panel border border-slate-200 dark:border-tactical-border p-4 mb-4">
                 <pre className="text-sm overflow-x-auto">
                   <code className="font-mono text-signal-amber">
-{`// Estrutura do processo
-type Process = {
-  id: number;
-  timestamp: number;
-  state: 'idle' | 'requesting' | 'executing';
-  requestQueue: Request[];
-}
-
-type Request = {
-  processId: number;
-  timestamp: number;
-}
-
-// Implementação do algoritmo
-class RicartAgrawala {
-  requestCriticalSection(process: Process) {
-    process.timestamp = Date.now();
-    process.state = 'requesting';
-    
-    // Enviar requisição para todos
-    broadcastRequest(process);
-    
-    // Esperar respostas
-    waitForResponses(process);
-  }
-  
-  handleRequest(process: Process, request: Request) {
-    if (process.state === 'idle' ||
-        request.timestamp < process.timestamp ||
-        (request.timestamp === process.timestamp && 
-         request.processId < process.id)) {
-      // Enviar OK imediatamente
-      sendOK(request.processId);
-    } else {
-      // Adicionar à fila de requisições
-      process.requestQueue.push(request);
-    }
-  }
-  
-  releaseCriticalSection(process: Process) {
-    process.state = 'idle';
-    // Responder todas requisições na fila
-    process.requestQueue.forEach(req => 
-      sendOK(req.processId)
-    );
-    process.requestQueue = [];
-  }
-}`}
+{t('design_principles.algorithms.ricart_agrawala.code')}
                   </code>
                 </pre>
               </div>

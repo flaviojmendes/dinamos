@@ -26,5 +26,10 @@
   "mitm_simulation_title": "Simulação de Ataque Man-in-the-Middle",
   "mitm_simulation_description": "Esta simulação demonstra como um atacante pode interceptar a comunicação entre cliente e servidor se posicionando no meio da conexão. O atacante pode ler e modificar os dados transmitidos.",
   "legitimate_traffic": "Tráfego Legítimo",
-  "malicious_traffic": "Tráfego Malicioso"
+  "malicious_traffic": "Tráfego Malicioso",
+  "nodes": {
+    "client": "Cliente",
+    "server": "Servidor",
+    "attacker": "Atacante"
+  }
 }

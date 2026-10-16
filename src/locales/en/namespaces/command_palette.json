@@ -1,0 +1,12 @@
+{
+  "group_nav": "Navigation",
+  "group_lesson": "Lessons",
+  "group_simulator": "Simulators",
+  "group_case": "Case studies",
+  "group_tool": "Tools",
+  "hint_move": "Move",
+  "hint_open": "Open",
+  "result_count": "{{count}} results",
+  "result_count_one": "{{count}} result",
+  "result_count_other": "{{count}} results"
+}

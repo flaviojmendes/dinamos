@@ -101,15 +101,15 @@ describe('content routes (public)', () => {
     const res = await app.request('/api/content/intro?lang=pt');
     const body = await res.json() as any;
     expect(body.lang).toBe('pt');
-    expect(body.body).toBe('Ola');
+    expect(body.body).toContain('Ola');
   });
 
-  it('GET /api/content/:slug falls back when language body is empty', async () => {
+  it('GET /api/content/:slug reports a missing translation without falling back', async () => {
     mockDb.setResults([[{ ...page, bodyPt: '   ' }]]);
     const res = await app.request('/api/content/intro?lang=pt');
-    const body = await res.json() as any;
-    expect(body.lang).toBe('en');
-    expect(body.body).toBe('Hello');
+    expect(res.status).toBe(404);
+    expect(await res.json()).toEqual({ detail: 'translation_unavailable' });
+    expect(res.headers.get('cache-control')).toBe('no-store');
   });
 
   it('GET /api/content/:slug 404 when unpublished', async () => {
@@ -124,7 +124,7 @@ describe('content routes (public)', () => {
     const res = await app.request('/api/content/body?path=/intro&lang=en');
     const body = await res.json() as any;
     expect(body.slug).toBe('intro');
-    expect(body.body).toBe('Hello');
+    expect(body.body).toContain('Hello');
   });
 
   it('GET /api/content/body 400 when path and slug missing', async () => {

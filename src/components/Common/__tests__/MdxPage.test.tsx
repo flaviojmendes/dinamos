@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 
 const delivery = vi.hoisted(() => ({
   loadPageBody: vi.fn(),
@@ -70,6 +70,37 @@ describe('MdxPage', () => {
         forceApi: false,
       })
     );
+  });
+
+  it('hides the previous locale immediately while its replacement loads', async () => {
+    let finish!: (body: string) => void;
+    delivery.loadPageBody.mockResolvedValueOnce('# English lesson').mockImplementationOnce(() => new Promise<string>(resolve => { finish = resolve; }));
+    const { rerender } = render(<MdxPage slug="s1" />);
+    await screen.findByText('# English lesson');
+    i18n.language = 'pt';
+    rerender(<MdxPage slug="s1" />);
+    expect(screen.queryByText('# English lesson')).not.toBeInTheDocument();
+    await act(async () => finish('# Aula em português'));
+    expect(await screen.findByText('# Aula em português')).toBeInTheDocument();
+  });
+
+  it('ignores a stale request that resolves after a language change', async () => {
+    let finishEnglish!: (body: string) => void;
+    delivery.loadPageBody.mockImplementationOnce(() => new Promise<string>(resolve => { finishEnglish = resolve; })).mockResolvedValueOnce('# Aula atual');
+    const { rerender } = render(<MdxPage slug="s1" />);
+    i18n.language = 'pt';
+    rerender(<MdxPage slug="s1" />);
+    await screen.findByText('# Aula atual');
+    await act(async () => finishEnglish('# Stale English'));
+    expect(screen.getByText('# Aula atual')).toBeInTheDocument();
+    expect(screen.queryByText('# Stale English')).not.toBeInTheDocument();
+  });
+
+  it('shows a localized missing translation state', async () => {
+    delivery.loadPageBody.mockRejectedValueOnce(Object.assign(new Error('translation_unavailable'), { name: 'ContentTranslationUnavailableError' }));
+    render(<MdxPage slug="s1" />);
+    expect(await screen.findByRole('status')).toHaveTextContent('content.translation_unavailable');
+    expect(screen.queryByTestId('mdx')).not.toBeInTheDocument();
   });
 
   it('keeps view tracking on the authenticated API', async () => {

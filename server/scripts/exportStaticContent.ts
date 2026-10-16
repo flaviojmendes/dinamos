@@ -9,6 +9,7 @@ import { fetchPublishedContent } from './staticContent/fetchPublishedContent.js'
 import { buildStaticContentSnapshot } from './staticContent/transform.js';
 import { validateSourceRows } from './staticContent/validate.js';
 import { CONTENT_ROOT_DIR, writeStaticContentSnapshot } from './staticContent/write.js';
+import { applyCourseRelease } from '../content/courseRelease.js';
 
 export function requireDatabaseUrl(): string {
   const url = process.env.DATABASE_URL?.trim();
@@ -22,7 +23,8 @@ async function main(): Promise<void> {
   requireDatabaseUrl();
 
   const contentRoot = resolve(CONTENT_ROOT_DIR);
-  const { modules, pages } = await fetchPublishedContent();
+  const { modules, pages: sourcePages } = await fetchPublishedContent();
+  const pages = sourcePages.map(applyCourseRelease);
   validateSourceRows(modules, pages);
 
   const snapshot = buildStaticContentSnapshot(modules, pages, new Date().toISOString());

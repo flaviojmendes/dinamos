@@ -35,6 +35,7 @@
     "recover": "Recuperar",
     "recent_ops": "Requisições Recentes",
     "read_label": "Leitura",
-    "write_label": "Escrita"
+    "write_label": "Escrita",
+    "keys_label": "{{count}} chaves"
   }
 }

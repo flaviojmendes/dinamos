@@ -2,6 +2,7 @@ import React, { createContext, useContext } from 'react';
 import { CircleCheck, Info, TriangleAlert, CircleAlert } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import './content.css';
+import BurgerAnalogy from './BurgerAnalogy';
 
 /** Shared lesson components. Long chapters remain document sections; Cards
  * provides the explicit grid context for compact overview/navigation tiles. */
@@ -220,12 +221,13 @@ export function BarChart({ data, caption }: { data: BarDatum[]; caption?: string
 }
 
 /** Responsive 16:9 video embed (YouTube etc.). */
-export function VideoEmbed({ src, title = 'video' }: { src: string; title?: string }) {
+export function VideoEmbed({ src, title }: { src: string; title?: string }) {
+  const { t } = useTranslation();
   return (
     <div className="relative w-full aspect-video my-10 tactical-panel p-1">
       <iframe
         src={src}
-        title={title}
+        title={title || t('content.video')}
         className="absolute inset-1 w-[calc(100%-0.5rem)] h-[calc(100%-0.5rem)]"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
@@ -266,7 +268,7 @@ const elements = {
 };
 
 export const mdxComponents = {
-  ...elements, Section, Cards, Card, Callout, Metrics, Metric,
+  ...elements, Section, Cards, Card, Callout, Metrics, Metric, BurgerAnalogy,
   Architecture, Flow, Timeline, BarChart, VideoEmbed,
 };
 export default mdxComponents;

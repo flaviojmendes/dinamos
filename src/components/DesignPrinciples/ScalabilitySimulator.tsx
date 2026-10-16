@@ -51,7 +51,7 @@ export default function ScalabilitySimulator() {
     {
       id: 'server1',
       name: 'Server 1',
-      region: 'US East',
+      region: 'us_east',
       status: 'healthy',
       load: 0,
       latency: 50,
@@ -61,7 +61,7 @@ export default function ScalabilitySimulator() {
     {
       id: 'server2',
       name: 'Server 2',
-      region: 'US West',
+      region: 'us_west',
       status: 'healthy',
       load: 0,
       latency: 100,
@@ -71,7 +71,7 @@ export default function ScalabilitySimulator() {
     {
       id: 'server3',
       name: 'Server 3',
-      region: 'Europe',
+      region: 'europe',
       status: 'healthy',
       load: 0,
       latency: 150,
@@ -350,9 +350,9 @@ export default function ScalabilitySimulator() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
           >
-            <Panel title={server.name} accent={server.role === 'primary' ? 'green' : 'cyan'}>
+            <Panel title={t('simulators.scalability.server', { id: server.id.replace('server', '') })} accent={server.role === 'primary' ? 'green' : 'cyan'}>
               <div className="flex justify-between items-center mb-4">
-                <p className="font-sans text-xs text-slate-500 dark:text-slate-400">{server.region}</p>
+                <p className="font-sans text-xs text-slate-500 dark:text-slate-400">{t(`simulators.scalability.regions.${server.region}`)}</p>
                 <StatusBadge
                   variant={serverStatusVariant(server.status)}
                   label={t(`simulators.vertical_scaling.statuses.${server.status}`)}
@@ -365,7 +365,7 @@ export default function ScalabilitySimulator() {
                   <div className="flex justify-between font-sans text-xs mb-1 text-slate-600 dark:text-slate-400">
                     <span>{t('simulators.scalability.role')}</span>
                     <span className={`font-mono ${server.role === 'primary' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}`}>
-                      {server.role}
+                      {t(`simulators.scalability.roles.${server.role}`)}
                     </span>
                   </div>
                 </div>
@@ -432,7 +432,7 @@ export default function ScalabilitySimulator() {
                 className="flex items-center justify-between rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2.5"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <StatusBadge variant={requestStatusVariant(request.status)} label={request.status} />
+                  <StatusBadge variant={requestStatusVariant(request.status)} label={t(`simulators.scalability.request_status.${request.status}`)} />
                   <span className="font-mono text-xs text-slate-900 dark:text-tactical-text truncate">
                     {t(`simulators.scalability.${request.type === 'write' ? 'write_label' : 'read_label'}`)} - 
                     {request.data?.key && ` ${t('simulators.scalability.key_placeholder')}: ${request.data.key}`}

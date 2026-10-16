@@ -34,7 +34,9 @@
     "baseline:build": "node scripts/measure-build-baseline.mjs",
     "baseline:lighthouse": "node scripts/run-lighthouse-baseline.mjs",
     "test:e2e": "PLAYWRIGHT_BROWSERS_PATH=.playwright-browsers playwright test",
-    "test:e2e:install": "node scripts/install-playwright-chromium.mjs"
+    "test:e2e:install": "node scripts/install-playwright-chromium.mjs",
+    "content:release-reviewed": "tsx server/scripts/releaseReviewedContent.ts",
+    "content:check": "node scripts/check-course-content.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

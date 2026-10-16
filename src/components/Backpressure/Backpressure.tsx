@@ -184,37 +184,37 @@ export default function Backpressure() {
       >
         <details className="mb-4 font-sans text-sm text-slate-600 dark:text-tactical-dim">
           <summary className="cursor-pointer text-sm font-medium text-slate-700 dark:text-tactical-text hover:text-brand-600 dark:hover:text-signal-green transition-colors">
-            O que é backpressure?
+            {t('simulators.backpressure.explanation.title')}
           </summary>
           <div className="mt-2 bg-slate-50 dark:bg-tactical-surface border border-slate-200 dark:border-tactical-border rounded-lg p-4 space-y-3">
             <p>
-              Backpressure é um mecanismo fundamental em sistemas distribuídos que lida com situações onde um componente não consegue processar dados na mesma velocidade em que os recebe. É como uma válvula de pressão que regula o fluxo de dados para evitar sobrecarga.
+              {t('simulators.backpressure.explanation.definition')}
             </p>
             <p>
-              No mundo real, isso acontece quando, por exemplo, um serviço de processamento de pedidos recebe mais requisições do que consegue processar. Sem backpressure, o sistema poderia falhar, perder dados ou consumir memória indefinidamente.
+              {t('simulators.backpressure.explanation.example')}
             </p>
-            <h3 className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text mt-4 mb-2">Como funciona o simulador</h3>
+            <h3 className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text mt-4 mb-2">{t('simulators.backpressure.explanation.how')}</h3>
             <ul className="list-disc list-inside space-y-2">
               <li>
-                <strong>Produtor:</strong> Gera mensagens em uma taxa configurável (mensagens/segundo)
+                <strong>{t('simulators.backpressure.explanation.producer')}</strong> {t('simulators.backpressure.explanation.producer_description')}
               </li>
               <li>
-                <strong>Fila:</strong> Armazena mensagens até um limite máximo configurável
+                <strong>{t('simulators.backpressure.explanation.queue')}</strong> {t('simulators.backpressure.explanation.queue_description')}
               </li>
               <li>
-                <strong>Consumidor:</strong> Processa mensagens em sua própria velocidade
+                <strong>{t('simulators.backpressure.explanation.consumer')}</strong> {t('simulators.backpressure.explanation.consumer_description')}
               </li>
               <li>
-                <strong>Mecanismos de Backpressure:</strong>
+                <strong>{t('simulators.backpressure.explanation.mechanisms')}</strong>
                 <ul className="list-disc list-inside ml-4 mt-1">
-                  <li>Quando a fila atinge 80% da capacidade, o produtor é throttled (desacelerado)</li>
-                  <li>Se a fila encher completamente, novas mensagens são descartadas</li>
-                  <li>Quando a fila esvazia, o produtor volta ao ritmo normal</li>
+                  <li>{t('simulators.backpressure.explanation.throttle')}</li>
+                  <li>{t('simulators.backpressure.explanation.overflow')}</li>
+                  <li>{t('simulators.backpressure.explanation.resume')}</li>
                 </ul>
               </li>
             </ul>
             <p className="mt-4">
-              Experimente configurar diferentes taxas de produção e consumo para ver como o sistema reage à pressão e se adapta para manter a estabilidade.
+              {t('simulators.backpressure.explanation.experiment')}
             </p>
           </div>
         </details>
@@ -222,7 +222,7 @@ export default function Backpressure() {
         {isConfigOpen && (
           <div className="mb-4 grid grid-cols-2 gap-4 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 rounded-lg">
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">Taxa de produção (msg/s)</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">{t('simulators.backpressure.config.production_rate')}</label>
               <input
                 type="number"
                 value={producers[0].rate}
@@ -231,7 +231,7 @@ export default function Backpressure() {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">Taxa de consumo (msg/s)</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">{t('simulators.backpressure.config.consumption_rate')}</label>
               <input
                 type="number"
                 value={consumer.processingRate}
@@ -240,7 +240,7 @@ export default function Backpressure() {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">Tamanho máximo da fila</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">{t('simulators.backpressure.config.queue_capacity')}</label>
               <input
                 type="number"
                 value={consumer.maxQueueSize}
@@ -331,14 +331,14 @@ export default function Backpressure() {
               transition={transition}
               className="flex justify-between items-center border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2 rounded-md"
             >
-              <StatusBadge variant={messageStatusVariant(message.status)} label={message.status.toUpperCase()} />
-              <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim tabular-nums">{((Date.now() - message.timestamp) / 1000).toFixed(1)}s ago</span>
+              <StatusBadge variant={messageStatusVariant(message.status)} label={t(`simulators.backpressure.status.${message.status}`)} />
+              <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim tabular-nums">{t('simulators.backpressure.seconds_ago', { seconds: ((Date.now() - message.timestamp) / 1000).toFixed(1) })}</span>
             </motion.div>
           ))}
           {messages.slice(-5).length === 0 && (
             <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center rounded-lg">
               <p className="font-sans text-xs text-slate-400 dark:text-tactical-label">
-                Nenhuma mensagem recente
+                {t('simulators.backpressure.empty')}
               </p>
             </div>
           )}

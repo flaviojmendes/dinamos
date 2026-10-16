@@ -1,0 +1,12 @@
+{
+  "save_error": "Could not save the note.",
+  "delete_confirm": "Delete this note?",
+  "note": "Note",
+  "draw": "Draw",
+  "title": "My notes",
+  "subtitle": "Select text to attach a note or drawing.",
+  "detach": "Detach from selection",
+  "placeholder": "Write a note…",
+  "add": "Add note",
+  "empty": "No notes yet. Select text on the page or add one above."
+}

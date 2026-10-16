@@ -1,0 +1,9 @@
+{
+  "tier_tools": "Tools & community",
+  "collapse_sidebar": "Collapse menu",
+  "expand_sidebar": "Expand menu",
+  "navigation": "Navigation",
+  "filter_placeholder": "Filter navigation…",
+  "collapse_section": "Collapse {{section}}",
+  "expand_section": "Expand {{section}}"
+}

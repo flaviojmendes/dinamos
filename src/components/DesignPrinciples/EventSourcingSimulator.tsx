@@ -48,7 +48,7 @@ const defaultConfig: SimulationConfig = {
 };
 
 export default function EventSourcingSimulator() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { reducedMotion, transition } = useSimulationMotion();
   const [events, setEvents] = useState<Event[]>([]);
   const [currentState, setCurrentState] = useState<OrderState | null>(null);
@@ -383,7 +383,7 @@ export default function EventSourcingSimulator() {
                     timestamp: Date.now(),
                     data: {
                       orderId: currentState.orderId,
-                      reason: 'Cliente cancelou o pedido',
+                      reason: t('simulators.event_sourcing.cancellation_reason'),
                     },
                   })}
                   disabled={!['PENDING', 'PAID'].includes(currentState.status)}
@@ -427,7 +427,7 @@ export default function EventSourcingSimulator() {
                           currentState.status === 'PAID' ? 'active' :
                           'pending'
                         }
-                        label={t('simulators.event_sourcing.state.status', { status: currentState.status })}
+                        label={t('simulators.event_sourcing.state.status', { status: t(`simulators.event_sourcing.statuses.${currentState.status}`) })}
                       />
                     </motion.div>
                     <div>{t('simulators.event_sourcing.state.total', { amount: currentState.amount })}</div>
@@ -506,7 +506,7 @@ export default function EventSourcingSimulator() {
                     <div className="flex justify-between font-mono text-xs">
                       <span className="text-slate-900 dark:text-tactical-text">{event.type}</span>
                       <span className="tabular-nums text-slate-500 dark:text-tactical-dim">
-                        {new Date(event.timestamp).toLocaleTimeString()}
+                        {new Date(event.timestamp).toLocaleTimeString(i18n?.resolvedLanguage || i18n?.language)}
                       </span>
                     </div>
                     {config.showEventData && (

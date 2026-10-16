@@ -54,7 +54,7 @@ const healthVariant = (health: Server['health']) => {
 };
 
 export default function CanaryDeploymentSimulator() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   
   const [config, setConfig] = useState<SimulationConfig>({
     canaryPercentage: 10,
@@ -87,7 +87,7 @@ export default function CanaryDeploymentSimulator() {
   const requestIdRef = useRef(0);
 
   const addLog = useCallback((message: string) => {
-    const timestamp = new Date().toLocaleTimeString();
+    const timestamp = new Date().toLocaleTimeString(i18n?.resolvedLanguage || i18n?.language);
     setLogs(prev => [`[${timestamp}] ${message}`, ...prev].slice(0, 50));
   }, []);
 

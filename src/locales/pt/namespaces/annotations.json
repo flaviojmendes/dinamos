@@ -1,0 +1,12 @@
+{
+  "save_error": "Não foi possível salvar a anotação.",
+  "delete_confirm": "Excluir esta anotação?",
+  "note": "Anotar",
+  "draw": "Desenhar",
+  "title": "Minhas anotações",
+  "subtitle": "Selecione um trecho para anexar uma anotação ou desenho.",
+  "detach": "Desvincular do trecho selecionado",
+  "placeholder": "Escreva uma anotação…",
+  "add": "Adicionar anotação",
+  "empty": "Nenhuma anotação ainda. Selecione um trecho da página ou adicione uma acima."
+}

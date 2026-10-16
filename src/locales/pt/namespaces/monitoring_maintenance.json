@@ -306,7 +306,16 @@
       "Usar texto não estruturado",
       "Logar sem timestamps",
       "Misturar diferentes padrões"
-    ]
+    ],
+    "samples": {
+      "login_success": "Usuário logado com sucesso",
+      "login_brief": "Usuário fez login",
+      "cache_warning": "Cache miss detectado - performance pode ser afetada",
+      "cache_brief": "Alerta: cache não encontrado",
+      "payment_error": "Falha ao processar pagamento",
+      "payment_reason": "Cartão recusado",
+      "payment_brief": "Deu erro no pagamento"
+    }
   },
   "tracing_simulator": {
     "title": "Simulador de Tracing",

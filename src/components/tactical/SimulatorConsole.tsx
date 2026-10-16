@@ -30,7 +30,7 @@ export function SimulatorConsole({
   className,
   children,
 }: SimulatorConsoleProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   return (
     <MotionConfig reducedMotion="user" transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}>
     <div className={cn('simulation-workspace sim-console', className)}>
@@ -43,7 +43,7 @@ export function SimulatorConsole({
         </div>
       </div>
       {subtitle && <p className="mb-5 max-w-prose text-sm text-slate-600 dark:text-tactical-dim">{subtitle}</p>}
-      <div className="sim-console-body">{children}</div>
+      <div key={i18n.resolvedLanguage || i18n.language} className="sim-console-body">{children}</div>
     </div>
     </MotionConfig>
   );

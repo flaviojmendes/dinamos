@@ -353,7 +353,7 @@ export default function MessageQueue() {
               >
                 <div className="flex items-center gap-3">
                   <span className="font-mono text-sm text-slate-900 dark:text-tactical-text">{message.content}</span>
-                  <StatusBadge variant={messageStatusVariant(message.status)} label={message.status.toUpperCase()} />
+                  <StatusBadge variant={messageStatusVariant(message.status)} label={t(`simulators.message_queue_sim.status.${message.status}`)} />
                 </div>
                 {message.processedAt && (
                   <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">

@@ -41,6 +41,9 @@ jobs:
       - name: Type-check (frontend + API)
         run: npm run typecheck
 
+      - name: Validate bilingual course content
+        run: npm run content:check
+
       - name: Native Node API cold start
         run: npm run test:api-runtime
 

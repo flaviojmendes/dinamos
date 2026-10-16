@@ -6,6 +6,7 @@ import {
   getModule,
   menuKey,
   fallbackLabel,
+  titleForPath,
   type ContentType,
 } from '../../config/contentRegistry';
 import { useContent } from '../../contexts/ContentContext';
@@ -47,7 +48,7 @@ const MAX_RESULTS = 24;
  */
 export default function CommandPalette() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { pages: contentPages } = useContent();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
@@ -105,7 +106,7 @@ export default function CommandPalette() {
     const content: PaletteItem[] = contentRegistry
       .filter((i) => !navPaths.has(i.path))
       .map((i) => {
-        const label = t(menuKey(i.path, 'name'), { defaultValue: fallbackLabel(i.path) });
+        const label = titleForPath(i.path, i18n.resolvedLanguage || i18n.language) ?? t(menuKey(i.path, 'name'), { defaultValue: fallbackLabel(i.path) });
         const description = t(menuKey(i.path, 'description'), { defaultValue: '' });
         const mod = getModule(i.moduleId);
         const moduleLabel = mod
@@ -125,7 +126,7 @@ export default function CommandPalette() {
     return [...nav, ...content];
     // contentPages drives the live registry; recompute once it loads.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [t, contentPages]);
+  }, [t, i18n.resolvedLanguage, i18n.language, contentPages]);
 
   // Filter then sort into stable group order, capped for performance.
   const filtered = useMemo(() => {

@@ -54,12 +54,13 @@ const DLAdminContentTree = React.lazy(() => import("./app/pages/AdminContentTree
 const DLAdminAnnouncements = React.lazy(() => import("./app/pages/AdminAnnouncements"));
 
 function DesignLabRouteFallback() {
+  const { t } = useTranslation();
   return (
     <div className="min-h-[60vh] flex items-center justify-center">
       <div className="inline-flex items-center space-x-3">
         <div className="animate-spin rounded-full h-8 w-8 border-2 border-brand-600 dark:border-brand-300 border-t-transparent" aria-hidden />
         <span className="font-mono uppercase tracking-wider text-sm text-slate-600 dark:text-tactical-dim">
-          Carregando...
+          {t('common.loading_page')}
         </span>
       </div>
     </div>
@@ -1445,7 +1446,7 @@ export default function App() {
     /^\/editor\/game\/[^/]+\/stage\/?$/.test(pathname);
   const { user, signOut } = useAuth();
   const { isCompleted, progress, updateTrigger } = useContentProgress();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { pages: contentPages, ready: contentReady } = useContent();
   // The sidebar must mirror what actually exists in the database. The static
   // tree below is only a source of labels/icons/structure — we prune it down to
@@ -1524,7 +1525,7 @@ export default function App() {
         const m = getModule(i.moduleId);
         return {
           path: i.path,
-          label: t(menuKey(i.path, 'name'), { defaultValue: fallbackLabel(i.path) }),
+          label: titleForPath(i.path, i18n.resolvedLanguage || i18n.language) ?? t(menuKey(i.path, 'name'), { defaultValue: fallbackLabel(i.path) }),
           moduleLabel: m ? t(`command_center.modules.${m.id}`, { defaultValue: m.label }) : '',
           type: i.type,
         };
@@ -1584,7 +1585,6 @@ export default function App() {
     const { pathname } = useLocation();
     const { isCompleted, updateTrigger } = useContentProgress();
     const { t, i18n } = useTranslation();
-    const makeMenuKey = (path: string, field: 'name' | 'description') => `menu.${path.replace(/^\//, '').replace(/\//g, '.')}.${field}`;
     // Labels come from the DB (content_pages.title_*) when the page exists there.
     // Otherwise fall back to the i18n key, then the static tree name — but never
     // a raw, unresolved key (those start with "menu."): use a prettified label
@@ -1593,7 +1593,7 @@ export default function App() {
       item.name && !item.name.startsWith('menu.') ? item.name : fallbackLabel(item.path);
     const displayName =
       titleForPath(item.path, i18n.language) ??
-      t(makeMenuKey(item.path, 'name'), { defaultValue: staticName });
+      t(menuKey(item.path, 'name'), { defaultValue: staticName });
     
     // Check if current path matches this item or any of its children
     const isActive =
@@ -1634,7 +1634,7 @@ export default function App() {
     const TypeMarker = () => null;
 
     const CompletedMark = () => (
-      <span className="ml-auto flex-shrink-0 text-brand-600 dark:text-brand-300" title="completed">
+      <span className="ml-auto flex-shrink-0 text-brand-600 dark:text-brand-300" title={t('content.completed_label')}>
         <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
           <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
         </svg>
@@ -1716,7 +1716,8 @@ export default function App() {
               className={`px-2 text-slate-400 dark:text-tactical-label hover:text-slate-900 dark:hover:text-tactical-text hover:bg-slate-100 dark:hover:bg-tactical-raised transition-colors ${
                 isActive ? "text-brand-700 dark:text-brand-300" : ""
               }`}
-              aria-label={isExpanded ? 'Collapse' : 'Expand'}
+              aria-label={t(isExpanded ? 'nav.collapse_section' : 'nav.expand_section', { section: displayName })}
+              aria-expanded={isExpanded}
             >
               <svg
                 className={`w-3.5 h-3.5 transform transition-transform ${isExpanded ? "rotate-90" : ""}`}
@@ -1951,7 +1952,7 @@ export default function App() {
                   {user.photoURL ? (
                     <img
                       src={user.photoURL}
-                      alt="Profile"
+                      alt={t('common.profile_photo')}
                       className="w-10 h-10 rounded-full border border-brand-200 dark:border-brand-500/40"
                     />
                   ) : (
@@ -1966,13 +1967,13 @@ export default function App() {
                       {user.displayName || user.email}
                     </p>
                     <p className="label-mono truncate">
-                      {user ? 'Free tier' : 'Guest'}
+                      {t(user ? 'common.free_tier' : 'common.guest')}
                     </p>
                   </div>
                   <button
                     onClick={signOut}
                     className="text-slate-400 hover:text-slate-700 dark:text-tactical-label dark:hover:text-signal-red transition-colors"
-                    aria-label="Sign out"
+                    aria-label={t('common.sign_out')}
                   >
                     <svg
                       className="w-5 h-5"

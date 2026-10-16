@@ -39,7 +39,7 @@ const dist = (a: { x: number; y: number }, b: { x: number; y: number }) =>
   Math.hypot(a.x - b.x, a.y - b.y);
 
 export default function VectorSearchSimulator() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { reducedMotion, transition, duration } = useSimulationMotion();
   const [efSearch, setEfSearch] = useState(64);
   const [m, setM] = useState(16);
@@ -309,7 +309,7 @@ export default function VectorSearchSimulator() {
             <div className="sim-metrics grid grid-cols-2 lg:grid-cols-4 gap-3">
               <AnimatedMetric value={result.recall} decimals={1} suffix="%" label={t(`${base}.metrics.recall`)} color={result.recall > 90 ? 'green' : 'amber'} />
               <AnimatedMetric value={result.latency} suffix="ms" label={t(`${base}.metrics.latency`)} color="cyan" />
-              <AnimatedMetric value={result.comparisons} format={(v) => Math.round(v).toLocaleString()} label={t(`${base}.metrics.comparisons`)} color="default" />
+              <AnimatedMetric value={result.comparisons} format={(v) => Math.round(v).toLocaleString(i18n?.resolvedLanguage || i18n?.language)} label={t(`${base}.metrics.comparisons`)} color="default" />
               <AnimatedMetric value={result.memoryMB} format={() => memLabel} label={t(`${base}.metrics.memory`)} color={result.memoryMB > 1024 ? 'red' : 'default'} />
             </div>
           </Panel>

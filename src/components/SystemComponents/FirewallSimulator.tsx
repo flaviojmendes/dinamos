@@ -319,7 +319,7 @@ export default function FirewallSimulator() {
         <Panel
           title={t('simulators.firewall.traffic.title')}
           accent="amber"
-          action={isAutoGenerating ? <StatusBadge variant="active" label="Auto" /> : undefined}
+          action={isAutoGenerating ? <StatusBadge variant="active" label={t('simulators.firewall.auto')} /> : undefined}
         >
           <div className="flex flex-wrap gap-2 mb-4">
             <TacticalButton
@@ -451,7 +451,7 @@ export default function FirewallSimulator() {
                       type="number"
                       value={newRule.port}
                       onChange={e => setNewRule(prev => ({ ...prev, port: parseInt(e.target.value) || 0 }))}
-                      placeholder={t('simulators.firewall.add_rule_modal.placeholder_port_or_zero') || 'Port or 0'}
+                      placeholder={t('simulators.firewall.add_rule_modal.placeholder_port_or_zero') || t('simulators.firewall.port_or_any')}
                       className="w-full bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-3 py-2 font-mono text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-signal-green"
                     />
                   </div>
@@ -603,7 +603,7 @@ export default function FirewallSimulator() {
                           setFormErrors(prev => ({ ...prev, port: '' }));
                         }
                       }}
-                      placeholder={t('simulators.firewall.custom_packet_modal.placeholder_port') || 'Port (e.g., 80)'}
+                      placeholder={t('simulators.firewall.custom_packet_modal.placeholder_port') || t('simulators.firewall.port_placeholder')}
                       className={`w-full bg-white dark:bg-tactical-raised border px-3 py-2 font-mono text-sm text-slate-900 dark:text-tactical-text transition-colors focus:outline-none ${
                         formErrors.port ? 'border-signal-red' : 'border-slate-300 dark:border-tactical-border'
                       }`}
@@ -649,7 +649,7 @@ export default function FirewallSimulator() {
                     type="text"
                     value={customPacket.payload}
                     onChange={e => setCustomPacket(prev => ({ ...prev, payload: e.target.value }))}
-                    placeholder={t('simulators.firewall.custom_packet_modal.placeholder_payload') || 'Packet data'}
+                    placeholder={t('simulators.firewall.custom_packet_modal.placeholder_payload') || t('simulators.firewall.packet_data')}
                     className="w-full bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-3 py-2 font-mono text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-signal-green"
                   />
                 </div>

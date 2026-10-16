@@ -306,7 +306,16 @@
       "Use unstructured text",
       "Log without timestamps",
       "Mix different patterns"
-    ]
+    ],
+    "samples": {
+      "login_success": "User logged in successfully",
+      "login_brief": "User logged in",
+      "cache_warning": "Cache miss detected; performance may be affected",
+      "cache_brief": "Warning: cache not found",
+      "payment_error": "Failed to process payment",
+      "payment_reason": "Card declined",
+      "payment_brief": "Payment error"
+    }
   },
   "tracing_simulator": {
     "title": "Tracing Simulator",

@@ -1,20 +1,157 @@
 {
-  "title": "Service-Oriented Design",
-  "intro": "Explore different approaches for organizing services and their practical implications. Each architecture has its own trade-offs and ideal use cases.",
+  "title": "Service-oriented design",
+  "intro": "Explore different approaches to organizing services and their practical implications. Each architecture has trade-offs and suitable use cases.",
   "sections": {
     "advantages": "Advantages",
     "disadvantages": "Disadvantages",
-    "example_title": "Practical Example",
-    "diagram_title": "Architecture Visualization",
+    "example_title": "Practical example",
+    "diagram_title": "Architecture visualization",
     "legend": {
       "direct_call": "Direct call",
       "interface": "Interface",
       "api_events": "API/Events"
     },
     "module_labels": {
-      "deploy": "Deploy",
+      "deploy": "Deployment",
       "communication": "Communication",
       "database": "Database"
+    }
+  },
+  "architectures": {
+    "monolithic": {
+      "name": "Monolith",
+      "description": "All features live in a single codebase, with tight coupling between modules.",
+      "advantages": [
+        "Simple initial development",
+        "Less communication overhead between components",
+        "One simple deployment",
+        "Easier to test end to end",
+        "Efficient resource sharing"
+      ],
+      "disadvantages": [
+        "Difficult to scale individual parts of the system",
+        "Every change requires a full redeployment",
+        "Can become complex as it grows",
+        "Tight coupling between modules",
+        "Difficult maintenance for large teams"
+      ],
+      "example": "A simple online store with catalog, user, and order features in one codebase.",
+      "modules": {
+        "auth": {
+          "name": "Authentication",
+          "details": {
+            "deployment": "One deployment for the whole application",
+            "communication": "Direct function calls",
+            "database": "Shared database"
+          }
+        },
+        "orders": {
+          "name": "Orders",
+          "details": {
+            "deployment": "One deployment for the whole application",
+            "communication": "Direct function calls",
+            "database": "Shared database"
+          }
+        },
+        "users": {
+          "name": "Users",
+          "details": {
+            "deployment": "One deployment for the whole application",
+            "communication": "Direct function calls",
+            "database": "Shared database"
+          }
+        }
+      }
+    },
+    "modular": {
+      "name": "Modular monolith",
+      "description": "Code is organized into well-defined modules with clear boundaries, within one deployment.",
+      "advantages": [
+        "Well-organized modular code with clear boundaries",
+        "Easier migration to microservices in the future",
+        "Less operational complexity than microservices",
+        "A useful balance between simplicity and organization",
+        "Supports gradual architectural evolution"
+      ],
+      "disadvantages": [
+        "Still requires discipline to preserve module boundaries",
+        "Scalability is still limited by a single deployment unit",
+        "Requires coordination between teams",
+        "Developers may be tempted to bypass module boundaries",
+        "Deployments are still coupled"
+      ],
+      "example": "An online store divided into independent catalog, order, and user modules. Each owns its rules and data, but all deploy together as one application.",
+      "modules": {
+        "auth": {
+          "name": "Authentication module",
+          "details": {
+            "deployment": "One deployment with independent modules",
+            "communication": "Well-defined interfaces",
+            "database": "Separate schema in a shared database"
+          }
+        },
+        "orders": {
+          "name": "Orders module",
+          "details": {
+            "deployment": "One deployment with independent modules",
+            "communication": "Well-defined interfaces",
+            "database": "Separate schema in a shared database"
+          }
+        },
+        "users": {
+          "name": "Users module",
+          "details": {
+            "deployment": "One deployment with independent modules",
+            "communication": "Well-defined interfaces",
+            "database": "Separate schema in a shared database"
+          }
+        }
+      }
+    },
+    "microservices": {
+      "name": "Microservices",
+      "description": "Independent services communicate over the network, each with its own deployment and database.",
+      "advantages": [
+        "Flexibility to scale individual parts of the system",
+        "Greater modularity and easier maintenance",
+        "Each team can focus on one service",
+        "Technology choices for each service",
+        "Faster, independent deployments"
+      ],
+      "disadvantages": [
+        "More complex orchestration",
+        "Requires robust infrastructure",
+        "Data consistency challenges",
+        "Higher communication latency",
+        "Higher operating costs"
+      ],
+      "example": "An online store with separate payment, inventory, and user microservices.",
+      "modules": {
+        "auth": {
+          "name": "Authentication service",
+          "details": {
+            "deployment": "Independent deployment",
+            "communication": "REST/gRPC API",
+            "database": "Own database"
+          }
+        },
+        "orders": {
+          "name": "Orders service",
+          "details": {
+            "deployment": "Independent deployment",
+            "communication": "REST/gRPC API",
+            "database": "Own database"
+          }
+        },
+        "users": {
+          "name": "Users service",
+          "details": {
+            "deployment": "Independent deployment",
+            "communication": "REST/gRPC API",
+            "database": "Own database"
+          }
+        }
+      }
     }
   }
 }

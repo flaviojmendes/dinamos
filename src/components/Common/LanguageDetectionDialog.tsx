@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { TacticalButton } from '../tactical';
+import { changeAppLanguage } from '../../config/i18n';
 
 const LanguageDetectionDialog: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+  const [pending, setPending] = useState(false);
+  const [failed, setFailed] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [detectedLanguage, setDetectedLanguage] = useState<string>('');
 
@@ -30,16 +33,17 @@ const LanguageDetectionDialog: React.FC = () => {
     }
   }, []);
 
-  const handleLanguageChoice = (language: string) => {
-    // Store the user's explicit choice first
-    localStorage.setItem('language-choice-made', 'true');
-    localStorage.setItem('i18nextLng', language);
-    
-    // Set the language (this will now find the localStorage value)
-    i18n.changeLanguage(language);
-    
-    // Close dialog
-    setShowDialog(false);
+  const handleLanguageChoice = async (language: string) => {
+    setPending(true);
+    setFailed(false);
+    try {
+      if (await changeAppLanguage(language)) {
+        try { localStorage.setItem('language-choice-made', 'true'); } catch { /* private storage */ }
+        setShowDialog(false);
+      }
+    } catch {
+      setFailed(true);
+    } finally { setPending(false); }
   };
 
   if (!showDialog) return null;
@@ -62,13 +66,10 @@ const LanguageDetectionDialog: React.FC = () => {
         >
           <div className="text-center mb-6">
             <h2 className="font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-tactical-text mb-4">
-              {isPortugueseDetected ? 'Escolha seu Idioma' : 'Choose Your Language'}
+              {t('common.language_dialog.title')}
             </h2>
             <p className="text-slate-600 dark:text-tactical-dim leading-relaxed">
-              {isPortugueseDetected 
-                ? 'Detectamos que seu navegador está em português. Gostaria de continuar em português?'
-                : 'We detected that your browser language is English or another language. Would you like to continue in English?'
-              }
+              {t('common.language_dialog.description')}
             </p>
           </div>
 
@@ -76,37 +77,42 @@ const LanguageDetectionDialog: React.FC = () => {
             {isPortugueseDetected ? (
               <>
                 <TacticalButton
+                  disabled={pending}
                   variant="primary"
                   onClick={() => handleLanguageChoice('pt')}
                   className="flex-1 py-3"
                 >
-                  Continuar em Português
+                  {t('common.language_dialog.continue_pt')}
                 </TacticalButton>
                 <TacticalButton
+                  disabled={pending}
                   onClick={() => handleLanguageChoice('en')}
                   className="flex-1 py-3"
                 >
-                  Mudar para Inglês
+                  {t('common.language_dialog.switch_en')}
                 </TacticalButton>
               </>
             ) : (
               <>
                 <TacticalButton
+                  disabled={pending}
                   variant="primary"
                   onClick={() => handleLanguageChoice('en')}
                   className="flex-1 py-3"
                 >
-                  Continue in English
+                  {t('common.language_dialog.continue_en')}
                 </TacticalButton>
                 <TacticalButton
+                  disabled={pending}
                   onClick={() => handleLanguageChoice('pt')}
                   className="flex-1 py-3"
                 >
-                  Switch to Portuguese
+                  {t('common.language_dialog.switch_pt')}
                 </TacticalButton>
               </>
             )}
           </div>
+          {failed && <p role="alert" className="mt-4 text-sm text-red-600 dark:text-red-300">{t('common.language_load_failed')}</p>}
         </motion.div>
       </motion.div>
     </AnimatePresence>

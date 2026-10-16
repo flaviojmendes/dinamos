@@ -15,10 +15,8 @@ interface Request {
 }
 
 interface Service {
-  name: string;
   type: Request['type'];
   color: string;
-  description: string;
   errorRate: number;
   processingTime: number;
 }
@@ -39,34 +37,26 @@ const defaultConfig: SimulationConfig = {
 
 const services: Service[] = [
   {
-    name: 'Auth Service',
     type: 'auth',
     color: 'bg-purple-500',
-    description: 'Autenticação e autorização',
     errorRate: 0.05,
     processingTime: 1500
   },
   {
-    name: 'Product Service',
     type: 'products',
     color: 'bg-blue-500',
-    description: 'Catálogo de produtos',
     errorRate: 0.02,
     processingTime: 800
   },
   {
-    name: 'Order Service',
     type: 'orders',
     color: 'bg-green-500',
-    description: 'Gerenciamento de pedidos',
     errorRate: 0.08,
     processingTime: 2000
   },
   {
-    name: 'Payment Service',
     type: 'payments',
     color: 'bg-yellow-500',
-    description: 'Processamento de pagamentos',
     errorRate: 0.15,
     processingTime: 2500
   }
@@ -279,7 +269,7 @@ export default function APIGatewaySimulator() {
                     {t('simulators.gateway.items.request_id', { id: request.id })}
                   </div>
                   <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
-                    {t('simulators.gateway.items.type', { type: request.type })}
+                    {t('simulators.gateway.items.type', { type: t(`simulators.gateway.types.${request.type}`) })}
                   </div>
                 </motion.div>
               ))}
@@ -304,7 +294,7 @@ export default function APIGatewaySimulator() {
                     {t('simulators.gateway.items.routing_to', { id: request.id })}
                   </div>
                   <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
-                    {t('simulators.gateway.items.to_service', { service: services.find(s => s.type === request.type)?.name })}
+                    {t('simulators.gateway.items.to_service', { service: t(`simulators.gateway.services.${request.type}.name`) })}
                   </div>
                 </motion.div>
               ))}
@@ -316,8 +306,8 @@ export default function APIGatewaySimulator() {
           <div className="space-y-4">
             {services.map(service => (
               <div key={service.type} className={`sim-node p-4 ${requests.some(r => r.type === service.type && r.status === 'routing') ? 'sim-node-active' : ''}`}>
-                <div className="font-sans text-sm font-medium text-slate-900 dark:text-tactical-text mb-1">{service.name}</div>
-                <div className="font-sans text-xs text-slate-500 dark:text-tactical-dim">{service.description}</div>
+                <div className="font-sans text-sm font-medium text-slate-900 dark:text-tactical-text mb-1">{t(`simulators.gateway.services.${service.type}.name`)}</div>
+                <div className="font-sans text-xs text-slate-500 dark:text-tactical-dim">{t(`simulators.gateway.services.${service.type}.description`)}</div>
                 <div className="font-mono text-xs text-slate-500 dark:text-tactical-label mt-1">
                   {t('simulators.gateway.items.processing_time', { ms: service.processingTime })}
                   <br />
