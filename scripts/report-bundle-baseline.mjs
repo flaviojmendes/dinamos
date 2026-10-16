@@ -43,11 +43,60 @@ function walkAssets(dir, prefix = '') {
 
 function parseIndexHtml() {
   const htmlPath = join(DIST, 'index.html');
-  if (!existsSync(htmlPath)) return { entryJs: null, entryCss: [] };
+  if (!existsSync(htmlPath)) return { entryJs: [], entryCss: [] };
   const html = readFileSync(htmlPath, 'utf8');
   const entryJs = [...html.matchAll(/src="(\/assets\/[^"]+\.js)"/g)].map((m) => m[1]);
   const entryCss = [...html.matchAll(/href="(\/assets\/[^"]+\.css)"/g)].map((m) => m[1]);
   return { entryJs, entryCss };
+}
+
+function startupFiles(entryJs, entryCss) {
+  const files = new Set([...entryJs, ...entryCss].map((file) => file.replace(/^\//, '')));
+  const manifestPath = [join(DIST, '.vite', 'manifest.json'), join(DIST, 'manifest.json')]
+    .find((file) => existsSync(file));
+  if (!manifestPath) return files;
+
+  const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+  const visited = new Set();
+  const active = new Set();
+  const path = [];
+
+  function checkStaticImports(key) {
+    if (active.has(key)) {
+      const cycle = [...path.slice(path.indexOf(key)), key]
+        .map((id) => manifest[id].file).join(' -> ');
+      throw new Error(`[baseline:bundle] Static chunk dependency cycle: ${cycle}`);
+    }
+    if (visited.has(key)) return;
+    const chunk = manifest[key];
+    if (!chunk) throw new Error(`[baseline:bundle] Missing manifest import: ${key}`);
+    active.add(key);
+    path.push(key);
+    for (const dependency of chunk.imports ?? []) checkStaticImports(dependency);
+    path.pop();
+    active.delete(key);
+    visited.add(key);
+  }
+
+  // Check lazy route chunks too, but never follow dynamic imports as static edges.
+  for (const key of Object.keys(manifest)) checkStaticImports(key);
+
+  const keyByFile = new Map(Object.entries(manifest).map(([key, chunk]) => [chunk.file, key]));
+  const included = new Set();
+  function include(key) {
+    if (included.has(key)) return;
+    included.add(key);
+    const chunk = manifest[key];
+    files.add(chunk.file);
+    for (const css of chunk.css ?? []) files.add(css);
+    for (const dependency of chunk.imports ?? []) include(dependency);
+  }
+  for (const file of entryJs) {
+    const key = keyByFile.get(file.replace(/^\//, ''));
+    if (key === undefined) throw new Error(`[baseline:bundle] Entry missing from manifest: ${file}`);
+    include(key);
+  }
+  return files;
 }
 
 function routeChunk(name) {
@@ -94,10 +143,11 @@ function main() {
   const cssTotal = chunks.filter((c) => c.file.endsWith('.css')).reduce((s, c) => s + c.raw, 0);
 
   const { entryJs, entryCss } = parseIndexHtml();
-  const entryChunks = chunks.filter((c) =>
-    entryJs.some((p) => c.file.endsWith(p.replace(/^\//, ''))) ||
-    entryCss.some((p) => c.file.endsWith(p.replace(/^\//, ''))),
-  );
+  const entryScripts = new Set(entryJs.map((file) => file.replace(/^\//, '')));
+  const initialFiles = startupFiles(entryJs, entryCss);
+  const entryChunks = chunks.filter((c) => initialFiles.has(c.file))
+    // Keep the actual entry first for the existing per-entry JS budget.
+    .sort((a, b) => Number(entryScripts.has(b.file)) - Number(entryScripts.has(a.file)));
 
   const routeChunks = chunks.filter((c) => c.routeHint && !entryJs.some((p) => c.file.endsWith(p.replace(/^\//, ''))));
 
@@ -138,7 +188,7 @@ function main() {
 
   const mainEntry = entryChunks.find((c) => c.file.endsWith('.js'));
   console.log('=== Bundle baseline ===');
-  console.log(`Entry JS gzip total: ${formatBytes(report.entry.gzipTotal)} (${entryJs.join(', ') || 'n/a'})`);
+  console.log(`Initial JS + CSS gzip total: ${formatBytes(report.entry.gzipTotal)} (${entryJs.join(', ') || 'n/a'})`);
   if (mainEntry) {
     console.log(`Main entry chunk: ${mainEntry.file} — raw ${formatBytes(mainEntry.raw)}, gzip ${formatBytes(mainEntry.gzip)}, brotli ${formatBytes(mainEntry.brotli)}`);
   }

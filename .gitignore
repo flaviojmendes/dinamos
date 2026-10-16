@@ -46,5 +46,4 @@ __pycache__/
 *.sln
 *.sw?
 .vercel
-package-lock.json
 yarn.lock

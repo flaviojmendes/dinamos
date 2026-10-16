@@ -3,7 +3,7 @@ import { test as base, expect } from '@playwright/test';
 const test = base.extend<{ pageErrors: string[] }>({
   pageErrors: [async ({ page }, use) => {
     const errors: string[] = [];
-    page.on('pageerror', error => errors.push(error.message));
+    page.on('pageerror', error => errors.push(error.stack ?? error.message));
     await use(errors);
     expect(errors, 'The production app must start without JavaScript errors').toEqual([]);
   }, { auto: true }],

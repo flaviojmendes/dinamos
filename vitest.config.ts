@@ -10,6 +10,7 @@ export default defineConfig({
       'src/**/*.test.tsx',
       'server/**/*.test.ts',
       'server/**/*.test.tsx',
+      'scripts/**/*.test.ts',
     ],
     setupFiles: ['./vitest.setup.ts'],
     coverage: {

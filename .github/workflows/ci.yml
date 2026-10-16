@@ -29,7 +29,7 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
         env:
           # Survive transient registry hiccups (e.g. ECONNRESET) by retrying.
           NPM_CONFIG_FETCH_RETRIES: "5"
@@ -70,6 +70,15 @@ jobs:
         run: npm run test:e2e
         env:
           CI: true
+
+      - name: Upload E2E diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results
+          path: test-results/
+          if-no-files-found: ignore
+          retention-days: 7
 
       - name: Upload coverage to Codecov
         if: always()

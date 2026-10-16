@@ -5,27 +5,20 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   build: {
+    manifest: true,
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (!id.includes('node_modules')) return undefined
-          if (id.includes('firebase')) return 'vendor-firebase'
-          if (id.includes('framer-motion')) return 'vendor-motion'
-          if (id.includes('@excalidraw')) return 'vendor-excalidraw'
-          if (id.includes('mermaid') || id.includes('cytoscape') || id.includes('elkjs')) {
-            return 'vendor-diagrams'
+          // Keep React and its shared helpers together. Splitting each tool's
+          // dependencies manually can pull the runtime into a lazy tool chunk
+          // and make initialization depend on chunk allocation order.
+          if (
+            /\/node_modules\/(react|react-dom|scheduler)\//.test(id) ||
+            id.includes('\0commonjsHelpers')
+          ) {
+            return 'vendor-react'
           }
-          if (id.includes('@uiw/react-md-editor') || id.includes('@uiw/react-markdown-preview')) {
-            return 'vendor-mdeditor'
-          }
-          if (id.includes('react-syntax-highlighter') || id.includes('refractor')) {
-            return 'vendor-highlight'
-          }
-          if (id.includes('@mdx-js')) return 'vendor-mdx'
-          if (id.includes('reactflow') || id.includes('@reactflow')) return 'vendor-reactflow'
-          if (id.includes('recharts')) return 'vendor-charts'
-          if (id.includes('i18next') || id.includes('react-i18next')) return 'vendor-i18n'
-          if (id.includes('lucide-react')) return 'vendor-icons'
+          // Let Rollup split the remaining dependencies around route imports.
         },
       },
     },
