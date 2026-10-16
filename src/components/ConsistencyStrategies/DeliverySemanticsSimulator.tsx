@@ -1,3 +1,4 @@
+import { SimulationActivity, FlowLink } from '../simulation';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -92,7 +93,8 @@ export default function DeliverySemanticsSimulator() {
   }, [running, mode, dlq, effectiveDedup]);
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
+      <SimulationActivity active={running} />
       <Panel
         title={t(`${base}.title`)}
         accent="cyan"
@@ -132,9 +134,11 @@ export default function DeliverySemanticsSimulator() {
           </div>
         </div>
 
+        <FlowLink active={running} tone={counts.lost > 0 ? 'amber' : 'cyan'} className="mb-5 w-full" />
+
         {/* Recent log */}
         <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t(`${base}.labels.recent`)}</div>
-        <div className="min-h-[120px] space-y-2">
+        <div className="sim-stage min-h-[120px] space-y-2">
           <AnimatePresence mode="popLayout">
             {log.map(item => (
               <motion.div

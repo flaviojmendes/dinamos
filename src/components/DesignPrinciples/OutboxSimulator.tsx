@@ -1,3 +1,4 @@
+import { SimulationActivity, FlowLink, useSimulationMotion } from '../simulation';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -17,6 +18,7 @@ type Narr = { tone: 'idle' | 'active' | 'success'; key: string; text: string };
 
 export default function OutboxSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const base = 'simulators.outbox';
 
   const [mode, setMode] = useState<Mode>('dual-write');
@@ -101,7 +103,8 @@ export default function OutboxSimulator() {
   const consistent = mode === 'outbox' || lost === 0;
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
+      <SimulationActivity active={running} />
       <Panel
         title={t(`${base}.title`)}
         accent="cyan"
@@ -141,12 +144,14 @@ export default function OutboxSimulator() {
         </div>
 
         {/* Pipeline stage diagram */}
-        <div className="grid items-stretch gap-3 md:grid-cols-[1fr_auto_1.4fr_auto_1fr]">
+        <div className="sim-stage grid items-stretch gap-3 md:grid-cols-[1fr_auto_1.4fr_auto_1fr]">
           {/* Service */}
           <Stage label={t(`${base}.service`)}>
             <motion.div
-              animate={{ scale: running ? [1, 1.06, 1] : 1 }}
-              transition={{ repeat: Infinity, duration: 1.2 }}
+              key={orders}
+              initial={{ opacity: 0.5, y: reducedMotion ? 0 : 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={transition}
               className="font-mono text-3xl tabular-nums text-slate-700 dark:text-tactical-text"
             >
               #{orders}
@@ -154,7 +159,7 @@ export default function OutboxSimulator() {
             <span className="mt-1 font-sans text-[11px] text-slate-400 dark:text-tactical-label">{t(`${base}.orders_made`)}</span>
           </Stage>
 
-          <Arrow />
+          <Arrow active={running} />
 
           {/* DB (+ atomic outbox in outbox mode) */}
           <div
@@ -203,7 +208,7 @@ export default function OutboxSimulator() {
             )}
           </div>
 
-          <Arrow label={mode === 'outbox' ? t(`${base}.relay`) : undefined} />
+          <Arrow active={running && (mode === 'dual-write' || pendingOutbox > 0)} label={mode === 'outbox' ? t(`${base}.relay`) : undefined} />
 
           {/* Broker + lost bin */}
           <Stage label={t(`${base}.broker`)} tone="green">
@@ -250,23 +255,17 @@ export default function OutboxSimulator() {
 
 function Stage({ label, tone, children }: { label: string; tone?: 'green'; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col items-center rounded-lg border border-slate-200 p-3 text-center dark:border-tactical-border">
+    <div className="sim-node flex flex-col items-center rounded-lg border border-slate-200 p-3 text-center dark:border-tactical-border">
       <div className={`label-mono ${tone === 'green' ? 'text-signal-green' : ''}`}>{label}</div>
       <div className="mt-2 flex flex-1 flex-col items-center justify-center">{children}</div>
     </div>
   );
 }
 
-function Arrow({ label }: { label?: string }) {
+function Arrow({ label, active }: { label?: string; active: boolean }) {
   return (
     <div className="flex flex-col items-center justify-center px-1">
-      <motion.span
-        className="font-mono text-xl text-signal-cyan"
-        animate={{ x: [0, 4, 0] }}
-        transition={{ repeat: Infinity, duration: 1.1, ease: 'easeInOut' }}
-      >
-        &#8594;
-      </motion.span>
+      <FlowLink active={active} className="w-10" />
       {label && <span className="mt-1 font-mono text-[9px] uppercase tracking-wide text-slate-400 dark:text-tactical-label">{label}</span>}
     </div>
   );

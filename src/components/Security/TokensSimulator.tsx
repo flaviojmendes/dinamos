@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Panel, StatusBadge, TacticalButton } from '../tactical';
+import { motion } from 'framer-motion';
+import { SimulationActivity, useSimulationMotion } from '../simulation';
 
 interface User {
   id: string;
@@ -21,6 +23,10 @@ const inputClass =
 export default function TokensSimulator() {
   const { t } = useTranslation();
   const base = 'jwt_simulator';
+  const { reducedMotion, transition } = useSimulationMotion();
+  const [updating, setUpdating] = useState(false);
+  const updateTimer = useRef<ReturnType<typeof setTimeout>>();
+  useEffect(() => () => clearTimeout(updateTimer.current), []);
 
   const [user, setUser] = useState<User>({
     id: '123456',
@@ -61,13 +67,18 @@ export default function TokensSimulator() {
     };
 
     const signature = 'simulated_signature_' + Math.random().toString(36).substring(7);
-    const encodedHeader = btoa(JSON.stringify(header));
-    const encodedPayload = btoa(JSON.stringify(payload));
+    const encode = (value: unknown) => btoa(String.fromCharCode(...new TextEncoder().encode(JSON.stringify(value))))
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    const encodedHeader = encode(header);
+    const encodedPayload = encode(payload);
 
     const newToken = `${encodedHeader}.${encodedPayload}.${signature}`;
     setToken(newToken);
     setDecodedToken({ header, payload, signature });
     setVerificationResult(null);
+    setUpdating(true);
+    clearTimeout(updateTimer.current);
+    updateTimer.current = setTimeout(() => setUpdating(false), 650);
   };
 
   useEffect(() => {
@@ -113,7 +124,7 @@ export default function TokensSimulator() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
       <div className="max-w-3xl">
         <h2 className="font-sans text-lg font-semibold text-slate-900 dark:text-tactical-text mb-2">
           {t(`${base}.title`)}
@@ -123,7 +134,7 @@ export default function TokensSimulator() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-w-0">
         <Panel title={t(`${base}.token_configuration_title`)} accent="cyan">
           <div className="space-y-6">
             <div className="space-y-4">
@@ -193,7 +204,8 @@ export default function TokensSimulator() {
                   <input
                     type="number"
                     value={expirationTime}
-                    onChange={e => setExpirationTime(parseInt(e.target.value))}
+                    min={0}
+                    onChange={e => setExpirationTime(Math.max(0, Number(e.target.value) || 0))}
                     className={inputClass}
                   />
                 </div>
@@ -260,11 +272,16 @@ export default function TokensSimulator() {
         </Panel>
 
         <div className="space-y-6">
-          <Panel title={t(`${base}.generated_token_title`)} accent="green">
+          <Panel title={t(`${base}.generated_token_title`)} accent="green" action={<SimulationActivity active={updating} />} >
             {token ? (
               <div className="space-y-4">
-                <div className="bg-slate-50 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border p-4">
-                  <p className="text-slate-600 dark:text-tactical-dim break-all font-mono text-sm">{token}</p>
+                <div className="sim-stage rounded-xl bg-slate-50 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border p-4">
+                  <div className="mb-4 flex flex-wrap gap-3 font-sans text-xs">
+                    {['header', 'payload', 'signature'].map((part, index) => <span key={part} className={['text-signal-cyan', 'text-signal-green', 'text-signal-amber'][index]}>{t(`${base}.${part}_title`)}</span>)}
+                  </div>
+                  <motion.p key={token} initial={reducedMotion ? false : { opacity: 0.4 }} animate={{ opacity: 1 }} transition={transition} className="font-mono text-xs leading-relaxed break-all">
+                    {token.split('.').map((part, index) => <React.Fragment key={index}><span className={['text-signal-cyan', 'text-signal-green', 'text-signal-amber'][index]}>{part}</span>{index < 2 && <span className="text-slate-500">.</span>}</React.Fragment>)}
+                  </motion.p>
                 </div>
                 <TacticalButton variant="primary" className="w-full" onClick={verifyToken}>
                   {t(`${base}.verify_token_button`)}
@@ -283,7 +300,7 @@ export default function TokensSimulator() {
                 <div>
                   <div className="font-sans text-xs font-medium text-signal-cyan mb-2">{t(`${base}.header_title`)}</div>
                   <div className="bg-slate-50 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border p-4">
-                    <pre className="text-slate-600 dark:text-tactical-dim text-sm font-mono">
+                    <pre className="text-slate-600 dark:text-tactical-dim text-xs font-mono whitespace-pre-wrap break-words leading-relaxed">
                       {JSON.stringify(decodedToken.header, null, 2)}
                     </pre>
                   </div>
@@ -291,7 +308,7 @@ export default function TokensSimulator() {
                 <div>
                   <div className="font-sans text-xs font-medium text-signal-green mb-2">{t(`${base}.payload_title`)}</div>
                   <div className="bg-slate-50 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border p-4">
-                    <pre className="text-slate-600 dark:text-tactical-dim text-sm font-mono">
+                    <pre className="text-slate-600 dark:text-tactical-dim text-xs font-mono whitespace-pre-wrap break-words leading-relaxed">
                       {JSON.stringify(decodedToken.payload, null, 2)}
                     </pre>
                   </div>
@@ -316,15 +333,15 @@ export default function TokensSimulator() {
                 <StatusBadge variant={verificationResult.isValid ? 'active' : 'classified'} />
               }
             >
-              <p className={`font-sans text-sm ${verificationResult.isValid ? 'text-signal-green' : 'text-signal-red'}`}>
+              <motion.p key={verificationResult.message} initial={reducedMotion ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={transition} role="status" className={`font-sans text-sm ${verificationResult.isValid ? 'text-signal-green' : 'text-signal-red'}`}>
                 {verificationResult.message}
-              </p>
+              </motion.p>
             </Panel>
           )}
         </div>
       </div>
 
-      <div className="tactical-panel rounded-lg border-l-2 border-l-signal-cyan p-5">
+      <div className="tactical-panel rounded-lg border border-slate-200 dark:border-tactical-border p-5">
         <h3 className="font-sans text-sm font-semibold text-signal-cyan mb-3">{t(`${base}.how_to_use_title`)}</h3>
         <ul className="space-y-1.5 font-sans text-sm text-slate-600 dark:text-tactical-dim list-decimal list-inside">
           {instructions.map((instruction, index) => (

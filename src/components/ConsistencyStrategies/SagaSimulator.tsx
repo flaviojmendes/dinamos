@@ -1,3 +1,4 @@
+import { SimulationActivity, useSimulationMotion } from '../simulation';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
@@ -17,6 +18,7 @@ const TICK_MS = 850;
 
 export default function SagaSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const base = 'simulators.saga';
 
   const [mode, setMode] = useState<Mode>('orchestrated');
@@ -100,7 +102,8 @@ export default function SagaSimulator() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
+      <SimulationActivity active={running} />
       <Panel
         title={t(`${base}.title`)}
         accent="cyan"
@@ -144,8 +147,8 @@ export default function SagaSimulator() {
           <div className="mb-4 flex justify-center">
             <motion.div
               className="rounded-lg border border-slate-200 dark:border-tactical-border px-4 py-2 font-sans text-xs text-slate-700 dark:text-tactical-text"
-              animate={running ? { boxShadow: ['0 0 0px rgba(34,211,238,0)', '0 0 14px rgba(34,211,238,0.5)', '0 0 0px rgba(34,211,238,0)'] } : {}}
-              transition={{ duration: TICK_MS / 1000, repeat: Infinity }}
+              animate={{ opacity: running ? 1 : 0.65 }}
+              transition={transition}
             >
               {t(`${base}.roles.coordinator`)}
             </motion.div>
@@ -153,14 +156,14 @@ export default function SagaSimulator() {
         )}
 
         {/* Steps */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="sim-stage grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {STEP_KEYS.map((k, i) => {
             const s = statuses[i];
             return (
               <motion.div
                 key={k}
-                className={`relative rounded-lg border p-3 ${statusColor[s]}`}
-                animate={active === i ? { scale: [1, 1.06, 1] } : { scale: 1 }}
+                className={`sim-node relative rounded-lg border p-3 ${statusColor[s]}`}
+                animate={active === i && !reducedMotion ? { y: [0, -4, 0] } : { y: 0 }}
                 transition={{ duration: 0.5 }}
               >
                 {mode === 'choreographed' && i > 0 && (

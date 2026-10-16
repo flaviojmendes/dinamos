@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import { Panel, StatusBadge, TacticalButton, SegmentBar } from '../tactical';
+import { SimulationActivity, FlowLink, useSimulationMotion } from '../simulation';
 import { AnimatedMetric } from './motion';
 
 interface InferReq {
@@ -23,6 +24,7 @@ const MAX_QUEUE = 24;
 
 export default function InferenceBatchingSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition, duration } = useSimulationMotion();
   const [isRunning, setIsRunning] = useState(false);
   const [arrivalRate, setArrivalRate] = useState(8);
   const [batchCapacity, setBatchCapacity] = useState(6);
@@ -120,7 +122,8 @@ export default function InferenceBatchingSimulator() {
   const base = 'simulators.inference_batching';
 
   return (
-    <div className="space-y-6">
+    <MotionConfig reducedMotion="user" transition={transition}>
+    <div className="sim-workspace space-y-6">
       <Panel
         title={t(`${base}.title`)}
         accent="cyan"
@@ -137,7 +140,7 @@ export default function InferenceBatchingSimulator() {
       >
         <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
 
-        <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="sim-controls mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="space-y-2">
             <label className="block font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.arrival_rate`)}</label>
             <div className="flex items-center gap-2">
@@ -161,7 +164,9 @@ export default function InferenceBatchingSimulator() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <SimulationActivity active={isRunning} label={t(`${base}.panels.batch`)} className="mb-4" />
+        <FlowLink active={isRunning && (batch.length > 0 || queue.length > 0)} count={Math.min(3, batch.length)} tone="cyan" className="mb-5" />
+        <div className="sim-stage grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Running batch */}
           <div className="rounded-lg border border-slate-200 dark:border-tactical-border">
             <div className="border-b border-slate-200 dark:border-tactical-border px-3 py-2 flex items-center justify-between">
@@ -191,18 +196,18 @@ export default function InferenceBatchingSimulator() {
                     <motion.div
                       key={r.id}
                       layout
-                      initial={{ opacity: 0, x: 40, scale: 0.9 }}
+                      initial={reducedMotion ? false : { opacity: 0, x: 16 }}
                       animate={{ opacity: 1, x: 0, scale: 1 }}
                       exit={{ opacity: 0, scale: 1.08, backgroundColor: 'rgba(34,197,94,0.25)' }}
-                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                      className="rounded-md border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
+                      transition={transition}
+                      className={`sim-node rounded-md border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-3 ${isRunning ? 'sim-node-active' : ''}`}
                     >
                       <div className="flex items-center justify-between mb-1.5">
                         <span className="font-sans text-xs text-slate-700 dark:text-tactical-text flex items-center gap-1.5">
                           <motion.span
                             className={`inline-block h-1.5 w-1.5 rounded-full ${almost ? 'bg-signal-green' : 'bg-signal-cyan'}`}
-                            animate={{ opacity: [1, 0.3, 1] }}
-                            transition={{ duration: 0.7, repeat: Infinity }}
+                            animate={{ opacity: isRunning && !reducedMotion ? [1, 0.5, 1] : 1 }}
+                            transition={{ duration: 0.7, repeat: reducedMotion || !isRunning ? 0 : Infinity }}
                           />
                           {t(`${base}.labels.request`)} {r.id}
                         </span>
@@ -212,7 +217,7 @@ export default function InferenceBatchingSimulator() {
                         <motion.div
                           className={`absolute inset-y-0 left-0 ${almost ? 'bg-signal-green' : 'bg-signal-cyan'}`}
                           animate={{ width: `${pct}%` }}
-                          transition={{ duration: TICK_MS / 1000, ease: 'linear' }}
+                          transition={{ duration: duration(TICK_MS / 1000), ease: 'linear' }}
                         />
                       </div>
                     </motion.div>
@@ -243,7 +248,7 @@ export default function InferenceBatchingSimulator() {
                         initial={{ opacity: 0, scale: 0.4, y: -8 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.4, x: -12 }}
-                        transition={{ type: 'spring', stiffness: 500, damping: 32 }}
+                        transition={transition}
                         className="rounded-md border border-signal-amber/40 text-signal-amber px-2 py-1 font-mono text-[11px] tabular-nums"
                       >
                         {r.id}
@@ -261,7 +266,7 @@ export default function InferenceBatchingSimulator() {
       </Panel>
 
       <Panel title={t(`${base}.panels.metrics`)} accent="green">
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="sim-metrics grid grid-cols-2 lg:grid-cols-3 gap-3">
           <AnimatedMetric value={throughput} label={t(`${base}.metrics.throughput`)} color="cyan" pulse={isRunning} />
           <AnimatedMetric value={utilization} suffix="%" label={t(`${base}.metrics.utilization`)} color={utilization > 90 ? 'green' : 'amber'} />
           <AnimatedMetric value={queue.length} label={t(`${base}.metrics.queue_depth`)} color={queue.length > 10 ? 'red' : 'default'} />
@@ -278,5 +283,6 @@ export default function InferenceBatchingSimulator() {
         </div>
       </Panel>
     </div>
+    </MotionConfig>
   );
 }

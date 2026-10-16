@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { animate, motion } from 'framer-motion';
+import { useEffect, useRef, type ReactNode } from 'react';
+import { animate, useReducedMotion } from 'framer-motion';
 
 export type MetricColor = 'default' | 'green' | 'amber' | 'red' | 'cyan';
 
@@ -9,14 +9,6 @@ export const metricColorClass: Record<MetricColor, string> = {
   amber: 'text-signal-amber',
   red: 'text-signal-red',
   cyan: 'text-signal-cyan',
-};
-
-const accentBar: Record<MetricColor, string> = {
-  default: 'bg-slate-300 dark:bg-tactical-border',
-  green: 'bg-signal-green',
-  amber: 'bg-signal-amber',
-  red: 'bg-signal-red',
-  cyan: 'bg-signal-cyan',
 };
 
 /** Smoothly tweens to `value` whenever it changes (count-up effect). */
@@ -29,24 +21,34 @@ export function AnimatedNumber({
   decimals?: number;
   format?: (n: number) => string;
 }) {
-  const [display, setDisplay] = useState(value);
-  const prev = useRef(value);
+  const display = useRef(value);
+  const element = useRef<HTMLSpanElement>(null);
+  const reducedMotion = useReducedMotion();
+  const formatter = useRef(format);
+  formatter.current = format;
+  const render = (n: number) => formatter.current ? formatter.current(n) : n.toFixed(decimals);
 
   useEffect(() => {
-    const controls = animate(prev.current, value, {
-      duration: 0.45,
-      ease: 'easeOut',
-      onUpdate: (v) => setDisplay(v),
+    if (reducedMotion || !Number.isFinite(value) || value === 0) {
+      display.current = value;
+      if (element.current) element.current.textContent = render(value);
+      return;
+    }
+    const controls = animate(display.current, value, {
+      duration: 0.24,
+      ease: [0.22, 1, 0.36, 1],
+      onUpdate: (v) => {
+        display.current = v;
+        if (element.current) element.current.textContent = render(v);
+      },
     });
-    prev.current = value;
     return () => controls.stop();
-  }, [value]);
+  }, [value, decimals, reducedMotion, format]);
 
-  if (format) return <>{format(display)}</>;
-  return <>{display.toFixed(decimals)}</>;
+  return <span ref={element}>{render(display.current)}</span>;
 }
 
-/** Metric card with a count-up number, a colored pulse accent, and a pop on change. */
+/** Stable telemetry, interpolated from the currently displayed number. */
 export function AnimatedMetric({
   value,
   label,
@@ -67,24 +69,13 @@ export function AnimatedMetric({
   pulse?: boolean;
 }) {
   return (
-    <div className="relative overflow-hidden border border-slate-200 dark:border-tactical-border px-3 py-3">
-      <motion.div
-        className={`absolute left-0 top-0 h-full w-[3px] ${accentBar[color]}`}
-        animate={pulse ? { opacity: [0.35, 1, 0.35] } : { opacity: 0.7 }}
-        transition={pulse ? { duration: 1.6, repeat: Infinity, ease: 'easeInOut' } : undefined}
-      />
-      <motion.div
-        key={Math.round(value * 10 ** decimals)}
-        initial={{ scale: 1 }}
-        animate={{ scale: [1.12, 1] }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
-        className={`font-mono text-2xl font-bold tabular-nums leading-none ${metricColorClass[color]}`}
-      >
-        {prefix}
+    <div className="sim-metric" data-tone={color} data-active={pulse}>
+      <div className={`sim-metric-value ${metricColorClass[color]}`}>
+        {prefix && <small>{prefix}</small>}
         <AnimatedNumber value={value} decimals={decimals} format={format} />
-        {suffix}
-      </motion.div>
-      <div className="label-mono mt-2">{label}</div>
+        {suffix && <small>{suffix}</small>}
+      </div>
+      <div className="sim-metric-label">{label}</div>
     </div>
   );
 }
@@ -104,16 +95,11 @@ export function GridBackdrop() {
   );
 }
 
-/** Wraps content with a subtle entrance used by visualization panels. */
+/** A stable canvas; its children animate the actual simulation events. */
 export function Stage({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, ease: 'easeOut' }}
-      className={`relative overflow-hidden ${className}`}
-    >
+    <div className={`relative overflow-hidden ${className}`}>
       {children}
-    </motion.div>
+    </div>
   );
 }

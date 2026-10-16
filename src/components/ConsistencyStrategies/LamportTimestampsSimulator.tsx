@@ -1,4 +1,7 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { SimulationActivity, useSimulationMotion } from '../simulation';
+import { AnimatedNumber } from '../AISystems/motion';
 import { useTranslation } from 'react-i18next';
 import { Panel, TacticalButton } from '../tactical';
 
@@ -20,11 +23,23 @@ interface Event {
 
 export default function LamportTimestampsSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
+  const [active, setActive] = useState(false);
   const [processes, setProcesses] = useState<Process[]>([
     { id: 'P1', name: t('design_principles.consistency_strategies.lamport_timestamps_simulator.process_label', { n: 1 }), clock: 0, events: [] },
     { id: 'P2', name: t('design_principles.consistency_strategies.lamport_timestamps_simulator.process_label', { n: 2 }), clock: 0, events: [] },
     { id: 'P3', name: t('design_principles.consistency_strategies.lamport_timestamps_simulator.process_label', { n: 3 }), clock: 0, events: [] },
   ]);
+
+  useEffect(() => {
+    if (!processes.some(process => process.events.length > 0)) {
+      setActive(false);
+      return;
+    }
+    setActive(true);
+    const timer = setTimeout(() => setActive(false), 650);
+    return () => clearTimeout(timer);
+  }, [processes]);
 
   const addLocalEvent = useCallback((processId: string) => {
     setProcesses(currentProcesses => {
@@ -123,7 +138,8 @@ export default function LamportTimestampsSimulator() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
+      <SimulationActivity active={active} />
       <div className="max-w-3xl">
         <h2 className="font-sans text-lg font-semibold tracking-tight text-slate-900 dark:text-tactical-text mb-2">
           {t('design_principles.consistency_strategies.lamport_timestamps_simulator.title')}
@@ -133,7 +149,7 @@ export default function LamportTimestampsSimulator() {
         </p>
       </div>
 
-      <div className="tactical-panel border-l-2 border-l-signal-cyan p-5">
+      <div className="tactical-panel p-5">
         <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim">
           {t('design_principles.consistency_strategies.lamport_timestamps_simulator.info')}
         </p>
@@ -145,12 +161,12 @@ export default function LamportTimestampsSimulator() {
         </TacticalButton>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="sim-stage grid grid-cols-1 lg:grid-cols-3 gap-5">
         {processes.map((process) => (
           <div key={process.id} className="flex flex-col">
             <Panel title={process.name} accent="cyan" action={
               <span className="font-mono text-sm text-slate-700 dark:text-tactical-text tabular-nums">
-                {t('design_principles.consistency_strategies.lamport_timestamps_simulator.timeline.clock_prefix')} {process.clock}
+                {t('design_principles.consistency_strategies.lamport_timestamps_simulator.timeline.clock_prefix')} <AnimatedNumber value={process.clock} />
               </span>
             }>
               <div className="flex flex-wrap gap-2 mb-4">
@@ -171,15 +187,16 @@ export default function LamportTimestampsSimulator() {
                   ))}
               </div>
 
-              <div className="flex-1 relative">
-                <div className="absolute inset-0 w-px bg-slate-200 dark:bg-tactical-border left-1/2 transform -translate-x-1/2" />
+              <div className="relative max-h-[28rem] min-h-32 overflow-y-auto">
+                <div className="absolute bottom-0 left-1.5 top-0 w-px bg-slate-200 dark:bg-tactical-border" />
                 <div className="space-y-3 md:space-y-4">
+                  <AnimatePresence initial={false}>
                   {process.events.map((event) => (
-                    <div key={event.id} className="relative pl-6 md:pl-8 pr-4 md:pr-8">
-                      <div className="absolute left-1/2 transform -translate-x-1/2">
-                        <div className={`w-3 h-3 md:w-4 md:h-4 ${getEventDot(event.type)}`} />
+                    <motion.div key={event.id} layout="position" initial={{ opacity: 0, x: reducedMotion ? 0 : -12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} transition={transition} className="relative pl-6">
+                      <div className="absolute left-0 top-4">
+                        <div className={`h-3 w-3 rounded-full ring-4 ring-white dark:ring-tactical-panel ${getEventDot(event.type)}`} />
                       </div>
-                      <div className={`p-2 md:p-3 rounded-lg border ml-4 ${getEventBorder(event.type)}`}>
+                      <div className={`p-3 rounded-lg border ${getEventBorder(event.type)}`}>
                         <div className="flex justify-between items-center text-xs md:text-sm">
                           <span className="font-sans text-slate-600 dark:text-tactical-dim">
                             {event.type === 'local'
@@ -191,8 +208,9 @@ export default function LamportTimestampsSimulator() {
                           <span className="font-mono tabular-nums text-slate-500 dark:text-tactical-label">{t('design_principles.consistency_strategies.lamport_timestamps_simulator.timeline.clock_prefix')}{event.timestamp}</span>
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
+                  </AnimatePresence>
                 </div>
               </div>
             </Panel>

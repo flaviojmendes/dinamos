@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Panel, StatusBadge, TacticalButton } from '../tactical';
+import { motion } from 'framer-motion';
+import { SimulationActivity, useSimulationMotion } from '../simulation';
 
 interface Span {
   id: string;
@@ -42,77 +44,56 @@ const operations = [
 ];
 
 const TimelineView = ({ spans }: { spans: Span[] }) => {
-  const totalDuration = Math.max(...spans.map(s => s.startTime + s.duration)) - Math.min(...spans.map(s => s.startTime));
+  const { reducedMotion, transition } = useSimulationMotion();
+  if (spans.length === 0) return null;
   const startTime = Math.min(...spans.map(s => s.startTime));
+  const totalDuration = Math.max(1, Math.max(...spans.map(s => s.startTime + s.duration)) - startTime);
 
   return (
-    <div className="relative h-32 rounded-lg bg-slate-100 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border overflow-hidden">
-      <div className="absolute inset-0 flex items-center">
-        {[0, 25, 50, 75, 100].map((marker) => (
-          <div key={marker} className="absolute left-[${marker}%] w-px h-full bg-slate-300 dark:bg-tactical-line">
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2 font-mono text-[10px] text-slate-500 dark:text-tactical-label">
-              {((totalDuration * marker) / 100).toFixed(0)}ms
-            </div>
-          </div>
-        ))}
+    <div className="sim-stage overflow-x-auto rounded-xl border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4">
+      <div className="min-w-[380px]">
+        <div className="ml-28 relative h-7 border-b border-slate-200 dark:border-tactical-border">
+          {[0, 25, 50, 75, 100].map(marker => (
+            <span key={marker} style={{ left: `${marker}%` }} className={`absolute top-0 font-mono text-[10px] text-slate-500 dark:text-tactical-label ${marker === 100 ? '-translate-x-full' : ''}`}>
+              {Math.round(totalDuration * marker / 100)}ms
+            </span>
+          ))}
+        </div>
+        {spans.map(span => {
+          const service = services.find(s => s.id === span.service);
+          const left = ((span.startTime - startTime) / totalDuration) * 100;
+          const width = Math.max(0.7, span.duration / totalDuration * 100);
+          return (
+            <motion.div key={span.id} initial={reducedMotion ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={transition} className="flex items-center min-h-11 gap-3 border-b border-slate-200/60 dark:border-tactical-border/60 last:border-0">
+              <span className="w-[100px] shrink-0 truncate font-sans text-xs text-slate-600 dark:text-tactical-dim" title={span.service}>{span.service}</span>
+              <div className="relative h-7 flex-1 border-l border-slate-200 dark:border-tactical-border">
+                <motion.div initial={false} animate={{ left: `${left}%`, width: `${width}%`, scaleX: 1 }} transition={transition} className={`absolute inset-y-1 origin-left rounded ${span.status === 'error' ? 'bg-signal-red' : service?.color}`} title={`${span.operation}: ${span.duration.toFixed(0)}ms`} />
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
-
-      {spans.map((span) => {
-        const left = ((span.startTime - startTime) / totalDuration) * 100;
-        const width = (span.duration / totalDuration) * 100;
-        const service = services.find(s => s.id === span.service);
-
-        return (
-          <div
-            key={span.id}
-            className="absolute h-8 transition-all duration-300 hover:scale-105"
-            style={{ left: `${left}%`, width: `${width}%`, top: `${spans.findIndex(s => s.id === span.id) * 32}px` }}
-          >
-            <div className={`h-full ${service?.color} flex items-center px-2 font-sans text-xs text-white whitespace-nowrap overflow-hidden`}>
-              <span className="truncate">{span.service}</span>
-              <span className="ml-auto tabular-nums">{span.duration.toFixed(0)}ms</span>
-            </div>
-          </div>
-        );
-      })}
     </div>
   );
 };
 
 const SpanView = ({ span, hasChildren, isLast }: { span: Span; hasChildren: boolean; isLast: boolean }) => {
-  const service = services.find(s => s.id === span.service);
+  const { reducedMotion, transition } = useSimulationMotion();
   const { t } = useTranslation();
   const base = 'monitoring_maintenance.tracing_simulator';
-
   return (
-    <div className="relative">
-      {hasChildren && (
-        <div className="absolute left-4 top-8 bottom-0 w-0.5 bg-slate-300 dark:bg-tactical-line" />
-      )}
-      
-      {span.parentId && (
-        <div className="absolute left-4 top-4 w-4 h-0.5 bg-slate-300 dark:bg-tactical-line" />
-      )}
-
-      <div className={`absolute left-0 top-2 w-2 h-2 ${
-        span.status === 'success' ? 'bg-signal-green' : 'bg-signal-red'
-      }`} />
-
-      <div className={`ml-8 flex items-center gap-2 border border-slate-200 dark:border-tactical-border ${service?.color} text-white px-3 py-2`}>
-        <div className="flex flex-col">
-          <span className="font-sans text-sm font-semibold">{span.service}</span>
-          <span className="font-sans text-xs opacity-75">{span.operation}</span>
+    <motion.div initial={reducedMotion ? false : { opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={transition} className="relative pl-7">
+      {hasChildren && <div className="absolute left-[7px] top-5 -bottom-4 w-px bg-slate-300 dark:bg-tactical-line" />}
+      <span className={`absolute left-0 top-4 h-4 w-4 rounded-full border-4 border-white dark:border-tactical-panel ${span.status === 'success' ? 'bg-signal-green' : 'bg-signal-red'}`} />
+      <div className={`sim-node flex flex-wrap items-center gap-3 rounded-lg border border-slate-200 dark:border-tactical-border bg-white dark:bg-tactical-panel px-4 py-3 ${isLast ? 'sim-node-active' : ''}`}>
+        <div className="min-w-0 flex-1">
+          <span className="block font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text">{span.service}</span>
+          <span className="block break-all font-mono text-[11px] text-slate-500 dark:text-tactical-dim mt-1">{span.operation}</span>
         </div>
-        <div className="ml-auto flex items-center gap-2">
-          <span className="font-mono text-xs bg-black/20 px-2 py-0.5 tabular-nums">
-            {span.duration.toFixed(0)}ms
-          </span>
-          {span.status === 'error' && (
-            <StatusBadge variant="classified" label={t(`${base}.error_badge`)} />
-          )}
-        </div>
+        <span className="font-mono text-xs tabular-nums text-slate-600 dark:text-tactical-dim">{span.duration.toFixed(0)}ms</span>
+        <StatusBadge variant={span.status === 'error' ? 'classified' : 'completed'} label={span.status === 'error' ? t(`${base}.error_badge`) : undefined} />
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -185,7 +166,7 @@ export default function TracingSimulator() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="max-w-3xl">
           <h2 className="font-sans text-lg font-semibold text-slate-900 dark:text-tactical-text mb-2">
@@ -204,7 +185,7 @@ export default function TracingSimulator() {
       </div>
 
       <Panel title={t(`${base}.controls_title`)} accent="cyan">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="sim-controls grid grid-cols-1 md:grid-cols-3 gap-3">
           <TacticalButton
             variant="primary"
             className="w-full"
@@ -245,9 +226,9 @@ export default function TracingSimulator() {
         <Panel
           title={t(`${base}.current_request_title`)}
           accent="amber"
-          action={<StatusBadge variant="in-progress" label={`${currentRequest.currentStep}/5`} />}
+          action={<SimulationActivity active={currentRequest.currentStep > 0 && currentRequest.currentStep < 5} label={`${currentRequest.currentStep}/5`} />}
         >
-          <div className="bg-slate-50 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border p-4">
+          <div className="rounded-lg p-1 sm:p-2">
             <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
               <div>
                 <h3 className="font-mono text-sm font-bold text-signal-cyan">Trace ID: {currentRequest.id}</h3>

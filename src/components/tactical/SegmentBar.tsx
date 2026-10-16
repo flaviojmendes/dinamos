@@ -30,8 +30,8 @@ export function SegmentBar({ value, max = 100, color = 'green', caption, classNa
     <div className={cn('flex items-center gap-3', className)}>
       <div className="relative h-2 flex-1 bg-slate-200 dark:bg-tactical-raised overflow-hidden rounded-full">
         <div
-          className={cn('seg-bar absolute inset-y-0 left-0 rounded-full', colorClass[color])}
-          style={{ width: `${pct}%` }}
+          className={cn('seg-bar sim-level-fill absolute inset-0 rounded-full', colorClass[color])}
+          style={{ transform: `scaleX(${pct / 100})` }}
           role="progressbar"
           aria-valuenow={value}
           aria-valuemin={0}

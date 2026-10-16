@@ -1,3 +1,4 @@
+import { SimulationActivity, FlowLink } from '../simulation';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -316,7 +317,8 @@ export default function ReplicacaoSimulator() {
   const inputClass = 'bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-3 py-2 font-mono text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-signal-green';
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
+      <SimulationActivity active={isRunning} />
       <div className="max-w-3xl">
         <h2 className="text-base font-semibold tracking-tight text-slate-900 dark:text-tactical-text mb-2">
           {t('simulators_extra.replication.title')}
@@ -380,9 +382,9 @@ export default function ReplicacaoSimulator() {
         </div>
       </Panel>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="sim-stage grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {regions.slice(0, config.replicaCount + 1).map((region) => (
-          <motion.div key={region.id} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}>
+          <motion.div key={region.id} layout="position" className="min-w-0" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}>
             <Panel title={region.name} accent={region.role === 'primary' ? 'green' : 'cyan'}>
               <div className="flex justify-between items-center mb-4">
                 <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim">{region.location}</p>
@@ -392,6 +394,7 @@ export default function ReplicacaoSimulator() {
                 />
               </div>
 
+              <FlowLink active={operations.some(operation => operation.replicationStatus[region.id] === 'pending') && region.status !== 'failed'} tone="cyan" className="mb-4 w-full" />
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between text-xs mb-1 text-slate-600 dark:text-tactical-dim">

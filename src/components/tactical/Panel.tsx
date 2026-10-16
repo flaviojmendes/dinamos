@@ -16,14 +16,14 @@ export function PanelHeader({ title, action, className }: PanelHeaderProps) {
   return (
     <div
       className={cn(
-        'flex items-center justify-between gap-3 border-b border-slate-200 dark:border-tactical-border px-5 py-4',
+        'flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-tactical-border px-5 py-4',
         className,
       )}
     >
       <h2 className="min-w-0 font-display text-base font-semibold tracking-tight text-slate-900 dark:text-tactical-text">
         {title}
       </h2>
-      {action && <div className="shrink-0 text-xs">{action}</div>}
+      {action && <div className="min-w-0 text-xs">{action}</div>}
     </div>
   );
 }

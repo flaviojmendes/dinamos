@@ -20,5 +20,6 @@
     "next": "Próxima",
     "more_in_module": "Mais em {{module}}",
     "explore": "Explorar"
-  }
+  },
+  "simulator_interactive": "Simulador interativo"
 }

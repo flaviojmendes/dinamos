@@ -1,6 +1,9 @@
+import { Play, Pause, Network, UserRound, Server as ServerIcon } from 'lucide-react';
+import { AnimatedNumber } from '../AISystems/motion';
+import { SimulationActivity, FlowLink } from '../simulation';
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Panel, StatusBadge, TacticalButton } from '../tactical';
+import { Panel, TacticalButton } from '../tactical';
 
 type LoadBalancingStrategy = 'roundRobin' | 'leastConnections' | 'random';
 
@@ -19,15 +22,8 @@ interface SimulationConfig {
 }
 
 const getLoadColor = (currentLoad: number, capacity: number): string => {
-  const loadPercentage = (currentLoad / capacity) * 100;
-  
-  if (loadPercentage < 50) {
-    // Green to Yellow gradient (0-50%)
-    return `rgb(${Math.floor((loadPercentage * 2) * 255 / 100)}, 255, 0)`;
-  } else {
-    // Yellow to Red gradient (50-100%)
-    return `rgb(255, ${Math.floor((100 - loadPercentage) * 2 * 255 / 100)}, 0)`;
-  }
+  const ratio = currentLoad / capacity;
+  return ratio > 0.8 ? 'var(--sim-red)' : ratio > 0.5 ? 'var(--sim-amber)' : 'var(--sim-green)';
 };
 
 export default function RoundRobin() {
@@ -41,6 +37,7 @@ export default function RoundRobin() {
   });
   const [currentServerIndex, setCurrentServerIndex] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
+  const [requestSequence, setRequestSequence] = useState(0);
   const animationFrameId = useRef<number>();
   const nextServerIndex = useRef(0);
 
@@ -98,8 +95,9 @@ export default function RoundRobin() {
 
   // Simulation logic
   const processNextRequest = () => {
+    setRequestSequence(value => value + 1);
     setServers((currentServers) => {
-      const newServers = [...currentServers];
+      const newServers = currentServers.map(server => ({ ...server }));
       const targetIndex = getNextServerIndex(newServers);
       const targetServer = newServers[targetIndex];
       
@@ -155,12 +153,8 @@ export default function RoundRobin() {
     'w-full h-2 bg-slate-200 dark:bg-tactical-border appearance-none cursor-pointer accent-signal-green';
 
   return (
-    <div className="space-y-6">
-      <div className="max-w-3xl">
-        <span className="inline-block text-xs font-medium text-slate-600 dark:text-tactical-label bg-slate-100 dark:bg-tactical-raised px-2.5 py-1 rounded-full mb-2">
-          {t('simulators.round_robin.title')}
-        </span>
-      </div>
+    <div className="simulation-workspace space-y-6">
+      <div className="sim-controls"><SimulationActivity active={isRunning} /></div>
 
       <Panel
         title={t('simulators.round_robin.config.strategy')}
@@ -168,9 +162,11 @@ export default function RoundRobin() {
         action={
           <TacticalButton
             size="sm"
-            variant={isRunning ? 'danger' : 'secondary'}
+            variant={isRunning ? 'secondary' : 'primary'}
+            aria-pressed={isRunning}
             onClick={() => setIsRunning(!isRunning)}
           >
+            {isRunning ? <Pause size={14} aria-hidden="true" /> : <Play size={14} aria-hidden="true" />}
             {isRunning ? t('simulators.round_robin.buttons.stop') : t('simulators.round_robin.buttons.start')}
           </TacticalButton>
         }
@@ -220,7 +216,7 @@ export default function RoundRobin() {
             <div>
               <div className="flex justify-between font-sans text-sm text-slate-600 dark:text-tactical-dim mb-1">
                 <span>{t('simulators.round_robin.config.server_capacity')}</span>
-                <span className="text-signal-cyan tabular-nums">{t('simulators.round_robin.server_card.requests', { current: config.serverCapacity, capacity: '' }).replace('undefined/', '').replace(' requests', '')}</span>
+                <span className="text-signal-cyan tabular-nums">{config.serverCapacity}</span>
               </div>
               <input
                 type="range"
@@ -272,27 +268,32 @@ export default function RoundRobin() {
       <Panel
         title={t('simulators.round_robin.config.server_count')}
         accent="green"
-        action={isRunning ? <StatusBadge variant="active" label="Running" /> : undefined}
+        action={<span className="font-sans text-sm tabular-nums text-slate-600 dark:text-tactical-dim"><AnimatedNumber value={requestSequence} /> req</span>}
       >
-        <div className="space-y-4">
+        <div className="sim-stage mb-5 flex items-center gap-4">
+          <div className="sim-node flex min-w-0 flex-col items-center gap-2 p-4 text-center text-sm"><UserRound size={22} aria-hidden="true" />{t('simulators.motion.client')}</div>
+          <FlowLink active={isRunning} eventKey={requestSequence} />
+          <div className="sim-node flex min-w-0 flex-col items-center gap-2 p-4 text-center text-sm"><Network size={22} aria-hidden="true" />{t('simulators.motion.gateway')}</div>
+          <FlowLink active={isRunning} eventKey={requestSequence} tone="green" />
+          <span className="font-mono text-sm tabular-nums text-slate-600 dark:text-tactical-dim">S{currentServerIndex + 1}</span>
+        </div>
+        <div className="grid gap-4 xl:grid-cols-2">
           {servers.map((server) => (
             <div
               key={server.id}
-              className={`border p-4 rounded-lg ${
-                currentServerIndex === server.id
+              className={`sim-node p-4 ${
+                currentServerIndex === server.id && isRunning
                   ? 'border-signal-cyan bg-signal-cyan/5'
                   : 'border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised'
               }`}
             >
               <div className="flex flex-col space-y-3">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                  <div className="flex items-center gap-4">
-                    <span className="font-sans text-sm font-medium text-slate-900 dark:text-tactical-text">
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                    <ServerIcon size={19} className="shrink-0 text-slate-500 dark:text-tactical-dim" aria-hidden="true" />
+                    <span className="whitespace-nowrap font-sans text-sm font-medium text-slate-900 dark:text-tactical-text">
                       {t('simulators.round_robin.server_card.server_label', { id: server.id + 1 })}
                     </span>
-                    {currentServerIndex === server.id && isRunning && (
-                      <StatusBadge variant="in-progress" label="Active" />
-                    )}
                     <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
                       <span>{t('simulators.round_robin.server_card.requests', { current: server.currentLoad, capacity: server.capacity })}</span>
                       <span className="text-signal-cyan ml-2">{t('simulators.round_robin.server_card.response_time_ms', { ms: server.responseTime })}</span>
@@ -312,11 +313,12 @@ export default function RoundRobin() {
                   </div>
                 </div>
 
+                <FlowLink active={isRunning && currentServerIndex === server.id} eventKey={requestSequence} count={1} tone={server.currentLoad / server.capacity > 0.8 ? 'red' : 'green'} />
                 <div className="w-full bg-slate-200 dark:bg-tactical-border h-3 rounded-full overflow-hidden">
                   <div
-                    className="h-3 transition-all duration-200"
+                    className="sim-level-fill h-3 w-full"
                     style={{
-                      width: `${(server.currentLoad / server.capacity) * 100}%`,
+                      transform: `scaleX(${server.currentLoad / server.capacity})`,
                       backgroundColor: getLoadColor(server.currentLoad, server.capacity),
                     }}
                   />

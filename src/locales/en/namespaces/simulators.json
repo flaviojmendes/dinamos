@@ -1761,5 +1761,20 @@
         "text": "In production, you would monitor latency, error rates, and business metrics before promoting a canary."
       }
     }
+  },
+  "motion": {
+    "interactive": "Interactive simulator",
+    "running": "Simulation running",
+    "ready": "Ready to simulate",
+    "client": "Client",
+    "gateway": "Load balancer",
+    "service": "Service",
+    "request": "Request flow",
+    "circuit": "Circuit",
+    "queue": "Queue",
+    "producer": "Producer",
+    "consumer": "Consumer",
+    "accepted": "Accepted",
+    "limited": "Rate limited"
   }
 }

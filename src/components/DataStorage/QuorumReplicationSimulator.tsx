@@ -1,12 +1,15 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
+import { FlowLink, useSimulationMotion } from '../simulation';
+import { RotateCcw } from 'lucide-react';
 import { Panel, TacticalButton, StatusBadge } from '../tactical';
 import { AnimatedMetric } from '../AISystems/motion';
 import { Legend, NarrationBar } from '../simulators/teaching';
 
 export default function QuorumReplicationSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const base = 'simulators.quorum_replication';
 
   const [n, setN] = useState(5);
@@ -92,13 +95,13 @@ export default function QuorumReplicationSimulator() {
   const faultTolerance = Math.min(n - w, n - r);
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
       <Panel
         title={t(`${base}.title`)}
         accent="cyan"
         action={
           <TacticalButton size="sm" variant="ghost" onClick={reset}>
-            {t(`${base}.buttons.reset`)}
+            <RotateCcw size={14} aria-hidden="true" />{t(`${base}.buttons.reset`)}
           </TacticalButton>
         }
       >
@@ -145,18 +148,23 @@ export default function QuorumReplicationSimulator() {
           </NarrationBar>
         </div>
 
-        <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))` }}>
+        <div className="sim-stage rounded-xl border border-slate-200 p-4 dark:border-tactical-border">
+        <div className="mb-2 flex justify-center"><span className="sim-node rounded-lg px-5 py-3 font-sans text-sm">{t(`${base}.metrics.latest`)} <span className="ml-2 font-mono text-signal-cyan">v{latest}</span></span></div>
+        <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(88px, 1fr))' }}>
           {versions.map((v, i) => {
             const inWrite = writeSet.includes(i);
             const inRead = readSet.includes(i);
             const overlap = inWrite && inRead;
             const fresh = v === latest && latest > 0;
+            const targeted = readSet.length > 0 ? inRead : inWrite;
             return (
+              <div key={i} className="flex min-w-0 flex-col items-center">
+              <FlowLink active={targeted} eventKey={narr.key} direction="vertical" tone={overlap ? 'green' : inRead ? 'amber' : 'cyan'} count={1} />
               <motion.div
-                key={i}
-                animate={{ scale: inWrite || inRead ? [1.1, 1] : 1 }}
-                transition={{ duration: 0.35, ease: 'easeOut' }}
-                className={`relative flex min-h-[88px] flex-col items-center justify-center rounded-lg border p-3 ${
+                initial={false}
+                animate={{ scale: !reducedMotion && targeted ? [1, 1.03, 1] : 1 }}
+                transition={transition}
+                className={`relative flex w-full min-h-[100px] flex-col items-center justify-center rounded-lg border p-3 ${
                   overlap
                     ? 'border-signal-green bg-signal-green/15 ring-2 ring-signal-green/40'
                     : inWrite
@@ -166,13 +174,17 @@ export default function QuorumReplicationSimulator() {
                         : 'border-slate-200 dark:border-tactical-border'
                 }`}
               >
-                <span
+                  <motion.span
+                    key={`${i}-${targeted ? narr.key : v}`}
+                    initial={targeted ? { opacity: 0.5, y: reducedMotion ? 0 : 4 } : false}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={transition}
                   className={`font-mono text-2xl tabular-nums ${
                     fresh ? 'text-signal-green' : 'text-slate-400 dark:text-tactical-dim'
                   }`}
                 >
                   v{v}
-                </span>
+                </motion.span>
                 <span className="mt-1 label-mono">{t(`${base}.node`)} {i}</span>
                 {inWrite && (
                   <span className="absolute -top-2 left-2 rounded-full bg-signal-cyan px-1.5 text-[9px] font-bold text-black">W</span>
@@ -181,8 +193,10 @@ export default function QuorumReplicationSimulator() {
                   <span className="absolute -top-2 right-2 rounded-full bg-signal-amber px-1.5 text-[9px] font-bold text-black">R</span>
                 )}
               </motion.div>
+              </div>
             );
           })}
+        </div>
         </div>
 
         {lastRead && (
@@ -200,7 +214,7 @@ export default function QuorumReplicationSimulator() {
       </Panel>
 
       <Panel title={t(`${base}.metrics.title`)} accent="green">
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div className="sim-metrics grid grid-cols-2 gap-3 lg:grid-cols-4">
           <AnimatedMetric value={n} label={t(`${base}.metrics.replicas`)} color="default" />
           <AnimatedMetric value={latest} label={t(`${base}.metrics.latest`)} color="cyan" />
           <AnimatedMetric value={faultTolerance} label={t(`${base}.metrics.fault_tolerance`)} color={faultTolerance > 0 ? 'green' : 'red'} />

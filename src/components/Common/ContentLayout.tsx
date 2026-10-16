@@ -3,9 +3,9 @@ import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import CompletionButton from './CompletionButton';
 import ReadingTime from './ReadingTime';
-import { SimulatorConsole } from '../tactical';
 import { getItem, getModule } from '../../config/contentRegistry';
 import { ContentBreadcrumb, ContentFooterNav } from './ContentNav';
+const SimulatorConsole = React.lazy(() => import('../simulation/SimulatorWorkspace'));
 
 interface Props {
   children: React.ReactNode;
@@ -23,7 +23,7 @@ export default function ContentLayout({ children, hideCompletion = false, childP
   const location = useLocation();
   const currentPath = location.pathname;
   const contentRef = useRef<HTMLDivElement>(null);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const isRoadmapPage = currentPath === '/roadmap';
   // Standalone interactive routes whose paths don't contain "simulator"/"simulador".
@@ -44,13 +44,16 @@ export default function ContentLayout({ children, hideCompletion = false, childP
   const isForumPage = currentPath === '/forum' || currentPath.startsWith('/forum/');
 
   const simulatorTitle = useMemo(() => {
+    const current = getItem(currentPath);
+    const title = (i18n.resolvedLanguage || i18n.language).startsWith('pt') ? current?.titlePt : current?.titleEn;
+    if (title) return title;
     const segs = currentPath.split('/').filter(Boolean);
     const tail = segs[segs.length - 1] ?? '';
     const baseSegs = TRAILING_SEGMENTS.includes(tail) ? segs.slice(0, -1) : segs;
     const fallback = prettify(baseSegs[baseSegs.length - 1] ?? tail);
     const key = `menu.${baseSegs.join('.')}.name`;
     return t(key, { defaultValue: fallback });
-  }, [currentPath, t]);
+  }, [currentPath, t, i18n.resolvedLanguage, i18n.language]);
 
   // Registry-driven breadcrumb + prev/next/related, shown on real content
   // pages (lessons, cases, simulators) but not on tool pages.
@@ -79,7 +82,7 @@ export default function ContentLayout({ children, hideCompletion = false, childP
         </div>
       )}
 
-      <div ref={contentRef} className={isSimulator ? 'sim-scope' : undefined}>
+      <div ref={contentRef} className={isSimulator ? 'sim-scope simulation-workspace' : undefined}>
         {useConsoleFrame ? (
           <div className="p-4 md:p-6">
             <SimulatorConsole
@@ -93,9 +96,9 @@ export default function ContentLayout({ children, hideCompletion = false, childP
         )}
       </div>
 
-      {isLesson && !hideCompletion && (
-        <div className="lesson-chrome">
-          <div className="lesson-completion">
+      {(isLesson || useConsoleFrame) && !hideCompletion && (
+        <div className={isLesson ? 'lesson-chrome' : 'px-4 pb-6 md:px-6'}>
+          <div className={isLesson ? 'lesson-completion' : 'flex justify-end border-t border-slate-200 pt-6 dark:border-tactical-border'}>
             <CompletionButton path={currentPath} childPaths={childPaths} />
           </div>
         </div>
@@ -107,7 +110,7 @@ export default function ContentLayout({ children, hideCompletion = false, childP
         </div>
       )}
 
-      {!isLesson && <div className="fixed bottom-8 right-8 flex flex-col items-end gap-3">
+      {!isLesson && !useConsoleFrame && <div className="fixed bottom-8 right-8 flex flex-col items-end gap-3">
         {!isRoadmapPage && !isSimulator && !isForumPage && (
           <ReadingTime contentRef={contentRef} />
         )}

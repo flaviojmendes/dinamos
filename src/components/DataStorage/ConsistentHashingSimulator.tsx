@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
+import { useSimulationMotion } from '../simulation';
+import { RotateCcw } from 'lucide-react';
 import { Panel, TacticalButton } from '../tactical';
 import { AnimatedMetric, GridBackdrop } from '../AISystems/motion';
 import { ConvergenceChart, Legend, NarrationBar } from '../simulators/teaching';
 
-const PALETTE = ['#22c55e', '#06b6d4', '#f59e0b', '#a855f7', '#ef4444', '#3b82f6', '#ec4899', '#14b8a6'];
+const PALETTE = ['#6ee7c8', '#6bc8e8', '#d8ad68', '#baa5e8', '#ec8398', '#8ba9dd', '#e99bc1', '#8cc9bc'];
 
 function hash01(str: string): number {
   let h = 2166136261;
@@ -30,6 +32,7 @@ interface VNode {
 
 export default function ConsistentHashingSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const base = 'simulators.consistent_hashing';
 
   const [nodeCount, setNodeCount] = useState(3);
@@ -113,12 +116,12 @@ export default function ConsistentHashingSimulator() {
   const rangeClass = 'flex-1 h-2 bg-slate-200 dark:bg-tactical-border appearance-none cursor-pointer accent-signal-green';
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
       <Panel
         title={t(`${base}.title`)}
         accent="cyan"
         action={
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="sim-controls flex flex-wrap items-center gap-2">
             <TacticalButton size="sm" variant="secondary" onClick={() => setNodeCount(c => Math.min(PALETTE.length, c + 1))} disabled={nodeCount >= PALETTE.length}>
               {t(`${base}.buttons.add_node`)}
             </TacticalButton>
@@ -126,7 +129,7 @@ export default function ConsistentHashingSimulator() {
               {t(`${base}.buttons.remove_node`)}
             </TacticalButton>
             <TacticalButton size="sm" variant="ghost" onClick={() => setSeed(s => s + 1)}>{t(`${base}.buttons.shuffle`)}</TacticalButton>
-            <TacticalButton size="sm" variant="ghost" onClick={reset}>{t(`${base}.buttons.reset`)}</TacticalButton>
+            <TacticalButton size="sm" variant="ghost" onClick={reset}><RotateCcw size={14} aria-hidden="true" />{t(`${base}.buttons.reset`)}</TacticalButton>
           </div>
         }
       >
@@ -174,12 +177,15 @@ export default function ConsistentHashingSimulator() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-center">
+        <div className="sim-stage grid grid-cols-1 gap-6 rounded-xl border border-slate-200 p-4 dark:border-tactical-border lg:grid-cols-[1fr_auto] lg:items-center">
           {/* Ring */}
           <div className="relative">
             <GridBackdrop />
-            <svg viewBox="0 0 100 100" className="relative mx-auto w-full max-w-[460px]">
+            <svg viewBox="0 0 100 100" role="img" aria-label={t(`${base}.title`)} className="relative mx-auto w-full max-w-[460px]">
               <circle cx={CENTER} cy={CENTER} r={RADIUS} fill="none" className="stroke-slate-300 dark:stroke-tactical-border" strokeWidth={0.4} />
+              <text x="50" y="48" textAnchor="middle" fill="var(--sim-ink)" fontSize="8" fontFamily="Hanken Grotesk, sans-serif" fontWeight="600">{keyCount}</text>
+              <text x="50" y="54" textAnchor="middle" fill="var(--sim-muted)" fontSize="2.8" fontFamily="Hanken Grotesk, sans-serif">{t(`${base}.metrics.keys`)}</text>
+              <text x="50" y="60" textAnchor="middle" fill="var(--sim-muted)" fontSize="2.8" fontFamily="Hanken Grotesk, sans-serif">{nodeCount} {t(`${base}.metrics.nodes`)}</text>
 
               {/* virtual nodes */}
               {ring.map((v, i) => {
@@ -198,14 +204,9 @@ export default function ConsistentHashingSimulator() {
                 return (
                   <motion.circle
                     key={k.id}
-                    cx={p.x}
-                    cy={p.y}
-                    r={moved ? 1.6 : 1.1}
-                    fill={PALETTE[owner]}
                     initial={false}
-                    animate={moved ? { scale: [1, 2.2, 1], opacity: [1, 0.6, 1] } : { scale: 1, opacity: 0.9 }}
-                    transition={{ duration: 0.8 }}
-                    style={{ transformOrigin: `${p.x}px ${p.y}px`, transformBox: 'fill-box' }}
+                    animate={{ cx: p.x, cy: p.y, r: !reducedMotion && moved ? [1.1, 1.8, 1.2] : 1.1, fill: PALETTE[owner], opacity: moved ? 1 : 0.8 }}
+                    transition={{ ...transition, duration: reducedMotion ? 0 : 0.48 }}
                   />
                 );
               })}
@@ -217,11 +218,11 @@ export default function ConsistentHashingSimulator() {
             {Array.from({ length: nodeCount }).map((_, n) => {
               const load = Array.from(owners.values()).filter(o => o === n).length;
               return (
-                <div key={n} className="flex items-center gap-2 rounded-md border border-slate-200 dark:border-tactical-border px-3 py-1.5">
+                <motion.div key={n} layout={!reducedMotion} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={transition} className="sim-node flex items-center gap-2 rounded-md border border-slate-200 dark:border-tactical-border px-3 py-2.5">
                   <span className="h-3 w-3 rounded-full" style={{ backgroundColor: PALETTE[n] }} />
                   <span className="font-sans text-xs text-slate-700 dark:text-tactical-text">{t(`${base}.labels.node`)} {n}</span>
-                  <span className="font-mono text-[11px] text-slate-500 dark:text-tactical-dim tabular-nums">{load}</span>
-                </div>
+                  <motion.span key={load} initial={{ opacity: 0.4 }} animate={{ opacity: 1 }} transition={transition} className="ml-auto font-mono text-xs text-slate-500 dark:text-tactical-dim tabular-nums">{load}</motion.span>
+                </motion.div>
               );
             })}
           </div>
@@ -229,7 +230,7 @@ export default function ConsistentHashingSimulator() {
       </Panel>
 
       <Panel title={t(`${base}.metrics.title`)} accent="green">
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+        <div className="sim-metrics grid grid-cols-2 lg:grid-cols-5 gap-3">
           <AnimatedMetric value={nodeCount} label={t(`${base}.metrics.nodes`)} color="cyan" />
           <AnimatedMetric value={nodeCount * vnodes} label={t(`${base}.metrics.vnodes`)} color="default" />
           <AnimatedMetric value={keyCount} label={t(`${base}.metrics.keys`)} color="default" />

@@ -1,3 +1,5 @@
+import { AnimatedNumber } from '../AISystems/motion';
+import { SimulationActivity, FlowLink } from '../simulation';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -67,7 +69,7 @@ export default function VerticalScalingSimulator() {
     uptime: 0
   });
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  
+
   const uptimeInterval = useRef<number>();
   const requestInterval = useRef<number>();
   const cleanupInterval = useRef<number>();
@@ -89,9 +91,9 @@ export default function VerticalScalingSimulator() {
       };
 
       setRequests(prev => {
-        const filtered = prev.filter(r => 
-          r.status !== 'completed' && 
-          r.status !== 'rejected' || 
+        const filtered = prev.filter(r =>
+          r.status !== 'completed' &&
+          r.status !== 'rejected' ||
           Date.now() - r.timestamp < 10000
         );
 
@@ -110,11 +112,11 @@ export default function VerticalScalingSimulator() {
           for (let i = 0; i < Math.min(available, queued.length); i++) {
             const request = queued[i];
             request.status = 'processing';
-            
+
             setTimeout(() => {
-              setRequests(current => 
-                current.map(r => 
-                  r.id === request.id 
+              setRequests(current =>
+                current.map(r =>
+                  r.id === request.id
                     ? { ...r, status: 'completed' }
                     : r
                 )
@@ -126,7 +128,7 @@ export default function VerticalScalingSimulator() {
 
         newRequests.forEach(request => {
           if (
-            request.status === 'queued' && 
+            request.status === 'queued' &&
             Date.now() - request.timestamp > 5000
           ) {
             request.status = 'rejected';
@@ -147,7 +149,7 @@ export default function VerticalScalingSimulator() {
     }, 1000);
 
     cleanupInterval.current = window.setInterval(() => {
-      setRequests(prev => 
+      setRequests(prev =>
         prev.filter(r => Date.now() - r.timestamp < 10000)
       );
     }, 1000);
@@ -180,8 +182,9 @@ export default function VerticalScalingSimulator() {
   };
 
   return (
-    <div className="space-y-6">
-      <motion.div 
+    <div className="simulation-workspace space-y-6">
+      <SimulationActivity active={isRunning} />
+      <motion.div
         className="max-w-3xl"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -195,8 +198,8 @@ export default function VerticalScalingSimulator() {
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <motion.div 
-          className="lg:col-span-2"
+        <motion.div
+          className="sim-stage lg:col-span-2"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
         >
@@ -228,6 +231,7 @@ export default function VerticalScalingSimulator() {
               {t('simulators.vertical_scaling.level_of_total', { current: currentTier + 1, total: SERVER_TIERS.length })}
             </p>
 
+            <FlowLink active={isRunning && requests.some(request => request.status === 'processing')} className="mb-5 w-full" />
             <div className="space-y-4 mb-6">
               <div>
                 <div className="flex justify-between font-sans text-xs mb-1 text-slate-600 dark:text-slate-400">
@@ -285,9 +289,9 @@ export default function VerticalScalingSimulator() {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       exit={{ scale: 0 }}
-                      className={`w-4 h-4 ${
-                        request.status === 'processing' 
-                          ? 'bg-signal-green animate-pulse' 
+                      className={`w-4 h-4 rounded-sm ${
+                        request.status === 'processing'
+                          ? 'bg-signal-green motion-safe:animate-pulse'
                           : 'bg-signal-amber'
                       }`}
                     />
@@ -297,7 +301,7 @@ export default function VerticalScalingSimulator() {
           </Panel>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
         >
@@ -329,17 +333,17 @@ export default function VerticalScalingSimulator() {
           <Panel title={t('simulators.vertical_scaling.stats_title')} accent="green">
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-3">
-                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green">{stats.processed}</div>
+                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green"><AnimatedNumber value={stats.processed} /></div>
                 <div className="text-xs font-sans font-medium text-slate-500 dark:text-slate-400 mt-2">{t('simulators.vertical_scaling.processed')}</div>
               </div>
               <div className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-3">
-                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-red">{stats.rejected}</div>
+                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-red"><AnimatedNumber value={stats.rejected} /></div>
                 <div className="text-xs font-sans font-medium text-slate-500 dark:text-slate-400 mt-2">{t('simulators.vertical_scaling.rejected')}</div>
               </div>
               <div className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-3">
                 <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">
-                  {stats.processed + stats.rejected === 0 
-                    ? '0' 
+                  {stats.processed + stats.rejected === 0
+                    ? '0'
                     : Math.round((stats.processed / (stats.processed + stats.rejected)) * 100)
                   }%
                 </div>
@@ -355,10 +359,10 @@ export default function VerticalScalingSimulator() {
               </div>
               <div className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-3">
                 <div className={`font-mono text-3xl font-bold tabular-nums leading-none ${
-                  serverLoad > 90 
-                    ? 'text-signal-red' 
-                    : serverLoad > 70 
-                    ? 'text-signal-amber' 
+                  serverLoad > 90
+                    ? 'text-signal-red'
+                    : serverLoad > 70
+                    ? 'text-signal-amber'
                     : 'text-signal-green'
                 }`}>
                   {Math.round(serverLoad)}%

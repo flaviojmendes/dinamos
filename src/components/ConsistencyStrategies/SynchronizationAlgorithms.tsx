@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Panel, StatusBadge, Tag, TacticalButton } from '../tactical';
+import { SimulationActivity, FlowLink, useSimulationMotion } from '../simulation';
 
 interface Process {
   id: number;
@@ -12,6 +13,7 @@ interface Process {
 
 export default function SynchronizationAlgorithms() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const [bakeryProcesses, setBakeryProcesses] = useState<Process[]>([
     { id: 0, state: 'idle' },
     { id: 1, state: 'idle' },
@@ -102,11 +104,12 @@ export default function SynchronizationAlgorithms() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
+      <SimulationActivity active={[...bakeryProcesses, ...ricartProcesses].some(process => process.state !== 'idle')} />
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={transition}
       >
         <div className="max-w-3xl">
           <h2 className="font-sans text-lg font-semibold tracking-tight text-slate-900 dark:text-tactical-text mb-2">
@@ -116,7 +119,7 @@ export default function SynchronizationAlgorithms() {
             {t('design_principles.algorithms.intro')}
           </p>
         </div>
-        <div className="tactical-panel border-l-2 border-l-signal-cyan p-5">
+        <div className="tactical-panel p-5">
           <div className="font-sans text-xs font-medium text-slate-600 dark:text-tactical-label mb-2">{t('design_principles.algorithms.key_concept_label')}</div>
           <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim">
             {t('design_principles.algorithms.key_concept_text')}
@@ -125,9 +128,9 @@ export default function SynchronizationAlgorithms() {
       </motion.div>
 
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
+        transition={transition}
       >
         <Panel title={t('design_principles.algorithms.bakery.title')} accent="cyan">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -190,17 +193,18 @@ function enterCriticalSection(process: Process, processes: Process[]) {
                 {bakeryProcesses.map(process => (
                   <div 
                     key={process.id}
-                    className="flex items-center gap-4"
+                    className="flex flex-wrap items-center gap-3"
                   >
                     <motion.div 
-                      className={`w-32 h-12 rounded-lg border flex items-center justify-center font-sans text-sm ${getProcessBorder(process.state)}`}
+                      className={`sim-node w-32 h-12 rounded-lg border flex items-center justify-center font-sans text-sm ${getProcessBorder(process.state)}`}
                       animate={{
-                        scale: process.state === 'idle' ? 1 : 1.05,
-                        transition: { duration: 0.2 }
+                        y: !reducedMotion && process.state === 'executing' ? -3 : 0,
+                        transition
                       }}
                     >
                       {t('design_principles.algorithms.bakery.labels.process')} {process.id}
                     </motion.div>
+                    <FlowLink active={process.state === 'requesting'} tone="cyan" className="w-8" />
                     {process.number && (
                       <motion.div
                         initial={{ opacity: 0, x: -10 }}
@@ -227,9 +231,9 @@ function enterCriticalSection(process: Process, processes: Process[]) {
       </motion.div>
 
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
+        transition={transition}
       >
         <Panel title={t('design_principles.algorithms.token_ring.title')} accent="green">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -290,10 +294,12 @@ class TokenRing {
 
             <div className="tactical-panel border border-slate-200 dark:border-tactical-border p-4">
               <div className="font-sans text-xs font-medium text-slate-600 dark:text-tactical-label mb-4">{t('design_principles.algorithms.token_ring.demo_title')}</div>
-              <div className="relative aspect-square">
+              <div className="relative aspect-square min-w-0">
+                <div className="absolute inset-[19%] rounded-full border border-dashed border-slate-300 dark:border-tactical-line" aria-hidden="true" />
+                <motion.div aria-hidden="true" className="pointer-events-none absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-signal-green ring-4 ring-signal-green/15" initial={false} animate={{ left: `${50 + 31 * Math.cos(tokenPosition * 2 * Math.PI / tokenRingProcesses.length)}%`, top: `${50 + 31 * Math.sin(tokenPosition * 2 * Math.PI / tokenRingProcesses.length)}%` }} transition={transition} />
                 {tokenRingProcesses.map((process, index) => {
                   const angle = (index * 2 * Math.PI) / tokenRingProcesses.length;
-                  const radius = 40;
+                  const radius = 31;
                   const x = 50 + radius * Math.cos(angle);
                   const y = 50 + radius * Math.sin(angle);
 
@@ -310,8 +316,8 @@ class TokenRing {
                         top: `${y}%`,
                       }}
                       animate={{
-                        scale: tokenPosition === process.id ? 1.1 : 1,
-                        transition: { duration: 0.3 }
+                        scale: !reducedMotion && tokenPosition === process.id ? 1.06 : 1,
+                        transition
                       }}
                     >
                       {t('design_principles.algorithms.token_ring.labels.process_prefix')}{process.id}
@@ -330,9 +336,9 @@ class TokenRing {
       </motion.div>
 
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
+        transition={transition}
       >
         <Panel title={t('design_principles.algorithms.ricart_agrawala.title')} accent="amber">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -408,17 +414,18 @@ class RicartAgrawala {
                 {ricartProcesses.map(process => (
                   <div 
                     key={process.id}
-                    className="flex items-center gap-4"
+                    className="flex flex-wrap items-center gap-3"
                   >
                     <motion.div 
-                      className={`w-32 h-12 rounded-lg border flex items-center justify-center font-sans text-sm ${getProcessBorder(process.state)}`}
+                      className={`sim-node w-32 h-12 rounded-lg border flex items-center justify-center font-sans text-sm ${getProcessBorder(process.state)}`}
                       animate={{
-                        scale: process.state === 'idle' ? 1 : 1.05,
-                        transition: { duration: 0.2 }
+                        y: !reducedMotion && process.state === 'executing' ? -3 : 0,
+                        transition
                       }}
                     >
                       {t('design_principles.algorithms.ricart_agrawala.labels.process')} {process.id}
                     </motion.div>
+                    <FlowLink active={process.state === 'requesting'} tone="amber" className="w-8" />
                     {process.timestamp !== undefined && process.timestamp > 0 && process.state !== 'idle' && (
                       <motion.div
                         initial={{ opacity: 0, x: -10 }}
@@ -445,9 +452,9 @@ class RicartAgrawala {
       </motion.div>
 
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
+        transition={transition}
       >
         <Panel title={t('design_principles.algorithms.comparison.title')} accent="cyan">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -513,9 +520,9 @@ class RicartAgrawala {
       </motion.div>
 
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.6 }}
+        transition={transition}
         className="mb-12"
       >
         

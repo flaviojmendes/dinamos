@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Panel, StatusBadge, TacticalButton } from '../tactical';
+import { Panel, TacticalButton } from '../tactical';
+import { SimulationActivity, useSimulationMotion } from '../simulation';
+import { motion } from 'framer-motion';
 
 interface Node {
   id: string;
@@ -25,6 +27,7 @@ const selectClass =
 export default function AttackSimulator() {
   const { t } = useTranslation();
   const base = 'attack_simulator';
+  const { reducedMotion, transition } = useSimulationMotion();
   
   const [attackType, setAttackType] = useState<'ddos' | 'mitm'>('ddos');
   const [isPlaying, setIsPlaying] = useState(false);
@@ -55,7 +58,7 @@ export default function AttackSimulator() {
   }, [attackType]);
 
   useEffect(() => {
-    if (!isPlaying) return;
+    if (!isPlaying || nodes.length === 0) return;
 
     const animate = (timestamp: number) => {
       if (timestamp - lastPacketTimeRef.current > (1000 / speed)) {
@@ -118,15 +121,15 @@ export default function AttackSimulator() {
       }
 
       setPackets(prev => {
-        const speed = 5;
+        const packetStep = reducedMotion ? 1000 : 5 * speed;
         return prev
           .map(packet => {
             const dx = packet.to.x - packet.x;
             const dy = packet.to.y - packet.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
             
-            if (distance < speed) {
-              if (packet.to.type === 'server') {
+            if (distance < packetStep) {
+              if (packet.to.type === 'server' && packet.type === 'malicious') {
                 setNodes(prev => prev.map(node => 
                   node.id === 'server' 
                     ? {...node, status: attackType === 'ddos' ? 'overloaded' : 'compromised'}
@@ -136,8 +139,8 @@ export default function AttackSimulator() {
               return null;
             }
 
-            const vx = (dx / distance) * speed;
-            const vy = (dy / distance) * speed;
+            const vx = (dx / distance) * packetStep;
+            const vy = (dy / distance) * packetStep;
 
             return {
               ...packet,
@@ -157,16 +160,16 @@ export default function AttackSimulator() {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [isPlaying, attackType, nodes, speed]);
+  }, [isPlaying, attackType, nodes, speed, reducedMotion]);
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
       <Panel
         title={attackType === 'ddos' ? t(`${base}.ddos_attack_button`) : t(`${base}.mitm_attack_button`)}
         accent="red"
-        action={isPlaying ? <StatusBadge variant="in-progress" label="Running" /> : undefined}
+        action={<SimulationActivity active={isPlaying} />}
       >
-        <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
+        <div className="sim-controls flex flex-wrap justify-between items-center gap-4 mb-6">
           <div className="flex flex-wrap gap-2">
             <TacticalButton
               size="sm"
@@ -208,8 +211,11 @@ export default function AttackSimulator() {
           </div>
         </div>
 
-        <div className="relative w-full h-[600px] rounded-lg bg-slate-950 border border-slate-800 dark:border-tactical-border overflow-hidden">
+        <div className="sim-stage relative w-full h-[320px] sm:h-[480px] rounded-xl bg-slate-50 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border overflow-hidden">
           <svg
+            viewBox="0 0 800 600"
+            preserveAspectRatio="none"
+            aria-hidden="true"
             className="absolute inset-0 w-full h-full pointer-events-none"
             style={{ zIndex: 0 }}
           >
@@ -222,7 +228,7 @@ export default function AttackSimulator() {
                     y1={node.y}
                     x2={nodes.find(n => n.type === (attackType === 'mitm' && node.type === 'client' ? 'attacker' : 'server'))?.x || 0}
                     y2={nodes.find(n => n.type === (attackType === 'mitm' && node.type === 'client' ? 'attacker' : 'server'))?.y || 0}
-                    stroke="#334155"
+                    className="stroke-slate-300 dark:stroke-tactical-border"
                     strokeWidth="2"
                   />
                 ) : null
@@ -233,16 +239,19 @@ export default function AttackSimulator() {
                 y1={nodes.find(n => n.type === 'attacker')?.y || 0}
                 x2={nodes.find(n => n.type === 'server')?.x || 0}
                 y2={nodes.find(n => n.type === 'server')?.y || 0}
-                stroke="#334155"
+                className="stroke-slate-300 dark:stroke-tactical-border"
                 strokeWidth="2"
               />
             )}
           </svg>
 
           {nodes.map((node) => (
-            <div
+            <motion.div
               key={node.id}
-              className={`absolute w-12 h-12 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center ${
+              initial={false}
+              animate={{ scale: node.status === 'compromised' || node.status === 'overloaded' ? 1.06 : 1 }}
+              transition={transition}
+              className={`sim-node absolute w-11 h-11 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center ${
                 node.type === 'server'
                   ? 'bg-signal-cyan'
                   : node.type === 'attacker'
@@ -250,14 +259,16 @@ export default function AttackSimulator() {
                   : 'bg-signal-green'
               } ${
                 node.status === 'overloaded'
-                  ? 'animate-pulse'
+                  ? 'ring-2 ring-signal-red ring-offset-4 ring-offset-slate-50 dark:ring-offset-tactical-raised'
                   : node.status === 'compromised'
                   ? 'ring-2 ring-signal-red'
                   : ''
               }`}
               style={{
-                left: node.x,
-                top: node.y,
+                left: `${node.x / 8}%`,
+                top: `${node.y / 6}%`,
+                x: '-50%',
+                y: '-50%',
                 zIndex: 10,
               }}
             >
@@ -290,35 +301,31 @@ export default function AttackSimulator() {
                   />
                 )}
               </svg>
-            </div>
+              <span className="absolute top-full mt-2 font-mono text-[10px] text-slate-600 dark:text-tactical-dim">{node.id}</span>
+            </motion.div>
           ))}
 
           {packets.map((packet) => (
             <div
               key={packet.id}
-              className={`absolute w-4 h-4 -translate-x-1/2 -translate-y-1/2 ${
+              className={`absolute w-2 h-2 rounded-full -translate-x-1/2 -translate-y-1/2 ${
                 packet.type === 'normal'
                   ? 'bg-signal-green'
                   : 'bg-signal-red'
-              } transition-transform duration-75`}
+              }`}
               style={{
-                left: packet.x,
-                top: packet.y,
+                left: `${packet.x / 8}%`,
+                top: `${packet.y / 6}%`,
                 zIndex: 20,
-                transform: `translate(-50%, -50%) scale(${Math.random() * 0.3 + 0.7})`,
+
               }}
             >
-                <div className={`absolute inset-0 ${
-                  packet.type === 'normal'
-                    ? 'bg-signal-green/60'
-                    : 'bg-signal-red/60'
-                } animate-ping`} />
             </div>
           ))}
         </div>
       </Panel>
 
-      <div className="tactical-panel rounded-lg border-l-2 border-l-signal-red p-5">
+      <div className="tactical-panel rounded-lg border border-slate-200 dark:border-tactical-border p-5">
         <h3 className="font-sans text-sm font-semibold text-signal-red mb-2">
           {attackType === 'ddos' ? t(`${base}.ddos_simulation_title`) : t(`${base}.mitm_simulation_title`)}
         </h3>

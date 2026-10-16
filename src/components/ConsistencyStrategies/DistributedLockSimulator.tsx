@@ -1,3 +1,4 @@
+import { SimulationActivity, useSimulationMotion } from '../simulation';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
@@ -19,6 +20,7 @@ type Narr = { tone: 'idle' | 'active' | 'success'; key: string; text: string };
 
 export default function DistributedLockSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const base = 'simulators.distributed_lock';
 
   const [holder, setHolder] = useState<number | null>(null);
@@ -137,7 +139,8 @@ export default function DistributedLockSimulator() {
   useEffect(() => () => clearTimers(), []);
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
+      <SimulationActivity active={demo || holder !== null} />
       <Panel
         title={t(`${base}.title`)}
         accent="cyan"
@@ -173,12 +176,12 @@ export default function DistributedLockSimulator() {
         </div>
 
         {/* Clients */}
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="sim-stage grid gap-3 sm:grid-cols-3">
           {CLIENTS.map((c, i) => {
             const isHolder = holder === i;
             const isStale = clientTokens[i] > 0 && clientTokens[i] < resourceToken;
             return (
-              <div key={c} className={`rounded-lg border p-3 ${isHolder ? 'border-signal-cyan' : 'border-slate-200 dark:border-tactical-border'}`}>
+              <motion.div key={c} initial={false} animate={{ y: isHolder && !reducedMotion ? -3 : 0, opacity: isStale ? 0.65 : 1 }} transition={transition} className={`sim-node rounded-lg border p-3 ${isHolder ? 'border-signal-cyan' : 'border-slate-200 dark:border-tactical-border'}`}>
                 <div className="mb-2 flex items-center justify-between">
                   <span className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text">{t(`${base}.client`)} {c}</span>
                   {clientTokens[i] > 0 && (
@@ -200,7 +203,7 @@ export default function DistributedLockSimulator() {
                     {t(`${base}.buttons.stall`)}
                   </TacticalButton>
                 )}
-              </div>
+              </motion.div>
             );
           })}
         </div>

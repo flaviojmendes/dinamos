@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from 'react';
+import { SimulationActivity, useSimulationMotion } from '../simulation';
+import React, { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Panel, StatusBadge, TacticalButton } from '../tactical';
@@ -26,6 +27,8 @@ const inputClass =
 
 export default function TwoPhaseCommitSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
+  const messageSequence = useRef(0);
   const [nodes, setNodes] = useState<Node[]>([
     { id: 0, name: t('design_principles.two_phase_commit_simulator.nodes.coordinator'), type: 'coordinator', state: 'idle' },
     { id: 1, name: t('design_principles.two_phase_commit_simulator.nodes.bank_n', { n: 1 }), type: 'participant', state: 'idle', hasResources: true, willVoteYes: true },
@@ -83,7 +86,7 @@ export default function TwoPhaseCommitSimulator() {
   };
 
   const addMessage = (from: number, to: number, type: Message['type'], content: string) => {
-    setMessages(prev => [...prev, { id: Date.now(), from, to, type, content }]);
+    setMessages(prev => [...prev, { id: ++messageSequence.current, from, to, type, content }]);
   };
 
   const toggleNodeResponse = (nodeId: number) => {
@@ -185,7 +188,8 @@ export default function TwoPhaseCommitSimulator() {
   }, [isAutoPlaying, step, simulateStep, speed]);
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
+      <SimulationActivity active={isAutoPlaying && step < 4} />
       <div className="max-w-3xl">
         <h2 className="font-sans text-lg font-semibold tracking-tight text-slate-900 dark:text-tactical-text mb-2">
           {t('design_principles.two_phase_commit_simulator.title')}
@@ -224,19 +228,20 @@ export default function TwoPhaseCommitSimulator() {
       </Panel>
 
       <Panel title={t('design_principles.two_phase_commit_simulator.steps.current_phase')} accent="green" bodyClassName="min-h-[400px]">
-        <div className="grid grid-cols-4 gap-4 mb-8">
+        <div className="sim-stage grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
           {nodes.map((node) => (
             <motion.div
               key={node.id}
-              className={`p-4 rounded-lg border ${getNodeBorder(node.state)} transition-colors`}
-              initial={{ opacity: 0, y: 20 }}
+              className={`sim-node p-4 rounded-lg border ${getNodeBorder(node.state)} transition-colors`}
+              initial={false}
               animate={{ opacity: 1, y: 0 }}
+              transition={transition}
             >
               <div className="flex items-start justify-between gap-2 mb-2">
                 <h4 className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text">{node.name}</h4>
                 <StatusBadge variant={getStateBadge(node.state)} label={t('design_principles.two_phase_commit_simulator.node_states.' + node.state, node.state)} />
               </div>
-              <div className="font-sans text-xs text-slate-600 dark:text-tactical-dim">
+              <motion.div key={node.state} initial={{ opacity: 0.55, y: reducedMotion ? 0 : 5 }} animate={{ opacity: 1, y: 0 }} transition={transition} className="font-sans text-xs text-slate-600 dark:text-tactical-dim">
                 {node.response && <div>{t('design_principles.two_phase_commit_simulator.responses.' + node.response)}</div>}
                 {node.type === 'participant' && step === 0 && (
                   <div className="mt-3 space-y-2">
@@ -265,7 +270,7 @@ export default function TwoPhaseCommitSimulator() {
                     </div>
                   </div>
                 )}
-              </div>
+              </motion.div>
             </motion.div>
           ))}
         </div>
@@ -278,7 +283,7 @@ export default function TwoPhaseCommitSimulator() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
-                className={`flex items-center gap-2 font-mono text-sm ${getMessageColor(message.type)}`}
+                className={`flex flex-wrap items-center gap-2 rounded-lg bg-slate-50 px-3 py-2 font-sans text-sm dark:bg-tactical-raised ${getMessageColor(message.type)}`}
               >
                 <span>{nodes[message.from].name} → {nodes[message.to].name}:</span>
                 <span>{message.content}</span>
@@ -288,8 +293,13 @@ export default function TwoPhaseCommitSimulator() {
         </div>
       </Panel>
 
-      <div className="tactical-panel border-l-2 border-l-signal-cyan p-5">
+      <div className="tactical-panel p-5">
         <h4 className="font-sans text-xs font-medium text-slate-600 dark:text-tactical-label mb-2">{t('design_principles.two_phase_commit_simulator.steps.current_phase')}</h4>
+        <div className="mb-4 flex gap-2" aria-hidden="true">
+          {[0, 1, 2, 3, 4].map(index => (
+            <motion.div key={index} className="h-1.5 flex-1 rounded-full" animate={{ backgroundColor: index <= step ? '#56b6c8' : '#323b4f', opacity: index === step ? 1 : 0.5 }} transition={transition} />
+          ))}
+        </div>
         <p className="font-sans text-sm text-slate-600 dark:text-tactical-dim">
           {step === 0 && t('design_principles.two_phase_commit_simulator.steps.s0')}
           {step === 1 && t('design_principles.two_phase_commit_simulator.steps.s1')}

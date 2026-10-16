@@ -1761,5 +1761,20 @@
         "text": "Em produção, você monitoraria latência, taxas de erro e métricas de negócio antes de promover um canary."
       }
     }
+  },
+  "motion": {
+    "interactive": "Simulador interativo",
+    "running": "Simulação em execução",
+    "ready": "Pronto para simular",
+    "client": "Cliente",
+    "gateway": "Balanceador",
+    "service": "Serviço",
+    "request": "Fluxo de requisições",
+    "circuit": "Circuito",
+    "queue": "Fila",
+    "producer": "Produtor",
+    "consumer": "Consumidor",
+    "accepted": "Aceitas",
+    "limited": "Limitadas"
   }
 }

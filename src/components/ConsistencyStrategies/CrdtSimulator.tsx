@@ -1,4 +1,5 @@
-import { useCallback, useRef, useState } from 'react';
+import { SimulationActivity, useSimulationMotion } from '../simulation';
+import { useCallback, useRef, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Panel, TacticalButton, StatusBadge } from '../tactical';
@@ -14,6 +15,7 @@ const equalVec = (a: Vector, b: Vector) => a.every((x, i) => x === b[i]);
 
 export default function CrdtSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const base = 'simulators.crdt';
 
   const [vectors, setVectors] = useState<Vector[]>(zero);
@@ -25,6 +27,8 @@ export default function CrdtSimulator() {
     text: t(`${base}.narration.idle`),
   });
   const flashTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => () => { if (flashTimer.current) clearTimeout(flashTimer.current); }, []);
 
   const totals = vectors.map(sum);
   const converged = vectors.every((v) => equalVec(v, vectors[0]));
@@ -102,7 +106,8 @@ export default function CrdtSimulator() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
+      <SimulationActivity active={flash.size > 0} />
       <Panel
         title={t(`${base}.title`)}
         accent="cyan"
@@ -121,7 +126,7 @@ export default function CrdtSimulator() {
         </div>
 
         {/* Replica cards */}
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="sim-stage grid gap-3 sm:grid-cols-3">
           {vectors.map((v, i) => (
             <div
               key={i}
@@ -137,9 +142,9 @@ export default function CrdtSimulator() {
                 </span>
                 <motion.span
                   key={totals[i]}
-                  initial={{ scale: 1.3 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.3, ease: 'easeOut' }}
+                  initial={{ opacity: 0.5, y: reducedMotion ? 0 : 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={transition}
                   className="font-mono text-2xl tabular-nums text-signal-cyan"
                 >
                   {totals[i]}
@@ -151,7 +156,7 @@ export default function CrdtSimulator() {
                   return (
                     <motion.div
                       key={j}
-                      animate={isFlash ? { scale: [1.25, 1] } : { scale: 1 }}
+                      animate={isFlash && !reducedMotion ? { scale: [1.08, 1] } : { scale: 1 }}
                       transition={{ duration: 0.4, ease: 'easeOut' }}
                       className={`flex-1 rounded px-1 py-1.5 text-center ${
                         isFlash

@@ -1,3 +1,4 @@
+import { SimulationActivity } from '../simulation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
@@ -209,7 +210,8 @@ export default function GossipSimulator() {
   })();
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
+      <SimulationActivity active={running || packets.length > 0} />
       <Panel
         title={t(`${base}.title`)}
         accent="cyan"
@@ -252,7 +254,7 @@ export default function GossipSimulator() {
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_15rem]">
           {/* Network stage */}
-          <div className="relative mx-auto w-full max-w-md">
+          <div className="sim-stage relative mx-auto w-full max-w-md">
             <svg viewBox={`0 0 ${VIEW} ${VIEW}`} className="w-full" role="img" aria-label={t(`${base}.title`)}>
               {/* in-flight rumor packets: faint path + a travelling dot */}
               <AnimatePresence>

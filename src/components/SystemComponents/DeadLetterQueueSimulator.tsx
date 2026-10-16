@@ -1,9 +1,13 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSimulationMotion } from '../simulation';
+import { Play, Pause, RotateCcw, SkipForward } from 'lucide-react';
 import { Panel, TacticalButton } from '../tactical';
 import { AnimatedMetric } from '../AISystems/motion';
 import { NarrationBar } from '../simulators/teaching';
+import TransitPacket from '../DataStorage/TransitPacket';
+import { Check, X, Inbox, ShieldAlert } from 'lucide-react';
 
 const TICK_MS = 800;
 
@@ -20,6 +24,7 @@ type Narr = { tone: 'idle' | 'active' | 'success'; key: string; text: string };
 
 export default function DeadLetterQueueSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const base = 'simulators.dead_letter_queue';
 
   const [running, setRunning] = useState(false);
@@ -104,17 +109,18 @@ export default function DeadLetterQueueSimulator() {
           : { ring: 'border-slate-200 dark:border-tactical-border', text: 'text-slate-400 dark:text-tactical-dim', icon: '\u2014' };
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
       <Panel
         title={t(`${base}.title`)}
         accent="cyan"
         action={
-          <div className="flex flex-wrap items-center gap-2">
-            <TacticalButton size="sm" variant="secondary" onClick={step} disabled={running}>{t(`${base}.buttons.step`)}</TacticalButton>
-            <TacticalButton size="sm" variant={running ? 'danger' : 'primary'} onClick={() => setRunning((r) => !r)}>
+          <div className="sim-controls flex flex-wrap items-center gap-2">
+            <TacticalButton size="sm" variant="secondary" onClick={step} disabled={running}><SkipForward size={14} aria-hidden="true" />{t(`${base}.buttons.step`)}</TacticalButton>
+            <TacticalButton size="sm" aria-pressed={running} variant={running ? 'secondary' : 'primary'} onClick={() => setRunning((r) => !r)}>
+              {running ? <Pause size={14} aria-hidden="true" /> : <Play size={14} aria-hidden="true" />}
               {running ? t(`${base}.buttons.stop`) : t(`${base}.buttons.start`)}
             </TacticalButton>
-            <TacticalButton size="sm" variant="ghost" onClick={reset}>{t(`${base}.buttons.reset`)}</TacticalButton>
+            <TacticalButton size="sm" variant="ghost" onClick={reset}><RotateCcw size={14} aria-hidden="true" />{t(`${base}.buttons.reset`)}</TacticalButton>
           </div>
         }
       >
@@ -129,20 +135,21 @@ export default function DeadLetterQueueSimulator() {
           <NarrationBar tone={narr.tone} stepKey={narr.key}>{narr.text}</NarrationBar>
         </div>
 
-        <div className="grid items-stretch gap-3 lg:grid-cols-[1fr_auto_auto_1fr]">
+        <div className="sim-stage grid items-center gap-3 lg:grid-cols-[1fr_36px_auto_36px_1fr]">
           {/* Main queue */}
-          <div className="rounded-lg border border-slate-200 p-3 dark:border-tactical-border">
-            <div className="label-mono mb-2">{t(`${base}.main_queue`)}</div>
+          <div className="sim-node min-h-32 rounded-lg border border-slate-200 p-4 dark:border-tactical-border">
+            <div className="mb-3 flex items-center gap-2 font-sans text-sm font-medium"><Inbox size={17} aria-hidden="true" />{t(`${base}.main_queue`)}<span className="ml-auto font-mono text-xs tabular-nums text-slate-500 dark:text-tactical-dim">{queue.length}</span></div>
             <div className="flex min-h-[3rem] flex-wrap gap-1.5">
               <AnimatePresence>
                 {queue.map((m) => (
                   <motion.div
                     key={m.id}
-                    layout
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    className={`flex h-7 min-w-[28px] items-center justify-center rounded border px-1 font-mono text-[10px] ${
+                    layout={!reducedMotion}
+                    initial={{ opacity: 0, x: reducedMotion ? 0 : 12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: reducedMotion ? 0 : -12 }}
+                    transition={transition}
+                    className={`flex h-8 min-w-8 items-center justify-center rounded-md border px-1.5 font-mono text-[11px] ${
                       m.poison
                         ? 'border-signal-red/50 bg-signal-red/10 text-signal-red'
                         : m.attempts > 0
@@ -151,24 +158,29 @@ export default function DeadLetterQueueSimulator() {
                     }`}
                     title={m.poison ? t(`${base}.poison`) : undefined}
                   >
-                    {m.poison ? '\u2620' : m.attempts > 0 ? `\u21bb${m.attempts}` : '\u2022'}
+                    #{m.id}{m.attempts > 0 && <span className="ml-1 opacity-70">·{m.attempts}</span>}
                   </motion.div>
                 ))}
               </AnimatePresence>
             </div>
           </div>
 
+          <div className="sim-flow relative h-8 overflow-hidden" aria-hidden="true">
+            <div className="absolute inset-x-0 top-1/2 h-px bg-slate-300 dark:bg-tactical-line" />
+            {last && <TransitPacket key={`${last.id}-${last.attempts}`} />}
+          </div>
+
           {/* Consumer */}
-          <div className="flex flex-col items-center justify-center rounded-lg border border-slate-200 px-4 py-3 text-center dark:border-tactical-border">
+          <div className="sim-node flex min-h-32 flex-col items-center justify-center rounded-lg border border-slate-200 px-5 py-4 text-center dark:border-tactical-border">
             <div className="label-mono mb-2">{t(`${base}.consumer`)}</div>
             <motion.div
               key={last ? `${last.id}-${last.attempts}` : 'none'}
-              initial={{ scale: 0.8, opacity: 0.4 }}
+              initial={{ scale: reducedMotion ? 1 : 0.92, opacity: 0.4 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.25 }}
+              transition={transition}
               className={`flex h-12 w-12 items-center justify-center rounded-lg border-2 font-mono text-xl ${verdictStyle.ring} ${verdictStyle.text}`}
             >
-              {verdictStyle.icon}
+              {last?.verdict === 'ok' ? <Check size={22} /> : last?.verdict === 'dlq' ? <X size={22} /> : last?.verdict === 'retry' ? <RotateCcw size={20} /> : <Inbox size={21} />}
             </motion.div>
             {last && (
               <div className="mt-2 font-mono text-[10px] text-slate-500 dark:text-tactical-dim">
@@ -177,30 +189,38 @@ export default function DeadLetterQueueSimulator() {
             )}
           </div>
 
+          <div className="sim-flow relative h-8 overflow-hidden" aria-hidden="true">
+            <div className="absolute inset-x-0 top-1/2 h-px bg-slate-300 dark:bg-tactical-line" />
+            {last && <TransitPacket key={`${last.id}-${last.attempts}`} tone={last.verdict === 'ok' ? 'green' : last.verdict === 'dlq' ? 'red' : 'amber'} reverse={last.verdict === 'retry'} />}
+          </div>
+
+          <div className="space-y-3">
+
           {/* Processed bin */}
-          <div className="flex flex-col items-center justify-center rounded-lg border border-signal-green/30 bg-signal-green/5 px-4 py-3 text-center">
-            <div className="label-mono mb-1 text-signal-green">{t(`${base}.metrics.processed`)}</div>
+          <div className="sim-node flex items-center justify-between gap-3 rounded-lg border border-signal-green/30 bg-signal-green/5 px-4 py-3">
+            <div className="font-sans text-sm text-signal-green">{t(`${base}.metrics.processed`)}</div>
             <div className="font-mono text-2xl tabular-nums text-signal-green">{processed}</div>
           </div>
 
           {/* DLQ */}
-          <div className="rounded-lg border border-signal-red/40 bg-signal-red/5 p-3">
-            <div className="label-mono mb-2 text-signal-red">{t(`${base}.dlq`)}</div>
+          <div className="sim-node rounded-lg border border-signal-red/40 bg-signal-red/5 p-4">
+            <div className="mb-3 flex items-center gap-2 font-sans text-sm font-medium text-signal-red"><ShieldAlert size={17} aria-hidden="true" />{t(`${base}.dlq`)}</div>
             <div className="flex min-h-[3rem] flex-wrap gap-1.5">
               <AnimatePresence>
                 {dlq.map((m) => (
-                  <motion.div key={m.id} initial={{ scale: 0, y: -8 }} animate={{ scale: 1, y: 0 }} exit={{ opacity: 0 }} className="flex h-7 min-w-[28px] items-center justify-center rounded border border-signal-red/50 bg-signal-red/20 px-1 font-mono text-[10px] text-signal-red">
-                    {m.poison ? '\u2620' : '\u2717'}
+                  <motion.div key={m.id} initial={{ opacity: 0, y: reducedMotion ? 0 : -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={transition} className="flex h-8 min-w-8 items-center justify-center rounded-md border border-signal-red/50 bg-signal-red/10 px-1.5 font-mono text-[11px] text-signal-red">
+                    #{m.id}
                   </motion.div>
                 ))}
               </AnimatePresence>
             </div>
           </div>
+          </div>
         </div>
       </Panel>
 
       <Panel title={t(`${base}.metrics.title`)} accent="green">
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div className="sim-metrics grid grid-cols-2 gap-3 lg:grid-cols-4">
           <AnimatedMetric value={processed} label={t(`${base}.metrics.processed`)} color="green" pulse={running} />
           <AnimatedMetric value={retried} label={t(`${base}.metrics.retried`)} color="amber" />
           <AnimatedMetric value={deadLettered} label={t(`${base}.metrics.dead_lettered`)} color={deadLettered > 0 ? 'red' : 'default'} />

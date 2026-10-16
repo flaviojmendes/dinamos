@@ -1,3 +1,4 @@
+import { SimulationActivity, FlowLink, useSimulationMotion } from '../simulation';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Panel, StatusBadge, TacticalButton } from '../tactical';
@@ -17,6 +18,7 @@ interface UserAction {
 }
 
 export default function AsyncSync() {
+  const { reducedMotion, transition } = useSimulationMotion();
   const [communicationType, setCommunicationType] = useState<'sync' | 'async'>('sync');
   const [requests, setRequests] = useState<Request[]>([]);
   const [userActions, setUserActions] = useState<UserAction[]>([]);
@@ -131,7 +133,8 @@ export default function AsyncSync() {
   }, []);
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
+      <div className="sim-controls"><SimulationActivity active={requests.some(request => request.status !== 'served')} /></div>
       <Panel title="Controles" accent="cyan">
         <div className="flex flex-col gap-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -178,7 +181,7 @@ export default function AsyncSync() {
       </Panel>
 
       <Panel title="Visualização" accent="green">
-        <div className="relative h-[300px]">
+        <div className="sim-stage relative h-[300px]">
           <div className="absolute inset-0 flex flex-col">
             <div className="flex h-8 text-xs font-medium text-slate-500 dark:text-tactical-label border-b border-slate-200 dark:border-tactical-border">
               <div className="w-1/3 text-center">Cliente</div>
@@ -206,11 +209,11 @@ export default function AsyncSync() {
                         left: request.status === 'ordered' ? '33%' : 
                               request.status === 'preparing' || request.status === 'ready' ? '66%' : '33%'
                       }}
-                      transition={{ duration: 0.3 }}
+                      transition={transition}
                     />
 
                     <motion.div
-                      className={`absolute h-6 w-6 flex items-center justify-center font-mono text-xs text-white ${
+                      className={`absolute h-7 w-7 rounded-md flex items-center justify-center font-mono text-xs text-slate-950 ${
                         request.type === 'sync' ? 'bg-signal-cyan' : 'bg-signal-amber'
                       }`}
                       initial={{ left: '31%', opacity: 0 }}
@@ -219,7 +222,7 @@ export default function AsyncSync() {
                               request.status === 'preparing' || request.status === 'ready' ? '64%' : '31%',
                         opacity: 1
                       }}
-                      transition={{ duration: 0.3 }}
+                      transition={transition}
                     >
                       {request.id}
                     </motion.div>
@@ -251,7 +254,7 @@ export default function AsyncSync() {
                       left: action.type === 'order' ? '2%' : '15%',
                       top: action.type === 'order' ? 16 : 64,
                       opacity: 0,
-                      scale: 0.5
+                      scale: reducedMotion ? 1 : 0.9
                     }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0 }}
@@ -263,13 +266,14 @@ export default function AsyncSync() {
 
               <div className="absolute left-[15%] top-0 bottom-0 w-px bg-slate-300 dark:bg-tactical-line">
                 {communicationType === 'async' && (
-                  <div className="absolute inset-0 border-l border-dashed border-signal-green/30 animate-pulse" />
+                  <div className="absolute inset-0 border-l border-dashed border-signal-green/30" />
                 )}
               </div>
             </div>
           </div>
         </div>
 
+        <FlowLink active={requests.some(request => request.status !== 'served')} tone={communicationType === 'sync' ? 'cyan' : 'amber'} eventKey={requests.map(request => `${request.id}-${request.status}`).join(',')} className="mt-4 w-full" />
         <div className="flex flex-wrap justify-center gap-6 mt-4 font-sans text-xs text-slate-500 dark:text-tactical-dim">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-signal-cyan"></div>

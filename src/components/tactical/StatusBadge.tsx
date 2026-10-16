@@ -1,5 +1,6 @@
 import React from 'react';
 import { cn } from './cn';
+import { useTranslation } from 'react-i18next';
 
 export type StatusVariant =
   | 'online'
@@ -64,6 +65,7 @@ interface StatusBadgeProps {
 
 /** Status label with a semantic color and optional dot. */
 export function StatusBadge({ variant, label, dot = true, className }: StatusBadgeProps) {
+  const { t } = useTranslation();
   const v = variants[variant];
   return (
     <span
@@ -74,7 +76,7 @@ export function StatusBadge({ variant, label, dot = true, className }: StatusBad
       )}
     >
       {dot && <span className={cn('h-1.5 w-1.5 rounded-full', v.dot)} aria-hidden />}
-      {label ?? v.label}
+      {label ?? t(`status.${variant}`, { defaultValue: v.label })}
     </span>
   );
 }

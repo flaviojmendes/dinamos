@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
+import { FlowLink, useSimulationMotion } from '../simulation';
+import { Database, Layers } from 'lucide-react';
+import { Play, Pause, RotateCcw, SkipForward } from 'lucide-react';
 import { Panel, TacticalButton, StatusBadge } from '../tactical';
 import { AnimatedMetric } from '../AISystems/motion';
 import { NarrationBar } from '../simulators/teaching';
@@ -22,6 +25,7 @@ type Narr = { tone: 'idle' | 'active' | 'success'; key: string; text: string };
 
 export default function StorageEngineSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const base = 'simulators.storage_engine';
 
   const [engine, setEngine] = useState<Engine>('lsm');
@@ -119,20 +123,21 @@ export default function StorageEngineSimulator() {
   const l1 = sstables.filter((s) => s.level === 1);
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
       <Panel
         title={t(`${base}.title`)}
         accent="cyan"
         action={
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="sim-controls flex flex-wrap items-center gap-2">
             <TacticalButton size="sm" variant="secondary" onClick={step} disabled={running}>
-              {t(`${base}.buttons.step`)}
+              <SkipForward size={14} aria-hidden="true" />{t(`${base}.buttons.step`)}
             </TacticalButton>
-            <TacticalButton size="sm" variant={running ? 'danger' : 'primary'} onClick={() => setRunning((r) => !r)}>
+            <TacticalButton size="sm" aria-pressed={running} variant={running ? 'secondary' : 'primary'} onClick={() => setRunning((r) => !r)}>
+              {running ? <Pause size={14} aria-hidden="true" /> : <Play size={14} aria-hidden="true" />}
               {running ? t(`${base}.buttons.stop`) : t(`${base}.buttons.start`)}
             </TacticalButton>
             <TacticalButton size="sm" variant="ghost" onClick={reset}>
-              {t(`${base}.buttons.reset`)}
+              <RotateCcw size={14} aria-hidden="true" />{t(`${base}.buttons.reset`)}
             </TacticalButton>
           </div>
         }
@@ -141,7 +146,7 @@ export default function StorageEngineSimulator() {
 
         <div className="mb-5 flex gap-2">
           {(['lsm', 'btree'] as Engine[]).map((e) => (
-            <TacticalButton key={e} size="sm" variant={engine === e ? 'secondary' : 'ghost'} onClick={() => setEngine(e)}>
+            <TacticalButton key={e} size="sm" aria-pressed={engine === e} variant={engine === e ? 'secondary' : 'ghost'} onClick={() => setEngine(e)}>
               {t(`${base}.engines.${e}`)}
             </TacticalButton>
           ))}
@@ -152,45 +157,49 @@ export default function StorageEngineSimulator() {
         </div>
 
         {/* WAL row */}
-        <div className="mb-4 flex items-center gap-3 rounded-lg border border-slate-200 p-3 dark:border-tactical-border">
+        <div className="sim-stage rounded-xl border border-slate-200 p-4 dark:border-tactical-border">
+        <div className="sim-node mb-2 flex items-center gap-3 rounded-lg border border-slate-200 p-3 dark:border-tactical-border">
           <StatusBadge variant="online" label={t(`${base}.wal`)} />
-          <SegmentBarInline value={walEvents % 20} />
+          <SegmentBarInline value={walEvents} />
           <span className="font-mono text-xs tabular-nums text-slate-500 dark:text-tactical-dim">{walEvents}</span>
         </div>
+        <div className="flex justify-center"><FlowLink direction="vertical" active={writes > 0} eventKey={writes} count={1} tone="green" /></div>
 
         {engine === 'lsm' ? (
           <div className="space-y-4">
-            <div>
-              <div className="label-mono mb-2">{t(`${base}.lsm.memtable`)}</div>
+            <div className="sim-node p-4">
+              <div className="mb-3 flex items-center gap-2 font-sans text-sm font-medium"><Layers size={17} aria-hidden="true" />{t(`${base}.lsm.memtable`)}<span className="ml-auto font-mono text-xs text-signal-green">{memtable}/{MEMTABLE_CAP}</span></div>
               <div className="flex gap-1">
                 {Array.from({ length: MEMTABLE_CAP }).map((_, i) => (
                   <motion.div
                     key={i}
-                    animate={{ scale: i === memtable - 1 ? [1.2, 1] : 1 }}
-                    transition={{ duration: 0.3 }}
+                    animate={{ scale: !reducedMotion && i === memtable - 1 ? [1.08, 1] : 1 }}
+                    transition={transition}
                     className={`h-6 flex-1 rounded ${i < memtable ? 'bg-signal-green' : 'border border-slate-200 dark:border-tactical-border'}`}
                   />
                 ))}
               </div>
             </div>
-            <div>
+            <div className="sim-node p-4">
               <div className="label-mono mb-2">{t(`${base}.lsm.level`, { n: 0 })}</div>
               <div className="flex min-h-[2rem] flex-wrap gap-2">
                 <AnimatePresence>
                   {l0.map((s) => (
-                    <motion.div key={s.id} layout initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ opacity: 0, y: 8 }} className="rounded border border-signal-cyan/50 bg-signal-cyan/30 px-3 py-1 font-mono text-[10px] text-signal-cyan">
+                    <motion.div key={s.id} layout={!reducedMotion} initial={{ y: reducedMotion ? 0 : -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ opacity: 0, y: reducedMotion ? 0 : 8 }} transition={transition} className="flex items-center gap-2 rounded-md border border-signal-cyan/50 bg-signal-cyan/10 px-3 py-2 font-mono text-xs text-signal-cyan">
+                      <Database size={14} aria-hidden="true" />
                       SST&#183;{s.size}
                     </motion.div>
                   ))}
                 </AnimatePresence>
               </div>
             </div>
-            <div>
+            <div className="sim-node p-4">
               <div className="label-mono mb-2">{t(`${base}.lsm.level`, { n: 1 })}</div>
               <div className="flex min-h-[2rem] flex-wrap gap-2">
                 <AnimatePresence>
                   {l1.map((s) => (
-                    <motion.div key={s.id} layout initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ opacity: 0 }} className="rounded border border-brand-500/50 bg-brand-500/20 px-3 py-1 font-mono text-[10px] text-brand-600 dark:text-brand-400">
+                    <motion.div key={s.id} layout={!reducedMotion} initial={{ y: reducedMotion ? 0 : -8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ opacity: 0 }} transition={transition} className="flex items-center gap-2 rounded-md border border-brand-500/50 bg-brand-500/10 px-3 py-2 font-mono text-xs text-brand-600 dark:text-brand-400">
+                      <Database size={14} aria-hidden="true" />
                       SST&#183;{s.size}
                     </motion.div>
                   ))}
@@ -199,7 +208,7 @@ export default function StorageEngineSimulator() {
             </div>
           </div>
         ) : (
-          <div>
+          <div className="sim-node p-4">
             <div className="label-mono mb-2">{t(`${base}.btree.pages`)}</div>
             <div className="grid grid-cols-8 gap-1.5">
               {Array.from({ length: PAGES }).map((_, i) => {
@@ -207,27 +216,28 @@ export default function StorageEngineSimulator() {
                 const everTouched = touched.has(i);
                 return (
                   <motion.div
-                    key={i}
-                    animate={{ scale: isActive ? [1.25, 1] : 1 }}
-                    transition={{ duration: 0.3 }}
-                    className={`h-7 rounded ${
+                    key={`${i}-${isActive ? pageWrites : 'idle'}`}
+                    animate={{ scale: !reducedMotion && isActive ? [1.08, 1] : 1 }}
+                    transition={transition}
+                    className={`flex h-9 items-center justify-center rounded-md font-mono text-xs ${
                       isActive
-                        ? 'bg-signal-amber'
+                        ? 'bg-signal-amber text-black'
                         : everTouched
                           ? 'border border-signal-cyan/40 bg-signal-cyan/30'
                           : 'border border-slate-200 dark:border-tactical-border'
                     }`}
-                  />
+                  >{i}</motion.div>
                 );
               })}
             </div>
             <p className="mt-3 font-sans text-[11px] text-slate-500 dark:text-tactical-dim">{t(`${base}.btree.note`)}</p>
           </div>
         )}
+        </div>
       </Panel>
 
       <Panel title={t(`${base}.metrics.title`)} accent="green">
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div className="sim-metrics grid grid-cols-2 gap-3 lg:grid-cols-4">
           <AnimatedMetric value={writes} label={t(`${base}.metrics.writes`)} color="cyan" pulse={running} />
           <AnimatedMetric value={writeAmp} label={t(`${base}.metrics.write_amp`)} color={writeAmp > 2 ? 'red' : 'green'} decimals={1} suffix="x" />
           <AnimatedMetric value={readAmp} label={t(`${base}.metrics.read_amp`)} color={readAmp > 3 ? 'red' : 'default'} suffix="x" />
@@ -242,9 +252,10 @@ export default function StorageEngineSimulator() {
 }
 
 function SegmentBarInline({ value }: { value: number }) {
+  const { reducedMotion, transition } = useSimulationMotion();
   return (
-    <div className="relative h-2 flex-1 overflow-hidden rounded-full bg-slate-200 dark:bg-tactical-raised">
-      <motion.div className="absolute inset-y-0 left-0 rounded-full bg-signal-green" animate={{ width: `${(value / 20) * 100}%` }} />
+    <div className="flex h-5 min-w-0 flex-1 gap-0.5 overflow-hidden" aria-hidden="true">
+      {Array.from({ length: 20 }, (_, i) => <motion.span key={i === 19 ? `${i}-${value}` : i} initial={false} animate={{ opacity: i < value ? 1 : 0.25, scaleY: !reducedMotion && i === Math.min(19, value - 1) ? [0.65, 1] : 1 }} transition={transition} className={`h-full min-w-0 flex-1 rounded-sm ${i < value ? 'bg-signal-green' : 'bg-slate-200 dark:bg-tactical-border'}`} />)}
     </div>
   );
 }

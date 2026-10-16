@@ -1,9 +1,13 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSimulationMotion } from '../simulation';
+import { Play, Pause, RotateCcw, SkipForward } from 'lucide-react';
 import { Panel, TacticalButton, StatusBadge } from '../tactical';
 import { AnimatedMetric } from '../AISystems/motion';
 import { NarrationBar } from '../simulators/teaching';
+import TransitPacket from './TransitPacket';
+import { Database, Search, Warehouse, Workflow } from 'lucide-react';
 
 const TICK_MS = 800;
 const OPS = ['INSERT', 'UPDATE', 'DELETE'] as const;
@@ -26,6 +30,7 @@ type Narr = { tone: 'idle' | 'active' | 'success'; key: string; text: string };
 
 export default function CdcSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const base = 'simulators.cdc';
 
   const [running, setRunning] = useState(false);
@@ -100,20 +105,21 @@ export default function CdcSimulator() {
   const firstPendingIdx = visible.findIndex((e) => !e.consumed);
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
       <Panel
         title={t(`${base}.title`)}
         accent="cyan"
         action={
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="sim-controls flex flex-wrap items-center gap-2">
             <TacticalButton size="sm" variant="secondary" onClick={step} disabled={running}>
-              {t(`${base}.buttons.step`)}
+              <SkipForward size={14} aria-hidden="true" />{t(`${base}.buttons.step`)}
             </TacticalButton>
-            <TacticalButton size="sm" variant={running ? 'danger' : 'primary'} onClick={() => setRunning((r) => !r)}>
+            <TacticalButton size="sm" aria-pressed={running} variant={running ? 'secondary' : 'primary'} onClick={() => setRunning((r) => !r)}>
+              {running ? <Pause size={14} aria-hidden="true" /> : <Play size={14} aria-hidden="true" />}
               {running ? t(`${base}.buttons.stop`) : t(`${base}.buttons.start`)}
             </TacticalButton>
             <TacticalButton size="sm" variant="ghost" onClick={reset}>
-              {t(`${base}.buttons.reset`)}
+              <RotateCcw size={14} aria-hidden="true" />{t(`${base}.buttons.reset`)}
             </TacticalButton>
           </div>
         }
@@ -130,7 +136,7 @@ export default function CdcSimulator() {
         </div>
 
         {/* Transaction log with a read offset */}
-        <div className="mb-4 rounded-lg border border-slate-200 p-3 dark:border-tactical-border">
+        <div className="sim-stage mb-4 rounded-lg border border-slate-200 p-4 dark:border-tactical-border">
           <div className="mb-2 flex items-center justify-between">
             <span className="label-mono">{t(`${base}.source`)}</span>
             <StatusBadge variant={running ? 'online' : 'offline'} />
@@ -138,7 +144,7 @@ export default function CdcSimulator() {
           <div className="flex flex-wrap items-center gap-1.5">
             <AnimatePresence>
               {visible.map((e, i) => (
-                <span key={e.id} className="flex items-center gap-1.5">
+                <motion.span key={e.id} layout={!reducedMotion} className="flex items-center gap-1.5" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={transition}>
                   {i === firstPendingIdx && (
                     <span className="mx-0.5 flex flex-col items-center" title={t(`${base}.offset`)}>
                       <span className="h-5 w-px bg-signal-cyan" />
@@ -146,10 +152,12 @@ export default function CdcSimulator() {
                     </span>
                   )}
                   <motion.span
-                    initial={{ scale: 0, opacity: 0 }}
+                    initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className={`flex h-7 w-7 items-center justify-center rounded border font-mono text-[10px] font-bold ${
+                    transition={transition}
+                    title={`#${e.id} ${e.op}`}
+                    className={`flex h-9 w-9 items-center justify-center rounded-md border font-mono text-[11px] font-semibold ${
                       e.consumed
                         ? 'border-signal-green/40 bg-signal-green/15 text-signal-green'
                         : `border-signal-amber/50 bg-signal-amber/10 ${OP_COLOR[e.op]}`
@@ -157,7 +165,7 @@ export default function CdcSimulator() {
                   >
                     {e.op[0]}
                   </motion.span>
-                </span>
+                </motion.span>
               ))}
             </AnimatePresence>
           </div>
@@ -166,30 +174,33 @@ export default function CdcSimulator() {
 
         {/* Connector -> sinks */}
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
-          <div className="flex flex-col items-center gap-1 text-center">
-            <span className="label-mono">{t(`${base}.connector`)}</span>
-            <motion.div animate={{ x: running ? [0, 6, 0] : 0 }} transition={{ repeat: Infinity, duration: 1 }} className="font-mono text-signal-cyan">
-              &#8594;&#8594;
-            </motion.div>
+          <div className="sim-node flex min-w-28 flex-col items-center gap-2 px-4 py-5 text-center">
+            <Workflow size={22} className="text-signal-cyan" aria-hidden="true" />
+            <span className="font-sans text-sm font-medium">{t(`${base}.connector`)}</span>
+          </div>
+          <div className="sim-flow relative h-8 min-w-12 overflow-hidden lg:w-16" aria-hidden="true">
+            <div className="absolute inset-x-0 top-1/2 h-px bg-slate-300 dark:bg-tactical-line" />
+            {sinkPulse > 0 && <TransitPacket key={sinkPulse} tone="cyan" />}
           </div>
           <div className="grid flex-1 gap-2 sm:grid-cols-3">
-            {SINKS.map((s) => (
+            {SINKS.map((s, i) => {
+              const Icon = [Database, Search, Warehouse][i];
+              return (
               <motion.div
                 key={s}
-                animate={{ scale: sinkPulse ? [1.03, 1] : 1 }}
-                transition={{ duration: 0.3 }}
-                className="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2 dark:border-tactical-border"
+                className="sim-node flex items-center gap-3 rounded-lg border border-slate-200 px-4 py-4 dark:border-tactical-border"
               >
-                <span className="font-sans text-xs text-slate-700 dark:text-tactical-text">{t(`${base}.sinks.${s}`)}</span>
-                <span className="font-mono text-sm tabular-nums text-signal-cyan">{sinkCounts[s]}</span>
+                <Icon size={18} className="shrink-0 text-slate-500 dark:text-tactical-dim" aria-hidden="true" />
+                <span className="flex-1 font-sans text-sm text-slate-700 dark:text-tactical-text">{t(`${base}.sinks.${s}`)}</span>
+                <motion.span key={sinkCounts[s]} initial={{ opacity: 0.4, y: reducedMotion ? 0 : 4 }} animate={{ opacity: 1, y: 0 }} transition={transition} className="font-mono text-sm tabular-nums text-signal-cyan">{sinkCounts[s]}</motion.span>
               </motion.div>
-            ))}
+            );})}
           </div>
         </div>
       </Panel>
 
       <Panel title={t(`${base}.metrics.title`)} accent="green">
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div className="sim-metrics grid grid-cols-2 gap-3 lg:grid-cols-4">
           <AnimatedMetric value={produced} label={t(`${base}.metrics.produced`)} color="cyan" pulse={running} />
           <AnimatedMetric value={consumed} label={t(`${base}.metrics.consumed`)} color="green" />
           <AnimatedMetric value={lag} label={t(`${base}.metrics.lag`)} color={lag > 10 ? 'red' : lag > 0 ? 'amber' : 'green'} />

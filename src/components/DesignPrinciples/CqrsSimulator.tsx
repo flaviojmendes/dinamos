@@ -1,3 +1,4 @@
+import { SimulationActivity, FlowLink, useSimulationMotion } from '../simulation';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -13,6 +14,7 @@ interface Event {
 
 export default function CqrsSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const base = 'simulators.cqrs';
 
   const [lag, setLag] = useState(800);
@@ -61,7 +63,8 @@ export default function CqrsSimulator() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
+      <SimulationActivity active={pending > 0} />
       <Panel
         title={t(`${base}.title`)}
         accent="cyan"
@@ -69,7 +72,7 @@ export default function CqrsSimulator() {
       >
         <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
 
-        <div className="mb-6 space-y-2 max-w-md">
+        <div className="sim-controls mb-6 space-y-2 max-w-md">
           <label className="block text-xs font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.lag`)}</label>
           <div className="flex items-center gap-2">
             <input type="range" min="100" max="2000" step="100" value={lag} onChange={e => setLag(Number(e.target.value))} className={rangeClass} />
@@ -77,7 +80,7 @@ export default function CqrsSimulator() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="sim-stage grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr_auto_1fr] gap-4">
           {/* Command side */}
           <div>
             <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t(`${base}.panels.command`)}</div>
@@ -88,6 +91,8 @@ export default function CqrsSimulator() {
               <TacticalButton size="sm" variant="ghost" onClick={() => emit('cancelled')} disabled={!created}>{t(`${base}.commands.cancel`)}</TacticalButton>
             </div>
           </div>
+
+          <FlowLink active={pending > 0} className="hidden w-8 lg:flex" />
 
           {/* Event log */}
           <div>
@@ -100,8 +105,9 @@ export default function CqrsSimulator() {
                     <motion.div
                       key={e.id}
                       layout
-                      initial={{ opacity: 0, x: 16 }}
-                      animate={{ opacity: isApplied ? 1 : 0.5 }}
+                      initial={{ opacity: 0, x: reducedMotion ? 0 : 16 }}
+                      animate={{ opacity: isApplied ? 1 : 0.7, x: 0 }}
+                      transition={transition}
                       className={`flex items-center justify-between border rounded-md px-2 py-1 ${eventColor[e.type]}`}
                     >
                       <span className="font-sans text-[10px]">{t(`${base}.events.${e.type}`)}</span>
@@ -116,12 +122,14 @@ export default function CqrsSimulator() {
             </div>
           </div>
 
+          <FlowLink active={pending > 0} tone="green" className="hidden w-8 lg:flex" />
+
           {/* Read models */}
           <div>
             <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t(`${base}.panels.read`)}</div>
             <div className="space-y-3">
               <div className="border border-slate-200 dark:border-tactical-border rounded-lg px-3 py-3">
-                <motion.div key={status} initial={{ scale: 1.1 }} animate={{ scale: 1 }} className="font-sans text-lg font-semibold tracking-tight text-slate-900 dark:text-tactical-text">
+                <motion.div key={status} initial={{ opacity: 0.5, y: reducedMotion ? 0 : 6 }} animate={{ opacity: 1, y: 0 }} transition={transition} className="font-sans text-lg font-semibold tracking-tight text-slate-900 dark:text-tactical-text">
                   {t(`${base}.status_values.${status}`)}
                 </motion.div>
                 <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-1">{t(`${base}.read.status`)}</div>

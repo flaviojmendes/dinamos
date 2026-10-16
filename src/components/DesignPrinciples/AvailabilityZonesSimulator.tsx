@@ -1,3 +1,4 @@
+import { SimulationActivity, FlowLink } from '../simulation';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -153,7 +154,8 @@ export default function AvailabilityZonesSimulator() {
   }, [isRunning, config.requestRate, config.failureChance]);
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
+      <SimulationActivity active={isRunning} />
       <div className="max-w-3xl">
         <h2 className="text-base font-semibold tracking-tight text-slate-900 dark:text-tactical-text mb-2">
           {tStr('design_principles.availability.availability_zones_simulator.title')}
@@ -219,10 +221,10 @@ export default function AvailabilityZonesSimulator() {
         </div>
       </Panel>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="sim-stage grid grid-cols-1 md:grid-cols-3 gap-6">
         {zones.map((zone) => (
           <motion.div
-            key={zone.id}
+            key={zone.id} layout="position" className="min-w-0"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
           >
@@ -244,6 +246,7 @@ export default function AvailabilityZonesSimulator() {
                 />
               }
             >
+              <FlowLink active={isRunning && zone.status !== 'failed' && zone.load > 0} tone="green" className="mb-4 w-full" />
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between text-xs text-slate-500 dark:text-tactical-dim mb-1">

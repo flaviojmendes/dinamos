@@ -224,12 +224,7 @@
 }
 
 /* Hairline borders (override the light-theme slate borders in dark). */
-.dark .sim-scope .border,
-.dark .sim-scope .border-2,
-.dark .sim-scope .border-t,
-.dark .sim-scope .border-b,
-.dark .sim-scope .border-l,
-.dark .sim-scope .border-r {
+.dark .sim-scope :is(.border-slate-200, .border-slate-300, .border-gray-200, .border-gray-300):not([class*="dark:border-"]) {
   border-color: theme('colors.tactical.border');
 }
 

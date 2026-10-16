@@ -230,7 +230,15 @@
     }
   },
   "status": {
-    "coming_soon": "Em breve"
+    "coming_soon": "Em breve",
+    "online": "Online",
+    "active": "Ativo",
+    "completed": "Concluído",
+    "in-progress": "Em andamento",
+    "pending": "Pendente",
+    "locked": "Bloqueado",
+    "offline": "Offline",
+    "classified": "Alerta"
   },
   "content": {
     "mark_complete": "Marcar como concluído",
@@ -254,7 +262,8 @@
       "next": "Próxima",
       "more_in_module": "Mais em {{module}}",
       "explore": "Explorar"
-    }
+    },
+    "simulator_interactive": "Simulador interativo"
   },
   "auth": {
     "welcome_title": "Bem-vindo ao System Design",
@@ -3821,6 +3830,21 @@
           "text": "Em produção, você monitoraria latência, taxas de erro e métricas de negócio antes de promover um canary."
         }
       }
+    },
+    "motion": {
+      "interactive": "Simulador interativo",
+      "running": "Simulação em execução",
+      "ready": "Pronto para simular",
+      "client": "Cliente",
+      "gateway": "Balanceador",
+      "service": "Serviço",
+      "request": "Fluxo de requisições",
+      "circuit": "Circuito",
+      "queue": "Fila",
+      "producer": "Produtor",
+      "consumer": "Consumidor",
+      "accepted": "Aceitas",
+      "limited": "Limitadas"
     }
   },
   "design_principles": {

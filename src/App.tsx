@@ -10,18 +10,18 @@ import {
 // Simulators are heavy, route-only components rendered inside the <Suspense>
 // boundary below. Lazy-load them so they are code-split out of the entry chunk
 // and only fetched when their route is visited.
-const CircuitBreaker = React.lazy(() => import("./components/CircuitBreaker/CircuitBreaker"));
-const Backpressure = React.lazy(() => import("./components/Backpressure/Backpressure"));
-const RateLimiter = React.lazy(() => import("./components/RateLimiter/RateLimiter"));
-const AsyncSync = React.lazy(() => import("./components/AsyncSync/AsyncSync"));
-const CDN = React.lazy(() => import("./components/CDN/CDN"));
-const LogSimulator = React.lazy(() => import("./components/Monitoramento/LogSimulator"));
-const TracingSimulator = React.lazy(() => import('./components/Monitoramento/TracingSimulator'));
+const CircuitBreaker = getSimulator('circuit-breaker')!.component;
+const Backpressure = getSimulator('backpressure')!.component;
+const RateLimiter = getSimulator('rate-limiter')!.component;
+const AsyncSync = getSimulator('async-sync')!.component;
+const CDN = getSimulator('cdn')!.component;
+const LogSimulator = getSimulator('logs')!.component;
+const TracingSimulator = getSimulator('tracing')!.component;
 
 const LandingPage = React.lazy(() => import("./components/LandingPage/LandingPage"));
 const CommandCenter = React.lazy(() => import("./components/Dashboard/CommandCenter"));
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
-import Login from "./components/Auth/Login";
+const Login = React.lazy(() => import("./components/Auth/Login"));
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
 // --- designLab (merged) ---
 import DLProtectedRoute from "./app/components/ProtectedRoute";
@@ -86,7 +86,7 @@ import {
   TIER_ORDER,
   type Tier,
 } from "./config/contentRegistry";
-const SynchronizationAlgorithms = React.lazy(() => import('./components/ConsistencyStrategies/SynchronizationAlgorithms'));
+const SynchronizationAlgorithms = getSimulator('synchronization-algorithms')!.component;
 const SimpleSystemEditorPage = React.lazy(() => import("./pages/SimpleSystemEditorPage"));
 const EmbedEditorPage = React.lazy(() => import("./pages/EmbedEditorPage"));
 const GameEditorPage = React.lazy(() => import("./pages/GameEditorPage"));
@@ -1430,9 +1430,9 @@ export default function App() {
     } catch {
       /* ignore storage failures (private mode) */
     }
-    return true;
+    return typeof window === 'undefined' || window.innerWidth >= 768;
   });
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768);
   const [navFilter, setNavFilter] = useState('');
   const { pathname } = useLocation();
   // Arena surfaces are standalone (a marketing domain points straight at

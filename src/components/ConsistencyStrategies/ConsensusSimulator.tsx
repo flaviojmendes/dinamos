@@ -1,3 +1,4 @@
+import { SimulationActivity, useSimulationMotion } from '../simulation';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -38,6 +39,7 @@ interface PathPosition {
 
 export default function ConsensusSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const [nodes, setNodes] = useState<Node[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [step, setStep] = useState(0);
@@ -64,9 +66,9 @@ export default function ConsensusSimulator() {
 
   const getNodePosition = (index: number) => {
     const angle = (index * 2 * Math.PI) / 5 - Math.PI / 2;
-    const radius = 150;
-    const centerX = 200;
-    const centerY = 200;
+    const radius = 32;
+    const centerX = 50;
+    const centerY = 50;
     return { x: centerX + radius * Math.cos(angle), y: centerY + radius * Math.sin(angle) };
   };
 
@@ -248,7 +250,8 @@ export default function ConsensusSimulator() {
   const roles = t('design_principles.consistency_strategies.consensus_simulator.roles', { returnObjects: true }) as Record<string, string>;
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
+      <SimulationActivity active={isPlaying} />
       <Panel title={t('design_principles.consistency_strategies.consensus_simulator.controls.protocol_label')} accent="cyan">
         <div className="flex items-center gap-4">
           <select
@@ -304,7 +307,7 @@ export default function ConsensusSimulator() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="tactical-panel border-l-2 border-l-signal-cyan p-5"
+            className="tactical-panel p-5"
           >
             <h3 className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text mb-2">
               {t('design_principles.consistency_strategies.consensus_simulator.step_prefix')} {step + 1}: {protocolSteps[protocol][step].title}
@@ -315,7 +318,7 @@ export default function ConsensusSimulator() {
       </AnimatePresence>
 
       <Panel title={t('design_principles.consistency_strategies.consensus_simulator.cluster_vis_title')} accent="green" bodyClassName="pb-20">
-        <div ref={containerRef} className="relative aspect-square max-w-3xl mx-auto" style={{ height: '400px' }}>
+        <div ref={containerRef} className="sim-stage relative aspect-square w-full max-w-lg mx-auto">
           {/* Messages */}
           <AnimatePresence>
             {messages.map(message => {
@@ -325,8 +328,8 @@ export default function ConsensusSimulator() {
                 <motion.div
                   key={message.id}
                   className={`absolute w-3 h-3 rounded-full ${getMessageColor(message.type)}`}
-                  initial={{ x: fromPos.x, y: fromPos.y, scale: 0, opacity: 0 }}
-                  animate={{ x: toPos.x, y: toPos.y, scale: 1, opacity: 1 }}
+                  initial={{ left: `${fromPos.x}%`, top: `${fromPos.y}%`, scale: 0, opacity: 0 }}
+                  animate={{ left: `${toPos.x}%`, top: `${toPos.y}%`, scale: 1, opacity: 1 }}
                   exit={{ scale: 0, opacity: 0 }}
                   transition={{ duration: 0.5, ease: 'linear' }}
                 />
@@ -340,31 +343,30 @@ export default function ConsensusSimulator() {
             return (
               <motion.div
                 key={node.id}
-                className={`absolute w-32 h-32 -translate-x-1/2 -translate-y-1/2 rounded-lg ${getNodeColor(node.role)} p-4 flex flex-col items-center justify-center font-sans text-xs ${node.active ? 'opacity-100' : 'opacity-50'}`}
-                style={{ left: position.x, top: position.y }}
+                className={`absolute w-16 h-20 sm:w-28 sm:h-28 -translate-x-1/2 -translate-y-1/2 rounded-lg ${getNodeColor(node.role)} p-1.5 sm:p-3 flex flex-col items-center justify-center break-words font-sans text-[9px] sm:text-xs ${node.active ? 'opacity-100' : 'opacity-50'}`}
+                style={{ left: `${position.x}%`, top: `${position.y}%`, x: '-50%', y: '-50%' }}
                 animate={{
-                  scale: node.role === 'leader' || node.role === 'proposer' ? 1.1 : 1,
-                  boxShadow: node.role === 'leader' || node.role === 'proposer' ? '0 0 30px 5px rgba(34, 197, 94, 0.3)' : '0 0 20px 0 rgba(59, 130, 246, 0.2)'
+                  scale: !reducedMotion && (node.role === 'leader' || node.role === 'proposer') ? 1.04 : 1
                 }}
-                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                transition={transition}
               >
-                <div className="text-lg font-medium">{t('design_principles.consistency_strategies.consensus_simulator.labels.node_label')} <span className="font-mono tabular-nums">{node.id}</span></div>
-                <div className="text-sm capitalize">{getRoleName(node.role)}</div>
+                <div className="text-xs sm:text-base font-medium">{t('design_principles.consistency_strategies.consensus_simulator.labels.node_label')} <span className="font-mono tabular-nums">{node.id}</span></div>
+                <div className="text-[9px] sm:text-sm capitalize">{getRoleName(node.role)}</div>
                 {protocol === 'raft' && (
                   <>
-                    <div className="text-xs font-mono tabular-nums">{t('design_principles.consistency_strategies.consensus_simulator.labels.term_label')} {node.term}</div>
-                    <div className="text-xs font-mono tabular-nums">{t('design_principles.consistency_strategies.consensus_simulator.labels.log_label')}: {node.log.length}</div>
+                    <div className="text-[8px] sm:text-xs font-mono tabular-nums">{t('design_principles.consistency_strategies.consensus_simulator.labels.term_label')} {node.term}</div>
+                    <div className="text-[8px] sm:text-xs font-mono tabular-nums">{t('design_principles.consistency_strategies.consensus_simulator.labels.log_label')}: {node.log.length}</div>
                   </>
                 )}
                 {protocol === 'paxos' && (
                   <>
                     {node.role === 'proposer' && (
-                      <div className="text-xs font-mono tabular-nums">{t('design_principles.consistency_strategies.consensus_simulator.labels.proposal_label')}: n=1</div>
+                      <div className="text-[8px] sm:text-xs font-mono tabular-nums">{t('design_principles.consistency_strategies.consensus_simulator.labels.proposal_label')}: n=1</div>
                     )}
                     {node.role === 'acceptor' && (
                       <>
-                        <div className="text-xs font-mono tabular-nums">{t('design_principles.consistency_strategies.consensus_simulator.labels.promised_label')}: {node.promisedProposal}</div>
-                        <div className="text-xs font-mono tabular-nums">{t('design_principles.consistency_strategies.consensus_simulator.labels.accepted_label')}: {node.acceptedProposal}</div>
+                        <div className="text-[8px] sm:text-xs font-mono tabular-nums">{t('design_principles.consistency_strategies.consensus_simulator.labels.promised_label')}: {node.promisedProposal}</div>
+                        <div className="text-[8px] sm:text-xs font-mono tabular-nums">{t('design_principles.consistency_strategies.consensus_simulator.labels.accepted_label')}: {node.acceptedProposal}</div>
                         {node.value && <div className="text-xs font-mono">{t('design_principles.consistency_strategies.consensus_simulator.labels.value_label')}: {node.value}</div>}
                       </>
                     )}
@@ -377,8 +379,8 @@ export default function ConsensusSimulator() {
                   <>
                     {(node.role === 'leader' || node.role === 'follower') && (
                       <>
-                        <div className="text-xs font-mono tabular-nums">{t('design_principles.consistency_strategies.consensus_simulator.labels.zxid_label')}: {node.term}</div>
-                        <div className="text-xs font-mono tabular-nums">{t('design_principles.consistency_strategies.consensus_simulator.labels.data_label')}: {node.log.length}</div>
+                        <div className="text-[8px] sm:text-xs font-mono tabular-nums">{t('design_principles.consistency_strategies.consensus_simulator.labels.zxid_label')}: {node.term}</div>
+                        <div className="text-[8px] sm:text-xs font-mono tabular-nums">{t('design_principles.consistency_strategies.consensus_simulator.labels.data_label')}: {node.log.length}</div>
                       </>
                     )}
                     {node.role === 'participant' && (
@@ -389,7 +391,7 @@ export default function ConsensusSimulator() {
                     )}
                   </>
                 )}
-                {(node.role === 'leader' || node.role === 'proposer') && (
+                {isPlaying && !reducedMotion && (node.role === 'leader' || node.role === 'proposer') && (
                   <motion.div
                     className="absolute inset-0 rounded-lg border-2 border-emerald-300/50 dark:border-signal-green/50"
                     initial={false}

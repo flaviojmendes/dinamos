@@ -1,7 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { FlowLink, SimulationActivity, useSimulationMotion } from '../simulation';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Panel, TacticalButton, StatusBadge } from '../tactical';
+import { AnimatedMetric } from '../AISystems/motion';
+import { Pause, Play, RotateCcw, Send, Server, Inbox, Settings2 } from 'lucide-react';
 
 interface Message {
   id: number;
@@ -10,6 +13,7 @@ interface Message {
   producedAt: number;
   processedAt?: number;
   consumerId?: number;
+  producerId: number;
 }
 
 interface Config {
@@ -39,6 +43,7 @@ const messageStatusVariant = (status: Message['status']) => {
 
 export default function MessageQueue() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const [isRunning, setIsRunning] = useState(false);
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -57,8 +62,24 @@ export default function MessageQueue() {
     producerCount: 2,
     consumerCount: 1
   });
+  const queueRef = useRef<Message[]>([]);
+  const pendingEnqueues = useRef(0);
+  const busyConsumers = useRef<Set<number>>(new Set());
+  const nextMessage = useRef(1);
+  const deliveryTimers = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
+  const scheduleDelivery = useCallback((deliver: () => void, delay: number) => {
+    const id = setTimeout(() => { deliveryTimers.current.delete(id); deliver(); }, delay);
+    deliveryTimers.current.add(id);
+  }, []);
+  useEffect(() => () => { deliveryTimers.current.forEach(clearTimeout); }, []);
 
   const resetSimulation = useCallback(() => {
+    deliveryTimers.current.forEach(clearTimeout);
+    deliveryTimers.current.clear();
+    queueRef.current = [];
+    pendingEnqueues.current = 0;
+    busyConsumers.current.clear();
+    nextMessage.current = 1;
     setIsRunning(false);
     setMessages([]);
     setQueuedMessages([]);
@@ -71,43 +92,46 @@ export default function MessageQueue() {
   }, []);
 
   const produceMessage = useCallback((producerId: number) => {
-    if (queuedMessages.length >= config.maxQueueSize) {
+    if (queueRef.current.length + pendingEnqueues.current >= config.maxQueueSize) {
       setStats(prev => ({ ...prev, dropped: prev.dropped + 1 }));
       return;
     }
 
+    const id = nextMessage.current++;
     const newMessage: Message = {
-      id: Date.now() + Math.random(),
-      content: `MSG-P${producerId}-${stats.produced + 1}`,
+      id,
+      producerId,
+      content: `MSG-P${producerId}-${id}`,
       status: 'produced',
       producedAt: Date.now()
     };
 
     setMessages(prev => [newMessage, ...prev].slice(0, 50));
     setStats(prev => ({ ...prev, produced: prev.produced + 1 }));
+    pendingEnqueues.current += 1;
 
-    setTimeout(() => {
+    scheduleDelivery(() => {
       setMessages(prev => 
         prev.map(msg => 
           msg.id === newMessage.id ? { ...msg, status: 'queued' } : msg
         )
       );
-      setQueuedMessages(prev => [...prev, { ...newMessage, status: 'queued' }]);
+      pendingEnqueues.current -= 1;
+      queueRef.current = [...queueRef.current, { ...newMessage, status: 'queued' }];
+      setQueuedMessages(queueRef.current);
     }, 300);
-  }, [config.maxQueueSize, stats.produced, queuedMessages.length]);
+  }, [config.maxQueueSize, scheduleDelivery]);
 
   const consumeMessage = useCallback((consumerId: number) => {
-    if (queuedMessages.length === 0) return;
+    if (queueRef.current.length === 0) return;
 
-    const isProcessing = messages.some(m => 
-      m.status === 'processing' && m.consumerId === consumerId
-    );
-    if (isProcessing) return;
+    if (busyConsumers.current.has(consumerId)) return;
 
-    const [messageToProcess, ...remainingMessages] = queuedMessages;
+    const [messageToProcess, ...remainingMessages] = queueRef.current;
+    queueRef.current = remainingMessages;
+    busyConsumers.current.add(consumerId);
     setQueuedMessages(remainingMessages);
 
-    const startProcessing = Date.now();
     setMessages(prev =>
       prev.map(msg =>
         msg.id === messageToProcess.id 
@@ -116,7 +140,8 @@ export default function MessageQueue() {
       )
     );
 
-    setTimeout(() => {
+    scheduleDelivery(() => {
+      busyConsumers.current.delete(consumerId);
       const endProcessing = Date.now();
       const processingTime = endProcessing - messageToProcess.producedAt;
 
@@ -141,7 +166,7 @@ export default function MessageQueue() {
           (prev.processed + 1)
       }));
     }, config.processTime);
-  }, [config.processTime, messages, queuedMessages]);
+  }, [config.processTime, scheduleDelivery]);
 
   useEffect(() => {
     if (!isRunning) return;
@@ -170,35 +195,34 @@ export default function MessageQueue() {
   const rangeClass = 'w-full h-2 bg-slate-200 dark:bg-tactical-raised appearance-none cursor-pointer accent-signal-green';
 
   return (
-    <div className="space-y-6">
-      <div className="max-w-3xl">
-        <span className="inline-block text-xs font-medium text-slate-600 dark:text-tactical-label bg-slate-100 dark:bg-tactical-raised px-2.5 py-1 rounded-full mb-2">
-          {t('simulators.message_queue_sim.title')}
-        </span>
-      </div>
+    <div className="simulation-workspace space-y-6">
+      <div className="sim-controls"><SimulationActivity active={isRunning} /></div>
 
       <div className="flex flex-wrap items-center gap-2">
-        <TacticalButton size="sm" variant="ghost" onClick={() => setIsConfigOpen(!isConfigOpen)}>
+        <TacticalButton size="sm" variant="ghost" aria-expanded={isConfigOpen} aria-controls="messagequeue-config" onClick={() => setIsConfigOpen(!isConfigOpen)}>
+          <Settings2 size={14} aria-hidden="true" />
           {isConfigOpen ? t('simulators.message_queue_sim.buttons.close_config') : t('simulators.message_queue_sim.buttons.configure')}
         </TacticalButton>
         <TacticalButton
           size="sm"
-          variant={isRunning ? 'danger' : 'primary'}
+          variant={isRunning ? 'secondary' : 'primary'}
+          aria-pressed={isRunning}
           onClick={() => setIsRunning(!isRunning)}
         >
-          {isRunning ? t('simulators.message_queue_sim.buttons.stop') : t('simulators.message_queue_sim.buttons.start')}
+          {isRunning ? <Pause size={14} aria-hidden="true" /> : <Play size={14} aria-hidden="true" />}{isRunning ? t('simulators.message_queue_sim.buttons.stop') : t('simulators.message_queue_sim.buttons.start')}
         </TacticalButton>
         <TacticalButton size="sm" variant="secondary" onClick={resetSimulation}>
-          {t('simulators.message_queue_sim.buttons.reset')}
+          <RotateCcw size={14} aria-hidden="true" />{t('simulators.message_queue_sim.buttons.reset')}
         </TacticalButton>
-        {isRunning && <StatusBadge variant="active" label="Running" />}
       </div>
 
-      {isConfigOpen && (
+      <AnimatePresence initial={false}>{isConfigOpen && (
         <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          exit={{ opacity: 0, height: 0 }}
+          id="messagequeue-config"
+          initial={{ opacity: 0, y: reducedMotion ? 0 : -6 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0 }}
+          transition={transition}
         >
           <Panel title={t('simulators.message_queue_sim.buttons.configure')} accent="cyan">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -251,81 +275,40 @@ export default function MessageQueue() {
             </div>
           </Panel>
         </motion.div>
-      )}
+      )}</AnimatePresence>
 
       <Panel title={t('simulators.message_queue_sim.flow.title')} accent="amber">
-        <div className="relative h-48 flex items-center justify-between max-w-4xl mx-auto">
-          <div className="absolute h-px bg-slate-300 dark:bg-tactical-line left-[25%] right-[25%] top-1/2 -translate-y-1/2" />
-          <div className="relative z-10 w-1/4">
-            <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 rounded-lg">
-              <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t('simulators.message_queue_sim.config.producers')}</div>
-              <div className="space-y-2">
-                {Array.from({ length: config.producerCount }).map((_, i) => (
-                  <div key={i} className="h-6 border border-signal-cyan/40 bg-signal-cyan/10 flex items-center justify-center font-mono text-xs text-signal-cyan rounded-md">
-                    P{i + 1}
-                  </div>
-                ))}
-              </div>
+        <div className="sim-stage grid grid-cols-1 gap-4 rounded-xl border border-slate-200 p-4 dark:border-tactical-border lg:grid-cols-[1fr_40px_1.4fr_40px_1fr] lg:items-center">
+          <div className="min-w-0">
+            <div className="mb-3 flex items-center gap-2 font-sans text-sm font-medium"><Send size={17} aria-hidden="true" />{t('simulators.message_queue_sim.config.producers')}</div>
+            <div className="space-y-2">
+              {Array.from({ length: config.producerCount }, (_, i) => {
+                const latest = messages.find(message => message.producerId === i + 1);
+                return <div key={i} className="sim-node flex items-center gap-3 rounded-lg px-3 py-3"><Send size={17} className="text-signal-cyan" aria-hidden="true" /><span className="font-mono text-xs">P{i + 1}</span><motion.span key={latest?.id ?? 'idle'} initial={latest ? { opacity: 0.4, x: reducedMotion ? 0 : -4 } : false} animate={{ opacity: 1, x: 0 }} transition={transition} className="ml-auto font-mono text-[10px] text-slate-500 dark:text-tactical-dim">{latest ? `#${latest.id}` : '—'}</motion.span></div>;
+              })}
             </div>
           </div>
-          <div className="relative z-10 w-1/3">
-            <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 rounded-lg">
-              <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t('simulators.message_queue_sim.flow.queue')}</div>
-              <div className="relative h-24 border border-slate-300 dark:border-tactical-border bg-slate-100 dark:bg-tactical-surface overflow-hidden rounded-md">
-                <AnimatePresence>
-                  {queuedMessages.slice(0, 5).map((msg, index) => (
-                    <motion.div
-                      key={msg.id}
-                      initial={{ opacity: 0, x: -50 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 50 }}
-                      transition={{ duration: 0.3 }}
-                      className="absolute w-full p-2"
-                      style={{ top: `${index * 20}%` }}
-                    >
-                      <div className="h-4 border border-signal-amber/40 bg-signal-amber/10 flex items-center justify-center font-mono text-xs text-signal-amber rounded-md">
-                        {msg.content}
-                      </div>
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-                {queuedMessages.length > 5 && (
-                  <div className="absolute bottom-0 inset-x-0 text-center font-mono text-xs text-slate-500 dark:text-tactical-label py-1">
-                    {t('simulators.message_queue_sim.flow.more', { count: queuedMessages.length - 5 })}
-                  </div>
-                )}
-              </div>
+          <FlowLink active={stats.produced > 0} eventKey={stats.produced} count={1} />
+          <div className="sim-node min-w-0 rounded-lg p-4">
+            <div className="mb-3 flex items-center gap-2 font-sans text-sm font-medium"><Inbox size={17} aria-hidden="true" />{t('simulators.message_queue_sim.flow.queue')}<span className="ml-auto font-mono text-xs text-signal-amber">{queuedMessages.length}/{config.maxQueueSize}</span></div>
+            <div className="flex min-h-28 flex-col gap-1.5">
+              <AnimatePresence initial={false} mode="popLayout">
+                {queuedMessages.slice(0, 6).map(msg => <motion.div key={msg.id} layout={!reducedMotion} initial={{ opacity: 0, x: reducedMotion ? 0 : -12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: reducedMotion ? 0 : 12 }} transition={transition} className="rounded-md border border-signal-amber/30 bg-signal-amber/5 px-3 py-2 font-mono text-xs text-signal-amber">{msg.content}</motion.div>)}
+              </AnimatePresence>
+              {queuedMessages.length > 6 && <span className="py-1 font-sans text-xs text-slate-500 dark:text-tactical-dim">{t('simulators.message_queue_sim.flow.more', { count: queuedMessages.length - 6 })}</span>}
             </div>
           </div>
-          <div className="relative z-10 w-1/4">
-            <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 rounded-lg">
-              <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t('simulators.message_queue_sim.config.consumers')}</div>
-              <div className="space-y-2">
-                {Array.from({ length: config.consumerCount }).map((_, i) => {
-                  const processingMessage = messages.find(m => m.status === 'processing' && m.consumerId === i + 1);
-                  return (
-                    <div key={i} className="space-y-1">
-                      <div className={`h-6 border flex items-center justify-center font-mono text-xs rounded-md ${
-                        processingMessage
-                          ? 'border-signal-amber/40 bg-signal-amber/10 text-signal-amber'
-                          : 'border-signal-green/40 bg-signal-green/10 text-signal-green'
-                      }`}>
-                        C{i + 1}
-                      </div>
-                      {processingMessage && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="font-mono text-xs border border-signal-amber/30 bg-signal-amber/5 p-1 text-signal-amber text-center rounded-md"
-                        >
-                          {processingMessage.content}
-                        </motion.div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+          <FlowLink active={messages.some(message => message.status === 'processing')} eventKey={messages.filter(message => message.status === 'processing').map(message => message.id).join('-')} count={1} tone="green" />
+          <div className="min-w-0">
+            <div className="mb-3 flex items-center gap-2 font-sans text-sm font-medium"><Server size={17} aria-hidden="true" />{t('simulators.message_queue_sim.config.consumers')}</div>
+            <div className="space-y-2">
+              {Array.from({ length: config.consumerCount }, (_, i) => {
+                const processing = messages.find(message => message.status === 'processing' && message.consumerId === i + 1);
+                return <div key={i} className={`sim-node overflow-hidden rounded-lg px-3 py-3 ${processing ? 'border-signal-amber' : ''}`}>
+                  <div className="flex items-center gap-3"><Server size={17} className={processing ? 'text-signal-amber' : 'text-signal-green'} aria-hidden="true" /><span className="font-mono text-xs">C{i + 1}</span><span className="ml-auto font-mono text-[10px] text-slate-500 dark:text-tactical-dim">{processing ? `#${processing.id}` : '—'}</span></div>
+                  {processing && <div className="relative mt-3 h-1 overflow-hidden rounded-full bg-slate-200 dark:bg-tactical-border"><motion.span key={processing.id} className="absolute inset-0 origin-left rounded-full bg-signal-amber" initial={{ scaleX: reducedMotion ? 0.5 : 0 }} animate={{ scaleX: reducedMotion ? 0.5 : 1 }} transition={{ duration: reducedMotion ? 0 : config.processTime / 1000, ease: 'linear' }} /></div>}
+                </div>;
+              })}
             </div>
           </div>
         </div>
@@ -337,40 +320,21 @@ export default function MessageQueue() {
             <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-1">{t('simulators.message_queue_sim.queue_status.size')}</div>
             <div className="relative h-8 border border-slate-200 dark:border-tactical-border bg-slate-100 dark:bg-tactical-raised overflow-hidden rounded-md">
               <motion.div
-                className="absolute inset-y-0 left-0 bg-signal-cyan/60"
-                animate={{ width: `${(queuedMessages.length / config.maxQueueSize) * 100}%` }}
-                transition={{ duration: 0.3 }}
+                className="absolute inset-0 origin-left bg-signal-cyan/30"
+                initial={false}
+                animate={{ scaleX: Math.min(1, queuedMessages.length / config.maxQueueSize) }}
+                transition={transition}
               />
               <div className="absolute inset-0 flex items-center justify-center font-mono text-sm text-slate-900 dark:text-tactical-text">
                 {queuedMessages.length} / {config.maxQueueSize}
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg">
-              <motion.div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan" animate={{ scale: stats.produced > 0 ? [1, 1.1, 1] : 1 }} transition={{ duration: 0.3 }}>
-                {stats.produced}
-              </motion.div>
-              <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.message_queue_sim.queue_status.produced')}</div>
-            </div>
-            <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg">
-              <motion.div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green" animate={{ scale: stats.processed > 0 ? [1, 1.1, 1] : 1 }} transition={{ duration: 0.3 }}>
-                {stats.processed}
-              </motion.div>
-              <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.message_queue_sim.queue_status.processed')}</div>
-            </div>
-            <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg">
-              <motion.div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-red" animate={{ scale: stats.dropped > 0 ? [1, 1.1, 1] : 1 }} transition={{ duration: 0.3 }}>
-                {stats.dropped}
-              </motion.div>
-              <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.message_queue_sim.queue_status.dropped')}</div>
-            </div>
-            <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg">
-              <div className="font-mono text-3xl font-bold tabular-nums leading-none text-slate-900 dark:text-tactical-text">
-                {Math.round(stats.avgProcessingTime)}ms
-              </div>
-              <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.message_queue_sim.queue_status.avg_time')}</div>
-            </div>
+          <div className="sim-metrics grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <AnimatedMetric value={stats.produced} label={t('simulators.message_queue_sim.queue_status.produced')} color="cyan" />
+            <AnimatedMetric value={stats.processed} label={t('simulators.message_queue_sim.queue_status.processed')} color="green" />
+            <AnimatedMetric value={stats.dropped} label={t('simulators.message_queue_sim.queue_status.dropped')} color={stats.dropped > 0 ? 'red' : 'default'} />
+            <AnimatedMetric value={Math.round(stats.avgProcessingTime)} suffix="ms" label={t('simulators.message_queue_sim.queue_status.avg_time')} color="default" />
           </div>
         </div>
       </Panel>
@@ -381,9 +345,10 @@ export default function MessageQueue() {
             {messages.map(message => (
               <motion.div
                 key={message.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: reducedMotion ? 0 : 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                exit={{ opacity: 0 }}
+                transition={transition}
                 className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-3 rounded-lg"
               >
                 <div className="flex items-center gap-3">

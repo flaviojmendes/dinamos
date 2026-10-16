@@ -1,3 +1,7 @@
+import { motion, AnimatePresence } from 'framer-motion';
+import { Play, Pause, UserRound, Server } from 'lucide-react';
+import { AnimatedNumber } from '../AISystems/motion';
+import { SimulationActivity, FlowLink, useSimulationMotion } from '../simulation';
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Panel, StatusBadge, TacticalButton } from '../tactical';
@@ -28,6 +32,7 @@ const circuitStateVariant = (state: CircuitState) => {
 
 export default function CircuitBreaker() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const [isRunning, setIsRunning] = useState(false);
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   const [errorsEnabled, setErrorsEnabled] = useState(false);
@@ -126,12 +131,8 @@ export default function CircuitBreaker() {
     'w-full bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-2 py-1 font-sans text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-brand-500 rounded-md';
 
   return (
-    <div className="space-y-6">
-      <div className="max-w-3xl">
-        <span className="inline-block text-xs font-medium text-slate-600 dark:text-tactical-label bg-slate-100 dark:bg-tactical-raised px-2.5 py-1 rounded-full mb-2">
-          {t('simulators.circuit_breaker.title')}
-        </span>
-      </div>
+    <div className="simulation-workspace space-y-6">
+      <div className="sim-controls"><SimulationActivity active={isRunning} /></div>
 
       <Panel
         title={t('simulators.circuit_breaker.labels.state')}
@@ -177,14 +178,17 @@ export default function CircuitBreaker() {
         <div className="flex flex-col sm:flex-row flex-wrap gap-4 mb-6">
           <TacticalButton
             size="sm"
-            variant={isRunning ? 'danger' : 'secondary'}
+            variant={isRunning ? 'secondary' : 'primary'}
+            aria-pressed={isRunning}
             onClick={() => setIsRunning(!isRunning)}
           >
+            {isRunning ? <Pause size={14} aria-hidden="true" /> : <Play size={14} aria-hidden="true" />}
             {isRunning ? t('simulators.circuit_breaker.buttons.stop') : t('simulators.circuit_breaker.buttons.start')}
           </TacticalButton>
           <TacticalButton
             size="sm"
             variant={errorsEnabled ? 'danger' : 'secondary'}
+            aria-pressed={errorsEnabled}
             onClick={() => setErrorsEnabled(!errorsEnabled)}
             disabled={!isRunning}
           >
@@ -204,6 +208,19 @@ export default function CircuitBreaker() {
           </div>
         </div>
 
+        <div className="sim-stage mb-5 flex items-center gap-3 sm:gap-5">
+          <div className="flex min-w-0 flex-col items-center gap-2 text-center text-xs sm:text-sm"><UserRound size={24} aria-hidden="true" />{t('simulators.motion.client')}</div>
+          <FlowLink active={isRunning && circuitState !== 'OPEN'} eventKey={requests[0]?.id ?? 0} />
+          <div className="sim-node flex min-w-0 flex-col items-center gap-2 px-3 py-4 text-center" style={{ borderColor: circuitState === 'OPEN' ? 'var(--sim-red)' : circuitState === 'HALF_OPEN' ? 'var(--sim-amber)' : 'var(--sim-green)' }}>
+            <svg width="64" height="40" viewBox="0 0 64 40" fill="none" aria-hidden="true" style={{ color: circuitState === 'OPEN' ? 'var(--sim-red)' : circuitState === 'HALF_OPEN' ? 'var(--sim-amber)' : 'var(--sim-green)' }}>
+              <path d="M0 28H14M50 28H64" stroke="currentColor" strokeWidth="2" /><circle cx="16" cy="28" r="3" stroke="currentColor" strokeWidth="2" /><circle cx="48" cy="28" r="3" stroke="currentColor" strokeWidth="2" />
+              <motion.line x1="19" y1="28" x2="45" animate={{ y2: circuitState === 'OPEN' ? 6 : circuitState === 'HALF_OPEN' ? 16 : 28 }} transition={transition} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+            </svg>
+            <span className="font-mono text-xs">{circuitState}</span>
+          </div>
+          <FlowLink active={isRunning && circuitState !== 'OPEN'} tone={errorsEnabled ? 'amber' : 'green'} eventKey={requests[0]?.id ?? 0} />
+          <div className="flex min-w-0 flex-col items-center gap-2 text-center text-xs sm:text-sm"><Server size={24} aria-hidden="true" />{t('simulators.motion.service')}</div>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg">
             <div className="flex flex-wrap items-center gap-4 mb-4">
@@ -216,7 +233,7 @@ export default function CircuitBreaker() {
               )}
             </div>
             <div className="text-xs font-medium text-slate-500 dark:text-tactical-label">{t('simulators.circuit_breaker.labels.consecutive_failures')}</div>
-            <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-amber">{consecutiveFailures}</div>
+            <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-amber"><AnimatedNumber value={consecutiveFailures} /></div>
           </div>
           <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg">
             <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t('simulators.circuit_breaker.labels.error_status')}</div>
@@ -234,8 +251,9 @@ export default function CircuitBreaker() {
 
       <Panel title={t('simulators.circuit_breaker.labels.latest_requests')} accent="amber">
         <div className="space-y-2">
+          <AnimatePresence initial={false} mode="popLayout">
           {requests.map(request => (
-            <div
+            <motion.div layout={!reducedMotion} initial={{ opacity: 0, x: reducedMotion ? 0 : -12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} transition={transition}
               key={request.id}
               className="flex flex-wrap justify-between gap-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2.5 rounded-md"
             >
@@ -246,8 +264,9 @@ export default function CircuitBreaker() {
                 />
               </div>
               <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim tabular-nums">{request.duration.toFixed(0)}ms</span>
-            </div>
+            </motion.div>
           ))}
+          </AnimatePresence>
           {requests.length === 0 && (
             <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center rounded-lg">
               <p className="font-sans text-xs text-slate-400 dark:text-tactical-label">

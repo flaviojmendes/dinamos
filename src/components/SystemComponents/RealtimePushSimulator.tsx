@@ -1,9 +1,13 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSimulationMotion } from '../simulation';
+import { Play, Pause, RotateCcw } from 'lucide-react';
 import { Panel, TacticalButton, StatusBadge } from '../tactical';
 import { AnimatedMetric } from '../AISystems/motion';
 import { NarrationBar } from '../simulators/teaching';
+import TransitPacket from '../DataStorage/TransitPacket';
+import { Server, Monitor } from 'lucide-react';
 
 type Mode = 'polling' | 'sse' | 'websocket';
 const TICK_MS = 500;
@@ -20,6 +24,7 @@ type Narr = { tone: 'idle' | 'active' | 'success'; key: string; text: string };
 
 export default function RealtimePushSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const base = 'simulators.realtime_push';
 
   const [mode, setMode] = useState<Mode>('polling');
@@ -108,16 +113,17 @@ export default function RealtimePushSimulator() {
   const persistent = mode !== 'polling';
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
       <Panel
         title={t(`${base}.title`)}
         accent="cyan"
         action={
-          <div className="flex flex-wrap items-center gap-2">
-            <TacticalButton size="sm" variant={running ? 'danger' : 'primary'} onClick={() => setRunning((r) => !r)}>
+          <div className="sim-controls flex flex-wrap items-center gap-2">
+            <TacticalButton size="sm" aria-pressed={running} variant={running ? 'secondary' : 'primary'} onClick={() => setRunning((r) => !r)}>
+              {running ? <Pause size={14} aria-hidden="true" /> : <Play size={14} aria-hidden="true" />}
               {running ? t(`${base}.buttons.stop`) : t(`${base}.buttons.start`)}
             </TacticalButton>
-            <TacticalButton size="sm" variant="ghost" onClick={reset}>{t(`${base}.buttons.reset`)}</TacticalButton>
+            <TacticalButton size="sm" variant="ghost" onClick={reset}><RotateCcw size={14} aria-hidden="true" />{t(`${base}.buttons.reset`)}</TacticalButton>
           </div>
         }
       >
@@ -146,49 +152,37 @@ export default function RealtimePushSimulator() {
         </div>
 
         {/* Server | wire | client */}
-        <div className="rounded-lg border border-slate-200 p-4 dark:border-tactical-border">
+        <div className="sim-stage rounded-xl border border-slate-200 p-4 dark:border-tactical-border">
           <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3">
-            <div className="text-center">
-              <div className="label-mono mb-1">{t(`${base}.server`)}</div>
+            <div className="sim-node flex min-h-28 min-w-20 flex-col items-center justify-center gap-2 px-3 py-4 text-center">
+              <Server size={24} className="text-signal-cyan" aria-hidden="true" />
+              <div className="font-sans text-sm font-medium">{t(`${base}.server`)}</div>
               <div className="flex min-h-[12px] flex-wrap justify-center gap-0.5">
                 <AnimatePresence>
                   {pending.map((m) => (
-                    <motion.span key={m.id} initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ opacity: 0 }} className="inline-block h-2.5 w-2.5 rounded-full bg-signal-amber" />
+                    <motion.span key={m.id} initial={{ scale: reducedMotion ? 1 : 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ opacity: 0 }} transition={transition} className="inline-block h-2.5 w-2.5 rounded-sm bg-signal-amber" />
                   ))}
                 </AnimatePresence>
               </div>
             </div>
 
-            <div className="relative h-8">
+            <div className="sim-flow relative h-10 overflow-hidden">
               <div
                 className={`absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 rounded-full ${
                   persistent ? 'bg-signal-green/50' : 'border-t-2 border-dashed border-slate-300 bg-transparent dark:border-tactical-border'
                 }`}
               />
-              {persistent && running && (
-                <motion.div
-                  className="absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-signal-green/70"
-                  animate={{ opacity: [0.3, 1, 0.3] }}
-                  transition={{ repeat: Infinity, duration: 1.5 }}
-                />
-              )}
               <AnimatePresence>
                 {flights.map((f) => (
-                  <motion.span
-                    key={f.id}
-                    className={`absolute top-1/2 h-3.5 w-3.5 -translate-y-1/2 rounded-full ${f.kind === 'data' ? 'bg-signal-green' : 'bg-signal-red'}`}
-                    initial={{ left: '0%', opacity: 0 }}
-                    animate={{ left: '100%', opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.6, ease: 'easeInOut' }}
-                  />
+                  <TransitPacket key={f.id} seconds={0.6} tone={f.kind === 'data' ? 'green' : 'amber'} />
                 ))}
               </AnimatePresence>
             </div>
 
-            <div className="text-center">
-              <div className="label-mono mb-1">{t(`${base}.client`)}</div>
-              <span className="mx-auto block h-4 w-4 rounded-full bg-slate-300 dark:bg-tactical-border" />
+            <div className="sim-node flex min-h-28 min-w-20 flex-col items-center justify-center gap-2 px-3 py-4 text-center">
+              <motion.div key={delivered} initial={delivered ? { opacity: 0.5, y: reducedMotion ? 0 : 3 } : false} animate={{ opacity: 1, y: 0 }} transition={transition}><Monitor size={24} className={delivered ? 'text-signal-green' : 'text-slate-500 dark:text-tactical-dim'} aria-hidden="true" /></motion.div>
+              <div className="font-sans text-sm font-medium">{t(`${base}.client`)}</div>
+              <span className="font-mono text-xs tabular-nums text-signal-green">{delivered}</span>
             </div>
           </div>
           <div className="mt-3 flex items-center justify-between">
@@ -201,7 +195,7 @@ export default function RealtimePushSimulator() {
       </Panel>
 
       <Panel title={t(`${base}.metrics.title`)} accent="green">
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div className="sim-metrics grid grid-cols-2 gap-3 lg:grid-cols-4">
           <AnimatedMetric value={delivered} label={t(`${base}.metrics.delivered`)} color="green" pulse={running} />
           <AnimatedMetric value={avgLatency} suffix=" ticks" label={t(`${base}.metrics.latency`)} color={avgLatency > 3 ? 'red' : 'green'} decimals={1} />
           <AnimatedMetric value={requests} label={t(`${base}.metrics.requests`)} color={mode === 'polling' ? 'amber' : 'green'} />

@@ -1,3 +1,4 @@
+import { SimulationActivity, FlowLink, useSimulationMotion } from '../simulation';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +25,7 @@ interface SimulationConfig {
 
 export default function TimeoutSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
 
   const [config, setConfig] = useState<SimulationConfig>({
     timeout: 3000,
@@ -144,7 +146,8 @@ export default function TimeoutSimulator() {
   const formatTime = (ms: number) => `${toSeconds(ms)}s`;
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
+      <SimulationActivity active={isSimulating} />
       <div className="max-w-3xl">
         <div className="flex items-center justify-between gap-4">
           <div>
@@ -310,15 +313,16 @@ export default function TimeoutSimulator() {
                 key={request.id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2.5"
+                transition={transition}
+                className="sim-node rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2.5"
               >
                 <div className="flex justify-between items-center gap-2">
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{t('simulators.timeout.request_label', { id: request.id })}</span>
                     {request.status === 'pending' && (
                       <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        animate={{ rotate: reducedMotion ? 0 : 360 }}
+                        transition={reducedMotion ? { duration: 0 } : { duration: 1, repeat: Infinity, ease: "linear" }}
                         className="w-4 h-4 border-2 border-signal-cyan border-t-transparent rounded-full"
                       />
                     )}
@@ -338,6 +342,7 @@ export default function TimeoutSimulator() {
                     </div>
                   )}
                 </div>
+                <FlowLink active={request.status === 'pending'} tone={request.status === 'error' ? 'red' : 'cyan'} className="mt-3 w-full" />
               </motion.div>
             ))}
             {requests.length === 0 && (
@@ -366,7 +371,7 @@ export default function TimeoutSimulator() {
             </div>
           </Panel>
 
-          <div className="rounded-lg border border-slate-200 dark:border-slate-700 border-l-2 border-l-emerald-500 bg-slate-50 dark:bg-slate-900 p-5">
+          <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-5">
             <h3 className="text-sm font-sans font-semibold text-slate-900 dark:text-slate-100 mb-3">{t('simulators.timeout.info.title')}</h3>
             <div className="space-y-1.5 font-sans text-sm text-slate-600 dark:text-slate-400">
               <p className="flex gap-2"><span className="text-emerald-600 dark:text-emerald-400">•</span>{t('simulators.timeout.info.p1')}</p>

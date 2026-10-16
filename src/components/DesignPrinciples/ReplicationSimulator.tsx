@@ -1,3 +1,5 @@
+import { AnimatedNumber } from '../AISystems/motion';
+import { SimulationActivity, FlowLink } from '../simulation';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Panel, StatusBadge, TacticalButton } from '../tactical';
@@ -251,7 +253,8 @@ export default function ReplicationSimulator() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
+      <SimulationActivity active={isRunning} />
       <div className="max-w-3xl">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -345,10 +348,10 @@ export default function ReplicationSimulator() {
         </div>
       </Panel>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="sim-stage grid grid-cols-1 md:grid-cols-3 gap-6">
         {servers.map((server) => (
           <motion.div
-            key={server.id}
+            key={server.id} layout="position" className="min-w-0"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
           >
@@ -376,6 +379,7 @@ export default function ReplicationSimulator() {
                 </div>
               </div>
 
+              <FlowLink active={isRunning && server.status !== 'offline' && server.load > 0} tone="cyan" className="mb-4 w-full" />
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between text-xs mb-1 text-slate-600 dark:text-tactical-dim">
@@ -440,7 +444,7 @@ export default function ReplicationSimulator() {
           <Panel title="Estatísticas" accent="green">
             <div className="grid grid-cols-1 gap-4">
               <div className="border border-slate-200 dark:border-tactical-border rounded-lg px-3 py-3">
-                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-slate-900 dark:text-tactical-text">{stats.total}</div>
+                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-slate-900 dark:text-tactical-text"><AnimatedNumber value={stats.total} /></div>
                 <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">Total de transações</div>
               </div>
               <div>

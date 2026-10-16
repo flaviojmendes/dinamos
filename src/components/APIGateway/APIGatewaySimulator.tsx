@@ -1,4 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { UserRound, Network, Server, Play, Pause } from 'lucide-react';
+import { AnimatedMetric } from '../AISystems/motion';
+import { SimulationActivity, FlowLink, useSimulationMotion } from '../simulation';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Panel, TacticalButton, StatusBadge } from '../tactical';
@@ -35,33 +38,33 @@ const defaultConfig: SimulationConfig = {
 };
 
 const services: Service[] = [
-  { 
-    name: 'Auth Service', 
-    type: 'auth', 
+  {
+    name: 'Auth Service',
+    type: 'auth',
     color: 'bg-purple-500',
     description: 'Autenticação e autorização',
     errorRate: 0.05,
     processingTime: 1500
   },
-  { 
-    name: 'Product Service', 
-    type: 'products', 
+  {
+    name: 'Product Service',
+    type: 'products',
     color: 'bg-blue-500',
     description: 'Catálogo de produtos',
     errorRate: 0.02,
     processingTime: 800
   },
-  { 
-    name: 'Order Service', 
-    type: 'orders', 
+  {
+    name: 'Order Service',
+    type: 'orders',
     color: 'bg-green-500',
     description: 'Gerenciamento de pedidos',
     errorRate: 0.08,
     processingTime: 2000
   },
-  { 
-    name: 'Payment Service', 
-    type: 'payments', 
+  {
+    name: 'Payment Service',
+    type: 'payments',
     color: 'bg-yellow-500',
     description: 'Processamento de pagamentos',
     errorRate: 0.15,
@@ -69,13 +72,18 @@ const services: Service[] = [
   }
 ];
 
-const requestCardClass = (type: Request['type']) => {
-  const svc = services.find(s => s.type === type);
-  return `p-3 border-l-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised ${svc?.color.replace('bg-', 'border-l-')}`;
-};
+const requestCardClass = (_type: Request['type']) => 'sim-node rounded-lg p-3';
 
 export default function APIGatewaySimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
+  const timers = useRef(new Set<ReturnType<typeof setTimeout>>());
+  const schedule = useCallback((callback: () => void, delay: number) => {
+    const timer = setTimeout(() => { timers.current.delete(timer); callback(); }, delay);
+    timers.current.add(timer);
+    return timer;
+  }, []);
+  useEffect(() => () => { timers.current.forEach(clearTimeout); timers.current.clear(); }, []);
   const [requests, setRequests] = useState<Request[]>([]);
   const [isSimulationRunning, setIsSimulationRunning] = useState(false);
   const [requestCount, setRequestCount] = useState(0);
@@ -90,7 +98,7 @@ export default function APIGatewaySimulator() {
   const generateRequest = useCallback((): Request => {
     const types: Request['type'][] = ['auth', 'products', 'orders', 'payments'];
     const randomType = types[Math.floor(Math.random() * types.length)];
-    
+
     return {
       id: requestCount,
       type: randomType,
@@ -102,30 +110,30 @@ export default function APIGatewaySimulator() {
 
   const processRequest = useCallback((request: Request) => {
     const service = services.find(s => s.type === request.type)!;
-    
+
     setStats(prev => ({ ...prev, totalRequests: prev.totalRequests + 1 }));
-    
+
     setRequests(prev => [...prev, request]);
-    
-    const routingTimer = setTimeout(() => {
-      setRequests(prev => 
-        prev.map(req => 
+
+    const routingTimer = schedule(() => {
+      setRequests(prev =>
+        prev.map(req =>
           req.id === request.id ? { ...req, status: 'routing' } : req
         )
       );
     }, config.routingDelay);
 
-    const processingTimer = setTimeout(() => {
+    const processingTimer = schedule(() => {
       const failed = Math.random() < (service.errorRate + config.errorRate);
-      
-      setRequests(prev => 
-        prev.map(req => 
-          req.id === request.id 
-            ? { ...req, status: failed ? 'rejected' : 'completed' } 
+
+      setRequests(prev =>
+        prev.map(req =>
+          req.id === request.id
+            ? { ...req, status: failed ? 'rejected' : 'completed' }
             : req
         )
       );
-      
+
       setStats(prev => ({
         ...prev,
         successfulRequests: prev.successfulRequests + (failed ? 0 : 1),
@@ -133,16 +141,16 @@ export default function APIGatewaySimulator() {
       }));
     }, config.routingDelay + service.processingTime);
 
-    const removalTimer = setTimeout(() => {
+    const removalTimer = schedule(() => {
       setRequests(prev => prev.filter(req => req.id !== request.id));
-    }, config.removeDelay);
+    }, Math.max(config.removeDelay, config.routingDelay + service.processingTime + 400));
 
     return () => {
       clearTimeout(routingTimer);
       clearTimeout(processingTimer);
       clearTimeout(removalTimer);
     };
-  }, [config.routingDelay, config.errorRate, config.removeDelay]);
+  }, [config.routingDelay, config.errorRate, config.removeDelay, schedule]);
 
   useEffect(() => {
     if (!isSimulationRunning) return;
@@ -159,6 +167,7 @@ export default function APIGatewaySimulator() {
   }, [isSimulationRunning, config.requestsPerSecond, generateRequest, processRequest]);
 
   const resetSimulation = () => {
+    timers.current.forEach(clearTimeout); timers.current.clear();
     setIsSimulationRunning(false);
     setRequests([]);
     setRequestCount(0);
@@ -172,15 +181,8 @@ export default function APIGatewaySimulator() {
   const rangeClass = 'w-full h-2 bg-slate-200 dark:bg-tactical-raised appearance-none cursor-pointer accent-signal-green';
 
   return (
-    <div className="space-y-6">
-      <div className="max-w-3xl">
-        <h2 className="font-sans text-lg font-semibold text-slate-900 dark:text-tactical-text mb-2">
-          {t('simulators.gateway.title')}
-        </h2>
-        <p className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim">
-          {t('simulators.gateway.description')}
-        </p>
-      </div>
+    <div className="simulation-workspace space-y-6">
+      <div className="sim-controls"><SimulationActivity active={isSimulationRunning} /></div>
 
       <div className="flex flex-wrap gap-2">
         <TacticalButton
@@ -195,15 +197,16 @@ export default function APIGatewaySimulator() {
             }
           }}
         >
+          {isSimulationRunning ? <Pause size={14} aria-hidden="true" /> : <Play size={14} aria-hidden="true" />}
           {isSimulationRunning ? t('simulators.gateway.buttons.stop') : t('simulators.gateway.buttons.start')}
         </TacticalButton>
-        <TacticalButton size="sm" variant="ghost" onClick={() => setShowConfig(!showConfig)}>
+        <TacticalButton size="sm" variant="ghost" aria-expanded={showConfig} onClick={() => setShowConfig(!showConfig)}>
           {showConfig ? t('simulators.gateway.buttons.hide_config') : t('simulators.gateway.buttons.show_config')}
         </TacticalButton>
         <TacticalButton size="sm" variant="secondary" onClick={resetSimulation}>
           {t('simulators.gateway.buttons.reset')}
         </TacticalButton>
-        {isSimulationRunning && <StatusBadge variant="active" label="Running" />}
+
       </div>
 
       {showConfig && (
@@ -245,34 +248,34 @@ export default function APIGatewaySimulator() {
         </Panel>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <div className="rounded-lg border border-slate-200 dark:border-tactical-border px-3 py-3">
-          <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">{stats.totalRequests}</div>
-          <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.gateway.stats.total')}</div>
-        </div>
-        <div className="rounded-lg border border-slate-200 dark:border-tactical-border px-3 py-3">
-          <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green">{stats.successfulRequests}</div>
-          <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.gateway.stats.success')}</div>
-        </div>
-        <div className="rounded-lg border border-slate-200 dark:border-tactical-border px-3 py-3">
-          <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-red">{stats.failedRequests}</div>
-          <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.gateway.stats.error')}</div>
-        </div>
+      <div className="sim-stage flex items-center gap-3 sm:gap-6">
+        <div className="flex min-w-0 flex-col items-center gap-2 text-center text-xs sm:text-sm"><UserRound size={26} aria-hidden="true" />{t('simulators.gateway.columns.clients')}</div>
+        <FlowLink active={requests.some(r => r.status === 'pending')} eventKey={requestCount} />
+        <div className="sim-node flex min-w-0 flex-col items-center gap-2 p-4 text-center text-xs sm:text-sm"><Network size={26} aria-hidden="true" />{t('simulators.gateway.columns.apigw')}</div>
+        <FlowLink active={requests.some(r => r.status === 'routing')} tone="green" />
+        <div className="flex min-w-0 flex-col items-center gap-2 text-center text-xs sm:text-sm"><Server size={26} aria-hidden="true" />{t('simulators.gateway.columns.microservices')}</div>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <AnimatedMetric value={stats.totalRequests} label={t('simulators.gateway.stats.total')} color="cyan" pulse={isSimulationRunning} />
+        <AnimatedMetric value={stats.successfulRequests} label={t('simulators.gateway.stats.success')} color="green" />
+        <AnimatedMetric value={stats.failedRequests} label={t('simulators.gateway.stats.error')} color="red" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Panel title={t('simulators.gateway.columns.clients')} accent="cyan">
-          <div className="space-y-2">
-            <AnimatePresence>
+          <div className="min-h-32 space-y-2">
+            <AnimatePresence initial={false} mode="popLayout">
               {requests.filter(r => r.status === 'pending').map(request => (
                 <motion.div
                   key={request.id}
-                  initial={{ opacity: 0, x: -50 }}
+                  layout={!reducedMotion}
+                  transition={transition}
+                  initial={{ opacity: 0, x: reducedMotion ? 0 : -14 }}
                   animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 50 }}
+                  exit={{ opacity: 0, x: reducedMotion ? 0 : 14 }}
                   className={requestCardClass(request.type)}
                 >
-                  <div className="font-mono text-sm text-slate-900 dark:text-tactical-text">
+                  <div className="font-sans text-sm text-slate-900 dark:text-tactical-text">
                     {t('simulators.gateway.items.request_id', { id: request.id })}
                   </div>
                   <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
@@ -285,17 +288,19 @@ export default function APIGatewaySimulator() {
         </Panel>
 
         <Panel title={t('simulators.gateway.columns.apigw')} accent="amber">
-          <div className="space-y-2">
-            <AnimatePresence>
+          <div className="min-h-32 space-y-2">
+            <AnimatePresence initial={false} mode="popLayout">
               {requests.filter(r => r.status === 'routing').map(request => (
                 <motion.div
                   key={request.id}
-                  initial={{ opacity: 0, scale: 0.8 }}
+                  layout={!reducedMotion}
+                  transition={transition}
+                  initial={{ opacity: 0, scale: reducedMotion ? 1 : 0.98 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
+                  exit={{ opacity: 0 }}
                   className={requestCardClass(request.type)}
                 >
-                  <div className="font-mono text-sm text-slate-900 dark:text-tactical-text">
+                  <div className="font-sans text-sm text-slate-900 dark:text-tactical-text">
                     {t('simulators.gateway.items.routing_to', { id: request.id })}
                   </div>
                   <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
@@ -310,7 +315,7 @@ export default function APIGatewaySimulator() {
         <Panel title={t('simulators.gateway.columns.microservices')} accent="green">
           <div className="space-y-4">
             {services.map(service => (
-              <div key={service.type} className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-3">
+              <div key={service.type} className={`sim-node p-4 ${requests.some(r => r.type === service.type && r.status === 'routing') ? 'sim-node-active' : ''}`}>
                 <div className="font-sans text-sm font-medium text-slate-900 dark:text-tactical-text mb-1">{service.name}</div>
                 <div className="font-sans text-xs text-slate-500 dark:text-tactical-dim">{service.description}</div>
                 <div className="font-mono text-xs text-slate-500 dark:text-tactical-label mt-1">
@@ -324,9 +329,11 @@ export default function APIGatewaySimulator() {
                     .map(request => (
                       <motion.div
                         key={request.id}
-                        initial={{ opacity: 0, y: 20 }}
+                        layout={!reducedMotion}
+                        transition={transition}
+                        initial={{ opacity: 0, y: reducedMotion ? 0 : 8 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
+                        exit={{ opacity: 0 }}
                         className="mt-2 font-mono text-xs p-2 border border-slate-200 dark:border-tactical-border"
                       >
                         {request.status === 'rejected' ? (

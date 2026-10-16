@@ -1,3 +1,4 @@
+import { SimulationActivity, FlowLink, useSimulationMotion } from '../simulation';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -48,6 +49,7 @@ const defaultConfig: SimulationConfig = {
 
 export default function EventSourcingSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const [events, setEvents] = useState<Event[]>([]);
   const [currentState, setCurrentState] = useState<OrderState | null>(null);
   const [selectedItems, setSelectedItems] = useState<{ name: string; quantity: number }[]>([]);
@@ -188,7 +190,8 @@ export default function EventSourcingSimulator() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
+      <SimulationActivity active={isReplayMode} />
       <div className="max-w-3xl">
         <div className="flex items-center justify-between gap-4 mb-2">
           <h2 className="text-base font-semibold tracking-tight text-slate-900 dark:text-tactical-text">
@@ -281,7 +284,7 @@ export default function EventSourcingSimulator() {
         )}
       </AnimatePresence>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="sim-stage grid grid-cols-1 lg:grid-cols-2 gap-6">
         <motion.div 
           className="space-y-6"
           initial={{ opacity: 0, x: -20 }}
@@ -397,6 +400,7 @@ export default function EventSourcingSimulator() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: config.animationDuration }}
         >
+          <FlowLink active={events.length > 0} eventKey={`${events.length}-${replayIndex}`} tone="cyan" className="w-full" />
           <AnimatePresence mode="wait">
             {currentState && (
               <motion.div
@@ -411,9 +415,9 @@ export default function EventSourcingSimulator() {
                     <div className="font-mono text-slate-900 dark:text-tactical-text">{t('simulators.event_sourcing.state.order', { id: currentState.orderId })}</div>
                     <motion.div
                       key={currentState.status}
-                      initial={{ color: '#60A5FA' }}
-                      animate={{ color: '#E5E7EB' }}
-                      transition={{ duration: 1 }}
+                      initial={{ opacity: 0.6, y: reducedMotion ? 0 : 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={transition}
                     >
                       <StatusBadge
                         variant={

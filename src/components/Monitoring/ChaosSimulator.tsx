@@ -1,3 +1,4 @@
+import { SimulationActivity, FlowLink, useSimulationMotion } from '../simulation';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -16,6 +17,7 @@ interface Node {
 
 export default function ChaosSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const base = 'simulators.chaos';
 
   const [redundancy, setRedundancy] = useState(true); // replicas + retries on
@@ -108,7 +110,8 @@ export default function ChaosSimulator() {
         : { tone: 'active' as const, text: t(`${base}.narration.degraded`, { down, avail: availability }) };
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
+      <SimulationActivity active={running} />
       <Panel
         title={t(`${base}.title`)}
         accent="red"
@@ -136,13 +139,14 @@ export default function ChaosSimulator() {
           <span className="font-sans text-sm text-slate-700 dark:text-tactical-text">{t(`${base}.redundancy_toggle`)}</span>
         </label>
 
-        <div className="mb-6 grid grid-cols-3 gap-3 sm:grid-cols-6">
+        <div className="sim-stage mb-6 grid grid-cols-3 gap-3 sm:grid-cols-6">
           {nodes.map((n) => (
             <motion.div
               key={n.id}
               layout
-              animate={{ scale: n.state === 'down' ? 0.9 : 1, opacity: n.state === 'down' ? 0.5 : 1 }}
-              className={`flex aspect-square flex-col items-center justify-center rounded-lg border-2 ${n.state === 'healthy' ? 'border-signal-green/50 bg-signal-green/5' : 'border-signal-red/50 bg-signal-red/5'}`}
+              animate={{ scale: n.state === 'down' && !reducedMotion ? 0.94 : 1, opacity: n.state === 'down' ? 0.55 : 1 }}
+              transition={transition}
+              className={`sim-node flex aspect-square flex-col items-center justify-center rounded-lg border-2 ${n.state === 'healthy' ? 'border-signal-green/50 bg-signal-green/5' : 'border-signal-red/50 bg-signal-red/5'}`}
             >
               <span className="font-mono text-sm text-slate-700 dark:text-tactical-text">N{n.id + 1}</span>
               <span className={`mt-1 h-2 w-2 rounded-full ${n.state === 'healthy' ? 'bg-signal-green' : 'bg-signal-red'}`} />
@@ -150,7 +154,8 @@ export default function ChaosSimulator() {
           ))}
         </div>
 
-        <div className="flex items-center gap-3">
+        <FlowLink active={running && healthyCount > 0} tone={healthyCount > NODE_COUNT / 2 ? 'green' : 'amber'} className="mb-4 w-full" />
+        <div className="flex flex-wrap items-center gap-3">
           <StatusBadge variant={healthyCount > NODE_COUNT / 2 ? 'online' : healthyCount > 0 ? 'pending' : 'classified'} label={t(`${base}.nodes_up`, { up: healthyCount, total: NODE_COUNT })} />
           <StatusBadge variant={availability >= 99 ? 'online' : availability >= 90 ? 'pending' : 'classified'} label={`${availability}% ${t(`${base}.availability`)}`} />
         </div>

@@ -1,3 +1,4 @@
+import { SimulationActivity, FlowLink } from '../simulation';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -232,7 +233,8 @@ export default function ScalabilitySimulator() {
   const inputClass = 'bg-white dark:bg-tactical-raised border border-slate-300 dark:border-tactical-border px-3 py-2 font-mono text-sm text-slate-900 dark:text-tactical-text focus:outline-none focus:border-signal-green';
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
+      <SimulationActivity active={isRunning} />
       <div className="max-w-3xl">
         <span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800 px-3 py-1 text-sm font-sans font-medium text-slate-700 dark:text-slate-300 mb-2">
           {t('simulators.scalability.title')}
@@ -242,7 +244,7 @@ export default function ScalabilitySimulator() {
         </p>
       </div>
 
-      <div className="rounded-lg border border-slate-200 dark:border-slate-700 border-l-2 border-l-emerald-500 bg-slate-50 dark:bg-slate-900 p-5">
+      <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-5">
         <h3 className="text-sm font-sans font-semibold text-slate-900 dark:text-slate-100 mb-3">{t('simulators.scalability.how_title')}</h3>
         <ol className="list-decimal list-inside space-y-1.5 font-sans text-sm text-slate-600 dark:text-slate-400">
           {(t('simulators.scalability.how_steps', { returnObjects: true }) as string[]).map((s, idx) => (
@@ -341,10 +343,10 @@ export default function ScalabilitySimulator() {
         </div>
       </Panel>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="sim-stage grid grid-cols-1 md:grid-cols-3 gap-6">
         {servers.map((server) => (
           <motion.div
-            key={server.id}
+            key={server.id} layout="position" className="min-w-0"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
           >
@@ -357,6 +359,7 @@ export default function ScalabilitySimulator() {
                 />
               </div>
 
+              <FlowLink active={requests.some(request => request.serverId === server.id && (request.status === 'pending' || request.status === 'processing'))} tone="cyan" className="mb-4 w-full" />
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between font-sans text-xs mb-1 text-slate-600 dark:text-slate-400">

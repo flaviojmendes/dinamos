@@ -1,7 +1,8 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import { Panel, StatusBadge, TacticalButton, SegmentBar, type StatusVariant } from '../tactical';
+import { SimulationActivity, useSimulationMotion } from '../simulation';
 import { AnimatedMetric } from './motion';
 
 type StageKey = 'embed' | 'search' | 'rerank' | 'assemble' | 'generate';
@@ -26,6 +27,7 @@ const STAGE_MS = 700;
 
 export default function RagPipelineSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition, duration } = useSimulationMotion();
   const [chunkSize, setChunkSize] = useState(300);
   const [topK, setTopK] = useState(5);
   const [rerank, setRerank] = useState(true);
@@ -104,7 +106,8 @@ export default function RagPipelineSimulator() {
   const base = 'simulators.rag_pipeline';
 
   return (
-    <div className="space-y-6">
+    <MotionConfig reducedMotion="user" transition={transition}>
+    <div className="sim-workspace space-y-6">
       <Panel
         title={t(`${base}.title`)}
         accent="cyan"
@@ -121,7 +124,7 @@ export default function RagPipelineSimulator() {
       >
         <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
 
-        <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="sim-controls mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="space-y-2">
             <label className="block font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.chunk_size`)}</label>
             <div className="flex items-center gap-2">
@@ -145,13 +148,14 @@ export default function RagPipelineSimulator() {
         </div>
 
         {/* Pipeline stages */}
-        <div className="relative">
+        <div className="sim-stage relative">
+          <SimulationActivity active={running} label={running && activeStage >= 0 ? t(`${base}.stages.${STAGE_ORDER[Math.min(activeStage, STAGE_ORDER.length - 1)]}`) : t(`${base}.labels.idle`)} className="mb-5" />
           {/* Flow progress line behind the stages */}
           <div className="absolute left-0 right-0 top-1/2 hidden h-[2px] -translate-y-1/2 bg-slate-200 dark:bg-tactical-border md:block">
             <motion.div
               className="h-full bg-signal-cyan"
               animate={{ width: activeStage < 0 ? '0%' : `${Math.min(100, ((activeStage + 0.5) / STAGE_ORDER.length) * 100)}%` }}
-              transition={{ duration: STAGE_MS / 1000, ease: 'easeInOut' }}
+              transition={{ duration: duration(0.24), ease: 'easeOut' }}
             />
           </div>
           <div className="relative grid grid-cols-1 md:grid-cols-5 gap-2">
@@ -162,17 +166,17 @@ export default function RagPipelineSimulator() {
                 <motion.div
                   key={stage}
                   animate={{
-                    scale: active ? 1.04 : 1,
+                    y: active && !reducedMotion ? -3 : 0,
                     borderColor: active ? 'rgb(34 211 238)' : undefined,
                   }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-                  className="relative rounded-lg border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-3 flex flex-col gap-2"
+                  transition={transition}
+                  className={`sim-node relative rounded-lg border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-4 flex flex-col gap-3 ${active ? 'sim-node-active' : ''}`}
                 >
                   {active && (
                     <motion.div
                       layoutId="rag-packet"
                       className="absolute -top-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rounded-full bg-signal-cyan"
-                      transition={{ type: 'spring', stiffness: 260, damping: 24 }}
+                      transition={transition}
                     />
                   )}
                   <span className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{i + 1}. {t(`${base}.stages.${stage}`)}</span>
@@ -197,9 +201,9 @@ export default function RagPipelineSimulator() {
               {result.chunks.map((c, i) => (
                 <motion.div
                   key={c.id}
-                  initial={{ opacity: 0, x: -24 }}
+                  initial={reducedMotion ? false : { opacity: 0, x: -12 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.08, type: 'spring', stiffness: 320, damping: 26 }}
+                  transition={{ ...transition, delay: duration(i * 0.04) }}
                   className="flex items-center gap-3 rounded-md border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
                 >
                   <span className="font-sans text-xs text-slate-700 dark:text-tactical-text w-16">{t(`${base}.labels.chunk`)} {c.id}</span>
@@ -211,7 +215,7 @@ export default function RagPipelineSimulator() {
           </Panel>
 
           <Panel title={t(`${base}.stages.generate`)} accent="green">
-            <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+            <div className="sim-metrics grid grid-cols-2 lg:grid-cols-5 gap-3">
               <AnimatedMetric value={result.recall} suffix="%" label={t(`${base}.metrics.recall`)} color={result.recall > 70 ? 'green' : 'amber'} />
               <AnimatedMetric value={result.latency} suffix="ms" label={t(`${base}.metrics.latency`)} color={result.latency > 600 ? 'red' : 'default'} />
               <AnimatedMetric value={result.cost} decimals={2} suffix="¢" label={t(`${base}.metrics.cost`)} color="cyan" />
@@ -222,5 +226,6 @@ export default function RagPipelineSimulator() {
         </>
       )}
     </div>
+    </MotionConfig>
   );
 }

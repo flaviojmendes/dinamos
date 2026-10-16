@@ -2,7 +2,12 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useSimulationMotion } from '../simulation';
+import { Play, Pause, RotateCcw } from 'lucide-react';
 import { Panel, TacticalButton, StatusBadge } from '../tactical';
+import { AnimatedMetric } from '../AISystems/motion';
+import TransitPacket from '../DataStorage/TransitPacket';
+import { Bell, Check, Database, Inbox, Monitor, Send, Server } from 'lucide-react';
 
 interface DataItem {
   id: string;
@@ -32,6 +37,7 @@ interface SimulationStats {
 
 export default function PollingWebhooks() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const [mode, setMode] = useState<'polling' | 'webhook'>('polling');
   const [isRunning, setIsRunning] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -54,6 +60,11 @@ export default function PollingWebhooks() {
   const pollingTimer = useRef<number>();
   const dataTimer = useRef<number>();
   const messageCounter = useRef(1);
+  const deliveryTimers = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
+  const scheduleDelivery = useCallback((deliver: () => void, delay: number) => {
+    const id = setTimeout(() => { deliveryTimers.current.delete(id); deliver(); }, delay);
+    deliveryTimers.current.add(id);
+  }, []);
 
   const sampleData = [
     'New order #1234 received',
@@ -86,7 +97,7 @@ export default function PollingWebhooks() {
     });
 
     if (mode === 'webhook' && isRunning) {
-      setTimeout(() => {
+      scheduleDelivery(() => {
         setPendingData(prev => prev.filter(item => item.id !== dataItem.id));
         
         addMessage({
@@ -106,9 +117,9 @@ export default function PollingWebhooks() {
         }));
       }, config.networkLatency);
     }
-  }, [mode, isRunning, config.networkLatency]);
+  }, [mode, isRunning, config.networkLatency, scheduleDelivery]);
 
-  const performPollingRequest = () => {
+  const performPollingRequest = useCallback(() => {
     addMessage({
       type: 'polling-request',
       direction: 'client-to-server',
@@ -122,7 +133,7 @@ export default function PollingWebhooks() {
       totalBandwidth: prev.totalBandwidth + estimateBandwidth('polling request')
     }));
 
-    setTimeout(() => {
+    scheduleDelivery(() => {
       setPendingData(currentPendingData => {
         if (currentPendingData.length > 0) {
           const dataItem = currentPendingData[0];
@@ -160,7 +171,7 @@ export default function PollingWebhooks() {
         }
       });
     }, config.networkLatency);
-  };
+  }, [config.networkLatency, scheduleDelivery, t]);
 
   const addMessage = (messageData: Omit<Message, 'id' | 'timestamp'>) => {
     const message: Message = {
@@ -178,12 +189,6 @@ export default function PollingWebhooks() {
 
   const startSimulation = () => {
     setIsRunning(true);
-    setTimeout(() => {
-      dataTimer.current = window.setInterval(generateData, config.dataGenerationInterval);
-      if (mode === 'polling') {
-        pollingTimer.current = window.setInterval(performPollingRequest, config.pollingInterval);
-      }
-    }, 10);
   };
 
   const stopSimulation = () => {
@@ -194,6 +199,8 @@ export default function PollingWebhooks() {
     if (dataTimer.current) {
       clearInterval(dataTimer.current);
     }
+    deliveryTimers.current.forEach(clearTimeout);
+    deliveryTimers.current.clear();
   };
 
   const resetSimulation = () => {
@@ -212,20 +219,21 @@ export default function PollingWebhooks() {
   };
 
   useEffect(() => {
-    if (isRunning) {
-      stopSimulation();
-      if (pollingTimer.current) clearInterval(pollingTimer.current);
-      if (mode === 'polling') {
-        pollingTimer.current = window.setInterval(performPollingRequest, config.pollingInterval);
-      }
+    if (!isRunning) return;
+    dataTimer.current = window.setInterval(generateData, config.dataGenerationInterval);
+    if (mode === 'polling') {
+      performPollingRequest();
+      pollingTimer.current = window.setInterval(performPollingRequest, config.pollingInterval);
+    } else {
+      generateData();
     }
-  }, [mode, config.pollingInterval]);
-
-  useEffect(() => {
     return () => {
-      stopSimulation();
+      clearInterval(dataTimer.current);
+      clearInterval(pollingTimer.current);
+      deliveryTimers.current.forEach(clearTimeout);
+      deliveryTimers.current.clear();
     };
-  }, []);
+  }, [isRunning, mode, config.dataGenerationInterval, config.pollingInterval, generateData, performPollingRequest]);
 
   const getMessageColor = (type: Message['type']) => {
     switch (type) {
@@ -240,19 +248,19 @@ export default function PollingWebhooks() {
 
   const getMessageIcon = (type: Message['type']) => {
     switch (type) {
-      case 'polling-request': return '📤';
-      case 'polling-response-empty': return '📭';
-      case 'polling-response-data': return '📬';
-      case 'webhook-notification': return '🔔';
-      case 'data-generated': return '📊';
-      default: return '💬';
+      case 'polling-request': return <Send size={14} aria-hidden="true" />;
+      case 'polling-response-empty': return <Inbox size={14} aria-hidden="true" />;
+      case 'polling-response-data': return <Check size={14} aria-hidden="true" />;
+      case 'webhook-notification': return <Bell size={14} aria-hidden="true" />;
+      case 'data-generated': return <Database size={14} aria-hidden="true" />;
+      default: return <Inbox size={14} aria-hidden="true" />;
     }
   };
 
   const rangeClass = 'w-full h-2 bg-slate-200 dark:bg-tactical-raised appearance-none cursor-pointer accent-signal-green';
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
       <div className="max-w-3xl">
         <h2 className="font-sans text-lg font-semibold text-slate-900 dark:text-tactical-text mb-2">
           {t('simulators.polling_webhooks.title')}
@@ -272,17 +280,17 @@ export default function PollingWebhooks() {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <TacticalButton size="sm" variant={mode === 'polling' ? 'primary' : 'secondary'} onClick={() => setMode('polling')} disabled={isRunning}>
-          📤 {t('simulators.polling_webhooks.buttons.polling')}
+        <TacticalButton size="sm" aria-pressed={mode === 'polling'} variant={mode === 'polling' ? 'primary' : 'secondary'} onClick={() => setMode('polling')} disabled={isRunning}>
+          <Send size={14} aria-hidden="true" />{t('simulators.polling_webhooks.buttons.polling')}
         </TacticalButton>
-        <TacticalButton size="sm" variant={mode === 'webhook' ? 'primary' : 'secondary'} onClick={() => setMode('webhook')} disabled={isRunning}>
-          🔔 {t('simulators.polling_webhooks.buttons.webhook')}
+        <TacticalButton size="sm" aria-pressed={mode === 'webhook'} variant={mode === 'webhook' ? 'primary' : 'secondary'} onClick={() => setMode('webhook')} disabled={isRunning}>
+          <Bell size={14} aria-hidden="true" />{t('simulators.polling_webhooks.buttons.webhook')}
         </TacticalButton>
-        <TacticalButton size="sm" variant={isRunning ? 'danger' : 'primary'} onClick={isRunning ? stopSimulation : startSimulation}>
-          {isRunning ? '⏹️ ' + t('simulators.polling_webhooks.buttons.stop') : '▶️ ' + t('simulators.polling_webhooks.buttons.start')}
+        <TacticalButton size="sm" aria-pressed={isRunning} variant={isRunning ? 'secondary' : 'primary'} onClick={isRunning ? stopSimulation : startSimulation}>
+          {isRunning ? <Pause size={14} aria-hidden="true" /> : <Play size={14} aria-hidden="true" />}{isRunning ? t('simulators.polling_webhooks.buttons.stop') : t('simulators.polling_webhooks.buttons.start')}
         </TacticalButton>
         <TacticalButton size="sm" variant="ghost" onClick={resetSimulation}>
-          🔄 {t('simulators.polling_webhooks.buttons.reset')}
+          <RotateCcw size={14} aria-hidden="true" />{t('simulators.polling_webhooks.buttons.reset')}
         </TacticalButton>
       </div>
 
@@ -321,80 +329,39 @@ export default function PollingWebhooks() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div>
             <div className="font-sans text-sm font-semibold text-signal-cyan mb-3">{t('simulators.polling_webhooks.flow.title')}</div>
-            <div className="rounded-lg border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-6 h-80 relative">
-              <div className="absolute top-4 left-4 rounded-full border border-signal-cyan/40 bg-signal-cyan/10 px-3 py-1.5 font-sans text-xs text-signal-cyan">
-                {t('simulators.polling_webhooks.flow.client')}
+            <div className="sim-stage min-h-80 rounded-xl border border-slate-200 p-4 dark:border-tactical-border">
+              <div className="mb-5 grid grid-cols-[auto_1fr_auto] items-center gap-3">
+                <div className="sim-node flex flex-col items-center gap-2 px-4 py-3"><Monitor size={23} className="text-signal-cyan" aria-hidden="true" /><span className="font-sans text-sm">{t('simulators.polling_webhooks.flow.client')}</span></div>
+                <div className="h-px bg-slate-300 dark:bg-tactical-line" />
+                <div className="sim-node flex flex-col items-center gap-2 px-4 py-3"><Server size={23} className="text-signal-green" aria-hidden="true" /><span className="font-sans text-sm">{t('simulators.polling_webhooks.flow.server')}</span></div>
               </div>
-              <div className="absolute top-4 right-4 rounded-full border border-signal-green/40 bg-signal-green/10 px-3 py-1.5 font-sans text-xs text-signal-green">
-                {t('simulators.polling_webhooks.flow.server')}
-              </div>
-              <div className="absolute top-8 left-20 right-20 h-px bg-slate-300 dark:bg-tactical-line mt-2" />
-              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-center">
-                <StatusBadge
-                  variant={isRunning ? 'active' : 'offline'}
-                  label={isRunning ? t('simulators.polling_webhooks.flow.active_sim', { mode }) : t('simulators.polling_webhooks.flow.stopped_sim')}
-                />
-              </div>
-              <div className="absolute top-16 left-0 right-0 bottom-16">
-                <AnimatePresence>
-                  {(() => {
-                    let visibleMessages = messages.slice(-5);
-                    if (mode === 'webhook') {
-                      visibleMessages = visibleMessages.filter(msg => 
-                        msg.type === 'webhook-notification' || msg.type === 'data-generated'
-                      ).slice(-3);
-                    } else {
-                      visibleMessages = visibleMessages.filter(msg => 
-                        msg.type === 'polling-request' || msg.type === 'polling-response-data' || msg.type === 'polling-response-empty'
-                      ).slice(-3);
-                    }
-                    return visibleMessages.map((message, index) => (
-                      <motion.div
-                        key={message.id}
-                        initial={{ opacity: 0, x: message.direction === 'client-to-server' ? -100 : message.direction === 'server-to-client' ? 100 : 0, y: 20 + index * 35, scale: message.type === 'webhook-notification' ? 0.8 : 1 }}
-                        animate={{ opacity: 1, x: message.direction === 'client-to-server' ? 50 : message.direction === 'server-to-client' ? -50 : 0, y: 20 + index * 35, scale: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: message.type === 'webhook-notification' ? 0.6 : 0.3, type: message.type === 'webhook-notification' ? 'spring' : 'tween' }}
-                        className={`absolute font-mono text-xs p-2 border ${getMessageColor(message.type)} ${message.type === 'webhook-notification' ? 'font-semibold' : ''}`}
-                        style={{ left: message.direction === 'server-internal' ? '50%' : 'auto', transform: message.direction === 'server-internal' ? 'translateX(-50%)' : 'none' }}
-                      >
-                        {getMessageIcon(message.type)} {message.content.substring(0, 25)}{message.content.length > 25 ? '...' : ''}
-                      </motion.div>
-                    ));
-                  })()}
+              <div className="min-h-40 space-y-3">
+                <AnimatePresence initial={false} mode="popLayout">
+                  {messages.filter(message => mode === 'webhook'
+                    ? message.type === 'webhook-notification' || message.type === 'data-generated'
+                    : message.type !== 'data-generated').slice(-3).map(message => (
+                    <motion.div key={message.id} layout={!reducedMotion} initial={{ opacity: 0, y: reducedMotion ? 0 : -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={transition} className={`min-w-0 rounded-lg border px-3 py-2 ${getMessageColor(message.type)}`}>
+                      <div className="flex min-w-0 items-center gap-2 font-sans text-xs">{getMessageIcon(message.type)}<span className="min-w-0 flex-1 truncate">{message.content}</span><span className="shrink-0 font-mono text-[10px] opacity-75">#{message.id}</span></div>
+                      {message.direction !== 'server-internal' && <div className="relative mt-2 h-3 overflow-hidden" aria-hidden="true"><span className="absolute inset-x-0 top-1/2 h-px bg-current opacity-20" /><TransitPacket reverse={message.direction === 'server-to-client'} tone={message.type === 'polling-response-empty' ? 'amber' : message.direction === 'client-to-server' ? 'cyan' : 'green'} seconds={Math.max(0.35, config.networkLatency / 1000)} /></div>}
+                    </motion.div>
+                  ))}
                 </AnimatePresence>
               </div>
+              <div className="mt-4 flex justify-center"><StatusBadge variant={isRunning ? 'active' : 'offline'} label={isRunning ? t('simulators.polling_webhooks.flow.active_sim', { mode }) : t('simulators.polling_webhooks.flow.stopped_sim')} /></div>
             </div>
           </div>
 
           <div>
             <div className="font-sans text-sm font-semibold text-signal-cyan mb-3">{t('simulators.polling_webhooks.stats.title')}</div>
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <div className="rounded-lg border border-slate-200 dark:border-tactical-border px-3 py-3">
-                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">{stats.totalRequests}</div>
-                <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.polling_webhooks.stats.total_requests')}</div>
-              </div>
-              <div className="rounded-lg border border-slate-200 dark:border-tactical-border px-3 py-3">
-                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-amber">{stats.emptyResponses}</div>
-                <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.polling_webhooks.stats.empty_responses')}</div>
-              </div>
-              <div className="rounded-lg border border-slate-200 dark:border-tactical-border px-3 py-3">
-                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green">{stats.dataTransfers}</div>
-                <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.polling_webhooks.stats.data_transfers')}</div>
-              </div>
-              <div className="rounded-lg border border-slate-200 dark:border-tactical-border px-3 py-3">
-                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">{stats.webhookNotifications}</div>
-                <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.polling_webhooks.stats.webhooks_sent')}</div>
-              </div>
-              <div className="rounded-lg border border-slate-200 dark:border-tactical-border px-3 py-3 col-span-2">
-                <div className="font-mono text-2xl font-bold tabular-nums leading-none text-signal-amber">
-                  {(stats.totalBandwidth / 1000).toFixed(1)}k
-                </div>
-                <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.polling_webhooks.stats.total_bandwidth_bits')}</div>
-              </div>
+            <div className="sim-metrics mb-4 grid grid-cols-2 gap-3">
+              <AnimatedMetric value={stats.totalRequests} label={t('simulators.polling_webhooks.stats.total_requests')} color="cyan" />
+              <AnimatedMetric value={stats.emptyResponses} label={t('simulators.polling_webhooks.stats.empty_responses')} color="amber" />
+              <AnimatedMetric value={stats.dataTransfers} label={t('simulators.polling_webhooks.stats.data_transfers')} color="green" />
+              <AnimatedMetric value={stats.webhookNotifications} label={t('simulators.polling_webhooks.stats.webhooks_sent')} color="cyan" />
+              <div className="col-span-2"><AnimatedMetric value={stats.totalBandwidth / 1000} decimals={1} suffix="k" label={t('simulators.polling_webhooks.stats.total_bandwidth_bits')} color="default" /></div>
             </div>
 
-            <div className="tactical-panel rounded-lg border-l-2 border-l-signal-cyan p-4 mb-4">
+            <div className="sim-node rounded-lg p-4 mb-4">
               <h4 className="font-sans text-sm font-semibold text-signal-cyan mb-2">{t('simulators.polling_webhooks.stats.efficiency')}</h4>
               {stats.totalRequests > 0 && (
                 <div className="space-y-2 font-sans text-sm text-slate-600 dark:text-tactical-dim">
@@ -434,13 +401,13 @@ export default function PollingWebhooks() {
           <div className="border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 max-h-60 overflow-y-auto">
             <AnimatePresence>
               {messages.slice(-15).reverse().map((message) => (
-                <motion.div key={message.id} initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, height: 0 }} className={`font-mono text-sm mb-2 p-2 border ${getMessageColor(message.type)}`}>
+                <motion.div key={message.id} initial={{ opacity: 0, y: reducedMotion ? 0 : -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={transition} className={`break-words rounded-lg font-sans text-sm mb-2 p-3 border ${getMessageColor(message.type)}`}>
                   <span className="text-slate-500 dark:text-tactical-label text-xs">[{new Date(message.timestamp).toLocaleTimeString()}]</span>{' '}
-                  <span>{getMessageIcon(message.type)}</span>{' '}
+                  <span className="inline-flex align-middle">{getMessageIcon(message.type)}</span>{' '}
                   <span>{message.content}</span>
                   {message.hasData && (
                     <span className="ml-2 text-xs border border-signal-green/30 px-2 py-0.5 text-signal-green">
-                      ✅ {t('simulators.polling_webhooks.log.with_data')}
+                      {t('simulators.polling_webhooks.log.with_data')}
                     </span>
                   )}
                 </motion.div>

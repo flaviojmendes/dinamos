@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import { Panel, StatusBadge, TacticalButton, SegmentBar } from '../tactical';
+import { SimulationActivity, FlowLink, useSimulationMotion } from '../simulation';
 import { AnimatedMetric, AnimatedNumber } from './motion';
 
 interface Replica {
@@ -23,6 +24,7 @@ const SCALE_DOWN_IDLE_TICKS = 6;
 
 export default function GpuAutoscalerSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition, duration } = useSimulationMotion();
   const [isRunning, setIsRunning] = useState(false);
   const [arrivalRate, setArrivalRate] = useState(6);
   const [scaleThreshold, setScaleThreshold] = useState(5);
@@ -117,7 +119,8 @@ export default function GpuAutoscalerSimulator() {
   const base = 'simulators.gpu_autoscaler';
 
   return (
-    <div className="space-y-6">
+    <MotionConfig reducedMotion="user" transition={transition}>
+    <div className="sim-workspace space-y-6">
       <Panel
         title={t(`${base}.title`)}
         accent="cyan"
@@ -131,7 +134,7 @@ export default function GpuAutoscalerSimulator() {
         }
       >
         <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="sim-controls grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Slider label={t(`${base}.controls.arrival_rate`)} value={arrivalRate} min={1} max={24} onChange={setArrivalRate} cls={rangeClass} />
           <Slider label={t(`${base}.controls.scale_threshold`)} value={scaleThreshold} min={1} max={20} onChange={setScaleThreshold} cls={rangeClass} />
           <Slider label={t(`${base}.controls.cold_start`)} value={coldStart} min={1} max={12} onChange={setColdStart} cls={rangeClass} suffix="s" />
@@ -139,6 +142,8 @@ export default function GpuAutoscalerSimulator() {
       </Panel>
 
       <Panel title={t(`${base}.panels.replicas`)} accent="green">
+        <SimulationActivity active={isRunning} label={isRunning ? `${readyCount}/${replicas.length} ${t(`${base}.labels.ready`)}` : t(`${base}.labels.scale_to_zero`)} className="mb-5" />
+        <FlowLink active={isRunning && queueLen > 0} tone={readyCount > 0 ? 'green' : 'amber'} count={Math.min(3, queueLen)} className="mb-5" />
         <AnimatePresence mode="popLayout" initial={false}>
           {replicas.length === 0 ? (
             <motion.div
@@ -159,24 +164,24 @@ export default function GpuAutoscalerSimulator() {
                     <motion.div
                       key={r.id}
                       layout
-                      initial={{ opacity: 0, scale: 0.4, y: 12 }}
+                      initial={reducedMotion ? false : { opacity: 0, y: 10 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.4, y: -12 }}
-                      transition={{ type: 'spring', stiffness: 360, damping: 26 }}
-                      className="relative rounded-lg border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-3 flex flex-col gap-2 overflow-hidden"
+                      exit={{ opacity: 0, y: reducedMotion ? 0 : -6 }}
+                      transition={transition}
+                      className={`sim-node relative rounded-lg border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-4 flex flex-col gap-3 overflow-hidden ${isRunning && r.state === 'ready' && utilization > 0 ? 'sim-node-active' : ''}`}
                     >
                       <div className="flex items-center gap-2">
                         {r.state === 'warming' ? (
                           <motion.span
                             className="inline-block h-3 w-3 rounded-full border-2 border-signal-amber border-t-transparent"
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
+                            animate={{ rotate: isRunning && !reducedMotion ? 360 : 0 }}
+                            transition={{ duration: 0.8, repeat: reducedMotion || !isRunning ? 0 : Infinity, ease: 'linear' }}
                           />
                         ) : (
                           <motion.span
                             className="inline-block h-3 w-3 rounded-full bg-signal-green"
-                            animate={{ opacity: [1, 0.4, 1], scale: [1, 1.15, 1] }}
-                            transition={{ duration: 1.6, repeat: Infinity }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 1.6, repeat: reducedMotion || !isRunning ? 0 : Infinity }}
                           />
                         )}
                         <span className="font-sans text-xs text-slate-700 dark:text-tactical-text">GPU {r.id}</span>
@@ -192,7 +197,7 @@ export default function GpuAutoscalerSimulator() {
                             <motion.div
                               className="h-full bg-signal-amber"
                               animate={{ width: `${warmPct}%` }}
-                              transition={{ duration: TICK_MS / 1000, ease: 'linear' }}
+                              transition={{ duration: duration(TICK_MS / 1000), ease: 'linear' }}
                             />
                           </div>
                         </>
@@ -214,12 +219,12 @@ export default function GpuAutoscalerSimulator() {
             <AnimatePresence mode="popLayout" initial={false}>
               {Array.from({ length: Math.min(queueLen, 40) }).map((_, i) => (
                 <motion.span
-                  key={`${queueLen}-${i}`}
+                  key={queue.current[i] !== undefined ? `${queue.current[i]}-${i}` : i}
                   layout
                   initial={{ opacity: 0, scale: 0.3 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.3 }}
-                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                  transition={transition}
                   className={`h-4 w-2.5 ${i >= scaleThreshold ? 'bg-signal-red' : 'bg-signal-cyan'}`}
                 />
               ))}
@@ -229,7 +234,7 @@ export default function GpuAutoscalerSimulator() {
       </Panel>
 
       <Panel title={t(`${base}.panels.metrics`)} accent="amber">
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+        <div className="sim-metrics grid grid-cols-2 lg:grid-cols-5 gap-3">
           <div className="relative overflow-hidden border border-slate-200 dark:border-tactical-border px-3 py-3">
             <div className="font-mono text-2xl font-bold tabular-nums leading-none text-signal-green">
               <AnimatedNumber value={readyCount} />/<AnimatedNumber value={replicas.length} />
@@ -249,6 +254,7 @@ export default function GpuAutoscalerSimulator() {
         </div>
       </Panel>
     </div>
+    </MotionConfig>
   );
 }
 
@@ -257,7 +263,7 @@ function Slider({ label, value, min, max, onChange, cls, suffix }: { label: stri
     <div className="space-y-2">
       <label className="block font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{label}</label>
       <div className="flex items-center gap-2">
-        <input type="range" min={min} max={max} value={value} onChange={e => onChange(Number(e.target.value))} className={cls} />
+        <input aria-label={label} type="range" min={min} max={max} value={value} onChange={e => onChange(Number(e.target.value))} className={cls} />
         <span className="font-mono text-sm w-10 text-right text-signal-cyan tabular-nums">{value}{suffix ?? ''}</span>
       </div>
     </div>

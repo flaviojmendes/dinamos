@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSimulationMotion } from '../simulation';
+import { Play, Pause, RotateCcw } from 'lucide-react';
 import { Panel, TacticalButton, SegmentBar } from '../tactical';
 import { AnimatedMetric } from '../AISystems/motion';
+import { Database, GitBranch } from 'lucide-react';
 
 type Strategy = 'range' | 'hash';
 
@@ -22,6 +25,7 @@ interface Particle {
 
 export default function ShardingSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const base = 'simulators.sharding';
 
   const [shards, setShards] = useState(4);
@@ -88,16 +92,17 @@ export default function ShardingSimulator() {
   const rangeClass = 'flex-1 h-2 bg-slate-200 dark:bg-tactical-border appearance-none cursor-pointer accent-signal-green';
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
       <Panel
         title={t(`${base}.title`)}
         accent="cyan"
         action={
-          <div className="flex flex-wrap items-center gap-2">
-            <TacticalButton size="sm" variant={running ? 'danger' : 'secondary'} onClick={() => setRunning(r => !r)}>
+          <div className="sim-controls flex flex-wrap items-center gap-2">
+            <TacticalButton size="sm" aria-pressed={running} variant={running ? 'secondary' : 'primary'} onClick={() => setRunning(r => !r)}>
+              {running ? <Pause size={14} aria-hidden="true" /> : <Play size={14} aria-hidden="true" />}
               {running ? t(`${base}.buttons.stop`) : t(`${base}.buttons.start`)}
             </TacticalButton>
-            <TacticalButton size="sm" variant="ghost" onClick={reset}>{t(`${base}.buttons.reset`)}</TacticalButton>
+            <TacticalButton size="sm" variant="ghost" onClick={reset}><RotateCcw size={14} aria-hidden="true" />{t(`${base}.buttons.reset`)}</TacticalButton>
           </div>
         }
       >
@@ -131,42 +136,50 @@ export default function ShardingSimulator() {
         </div>
 
         {/* Shards */}
-        <div className="relative grid gap-3" style={{ gridTemplateColumns: `repeat(${shards}, minmax(0, 1fr))` }}>
+        <div className="sim-stage rounded-xl border border-slate-200 p-4 dark:border-tactical-border">
+        <div className="mb-5 flex justify-center">
+          <div className="sim-node flex items-center gap-2 px-4 py-2.5 font-sans text-sm"><GitBranch size={18} className="text-signal-cyan" aria-hidden="true" />{t(`${base}.strategies.${strategy}`)}</div>
+        </div>
+        <div className="relative grid gap-3" style={{ gridTemplateColumns: `repeat(${shards > 4 ? 4 : shards}, minmax(0, 1fr))` }}>
           {load.map((l, i) => {
             const isHot = total > 0 && i === hotShard && imbalance > 50;
             const pct = Math.round((l / maxLoad) * 100);
             return (
-              <div key={i} className={`relative rounded-lg border ${isHot ? 'border-signal-red' : 'border-slate-200 dark:border-tactical-border'} bg-slate-50 dark:bg-tactical-raised p-3 flex flex-col justify-end min-h-[150px] overflow-hidden`}>
+              <div key={i} className={`sim-node relative rounded-lg border ${isHot ? 'border-signal-red' : 'border-slate-200 dark:border-tactical-border'} bg-slate-50 dark:bg-tactical-raised p-2.5 sm:p-3 flex flex-col justify-end min-h-[170px] overflow-hidden`}>
                 <AnimatePresence>
                   {particles.filter(p => p.shard === i).slice(-1).map(p => (
                     <motion.span
                       key={p.id}
                       className={`absolute left-1/2 top-2 h-2.5 w-2.5 -translate-x-1/2 rounded-full ${isHot ? 'bg-signal-red' : 'bg-signal-cyan'}`}
-                      initial={{ y: -10, opacity: 0 }}
-                      animate={{ y: 60, opacity: [0, 1, 0] }}
+                      initial={reducedMotion ? false : { y: -10, opacity: 0 }}
+                      animate={reducedMotion ? { opacity: 1 } : { y: 60, opacity: [0, 1, 0] }}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.5 }}
                     />
                   ))}
                 </AnimatePresence>
-                <motion.div
-                  className={`w-full ${isHot ? 'bg-signal-red' : 'bg-signal-cyan'}`}
-                  animate={{ height: `${pct}%` }}
-                  transition={{ duration: TICK_MS / 1000, ease: 'linear' }}
-                  style={{ minHeight: 2 }}
-                />
+                <div className="relative h-24 w-full overflow-hidden rounded-md bg-slate-200/60 dark:bg-tactical-surface">
+                  <motion.div
+                    className={`absolute inset-0 origin-bottom rounded-md ${isHot ? 'bg-signal-red/75' : 'bg-signal-cyan/60'}`}
+                    initial={false}
+                    animate={{ scaleY: pct / 100 }}
+                    transition={transition}
+                  />
+                  <Database size={18} className="absolute bottom-2 left-1/2 -translate-x-1/2 text-slate-600 dark:text-tactical-text" aria-hidden="true" />
+                </div>
                 <div className="mt-2 text-center">
                   <div className="font-mono text-xs text-slate-700 dark:text-tactical-text tabular-nums">{l}</div>
-                  <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.labels.shard`)} {i}</div>
+                  <div className="break-words font-sans text-xs font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.labels.shard`)} {i}</div>
                 </div>
               </div>
             );
           })}
         </div>
+        </div>
       </Panel>
 
       <Panel title={t(`${base}.metrics.title`)} accent="green">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="sim-metrics grid grid-cols-2 lg:grid-cols-4 gap-3">
           <AnimatedMetric value={total} label={t(`${base}.metrics.keys`)} color="cyan" pulse={running} />
           <AnimatedMetric value={shards} label={t(`${base}.metrics.shards`)} color="default" />
           <AnimatedMetric value={imbalance} suffix="%" label={t(`${base}.metrics.imbalance`)} color={imbalance > 50 ? 'red' : 'green'} />

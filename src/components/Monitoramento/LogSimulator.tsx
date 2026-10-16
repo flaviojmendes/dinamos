@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Panel, StatusBadge, TacticalButton } from '../tactical';
+import { SimulationActivity, useSimulationMotion } from '../simulation';
 
 interface Log {
   timestamp: string;
@@ -119,6 +120,11 @@ const exemplosLogs = {
 export default function LogSimulator() {
   const { t } = useTranslation();
   const base = 'monitoring_maintenance.logs_simulator';
+  const { reducedMotion, transition } = useSimulationMotion();
+  const [receiving, setReceiving] = useState(false);
+  const receiveTimer = useRef<ReturnType<typeof setTimeout>>();
+  const endRef = useRef<HTMLDivElement>(null);
+  useEffect(() => () => clearTimeout(receiveTimer.current), []);
 
   const [logs, setLogs] = useState<Log[]>([]);
   const [config, setConfig] = useState<SimulacaoConfig>(configuracaoPadrao);
@@ -127,8 +133,15 @@ export default function LogSimulator() {
   const [indiceReplay, setIndiceReplay] = useState(0);
   const [velocidadeReplay, setVelocidadeReplay] = useState(1000);
 
+  useEffect(() => {
+    endRef.current?.scrollIntoView?.({ behavior: reducedMotion ? 'instant' : 'smooth', block: 'nearest' });
+  }, [logs.length, reducedMotion]);
+
   const adicionarLog = (log: Log) => {
-    setLogs(prev => [...prev, log]);
+    setLogs(prev => [...prev, { ...log, timestamp: new Date().toISOString() }]);
+    setReceiving(true);
+    clearTimeout(receiveTimer.current);
+    receiveTimer.current = setTimeout(() => setReceiving(false), 700);
   };
 
   const iniciarReplay = () => {
@@ -138,6 +151,8 @@ export default function LogSimulator() {
 
   const reiniciarSimulador = () => {
     setLogs([]);
+    setReceiving(false);
+    clearTimeout(receiveTimer.current);
     setModoReplay(false);
     setIndiceReplay(0);
   };
@@ -156,7 +171,7 @@ export default function LogSimulator() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="max-w-3xl">
           <h2 className="font-sans text-lg font-semibold text-slate-900 dark:text-tactical-text mb-2">
@@ -186,10 +201,10 @@ export default function LogSimulator() {
       <AnimatePresence>
         {mostrarConfiguracoes && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={reducedMotion ? false : { opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.2 }}
+            exit={{ opacity: 0, y: reducedMotion ? 0 : -8 }}
+            transition={transition}
           >
             <Panel title={t(`${base}.settings_title`)} accent="cyan">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -224,7 +239,7 @@ export default function LogSimulator() {
         )}
       </AnimatePresence>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="sim-controls grid grid-cols-1 md:grid-cols-3 gap-4">
         <Panel title={t(`${base}.controls.info_title`)} accent="cyan">
           <div className="grid grid-cols-1 gap-2">
             <TacticalButton variant="secondary" size="sm" onClick={() => adicionarLog(exemplosLogs.infoBom)}>
@@ -257,8 +272,11 @@ export default function LogSimulator() {
         </Panel>
       </div>
 
-      <Panel title={t(`${base}.viewer_title`)} accent="green">
-        <div className="bg-slate-50 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border p-4 h-[400px] overflow-y-auto font-mono text-sm">
+      <Panel title={t(`${base}.viewer_title`)} accent="green" action={<SimulationActivity active={receiving} label={`${logs.length}`} />}>
+        <div className="sim-metrics mb-4 flex flex-wrap gap-5 font-mono text-xs tabular-nums">
+          {(['INFO', 'WARN', 'ERROR'] as const).map(level => <span key={level} className={getLogLevelClass(level)}>{level} <strong className="ml-2">{logs.filter(log => log.nivel === level).length}</strong></span>)}
+        </div>
+        <div className="sim-stage rounded-xl bg-slate-50 dark:bg-tactical-raised border border-slate-200 dark:border-tactical-border p-4 h-[420px] overflow-y-auto font-mono text-sm">
           {logs.length === 0 ? (
             <p className="text-slate-400 dark:text-tactical-label text-xs text-center py-10">—</p>
           ) : (
@@ -272,7 +290,7 @@ export default function LogSimulator() {
                 log.acao.includes('_')
               );
               return (
-                <div key={index} className="mb-4 pb-4 border-b border-slate-200 dark:border-tactical-border last:border-0">
+                <motion.div key={index} initial={reducedMotion ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={transition} className="mb-4 pb-4 border-b border-slate-200 dark:border-tactical-border last:border-0">
                   <div className="flex flex-wrap items-center gap-2 mb-2">
                     <span className={`font-bold ${getLogLevelClass(log.nivel)}`}>{log.nivel}</span>
                     <span className="text-xs text-slate-500 dark:text-tactical-label">{log.timestamp}</span>
@@ -282,16 +300,17 @@ export default function LogSimulator() {
                       <StatusBadge variant="classified" label={t(`${base}.badges.bad`)} />
                     )}
                   </div>
-                  <pre className="whitespace-pre-wrap text-slate-700 dark:text-tactical-dim">{JSON.stringify(log, null, 2)}</pre>
-                </div>
+                  <pre className="whitespace-pre-wrap break-words text-slate-700 dark:text-tactical-dim text-xs leading-relaxed">{JSON.stringify(log, null, 2)}</pre>
+                </motion.div>
               );
             })
           )}
+          <div ref={endRef} />
         </div>
       </Panel>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="tactical-panel rounded-lg border-l-2 border-l-signal-green p-5">
+        <div className="tactical-panel rounded-lg border border-slate-200 dark:border-tactical-border p-5">
           <h2 className="font-sans text-sm font-semibold text-signal-green mb-3">{t(`${base}.best_practices_title`)}</h2>
           <ul className="space-y-1.5 font-sans text-sm text-slate-600 dark:text-tactical-dim list-disc list-inside">
             {(t(`${base}.best_practices_items`, { returnObjects: true }) as string[]).map((item, idx) => (
@@ -299,7 +318,7 @@ export default function LogSimulator() {
             ))}
           </ul>
         </div>
-        <div className="tactical-panel rounded-lg border-l-2 border-l-signal-red p-5">
+        <div className="tactical-panel rounded-lg border border-slate-200 dark:border-tactical-border p-5">
           <h2 className="font-sans text-sm font-semibold text-signal-red mb-3">{t(`${base}.bad_practices_title`)}</h2>
           <ul className="space-y-1.5 font-sans text-sm text-slate-600 dark:text-tactical-dim list-disc list-inside">
             {(t(`${base}.bad_practices_items`, { returnObjects: true }) as string[]).map((item, idx) => (

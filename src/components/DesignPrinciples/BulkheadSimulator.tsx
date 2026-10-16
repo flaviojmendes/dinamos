@@ -1,3 +1,4 @@
+import { SimulationActivity, useSimulationMotion } from '../simulation';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
@@ -101,7 +102,8 @@ export default function BulkheadSimulator() {
       : t(`${base}.narration.shared`, { used: Math.min(busyA + busyB, POOL), pool: POOL });
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
+      <SimulationActivity active={running} />
       <Panel
         title={t(`${base}.title`)}
         accent="cyan"
@@ -201,6 +203,7 @@ export default function BulkheadSimulator() {
 }
 
 function PoolRow({ a, b, total }: { a: number; b: number; total: number }) {
+  const { reducedMotion, transition } = useSimulationMotion();
   const aN = Math.min(a, total);
   const bN = Math.min(b, total - aN);
   return (
@@ -210,8 +213,8 @@ function PoolRow({ a, b, total }: { a: number; b: number; total: number }) {
         return (
           <motion.div
             key={i}
-            animate={{ scale: kind !== 'free' ? [1.15, 1] : 1 }}
-            transition={{ duration: 0.25 }}
+            animate={{ scale: kind !== 'free' && !reducedMotion ? [1.08, 1] : 1 }}
+            transition={transition}
             className={`h-7 flex-1 rounded ${
               kind === 'a'
                 ? 'bg-signal-cyan'

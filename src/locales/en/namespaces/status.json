@@ -1,3 +1,11 @@
 {
-  "coming_soon": "Coming soon"
+  "coming_soon": "Coming soon",
+  "online": "Online",
+  "active": "Active",
+  "completed": "Completed",
+  "in-progress": "In progress",
+  "pending": "Pending",
+  "locked": "Locked",
+  "offline": "Offline",
+  "classified": "Alert"
 }

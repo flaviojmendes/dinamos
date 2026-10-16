@@ -1,6 +1,9 @@
+import { SimulationActivity, FlowLink, useSimulationMotion } from '../simulation';
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Panel, StatusBadge, TacticalButton } from '../tactical';
+import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatedNumber } from '../AISystems/motion';
 
 interface Message {
   id: number;
@@ -39,6 +42,7 @@ const messageStatusVariant = (status: Message['status']) => {
 
 export default function Backpressure() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const [isRunning, setIsRunning] = useState(false);
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   
@@ -166,12 +170,8 @@ export default function Backpressure() {
     'bg-signal-green';
 
   return (
-    <div className="space-y-6">
-      <div className="max-w-3xl">
-        <span className="inline-block text-xs font-medium text-slate-600 dark:text-tactical-label bg-slate-100 dark:bg-tactical-raised px-2.5 py-1 rounded-full mb-2">
-          {t('simulators.backpressure.title')}
-        </span>
-      </div>
+    <div className="simulation-workspace space-y-6">
+      <div className="sim-controls"><SimulationActivity active={isRunning} /></div>
 
       <Panel
         title={t('simulators.backpressure.title')}
@@ -264,13 +264,30 @@ export default function Backpressure() {
           </TacticalButton>
         </div>
 
+        <div className="sim-stage mb-6 space-y-4">
+          <div className="flex items-center justify-between gap-4 font-sans text-sm text-slate-600 dark:text-tactical-dim">
+            <span>{t('simulators.backpressure.labels.produced')} · {producers[0].rate}/s</span>
+            <span className="font-mono tabular-nums">{messages.filter(message => message.status === 'queued').length}/{consumer.maxQueueSize}</span>
+            <span>{t('simulators.backpressure.labels.processed')} · {consumer.processingRate}/s</span>
+          </div>
+          <FlowLink active={isRunning && !producers[0].isThrottled} tone={producers[0].isThrottled ? 'amber' : 'cyan'} className="w-full" />
+          <div className="flex min-h-12 flex-wrap items-center gap-2 rounded-lg border border-dashed border-slate-300 p-3 dark:border-tactical-line" aria-label={t('simulators.backpressure.labels.latest')}>
+            <AnimatePresence initial={false} mode="popLayout">
+              {messages.filter(message => message.status === 'queued').map(message => (
+                <motion.span key={message.id} layout="position" className="h-5 w-5 rounded bg-signal-amber" initial={{ opacity: 0, x: reducedMotion ? 0 : -12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: reducedMotion ? 0 : 20 }} transition={transition} title={`#${message.id}`} />
+              ))}
+            </AnimatePresence>
+          </div>
+          <FlowLink active={isRunning && messages.some(message => message.status === 'queued')} tone="green" className="w-full" />
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
           <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg">
             <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mb-2">{t('simulators.backpressure.title')}</div>
             <div className="h-2 bg-slate-200 dark:bg-tactical-border overflow-hidden rounded-full">
               <div
                 className={`h-full transition-all duration-300 ${backpressureBarColor}`}
-                style={{ width: `${metrics.currentBackpressure}%` }}
+                style={{ width: `${Math.min(100, metrics.currentBackpressure)}%` }}
               />
             </div>
             <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-amber mt-2">
@@ -289,15 +306,15 @@ export default function Backpressure() {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
           <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg">
-            <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">{metrics.producedTotal}</div>
+            <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan"><AnimatedNumber value={metrics.producedTotal} /></div>
             <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.backpressure.labels.produced')}</div>
           </div>
           <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg">
-            <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green">{metrics.processedTotal}</div>
+            <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green"><AnimatedNumber value={metrics.processedTotal} /></div>
             <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.backpressure.labels.processed')}</div>
           </div>
           <div className="border border-slate-200 dark:border-tactical-border px-3 py-3 rounded-lg">
-            <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-red">{metrics.droppedTotal}</div>
+            <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-red"><AnimatedNumber value={metrics.droppedTotal} /></div>
             <div className="text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.backpressure.labels.dropped')}</div>
           </div>
         </div>
@@ -306,13 +323,17 @@ export default function Backpressure() {
       <Panel title={t('simulators.backpressure.labels.latest')} accent="amber">
         <div className="space-y-2">
           {messages.slice(-5).map(message => (
-            <div
+            <motion.div
               key={message.id}
+              layout="position"
+              initial={{ opacity: 0, y: reducedMotion ? 0 : 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={transition}
               className="flex justify-between items-center border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2 rounded-md"
             >
               <StatusBadge variant={messageStatusVariant(message.status)} label={message.status.toUpperCase()} />
               <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim tabular-nums">{((Date.now() - message.timestamp) / 1000).toFixed(1)}s ago</span>
-            </div>
+            </motion.div>
           ))}
           {messages.slice(-5).length === 0 && (
             <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center rounded-lg">

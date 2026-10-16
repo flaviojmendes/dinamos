@@ -1,8 +1,9 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Panel } from '../tactical';
+import { SimulationActivity, FlowLink, useSimulationMotion } from '../simulation';
 
 /**
  * An interactive, deterministic teaching tool for prompt injection.
@@ -428,6 +429,8 @@ const STATUS_STYLE: Record<StageStatus, { box: string; chip: string; dot: string
 
 export default function PromptInjectionSimulator() {
   const { i18n } = useTranslation();
+  const { reducedMotion, transition, duration } = useSimulationMotion();
+  const [evaluating, setEvaluating] = useState(false);
   const lang: Lang = i18n.language?.startsWith('en') ? 'en' : 'pt';
   const s = STRINGS[lang];
 
@@ -446,14 +449,19 @@ export default function PromptInjectionSimulator() {
   const isLeak = result.outcome === 'leaked';
   // Changes whenever the scenario changes, so the pipeline replays its animation.
   const runKey = `${attack}|${DEFENSE_ORDER.filter((d) => active.has(d)).join(',')}`;
+  useEffect(() => {
+    setEvaluating(true);
+    const timer = setTimeout(() => setEvaluating(false), reducedMotion ? 0 : 900);
+    return () => clearTimeout(timer);
+  }, [runKey, reducedMotion]);
 
   return (
-    <div className="min-h-full bg-gradient-to-b from-zinc-900 to-black">
-      <div className="py-12 px-6 max-w-7xl mx-auto">
+    <div className="simulation-workspace min-h-full bg-white dark:bg-tactical-bg">
+      <div className="py-8 px-4 sm:px-6 max-w-7xl mx-auto">
         <nav className="mb-8">
           <Link
             to="/seguranca/prompt-injection"
-            className="inline-flex items-center text-slate-500 dark:text-slate-400 hover:text-white transition-colors font-sans text-sm"
+            className="inline-flex items-center text-slate-500 dark:text-slate-400 hover:text-signal-pink transition-colors font-sans text-sm"
           >
             <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -464,12 +472,12 @@ export default function PromptInjectionSimulator() {
 
         <motion.div
           className="mb-10"
-          initial={{ opacity: 0, y: 12 }}
+          initial={false}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <h1 className="text-4xl font-bold text-white mb-4">{s.title}</h1>
-          <p className="text-lg text-slate-400 max-w-3xl">{s.subtitle}</p>
+          <h1 className="font-display text-3xl sm:text-4xl font-semibold text-slate-900 dark:text-tactical-text mb-4">{s.title}</h1>
+          <p className="text-base text-slate-600 dark:text-tactical-dim max-w-3xl">{s.subtitle}</p>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-6">
@@ -510,7 +518,8 @@ export default function PromptInjectionSimulator() {
                       onClick={() => setAttack(id)}
                       whileHover={{ x: 3 }}
                       whileTap={{ scale: 0.99 }}
-                      className={`w-full text-left border px-3 py-2.5 transition-colors ${
+                      aria-pressed={attack === id}
+                      className={`w-full text-left rounded-lg border px-3 py-3 transition-colors ${
                         selected
                           ? 'border-signal-red bg-signal-red/10'
                           : 'border-slate-300 dark:border-tactical-line hover:border-slate-500 dark:hover:border-tactical-border'
@@ -543,7 +552,8 @@ export default function PromptInjectionSimulator() {
                       onClick={() => toggle(id)}
                       whileHover={{ x: 3 }}
                       whileTap={{ scale: 0.99 }}
-                      className={`w-full text-left border px-3 py-2.5 transition-colors flex items-start gap-3 ${
+                      aria-pressed={on}
+                      className={`w-full text-left rounded-lg border px-3 py-3 transition-colors flex items-start gap-3 ${
                         on
                           ? 'border-signal-green bg-signal-green/10'
                           : 'border-slate-300 dark:border-tactical-line hover:border-slate-500 dark:hover:border-tactical-border'
@@ -606,6 +616,7 @@ export default function PromptInjectionSimulator() {
             </Panel>
 
             <Panel title={s.pipelineTitle} accent="cyan">
+              <SimulationActivity active={evaluating} className="mb-4" />
               <motion.div
                 key={runKey}
                 className="space-y-2"
@@ -613,7 +624,7 @@ export default function PromptInjectionSimulator() {
                 animate="show"
                 variants={{
                   hidden: {},
-                  show: { transition: { staggerChildren: 0.18 } },
+                  show: { transition: { staggerChildren: duration(0.16) } },
                 }}
               >
                 {result.stages.map((stage, idx) => {
@@ -622,10 +633,10 @@ export default function PromptInjectionSimulator() {
                   return (
                     <React.Fragment key={stage.id}>
                       <motion.div
-                        className={`relative overflow-hidden border px-3 py-2.5 ${st.box}`}
+                        className={`sim-node relative overflow-hidden rounded-xl border px-4 py-4 ${st.box} ${evaluating ? 'sim-node-active' : ''}`}
                         variants={{
-                          hidden: { opacity: 0, x: -16 },
-                          show: { opacity: 1, x: 0, transition: { type: 'spring', stiffness: 320, damping: 26 } },
+                          hidden: { opacity: reducedMotion ? 1 : 0, x: reducedMotion ? 0 : -12 },
+                          show: { opacity: 1, x: 0, transition },
                         }}
                       >
                         {/* sweeping highlight as the request "reaches" this stage */}
@@ -634,15 +645,15 @@ export default function PromptInjectionSimulator() {
                           className={`absolute inset-y-0 left-0 w-1 ${st.dot}`}
                           initial={{ scaleY: 0 }}
                           animate={{ scaleY: 1 }}
-                          transition={{ delay: idx * 0.18 + 0.1, duration: 0.3 }}
+                          transition={{ delay: duration(idx * 0.16 + 0.1), duration: duration(0.24) }}
                           style={{ originY: 0 }}
                         />
                         <div className="flex items-center justify-between gap-2">
                           <span className="flex items-center gap-2 font-sans text-sm font-medium text-slate-900 dark:text-tactical-text">
                             <motion.span
                               className={`w-2 h-2 rounded-full ${st.dot}`}
-                              animate={isStop ? { scale: [1, 1.6, 1] } : {}}
-                              transition={{ repeat: isStop ? Infinity : 0, duration: 1.2 }}
+                              animate={isStop && !reducedMotion ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+                              transition={{ duration: duration(0.24) }}
                             />
                             {s.stageNames[stage.id]}
                           </span>
@@ -650,9 +661,9 @@ export default function PromptInjectionSimulator() {
                             className={`font-sans text-[10px] rounded-full border px-2 py-0.5 ${st.chip}`}
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: idx * 0.18 + 0.2 }}
+                            transition={{ delay: duration(idx * 0.16 + 0.2), duration: duration(0.2) }}
                           >
-                            {st.label(s)}
+                            {lang === 'pt' && stage.status !== 'off' ? ({ blocked: 'Bloqueado', pass: 'Aprovado', danger: 'Vulnerável' }[stage.status]) : st.label(s)}
                           </motion.span>
                         </div>
                         <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim mt-1">{stage.note}</p>
@@ -665,16 +676,7 @@ export default function PromptInjectionSimulator() {
                             show: { opacity: 1 },
                           }}
                         >
-                          <motion.svg
-                            className="w-4 h-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            animate={{ y: [0, 4, 0] }}
-                            transition={{ repeat: Infinity, duration: 1.1, ease: 'easeInOut' }}
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                          </motion.svg>
+                          <FlowLink active={evaluating} direction="vertical" tone={stage.status === 'danger' ? 'red' : 'cyan'} className="h-7" />
                         </motion.div>
                       )}
                     </React.Fragment>
@@ -689,16 +691,16 @@ export default function PromptInjectionSimulator() {
                 initial={{ opacity: 0, scale: 0.97, y: 8 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.97, y: -8 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-                className={`border-l-2 p-5 ${
-                  isLeak ? 'border-l-signal-red bg-signal-red/5' : 'border-l-signal-green bg-signal-green/5'
+                transition={transition}
+                className={`rounded-xl border p-5 ${
+                  isLeak ? 'border-signal-red/40 bg-signal-red/5' : 'border-signal-green/40 bg-signal-green/5'
                 } tactical-panel`}
               >
                 <div className="flex items-center gap-3 mb-2">
                   <motion.span
                     className={`w-3 h-3 rounded-full ${isLeak ? 'bg-signal-red' : 'bg-signal-green'}`}
-                    animate={isLeak ? { scale: [1, 1.5, 1], opacity: [1, 0.5, 1] } : { scale: 1 }}
-                    transition={{ repeat: isLeak ? Infinity : 0, duration: 0.9 }}
+                    animate={isLeak && !reducedMotion ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+                    transition={{ duration: duration(0.24) }}
                   />
                   <h3
                     className={`font-sans text-sm font-semibold ${

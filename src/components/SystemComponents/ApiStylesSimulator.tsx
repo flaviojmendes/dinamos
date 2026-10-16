@@ -1,15 +1,20 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
+import { useSimulationMotion } from '../simulation';
+
 import { Panel, TacticalButton } from '../tactical';
 import { AnimatedMetric } from '../AISystems/motion';
 import { NarrationBar } from '../simulators/teaching';
+import TransitPacket from '../DataStorage/TransitPacket';
+import { Monitor, Server } from 'lucide-react';
 
 type Style = 'rest' | 'graphql' | 'grpc';
 const TOTAL_USER_FIELDS = 12;
 
 export default function ApiStylesSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const base = 'simulators.api_styles';
 
   const [style, setStyle] = useState<Style>('rest');
@@ -52,13 +57,13 @@ export default function ApiStylesSimulator() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
       <Panel title={t(`${base}.title`)} accent="cyan">
         <p className="mb-5 font-sans text-xs text-slate-500 dark:text-tactical-dim">{t(`${base}.subtitle`)}</p>
 
         <div className="mb-5 flex flex-wrap gap-2">
           {(['rest', 'graphql', 'grpc'] as Style[]).map((s) => (
-            <TacticalButton key={s} size="sm" variant={style === s ? 'secondary' : 'ghost'} onClick={() => setStyle(s)}>
+            <TacticalButton key={s} size="sm" aria-pressed={style === s} variant={style === s ? 'secondary' : 'ghost'} onClick={() => setStyle(s)}>
               {t(`${base}.styles.${s}`)}
             </TacticalButton>
           ))}
@@ -73,7 +78,7 @@ export default function ApiStylesSimulator() {
             </div>
           </div>
           <div className="flex items-end">
-            <TacticalButton size="sm" variant={needsOrders ? 'secondary' : 'ghost'} onClick={() => setNeedsOrders((v) => !v)}>
+            <TacticalButton size="sm" aria-pressed={needsOrders} variant={needsOrders ? 'secondary' : 'ghost'} onClick={() => setNeedsOrders((v) => !v)}>
               {needsOrders ? t(`${base}.controls.with_orders`) : t(`${base}.controls.no_orders`)}
             </TacticalButton>
           </div>
@@ -86,20 +91,20 @@ export default function ApiStylesSimulator() {
         </div>
 
         {/* Request endpoints + round trips */}
-        <div className="mb-4 space-y-2">
+        <div className="sim-stage mb-4 space-y-3 rounded-xl border border-slate-200 p-4 dark:border-tactical-border">
           {endpoints.map((ep, i) => (
-            <div key={ep} className="flex items-center gap-2">
-              <span className="w-14 label-mono">{t(`${base}.client`)}</span>
-              <motion.div className="h-0.5 flex-1 bg-signal-cyan/60" initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ delay: i * 0.2, duration: 0.4 }} style={{ transformOrigin: 'left' }} />
-              <span className="shrink-0 rounded bg-slate-100 px-2 py-0.5 font-mono text-[10px] text-slate-600 dark:bg-tactical-raised dark:text-tactical-dim">{ep}</span>
-              <motion.div className="h-0.5 flex-1 bg-signal-green/60" initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ delay: i * 0.2 + 0.2, duration: 0.4 }} style={{ transformOrigin: 'right' }} />
-              <span className="w-14 text-right label-mono">{t(`${base}.server`)}</span>
+            <div key={`${ep}-${fieldsNeeded}-${needsOrders}`} className="flex min-w-0 items-center gap-2 sm:gap-3">
+              <span className="sim-node flex w-14 shrink-0 flex-col items-center gap-2 py-3 font-sans text-xs"><Monitor size={18} aria-hidden="true" />{t(`${base}.client`)}</span>
+              <div className="sim-flow relative h-8 min-w-3 flex-1 overflow-hidden" aria-hidden="true"><span className="absolute inset-x-0 top-1/2 h-px bg-signal-cyan/40" /><TransitPacket seconds={0.45 + i * 0.1} /></div>
+              <span className="min-w-0 max-w-[44%] break-all rounded-md bg-slate-100 px-2 py-2 font-mono text-xs text-slate-600 dark:bg-tactical-raised dark:text-tactical-dim">{ep}</span>
+              <div className="sim-flow relative h-8 min-w-3 flex-1 overflow-hidden" aria-hidden="true"><span className="absolute inset-x-0 top-1/2 h-px bg-signal-green/40" /><TransitPacket seconds={0.55 + i * 0.1} tone="green" reverse /></div>
+              <span className="sim-node flex w-14 shrink-0 flex-col items-center gap-2 py-3 font-sans text-xs"><Server size={18} aria-hidden="true" />{t(`${base}.server`)}</span>
             </div>
           ))}
         </div>
 
         {/* Response payload: returned vs used vs over-fetched */}
-        <div className="rounded-lg border border-slate-200 p-3 dark:border-tactical-border">
+        <div className="sim-node rounded-lg border border-slate-200 p-4 dark:border-tactical-border">
           <div className="mb-2 flex items-center justify-between">
             <span className="label-mono">{t(`${base}.payload_label`)}</span>
             {style === 'grpc' && (
@@ -112,9 +117,10 @@ export default function ApiStylesSimulator() {
               return (
                 <motion.div
                   key={i}
-                  initial={{ scale: 0.6, opacity: 0 }}
+                  layout={!reducedMotion}
+                  initial={{ scale: reducedMotion ? 1 : 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: i * 0.02 }}
+                  transition={{ ...transition, delay: reducedMotion ? 0 : i * 0.015 }}
                   className={`h-6 ${style === 'grpc' ? 'w-4' : 'w-7'} rounded ${
                     used
                       ? 'bg-signal-green/70'
@@ -126,7 +132,7 @@ export default function ApiStylesSimulator() {
             })}
             {needsOrders &&
               Array.from({ length: 3 }).map((_, i) => (
-                <motion.div key={`o${i}`} initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className={`h-6 ${style === 'grpc' ? 'w-4' : 'w-7'} rounded bg-signal-cyan/60`} title="order" />
+                <motion.div key={`o${i}`} layout={!reducedMotion} initial={{ scale: reducedMotion ? 1 : 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={transition} className={`h-6 ${style === 'grpc' ? 'w-4' : 'w-7'} rounded bg-signal-cyan/60`} title={t(`${base}.sinks_orders`)} />
               ))}
           </div>
           <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 font-sans text-[11px] text-slate-500 dark:text-tactical-dim">
@@ -138,7 +144,7 @@ export default function ApiStylesSimulator() {
       </Panel>
 
       <Panel title={t(`${base}.metrics.title`)} accent="green">
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div className="sim-metrics grid grid-cols-2 gap-3 lg:grid-cols-4">
           <AnimatedMetric value={stats.roundTrips} label={t(`${base}.metrics.round_trips`)} color={stats.roundTrips > 1 ? 'amber' : 'green'} />
           <AnimatedMetric value={stats.payload} suffix=" B" label={t(`${base}.metrics.payload`)} color="cyan" />
           <AnimatedMetric value={stats.overFetch} suffix="%" label={t(`${base}.metrics.over_fetch`)} color={stats.overFetch > 30 ? 'red' : 'green'} />

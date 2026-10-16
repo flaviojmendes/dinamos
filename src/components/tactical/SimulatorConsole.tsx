@@ -1,6 +1,9 @@
 import React from 'react';
 import { cn } from './cn';
 import { StatusBadge } from './StatusBadge';
+import { MotionConfig } from 'framer-motion';
+import { FlaskConical } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface SimulatorConsoleProps {
   /** Simulator subject title. */
@@ -23,30 +26,26 @@ export function SimulatorConsole({
   title,
   subtitle,
   toolbar,
-  online = true,
+  online = false,
   className,
   children,
 }: SimulatorConsoleProps) {
+  const { t } = useTranslation();
   return (
-    <div className={cn('tactical-panel', className)}>
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 dark:border-tactical-border px-5 py-4">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="min-w-0">
-            <h2 className="font-display text-lg font-semibold tracking-tight text-slate-900 dark:text-tactical-text">
-              {title}
-            </h2>
-            {subtitle && (
-              <p className="mt-1 max-w-prose font-sans text-sm text-slate-500 dark:text-tactical-dim">{subtitle}</p>
-            )}
-          </div>
-        </div>
+    <MotionConfig reducedMotion="user" transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}>
+    <div className={cn('simulation-workspace sim-console', className)}>
+      <div className="sim-console-heading">
+        <h1>{title}</h1>
+        <span className="sim-console-caption"><FlaskConical size={15} aria-hidden="true" />{t('content.simulator_interactive')}</span>
         <div className="flex items-center gap-3">
           {toolbar}
           {online && <StatusBadge variant="online" />}
         </div>
       </div>
-      <div className="p-4">{children}</div>
+      {subtitle && <p className="mb-5 max-w-prose text-sm text-slate-600 dark:text-tactical-dim">{subtitle}</p>}
+      <div className="sim-console-body">{children}</div>
     </div>
+    </MotionConfig>
   );
 }
 

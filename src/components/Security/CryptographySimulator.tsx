@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import CryptoJS from 'crypto-js';
 import { useTranslation } from 'react-i18next';
 import { Panel, TacticalButton } from '../tactical';
+import { motion, AnimatePresence } from 'framer-motion';
+import { SimulationActivity, FlowLink, useSimulationMotion } from '../simulation';
 
 interface SimulationResult {
+  id: number;
   input: string;
   output: string;
   details?: string;
@@ -15,6 +18,11 @@ const inputClass =
 export default function CryptographySimulator() {
   const { t } = useTranslation();
   const base = 'cryptography_simulator';
+  const { reducedMotion, transition } = useSimulationMotion();
+  const [processing, setProcessing] = useState(false);
+  const processingTimer = useRef<ReturnType<typeof setTimeout>>();
+  const nextResultId = useRef(0);
+  useEffect(() => () => clearTimeout(processingTimer.current), []);
 
   const [plainText, setPlainText] = useState<string>('');
   const [key, setKey] = useState<string>('');
@@ -30,10 +38,16 @@ export default function CryptographySimulator() {
 
   const clearResults = () => {
     setResults([]);
+    setProcessing(false);
+    clearTimeout(processingTimer.current);
   };
 
   const addResult = (input: string, output: string, details?: string) => {
-    setResults(prev => [...prev, { input, output, details }].slice(-5));
+    const id = ++nextResultId.current;
+    setResults(prev => [...prev, { id, input, output, details }].slice(-5));
+    setProcessing(true);
+    clearTimeout(processingTimer.current);
+    processingTimer.current = setTimeout(() => setProcessing(false), 750);
   };
 
   const encryptAES = (text: string, key: string) => {
@@ -98,7 +112,7 @@ export default function CryptographySimulator() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
       <div className="max-w-3xl">
         <h2 className="font-sans text-lg font-semibold text-slate-900 dark:text-tactical-text mb-2">
           {t(`${base}.title`)}
@@ -110,7 +124,7 @@ export default function CryptographySimulator() {
 
       <Panel title={t(`${base}.operation_label`)} accent="green">
         <div className="space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="sim-controls grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
@@ -156,7 +170,7 @@ export default function CryptographySimulator() {
               </div>
 
               <div className="pt-4 flex flex-col gap-2">
-                <TacticalButton variant="primary" className="w-full" onClick={runSimulation}>
+                <TacticalButton variant="primary" className="w-full" onClick={runSimulation} disabled={!plainText.trim()}>
                   {t(`${base}.process_button`)}
                 </TacticalButton>
                 <TacticalButton variant="ghost" className="w-full" onClick={clearResults}>
@@ -166,16 +180,27 @@ export default function CryptographySimulator() {
             </div>
           </div>
 
-          <div className="space-y-4">
-            <div className="font-sans text-sm font-semibold text-signal-cyan">{t(`${base}.results_title`)}</div>
+          <div className="sim-stage rounded-xl border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 sm:p-5">
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <div className="font-sans text-sm font-semibold text-slate-900 dark:text-tactical-text">{t(`${base}.results_title`)}</div>
+              <SimulationActivity active={processing} label={operations[selectedOperation]} />
+            </div>
+            <div className="grid grid-cols-[1fr_48px_1fr_48px_1fr] items-center gap-2 mb-6 text-center font-sans text-xs text-slate-600 dark:text-tactical-dim">
+              <div className="sim-node min-w-0 rounded-lg border border-slate-200 dark:border-tactical-border p-3 break-words">{resultLabels.input}</div>
+              <FlowLink active={processing} tone="cyan" />
+              <div className={`sim-node min-w-0 rounded-lg border border-slate-200 dark:border-tactical-border p-3 break-words ${processing ? 'sim-node-active' : ''}`}>{selectedOperation.toUpperCase()}</div>
+              <FlowLink active={processing} tone="green" />
+              <div className="sim-node min-w-0 rounded-lg border border-slate-200 dark:border-tactical-border p-3 break-words">{resultLabels.output}</div>
+            </div>
             {results.length === 0 ? (
               <p className="font-sans text-sm text-slate-400 dark:text-tactical-label">
                 {t(`${base}.no_results`)}
               </p>
             ) : (
               <div className="space-y-3">
-                {results.map((result, index) => (
-                  <div key={index} className="rounded-lg border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4">
+                <AnimatePresence initial={false}>
+                {results.map((result) => (
+                  <motion.div key={result.id} initial={reducedMotion ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={transition} className="rounded-lg border border-slate-200 dark:border-tactical-border bg-white dark:bg-tactical-panel p-4">
                     <div className="grid gap-2 font-mono text-sm">
                       <div>
                         <span className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label">{resultLabels.input}</span>
@@ -192,15 +217,16 @@ export default function CryptographySimulator() {
                         </div>
                       )}
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
+                </AnimatePresence>
               </div>
             )}
           </div>
         </div>
       </Panel>
 
-      <div className="tactical-panel rounded-lg border-l-2 border-l-signal-cyan p-5">
+      <div className="tactical-panel rounded-lg border border-slate-200 dark:border-tactical-border p-5">
         <h3 className="font-sans text-sm font-semibold text-signal-cyan mb-3">{t(`${base}.instructions_title`)}</h3>
         <ul className="space-y-1.5 font-sans text-sm text-slate-600 dark:text-tactical-dim mb-6 list-decimal list-inside">
           {instructions.map((instruction, index) => (

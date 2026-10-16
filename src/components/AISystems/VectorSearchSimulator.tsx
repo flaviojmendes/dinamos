@@ -1,7 +1,8 @@
 import { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
+import { motion, MotionConfig } from 'framer-motion';
 import { Panel, TacticalButton, SegmentBar } from '../tactical';
+import { useSimulationMotion } from '../simulation';
 import { AnimatedMetric, GridBackdrop } from './motion';
 
 const DATASET_SIZES = [10_000, 100_000, 1_000_000, 10_000_000];
@@ -39,6 +40,7 @@ const dist = (a: { x: number; y: number }, b: { x: number; y: number }) =>
 
 export default function VectorSearchSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition, duration } = useSimulationMotion();
   const [efSearch, setEfSearch] = useState(64);
   const [m, setM] = useState(16);
   const [datasetIdx, setDatasetIdx] = useState(2);
@@ -165,7 +167,8 @@ export default function VectorSearchSimulator() {
   const pathD = visited.map((id, i) => `${i === 0 ? 'M' : 'L'} ${nodes[id].x} ${nodes[id].y}`).join(' ');
 
   return (
-    <div className="space-y-6">
+    <MotionConfig reducedMotion="user" transition={transition}>
+    <div className="sim-workspace space-y-6">
       <Panel
         title={t(`${base}.title`)}
         accent="cyan"
@@ -178,7 +181,7 @@ export default function VectorSearchSimulator() {
       >
         <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="sim-controls grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="space-y-2">
             <label className="block font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{t(`${base}.controls.ef_search`)}</label>
             <div className="flex items-center gap-2">
@@ -205,7 +208,7 @@ export default function VectorSearchSimulator() {
 
       {/* Navigable graph visualization */}
       <Panel title={t(`${base}.controls.m_links`)} accent="cyan" bodyClassName="p-0">
-        <div className="relative">
+        <div className="sim-stage relative">
           <GridBackdrop />
           <svg viewBox="0 0 100 60" className="relative w-full" style={{ aspectRatio: '100 / 60' }}>
             {/* graph edges */}
@@ -231,15 +234,15 @@ export default function VectorSearchSimulator() {
                   strokeWidth={0.7}
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  initial={{ pathLength: 0, opacity: 0.9 }}
+                  initial={reducedMotion ? false : { pathLength: 0, opacity: 0.9 }}
                   animate={{ pathLength: 1 }}
-                  transition={{ duration: Math.max(0.6, visited.length * 0.22), ease: 'easeInOut' }}
+                  transition={{ duration: duration(Math.max(0.6, visited.length * 0.16)), ease: 'easeOut' }}
                 />
                 {/* query target */}
                 <motion.g
                   initial={{ scale: 0, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 18 }}
+                  transition={transition}
                   style={{ transformOrigin: `${query.x}px ${query.y}px`, transformBox: 'fill-box' }}
                 >
                   <motion.circle
@@ -248,8 +251,8 @@ export default function VectorSearchSimulator() {
                     r={2.6}
                     className="fill-none stroke-signal-amber"
                     strokeWidth={0.4}
-                    animate={{ r: [2.6, 4.2, 2.6], opacity: [0.9, 0.2, 0.9] }}
-                    transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+                    animate={{ r: reducedMotion ? 2.6 : [2.6, 4.2, 2.6], opacity: [0.9, 0.4, 0.9] }}
+                    transition={{ duration: duration(0.65), repeat: 1, ease: 'easeOut' }}
                   />
                   <circle cx={query.x} cy={query.y} r={1.4} className="fill-signal-amber" />
                 </motion.g>
@@ -277,10 +280,10 @@ export default function VectorSearchSimulator() {
                   initial={false}
                   animate={
                     isVisited
-                      ? { scale: [0.6, 1.8, 1], opacity: 1 }
+                      ? { scale: reducedMotion ? 1 : [0.9, 1.35, 1], opacity: 1 }
                       : { scale: 1, opacity: 0.55 }
                   }
-                  transition={{ delay: isVisited && order >= 0 ? order * 0.22 : 0, duration: 0.4 }}
+                  transition={{ delay: duration(isVisited && order >= 0 ? order * 0.16 : 0), duration: duration(0.24) }}
                   style={{ transformOrigin: `${node.x}px ${node.y}px`, transformBox: 'fill-box' }}
                 />
               );
@@ -303,7 +306,7 @@ export default function VectorSearchSimulator() {
       {result && (
         <>
           <Panel title={t(`${base}.metrics.recall`)} accent="green">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="sim-metrics grid grid-cols-2 lg:grid-cols-4 gap-3">
               <AnimatedMetric value={result.recall} decimals={1} suffix="%" label={t(`${base}.metrics.recall`)} color={result.recall > 90 ? 'green' : 'amber'} />
               <AnimatedMetric value={result.latency} suffix="ms" label={t(`${base}.metrics.latency`)} color="cyan" />
               <AnimatedMetric value={result.comparisons} format={(v) => Math.round(v).toLocaleString()} label={t(`${base}.metrics.comparisons`)} color="default" />
@@ -338,6 +341,7 @@ export default function VectorSearchSimulator() {
         </>
       )}
     </div>
+    </MotionConfig>
   );
 }
 

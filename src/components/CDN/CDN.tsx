@@ -1,5 +1,7 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { Globe2, Server, ArrowDownToLine } from 'lucide-react';
+import { SimulationActivity, FlowLink, useSimulationMotion } from '../simulation';
+import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Panel, StatusBadge, TacticalButton } from '../tactical';
 
@@ -34,6 +36,9 @@ interface Config {
 
 export default function CDN() {
   const { t, i18n } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
+  const runId = useRef(0);
+  useEffect(() => () => { runId.current += 1; }, []);
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [isRequesting, setIsRequesting] = useState(false);
   const [nearestDatacenter, setNearestDatacenter] = useState<string | null>(null);
@@ -86,6 +91,7 @@ export default function CDN() {
   ]);
 
   const resetSimulation = () => {
+    runId.current += 1;
     setSelectedCountry(null);
     setIsRequesting(false);
     setNearestDatacenter(null);
@@ -110,6 +116,7 @@ export default function CDN() {
   const handleRequest = async (countryId: string) => {
     if (isRequesting) return;
     
+    const currentRun = ++runId.current;
     setIsRequesting(true);
     setSelectedCountry(countryId);
     
@@ -152,6 +159,7 @@ export default function CDN() {
     // Use Promise to handle the delay
     await new Promise(resolve => setTimeout(resolve, latency));
     
+    if (currentRun !== runId.current) return;
     setDatacenters(prev => prev.map(dc => 
       dc.id === nearest ? { ...dc, hasCache: true } : dc
     ));
@@ -171,19 +179,15 @@ export default function CDN() {
     'w-full h-2 bg-slate-200 dark:bg-tactical-border appearance-none cursor-pointer accent-signal-green';
 
   return (
-    <div className="space-y-6">
-      <div className="max-w-3xl">
-        <span className="inline-block text-xs font-medium text-slate-600 dark:text-tactical-label bg-slate-100 dark:bg-tactical-raised px-2.5 py-1 rounded-full mb-2">
-          {t('simulators.cdn.title')}
-        </span>
-      </div>
+    <div className="simulation-workspace space-y-6">
+      <div className="sim-controls"><SimulationActivity active={isRequesting} /></div>
 
       <Panel
         title={t('simulators.cdn.labels.country_select')}
         accent="cyan"
         action={
           <div className="flex items-center gap-2">
-            <TacticalButton size="sm" variant="ghost" onClick={() => setIsConfigOpen(!isConfigOpen)}>
+            <TacticalButton size="sm" variant="ghost" aria-expanded={isConfigOpen} onClick={() => setIsConfigOpen(!isConfigOpen)}>
               {isConfigOpen ? t('simulators.cdn.buttons.close_config') : t('simulators.cdn.buttons.configure')}
             </TacticalButton>
             <TacticalButton size="sm" variant="ghost" onClick={resetSimulation}>
@@ -260,6 +264,11 @@ export default function CDN() {
           </div>
         )}
 
+        <div className="sim-stage mb-6 flex items-center gap-4">
+          <div className="flex min-w-0 flex-1 flex-col items-center gap-2 text-center text-sm"><Globe2 size={28} aria-hidden="true" /><span>{selectedCountry ? t(`simulators.cdn.countries.${selectedCountry}.name`) : t('simulators.motion.client')}</span></div>
+          <FlowLink active={!!selectedCountry} eventKey={requestLogs[0]?.id ?? 0} tone={requestLogs[0]?.fromCache ? 'green' : 'cyan'} />
+          <div className="sim-node flex min-w-0 flex-1 flex-col items-center gap-2 p-4 text-center text-sm"><Server size={28} aria-hidden="true" /><span>{nearestDatacenter ? t(`simulators.cdn.datacenters.${nearestDatacenter}.name`) : t('simulators.cdn.labels.datacenters')}</span>{requestLogs[0] && <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim">{requestLogs[0].latency} ms</span>}</div>
+        </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
           {countries.map((country) => (
             <TacticalButton
@@ -268,28 +277,17 @@ export default function CDN() {
               variant={selectedCountry === country.id ? 'primary' : 'secondary'}
               onClick={() => handleRequest(country.id)}
               disabled={isRequesting}
+              aria-pressed={selectedCountry === country.id}
               className="!flex-col !items-start !h-auto !py-3 !normal-case !tracking-normal"
             >
-              <span className="font-mono text-sm font-semibold">{t(`simulators.cdn.countries.${country.id}.name`, { defaultValue: country.name })}</span>
-              <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim font-normal">{t(`simulators.cdn.countries.${country.id}.region`, { defaultValue: country.region })}</span>
+              <span className="flex items-center gap-2 font-sans text-sm font-semibold"><ArrowDownToLine size={14} aria-hidden="true" />{t(`simulators.cdn.countries.${country.id}.name`, { defaultValue: country.name })}</span>
+              <span className="font-sans text-xs text-slate-500 dark:text-tactical-dim font-normal">{t(`simulators.cdn.countries.${country.id}.region`, { defaultValue: country.region })}</span>
             </TacticalButton>
           ))}
         </div>
 
-        {isRequesting && (
-          <div className="mb-6 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised p-4 flex items-center justify-center rounded-lg">
-            <motion.div
-              className="flex items-center gap-2"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
-              <div className="w-2 h-2 bg-signal-cyan animate-bounce" />
-              <div className="w-2 h-2 bg-signal-cyan animate-bounce [animation-delay:0.2s]" />
-              <div className="w-2 h-2 bg-signal-cyan animate-bounce [animation-delay:0.4s]" />
-              <span className="ml-2 font-sans text-sm text-slate-600 dark:text-tactical-dim">{t('simulators.cdn.messages.processing')}</span>
-            </motion.div>
-          </div>
-        )}
+        {isRequesting && <SimulationActivity active label={t('simulators.cdn.messages.processing')} />}
+
       </Panel>
 
       <Panel title={t('simulators.cdn.labels.datacenters')} accent="green">
@@ -297,7 +295,7 @@ export default function CDN() {
           {datacenters.map((dc) => (
             <div
               key={dc.id}
-              className={`p-3 border rounded-lg ${
+              className={`sim-node p-4 ${
                 nearestDatacenter === dc.id
                   ? 'border-signal-cyan bg-signal-cyan/5'
                   : 'border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised'
@@ -323,8 +321,9 @@ export default function CDN() {
       {requestLogs.length > 0 && (
         <Panel title={t('simulators.cdn.history.title')} accent="amber">
           <div className="space-y-2">
+            <AnimatePresence initial={false} mode="popLayout">
             {requestLogs.map((log) => (
-              <div
+              <motion.div layout={!reducedMotion} initial={{ opacity: 0, y: reducedMotion ? 0 : -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={transition}
                 key={log.id}
                 className="p-3 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised flex items-center justify-between rounded-lg"
               >
@@ -343,8 +342,9 @@ export default function CDN() {
                     )}
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
+            </AnimatePresence>
           </div>
         </Panel>
       )}

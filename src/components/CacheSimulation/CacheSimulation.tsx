@@ -1,3 +1,5 @@
+import { UserRound, Database, Layers3, Play, Pause } from 'lucide-react';
+import { SimulationActivity } from '../simulation';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
@@ -57,6 +59,8 @@ export default function CacheSimulation() {
   const busy = useRef(false);
   const auto = useRef(false);
   const [autoOn, setAutoOn] = useState(false);
+
+  useEffect(() => () => { runId.current += 1; auto.current = false; }, []);
 
   // Real-time clock for TTL countdown + expiry sweep.
   useEffect(() => {
@@ -218,13 +222,15 @@ export default function CacheSimulation() {
   const narrTone = narr.kind === 'hit' ? 'success' : narr.kind === 'idle' ? 'idle' : 'active';
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
+      <div className="sim-controls"><SimulationActivity active={autoOn || phase !== null} /></div>
       <Panel
         title={t(`${base}.title`)}
         accent="cyan"
         action={
           <div className="flex flex-wrap items-center gap-2">
-            <TacticalButton size="sm" variant={autoOn ? 'danger' : 'primary'} onClick={toggleAuto}>
+            <TacticalButton size="sm" variant={autoOn ? 'secondary' : 'primary'} aria-pressed={autoOn} onClick={toggleAuto}>
+              {autoOn ? <Pause size={14} aria-hidden="true" /> : <Play size={14} aria-hidden="true" />}
               {autoOn ? t(`${base}.buttons.stop`) : t(`${base}.buttons.auto`)}
             </TacticalButton>
             <TacticalButton size="sm" variant="ghost" onClick={() => writeCache([])}>{t(`${base}.buttons.clear`)}</TacticalButton>
@@ -239,6 +245,7 @@ export default function CacheSimulation() {
           {[true, false].map((on) => (
             <button
               key={String(on)}
+              aria-pressed={cacheOn === on}
               onClick={() => setCacheOn(on)}
               className={`rounded-md px-3 py-1.5 font-sans text-xs font-medium transition-colors ${
                 cacheOn === on
@@ -254,24 +261,24 @@ export default function CacheSimulation() {
         </div>
 
         {/* Stage: client -> cache -> db with a traveling request token */}
-        <div className="relative mx-auto mb-6 h-28 max-w-2xl">
-          <div className="absolute left-[8%] right-[8%] top-9 h-px bg-slate-200 dark:bg-tactical-line" />
-          <StageNode left="8%" label={t(`${base}.stage.client`)} active={phase === 'client'} tone="cyan" />
+        <div className="sim-stage relative mx-auto mb-6 h-40 max-w-3xl">
+          <div className="absolute left-[8%] right-[8%] top-16 h-px bg-slate-200 dark:bg-tactical-line" />
+          <StageNode icon="client" left="8%" label={t(`${base}.stage.client`)} active={phase === 'client'} tone="cyan" />
           <StageNode
-            left="50%"
+            icon="cache" left="50%"
             label={t(`${base}.stage.cache`)}
             sub={t(`${base}.stage.cache_sub`)}
             active={cacheOn && (phase === 'cache' || phase === 'store')}
             dim={!cacheOn}
             tone={token?.tone === 'miss' && phase === 'cache' ? 'amber' : 'green'}
           />
-          <StageNode left="92%" label={t(`${base}.stage.db`)} sub={t(`${base}.stage.db_sub`)} active={phase === 'db'} tone="red" />
+          <StageNode icon="db" left="92%" label={t(`${base}.stage.db`)} sub={t(`${base}.stage.db_sub`)} active={phase === 'db'} tone="red" />
 
           <AnimatePresence>
             {token && (
               <motion.div
                 key="token"
-                className="absolute top-9 z-10"
+                className="absolute top-16 z-10"
                 style={{ x: '-50%', y: '-50%' }}
                 initial={{ opacity: 0, scale: 0.6, left: stationLeft.client }}
                 animate={{ opacity: 1, scale: 1, left: stationLeft[token.at] }}
@@ -347,13 +354,13 @@ export default function CacheSimulation() {
                   <motion.div
                     key={e.key}
                     layout
-                    animate={isEvicting ? { backgroundColor: 'rgba(231,76,60,0.16)', x: [0, -3, 3, 0] } : {}}
+                    animate={isEvicting ? { opacity: 0.35, x: reduce ? 0 : 12 } : { opacity: 1, x: 0 }}
                     transition={{ duration: 0.3 }}
                     className="relative flex h-9 items-center justify-between overflow-hidden rounded-md border border-slate-200 px-3 dark:border-tactical-border"
                   >
                     <div
                       className={`absolute bottom-0 left-0 top-0 ${expiringSoon ? 'bg-signal-amber/10' : 'bg-signal-green/10'}`}
-                      style={{ width: `${pct * 100}%` }}
+                      style={{ width: '100%', transform: `scaleX(${pct})`, transformOrigin: 'left', transition: reduce ? 'none' : 'transform 250ms linear' }}
                     />
                     <span className="relative font-mono text-xs text-slate-900 dark:text-tactical-text">{e.key}</span>
                     <span className={`relative font-mono text-[11px] tabular-nums ${expiringSoon ? 'text-amber-700 dark:text-signal-amber' : 'text-slate-400 dark:text-tactical-dim'}`}>
@@ -386,8 +393,9 @@ export default function CacheSimulation() {
                     <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-tactical-raised">
                       <motion.div
                         className={`h-full rounded-full ${last.hit ? 'bg-signal-green' : 'bg-signal-amber'}`}
-                        initial={{ width: 0 }}
-                        animate={{ width: `${Math.max(2, Math.min(100, (last.ms / dbLatency) * 100))}%` }}
+                        initial={{ scaleX: 0 }}
+                        animate={{ scaleX: Math.max(0.02, Math.min(1, last.ms / dbLatency)) }}
+                        style={{ transformOrigin: 'left' }}
                         transition={{ duration: 0.4, ease: 'easeOut' }}
                       />
                     </div>
@@ -447,6 +455,7 @@ function weightedKey(): string {
 }
 
 function StageNode({
+  icon,
   left,
   label,
   sub,
@@ -454,6 +463,7 @@ function StageNode({
   dim,
   tone,
 }: {
+  icon: 'client' | 'cache' | 'db';
   left: string;
   label: string;
   sub?: string;
@@ -461,6 +471,8 @@ function StageNode({
   dim?: boolean;
   tone: 'cyan' | 'green' | 'red' | 'amber';
 }) {
+  const reduce = useReducedMotion();
+  const Icon = icon === 'client' ? UserRound : icon === 'cache' ? Layers3 : Database;
   const ring =
     tone === 'green'
       ? 'border-signal-green bg-signal-green/10'
@@ -470,17 +482,18 @@ function StageNode({
           ? 'border-signal-amber bg-signal-amber/10'
           : 'border-signal-cyan bg-signal-cyan/10';
   return (
-    <div className="absolute top-9 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center" style={{ left }}>
+    <div className="absolute top-16 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center" style={{ left }}>
       <motion.div
-        animate={active ? { scale: [1, 1.06, 1] } : { scale: 1 }}
-        transition={active ? { duration: 1.2, repeat: Infinity, ease: 'easeInOut' } : { duration: 0.2 }}
-        className={`flex h-14 w-14 items-center justify-center rounded-xl border-2 transition-colors ${
+        animate={{ scale: active && !reduce ? 1.04 : 1 }}
+        transition={{ duration: reduce ? 0 : 0.22, ease: [0.22, 1, 0.36, 1] }}
+        className={`flex h-16 w-16 flex-col gap-1.5 items-center justify-center rounded-xl border transition-colors ${
           active ? ring : 'border-slate-300 bg-white dark:border-tactical-border dark:bg-tactical-raised'
         } ${dim ? 'opacity-40' : ''}`}
       >
-        <span className="font-sans text-[10px] font-semibold text-slate-700 dark:text-tactical-text">{label}</span>
+        <Icon size={20} aria-hidden="true" />
+        <span className="font-sans text-xs font-semibold text-slate-700 dark:text-tactical-text">{label}</span>
       </motion.div>
-      {sub && <span className="mt-1.5 font-mono text-[9px] uppercase tracking-wide text-slate-400 dark:text-tactical-label">{sub}</span>}
+      {sub && <span className="mt-1.5 font-sans text-[11px] text-slate-400 dark:text-tactical-label">{sub}</span>}
     </div>
   );
 }

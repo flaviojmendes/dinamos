@@ -1,7 +1,9 @@
+import { SimulationActivity, FlowLink } from '../simulation';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Panel, TacticalButton, StatusBadge } from '../tactical';
+import { AnimatedNumber } from '../AISystems/motion';
 
 interface Server {
   id: string;
@@ -252,7 +254,8 @@ export default function CanaryDeploymentSimulator() {
   const rangeClass = 'w-full h-2 bg-slate-200 dark:bg-tactical-raised appearance-none cursor-pointer accent-signal-green';
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
+      <SimulationActivity active={isRunning} />
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="max-w-3xl">
           <span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800 px-3 py-1 text-sm font-sans font-medium text-slate-700 dark:text-slate-300 mb-2">
@@ -354,11 +357,11 @@ export default function CanaryDeploymentSimulator() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <Panel title={`${t('simulators.canary.labels.stable_servers')} (v1)`} accent="green">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="sim-stage grid grid-cols-1 sm:grid-cols-3 gap-4">
               {servers.map(server => (
                 <motion.div
                   key={server.id}
-                  className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4"
+                  className="sim-node rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4"
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                 >
@@ -366,9 +369,10 @@ export default function CanaryDeploymentSimulator() {
                     <span className="font-mono text-sm text-slate-900 dark:text-tactical-text">{server.id}</span>
                     <StatusBadge variant={healthVariant(server.health)} dot />
                   </div>
-                  <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
-                    <div>{t('simulators.canary.labels.requests')}: {server.requestsHandled}</div>
-                    <div>{t('simulators.canary.labels.errors')}: {server.errors}</div>
+                  <FlowLink active={server.requestsHandled > 0} eventKey={server.requestsHandled} tone="green" className="mb-3 w-full" />
+                  <div className="font-sans text-xs text-slate-500 dark:text-tactical-dim">
+                    <div>{t('simulators.canary.labels.requests')}: <AnimatedNumber value={server.requestsHandled} /></div>
+                    <div>{t('simulators.canary.labels.errors')}: <AnimatedNumber value={server.errors} /></div>
                   </div>
                 </motion.div>
               ))}
@@ -388,20 +392,21 @@ export default function CanaryDeploymentSimulator() {
                   }
                   className="border-signal-amber/40"
                 >
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="sim-stage grid grid-cols-1 sm:grid-cols-3 gap-4">
                     {canaryServers.map(server => (
                       <motion.div
                         key={server.id}
-                        className="rounded-lg border border-amber-200 dark:border-amber-800/40 bg-amber-50 dark:bg-amber-950/20 p-4"
+                        className="sim-node rounded-lg border border-amber-200 dark:border-amber-800/40 bg-amber-50 dark:bg-amber-950/20 p-4"
                         layout
                       >
                         <div className="flex items-center justify-between mb-2">
                           <span className="font-mono text-sm text-slate-900 dark:text-tactical-text">{server.id}</span>
                           <StatusBadge variant={healthVariant(server.health)} dot />
                         </div>
-                        <div className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
-                          <div>{t('simulators.canary.labels.requests')}: {server.requestsHandled}</div>
-                          <div>{t('simulators.canary.labels.errors')}: {server.errors}</div>
+                        <FlowLink active={server.requestsHandled > 0} eventKey={server.requestsHandled} tone="amber" className="mb-3 w-full" />
+                        <div className="font-sans text-xs text-slate-500 dark:text-tactical-dim">
+                          <div>{t('simulators.canary.labels.requests')}: <AnimatedNumber value={server.requestsHandled} /></div>
+                          <div>{t('simulators.canary.labels.errors')}: <AnimatedNumber value={server.errors} /></div>
                         </div>
                       </motion.div>
                     ))}
@@ -414,23 +419,23 @@ export default function CanaryDeploymentSimulator() {
           <Panel title={t('simulators.canary.labels.metrics')} accent="cyan">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-3">
-                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">{totalRequests}</div>
+                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan"><AnimatedNumber value={totalRequests} /></div>
                 <div className="text-xs font-sans font-medium text-slate-500 dark:text-slate-400 mt-2">{t('simulators.canary.labels.total_requests')}</div>
               </div>
               <div className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-3">
-                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-amber">{totalCanaryRequests}</div>
+                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-amber"><AnimatedNumber value={totalCanaryRequests} /></div>
                 <div className="text-xs font-sans font-medium text-slate-500 dark:text-slate-400 mt-2">{t('simulators.canary.labels.canary_requests')}</div>
               </div>
               <div className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-3">
                 <div className={`font-mono text-3xl font-bold tabular-nums leading-none ${
                   canaryErrorRate > 15 ? 'text-signal-red' : canaryErrorRate > 5 ? 'text-signal-amber' : 'text-signal-green'
                 }`}>
-                  {canaryErrorRate.toFixed(1)}%
+                  <AnimatedNumber value={canaryErrorRate} decimals={1} />%
                 </div>
                 <div className="text-xs font-sans font-medium text-slate-500 dark:text-slate-400 mt-2">{t('simulators.canary.labels.canary_error_rate')}</div>
               </div>
               <div className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-3">
-                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green">{stableErrorRate.toFixed(1)}%</div>
+                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green"><AnimatedNumber value={stableErrorRate} decimals={1} />%</div>
                 <div className="text-xs font-sans font-medium text-slate-500 dark:text-slate-400 mt-2">{t('simulators.canary.labels.stable_error_rate')}</div>
               </div>
             </div>
@@ -487,7 +492,7 @@ export default function CanaryDeploymentSimulator() {
         </Panel>
       </div>
 
-      <div className="rounded-lg border border-slate-200 dark:border-slate-700 border-l-2 border-l-emerald-500 bg-slate-50 dark:bg-slate-900 p-5">
+      <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-5">
         <h3 className="text-sm font-sans font-semibold text-slate-900 dark:text-slate-100 mb-4">{t('simulators.canary.info.title')}</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-sans text-sm text-slate-600 dark:text-slate-400">
           <div>

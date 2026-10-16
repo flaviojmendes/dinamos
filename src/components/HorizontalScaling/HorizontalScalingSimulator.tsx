@@ -1,3 +1,4 @@
+import { SimulationActivity, FlowLink } from '../simulation';
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -134,7 +135,8 @@ export default function HorizontalScalingSimulator() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
+      <SimulationActivity active={isRunning} />
       <div className="max-w-3xl">
         <span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800 px-3 py-1 text-sm font-sans font-medium text-slate-700 dark:text-slate-300 mb-2">
           {t('simulators.horizontal_scaling.title')}
@@ -145,7 +147,7 @@ export default function HorizontalScalingSimulator() {
       </div>
 
       <Panel title={t('simulators.horizontal_scaling.controls.request_rate')} accent="cyan">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="sim-stage grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="space-y-2">
             <label className="text-sm font-sans font-medium text-slate-600 dark:text-slate-400">{t('simulators.horizontal_scaling.controls.request_rate')}</label>
             <input type="range" min="1" max="10" value={config.requestRate} onChange={e => setConfig({ ...config, requestRate: Number(e.target.value) })} className={rangeClass} />
@@ -196,7 +198,7 @@ export default function HorizontalScalingSimulator() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {servers.map(server => (
-          <motion.div key={server.id} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}>
+          <motion.div key={server.id} layout="position" className="min-w-0" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}>
             <Panel
               title={t('simulators.horizontal_scaling.server_card.server_label', { id: server.id })}
               accent="green"
@@ -207,6 +209,7 @@ export default function HorizontalScalingSimulator() {
                 />
               }
             >
+              <FlowLink active={isRunning && server.status === 'active' && server.load > 0} tone="cyan" className="mb-4 w-full" />
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between font-sans text-sm text-slate-600 dark:text-slate-400 mb-1">

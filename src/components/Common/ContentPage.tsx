@@ -10,10 +10,6 @@ export default function ContentPage({ children }: Props) {
   const location = useLocation();
   const childPaths = location.state?.childPaths || [];
   
-  // Log for debugging
-  console.log('Current path:', location.pathname);
-  console.log('Child paths:', childPaths);
-
   return (
     <ContentLayout childPaths={childPaths}>
       {children}

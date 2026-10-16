@@ -1,6 +1,8 @@
 import { useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
+import { useSimulationMotion } from '../simulation';
+import { RotateCcw } from 'lucide-react';
 import { Panel, TacticalButton } from '../tactical';
 import { AnimatedMetric } from '../AISystems/motion';
 import { NarrationBar } from '../simulators/teaching';
@@ -29,7 +31,7 @@ function positions(word: string, m: number, k: number): number[] {
   const a = hash1(word);
   const b = hash2(word);
   const out: number[] = [];
-  for (let i = 0; i < k; i++) out.push((a + Math.imul(i, b)) % m);
+  for (let i = 0; i < k; i++) out.push(((a + Math.imul(i, b)) >>> 0) % m);
   return out;
 }
 
@@ -42,6 +44,7 @@ type Probe = {
 
 export default function BloomFilterSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const base = 'simulators.bloom_filter';
 
   const [m, setM] = useState(48);
@@ -134,13 +137,13 @@ export default function BloomFilterSimulator() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
       <Panel
         title={t(`${base}.title`)}
         accent="cyan"
         action={
           <TacticalButton size="sm" variant="ghost" onClick={reset}>
-            {t(`${base}.buttons.reset`)}
+            <RotateCcw size={14} aria-hidden="true" />{t(`${base}.buttons.reset`)}
           </TacticalButton>
         }
       >
@@ -148,7 +151,7 @@ export default function BloomFilterSimulator() {
 
         <div className="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Slider label={t(`${base}.controls.bits`)} value={m} min={16} max={96} step={8} onChange={resize} />
-          <Slider label={t(`${base}.controls.hashes`)} value={k} min={1} max={6} onChange={setK} />
+          <Slider label={t(`${base}.controls.hashes`)} value={k} min={1} max={6} onChange={(next) => { setK(next); resetState(m); }} />
         </div>
 
         <div className="mb-5 flex flex-wrap items-center gap-2">
@@ -175,9 +178,10 @@ export default function BloomFilterSimulator() {
           <NarrationBar tone={narr.tone} stepKey={narr.key}>{narr.text}</NarrationBar>
         </div>
 
+        <div className="sim-stage rounded-xl border border-slate-200 p-4 dark:border-tactical-border">
         {/* Hash mapping chips */}
         {probe && (
-          <div className="mb-4 flex flex-wrap items-center gap-2">
+          <div key={narr.key} className="mb-5 flex flex-wrap items-center gap-2">
             <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim">
               {probe.mode === 'insert' ? t(`${base}.maps_to`) : t(`${base}.checks`)} "{probe.word}"
             </span>
@@ -190,9 +194,9 @@ export default function BloomFilterSimulator() {
                     ? 'border-signal-green/50 bg-signal-green/10 text-signal-green'
                     : 'border-signal-red/50 bg-signal-red/10 text-signal-red';
               return (
-                <span key={i} className={`rounded-md border px-2 py-1 font-mono text-[11px] ${color}`}>
+                <motion.span key={i} initial={{ opacity: 0, y: reducedMotion ? 0 : -5 }} animate={{ opacity: 1, y: 0 }} transition={{ ...transition, delay: reducedMotion ? 0 : i * 0.045 }} className={`rounded-md border px-2.5 py-2 font-mono text-xs ${color}`}>
                   h{i + 1}&#8594;{p} {probe.mode === 'query' && (setBit ? '\u2713' : '\u2717')}
-                </span>
+                </motion.span>
               );
             })}
           </div>
@@ -212,26 +216,28 @@ export default function BloomFilterSimulator() {
                     : '';
             return (
               <motion.div
-                key={i}
-                animate={{ scale: lit !== 'none' ? [1.25, 1] : 1 }}
-                transition={{ duration: 0.3 }}
-                className={`relative flex h-8 w-8 items-center justify-center rounded border font-mono text-[11px] tabular-nums ${
+                key={`${i}-${lit !== 'none' ? narr.key : 'idle'}`}
+                initial={false}
+                animate={{ scale: !reducedMotion && lit !== 'none' ? [1, 1.13, 1] : 1 }}
+                transition={{ ...transition, delay: reducedMotion ? 0 : Math.max(0, probe?.positions.indexOf(i) ?? 0) * 0.045 }}
+                className={`relative flex h-9 w-9 items-center justify-center rounded-md border font-mono text-xs tabular-nums ${
                   litClass ||
                   (on
                     ? 'border-signal-cyan/40 bg-signal-cyan/20 text-signal-cyan'
                     : 'border-slate-200 text-slate-400 dark:border-tactical-border dark:text-tactical-dim')
                 }`}
               >
-                <span className="absolute left-0.5 top-0 text-[7px] leading-tight text-slate-400 dark:text-tactical-label">{i}</span>
+                <span className="absolute left-1 top-0.5 text-[8px] leading-tight text-slate-400 dark:text-tactical-label">{i}</span>
                 {on ? 1 : 0}
               </motion.div>
             );
           })}
         </div>
+        </div>
       </Panel>
 
       <Panel title={t(`${base}.metrics.title`)} accent="green">
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div className="sim-metrics grid grid-cols-2 gap-3 lg:grid-cols-4">
           <AnimatedMetric value={n} label={t(`${base}.metrics.items`)} color="cyan" />
           <AnimatedMetric value={bitsSet} label={t(`${base}.metrics.bits_set`)} color="default" />
           <AnimatedMetric value={fill} suffix="%" label={t(`${base}.metrics.fill`)} color={fill > 60 ? 'red' : 'default'} />

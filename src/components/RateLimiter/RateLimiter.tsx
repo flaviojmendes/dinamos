@@ -1,6 +1,8 @@
+import { Play, Pause, UserRound, Gauge, Check, X } from 'lucide-react';
+import { SimulationActivity, FlowLink, useSimulationMotion } from '../simulation';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Panel, StatusBadge, TacticalButton } from '../tactical';
 import { AnimatedMetric } from '../AISystems/motion';
 
@@ -14,6 +16,7 @@ interface Request {
 
 export default function RateLimiter() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const [strategy, setStrategy] = useState<Strategy>('token');
   const [isRunning, setIsRunning] = useState(false);
   const [isConfigOpen, setIsConfigOpen] = useState(false);
@@ -23,6 +26,8 @@ export default function RateLimiter() {
 
   // Unified "level": tokens available (token), queue depth (leaky), window count (sliding).
   const [level, setLevel] = useState(maxTokens);
+  const levelRef = useRef(level);
+  levelRef.current = level;
   const windowRef = useRef<number[]>([]);
   const [windowCount, setWindowCount] = useState(0);
 
@@ -72,12 +77,12 @@ export default function RateLimiter() {
       let accepted = false;
 
       if (strategy === 'token') {
-        if (level >= 1) {
+        if (levelRef.current >= 1) {
           accepted = true;
           setLevel(prev => prev - 1);
         }
       } else if (strategy === 'leaky') {
-        if (level < maxTokens) {
+        if (levelRef.current < maxTokens) {
           accepted = true;
           setLevel(prev => Math.min(maxTokens, prev + 1));
         }
@@ -99,7 +104,7 @@ export default function RateLimiter() {
     };
     const requestInterval = setInterval(generate, 1000 / messageRate);
     return () => clearInterval(requestInterval);
-  }, [isRunning, level, messageRate, strategy, requestsPerSecond, maxTokens]);
+  }, [isRunning, messageRate, strategy, requestsPerSecond, maxTokens]);
 
   const rangeClass = 'flex-1 h-2 bg-slate-200 dark:bg-tactical-border appearance-none cursor-pointer accent-signal-green';
 
@@ -112,20 +117,19 @@ export default function RateLimiter() {
   const acceptedPct = metrics.total > 0 ? Math.round((metrics.accepted / metrics.total) * 100) : 0;
 
   return (
-    <div className="space-y-6">
-      <div className="max-w-3xl">
-        <span className="inline-block text-xs font-medium text-slate-600 dark:text-tactical-label bg-slate-100 dark:bg-tactical-raised px-2.5 py-1 rounded-full mb-2">{t('simulators.rate_limiter.title')}</span>
-      </div>
+    <div className="simulation-workspace space-y-6">
+      <div className="sim-controls"><SimulationActivity active={isRunning} /></div>
 
       <Panel
         title={t('simulators.rate_limiter.bucket.title')}
         accent="cyan"
         action={
           <div className="flex flex-wrap items-center gap-2">
-            <TacticalButton size="sm" variant="ghost" onClick={() => setIsConfigOpen(!isConfigOpen)}>
+            <TacticalButton size="sm" variant="ghost" aria-expanded={isConfigOpen} onClick={() => setIsConfigOpen(!isConfigOpen)}>
               {isConfigOpen ? t('simulators.rate_limiter.buttons.close_config') : t('simulators.rate_limiter.buttons.configure')}
             </TacticalButton>
-            <TacticalButton size="sm" variant={isRunning ? 'danger' : 'secondary'} onClick={() => setIsRunning(!isRunning)}>
+            <TacticalButton size="sm" variant={isRunning ? 'secondary' : 'primary'} aria-pressed={isRunning} onClick={() => setIsRunning(!isRunning)}>
+              {isRunning ? <Pause size={14} aria-hidden="true" /> : <Play size={14} aria-hidden="true" />}
               {isRunning ? t('simulators.rate_limiter.buttons.stop') : t('simulators.rate_limiter.buttons.start')}
             </TacticalButton>
             <TacticalButton size="sm" variant="ghost" onClick={resetSimulation}>
@@ -138,7 +142,7 @@ export default function RateLimiter() {
         <div className="mb-4 flex flex-wrap items-center gap-2">
           <span className="text-xs font-medium text-slate-500 dark:text-tactical-label mr-1">{t('simulators.rate_limiter.strategy')}</span>
           {(['token', 'leaky', 'sliding'] as Strategy[]).map(s => (
-            <TacticalButton key={s} size="sm" variant={strategy === s ? 'secondary' : 'ghost'} onClick={() => setStrategy(s)}>
+            <TacticalButton key={s} size="sm" variant={strategy === s ? 'secondary' : 'ghost'} aria-pressed={strategy === s} onClick={() => setStrategy(s)}>
               {t(`simulators.rate_limiter.algorithms.${s}`)}
             </TacticalButton>
           ))}
@@ -173,6 +177,16 @@ export default function RateLimiter() {
           </div>
         )}
 
+        <div className="sim-stage mb-5 flex items-center gap-3 sm:gap-5">
+          <div className="flex flex-col items-center gap-2 text-xs"><UserRound size={24} aria-hidden="true" />{t('simulators.motion.client')}</div>
+          <FlowLink active={isRunning} eventKey={metrics.total} />
+          <div className="sim-node flex min-w-0 flex-col items-center gap-2 p-3 text-center text-xs"><Gauge size={24} aria-hidden="true" />{t(`simulators.rate_limiter.algorithms.${strategy}`)}</div>
+          <FlowLink active={isRunning && !!requests.length} tone={requests[0]?.status === 'rejected' ? 'red' : 'green'} eventKey={metrics.total} />
+          <div className="flex min-w-0 flex-col items-center gap-2 text-center text-xs" style={{ color: requests[0]?.status === 'rejected' ? 'var(--sim-red)' : 'var(--sim-green)' }}>
+            {requests[0]?.status === 'rejected' ? <X size={24} aria-hidden="true" /> : <Check size={24} aria-hidden="true" />}
+            {requests.length ? t(requests[0].status === 'rejected' ? 'simulators.motion.limited' : 'simulators.motion.accepted') : '—'}
+          </div>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div className="border border-slate-200 dark:border-tactical-border rounded-lg">
             <div className="border-b border-slate-200 dark:border-tactical-border px-3 py-2">
@@ -180,7 +194,7 @@ export default function RateLimiter() {
               <div className="font-sans text-xs text-slate-500 dark:text-tactical-dim">{t('simulators.rate_limiter.bucket.rate', { rate: requestsPerSecond })}</div>
             </div>
             <div className="relative h-32 bg-slate-50 dark:bg-tactical-raised overflow-hidden border-t border-slate-200 dark:border-tactical-border">
-              <motion.div className={`absolute bottom-0 w-full ${fillColor}`} animate={{ height: `${fillPct}%` }} transition={{ duration: 0.25 }} />
+              <motion.div className={`absolute inset-0 ${fillColor}`} style={{ transformOrigin: 'bottom' }} animate={{ scaleY: fillPct / 100 }} transition={transition} />
               <div className="absolute inset-0 flex items-center justify-center">
                 <span className="font-mono text-2xl font-bold tabular-nums text-slate-900 dark:text-tactical-text">
                   {Math.round(displayLevel)}/{displayMax}
@@ -195,8 +209,9 @@ export default function RateLimiter() {
               <div className="font-sans text-xs text-slate-500 dark:text-tactical-dim">{t('simulators.rate_limiter.recent.rate', { rate: messageRate })}</div>
             </div>
             <div className="p-3 space-y-2">
+              <AnimatePresence initial={false} mode="popLayout">
               {requests.map(request => (
-                <div key={request.id} className="flex flex-wrap items-center gap-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2 rounded-md">
+                <motion.div layout={!reducedMotion} initial={{ opacity: 0, x: reducedMotion ? 0 : -12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} transition={transition} key={request.id} className="flex flex-wrap items-center gap-2 border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2 rounded-md">
                   <StatusBadge
                     variant={request.status === 'accepted' ? 'active' : 'classified'}
                     label={request.status === 'accepted' ? t('simulators.rate_limiter.recent.accepted') : t('simulators.rate_limiter.recent.rejected')}
@@ -204,8 +219,9 @@ export default function RateLimiter() {
                   <span className="flex-1 min-w-[120px] font-mono text-xs text-slate-500 dark:text-tactical-dim tabular-nums">
                     {((Date.now() - request.timestamp) / 1000).toFixed(1)}s
                   </span>
-                </div>
+                </motion.div>
               ))}
+              </AnimatePresence>
               {requests.length === 0 && (
                 <div className="border border-dashed border-slate-300 dark:border-tactical-border px-4 py-10 text-center rounded-lg">
                   <p className="font-sans text-xs text-slate-400 dark:text-tactical-label">{t('simulators.rate_limiter.recent.none')}</p>
@@ -220,7 +236,7 @@ export default function RateLimiter() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <AnimatedMetric value={metrics.total} label={t('simulators.rate_limiter.metrics.total')} color="cyan" pulse={isRunning} />
           <AnimatedMetric value={metrics.accepted} suffix={` (${acceptedPct}%)`} label={t('simulators.rate_limiter.metrics.accepted')} color="green" />
-          <AnimatedMetric value={metrics.rejected} suffix={` (${100 - (metrics.total > 0 ? acceptedPct : 0)}%)`} label={t('simulators.rate_limiter.metrics.rejected')} color="red" />
+          <AnimatedMetric value={metrics.rejected} suffix={` (${metrics.total > 0 ? 100 - acceptedPct : 0}%)`} label={t('simulators.rate_limiter.metrics.rejected')} color="red" />
         </div>
       </Panel>
     </div>

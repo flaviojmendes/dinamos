@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Panel, TacticalButton, StatusBadge } from '../tactical';
+import { FlowLink, useSimulationMotion } from '../simulation';
 
 type Scenario = 'normal' | 'partition';
 type PA = 'PA' | 'PC';
@@ -23,6 +24,7 @@ const PRESETS: SystemPreset[] = [
 
 export default function PacelcSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const base = 'simulators.pacelc';
 
   const [scenario, setScenario] = useState<Scenario>('normal');
@@ -40,7 +42,7 @@ export default function PacelcSimulator() {
   const favorsAvailability = (scenario === 'partition' && pa === 'PA') || (scenario === 'normal' && el === 'EL');
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
       <Panel title={t(`${base}.title`)} accent="cyan">
         <p className="mb-5 font-sans text-xs text-slate-500 dark:text-tactical-dim">{t(`${base}.subtitle`)}</p>
 
@@ -79,11 +81,11 @@ export default function PacelcSimulator() {
         </div>
 
         {/* Decision tree root */}
-        <div className="flex flex-col items-center">
+        <div className="sim-stage flex flex-col items-center">
           <div className="rounded-lg border border-slate-300 bg-slate-50 px-4 py-2 font-mono text-xs text-slate-700 dark:border-tactical-line dark:bg-tactical-raised dark:text-tactical-text">
             {t(`${base}.root`)}
           </div>
-          <div className="h-4 w-px bg-slate-300 dark:bg-tactical-line" />
+          <FlowLink active={false} direction="vertical" className="h-7" />
           <div className="flex w-full items-center justify-center">
             <div className="h-px w-1/2 max-w-[14rem] bg-slate-300 dark:bg-tactical-line" />
           </div>
@@ -134,9 +136,9 @@ export default function PacelcSimulator() {
           </div>
           <motion.p
             key={`${scenario}-${activeChoice}`}
-            initial={{ opacity: 0, y: 4 }}
+            initial={{ opacity: 0.6, y: reducedMotion ? 0 : 6 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={transition}
             className="font-sans text-sm leading-relaxed text-slate-600 dark:text-tactical-dim"
           >
             {t(`${base}.outcomes.${activeChoice}`)}
@@ -178,15 +180,17 @@ function Branch({
   options: Option[];
   onPick: (id: string) => void;
 }) {
+  const { reducedMotion, transition } = useSimulationMotion();
   const toneText = tone === 'red' ? 'text-signal-red' : 'text-signal-cyan';
   const activeBorder = tone === 'red' ? 'border-signal-red/60 bg-signal-red/5' : 'border-signal-cyan/60 bg-signal-cyan/5';
   const selectedChip = tone === 'red' ? 'bg-signal-red text-white' : 'bg-signal-cyan text-white';
 
   return (
     <motion.div
-      animate={{ opacity: active ? 1 : 0.55, scale: active ? 1 : 0.99 }}
-      transition={{ duration: 0.25, ease: 'easeOut' }}
-      className={`rounded-lg border p-4 ${active ? activeBorder : 'border-slate-200 dark:border-tactical-border'}`}
+      initial={false}
+      animate={{ opacity: active ? 1 : 0.7, y: active && !reducedMotion ? -3 : 0 }}
+      transition={transition}
+      className={`sim-node rounded-lg border p-4 ${active ? activeBorder : 'border-slate-200 dark:border-tactical-border'}`}
     >
       <div className="flex items-center justify-between gap-2">
         <div className={`label-mono ${toneText}`}>{condition}</div>

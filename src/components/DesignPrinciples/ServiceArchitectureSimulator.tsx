@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Panel, TacticalButton } from '../tactical';
+import { FlowLink, useSimulationMotion } from '../simulation';
 
 interface Module {
   id: string;
@@ -253,41 +254,12 @@ const architectures: Architecture[] = [
 ];
 
 export default function ServiceArchitectureSimulator() {
+  const { reducedMotion, transition } = useSimulationMotion();
   const [selectedArch, setSelectedArch] = useState<Architecture>(architectures[0]);
   const [hoveredModule, setHoveredModule] = useState<string | null>(null);
 
-  const renderDependencyLines = (module: Module) => {
-    if (!module.dependencies) return null;
-
-    return module.dependencies.map(depId => {
-      const depModule = selectedArch.modules.find(m => m.id === depId);
-      if (!depModule) return null;
-
-      const isHighlighted = hoveredModule === module.id || hoveredModule === depId;
-
-      return (
-        <svg
-          key={`${module.id}-${depId}`}
-          className={`absolute left-0 top-0 w-full h-full pointer-events-none transition-opacity ${
-            hoveredModule && !isHighlighted ? 'opacity-10' : 'opacity-50'
-          }`}
-        >
-          <line
-            x1="50%"
-            y1="50%"
-            x2="50%"
-            y2="50%"
-            stroke={isHighlighted ? '#60A5FA' : '#666'}
-            strokeWidth="2"
-            strokeDasharray={selectedArch.type === 'microservices' ? '4' : '0'}
-          />
-        </svg>
-      );
-    });
-  };
-
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
       <div className="max-w-3xl">
         <h2 className="text-base font-semibold tracking-tight text-slate-900 dark:text-tactical-text mb-2">
           Simulador de arquiteturas de serviços
@@ -300,7 +272,7 @@ export default function ServiceArchitectureSimulator() {
           {architectures.map(arch => (
             <motion.div
               key={arch.type}
-              initial={{ opacity: 0, y: -20 }}
+              initial={false}
               animate={{ opacity: 1, y: 0 }}
             >
               <TacticalButton
@@ -326,25 +298,31 @@ export default function ServiceArchitectureSimulator() {
         </Panel>
 
         {/* Modules Visualization */}
-        <div className="relative">
+        <div className="sim-stage relative">
           <div className={`grid gap-8 ${
             selectedArch.type === 'monolithic' 
               ? 'grid-cols-1' 
               : selectedArch.type === 'modular'
-              ? 'grid-cols-2'
-              : 'grid-cols-3'
+              ? 'grid-cols-1 md:grid-cols-2'
+              : 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3'
           }`}>
             {selectedArch.modules.map(module => (
               <motion.div
                 key={module.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
-                className={`p-4 border rounded-lg relative bg-slate-50 dark:bg-tactical-raised border-slate-200 dark:border-tactical-border ${
+                layout
+                initial={{ opacity: 0.6 }}
+                animate={{ opacity: hoveredModule && hoveredModule !== module.id && !module.dependencies?.includes(hoveredModule) ? 0.4 : 1, y: hoveredModule === module.id && !reducedMotion ? -3 : 0 }}
+                transition={transition}
+                className={`sim-node p-4 border rounded-lg relative bg-slate-50 dark:bg-tactical-raised border-slate-200 dark:border-tactical-border ${
                   hoveredModule && hoveredModule !== module.id && !module.dependencies?.includes(hoveredModule)
                     ? 'opacity-30'
                     : hoveredModule === module.id ? 'border-signal-cyan' : ''
                 }`}
+                tabIndex={0}
+                role="group"
+                aria-label={module.name}
+                onFocus={() => setHoveredModule(module.id)}
+                onBlur={() => setHoveredModule(null)}
                 onMouseEnter={() => setHoveredModule(module.id)}
                 onMouseLeave={() => setHoveredModule(null)}
               >
@@ -353,28 +331,28 @@ export default function ServiceArchitectureSimulator() {
                 {/* Module Details - Always Visible */}
                 {module.details && (
                   <div className="font-sans text-xs text-slate-600 dark:text-tactical-dim space-y-2">
-                    <div className="flex items-start gap-2">
-                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label min-w-[100px] shrink-0">Deploy:</span>
+                    <div className="flex flex-wrap items-start gap-2">
+                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label w-28 shrink-0">Deploy:</span>
                       <span>{module.details.deployment}</span>
                     </div>
-                    <div className="flex items-start gap-2">
-                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label min-w-[100px] shrink-0">Comunicação:</span>
+                    <div className="flex flex-wrap items-start gap-2">
+                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label w-28 shrink-0">Comunicação:</span>
                       <span>{module.details.communication}</span>
                     </div>
-                    <div className="flex items-start gap-2">
-                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label min-w-[100px] shrink-0">Banco:</span>
+                    <div className="flex flex-wrap items-start gap-2">
+                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label w-28 shrink-0">Banco:</span>
                       <span>{module.details.database}</span>
                     </div>
-                    <div className="flex items-start gap-2">
-                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label min-w-[100px] shrink-0">Escala:</span>
+                    <div className="flex flex-wrap items-start gap-2">
+                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label w-28 shrink-0">Escala:</span>
                       <span>{module.details.scaling}</span>
                     </div>
-                    <div className="flex items-start gap-2">
-                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label min-w-[100px] shrink-0">Desenvolvimento:</span>
+                    <div className="flex flex-wrap items-start gap-2">
+                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label w-28 shrink-0">Desenvolvimento:</span>
                       <span>{module.details.development}</span>
                     </div>
-                    <div className="flex items-start gap-2">
-                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label min-w-[100px] shrink-0">Manutenção:</span>
+                    <div className="flex flex-wrap items-start gap-2">
+                      <span className="text-xs font-medium text-slate-500 dark:text-tactical-label w-28 shrink-0">Manutenção:</span>
                       <span>{module.details.maintenance}</span>
                     </div>
                   </div>
@@ -388,7 +366,16 @@ export default function ServiceArchitectureSimulator() {
                     }).join(', ')}
                   </div>
                 )}
-                {renderDependencyLines(module)}
+                {module.dependencies && module.dependencies.length > 0 && (
+                  <div className="mt-4 space-y-2" aria-hidden="true">
+                    {module.dependencies.map(dependency => (
+                      <div key={dependency} className="flex items-center gap-2 font-sans text-xs text-slate-500 dark:text-tactical-dim">
+                        <FlowLink active={hoveredModule === module.id || hoveredModule === dependency} className="w-10 shrink-0" />
+                        <span>{selectedArch.modules.find(item => item.id === dependency)?.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </motion.div>
             ))}
           </div>

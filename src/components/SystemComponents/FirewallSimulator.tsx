@@ -1,7 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { useSimulationMotion } from '../simulation';
+import { Play, Pause } from 'lucide-react';
 import { Panel, StatusBadge, TacticalButton } from '../tactical';
+import { AnimatedMetric } from '../AISystems/motion';
+import TransitPacket from '../DataStorage/TransitPacket';
+import { Monitor, Server, Shield, ShieldCheck, ShieldX } from 'lucide-react';
 
 interface PacketType {
   id: number;
@@ -40,6 +45,7 @@ interface FormErrors {
 
 export default function FirewallSimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition } = useSimulationMotion();
   const defaultRules: FirewallRule[] = [
     { id: 1, source: '*', destination: '10.0.0.1', port: 80, protocol: 'TCP', type: 'HTTP', action: 'allow' },
     { id: 2, source: '*', destination: '10.0.0.1', port: 443, protocol: 'TCP', type: 'HTTPS', action: 'allow' },
@@ -78,6 +84,8 @@ export default function FirewallSimulator() {
   });
 
   const autoGenerateInterval = useRef<number>();
+  const rulesRef = useRef(rules);
+  rulesRef.current = rules;
 
   const protocols = ['TCP', 'UDP', 'ICMP'];
   const packetTypes = ['HTTP', 'HTTPS', 'FTP', 'SSH', 'DNS', 'SMTP'];
@@ -96,7 +104,7 @@ export default function FirewallSimulator() {
       timestamp: Date.now()
     };
 
-    const matchingRule = rules.find(rule => {
+    const matchingRule = rulesRef.current.find(rule => {
       return (rule.source === '*' || rule.source === newPacket.source) &&
              (rule.destination === '*' || rule.destination === newPacket.destination) &&
              (rule.port === 0 || rule.port === newPacket.port) &&
@@ -210,8 +218,17 @@ export default function FirewallSimulator() {
     };
   }, []);
 
+  const latestPacket = packets[packets.length - 1];
+  const matchedRule = latestPacket ? rules.find(rule =>
+    (rule.source === '*' || rule.source === latestPacket.source) &&
+    (rule.destination === '*' || rule.destination === latestPacket.destination) &&
+    (rule.port === 0 || rule.port === latestPacket.port) &&
+    (rule.protocol === '*' || rule.protocol === latestPacket.protocol) &&
+    (rule.type === '*' || rule.type === latestPacket.type)
+  ) : undefined;
+
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
       <div className="max-w-3xl">
         <h2 className="font-sans text-lg font-semibold text-slate-900 dark:text-tactical-text mb-2">
           {t('simulators.firewall.title')}
@@ -247,15 +264,18 @@ export default function FirewallSimulator() {
           >
             <div className="space-y-2">
               <AnimatePresence>
-                {rules.map(rule => (
+                {rules.map((rule, index) => (
                   <motion.div
                     key={rule.id}
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 20 }}
+                    layout={!reducedMotion}
+                    initial={{ opacity: 0, y: reducedMotion ? 0 : -8 }}
+                    animate={{ opacity: 1, y: 0, borderColor: matchedRule?.id === rule.id ? 'var(--sim-cyan)' : 'var(--sim-line)' }}
+                    exit={{ opacity: 0 }}
+                    transition={transition}
                     className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2.5"
                   >
                     <div className="min-w-0 flex flex-wrap items-center gap-x-2 gap-y-0.5 font-mono text-xs text-slate-500 dark:text-tactical-dim">
+                      <span className="mr-1 flex h-6 w-6 items-center justify-center rounded bg-slate-200/60 text-slate-600 dark:bg-tactical-surface dark:text-tactical-dim">{index + 1}</span>
                       <span className="text-slate-900 dark:text-tactical-text">{rule.source} → {rule.destination}</span>
                       <span className="text-slate-300 dark:text-tactical-line">|</span>
                       <span>{t('simulators.firewall.labels.port')}: {rule.port || '*'}</span>
@@ -288,19 +308,10 @@ export default function FirewallSimulator() {
           </Panel>
 
           <Panel title={t('simulators.firewall.stats.title')} accent="green">
-            <div className="grid grid-cols-3 gap-3">
-              <div className="rounded-lg border border-slate-200 dark:border-tactical-border px-3 py-3">
-                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-cyan">{stats.total}</div>
-                <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.firewall.stats.total')}</div>
-              </div>
-              <div className="rounded-lg border border-slate-200 dark:border-tactical-border px-3 py-3">
-                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-green">{stats.allowed}</div>
-                <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.firewall.stats.allowed')}</div>
-              </div>
-              <div className="rounded-lg border border-slate-200 dark:border-tactical-border px-3 py-3">
-                <div className="font-mono text-3xl font-bold tabular-nums leading-none text-signal-red">{stats.blocked}</div>
-                <div className="font-sans text-xs font-medium text-slate-500 dark:text-tactical-label mt-2">{t('simulators.firewall.stats.blocked')}</div>
-              </div>
+            <div className="sim-metrics grid grid-cols-3 gap-3">
+              <AnimatedMetric value={stats.total} label={t('simulators.firewall.stats.total')} color="cyan" />
+              <AnimatedMetric value={stats.allowed} label={t('simulators.firewall.stats.allowed')} color="green" />
+              <AnimatedMetric value={stats.blocked} label={t('simulators.firewall.stats.blocked')} color="red" />
             </div>
           </Panel>
         </div>
@@ -325,19 +336,33 @@ export default function FirewallSimulator() {
             <TacticalButton
               size="sm"
               variant={isAutoGenerating ? 'danger' : 'secondary'}
+              aria-pressed={isAutoGenerating}
               onClick={toggleAutoGenerate}
             >
-              {isAutoGenerating ? t('simulators.firewall.traffic.stop_autogen') : t('simulators.firewall.traffic.start_autogen')}
+              {isAutoGenerating ? <Pause size={14} aria-hidden="true" /> : <Play size={14} aria-hidden="true" />}{isAutoGenerating ? t('simulators.firewall.traffic.stop_autogen') : t('simulators.firewall.traffic.start_autogen')}
             </TacticalButton>
+          </div>
+          <div className="sim-stage mb-5 rounded-xl border border-slate-200 p-4 dark:border-tactical-border">
+            <div className="grid grid-cols-[1fr_24px_auto_24px_1fr] items-center gap-2">
+              <div className="flex min-w-0 flex-col items-center gap-2 text-center"><Monitor size={22} className="text-signal-cyan" aria-hidden="true" /><span className="font-sans text-xs">{t('simulators.firewall.custom_packet_modal.origin')}</span><span className="w-full truncate font-mono text-[10px] text-slate-500 dark:text-tactical-dim">{latestPacket?.source ?? '192.168.x.x'}</span></div>
+              <div className="relative h-8 overflow-hidden" aria-hidden="true"><span className="absolute inset-x-0 top-1/2 h-px bg-slate-300 dark:bg-tactical-line" />{latestPacket && <TransitPacket key={latestPacket.id} />}</div>
+              <motion.div key={latestPacket?.id ?? 'idle'} initial={{ opacity: 0.5 }} animate={{ opacity: 1 }} transition={transition} className={`sim-node flex h-14 w-14 items-center justify-center ${latestPacket ? latestPacket.status === 'allowed' ? 'border-signal-green text-signal-green' : 'border-signal-red text-signal-red' : 'text-slate-500 dark:text-tactical-dim'}`}>
+                {latestPacket ? latestPacket.status === 'allowed' ? <ShieldCheck size={27} aria-hidden="true" /> : <ShieldX size={27} aria-hidden="true" /> : <Shield size={27} aria-hidden="true" />}
+              </motion.div>
+              <div className="relative h-8 overflow-hidden" aria-hidden="true"><span className="absolute inset-x-0 top-1/2 h-px bg-slate-300 dark:bg-tactical-line" />{latestPacket?.status === 'allowed' && <TransitPacket key={latestPacket.id} tone="green" />}</div>
+              <div className="flex min-w-0 flex-col items-center gap-2 text-center"><Server size={22} className={latestPacket?.status === 'allowed' ? 'text-signal-green' : 'text-slate-500 dark:text-tactical-dim'} aria-hidden="true" /><span className="font-sans text-xs">{t('simulators.firewall.custom_packet_modal.destination')}</span><span className="w-full truncate font-mono text-[10px] text-slate-500 dark:text-tactical-dim">{latestPacket?.destination ?? '10.0.0.1'}</span></div>
+            </div>
+            {latestPacket && <div className="mt-4 flex justify-center"><StatusBadge variant={latestPacket.status === 'allowed' ? 'active' : 'classified'} label={t(latestPacket.status === 'allowed' ? 'simulators.firewall.badges.allow' : 'simulators.firewall.badges.block')} /></div>}
           </div>
           <div className="space-y-2">
             <AnimatePresence>
               {packets.map(packet => (
                 <motion.div
                   key={packet.id}
-                  initial={{ opacity: 0, x: -50 }}
+                  initial={{ opacity: 0, x: reducedMotion ? 0 : -12 }}
                   animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 50 }}
+                  exit={{ opacity: 0 }}
+                  transition={transition}
                   className="rounded-lg border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2.5"
                 >
                   <div className="flex flex-col gap-1.5">
@@ -391,7 +416,7 @@ export default function FirewallSimulator() {
             >
               <h3 className="font-sans text-lg font-semibold mb-6 text-slate-900 dark:text-tactical-text">{t('simulators.firewall.add_rule_modal.title')}</h3>
               <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="sim-metrics grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
                       {t('simulators.firewall.add_rule_modal.origin')}
@@ -518,7 +543,7 @@ export default function FirewallSimulator() {
             >
               <h3 className="font-sans text-lg font-semibold mb-6 text-slate-900 dark:text-tactical-text">{t('simulators.firewall.custom_packet_modal.title')}</h3>
               <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="sim-metrics grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
                       {t('simulators.firewall.custom_packet_modal.origin')} <span className="text-signal-red">*</span>
@@ -648,7 +673,7 @@ export default function FirewallSimulator() {
         )}
       </AnimatePresence>
 
-      <div className="tactical-panel rounded-lg border-l-2 border-l-signal-cyan dark:border-l-signal-cyan p-5">
+      <div className="sim-node rounded-lg p-5">
         <h3 className="font-sans text-sm font-semibold text-signal-cyan mb-3">{t('simulators.firewall.info.title')}</h3>
         <ul className="space-y-1.5 font-sans text-sm text-slate-600 dark:text-tactical-dim list-disc list-inside">
           <li>{t('simulators.firewall.info.i1')}</li>
@@ -661,4 +686,4 @@ export default function FirewallSimulator() {
       </div>
     </div>
   );
-} 
+}

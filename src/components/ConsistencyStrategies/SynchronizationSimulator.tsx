@@ -1,3 +1,5 @@
+import { AnimatedNumber } from '../AISystems/motion';
+import { SimulationActivity, useSimulationMotion } from '../simulation';
 import React, { useEffect, useMemo, useReducer } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -325,6 +327,7 @@ function ForkGlyph({ held }: { held: boolean }) {
 }
 
 export default function PhilosophersSimulator() {
+  const { reducedMotion } = useSimulationMotion();
   const { t } = useTranslation();
   const [state, dispatch] = useReducer(reducer, undefined, () => initState(5, 'naive'));
   const [isRunning, setIsRunning] = React.useState(false);
@@ -393,7 +396,8 @@ export default function PhilosophersSimulator() {
   const holdsRight = (id: number) => state.forks[(id + 1) % n] === id;
 
   return (
-    <div className="space-y-6">
+    <div className="simulation-workspace space-y-6">
+      <SimulationActivity active={isRunning && !state.deadlocked} />
       <div className="max-w-3xl">
         <span className="inline-block text-xs font-medium text-slate-600 dark:text-tactical-label bg-slate-100 dark:bg-tactical-raised px-2.5 py-1 rounded-full mb-2">
           {tk('title')}
@@ -554,7 +558,7 @@ export default function PhilosophersSimulator() {
                     key={`fork-${f}`}
                     initial={false}
                     animate={{ x: fk.x, y: fk.y, rotate: fk.rotate }}
-                    transition={{ type: 'spring', stiffness: 220, damping: 26 }}
+                    transition={{ duration: reducedMotion ? 0 : 0.22, ease: [0.22, 1, 0.36, 1] }}
                   >
                     <ForkGlyph held={fk.held} />
                     {/* Fork ids: only meaningful for the resource-hierarchy
@@ -587,7 +591,7 @@ export default function PhilosophersSimulator() {
                   return (
                     <g key={p.id}>
                       <title>{p.name}</title>
-                      {p.state === 'eating' && (
+                      {isRunning && !reducedMotion && p.state === 'eating' && (
                         <motion.circle
                           cx={pos.x}
                           cy={pos.y}
@@ -646,15 +650,15 @@ export default function PhilosophersSimulator() {
           <Panel title={tk('stats.title')} accent="cyan">
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <div className="font-mono text-2xl font-bold tabular-nums leading-none text-signal-green">{state.totalMeals}</div>
+                <div className="font-mono text-2xl font-bold tabular-nums leading-none text-signal-green"><AnimatedNumber value={state.totalMeals} /></div>
                 <div className="text-[11px] font-medium text-slate-500 dark:text-tactical-label mt-1.5 leading-tight">{tk('stats.total_meals')}</div>
               </div>
               <div>
-                <div className="font-mono text-2xl font-bold tabular-nums leading-none text-signal-amber">{state.longestWait}</div>
+                <div className="font-mono text-2xl font-bold tabular-nums leading-none text-signal-amber"><AnimatedNumber value={state.longestWait} /></div>
                 <div className="text-[11px] font-medium text-slate-500 dark:text-tactical-label mt-1.5 leading-tight">{tk('stats.longest_wait')}</div>
               </div>
               <div>
-                <div className="font-mono text-2xl font-bold tabular-nums leading-none text-slate-900 dark:text-tactical-text">{state.tick}</div>
+                <div className="font-mono text-2xl font-bold tabular-nums leading-none text-slate-900 dark:text-tactical-text"><AnimatedNumber value={state.tick} /></div>
                 <div className="text-[11px] font-medium text-slate-500 dark:text-tactical-label mt-1.5 leading-tight">{tk('stats.ticks')}</div>
               </div>
             </div>

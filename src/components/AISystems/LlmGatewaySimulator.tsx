@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import { Panel, StatusBadge, TacticalButton, type StatusVariant } from '../tactical';
+import { SimulationActivity, FlowLink, useSimulationMotion } from '../simulation';
 import { AnimatedMetric, GridBackdrop } from './motion';
 
 type Route = 'cache' | 'primary' | 'fallback' | 'rejected';
@@ -57,6 +58,7 @@ const routeVariant: Record<Route, StatusVariant> = {
 
 export default function LlmGatewaySimulator() {
   const { t } = useTranslation();
+  const { reducedMotion, transition, duration } = useSimulationMotion();
   const [isRunning, setIsRunning] = useState(false);
   const [arrivalRate, setArrivalRate] = useState(4);
   const [cacheRate, setCacheRate] = useState(30);
@@ -123,7 +125,8 @@ export default function LlmGatewaySimulator() {
   const base = 'simulators.llm_gateway';
 
   return (
-    <div className="space-y-6">
+    <MotionConfig reducedMotion="user" transition={transition}>
+    <div className="sim-workspace space-y-6">
       <Panel
         title={t(`${base}.title`)}
         accent="cyan"
@@ -138,7 +141,7 @@ export default function LlmGatewaySimulator() {
       >
         <p className="font-sans text-xs text-slate-500 dark:text-tactical-dim mb-6">{t(`${base}.subtitle`)}</p>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="sim-controls grid grid-cols-2 lg:grid-cols-4 gap-4">
           <Slider label={t(`${base}.controls.cache_rate`)} value={cacheRate} min={0} max={90} onChange={setCacheRate} cls={rangeClass} suffix="%" />
           <Slider label={t(`${base}.controls.rate_limit`)} value={rateLimit} min={1} max={20} onChange={v => { setRateLimit(v); }} cls={rangeClass} />
           <Slider label={t(`${base}.controls.primary_fail`)} value={primaryFail} min={0} max={80} onChange={setPrimaryFail} cls={rangeClass} suffix="%" />
@@ -148,15 +151,19 @@ export default function LlmGatewaySimulator() {
 
       {/* Routing flow visualization */}
       <Panel title={t(`${base}.title`)} accent="cyan" bodyClassName="p-0">
-        <div className="relative h-[230px] overflow-hidden">
+        <div className="sim-stage relative h-[280px] overflow-hidden">
+          <SimulationActivity active={isRunning} className="absolute left-4 top-3 z-10" />
           <GridBackdrop />
 
+          <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            {ROUTE_ORDER.map(route => <path key={route} d={`M 16 50 C 42 50 48 ${parseInt(laneTop[route])} 78 ${parseInt(laneTop[route])}`} fill="none" className="stroke-slate-200 dark:stroke-tactical-border" strokeWidth="0.35" />)}
+          </svg>
           {/* Source node */}
           <div className="absolute left-[6%] top-1/2 -translate-y-1/2 -translate-x-0">
             <motion.div
               className="rounded-lg border border-signal-cyan/60 bg-slate-50 dark:bg-tactical-raised px-3 py-3 text-center"
-              animate={isRunning ? { scale: [1, 1.02, 1] } : {}}
-              transition={{ duration: 1.6, repeat: Infinity }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 1.6, repeat: reducedMotion ? 0 : Infinity }}
             >
               <div className="font-sans text-lg font-bold text-signal-cyan">⇉</div>
               <div className="font-sans text-[11px] font-medium mt-1 text-slate-500 dark:text-tactical-label">req/s <span className="font-mono tabular-nums">{arrivalRate}</span></div>
@@ -170,7 +177,7 @@ export default function LlmGatewaySimulator() {
               className="absolute right-[5%] flex -translate-y-1/2 items-center"
               style={{ top: laneTop[route] }}
             >
-              <div className={`rounded-md border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-1.5 font-sans text-[11px] font-medium ${routeText[route]}`}>
+              <div className={`sim-node rounded-md border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2 font-sans text-xs font-medium ${routeText[route]} ${isRunning && logs[0]?.route === route ? 'sim-node-active' : ''}`}>
                 {t(`${base}.routes.${route}`)}
               </div>
             </div>
@@ -182,10 +189,10 @@ export default function LlmGatewaySimulator() {
               <motion.div
                 key={p.id}
                 className={`absolute h-2.5 w-2.5 rounded-full ${routeColor[p.route]}`}
-                initial={{ left: '11%', top: '50%', opacity: 0, scale: 0.6 }}
-                animate={{ left: '90%', top: laneTop[p.route], opacity: [0, 1, 1, 0.8], scale: 1 }}
+                initial={reducedMotion ? { left: '70%', top: laneTop[p.route], opacity: 0 } : { left: '16%', top: '50%', opacity: 0, scale: 0.8 }}
+                animate={{ left: reducedMotion ? '70%' : '78%', top: laneTop[p.route], opacity: reducedMotion ? 1 : [0, 1, 1, 0], scale: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.9, ease: 'easeInOut' }}
+                transition={{ duration: duration(0.75), ease: 'easeOut' }}
                 onAnimationComplete={() => setParticles(prev => prev.filter(x => x.id !== p.id))}
               />
             ))}
@@ -216,10 +223,10 @@ export default function LlmGatewaySimulator() {
                   <motion.div
                     key={log.id}
                     layout
-                    initial={{ opacity: 0, y: -14, scale: 0.96 }}
+                    initial={reducedMotion ? false : { opacity: 0, y: -8 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ type: 'spring', stiffness: 420, damping: 32 }}
+                    transition={transition}
                     className="flex items-center gap-2 rounded-md border border-slate-200 dark:border-tactical-border bg-slate-50 dark:bg-tactical-raised px-3 py-2"
                   >
                     <span className="font-mono text-xs text-slate-500 dark:text-tactical-dim w-12 tabular-nums">{log.id}</span>
@@ -235,6 +242,7 @@ export default function LlmGatewaySimulator() {
         </Panel>
       </div>
     </div>
+    </MotionConfig>
   );
 }
 
@@ -243,7 +251,7 @@ function Slider({ label, value, min, max, onChange, cls, suffix }: { label: stri
     <div className="space-y-2">
       <label className="block font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label">{label}</label>
       <div className="flex items-center gap-2">
-        <input type="range" min={min} max={max} value={value} onChange={e => onChange(Number(e.target.value))} className={cls} />
+        <input aria-label={label} type="range" min={min} max={max} value={value} onChange={e => onChange(Number(e.target.value))} className={cls} />
         <span className="font-mono text-sm w-12 text-right text-signal-cyan tabular-nums">{value}{suffix ?? ''}</span>
       </div>
     </div>
