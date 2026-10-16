@@ -24,6 +24,7 @@ import { traceLatency } from './latencyTracer.js';
 import { Rng } from './rng.js';
 import { ChaosEvent, LoadProfile, isChaosActive, makeLoadProfile } from './scenarios.js';
 import { estimateNodeCostPerHour, CloudProvider } from './costModel.js';
+import { AUTOSCALER_DOWNSCALE_WINDOW_SECONDS, AUTOSCALER_INTERVAL_SECONDS } from './constants.js';
 
 const HISTORY_LIMIT = 240;
 
@@ -35,9 +36,12 @@ export class Simulator {
   private rng: Rng;
   private seed: number;
   private time = 0;
+  private ticks = 0;
 
   private state: EngineState;
   private breakers = new Map<string, CircuitBreaker>();
+  private scalerLastEvaluation = new Map<string, number>();
+  private scalerRecommendations = new Map<string, { time: number; replicas: number }[]>();
   profile: LoadProfile;
   chaos: ChaosEvent[] = [];
   provider: CloudProvider = 'aws';
@@ -50,14 +54,22 @@ export class Simulator {
   constructor(config: SimConfig) {
     this.nodes = config.nodes;
     this.edges = config.edges;
-    this.dt = config.dtSeconds || 1;
-    this.traceSamples = config.traceSamples || 2000;
+    this.dt = config.dtSeconds ?? 1;
+    this.traceSamples = config.traceSamples ?? 2000;
+    if (!Number.isFinite(this.dt) || this.dt <= 0) {
+      throw new RangeError('Simulation dtSeconds must be finite and greater than zero');
+    }
+    if (!Number.isInteger(this.traceSamples) || this.traceSamples <= 0) {
+      throw new RangeError('Simulation traceSamples must be a positive integer');
+    }
     this.seed = config.seed;
     this.rng = new Rng(config.seed);
     this.profile = makeLoadProfile('constant');
     this.state = {
       queueLengths: new Map(),
       breakerShed: new Map(),
+      breakerProbeLimit: new Map(),
+      unavailableNodes: new Set(),
       replicaOverride: new Map(),
       dtSeconds: this.dt,
     };
@@ -73,29 +85,52 @@ export class Simulator {
         );
       }
       if (isAutoScaling(n)) {
-        this.state.replicaOverride.set(n.id, n.replicas);
+        const { min, max } = scalingBounds(n);
+        this.state.replicaOverride.set(n.id, Math.max(min, Math.min(max, n.replicas)));
+        this.scalerLastEvaluation.set(n.id, this.time);
+        this.scalerRecommendations.set(n.id, []);
       }
     });
   }
 
   /** Replace the graph (e.g. user edits) without losing the clock. */
   setGraph(nodes: NodeConfig[], edges: EdgeSpec[]): void {
+    const previous = new Map(this.nodes.map((n) => [n.id, n]));
     this.nodes = nodes;
     this.edges = edges;
-    // Drop stale state for removed nodes; add state for new ones.
-    const ids = new Set(nodes.map((n) => n.id));
-    [...this.state.queueLengths.keys()].forEach((id) => !ids.has(id) && this.state.queueLengths.delete(id));
-    [...this.breakers.keys()].forEach((id) => !ids.has(id) && this.breakers.delete(id));
+    // State belongs to a node kind, not just its id. Reusing an id for another
+    // kind must not resurrect old backlog, a tripped breaker or replica count.
+    const byId = new Map(nodes.map((n) => [n.id, n]));
+    [...this.state.queueLengths.keys()].forEach((id) => byId.get(id)?.kind !== 'messageQueue' && this.state.queueLengths.delete(id));
+    [...this.breakers.keys()].forEach((id) => {
+      if (byId.get(id)?.kind === 'circuitBreaker') return;
+      this.breakers.delete(id);
+      this.state.breakerShed.delete(id);
+      this.state.breakerProbeLimit?.delete(id);
+    });
+    [...this.state.replicaOverride.keys()].forEach((id) => {
+      const node = byId.get(id);
+      if (node && isAutoScaling(node)) return;
+      this.state.replicaOverride.delete(id);
+      this.scalerLastEvaluation.delete(id);
+      this.scalerRecommendations.delete(id);
+    });
     nodes.forEach((n) => {
-      if (n.kind === 'circuitBreaker' && !this.breakers.has(n.id)) {
+      const old = previous.get(n.id);
+      if (n.kind === 'circuitBreaker' && (!this.breakers.has(n.id) ||
+        n.errorThreshold !== old?.errorThreshold || n.resetTimeoutMs !== old?.resetTimeoutMs)) {
         this.breakers.set(n.id, new CircuitBreaker(n.errorThreshold ?? 0.5, n.resetTimeoutMs ?? 5000));
+        this.state.breakerShed.delete(n.id);
+        this.state.breakerProbeLimit?.delete(n.id);
       }
       if (isAutoScaling(n)) {
-        if (!this.state.replicaOverride.has(n.id)) this.state.replicaOverride.set(n.id, n.replicas);
-      } else if (this.state.replicaOverride.has(n.id)) {
-        // Autoscaling was turned off: drop the stale override so the node uses
-        // its configured replica count again.
-        this.state.replicaOverride.delete(n.id);
+        const { min, max } = scalingBounds(n);
+        const current = n.replicas !== old?.replicas ? n.replicas : this.state.replicaOverride.get(n.id) ?? n.replicas;
+        this.state.replicaOverride.set(n.id, Math.max(min, Math.min(max, current)));
+        if (!this.scalerLastEvaluation.has(n.id) || n.replicas !== old?.replicas) {
+          this.scalerLastEvaluation.set(n.id, this.time);
+          this.scalerRecommendations.set(n.id, []);
+        }
       }
     });
   }
@@ -114,6 +149,7 @@ export class Simulator {
 
   reset(seed?: number): void {
     this.time = 0;
+    this.ticks = 0;
     this.history = [];
     this.totalCost = 0;
     this.totalSuccess = 0;
@@ -124,6 +160,10 @@ export class Simulator {
     this.state.breakerShed.clear();
     this.state.replicaOverride.clear();
     this.breakers.clear();
+    this.state.breakerProbeLimit?.clear();
+    this.state.unavailableNodes?.clear();
+    this.scalerLastEvaluation.clear();
+    this.scalerRecommendations.clear();
     this.initStatefulNodes();
   }
 
@@ -133,15 +173,20 @@ export class Simulator {
 
   /** Run one simulation step and return the resulting frame. */
   tick(): SimulationFrame {
-    this.time += this.dt;
-
+    // A frame describes [time, time + dt). Sampling at the interval's end
+    // skips an outage scheduled for [0, 1) entirely with the default 1s step.
+    this.state.unavailableNodes = new Set(this.chaos
+      .filter((event) => (event.type === 'killNode' || event.type === 'partition') && isChaosActive(event, this.time))
+      .map((event) => event.targetId));
     const mult = this.profile.multiplierAt(this.time);
     const effectiveNodes = this.applyChaosAndLoad(mult);
-    const effectiveEdges = this.applyPartitions();
+    const effectiveEdges = this.edges;
+    this.prepareBreakers();
 
     const topo = buildTopology(effectiveNodes, effectiveEdges);
     const result = solveFlow(effectiveNodes, effectiveEdges, topo, this.state);
 
+    this.time = ++this.ticks * this.dt;
     this.updateBreakers(result.runtime);
     this.updateAutoscalers(result.runtime);
 
@@ -188,7 +233,9 @@ export class Simulator {
       }
       for (const ev of this.chaos) {
         if (ev.targetId !== n.id || !isChaosActive(ev, this.time)) continue;
-        if (ev.type === 'killNode') {
+        if (ev.type === 'killNode' || ev.type === 'partition') {
+          // Keep dependency edges: removing them would turn the upstream
+          // service into a successful terminal node during a network outage.
           cfg = { ...cfg, failureRate: 1 };
         } else if (ev.type === 'latencyInjection') {
           cfg = { ...cfg, serviceTimeMs: cfg.serviceTimeMs * (ev.magnitude ?? 5) };
@@ -198,13 +245,13 @@ export class Simulator {
     });
   }
 
-  private applyPartitions(): EdgeSpec[] {
-    const partitioned = new Set<string>();
-    for (const ev of this.chaos) {
-      if (ev.type === 'partition' && isChaosActive(ev, this.time)) partitioned.add(ev.targetId);
-    }
-    if (partitioned.size === 0) return this.edges;
-    return this.edges.filter((e) => !partitioned.has(e.source) && !partitioned.has(e.target));
+  private prepareBreakers(): void {
+    this.breakers.forEach((breaker, id) => {
+      breaker.advance(this.time * 1000);
+      this.state.breakerShed.set(id, breaker.state === 'open' ? 1 : 0);
+      if (breaker.state === 'halfOpen') this.state.breakerProbeLimit?.set(id, 1);
+      else this.state.breakerProbeLimit?.delete(id);
+    });
   }
 
   private updateBreakers(runtime: Map<string, NodeRuntime>): void {
@@ -223,24 +270,39 @@ export class Simulator {
         }
       });
       const errorRate = total > 0 ? err / total : 0;
-      const shed = breaker.update(errorRate, this.time * 1000);
-      this.state.breakerShed.set(id, shed);
+      // An open breaker has no observations; a half-open breaker may only
+      // recover after an admitted probe actually reaches the dependency.
+      breaker.update(errorRate, this.time * 1000, rt.throughput * this.dt);
     });
   }
 
   private updateAutoscalers(runtime: Map<string, NodeRuntime>): void {
     this.nodes.forEach((n) => {
       if (!isAutoScaling(n)) return;
+      // An unavailable node has missing load observations, not zero demand.
+      if (this.state.unavailableNodes?.has(n.id)) return;
       const rt = runtime.get(n.id);
       if (!rt) return;
-      const target = n.targetUtilization ?? 0.7;
-      const min = n.minReplicas ?? 1;
-      const max = n.maxReplicas ?? 20;
+      const lastEvaluation = this.scalerLastEvaluation.get(n.id) ?? 0;
+      if (this.time - lastEvaluation < AUTOSCALER_INTERVAL_SECONDS - 1e-9) return;
+      this.scalerLastEvaluation.set(n.id, this.time);
+      const target = Math.max(0.01, n.targetUtilization ?? 0.7);
+      const { min, max } = scalingBounds(n);
       const current = this.state.replicaOverride.get(n.id) ?? n.replicas;
-      let desired = current;
-      if (rt.utilization > target * 1.1) desired = current + 1;
-      else if (rt.utilization < target * 0.7 && current > min) desired = current - 1;
-      this.state.replicaOverride.set(n.id, Math.max(min, Math.min(max, desired)));
+      const ratio = rt.utilization / target;
+      const desired = Math.max(min, Math.min(max,
+        Math.abs(1 - ratio) <= 0.1 ? current : Math.ceil(current * ratio),
+      ));
+      const recommendations = (this.scalerRecommendations.get(n.id) ?? [])
+        .filter((r) => this.time - r.time < AUTOSCALER_DOWNSCALE_WINDOW_SECONDS);
+      recommendations.push({ time: this.time, replicas: desired });
+      this.scalerRecommendations.set(n.id, recommendations);
+      // Keep the highest recent recommendation when scaling down; a single
+      // quiet interval should not immediately remove provisioned capacity.
+      const stabilized = desired < current
+        ? Math.max(...recommendations.map((r) => r.replicas))
+        : desired;
+      this.state.replicaOverride.set(n.id, Math.max(min, Math.min(max, stabilized)));
     });
   }
 
@@ -254,9 +316,16 @@ export class Simulator {
     let inFlight = 0;
     let costPerHour = 0;
 
+    const configuredById = new Map(this.nodes.map((n) => [n.id, n]));
     runtime.forEach((rt) => {
       inFlight += rt.queue.inSystem;
-      costPerHour += estimateNodeCostPerHour(rt, this.provider);
+      // Chaos changes response time, not the price of already provisioned
+      // hardware. Retain actual runtime replica counts for autoscaling costs.
+      const configured = configuredById.get(rt.cfg.id);
+      const billingRuntime = configured && configured.serviceTimeMs !== rt.cfg.serviceTimeMs
+        ? { ...rt, cfg: { ...rt.cfg, serviceTimeMs: configured.serviceTimeMs } }
+        : rt;
+      costPerHour += estimateNodeCostPerHour(billingRuntime, this.provider);
     });
 
     // Aggregate every source of externally-offered work: clients emit `arrival`,
@@ -267,19 +336,9 @@ export class Simulator {
         const load = rt.arrival;
         if (load <= 0) return;
         offered += load;
-        // The client's throughput already removes client-side failures; discount
-        // the remainder by the weighted downstream failure across its branches.
-        let branchFail = 0;
-        let branchWeight = 0;
-        rt.branches.forEach((b) => {
-          const child = runtime.get(b.target);
-          if (child) {
-            branchFail += b.prob * child.effFailProb;
-            branchWeight += b.prob;
-          }
-        });
-        const downstreamFail = branchWeight > 0 ? branchFail / branchWeight : 0;
-        totalThroughput += rt.throughput * (1 - downstreamFail);
+        // The solver includes client-side failure, downstream dependencies and
+        // residual failure after this client's retries exactly once.
+        totalThroughput += load * (1 - rt.effFailProb);
       } else if (rt.cfg.cronEnabled) {
         const load = Math.max(0, rt.cfg.cronRate ?? 0);
         if (load <= 0) return;
@@ -344,6 +403,12 @@ function round(x: number): number {
 /** A node scales its own replicas if it is an autoScaler or has autoScaleEnabled. */
 function isAutoScaling(n: NodeConfig): boolean {
   return n.kind === 'autoScaler' || n.autoScaleEnabled === true;
+}
+
+function scalingBounds(n: NodeConfig): { min: number; max: number } {
+  const min = Math.max(1, Math.ceil(n.minReplicas ?? 1));
+  const max = Math.max(min, Math.floor(n.maxReplicas ?? 20));
+  return { min, max };
 }
 
 export { nodeCapacity };

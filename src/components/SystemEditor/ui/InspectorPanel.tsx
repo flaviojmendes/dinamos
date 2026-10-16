@@ -61,6 +61,8 @@ interface Props {
    * can never be tuned by players — these sections render locked.
    */
   gameMode?: boolean;
+  /** Connected load-balancer targets whose relative weights can be tuned. */
+  weightedTargets?: { id: string; label: string }[];
 }
 
 function Num({
@@ -93,6 +95,7 @@ function Num({
       </div>
       <input
         type="range"
+        aria-label={label}
         min={min}
         max={max}
         step={step}
@@ -121,6 +124,7 @@ function Toggle({
       <button
         type="button"
         role="switch"
+        aria-label={label}
         aria-checked={value}
         onClick={() => onChange(!value)}
         className={`relative inline-flex h-4 w-8 shrink-0 items-center rounded-full transition-colors ${value ? 'bg-signal-cyan' : 'bg-tactical-line'}`}
@@ -148,6 +152,7 @@ function Select<T extends string>({
     <label className="block mb-3">
       <div className="flex items-center gap-1 font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1">{label}<HintIcon hint={hint} /></div>
       <select
+        aria-label={label}
         value={value}
         onChange={(e) => onChange(e.target.value as T)}
         className="w-full bg-tactical-raised border border-tactical-border rounded-md px-2 py-1 font-sans text-sm text-tactical-text"
@@ -162,7 +167,7 @@ function Select<T extends string>({
   );
 }
 
-export default function InspectorPanel({ config, onChange, onDelete, canDelete = true, readOnly = false, gameMode = false }: Props) {
+export default function InspectorPanel({ config, onChange, onDelete, canDelete = true, readOnly = false, gameMode = false, weightedTargets = [] }: Props) {
   const { t } = useTranslation();
   // Swallow edits when the node is admin-controlled (e.g. the Users traffic
   // source); the panel still shows the values for context.
@@ -193,8 +198,9 @@ export default function InspectorPanel({ config, onChange, onDelete, canDelete =
         {canDelete && (
           <button
             onClick={onDelete}
+            disabled={readOnly}
             className="text-tactical-label hover:text-signal-red transition-colors"
-            aria-label="Delete node"
+            aria-label={t('editor.inspector.delete_node')}
           >
             <Trash2 className="w-4 h-4" />
           </button>
@@ -216,10 +222,11 @@ export default function InspectorPanel({ config, onChange, onDelete, canDelete =
         </div>
       )}
 
-      <div className={readOnly ? 'pointer-events-none opacity-60 select-none' : undefined}>
+      <fieldset disabled={readOnly} className={`min-w-0 ${readOnly ? 'opacity-60' : ''}`}>
         <label className="block mb-3">
           <div className="flex items-center gap-1 font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1">{t('editor.inspector.label')}<HintIcon hint={t('editor.hints.label')} /></div>
           <input
+            aria-label={t('editor.inspector.label')}
             value={config.label}
             readOnly={readOnly}
             onChange={(e) => handleChange({ label: e.target.value })}
@@ -228,7 +235,7 @@ export default function InspectorPanel({ config, onChange, onDelete, canDelete =
         </label>
 
         {config.kind === 'client' && (
-          <Num label={t('editor.inspector.base_rate')} hint={t('editor.hints.base_rate')} value={config.baseRate ?? 50} min={1} max={5000} step={10} unit="req/s" onChange={(v) => handleChange({ baseRate: v })} />
+          <Num label={t('editor.inspector.base_rate')} hint={t('editor.hints.base_rate')} value={config.baseRate ?? 50} min={0} max={5000} step={10} unit="req/s" onChange={(v) => handleChange({ baseRate: v })} />
         )}
 
         {config.kind !== 'client' && (
@@ -241,6 +248,19 @@ export default function InspectorPanel({ config, onChange, onDelete, canDelete =
             <div className="font-sans text-[10px] text-slate-500 dark:text-tactical-label mb-3">
               {t('editor.inspector.capacity_approx', { value: isFinite(capacity) ? `${Math.round(capacity)} req/s` : '∞' })}
             </div>
+            {config.kind !== 'messageQueue' && (
+              <>
+                <Toggle
+                  label={t('editor.inspector.bounded_queue')}
+                  hint={t('editor.hints.bounded_queue')}
+                  value={Number.isFinite(config.queueCapacity)}
+                  onChange={(enabled) => handleChange({ queueCapacity: enabled ? 1000 : Infinity })}
+                />
+                {Number.isFinite(config.queueCapacity) && (
+                  <Num label={t('editor.inspector.waiting_capacity')} hint={t('editor.hints.waiting_capacity')} value={config.queueCapacity} min={0} max={100000} unit="reqs" onChange={(v) => handleChange({ queueCapacity: v })} />
+                )}
+              </>
+            )}
           </>
         )}
 
@@ -271,65 +291,97 @@ export default function InspectorPanel({ config, onChange, onDelete, canDelete =
             {config.autoScaleEnabled && (
               <>
                 <Num label={t('editor.inspector.target_utilization')} hint={t('editor.hints.target_utilization')} value={Math.round((config.targetUtilization ?? 0.7) * 100)} min={10} max={95} unit="%" onChange={(v) => handleChange({ targetUtilization: v / 100 })} />
-                <Num label={t('editor.inspector.min_replicas')} hint={t('editor.hints.min_replicas')} value={config.minReplicas ?? 1} min={1} max={50} onChange={(v) => handleChange({ minReplicas: v })} />
-                <Num label={t('editor.inspector.max_replicas')} hint={t('editor.hints.max_replicas')} value={config.maxReplicas ?? 20} min={1} max={100} onChange={(v) => handleChange({ maxReplicas: v })} />
+                <Num label={t('editor.inspector.min_replicas')} hint={t('editor.hints.min_replicas')} value={config.minReplicas ?? 1} min={1} max={100} onChange={(v) => handleChange(minReplicaPatch(config, v))} />
+                <Num label={t('editor.inspector.max_replicas')} hint={t('editor.hints.max_replicas')} value={config.maxReplicas ?? 20} min={1} max={100} onChange={(v) => handleChange(maxReplicaPatch(config, v))} />
               </>
             )}
           </div>
         )}
 
         {/* Kind-specific controls */}
-        {renderKindControls(config, handleChange, t)}
+        {renderKindControls(config, handleChange, t, weightedTargets)}
 
         {/* Reliability + latency-shape: fixed by the match, never player-tunable */}
-        <div className={gameMode && !readOnly ? 'pointer-events-none opacity-60 select-none' : undefined}>
+        <fieldset disabled={tuningLocked} className={`min-w-0 ${gameMode && !readOnly ? 'opacity-60' : ''}`}>
           {/* Reliability */}
           <div className="flex items-center gap-1 font-sans text-[11px] font-medium text-slate-600 dark:text-signal-amber mt-2 mb-2">
             {t('editor.inspector.reliability')}
             {tuningLocked && <span className="font-normal text-tactical-label normal-case">· {t('editor.inspector.match_fixed', { defaultValue: 'fixed by match' })}</span>}
           </div>
           <Num label={t('editor.inspector.failure_rate')} hint={t('editor.hints.failure_rate')} value={Math.round(config.failureRate * 100)} min={0} max={100} unit="%" onChange={(v) => tuningChange({ failureRate: v / 100 })} />
-          <Num label={t('editor.inspector.timeout')} hint={t('editor.hints.timeout')} value={config.timeoutMs} min={50} max={10000} step={50} unit="ms" onChange={(v) => tuningChange({ timeoutMs: v })} />
+          {config.kind !== 'client' && <Num label={t('editor.inspector.timeout')} hint={t('editor.hints.timeout')} value={config.timeoutMs} min={50} max={10000} step={50} unit="ms" onChange={(v) => tuningChange({ timeoutMs: v })} />}
           <Num label={t('editor.inspector.max_retries')} hint={t('editor.hints.max_retries')} value={config.retry?.maxRetries ?? 0} min={0} max={6} onChange={(v) => tuningChange({ retry: { maxRetries: v, backoffBaseMs: config.retry?.backoffBaseMs ?? 50, jitter: config.retry?.jitter ?? true } })} />
+          {(config.retry?.maxRetries ?? 0) > 0 && (
+            <>
+              <Num label={t('editor.inspector.retry_backoff')} hint={t('editor.hints.retry_backoff')} value={config.retry?.backoffBaseMs ?? 50} min={0} max={5000} step={10} unit="ms" onChange={(v) => tuningChange({ retry: { maxRetries: config.retry?.maxRetries ?? 0, backoffBaseMs: v, jitter: config.retry?.jitter ?? true } })} />
+              <Toggle label={t('editor.inspector.retry_jitter')} hint={t('editor.hints.retry_jitter')} value={config.retry?.jitter ?? true} onChange={(v) => tuningChange({ retry: { maxRetries: config.retry?.maxRetries ?? 0, backoffBaseMs: config.retry?.backoffBaseMs ?? 50, jitter: v } })} />
+            </>
+          )}
 
           {/* Latency shape */}
-          <div className="font-sans text-[11px] font-medium text-slate-600 dark:text-signal-amber mt-2 mb-2">{t('editor.inspector.latency_shape')}</div>
-          <Select
-            label={t('editor.inspector.distribution')}
-            hint={t('editor.hints.distribution')}
-            value={config.latencyDistribution}
-            options={[
-              { value: 'lognormal', label: t('editor.inspector.dist.lognormal') },
-              { value: 'exponential', label: t('editor.inspector.dist.exponential') },
-              { value: 'deterministic', label: t('editor.inspector.dist.deterministic') },
-            ]}
-            onChange={(v) => tuningChange({ latencyDistribution: v })}
-          />
-          {config.latencyDistribution === 'lognormal' && (
-            <Num label={t('editor.inspector.variability')} hint={t('editor.hints.variability')} value={config.latencyCv} min={0.1} max={2} step={0.1} onChange={(v) => tuningChange({ latencyCv: v })} />
+          {config.kind !== 'client' && (
+            <>
+              <div className="font-sans text-[11px] font-medium text-slate-600 dark:text-signal-amber mt-2 mb-2">{t('editor.inspector.latency_shape')}</div>
+              <Select
+                label={t('editor.inspector.distribution')}
+                hint={t('editor.hints.distribution')}
+                value={config.latencyDistribution}
+                options={[
+                  { value: 'lognormal', label: t('editor.inspector.dist.lognormal') },
+                  { value: 'exponential', label: t('editor.inspector.dist.exponential') },
+                  { value: 'deterministic', label: t('editor.inspector.dist.deterministic') },
+                ]}
+                onChange={(v) => tuningChange({ latencyDistribution: v })}
+              />
+              {config.latencyDistribution === 'lognormal' && (
+                <Num label={t('editor.inspector.variability')} hint={t('editor.hints.variability')} value={config.latencyCv} min={0.1} max={2} step={0.1} onChange={(v) => tuningChange({ latencyCv: v })} />
+              )}
+            </>
           )}
-        </div>
-      </div>
+        </fieldset>
+      </fieldset>
     </div>
   );
 }
 
-function renderKindControls(config: NodeConfig, onChange: (patch: Partial<NodeConfig>) => void, t: TFunc) {
+function minReplicaPatch(config: NodeConfig, value: number): Partial<NodeConfig> {
+  const maxReplicas = Math.max(value, config.maxReplicas ?? 20);
+  return { minReplicas: value, maxReplicas, replicas: Math.min(maxReplicas, Math.max(value, config.replicas)) };
+}
+
+function maxReplicaPatch(config: NodeConfig, value: number): Partial<NodeConfig> {
+  const minReplicas = Math.min(value, config.minReplicas ?? 1);
+  return { maxReplicas: value, minReplicas, replicas: Math.max(minReplicas, Math.min(value, config.replicas)) };
+}
+
+function renderKindControls(config: NodeConfig, onChange: (patch: Partial<NodeConfig>) => void, t: TFunc, weightedTargets: { id: string; label: string }[]) {
   switch (config.kind) {
     case 'loadBalancer':
       return (
-        <Select
-          label={t('editor.inspector.strategy')}
-          hint={t('editor.hints.strategy')}
-          value={config.strategy ?? 'roundRobin'}
-          options={[
-            { value: 'roundRobin', label: t('editor.inspector.strat.roundRobin') },
-            { value: 'leastConnections', label: t('editor.inspector.strat.leastConnections') },
-            { value: 'weighted', label: t('editor.inspector.strat.weighted') },
-            { value: 'hashing', label: t('editor.inspector.strat.hashing') },
-          ]}
-          onChange={(v) => onChange({ strategy: v })}
-        />
+        <>
+          <Select
+            label={t('editor.inspector.strategy')}
+            hint={t('editor.hints.strategy')}
+            value={config.strategy ?? 'roundRobin'}
+            options={[
+              { value: 'roundRobin', label: t('editor.inspector.strat.roundRobin') },
+              { value: 'leastConnections', label: t('editor.inspector.strat.leastConnections') },
+              { value: 'weighted', label: t('editor.inspector.strat.weighted') },
+              { value: 'hashing', label: t('editor.inspector.strat.hashing') },
+            ]}
+            onChange={(v) => onChange({ strategy: v })}
+          />
+          {config.strategy === 'hashing' && <p className="font-sans text-[11px] leading-relaxed text-tactical-dim mb-3">{t('editor.inspector.hashing_model_note')}</p>}
+          {config.strategy === 'weighted' && (
+            <div className="mb-3">
+              <p className="font-sans text-[11px] leading-relaxed text-tactical-dim mb-2">{t('editor.inspector.weights_note')}</p>
+              {weightedTargets.length === 0 && <p className="font-sans text-[11px] text-tactical-dim">{t('editor.inspector.weights_empty')}</p>}
+              {weightedTargets.map((target) => (
+                <Num key={target.id} label={t('editor.inspector.target_weight', { name: target.label })} value={config.weights?.[target.id] ?? 1} min={0} max={100} onChange={(v) => onChange({ weights: { ...config.weights, [target.id]: v } })} />
+              ))}
+            </div>
+          )}
+        </>
       );
     case 'apiGateway':
       return <Num label={t('editor.inspector.rate_limit')} hint={t('editor.hints.rate_limit')} value={config.rateLimit ?? 1000} min={10} max={10000} step={10} unit="req/s" onChange={(v) => onChange({ rateLimit: v })} />;
@@ -337,7 +389,7 @@ function renderKindControls(config: NodeConfig, onChange: (patch: Partial<NodeCo
       return (
         <>
           <Num label={t('editor.inspector.hit_rate')} hint={t('editor.hints.hit_rate')} value={Math.round((config.hitRate ?? 0.8) * 100)} min={0} max={100} unit="%" onChange={(v) => onChange({ hitRate: v / 100 })} />
-          <Num label={t('editor.inspector.ttl')} hint={t('editor.hints.ttl')} value={config.ttlSeconds ?? 60} min={1} max={3600} step={1} unit="s" onChange={(v) => onChange({ ttlSeconds: v })} />
+          <p className="font-sans text-[11px] leading-relaxed text-tactical-dim mb-3">{t('editor.inspector.cache_model_note')}</p>
         </>
       );
     case 'messageQueue':
@@ -371,16 +423,7 @@ function renderKindControls(config: NodeConfig, onChange: (patch: Partial<NodeCo
         <>
           <Num label={t('editor.inspector.shard_count')} hint={t('editor.hints.shard_count')} value={config.shardCount ?? 4} min={1} max={64} onChange={(v) => onChange({ shardCount: v })} />
           <Num label={t('editor.inspector.skew')} hint={t('editor.hints.skew')} value={Math.round((config.skew ?? 0) * 100)} min={0} max={100} unit="%" onChange={(v) => onChange({ skew: v / 100 })} />
-          <Select
-            label={t('editor.inspector.strategy')}
-            hint={t('editor.hints.shard_strategy')}
-            value={config.shardStrategy ?? 'hash'}
-            options={[
-              { value: 'hash', label: t('editor.inspector.shard_strat.hash') },
-              { value: 'range', label: t('editor.inspector.shard_strat.range') },
-            ]}
-            onChange={(v) => onChange({ shardStrategy: v })}
-          />
+          <p className="font-sans text-[11px] leading-relaxed text-tactical-dim mb-3">{t('editor.inspector.shard_model_note')}</p>
         </>
       );
     case 'circuitBreaker':
@@ -394,8 +437,8 @@ function renderKindControls(config: NodeConfig, onChange: (patch: Partial<NodeCo
       return (
         <>
           <Num label={t('editor.inspector.target_utilization')} hint={t('editor.hints.target_utilization')} value={Math.round((config.targetUtilization ?? 0.7) * 100)} min={10} max={95} unit="%" onChange={(v) => onChange({ targetUtilization: v / 100 })} />
-          <Num label={t('editor.inspector.min_replicas')} hint={t('editor.hints.min_replicas')} value={config.minReplicas ?? 1} min={1} max={50} onChange={(v) => onChange({ minReplicas: v })} />
-          <Num label={t('editor.inspector.max_replicas')} hint={t('editor.hints.max_replicas')} value={config.maxReplicas ?? 20} min={1} max={100} onChange={(v) => onChange({ maxReplicas: v })} />
+          <Num label={t('editor.inspector.min_replicas')} hint={t('editor.hints.min_replicas')} value={config.minReplicas ?? 1} min={1} max={100} onChange={(v) => onChange(minReplicaPatch(config, v))} />
+          <Num label={t('editor.inspector.max_replicas')} hint={t('editor.hints.max_replicas')} value={config.maxReplicas ?? 20} min={1} max={100} onChange={(v) => onChange(maxReplicaPatch(config, v))} />
         </>
       );
     default:

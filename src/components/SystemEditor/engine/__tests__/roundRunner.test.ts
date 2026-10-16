@@ -21,6 +21,24 @@ describe('roundRunner', () => {
     expect(result.finalFrame).toBeNull();
   });
 
+  it.each([-1, 1.5, NaN, Infinity])('rejects invalid tick counts (%s)', (tickCount) => {
+    const preset = getPreset('three-tier')!;
+    const architecture = presetNodesToArchitecture(preset.nodes, preset.edges);
+    expect(() => runRound({ architecture, seed: preset.seed, tickCount }))
+      .toThrow('tickCount must be a non-negative integer');
+  });
+
+  it('does not reward an idle but structurally compliant service', () => {
+    const preset = getPreset('three-tier')!;
+    const architecture = presetNodesToArchitecture(preset.nodes, preset.edges);
+    architecture.nodes[0].config.baseRate = 0;
+    const result = runRound({ architecture, seed: preset.seed, tickCount: 10 });
+    expect(result.compliant).toBe(true);
+    expect(result.roundedScore).toBe(0);
+    expect(result.score.availability).toBe(0);
+    expect(result.score.bestStreak).toBe(0);
+  });
+
   it('honours eligibleFromTick for late-join windows', () => {
     const preset = getPreset('three-tier')!;
     const architecture = presetNodesToArchitecture(preset.nodes, preset.edges);

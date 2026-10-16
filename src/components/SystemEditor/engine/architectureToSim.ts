@@ -10,7 +10,9 @@ export function architectureToSimConfig(
   seed: number,
   overrides?: Partial<Pick<SimConfig, 'dtSeconds' | 'traceSamples'>>,
 ): SimConfig {
-  const nodes = (architecture.nodes ?? []).map((n) => n.config);
+  // Edges and compliance use the stored node's outer id. Use the same identity
+  // in the engine, even if an older/imported config carries a stale inner id.
+  const nodes = (architecture.nodes ?? []).map((n) => ({ ...n.config, id: n.id }));
   const edges: EdgeSpec[] = (architecture.edges ?? []).map((e) => ({
     id: e.id,
     source: e.source,

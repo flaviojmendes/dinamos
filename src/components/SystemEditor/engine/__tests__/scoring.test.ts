@@ -39,13 +39,29 @@ describe('normalizeScoring', () => {
     expect(cfg.budgetPerHour).toBe(100);
     expect(cfg.wSuccess).toBe(DEFAULT_SCORING.wSuccess);
   });
+
+  it('rejects non-finite or negative inputs without inverting penalties', () => {
+    expect(normalizeScoring({
+      wThroughput: NaN,
+      wSuccess: Infinity,
+      wLatency: -1,
+      wCost: undefined,
+      latencyTargetMs: 0,
+      budgetPerHour: -5,
+    })).toEqual(DEFAULT_SCORING);
+  });
+
+  it('preserves explicit zero weights and a disabled budget', () => {
+    expect(normalizeScoring({ wSuccess: 0, wCost: 0, budgetPerHour: 0 }))
+      .toMatchObject({ wSuccess: 0, wCost: 0, budgetPerHour: 0 });
+  });
 });
 
 describe('frameScore', () => {
   const cfg: ScoringConfig = normalizeScoring({ budgetPerHour: 10 });
 
   it('rewards throughput and availability', () => {
-    const s = frameScore(metrics({ totalThroughput: 100, successRate: 1 }), cfg);
+    const s = frameScore(metrics({ offeredLoad: 100, totalThroughput: 100, successRate: 1 }), cfg);
     expect(s.throughput).toBe(100);
     expect(s.availability).toBe(cfg.wSuccess * 100);
     expect(s.latencyPenalty).toBe(0);
@@ -56,6 +72,29 @@ describe('frameScore', () => {
   it('clamps negative throughput to zero', () => {
     const s = frameScore(metrics({ totalThroughput: -50 }), cfg);
     expect(s.throughput).toBe(0);
+  });
+
+  it('does not reward perfect availability when no traffic is served', () => {
+    const idle = frameScore(metrics({ successRate: 1 }), cfg);
+    expect(idle.throughput).toBe(0);
+    expect(idle.availability).toBe(0);
+    expect(idle.net).toBe(0);
+    expect(idle.sloMet).toBe(false);
+
+    const unavailable = frameScore(metrics({ offeredLoad: 100, successRate: 1 }), cfg);
+    expect(unavailable.availability).toBe(0);
+    expect(unavailable.sloMet).toBe(false);
+  });
+
+  it('cannot reward more completed requests than were offered', () => {
+    const frame = frameScore(metrics({ offeredLoad: 100, totalThroughput: 1000, successRate: 2 }), cfg);
+    expect(frame.throughput).toBe(100);
+    expect(frame.availability).toBe(cfg.wSuccess * 100);
+  });
+
+  it('does not build an SLO streak from inconsistent success/throughput metrics', () => {
+    const frame = frameScore(metrics({ offeredLoad: 100, totalThroughput: 50, successRate: 1 }), cfg);
+    expect(frame.sloMet).toBe(false);
   });
 
   it('penalizes latency over the target', () => {
@@ -114,6 +153,8 @@ describe('SLO streak', () => {
     expect(streakMultiplier(STREAK_RAMP_SEC)).toBe(STREAK_MAX_MULTIPLIER);
     expect(streakMultiplier(STREAK_RAMP_SEC * 10)).toBe(STREAK_MAX_MULTIPLIER);
     expect(streakMultiplier(STREAK_RAMP_SEC / 2)).toBeCloseTo(1 + (STREAK_MAX_MULTIPLIER - 1) / 2);
+    expect(streakMultiplier(-10)).toBe(1);
+    expect(streakMultiplier(NaN)).toBe(1);
   });
 
   it('builds streak on healthy seconds and earns a bonus', () => {

@@ -4,6 +4,7 @@ import {
   afterRetryFailProb,
   combineFailureProbs,
   expectedAttempts,
+  responseTimeoutFailureProb,
   timeoutFailureProb,
 } from '../failureModel';
 
@@ -45,5 +46,44 @@ describe('failure model', () => {
 
     expect(cb.update(0.0, 7000)).toBe(0); // recovered -> closed
     expect(cb.state).toBe('closed');
+  });
+
+  it('requires an actual observation before opening or recovering', () => {
+    const cb = new CircuitBreaker(0.5, 1000);
+    cb.update(1, 0, 0);
+    expect(cb.state).toBe('closed');
+    cb.update(1, 100, 10);
+    cb.advance(1100);
+    expect(cb.state).toBe('halfOpen');
+    cb.update(0, 1200, 0);
+    expect(cb.state).toBe('halfOpen');
+    cb.update(0, 1300, 1);
+    expect(cb.state).toBe('closed');
+  });
+
+  it('does not trip a zero-threshold breaker on healthy requests', () => {
+    const cb = new CircuitBreaker(0, 1000);
+    cb.update(0, 100, 1);
+    expect(cb.state).toBe('closed');
+    cb.update(0.01, 200, 100);
+    expect(cb.state).toBe('open');
+  });
+
+  it('uses the selected service distribution when calculating deadlines', () => {
+    expect(responseTimeoutFailureProb(10, 0, 20, 'deterministic', 0.5)).toBe(0);
+    expect(responseTimeoutFailureProb(30, 0, 20, 'deterministic', 0.5)).toBe(1);
+    expect(responseTimeoutFailureProb(20, 0, 20, 'deterministic', 0.5)).toBe(0);
+    expect(responseTimeoutFailureProb(10, 5, 20, 'deterministic', 0.5)).toBeCloseTo(Math.exp(-2), 8);
+    expect(responseTimeoutFailureProb(10, 10, 20, 'exponential', 1)).toBeCloseTo(3 * Math.exp(-2), 8);
+    expect(responseTimeoutFailureProb(10, 5, 20, 'exponential', 1)).toBeCloseTo(2 * Math.exp(-2) - Math.exp(-4), 8);
+    expect(responseTimeoutFailureProb(10, 5, 0, 'exponential', 1)).toBe(0);
+  });
+
+  it('uses the exact lognormal median without queueing and approaches deterministic service at zero CV', () => {
+    const cv = 0.5;
+    const median = 100 / Math.sqrt(1 + cv * cv);
+    expect(responseTimeoutFailureProb(100, 0, median, 'lognormal', cv)).toBeCloseTo(0.5, 6);
+    expect(responseTimeoutFailureProb(100, 0, 200, 'lognormal', 0)).toBe(0);
+    expect(responseTimeoutFailureProb(100, 0, 50, 'lognormal', 0)).toBe(1);
   });
 });

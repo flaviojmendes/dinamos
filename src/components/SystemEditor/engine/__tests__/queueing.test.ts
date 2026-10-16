@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { erlangC, mmcMetrics } from '../queueing';
+import { boundedQueueMetrics, erlangC, mmcMetrics } from '../queueing';
 
 describe('queueing theory', () => {
   it('M/M/1 matches the closed-form Wq = rho / (mu - lambda)', () => {
@@ -50,4 +50,66 @@ describe('queueing theory', () => {
     expect(Number.isFinite(m.waitMs)).toBe(true);
     expect(m.waitMs).toBeGreaterThan(0);
   });
+});
+
+// An overloaded system must not appear faster as it crosses saturation.
+describe('queue limits', () => {
+  it('does not reset the waiting time at the capacity boundary', () => {
+    const below = mmcMetrics(9.999, 10, 1);
+    const above = mmcMetrics(10.001, 10, 1);
+    expect(above.waitMs).toBeGreaterThanOrEqual(below.waitMs);
+  });
+});
+
+
+describe('finite waiting rooms', () => {
+  it('matches M/M/1/1 loss probability with no waiting room', () => {
+    const m = boundedQueueMetrics(8, 10, 1, 0);
+    expect(m.blockingProbability).toBeCloseTo(8 / 18, 10);
+    expect(m.admittedRate).toBeCloseTo(80 / 18, 10);
+    expect(m.queueLength).toBe(0);
+    expect(m.waitMs).toBe(0);
+    expect(m.inSystem).toBeCloseTo(m.admittedRate * m.responseMs / 1000, 10);
+  });
+
+  it('matches a uniform M/M/1/K distribution at rho=1', () => {
+    const m = boundedQueueMetrics(10, 10, 1, 2);
+    expect(m.blockingProbability).toBeCloseTo(0.25, 10);
+    expect(m.queueLength).toBeCloseTo(0.75, 10);
+    expect(m.inSystem).toBeCloseTo(1.5, 10);
+    expect(m.waitMs).toBeCloseTo(100, 10);
+  });
+
+  it('retains a bounded queue and Little\'s Law under severe overload', () => {
+    const m = boundedQueueMetrics(1e6, 10, 2, 1000);
+    expect(m.queueLength).toBeLessThanOrEqual(1000);
+    expect(m.admittedRate).toBeCloseTo(20, 2);
+    expect(m.inSystem).toBeCloseTo(m.admittedRate * m.responseMs / 1000, 5);
+    expect(Number.isFinite(m.waitMs)).toBe(true);
+  });
+  it('agrees with independently enumerated birth/death states across load regimes', () => {
+    for (const workers of [1, 2, 8]) for (const room of [0, 1, 25]) {
+      for (const rho of [1e-8, 0.1, 0.99999999999, 1, 1.00000001, 1.5, 100]) {
+        const lambda = workers * 10 * rho;
+        const weights = [1];
+        for (let n = 1; n <= workers + room; n++) weights.push(weights[n - 1] * lambda / (Math.min(n, workers) * 10));
+        const total = weights.reduce((a, b) => a + b, 0);
+        const expectedQueue = weights.reduce((sum, weight, n) => sum + Math.max(0, n - workers) * weight, 0) / total;
+        const expectedBusy = weights.reduce((sum, weight, n) => sum + Math.min(workers, n) * weight, 0) / total;
+        const actual = boundedQueueMetrics(lambda, 10, workers, room);
+        expect(actual.queueLength).toBeCloseTo(expectedQueue, 7);
+        expect(actual.blockingProbability).toBeCloseTo(weights[weights.length - 1] / total, 7);
+        expect(actual.admittedRate).toBeCloseTo(10 * expectedBusy, 7);
+      }
+    }
+  });
+
+  it('sums a large waiting room without enumerating its states', () => {
+    const room = 1e9;
+    const actual = boundedQueueMetrics(10, 10, 1, room);
+    expect(actual.blockingProbability).toBeCloseTo(1 / (room + 2), 14);
+    expect(actual.queueLength).toBeCloseTo(room * (room + 1) / (2 * (room + 2)), 5);
+    expect(actual.admittedRate).toBeCloseTo(10 * (room + 1) / (room + 2), 10);
+  });
+
 });

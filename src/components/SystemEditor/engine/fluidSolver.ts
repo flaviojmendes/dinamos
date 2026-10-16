@@ -9,15 +9,16 @@
 import {
   EdgeSpec,
   NodeConfig,
+  nodeCapacity,
   serverServiceRate,
 } from './types.js';
-import { Topology } from './topology';
-import { mmcMetrics, QueueMetrics } from './queueing.js';
+import { Topology } from './topology.js';
+import { boundedQueueMetrics, mmcMetrics, QueueMetrics } from './queueing.js';
 import {
   afterRetryFailProb,
   combineFailureProbs,
   expectedAttempts,
-  timeoutFailureProb,
+  responseTimeoutFailureProb,
 } from './failureModel.js';
 
 /** Mutable cross-tick state owned by the simulator and threaded through solves. */
@@ -26,6 +27,10 @@ export interface EngineState {
   queueLengths: Map<string, number>;
   /** circuitBreaker id -> fraction of traffic to shed this tick [0..1]. */
   breakerShed: Map<string, number>;
+  /** Half-open breaker id -> maximum probe requests in this tick. */
+  breakerProbeLimit?: Map<string, number>;
+  /** Chaos-unavailable nodes reject work without consuming durable backlog. */
+  unavailableNodes?: Set<string>;
   /** autoScaler id -> current replica count override. */
   replicaOverride: Map<string, number>;
   dtSeconds: number;
@@ -85,16 +90,23 @@ export function solveFlow(
 
   // effFailProb from the previous iteration, used for retry amplification.
   const effFail = new Map<string, number>();
-  nodes.forEach((n) => effFail.set(n.id, 0));
+  // Start conservatively: a closed, lossless cycle never answers a request.
+  // Solving from zero would incorrectly assign it 100% success forever. The
+  // greatest failure fixed point discounts only paths that reach a real sink.
+  nodes.forEach((n) => effFail.set(n.id, 1));
+  // Relaxation iterations solve ONE tick. Never advance a stateful queue while
+  // finding the fixed point, otherwise node ordering/iteration count changes time.
+  const tickState = { ...state, queueLengths: new Map(state.queueLengths) };
 
   let iterations = 0;
   let converged = false;
   let runtime = new Map<string, NodeRuntime>();
 
-  for (let iter = 0; iter < MAX_ITERS; iter++) {
+  for (let iter = 0; iter < Math.max(MAX_ITERS, nodes.length * 2 + 1); iter++) {
     iterations = iter + 1;
     const nextEffFail = new Map<string, number>();
     let maxDelta = 0;
+    let maxFailureDelta = 0;
     runtime = new Map<string, NodeRuntime>();
 
     for (const node of nodes) {
@@ -108,9 +120,10 @@ export function solveFlow(
           : incoming.reduce((sum, e) => sum + (edgeFlow.get(e.id) ?? 0), 0) + cronRate;
 
       const outgoing = topo.outgoing.get(node.id) ?? [];
-      const rt = processNode(node, arrival, outgoing, state, effFail, nodeById);
+      const rt = processNode(node, arrival, outgoing, tickState, effFail, nodeById);
       runtime.set(node.id, rt);
       nextEffFail.set(node.id, rt.effFailProb);
+      maxFailureDelta = Math.max(maxFailureDelta, Math.abs(rt.effFailProb - (effFail.get(node.id) ?? 0)));
 
       // Push forwarded flow onto outgoing edges with retry amplification.
       const forwarded = rt.throughput * (1 - rt.terminateProb);
@@ -130,11 +143,15 @@ export function solveFlow(
 
     nextEffFail.forEach((v, k) => effFail.set(k, v));
 
-    if (maxDelta < EPSILON) {
+    if (maxDelta < EPSILON && maxFailureDelta < 1e-7) {
       converged = true;
       break;
     }
   }
+
+  runtime.forEach((rt, id) => {
+    if (rt.cfg.kind === 'messageQueue') state.queueLengths.set(id, rt.queue.queueLength);
+  });
 
   return { runtime, edgeFlow, iterations, converged };
 }
@@ -183,6 +200,13 @@ function processNode(
     branches: evenBranches(),
   };
 
+  if (state.unavailableNodes?.has(node.id)) {
+    const backlog = node.kind === 'messageQueue' ? state.queueLengths.get(node.id) ?? 0 : 0;
+    return { ...base, processed: 0, throughput: 0, dropped: arrival, effFailProb: 1,
+      queue: { rho: 0, waitMs: backlog > 0 ? 60000 : 0, responseMs: backlog > 0 ? 60000 : 0,
+        queueLength: backlog, inSystem: backlog, saturated: backlog > 0 } };
+  }
+
   // Closures capture the effective replica count so capacity helpers report it.
   const capNode = (arr: number, m: number, srv: number, out: EdgeSpec[], ef: Map<string, number>, extra: Partial<NodeRuntime>) =>
     capacityNode(node, arr, m, srv, out, ef, extra, replicas);
@@ -200,7 +224,8 @@ function processNode(
       base.terminateProb = 0;
       base.utilization = 0;
       base.queue = mmcMetrics(0, mu, servers);
-      base.effFailProb = node.failureRate;
+      base.effFailProb = combineFailureProbs(node.failureRate,
+        outgoing.length === 0 ? 1 : afterRetryFailProb(weightedDownstreamFail(base.branches, effFail), node.retry));
       return base;
     }
 
@@ -229,17 +254,18 @@ function processNode(
     }
 
     case 'messageQueue': {
-      return queueNode(node, arrival, outgoing, state, effFail);
+      return queueNode(node, arrival, outgoing, state);
     }
 
     case 'circuitBreaker': {
       const shed = clamp01(state.breakerShed.get(node.id) ?? 0);
-      const admitted = arrival * (1 - shed);
-      const rejected = arrival * shed;
+      const probes = state.breakerProbeLimit?.get(node.id);
+      const admitted = probes === undefined ? arrival * (1 - shed) : Math.min(arrival, Math.max(0, probes) / state.dtSeconds);
+      const rejected = arrival - admitted;
       const rt = capNode(admitted, mu, servers, outgoing, effFail, {});
       rt.arrival = arrival;
       rt.dropped += rejected;
-      rt.effFailProb = combineFailureProbs(rt.effFailProb, shed);
+      rt.effFailProb = combineFailureProbs(rt.effFailProb, arrival > 0 ? rejected / arrival : 0);
       return rt;
     }
 
@@ -250,7 +276,12 @@ function processNode(
       // so effective capacity is throttled by the busiest shard.
       const hotShare = 1 / shards + skew * (1 - 1 / shards);
       const effectiveCapacity = mu * servers * (1 / Math.max(hotShare * shards, 1e-9));
-      const rt = capNodeWithCap(arrival, effectiveCapacity, servers, mu, outgoing, effFail, {});
+      // The first downstream destination is the hot partition. Keep displayed
+      // shard imbalance and actual downstream traffic consistent.
+      const destinationHotShare = outgoing.length > 0 ? 1 / outgoing.length + skew * (1 - 1 / outgoing.length) : 0;
+      const branches = outgoing.map((e, i) => ({ edgeId: e.id, target: e.target,
+        prob: i === 0 ? destinationHotShare : (1 - destinationHotShare) / Math.max(1, outgoing.length - 1) }));
+      const rt = capNodeWithCap(arrival, effectiveCapacity, servers, mu, outgoing, effFail, { branches });
       const loads: number[] = [];
       for (let i = 0; i < shards; i++) {
         const share = i === 0 ? hotShare : (1 - hotShare) / Math.max(shards - 1, 1);
@@ -264,12 +295,9 @@ function processNode(
       // For a replicated DB the replica set size is a single knob (replicaCount):
       // one primary plus read replicas. Each node has `concurrency` workers.
       const replicaCount = Math.max(1, node.replicaCount ?? 1);
-      const writeFrac = clamp01(node.writeFraction ?? 0.2);
       const perNode = Math.max(1, node.concurrency);
       // Reads spread across the whole set; writes are serialized on the primary.
-      const readCap = mu * perNode * replicaCount;
-      const writeCap = mu * perNode;
-      const effectiveCapacity = 1 / ((1 - writeFrac) / readCap + writeFrac / writeCap);
+      const effectiveCapacity = nodeCapacity(node);
       const totalServers = Math.max(1, Math.round(perNode * replicaCount));
       const rt = capNodeWithCap(arrival, effectiveCapacity, totalServers, mu, outgoing, effFail, {});
       rt.replicas = replicaCount;
@@ -278,10 +306,9 @@ function processNode(
 
     default: {
       // server, database, autoScaler, externalDependency, loadBalancer.
-      const rt = capNode(arrival, mu, servers, outgoing, effFail, {});
-      if (node.kind === 'loadBalancer') {
-        rt.branches = balancerBranches(node, outgoing, nodeById, effFail);
-      }
+      const rt = capNode(arrival, mu, servers, outgoing, effFail, node.kind === 'loadBalancer'
+        ? { branches: balancerBranches(node, outgoing, nodeById, effFail, state) }
+        : {});
       return rt;
     }
   }
@@ -313,17 +340,22 @@ function capacityNodeWithCap(
   extra: Partial<NodeRuntime>,
   replicas: number,
 ): NodeRuntime {
-  const dropped = isFinite(capacity) ? Math.max(0, arrival - capacity) : 0;
-  const processed = arrival - dropped;
-
-  const queue = mmcMetrics(processed, mu, servers);
-  const timeoutP = timeoutFailureProb(queue.responseMs, node.timeoutMs);
+  // A constrained replica/shard set must queue against its EFFECTIVE capacity,
+  // rather than pretending every worker still offers its unconstrained rate.
+  const effectiveMu = Number.isFinite(capacity) ? capacity / servers : mu;
+  const bounded = Number.isFinite(node.queueCapacity)
+    ? boundedQueueMetrics(arrival, effectiveMu, servers, node.queueCapacity)
+    : undefined;
+  const processed = bounded?.admittedRate ?? Math.min(arrival, capacity);
+  const dropped = Math.max(0, arrival - processed);
+  const queue = bounded ?? mmcMetrics(arrival, effectiveMu, servers);
+  const timeoutP = nodeTimeoutFailure(node, queue.waitMs);
   const serviceFail = combineFailureProbs(node.failureRate, timeoutP);
   const failedInService = processed * serviceFail;
   const throughput = processed - failedInService;
 
   const terminateProb = extra.terminateProb ?? (outgoing.length === 0 ? 1 : 0);
-  const branches: RouteBranch[] = outgoing.map((e) => ({
+  const branches: RouteBranch[] = extra.branches ?? outgoing.map((e) => ({
     edgeId: e.id,
     target: e.target,
     prob: outgoing.length ? 1 / outgoing.length : 0,
@@ -331,7 +363,9 @@ function capacityNodeWithCap(
 
   // Local failure as seen by the caller: drops + in-service failures.
   const localFail = arrival > 0 ? (dropped + failedInService) / arrival : 0;
-  const downstreamFail = weightedDownstreamFail(branches, effFail);
+  // An isolated cache can answer its hits, but a miss without an origin fails.
+  const downstreamFail = node.kind === 'cache' && branches.length === 0
+    ? 1 : weightedDownstreamFail(branches, effFail);
   const downstreamAfterRetry = afterRetryFailProb(downstreamFail, node.retry);
   const forwardShare = 1 - terminateProb;
   const effFailProb = combineFailureProbs(localFail, forwardShare * downstreamAfterRetry);
@@ -367,40 +401,33 @@ function queueNode(
   arrival: number,
   outgoing: EdgeSpec[],
   state: EngineState,
-  effFail: Map<string, number>,
 ): NodeRuntime {
   const maxQueue = node.maxQueue ?? Infinity;
   const drainRate = node.dequeueRate ?? 50;
   const dt = state.dtSeconds;
-  let backlog = state.queueLengths.get(node.id) ?? 0;
+  const initialBacklog = state.queueLengths.get(node.id) ?? 0;
 
-  const incoming = arrival * dt;
-  let dropped = 0;
-  if (backlog + incoming > maxQueue) {
-    dropped = backlog + incoming - maxQueue;
-    backlog = maxQueue;
-  } else {
-    backlog += incoming;
-  }
-
-  const drained = Math.min(backlog, drainRate * dt);
-  backlog -= drained;
-  state.queueLengths.set(node.id, backlog);
+  const enqueueFailed = arrival * clamp01(node.failureRate);
+  const incoming = (arrival - enqueueFailed) * dt;
+  // Producers and consumers run concurrently over the tick. Filling the whole
+  // input batch before draining falsely drops traffic even when drain >= input.
+  const available = initialBacklog + incoming;
+  const drained = Math.min(available, drainRate * dt);
+  const dropped = Math.max(0, available - drained - maxQueue);
+  const backlog = Math.max(0, available - drained - dropped);
 
   const drainPerSec = drained / dt;
   const droppedPerSec = dropped / dt;
 
   // Queue wait grows with backlog: Wq ~ backlog / drainRate.
-  const waitMs = drainRate > 0 ? (backlog / drainRate) * 1000 : 60000;
+  const waitMs = drainRate > 0 ? ((initialBacklog + backlog) / 2 / drainRate) * 1000 : 60000;
   const serviceMs = node.serviceTimeMs;
   const responseMs = waitMs + serviceMs;
 
-  const serviceFail = combineFailureProbs(
-    node.failureRate,
-    timeoutFailureProb(responseMs, node.timeoutMs),
-  );
-  const failed = drainPerSec * serviceFail;
-  const throughput = drainPerSec - failed;
+  // timeoutMs is the producer ACK budget, not a message TTL. Accepted durable
+  // messages keep waiting and drain at the configured rate. Worker timeouts
+  // apply at the worker; delivery acknowledgements/requeue are not modeled.
+  const throughput = drainPerSec;
 
   const terminateProb = outgoing.length === 0 ? 1 : 0;
   const branches: RouteBranch[] = outgoing.map((e) => ({
@@ -408,9 +435,11 @@ function queueNode(
     target: e.target,
     prob: outgoing.length ? 1 / outgoing.length : 0,
   }));
-  const downstreamFail = weightedDownstreamFail(branches, effFail);
-  const localFail = arrival > 0 ? droppedPerSec / arrival : 0;
-  const effFailProb = combineFailureProbs(localFail, serviceFail, (1 - terminateProb) * downstreamFail);
+  // A durable broker acknowledges a producer on admission. Worker failures or
+  // later delivery timeouts cannot retroactively fail an accepted request.
+  const enqueueTimeout = responseTimeoutFailureProb(serviceMs, 0, node.timeoutMs, node.latencyDistribution, node.latencyCv);
+  const localFail = arrival > 0 ? (droppedPerSec + enqueueFailed) / arrival : 0;
+  const effFailProb = combineFailureProbs(localFail, enqueueTimeout);
 
   return {
     cfg: node,
@@ -419,7 +448,7 @@ function queueNode(
     arrival,
     processed: drainPerSec,
     throughput,
-    failed,
+    failed: enqueueFailed,
     dropped: droppedPerSec,
     retried: 0,
     utilization: drainRate > 0 ? Math.min(2, arrival / drainRate) : 1,
@@ -443,6 +472,7 @@ function balancerBranches(
   outgoing: EdgeSpec[],
   nodeById: Map<string, NodeConfig>,
   effFail: Map<string, number>,
+  state: EngineState,
 ): RouteBranch[] {
   if (outgoing.length === 0) return [];
   const strategy = node.strategy ?? 'roundRobin';
@@ -450,8 +480,8 @@ function balancerBranches(
   if (strategy === 'weighted') {
     const weights = node.weights ?? {};
     const raw = outgoing.map((e) => Math.max(0, weights[e.target] ?? 1));
-    const total = raw.reduce((s, w) => s + w, 0) || 1;
-    return outgoing.map((e, i) => ({ edgeId: e.id, target: e.target, prob: raw[i] / total }));
+    const total = raw.reduce((s, w) => s + w, 0);
+    return outgoing.map((e, i) => ({ edgeId: e.id, target: e.target, prob: total > 0 ? raw[i] / total : 1 / outgoing.length }));
   }
 
   if (strategy === 'leastConnections') {
@@ -460,10 +490,15 @@ function balancerBranches(
     // capacity-aware term keeps the split balanced under uniform health.
     const raw = outgoing.map((e) => {
       const fail = effFail.get(e.target) ?? 0;
-      return 1 - 0.9 * fail;
+      const target = nodeById.get(e.target);
+      if (!target) return 0;
+      const replicas = state.replicaOverride.get(target.id) ?? target.replicas;
+      const targetCapacity = nodeCapacity({ ...target, replicas });
+      const capacity = Number.isFinite(targetCapacity) ? targetCapacity : 1e9;
+      return capacity * (1 - fail);
     });
-    const total = raw.reduce((s, w) => s + w, 0) || 1;
-    return outgoing.map((e, i) => ({ edgeId: e.id, target: e.target, prob: raw[i] / total }));
+    const total = raw.reduce((s, w) => s + w, 0);
+    return outgoing.map((e, i) => ({ edgeId: e.id, target: e.target, prob: total > 0 ? raw[i] / total : 1 / outgoing.length }));
   }
 
   // roundRobin and hashing both produce an even aggregate split.
@@ -474,4 +509,12 @@ function clamp01(x: number): number {
   if (x < 0) return 0;
   if (x > 1) return 1;
   return x;
+}
+
+function nodeTimeoutFailure(node: NodeConfig, waitMs: number): number {
+  const tail = (ackMs: number) => node.timeoutMs > 0 && Number.isFinite(node.timeoutMs) && ackMs >= node.timeoutMs
+    ? 1 : responseTimeoutFailureProb(node.serviceTimeMs, waitMs, node.timeoutMs - ackMs, node.latencyDistribution, node.latencyCv);
+  if (node.kind !== 'replicatedDb' || (node.replicaCount ?? 1) <= 1 || node.consistency === 'eventual') return tail(0);
+  const writes = clamp01(node.writeFraction ?? 0.2);
+  return (1 - writes) * tail(0) + writes * tail(Math.max(0, node.replicationLagMs ?? 0));
 }

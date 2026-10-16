@@ -152,7 +152,7 @@
     "ticks": 30,
     "bestStreak": 30,
     "nonCompliantTicks": 0,
-    "finalP95": 80.67431226170507,
-    "finalThroughput": 119.99999999999748
+    "finalP95": 79.41786153432804,
+    "finalThroughput": 119.99999999999977
   }
 }

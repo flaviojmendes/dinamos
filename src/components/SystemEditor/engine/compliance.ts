@@ -85,6 +85,9 @@ function reaches(
     seen.add(key);
 
     const kind = kinds.get(cur.id);
+    // A dangling edge is not a traversable component. It cannot bridge a
+    // disconnected client to a real service/database in the compliance graph.
+    if (kind === undefined) continue;
     const viaCompute = cur.viaCompute || (kind !== undefined && COMPUTE.has(kind));
     if (
       cur.id !== start &&

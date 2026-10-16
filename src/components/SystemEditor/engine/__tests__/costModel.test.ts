@@ -5,18 +5,36 @@ import {
   estimateCostFromMetrics,
   providerLabel,
   productName,
+  configuredWorkers,
 } from '../costModel';
 import { NodeRuntime } from '../fluidSolver';
 import { NodeKind } from '../types';
+import { defaultsForKind } from '../types';
 
 function rt(kind: NodeKind, extra: Partial<NodeRuntime['cfg']> & Partial<NodeRuntime> = {}): NodeRuntime {
   const { servers, arrival, ...cfgExtra } = extra as any;
   return {
     cfg: { kind, serviceTimeMs: 20, ...cfgExtra },
-    servers: servers ?? 1,
+    servers: servers ?? (kind === 'replicatedDb' ? 8 * (cfgExtra.replicaCount ?? 1) : kind === 'database' ? 8 : 1),
     arrival: arrival ?? 0,
   } as NodeRuntime;
 }
+
+describe('configuredWorkers', () => {
+  it('includes replicated database set size before runtime metrics exist', () => {
+    const config = defaultsForKind('replicatedDb', 'db', 'Database');
+    config.replicaCount = 4;
+    config.replicas = 1;
+    expect(configuredWorkers(config)).toBe(32);
+    expect(estimateCostFromMetrics(config.kind, configuredWorkers(config), 0, config.replicaCount, 'aws', config.serviceTimeMs))
+      .toBeCloseTo(estimateNodeCostPerHour(rt(config.kind, { servers: 32, replicaCount: 4, serviceTimeMs: config.serviceTimeMs })), 10);
+  });
+
+  it('includes ordinary compute replicas', () => {
+    const config = defaultsForKind('server', 's', 'Server');
+    expect(configuredWorkers(config)).toBe(config.concurrency * config.replicas);
+  });
+});
 
 describe('serviceTimePremium', () => {
   it('returns the max tier for instant/invalid service times', () => {
@@ -50,6 +68,14 @@ describe('estimateNodeCostPerHour', () => {
     expect(cost).toBeCloseTo(0.136, 5);
   });
 
+  it('charges for database concurrency and replica upgrades', () => {
+    const baseline = estimateNodeCostPerHour(rt('database', { servers: 8 }));
+    const doubleWorkers = estimateNodeCostPerHour(rt('database', { servers: 16 }));
+    const fourWorkers = estimateNodeCostPerHour(rt('database', { servers: 4 }));
+    expect(doubleWorkers).toBeCloseTo(2 * baseline, 8);
+    expect(fourWorkers).toBeCloseTo(baseline / 2, 8);
+  });
+
   it('prices usage nodes by request volume', () => {
     const cost = estimateNodeCostPerHour(rt('apiGateway', { arrival: 1000 }), 'aws');
     expect(cost).toBeCloseTo((1000 * 3600 / 1_000_000) * 1.0, 5);
@@ -68,6 +94,12 @@ describe('estimateNodeCostPerHour', () => {
 describe('estimateCostFromMetrics', () => {
   it('matches the runtime estimate for compute nodes', () => {
     expect(estimateCostFromMetrics('server', 2, 0, undefined, 'gcp')).toBeCloseTo(2 * 0.0395, 5);
+  });
+
+  it.each(['database', 'replicatedDb'] as const)('matches runtime database costs for %s', (kind) => {
+    const runtime = rt(kind, { servers: 48, replicaCount: 3, serviceTimeMs: 12 });
+    expect(estimateCostFromMetrics(kind, 48, 0, 3, 'gcp', 12))
+      .toBeCloseTo(estimateNodeCostPerHour(runtime, 'gcp'), 10);
   });
 
   it('prices usage and external nodes from arrival', () => {

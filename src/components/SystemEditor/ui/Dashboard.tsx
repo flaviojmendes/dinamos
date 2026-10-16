@@ -139,11 +139,15 @@ export default function Dashboard({ history, totalCost, costPerHour, successCoun
 
   const successTone = (latest?.successRate ?? 1) >= SLO_SUCCESS ? 'text-signal-green' : 'text-signal-red';
   const p95Tone = (latest?.p95 ?? 0) <= SLO_P95_MS ? 'text-signal-green' : 'text-signal-amber';
-  const errorBudgetUsed = latest ? Math.min(100, ((1 - latest.successRate) / (1 - SLO_SUCCESS)) * 100) : 0;
+  // A recovered last tick must not erase the errors accumulated in this run.
+  const offeredCount = successCount + failedCount;
+  const errorBudgetUsed = offeredCount > 0
+    ? Math.min(100, failedCount / (offeredCount * (1 - SLO_SUCCESS)) * 100)
+    : 0;
 
   // --- Four Golden Signals (Google SRE) ---
   const latency = Math.round(latest?.p95 ?? 0);
-  const traffic = Math.round(latest?.totalThroughput ?? 0);
+  const traffic = Math.round(latest?.offeredLoad ?? 0);
   const errors = Math.round(latest?.failedRate ?? 0);
   const saturationPct = data[data.length - 1]?.saturation ?? 0;
 
@@ -176,7 +180,7 @@ export default function Dashboard({ history, totalCost, costPerHour, successCoun
             tone="text-signal-cyan"
             accent="#06b6d4"
             series={data}
-            dataKey="throughput"
+            dataKey="offered"
           />
           <GoldenSignal
             label={t('editor.dashboard.golden.errors', { defaultValue: 'Errors' })}
@@ -204,7 +208,7 @@ export default function Dashboard({ history, totalCost, costPerHour, successCoun
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-2">
         <Stat label={t('editor.dashboard.offered')} value={`${Math.round(latest?.offeredLoad ?? 0)}/s`} />
         <Stat label={t('editor.dashboard.throughput')} value={`${Math.round(latest?.totalThroughput ?? 0)}/s`} tone="text-signal-green" />
-        <Stat label={t('editor.dashboard.success')} value={`${((latest?.successRate ?? 1) * 100).toFixed(1)}%`} tone={successTone} />
+        <Stat label={t('editor.dashboard.success')} value={latest && latest.offeredLoad > 0 ? `${(latest.successRate * 100).toFixed(1)}%` : '—'} tone={successTone} />
         <Stat label={t('editor.dashboard.p95')} value={`${Math.round(latest?.p95 ?? 0)}ms`} tone={p95Tone} />
         <Stat label={t('editor.dashboard.success_total', { defaultValue: 'Successful reqs' })} value={fmtCount(successCount)} tone="text-signal-green" title={t('editor.dashboard.success_total_hint', { defaultValue: 'Total requests served OK this run' })} />
         <Stat label={t('editor.dashboard.failed_total', { defaultValue: 'Failed reqs' })} value={fmtCount(failedCount)} tone={failedCount >= 1 ? 'text-signal-red' : 'text-tactical-text'} title={t('editor.dashboard.failed_total_hint', { defaultValue: 'Total requests failed/dropped this run' })} />

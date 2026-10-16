@@ -2,7 +2,7 @@
 // circuit breaker. These are pure helpers plus one small state machine that the
 // simulator owns across ticks.
 
-import { CircuitState, RetryPolicy } from './types';
+import { CircuitState, LatencyDistribution, RetryPolicy } from './types.js';
 
 /**
  * Expected number of attempts per logical request given a per-attempt failure
@@ -36,6 +36,53 @@ export function timeoutFailureProb(meanResponseMs: number, timeoutMs: number): n
   return Math.exp(-timeoutMs / meanResponseMs);
 }
 
+/**
+ * Tail probability for the service distribution selected in the editor plus
+ * exponential queue waiting. Deterministic/exponential services use exact
+ * convolution tails; lognormal response uses the same first two moments when
+ * waiting is nonzero (the sum has no elementary closed-form distribution).
+ */
+export function responseTimeoutFailureProb(
+  serviceMeanMs: number,
+  waitMeanMs: number,
+  timeoutMs: number,
+  distribution: LatencyDistribution,
+  cv: number,
+): number {
+  if (timeoutMs <= 0 || !Number.isFinite(timeoutMs)) return 0;
+  const service = Math.max(0, serviceMeanMs);
+  const wait = Math.max(0, waitMeanMs);
+  if (service <= 0) return wait > 0 ? Math.exp(-timeoutMs / wait) : 0;
+  if (distribution === 'deterministic' || (distribution === 'lognormal' && cv <= 0)) {
+    if (timeoutMs < service) return 1;
+    return wait > 0 ? Math.exp(-(timeoutMs - service) / wait) : 0;
+  }
+  if (distribution === 'exponential') {
+    if (wait <= 0) return Math.exp(-timeoutMs / service);
+    if (Math.abs(service - wait) <= Math.max(service, wait) * 1e-8) {
+      const ratio = timeoutMs / service;
+      return Math.min(1, Math.exp(-ratio) * (1 + ratio));
+    }
+    return clamp01((service * Math.exp(-timeoutMs / service) - wait * Math.exp(-timeoutMs / wait)) / (service - wait));
+  }
+  const mean = service + wait;
+  const variance = service * service * cv * cv + wait * wait;
+  const sigma2 = Math.log1p(variance / (mean * mean));
+  if (sigma2 <= 0) return timeoutMs < mean ? 1 : 0;
+  const mu = Math.log(mean) - sigma2 / 2;
+  const z = (Math.log(timeoutMs) - mu) / Math.sqrt(sigma2);
+  return standardNormalSurvival(z);
+}
+
+/** Abramowitz-Stegun normal tail approximation, absolute error below 8e-8. */
+function standardNormalSurvival(z: number): number {
+  const x = Math.abs(z);
+  const t = 1 / (1 + 0.2316419 * x);
+  const polynomial = t * (0.319381530 + t * (-0.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429))));
+  const tail = Math.exp(-x * x / 2) / Math.sqrt(2 * Math.PI) * polynomial;
+  return z >= 0 ? tail : 1 - tail;
+}
+
 /** Combine independent failure sources into a single probability. */
 export function combineFailureProbs(...probs: number[]): number {
   let survive = 1;
@@ -58,28 +105,35 @@ export class CircuitBreaker {
     this.resetTimeoutMs = resetTimeoutMs;
   }
 
+  /** Advance the recovery timer before admitting this interval's traffic. */
+  advance(nowMs: number): CircuitState {
+    if (this.state === 'open' && nowMs - this.openedAtMs >= this.resetTimeoutMs) {
+      this.state = 'halfOpen';
+    }
+    return this.state;
+  }
+
   /**
    * Update the breaker with the observed downstream error rate at simulated
-   * time `nowMs`. Returns the fraction of traffic that should be *shed* (1 when
-   * fully open, 0 when closed, partial while half-open probing).
+   * time `nowMs`. Returns 1 when open, 0 when closed and 0.5 as the half-open
+   * indicator. The simulator separately caps admitted half-open probes to one
+   * request per interval, rather than treating the indicator as a load fraction.
    */
-  update(errorRate: number, nowMs: number): number {
+  update(errorRate: number, nowMs: number, observedRequests = 1): number {
     switch (this.state) {
       case 'closed':
-        if (errorRate >= this.threshold) {
+        if (observedRequests > 0 && errorRate > 0 && errorRate >= this.threshold) {
           this.state = 'open';
           this.openedAtMs = nowMs;
           return 1;
         }
         return 0;
       case 'open':
-        if (nowMs - this.openedAtMs >= this.resetTimeoutMs) {
-          this.state = 'halfOpen';
-          return 0.5; // probe with half traffic
-        }
-        return 1;
+        return this.advance(nowMs) === 'halfOpen' ? 0.5 : 1;
       case 'halfOpen':
-        if (errorRate >= this.threshold) {
+        // No admitted requests is absence of evidence, not a healthy probe.
+        if (observedRequests <= 0) return 0.5;
+        if (errorRate > 0 && errorRate >= this.threshold) {
           this.state = 'open';
           this.openedAtMs = nowMs;
           return 1;

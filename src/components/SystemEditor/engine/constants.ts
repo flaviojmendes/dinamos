@@ -7,6 +7,11 @@ export const SIM_DT_SECONDS = 1;
 /** Monte-Carlo trace samples per tick for latency percentiles. */
 export const SIM_TRACE_SAMPLES = 2000;
 
+/** Controller cadence and downscale window match the HPA defaults. */
+// https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+export const AUTOSCALER_INTERVAL_SECONDS = 15;
+export const AUTOSCALER_DOWNSCALE_WINDOW_SECONDS = 300;
+
 /** Target cadence for verified leaderboard recomputation during live rounds. */
 export const SCORING_RECOMPUTE_CHECKPOINT_SEC = 15;
 

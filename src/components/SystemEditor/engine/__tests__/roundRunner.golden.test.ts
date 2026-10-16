@@ -49,6 +49,21 @@ describe('roundRunner golden fixtures', () => {
     expect(result.score.nonCompliantTicks).toBe(fx.expected.nonCompliantTicks);
     expect(result.finalFrame?.system.p95).toBe(fx.expected.finalP95);
     expect(result.finalFrame?.system.totalThroughput).toBe(fx.expected.finalThroughput);
+
+    // Independent behavioral checks justify the baseline: 120 req/s split
+    // equally across the application tier, then recombine at the database.
+    // Healthy service earns 120 throughput + 200 availability points each
+    // second, with the linear t/60 streak bonus over these thirty seconds.
+    const frame = result.finalFrame!;
+    expect(frame.nodeMetrics.s1.arrivalRate).toBeCloseTo(60, 10);
+    expect(frame.nodeMetrics.s2.arrivalRate).toBeCloseTo(60, 10);
+    expect(frame.nodeMetrics.db.arrivalRate).toBeCloseTo(120, 10);
+    expect(frame.system.totalThroughput).toBeCloseTo(frame.system.offeredLoad, 10);
+    expect(frame.system.successRate).toBeCloseTo(1, 12);
+    expect(frame.system.warnings).toEqual([]);
+    expect(frame.system.p95).toBeGreaterThan(frame.system.p50);
+    expect(frame.system.p99).toBeGreaterThan(frame.system.p95);
+    expect(result.score.total).toBeCloseTo(320 * (30 + (30 * 31 / 2) / 60), 6);
   });
 
   it('is deterministic across repeated runs', () => {

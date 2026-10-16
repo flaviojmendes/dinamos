@@ -25,7 +25,7 @@ export function makeLoadProfile(type: LoadProfileType): LoadProfile {
         type,
         label: 'Spike',
         // Baseline 1x with a sharp 4x spike between 20s and 30s.
-        multiplierAt: (t) => (t >= 20 && t <= 30 ? 4 : 1),
+        multiplierAt: (t) => (t >= 20 && t < 30 ? 4 : 1),
       };
     case 'diurnal':
       return {

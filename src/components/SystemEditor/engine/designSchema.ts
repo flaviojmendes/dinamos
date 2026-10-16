@@ -31,8 +31,56 @@ const nodeConfigSchema = z
     id: z.string().min(1).max(128),
     kind: z.enum(NODE_KINDS),
     label: z.string().max(200),
+    serviceTimeMs: z.number().finite().nonnegative().optional(),
+    concurrency: z.number().int().positive().max(128).optional(),
+    replicas: z.number().int().positive().max(100).optional(),
+    failureRate: z.number().finite().min(0).max(1).optional(),
+    timeoutMs: z.number().finite().positive().optional(),
+    latencyDistribution: z.enum(['exponential', 'lognormal', 'deterministic']).optional(),
+    latencyCv: z.number().finite().nonnegative().optional(),
+    // JSON encodes Infinity as null. Restore the unbounded waiting room on load.
+    queueCapacity: z.preprocess((v) => v === null ? Infinity : v,
+      z.union([z.number().int().nonnegative(), z.literal(Infinity)]).optional()),
+    retry: z.object({
+      maxRetries: z.number().int().min(0).max(20),
+      backoffBaseMs: z.number().finite().nonnegative(),
+      jitter: z.boolean(),
+    }).optional(),
+    baseRate: z.number().finite().nonnegative().optional(),
+    cronEnabled: z.boolean().optional(),
+    cronRate: z.number().finite().nonnegative().optional(),
+    strategy: z.enum(['roundRobin', 'leastConnections', 'weighted', 'hashing']).optional(),
+    weights: z.record(z.number().finite().nonnegative()).optional(),
+    rateLimit: z.number().finite().nonnegative().optional(),
+    hitRate: z.number().finite().min(0).max(1).optional(),
+    ttlSeconds: z.number().finite().nonnegative().optional(),
+    maxQueue: z.number().int().nonnegative().optional(),
+    dequeueRate: z.number().finite().nonnegative().optional(),
+    replicaCount: z.number().int().positive().max(100).optional(),
+    consistency: z.enum(['strong', 'eventual', 'quorum']).optional(),
+    replicationLagMs: z.number().finite().nonnegative().optional(),
+    writeFraction: z.number().finite().min(0).max(1).optional(),
+    shardCount: z.number().int().positive().max(100).optional(),
+    skew: z.number().finite().min(0).max(1).optional(),
+    shardStrategy: z.enum(['hash', 'range']).optional(),
+    errorThreshold: z.number().finite().min(0).max(1).optional(),
+    resetTimeoutMs: z.number().finite().positive().optional(),
+    autoScaleEnabled: z.boolean().optional(),
+    targetUtilization: z.number().finite().positive().max(1).optional(),
+    minReplicas: z.number().int().positive().max(100).optional(),
+    maxReplicas: z.number().int().positive().max(100).optional(),
+    locked: z.boolean().optional(),
+    origin: z.enum(['seed', 'player']).optional(),
   })
-  .passthrough();
+  .transform((config) => ({ ...defaultsForKind(config.kind, config.id, config.label), ...config }))
+  .superRefine((config, ctx) => {
+    if (config.kind !== 'client' && config.serviceTimeMs <= 0) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['serviceTimeMs'], message: 'Service time must be positive' });
+    }
+    if ((config.minReplicas ?? 1) > (config.maxReplicas ?? 20)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['maxReplicas'], message: 'Maximum replicas must be at least the minimum' });
+    }
+  });
 
 const serializedNodeSchema = z.object({
   id: z.string().min(1).max(128),
@@ -41,7 +89,7 @@ const serializedNodeSchema = z.object({
     y: z.number().finite(),
   }),
   config: nodeConfigSchema,
-});
+}).transform((node) => ({ ...node, config: { ...node.config, id: node.id } }));
 
 const edgeSpecSchema = z.object({
   id: z.string().min(1).max(128),
@@ -57,16 +105,32 @@ const chaosEventSchema = z.object({
   targetId: z.string().min(1).max(128),
   startSec: z.number().finite().min(0),
   durationSec: z.number().finite().min(0),
-  magnitude: z.number().finite().optional(),
+  magnitude: z.number().finite().nonnegative().optional(),
 });
 
 export const designV2Schema = z.object({
   version: z.literal('2.0'),
   seed: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER),
   profileType: z.enum(LOAD_PROFILE_TYPES),
+  profileMultiplier: z.number().finite().nonnegative().default(1),
+  provider: z.enum(['aws', 'gcp']).default('aws'),
   chaos: z.array(chaosEventSchema).max(MAX_CHAOS_EVENTS),
   nodes: z.array(serializedNodeSchema).max(MAX_DESIGN_NODES),
   edges: z.array(edgeSpecSchema).max(MAX_DESIGN_EDGES),
+}).superRefine((design, ctx) => {
+  const nodeIds = new Set<string>();
+  design.nodes.forEach((node, i) => {
+    if (nodeIds.has(node.id)) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['nodes', i, 'id'], message: 'Duplicate node ID' });
+    nodeIds.add(node.id);
+  });
+  const edgeIds = new Set<string>();
+  design.edges.forEach((edge, i) => {
+    if (edgeIds.has(edge.id)) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['edges', i, 'id'], message: 'Duplicate edge ID' });
+    edgeIds.add(edge.id);
+    if (!nodeIds.has(edge.source) || !nodeIds.has(edge.target)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['edges', i], message: 'Edge endpoint does not exist' });
+    }
+  });
 });
 
 export type ValidatedDesignV2 = z.infer<typeof designV2Schema>;
@@ -137,7 +201,7 @@ export function normalizeDesignInput(parsed: unknown): DesignV2 {
 }
 
 export function parseDesignRaw(raw: string): DesignV2 {
-  if (raw.length > MAX_DESIGN_RAW_BYTES) {
+  if (raw.length > MAX_DESIGN_RAW_BYTES || new TextEncoder().encode(raw).byteLength > MAX_DESIGN_RAW_BYTES) {
     throw new Error('FILE_TOO_LARGE');
   }
   let parsed: unknown;

@@ -1652,14 +1652,14 @@
       "client": "Gera a carga ofertada (requisições/s) que move todo o sistema. Conecte a saída dele à primeira camada (API gateway, balanceador ou servidor). Ajuste a \"Taxa base\" para definir quantas requisições por segundo entram no sistema.",
       "loadBalancer": "Distribui as requisições recebidas entre as réplicas para as quais aponta, usando a estratégia escolhida (round-robin, menos conexões, ponderado ou hashing consistente). Coloque-o entre o cliente/gateway e um conjunto de servidores.",
       "apiGateway": "Ponto único de entrada na borda do sistema. Impõe um limite de requisições/s — o tráfego acima do limite é descartado — e encaminha o restante aos backends. Conecte o cliente a ele e ele aos seus serviços.",
-      "cache": "Atende uma fração das leituras a partir da memória, definida pela \"Taxa de acerto\". Acertos retornam rápido; erros caem para o armazenamento abaixo. Coloque-o à frente de um banco ou serviço para reduzir carga e latência.",
+      "cache": "Atende uma fração das requisições em memória, definida pela Taxa de acerto. Acertos retornam rápido; requisições não encontradas seguem para o armazenamento ou serviço abaixo. Reduz carga e latência dos componentes seguintes.",
       "server": "Camada de computação sem estado que processa requisições com um tempo de serviço e concorrência. Escale-o com réplicas ou coloque um auto-scaler à frente. Conecte-o a bancos, caches ou outros serviços dos quais depende.",
       "database": "Armazenamento persistente e um ponto final (sem arestas de saída). Seu tempo de serviço e concorrência o tornam um gargalo comum. Envie tráfego de leitura/escrita dos servidores para ele.",
       "replicatedDb": "Banco de dados com várias réplicas. Escritas (definidas pela \"Fração de escrita\") vão ao primário; leituras se distribuem entre as réplicas. Escolha o nível de consistência (forte/quórum/eventual) e o atraso de replicação para modelar trade-offs.",
       "shardRouter": "Particiona o tráfego entre shards por chave usando estratégia de hash ou intervalo. O \"Desbalanceamento de shard\" modela um shard recebendo carga desproporcional. Conecte-o a um conjunto de backends de shard.",
       "messageQueue": "Armazena as requisições recebidas e as drena a uma taxa fixa para suavizar picos. Mensagens acima da capacidade da fila são descartadas. Coloque-a entre um produtor rápido e um consumidor mais lento.",
       "circuitBreaker": "Envolve uma dependência abaixo. Quando a taxa de erro excede o limiar, ele abre e descarta carga durante o timeout de reset, depois entra em meio-aberto para testar a recuperação. Use-o para evitar falhas em cascata.",
-      "autoScaler": "Ajusta o número de réplicas da camada à sua frente para manter a utilização próxima do alvo, limitado por mín/máx de réplicas. Use-o para reagir automaticamente a mudanças de carga.",
+      "autoScaler": "Representa um grupo de servidores que ajusta as próprias réplicas para manter a utilização próxima do alvo, dentro dos limites mínimo e máximo. A avaliação ocorre a cada 15 segundos simulados; reduções aguardam uma janela de estabilização de 300 segundos.",
       "externalDependency": "Um serviço de terceiros que você não controla (um ponto final). Modele sua latência e taxa de falha para simular indisponibilidades ou lentidão de provedores externos."
     },
     "hints": {
@@ -1672,13 +1672,13 @@
       "concurrency": "Workers paralelos por réplica (o c do M/M/c). Maior = mais requisições atendidas ao mesmo tempo, menos fila e menor latência; menor = satura mais cedo.",
       "replicas": "Número de cópias idênticas deste nó (escala horizontal). Maior = capacidade proporcionalmente maior; menor = menos capacidade.",
       "failure_rate": "Probabilidade base de uma requisição falhar aqui, independente da carga. Maior = mais erros propagados; menor = mais confiável.",
-      "timeout": "Milissegundos até uma requisição lenta ser contada como falha. Menor = mais timeouts quando o nó está ocupado; maior = espera mais antes de desistir.",
+      "timeout": "Prazo em milissegundos para processamento e espera na fila deste componente. Chamadas aos próximos componentes e esperas entre novas tentativas não fazem parte deste timeout local.",
       "max_retries": "Quantas vezes uma chamada que falhou é repetida. Maior = menos erros finais mas mais carga amplificada (tempestade de retries); menor = menos carga mas mais falhas visíveis.",
       "distribution": "Formato da distribuição de latência por requisição. Lognormal tem cauda pesada realista, exponencial é sem memória, determinística é constante.",
       "variability": "Coeficiente de variação da latência (apenas lognormal). Maior = cauda mais pesada, então p95/p99 crescem; menor = latências mais uniformes.",
       "strategy": "Como as requisições são distribuídas entre as réplicas (round-robin, menos conexões, ponderado ou hashing consistente).",
       "rate_limit": "Máximo de requisições por segundo admitidas; o excedente é descartado. Maior = menos descartes mas mais carga abaixo; menor = protege os backends mas rejeita tráfego.",
-      "hit_rate": "Fração de leituras atendidas pelo cache. Maior = muito menos carga e latência abaixo; menor = mais requisições caem para o armazenamento.",
+      "hit_rate": "Fração de requisições atendidas no cache, definida diretamente para o modelo em regime estável. As demais seguem pelo caminho de miss; misses não são erros do serviço.",
       "ttl": "Quanto tempo as entradas do cache permanecem válidas. Maior = mais acertos mas dados mais antigos; menor = dados mais frescos mas mais erros de cache.",
       "queue_capacity": "Máximo de mensagens em buffer. Maior = absorve picos maiores sem descartar, mas adiciona latência de backlog; menor = descarta mais cedo sob sobrecarga.",
       "drain_rate": "Mensagens consumidas por segundo. Maior = o backlog esvazia mais rápido e a latência cai; menor = o backlog se acumula.",
@@ -1692,7 +1692,11 @@
       "reset_timeout": "Milissegundos que o breaker fica aberto antes de testar a recuperação. Maior = espera mais antes de tentar de novo; menor = tenta a dependência mais cedo.",
       "target_utilization": "Utilização que o auto-scaler tenta manter. Menor = escala antes (mais réplicas, mais folga); maior = opera mais quente com menos réplicas.",
       "min_replicas": "Limite inferior de réplicas que o auto-scaler mantém, mesmo ocioso.",
-      "max_replicas": "Limite superior de réplicas que o auto-scaler pode adicionar sob carga."
+      "max_replicas": "Limite superior de réplicas que o auto-scaler pode adicionar sob carga.",
+      "bounded_queue": "Define um limite para requisições que aguardam atendimento neste componente. Desativado: fila sem limite explícito.",
+      "waiting_capacity": "Quantidade de requisições que podem esperar além das que já estão em atendimento. Zero significa que o componente rejeita novas requisições quando todos os workers estão ocupados.",
+      "retry_backoff": "Espera antes da primeira nova tentativa. A espera dobra a cada repetição, reduzindo chamadas simultâneas à dependência com falha.",
+      "retry_jitter": "Sorteia uma espera entre zero e o intervalo de backoff para evitar que várias requisições tentem novamente ao mesmo tempo."
     },
     "inspector": {
       "title": "Inspetor",
@@ -1709,8 +1713,8 @@
       "match_fixed": "fixo na partida",
       "reliability": "Confiabilidade",
       "failure_rate": "Taxa de falha",
-      "timeout": "Timeout",
-      "max_retries": "Máx. tentativas",
+      "timeout": "Timeout local",
+      "max_retries": "Novas tentativas após falha",
       "latency_shape": "Distribuição de latência",
       "distribution": "Distribuição",
       "variability": "Variabilidade (CV)",
@@ -1749,10 +1753,22 @@
       "shard_strat": {
         "hash": "Hash",
         "range": "Intervalo"
-      }
+      },
+      "delete_node": "Excluir componente",
+      "bounded_queue": "Limitar fila de espera",
+      "waiting_capacity": "Vagas na fila de espera",
+      "retry_backoff": "Espera inicial entre tentativas",
+      "retry_jitter": "Variar espera aleatoriamente (jitter)",
+      "target_weight": "Peso: {{name}}",
+      "weights_note": "Os pesos são relativos: 3 e 1 enviam 75% e 25% do tráfego. Peso zero retira o destino da distribuição; se todos forem zero, o tráfego é dividido igualmente.",
+      "weights_empty": "Conecte o balanceador a um destino para ajustar os pesos.",
+      "cache_model_note": "A taxa de acerto é uma entrada do modelo em regime estável. Expiração por TTL, chaves e invalidação de dados não são simuladas.",
+      "hashing_model_note": "O modelo usa taxas agregadas e não acompanha chaves individuais. Com chaves uniformes, hashing produz a mesma divisão de tráfego que round-robin; afinidade de sessão não é simulada.",
+      "shard_model_note": "O desbalanceamento define o hotspot diretamente. Chaves individuais, migração de dados e diferenças entre particionamento por hash ou intervalo não são simuladas.",
+      "admin_controlled": "As configurações deste componente estão em modo somente leitura."
     },
     "bill": {
-      "title": "Fatura {{provider}}",
+      "title": "Estimativa {{provider}}",
       "open_hint": "Clique para ver o detalhamento de custos por produto",
       "close": "Fechar",
       "empty": "Nenhum recurso faturável ainda. Execute a simulação.",
@@ -1829,7 +1845,7 @@
       "idle": "ocioso",
       "cron": "fonte cron · {{rate}}/s",
       "hit_s": "acerto/s",
-      "miss_s": "erro/s",
+      "miss_s": "miss/s",
       "hit_rate": "taxa acerto",
       "queue": "fila",
       "dropped_s": "descart./s",
@@ -1960,7 +1976,11 @@
       "champion": "Campeão",
       "standings": "Classificação",
       "waiting_players": "Aguardando jogadores entrarem…"
-    }
+    },
+    "cost": {
+      "illustrative_note": "Estimativa didática com tarifas fixas. Não é uma cotação atual de AWS ou Google Cloud; armazenamento, tráfego de rede, região e impostos não entram no cálculo."
+    },
+    "model_note": "Modelo didático de taxas agregadas: saídas são rotas alternativas, não chamadas paralelas com junção de resultados. Timeouts limitam o processamento e a fila local, não a requisição completa. Os resultados aproximam o comportamento em regime estável. Filas confirmam o recebimento das mensagens; a confirmação não significa que o consumidor concluiu o trabalho."
   },
   "arena": {
     "badge": "ARENA",

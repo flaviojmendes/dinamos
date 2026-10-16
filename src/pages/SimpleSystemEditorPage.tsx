@@ -7,29 +7,26 @@ import { apiClient } from '../app/utils/api';
 export default function SimpleSystemEditorPage() {
   const [searchParams] = useSearchParams();
   const designId = searchParams.get('design');
-  const [initialDesign, setInitialDesign] = useState<DesignV2 | null>(null);
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState<{ id: string | null; design: DesignV2 | null; ready: boolean }>({ id: null, design: null, ready: false });
 
   // When linked with ?design=:id, recover that saved architecture into the
   // editor. Owners load their private designs (token attached automatically);
   // anyone can load unlisted/public ones.
   useEffect(() => {
     if (!designId) {
-      setLoaded(true);
+      setLoaded({ id: null, design: null, ready: true });
       return;
     }
     let cancelled = false;
-    setLoaded(false);
+    setLoaded({ id: designId, design: null, ready: false });
     apiClient
       .get(`/api/architectures/${designId}`)
       .then((res) => {
-        if (!cancelled) setInitialDesign(res.data?.design ?? null);
+        if (!cancelled) setLoaded({ id: designId, design: res.data?.design ?? null, ready: true });
       })
       .catch(() => {
-        /* not found / no access: fall back to a blank editor */
-      })
-      .finally(() => {
-        if (!cancelled) setLoaded(true);
+        // Never hydrate the previous design under a different URL.
+        if (!cancelled) setLoaded({ id: designId, design: null, ready: true });
       });
     return () => {
       cancelled = true;
@@ -39,8 +36,8 @@ export default function SimpleSystemEditorPage() {
   return (
     <div className="min-h-screen bg-canvas-paper dark:bg-tactical-bg">
       {/* Wait for the design before mounting so it hydrates exactly once. */}
-      {loaded && (
-        <SystemEditorV2 key={designId ?? 'blank'} initialDesign={initialDesign} />
+      {loaded.ready && loaded.id === designId && (
+        <SystemEditorV2 key={designId ?? 'blank'} initialDesign={loaded.design} />
       )}
     </div>
   );

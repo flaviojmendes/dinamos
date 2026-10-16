@@ -66,6 +66,14 @@ describe('evaluateCompliance', () => {
     expect(r.violations).toContain('path_to_db');
   });
 
+  it('does not follow dangling edges through a missing component', () => {
+    const r = evaluateCompliance(GOOD_NODES, [
+      e('c', 'missing'), e('missing', 's'), e('s', 'db'),
+    ]);
+    expect(r.ok).toBe(false);
+    expect(r.violations).toContain('path_to_db');
+  });
+
   it('flags a cache with no miss path to a database', () => {
     const r = evaluateCompliance(
       [...GOOD_NODES, n('cache', 'cache')],

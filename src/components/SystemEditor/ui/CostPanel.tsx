@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { X, ArrowUp, ArrowDown, Minus } from 'lucide-react';
 import { NodeConfig, NodeMetrics } from '../engine/types';
-import { CloudProvider, estimateCostFromMetrics, productName, providerLabel } from '../engine/costModel';
+import { CloudProvider, configuredWorkers, estimateCostFromMetrics, productName, providerLabel } from '../engine/costModel';
 
 interface Props {
   nodes: { id: string; config: NodeConfig }[];
@@ -29,7 +29,7 @@ export default function CostPanel({ nodes, metrics, provider, totalCost, onClose
     const map = new Map<string, BillLine>();
     nodes.forEach(({ id, config }) => {
       const m = metrics[id];
-      const servers = m?.servers ?? Math.max(1, Math.round(config.concurrency * config.replicas));
+      const servers = configuredWorkers(config.autoScaleEnabled || config.kind === 'autoScaler' ? { ...config, replicas: m?.replicas ?? config.replicas } : config);
       const arrival = m?.arrivalRate ?? 0;
       const cost = estimateCostFromMetrics(config.kind, servers, arrival, config.replicaCount, provider, config.serviceTimeMs);
       if (cost <= 0) return;
@@ -71,6 +71,8 @@ export default function CostPanel({ nodes, metrics, provider, totalCost, onClose
           <X className="w-4 h-4" />
         </button>
       </div>
+
+      <p className="mb-3 font-sans text-[11px] leading-relaxed text-tactical-label">{t('editor.cost.illustrative_note')}</p>
 
       {lines.length === 0 ? (
         <div className="font-sans text-xs text-tactical-label">{t('editor.bill.empty')}</div>

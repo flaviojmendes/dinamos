@@ -27,7 +27,7 @@ export interface RoundRunConfig {
   tickCount: number;
   /** First simulated second eligible for scoring (late-join offset). */
   eligibleFromTick?: number;
-  /** Last simulated second eligible for scoring (exclusive upper bound). */
+  /** Last simulated second eligible for scoring (inclusive upper bound). */
   eligibleToTick?: number;
 }
 
@@ -46,7 +46,8 @@ function resolveLoadProfile(
 ): ReturnType<typeof makeLoadProfile> {
   const type = profile?.type ?? 'constant';
   const base = makeLoadProfile(type);
-  const mult = profile?.multiplier && profile.multiplier > 0 ? profile.multiplier : 1;
+  const value = profile?.multiplier;
+  const mult = typeof value === 'number' && Number.isFinite(value) && value > 0 ? value : 1;
   if (mult === 1) return base;
   return {
     ...base,
@@ -69,7 +70,13 @@ export function runRound(config: RoundRunConfig): RoundRunResult {
     eligibleToTick = tickCount,
   } = config;
 
-  if (tickCount < 0) throw new Error('tickCount must be non-negative');
+  if (!Number.isSafeInteger(tickCount) || tickCount < 0) {
+    throw new Error('tickCount must be a non-negative integer');
+  }
+  if (!Number.isSafeInteger(eligibleFromTick) || eligibleFromTick < 0 ||
+      !Number.isSafeInteger(eligibleToTick) || eligibleToTick < 0) {
+    throw new Error('eligibility bounds must be non-negative integers');
+  }
 
   const simConfig = architectureToSimConfig(architecture, seed);
   const sim = new Simulator(simConfig);

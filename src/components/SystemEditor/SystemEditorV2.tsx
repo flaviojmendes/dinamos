@@ -26,10 +26,11 @@ import {
   SimulationFrame,
   defaultsForKind,
 } from './engine/types';
+import { validateDesignPayload } from './engine/designSchema';
 import { SIM_DT_SECONDS, SIM_TRACE_SAMPLES } from './engine/constants';
 import { Simulator } from './engine/simulator';
 import { makeLoadProfile, LoadProfileType, ChaosEvent, getPreset } from './engine/scenarios';
-import { CloudProvider, estimateCostFromMetrics } from './engine/costModel';
+import { CloudProvider, configuredWorkers, estimateCostFromMetrics } from './engine/costModel';
 
 import SimNode, { SimNodeData } from './ui/SimNode';
 import { NODE_CATALOG, PALETTE_ORDER, KIND_DEFAULT_LABEL } from './ui/nodeCatalog';
@@ -423,10 +424,11 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
   gameStateRef.current = gameState;
 
   // Latest-value freeze check for use inside callbacks (avoids re-creating them
-  // on every poll). Editing is blocked only while a round is live.
+  // on every poll). Embeds also reject mutation callbacks and keyboard actions.
+
   const isFrozen = useCallback(
-    () => gameActive && gameStateRef.current?.phase === 'round',
-    [gameActive],
+    () => !!readOnly || (gameActive && gameStateRef.current?.phase === 'round'),
+    [gameActive, readOnly],
   );
   const scoreRef = useRef<ScoreAccumulator>(emptyAccumulator());
   const lastFrameRef = useRef<SimulationFrame | null>(null);
@@ -457,6 +459,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
   const [, setHistoryVersion] = useState(0);
   const snapshotGuardRef = useRef(false);
   const lastPatchAtRef = useRef(0);
+  const lastPatchedIdRef = useRef<string | null>(null);
   const MAX_HISTORY = 100;
 
   const takeSnapshot = useCallback(() => {
@@ -475,6 +478,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
 
   const undo = useCallback(() => {
     if (isFrozen()) return;
+    lastPatchAtRef.current = 0;
     const previous = pastRef.current.pop();
     if (!previous) return;
     futureRef.current.push({ nodes: nodesRef.current, edges: edgesRef.current });
@@ -486,6 +490,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
 
   const redo = useCallback(() => {
     if (isFrozen()) return;
+    lastPatchAtRef.current = 0;
     const next = futureRef.current.pop();
     if (!next) return;
     pastRef.current.push({ nodes: nodesRef.current, edges: edgesRef.current });
@@ -547,7 +552,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
 
   useEffect(() => {
     const base = makeLoadProfile(profileType);
-    const mult = profileMultiplier > 0 ? profileMultiplier : 1;
+    const mult = Number.isFinite(profileMultiplier) ? Math.max(0, profileMultiplier) : 1;
     const profile =
       mult === 1
         ? base
@@ -602,6 +607,18 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
     setTotalCost(0); setSuccessCount(0); setFailedCount(0);
     setWarnings([]);
   }, [seed]);
+
+  // Changing the seed starts a fresh deterministic run immediately.
+  const changeSeed = useCallback((value: string) => {
+    if (isFrozen()) return;
+    const next = Number(value);
+    if (!Number.isSafeInteger(next) || next < 0) return;
+    setSeed(next);
+    setRunning(false);
+    simRef.current?.reset(next);
+    setMetrics({}); setHistory([]); setWarnings([]);
+    setTotalCost(0); setSuccessCount(0); setFailedCount(0);
+  }, [isFrozen]);
 
   // ===================== Game mode wiring =====================
   // Seed the graph from the match's starting (or the player's saved) architecture
@@ -874,7 +891,8 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
       if (!selectedId || isFrozen()) return;
       // Coalesce rapid edits (e.g. dragging a slider) into one history entry.
       const now = Date.now();
-      if (now - lastPatchAtRef.current > 600) takeSnapshot();
+      if (lastPatchedIdRef.current !== selectedId || now - lastPatchAtRef.current > 600) takeSnapshot();
+      lastPatchedIdRef.current = selectedId;
       lastPatchAtRef.current = now;
       setNodes((nds) =>
         nds.map((n) => (n.id === selectedId ? { ...n, data: { config: { ...n.data.config, ...patch } } } : n)),
@@ -909,8 +927,8 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
       const src = nodes.find((n) => n.id === id);
       if (!src) return;
       takeSnapshot();
-      const newId = `n${Date.now()}`;
-      const config: NodeConfig = { ...src.data.config, id: newId, label: `${src.data.config.label} (copy)` };
+      const newId = `n-${crypto.randomUUID()}`;
+      const config: NodeConfig = { ...structuredClone(src.data.config), id: newId, label: `${src.data.config.label} (copy)`.slice(0, 200), locked: false, origin: 'player' };
       const newNode: RFNode = {
         id: newId,
         type: src.type,
@@ -937,10 +955,10 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
     setChaos((c) => [
       ...c,
       {
-        id: `chaos-${Date.now()}`,
+        id: `chaos-${crypto.randomUUID()}`,
         type: 'killNode',
         targetId: id,
-        startSec: Math.ceil(simRef.current?.currentTime ?? 0) + 1,
+        startSec: simRef.current?.currentTime ?? 0,
         durationSec: 15,
       },
     ]);
@@ -1011,9 +1029,10 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
 
   const onConnect = useCallback(
     (params: Connection | Edge) => {
-      if (isFrozen()) return;
+      if (isFrozen() || !params.source || !params.target || params.source === params.target) return;
+      if (edgesRef.current.some((e) => e.source === params.source && e.target === params.target)) return;
       takeSnapshot();
-      setEdges((eds) => addEdge({ ...params, id: `e-${(params as Edge).source}-${(params as Edge).target}-${Date.now()}`, animated: true, style: { strokeWidth: 2.5 } }, eds));
+      setEdges((eds) => addEdge({ ...params, id: `e-${crypto.randomUUID()}`, animated: true, style: { strokeWidth: 2.5 } }, eds));
     },
     [setEdges, takeSnapshot, isFrozen],
   );
@@ -1024,6 +1043,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
   const isValidConnection = useCallback(
     (conn: Connection) => {
       if (!conn.source || !conn.target || conn.source === conn.target) return false;
+      if (edgesRef.current.some((e) => e.source === conn.source && e.target === conn.target)) return false;
       const srcKind = nodes.find((n) => n.id === conn.source)?.data.config.kind;
       const tgtKind = nodes.find((n) => n.id === conn.target)?.data.config.kind;
       if (!srcKind || !tgtKind) return false;
@@ -1075,7 +1095,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
     (kind: NodeKind, position: { x: number; y: number }) => {
       if (isFrozen()) return undefined;
       takeSnapshot();
-      const id = `n${Date.now()}`;
+      const id = `n-${crypto.randomUUID()}`;
       const count = nodesRef.current.filter((n) => n.data.config.kind === kind).length + 1;
       const config = defaultsForKind(kind, id, `${t(`editor.kinds.${kind}`, { defaultValue: KIND_DEFAULT_LABEL[kind] })} ${count}`);
       const newNode: RFNode = { id, type: kind, position, data: { config } };
@@ -1089,7 +1109,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
     (event: React.DragEvent) => {
       event.preventDefault();
       const kind = event.dataTransfer.getData('application/dinamos') as NodeKind;
-      if (!kind) return;
+      if (!Object.hasOwn(NODE_CATALOG, kind)) return;
       addNodeAt(kind, rf.screenToFlowPosition({ x: event.clientX, y: event.clientY }));
     },
     [rf, addNodeAt],
@@ -1113,6 +1133,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
   // --- Presets / persistence ---
   const loadPreset = useCallback(
     (id: string) => {
+      if (isFrozen()) return;
       takeSnapshot();
       const { nodes: pn, edges: pe, seed: ps } = presetToRF(id);
       setRunning(false);
@@ -1121,12 +1142,15 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
       setSeed(ps);
       setSelectedId(null);
       setChaos([]);
+      setWarnings([]);
+      setSelectedEdgeId(null);
+      setCurrentDesignId(null);
       simRef.current?.reset(ps);
       setMetrics({});
       setHistory([]);
       setTotalCost(0); setSuccessCount(0); setFailedCount(0);
     },
-    [setNodes, setEdges, takeSnapshot],
+    [setNodes, setEdges, takeSnapshot, isFrozen],
   );
 
   // Snapshot the current canvas as a DesignV2 document (shared by file export
@@ -1137,16 +1161,19 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
       version: '2.0',
       seed,
       profileType,
+      profileMultiplier,
+      provider,
       chaos,
       nodes: sNodes,
       edges: edges.map((e) => ({ id: e.id, source: e.source, target: e.target, sourceHandle: e.sourceHandle, targetHandle: e.targetHandle })),
     };
-  }, [nodes, edges, seed, profileType, chaos]);
+  }, [nodes, edges, seed, profileType, profileMultiplier, provider, chaos]);
 
   // Hydrate the canvas + simulation from a DesignV2 document (file import, DB
   // recover, embed). Caller decides whether to snapshot for undo first.
   const applyDesign = useCallback(
-    (design: DesignV2) => {
+    (input: DesignV2) => {
+      const design = validateDesignPayload(input);
       const rfNodes: RFNode[] = design.nodes.map((n) => ({
         id: n.id,
         type: n.config.kind,
@@ -1158,6 +1185,10 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
       setEdges(design.edges.map((ed) => ({ id: ed.id, source: ed.source, target: ed.target, sourceHandle: ed.sourceHandle ?? 'bottom', targetHandle: ed.targetHandle ?? 'top', animated: true, style: { strokeWidth: 2.5 } })));
       setSeed(design.seed);
       setProfileType(design.profileType);
+      setProfileMultiplier(design.profileMultiplier ?? 1);
+      setProvider(design.provider ?? 'aws');
+      setWarnings([]);
+      setSelectedEdgeId(null);
       setChaos(design.chaos);
       setSelectedId(null);
       simRef.current?.reset(design.seed);
@@ -1173,13 +1204,17 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
     if (!initialDesign) return;
     if (initialDesignHydratedRef.current) return;
     initialDesignHydratedRef.current = true;
-    applyDesign(initialDesign);
-  }, [initialDesign, applyDesign]);
+    try {
+      applyDesign(initialDesign);
+    } catch {
+      setImportError(t('editor.errors.import_error'));
+    }
+  }, [initialDesign, applyDesign, t]);
 
   const exportDesign = useCallback(() => {
     setRunning(false);
     const design = buildDesign();
-    const json = serializeDesign(design.nodes, design.edges, design.seed, design.profileType, design.chaos);
+    const json = serializeDesign(design.nodes, design.edges, design.seed, design.profileType, design.chaos, design.provider, design.profileMultiplier);
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -1193,12 +1228,14 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
 
   const importDesign = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (isFrozen()) return;
       const file = event.target.files?.[0];
       if (!file) return;
       setRunning(false);
       setImportError(null);
       const reader = new FileReader();
       reader.onload = (e) => {
+        if (isFrozen()) return;
         try {
           const design = parseDesign(e.target?.result as string);
           takeSnapshot();
@@ -1213,7 +1250,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
       reader.onerror = () => setImportError(t('editor.errors.read_error', { defaultValue: 'Could not read file.' }));
       reader.readAsText(file);
     },
-    [applyDesign, t, takeSnapshot],
+    [applyDesign, t, takeSnapshot, isFrozen],
   );
 
   // --- Save / load / share against /api/architectures ---
@@ -1356,7 +1393,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
     return nodes.reduce((sum, n) => {
       const cfg = n.data.config;
       const m = metrics[n.id];
-      const servers = m?.servers ?? Math.max(1, Math.round(cfg.concurrency * cfg.replicas));
+      const servers = configuredWorkers(cfg.autoScaleEnabled || cfg.kind === 'autoScaler' ? { ...cfg, replicas: m?.replicas ?? cfg.replicas } : cfg);
       const arrival = m?.arrivalRate ?? 0;
       return sum + estimateCostFromMetrics(cfg.kind, servers, arrival, cfg.replicaCount, provider, cfg.serviceTimeMs);
     }, 0);
@@ -1373,6 +1410,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
         <h1 className="text-2xl md:text-3xl font-sans font-bold mb-4 tracking-tight text-slate-900 dark:text-tactical-text">
           {t('editor.title', { defaultValue: 'Distributed Systems Simulator' })}
         </h1>
+        <p className="mb-4 max-w-5xl font-sans text-xs leading-relaxed text-tactical-dim">{t('editor.model_note')}</p>
 
         {/* Game-mode status bar (replaces manual sim controls when in a match) */}
         {gameActive && (
@@ -1480,7 +1518,10 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
                 <input
                   type="number"
                   value={seed}
-                  onChange={(e) => setSeed(Number(e.target.value))}
+                  min={0}
+                  step={1}
+                  disabled={frozen}
+                  onChange={(e) => changeSeed(e.target.value)}
                   className="w-20 bg-tactical-raised border border-tactical-border rounded-md px-2 py-1 font-mono text-xs text-tactical-text"
                 />
               </label>
@@ -1575,7 +1616,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
 
           {/* Hidden file input shared by desktop toolbar and the Tools sheet. */}
           {!gameActive && (
-            <input type="file" ref={fileInputRef} accept=".din" className="hidden" onChange={importDesign} />
+            <input type="file" ref={fileInputRef} accept=".din" className="hidden" disabled={frozen} onChange={importDesign} />
           )}
         </div>
 
@@ -1636,7 +1677,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
         {/* Scenario controls (admin-driven in game mode, so hidden for players;
             on touch they live in the Scenario bottom sheet). */}
         {!gameActive && !isTouch && (
-          <div className="tactical-panel p-3 mb-4">
+          <fieldset disabled={frozen} className="tactical-panel p-3 mb-4 min-w-0">
             <ScenarioBar
               profileType={profileType}
               onProfileChange={setProfileType}
@@ -1649,7 +1690,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
               onProviderChange={setProvider}
               currentTime={simRef.current?.currentTime ?? 0}
             />
-          </div>
+          </fieldset>
         )}
 
         {/* Canvas + inspector */}
@@ -1667,8 +1708,8 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
             <ReactFlow
               nodes={nodes}
               edges={edges}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
+              onNodesChange={(changes) => onNodesChange(frozen ? changes.filter((change) => change.type === 'select' || change.type === 'dimensions') : changes)}
+              onEdgesChange={(changes) => onEdgesChange(frozen ? changes.filter((change) => change.type === 'select') : changes)}
               onConnect={onConnect}
               isValidConnection={isValidConnection}
               connectionMode={ConnectionMode.Loose}
@@ -1740,7 +1781,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
                   onMobileSheetClose={() => setLbSheetOpen(false)}
                 />
               )}
-              <Controls className={isTouch ? 'rf-controls-touch' : undefined} showInteractive={!isTouch} />
+              <Controls className={isTouch ? 'rf-controls-touch' : undefined} showInteractive={!isTouch && !frozen} />
               {!isTouch && <MiniMap nodeColor={(n) => NODE_CATALOG[(n.type as NodeKind) ?? 'server']?.hex ?? '#64748b'} />}
               <Background variant={BackgroundVariant.Dots} gap={14} size={1} />
             </ReactFlow>
@@ -1833,9 +1874,10 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
               ) : (
                 <InspectorPanel
                   config={selectedConfig}
+                  weightedTargets={nodeOptions.filter((n) => edges.some((e) => e.source === selectedId && e.target === n.id))}
                   onChange={patchSelected}
                   onDelete={deleteSelected}
-                  canDelete={!selectedConfig?.locked}
+                  canDelete={!frozen && !selectedConfig?.locked}
                   readOnly={frozen || (gameActive && selectedConfig?.kind === 'client')}
                   gameMode={gameActive}
                 />
@@ -1885,9 +1927,10 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
               ) : (
                 <InspectorPanel
                   config={selectedConfig}
+                  weightedTargets={nodeOptions.filter((n) => edges.some((e) => e.source === selectedId && e.target === n.id))}
                   onChange={patchSelected}
                   onDelete={() => { deleteSelected(); setSheet(null); }}
-                  canDelete={!selectedConfig?.locked}
+                  canDelete={!frozen && !selectedConfig?.locked}
                   readOnly={frozen || (gameActive && selectedConfig?.kind === 'client')}
                   gameMode={gameActive}
                 />
@@ -1901,7 +1944,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
                   onClose={() => setSheet(null)}
                   title={t('editor.mobile.scenario', { defaultValue: 'Scenario' })}
                 >
-                  <div className="p-3">
+                  <fieldset disabled={frozen} className="p-3 min-w-0">
                     <ScenarioBar
                       profileType={profileType}
                       onProfileChange={setProfileType}
@@ -1914,7 +1957,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
                       onProviderChange={setProvider}
                       currentTime={simRef.current?.currentTime ?? 0}
                     />
-                  </div>
+                  </fieldset>
                 </BottomSheet>
 
                 <BottomSheet
@@ -1957,7 +2000,10 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
                       <input
                         type="number"
                         value={seed}
-                        onChange={(e) => setSeed(Number(e.target.value))}
+                        min={0}
+                        step={1}
+                        disabled={frozen}
+                        onChange={(e) => changeSeed(e.target.value)}
                         className="w-full bg-tactical-raised border border-tactical-border rounded-md px-2 py-2 font-mono text-sm text-tactical-text"
                       />
                     </label>
@@ -1966,7 +2012,7 @@ function EditorInner({ gameId, initialDesign, readOnly, hideChrome }: SystemEdit
                       <button onClick={() => { exportDesign(); setSheet(null); }} className={`${btn} flex-1 justify-center border-tactical-border text-tactical-dim`}>
                         <Download className="w-4 h-4" /> {t('editor.buttons.export', { defaultValue: 'Export' })}
                       </button>
-                      <button onClick={() => fileInputRef.current?.click()} className={`${btn} flex-1 justify-center border-tactical-border text-tactical-dim`}>
+                      <button disabled={frozen} onClick={() => fileInputRef.current?.click()} className={`${btn} flex-1 justify-center border-tactical-border text-tactical-dim`}>
                         <Upload className="w-4 h-4" /> {t('editor.buttons.import', { defaultValue: 'Import' })}
                       </button>
                     </div>

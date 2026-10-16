@@ -62,7 +62,7 @@ export interface NodeConfig {
   // --- Reliability ---
   /** Intrinsic per-request failure probability [0..1] under normal load. */
   failureRate: number;
-  /** Request timeout in ms; responses slower than this are counted failed. */
+  /** Local processing/queue timeout in ms; not a propagated request deadline. */
   timeoutMs: number;
   retry?: RetryPolicy;
 
@@ -101,7 +101,7 @@ export interface NodeConfig {
   // --- cache ---
   /** Fraction of reads served from cache [0..1]; misses are forwarded. */
   hitRate?: number;
-  /** TTL in seconds; informational + affects effective hit rate decay. */
+  /** Legacy informational TTL; per-key expiration is not modeled. */
   ttlSeconds?: number;
 
   // --- messageQueue ---
@@ -302,15 +302,25 @@ export function serverServiceRate(cfg: NodeConfig): number {
 /** Total capacity of a node in req/s (servers * mu). */
 export function nodeCapacity(cfg: NodeConfig): number {
   const mu = serverServiceRate(cfg);
-  if (!isFinite(mu)) return Infinity;
+  if (cfg.kind === 'messageQueue') return Math.max(0, cfg.dequeueRate ?? 50);
   if (cfg.kind === 'replicatedDb') {
     const replicaCount = Math.max(1, cfg.replicaCount ?? 1);
     const writeFrac = Math.min(1, Math.max(0, cfg.writeFraction ?? 0.2));
     const perNode = Math.max(1, cfg.concurrency);
-    const readCap = mu * perNode * replicaCount;
-    const writeCap = mu * perNode;
-    return 1 / ((1 - writeFrac) / readCap + writeFrac / writeCap);
+    // The primary handles all writes and its share of reads. Synchronous
+    // replication occupies a primary worker while it waits for acknowledgement.
+    const ackMs = replicaCount > 1 && cfg.consistency !== 'eventual' ? Math.max(0, cfg.replicationLagMs ?? 0) : 0;
+    const primaryWorkMs = (1 - writeFrac) * cfg.serviceTimeMs / replicaCount
+      + writeFrac * (cfg.serviceTimeMs + ackMs);
+    return primaryWorkMs > 0 ? perNode * 1000 / primaryWorkMs : Infinity;
   }
+  if (!isFinite(mu)) return Infinity;
   const servers = Math.max(1, cfg.concurrency * cfg.replicas);
+  if (cfg.kind === 'shardRouter') {
+    const shards = Math.max(1, cfg.shardCount ?? 1);
+    const skew = Math.min(1, Math.max(0, cfg.skew ?? 0));
+    const hotShare = 1 / shards + skew * (1 - 1 / shards);
+    return servers * mu / (hotShare * shards);
+  }
   return servers * mu;
 }

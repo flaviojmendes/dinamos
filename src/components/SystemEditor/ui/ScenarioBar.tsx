@@ -42,13 +42,13 @@ export default function ScenarioBar({
   const [chaosType, setChaosType] = useState<ChaosType>('killNode');
 
   const addChaos = () => {
-    const target = chaosTarget || nodeOptions[0]?.id;
+    const target = nodeOptions.some((n) => n.id === chaosTarget) ? chaosTarget : nodeOptions[0]?.id;
     if (!target) return;
     onAddChaos({
-      id: `chaos-${Date.now()}`,
+      id: `chaos-${crypto.randomUUID()}`,
       type: chaosType,
       targetId: target,
-      startSec: Math.ceil(currentTime) + 1,
+      startSec: currentTime,
       durationSec: 15,
       magnitude: chaosType === 'latencyInjection' ? 5 : undefined,
     });
@@ -60,7 +60,7 @@ export default function ScenarioBar({
         <div>
           <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1">{t('editor.scenario.preset')}</div>
           <div className="flex gap-1">
-            <select value={presetId} onChange={(e) => setPresetId(e.target.value)} className={selectCls}>
+            <select aria-label={t('editor.scenario.preset')} value={presetId} onChange={(e) => setPresetId(e.target.value)} className={selectCls}>
               {PRESETS.map((p) => (
                 <option key={p.id} value={p.id}>
                   {t(`editor.scenario.presets.${p.id}`, { defaultValue: p.name })}
@@ -78,7 +78,7 @@ export default function ScenarioBar({
 
         <div>
           <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1">{t('editor.scenario.load_profile')}</div>
-          <select value={profileType} onChange={(e) => onProfileChange(e.target.value as LoadProfileType)} className={selectCls}>
+          <select aria-label={t('editor.scenario.load_profile')} value={profileType} onChange={(e) => onProfileChange(e.target.value as LoadProfileType)} className={selectCls}>
             {PROFILE_VALUES.map((p) => (
               <option key={p} value={p}>
                 {t(`editor.scenario.profiles.${p}`)}
@@ -89,7 +89,7 @@ export default function ScenarioBar({
 
         <div>
           <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1">{t('editor.scenario.cloud')}</div>
-          <select value={provider} onChange={(e) => onProviderChange(e.target.value as CloudProvider)} className={selectCls}>
+          <select aria-label={t('editor.scenario.cloud')} value={provider} onChange={(e) => onProviderChange(e.target.value as CloudProvider)} className={selectCls}>
             <option value="aws">AWS</option>
             <option value="gcp">Google Cloud</option>
           </select>
@@ -98,14 +98,14 @@ export default function ScenarioBar({
         <div>
           <div className="font-sans text-[11px] font-medium text-slate-500 dark:text-tactical-label mb-1">{t('editor.scenario.chaos')}</div>
           <div className="flex gap-1">
-            <select value={chaosType} onChange={(e) => setChaosType(e.target.value as ChaosType)} className={selectCls}>
+            <select aria-label={t('editor.scenario.chaos')} value={chaosType} onChange={(e) => setChaosType(e.target.value as ChaosType)} className={selectCls}>
               {CHAOS_VALUES.map((c) => (
                 <option key={c} value={c}>
                   {t(`editor.scenario.chaos_types.${c}`)}
                 </option>
               ))}
             </select>
-            <select value={chaosTarget} onChange={(e) => setChaosTarget(e.target.value)} className={selectCls}>
+            <select aria-label={t('editor.inspector.label')} value={nodeOptions.some((n) => n.id === chaosTarget) ? chaosTarget : nodeOptions[0]?.id ?? ''} onChange={(e) => setChaosTarget(e.target.value)} className={selectCls}>
               {nodeOptions.map((n) => (
                 <option key={n.id} value={n.id}>
                   {n.label}

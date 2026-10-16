@@ -74,14 +74,14 @@
     "client": "Generates the offered load (requests/s) that drives the whole system. Connect its output to your first tier (API gateway, load balancer or server). Tune \"Base rate\" to set how many requests per second enter the system.",
     "loadBalancer": "Spreads incoming requests across the downstream replicas it points to, using the selected strategy (round-robin, least-connections, weighted or consistent hashing). Place it between the client/gateway and a pool of servers.",
     "apiGateway": "Single entry point at the edge of your system. Enforces a requests/s rate limit — traffic above the limit is dropped — and forwards the rest to backends. Connect the client to it, and it to your services.",
-    "cache": "Serves a fraction of reads from memory set by \"Hit rate\". Hits return quickly; misses fall through to the downstream store. Put it in front of a database or service to cut load and latency.",
+    "cache": "Answers a configured fraction of requests from memory using the Hit rate. Hits return quickly; requests not found continue to the downstream store or service, reducing its load and latency.",
     "server": "Stateless compute tier that processes requests with a given service time and concurrency. Scale it with replicas or front it with an auto-scaler. Connect it to databases, caches or other services it depends on.",
     "database": "Persistent datastore and an end point (no outgoing edges). Its service time and concurrency make it a common bottleneck. Send read/write traffic from servers into it.",
     "replicatedDb": "Database with multiple replicas. Writes (set by \"Write fraction\") hit the primary; reads spread across replicas. Pick a consistency level (strong/quorum/eventual) and replication lag to model trade-offs.",
     "shardRouter": "Partitions traffic across shards by key using hash or range strategy. \"Hot-shard skew\" models one shard receiving disproportionate load. Connect it to a pool of shard backends.",
     "messageQueue": "Buffers incoming requests and drains them at a fixed rate to smooth spikes. Messages beyond the queue capacity are dropped. Place it between a fast producer and a slower consumer.",
     "circuitBreaker": "Wraps a downstream dependency. When the error rate exceeds the threshold it opens and sheds load for the reset timeout, then half-opens to probe recovery. Use it to stop cascading failures.",
-    "autoScaler": "Adjusts the replica count of the tier it fronts to keep utilization near the target, bounded by min/max replicas. Use it to react automatically to changing load.",
+    "autoScaler": "Represents a server group that adjusts its own replicas toward the utilization target, within minimum and maximum bounds. It evaluates every 15 simulated seconds; scale-down uses a 300-second stabilization window.",
     "externalDependency": "A third-party service you do not control (an end point). Model its latency and failure rate to simulate outages or slowdowns of upstream providers."
   },
   "hints": {
@@ -94,13 +94,13 @@
     "concurrency": "Parallel workers per replica (the c in M/M/c). Higher = more requests served at once, less queueing and lower latency; lower = saturates sooner.",
     "replicas": "Number of identical copies of this node (horizontal scaling). Higher = proportionally more capacity; lower = less capacity.",
     "failure_rate": "Baseline probability a request fails here regardless of load. Higher = more errors propagated downstream; lower = more reliable.",
-    "timeout": "Milliseconds before a slow request is counted as failed. Lower = more timeouts when the node is busy; higher = waits longer before giving up.",
+    "timeout": "Deadline in milliseconds for this component’s processing and queue wait. Downstream calls and retry backoff are not included in this local timeout.",
     "max_retries": "How many times a failed call is retried. Higher = fewer final errors but more amplified load (retry storms); lower = less load but more user-visible failures.",
     "distribution": "Shape of the per-request latency distribution. Lognormal has a realistic heavy tail, exponential is memoryless, deterministic is constant.",
     "variability": "Coefficient of variation of latency (lognormal only). Higher = heavier tail, so p95/p99 grow; lower = more uniform latencies.",
     "strategy": "How incoming requests are spread across downstream replicas (round-robin, least-connections, weighted, or consistent hashing).",
     "rate_limit": "Maximum requests per second admitted; anything above is dropped. Higher = fewer drops but more load downstream; lower = protects backends but rejects traffic.",
-    "hit_rate": "Fraction of reads served from cache. Higher = much less load and latency downstream; lower = more requests fall through to the store.",
+    "hit_rate": "Fraction of requests answered by the cache, specified directly for the steady-state model. The rest follow the miss path; misses are not service errors.",
     "ttl": "How long cached entries stay valid. Higher = more hits but staler data; lower = fresher data but more misses.",
     "queue_capacity": "Maximum messages buffered. Higher = absorbs bigger spikes without dropping, but adds backlog latency; lower = drops sooner under overload.",
     "drain_rate": "Messages consumed per second. Higher = backlog clears faster and latency drops; lower = backlog builds up.",
@@ -114,7 +114,11 @@
     "reset_timeout": "Milliseconds the breaker stays open before probing recovery. Higher = waits longer before retrying; lower = retries the dependency sooner.",
     "target_utilization": "Utilization the auto-scaler tries to hold. Lower = scales out earlier (more replicas, more headroom); higher = runs hotter with fewer replicas.",
     "min_replicas": "Lower bound on replicas the auto-scaler will keep, even when idle.",
-    "max_replicas": "Upper bound on replicas the auto-scaler can add under load."
+    "max_replicas": "Upper bound on replicas the auto-scaler can add under load.",
+    "bounded_queue": "Limits requests waiting for service at this component. When disabled, there is no explicit waiting-room limit.",
+    "waiting_capacity": "Requests allowed to wait beyond those already in service. Zero rejects new requests when every worker is busy.",
+    "retry_backoff": "Wait before the first retry. The interval doubles with each retry, reducing simultaneous calls to a failing dependency.",
+    "retry_jitter": "Randomizes the wait between zero and the backoff interval so requests do not all retry together."
   },
   "inspector": {
     "title": "Inspector",
@@ -131,8 +135,8 @@
     "match_fixed": "fixed by match",
     "reliability": "Reliability",
     "failure_rate": "Failure rate",
-    "timeout": "Timeout",
-    "max_retries": "Max retries",
+    "timeout": "Local timeout",
+    "max_retries": "Retries after failure",
     "latency_shape": "Latency shape",
     "distribution": "Distribution",
     "variability": "Variability (CV)",
@@ -171,10 +175,22 @@
     "shard_strat": {
       "hash": "Hash",
       "range": "Range"
-    }
+    },
+    "delete_node": "Delete component",
+    "bounded_queue": "Limit waiting queue",
+    "waiting_capacity": "Waiting queue slots",
+    "retry_backoff": "Initial retry backoff",
+    "retry_jitter": "Randomize retry backoff (jitter)",
+    "target_weight": "Weight: {{name}}",
+    "weights_note": "Weights are relative: 3 and 1 route 75% and 25% of traffic. Zero removes a target from the split; if all weights are zero, traffic is split equally.",
+    "weights_empty": "Connect the load balancer to a target to configure weights.",
+    "cache_model_note": "The hit ratio is an input to this steady-state model. Key expiry, TTL and cache invalidation are not simulated.",
+    "hashing_model_note": "This model uses aggregate rates without tracking individual keys. With uniform keys, hashing has the same traffic split as round-robin; session affinity is not simulated.",
+    "shard_model_note": "Skew sets the hotspot directly. Individual keys, data migration and differences between hash and range partitioning are not simulated.",
+    "admin_controlled": "This component’s configuration is read-only."
   },
   "bill": {
-    "title": "{{provider}} bill",
+    "title": "{{provider}} estimate",
     "open_hint": "Click to see the cost breakdown by product",
     "close": "Close",
     "empty": "No billable resources yet. Run the simulation.",
@@ -475,5 +491,9 @@
     "token_required_title": "Stage link required",
     "token_required_body": "Ask the host for the audience screen link. It includes a read-only access token.",
     "architectures_hidden": "Live architectures hidden until the round ends"
-  }
+  },
+  "cost": {
+    "illustrative_note": "Illustrative estimate using fixed rates. This is not a current AWS or Google Cloud quote; storage, network traffic, region and taxes are excluded."
+  },
+  "model_note": "An educational model of aggregate rates: outgoing edges are alternative routes, not parallel calls with joined results. Timeouts limit local processing and queueing, not the entire request. Results approximate steady-state behavior. Queues acknowledge accepted messages; acknowledgement does not mean the consumer has completed the work."
 }

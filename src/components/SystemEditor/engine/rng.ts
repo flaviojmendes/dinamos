@@ -5,8 +5,9 @@ export class Rng {
   private state: number;
 
   constructor(seed: number) {
-    // Avoid a zero state which would stick the generator.
-    this.state = (seed | 0) || 0x9e3779b9;
+    // Mulberry32 adds a nonzero increment before mixing, so zero is a valid
+    // seed. Substituting a fallback would make two distinct seeds identical.
+    this.state = seed | 0;
   }
 
   /** Uniform float in [0, 1). */

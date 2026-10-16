@@ -3,7 +3,7 @@
 // (requests through gateways/queues, calls to external dependencies).
 
 import { NodeRuntime } from './fluidSolver';
-import { NodeKind } from './types';
+import type { NodeConfig, NodeKind } from './types';
 
 export type CloudProvider = 'aws' | 'gcp';
 
@@ -40,6 +40,14 @@ const USAGE_KINDS: NodeKind[] = ['apiGateway', 'messageQueue'];
  * cost scales with how much faster than this baseline the node runs.
  */
 const SERVICE_TIME_BASELINE_MS = 20;
+/** The default database instance exposes eight parallel workers. */
+const DB_WORKERS_PER_INSTANCE = 8;
+
+/** Effective configured workers before the first runtime metrics arrive. */
+export function configuredWorkers(config: NodeConfig): number {
+  const replicas = config.kind === 'replicatedDb' ? config.replicaCount ?? 1 : config.replicas;
+  return Math.max(1, Math.round(config.concurrency * replicas));
+}
 
 /**
  * Compute price premium driven by per-request service time. A node that serves
@@ -54,16 +62,15 @@ export function serviceTimePremium(serviceTimeMs: number): number {
 }
 
 /**
- * Per-hour cost of a single compute/db node from its three capacity knobs:
- * service time, concurrency (c) and replicas. `servers` already folds in
- * concurrency * replicas; the service-time premium adds the third dimension so
- * all three realistically move the bill.
+ * Illustrative hourly provisioning estimate, rather than a provider quote.
+ * `servers` already includes concurrency * effective replicas. A default DB
+ * instance has eight workers; charging worker-equivalents makes DB capacity
+ * upgrades affect the bill just as compute upgrades do.
  */
 function computeCostPerHour(
   kind: NodeKind,
   servers: number,
   serviceTimeMs: number,
-  replicaCountForDb: number | undefined,
   rates: Rates,
 ): number {
   const premium = serviceTimePremium(serviceTimeMs);
@@ -71,8 +78,8 @@ function computeCostPerHour(
     return Math.max(0, servers) * rates.serverHour * premium;
   }
   if (kind === 'database' || kind === 'replicatedDb') {
-    const replicas = kind === 'replicatedDb' ? replicaCountForDb ?? 1 : 1;
-    return Math.max(1, replicas) * rates.dbReplicaHour * premium;
+    const instanceEquivalents = Math.max(0, servers) / DB_WORKERS_PER_INSTANCE;
+    return instanceEquivalents * rates.dbReplicaHour * premium;
   }
   return 0;
 }
@@ -82,7 +89,7 @@ export function estimateNodeCostPerHour(rt: NodeRuntime, provider: CloudProvider
   const kind = rt.cfg.kind;
 
   if (COMPUTE_KINDS.includes(kind) || kind === 'database' || kind === 'replicatedDb') {
-    return computeCostPerHour(kind, rt.servers, rt.cfg.serviceTimeMs, rt.cfg.replicaCount, rates);
+    return computeCostPerHour(kind, rt.servers, rt.cfg.serviceTimeMs, rates);
   }
   if (USAGE_KINDS.includes(kind)) {
     const reqPerHour = rt.arrival * 3600;
@@ -108,13 +115,14 @@ export function estimateCostFromMetrics(
   kind: NodeKind,
   servers: number,
   arrivalPerSec: number,
-  replicaCount: number | undefined,
+  // Kept for existing callers; effective servers already includes this count.
+  _replicaCount: number | undefined,
   provider: CloudProvider,
   serviceTimeMs = SERVICE_TIME_BASELINE_MS,
 ): number {
   const rates = RATES[provider];
   if (COMPUTE_KINDS.includes(kind) || kind === 'database' || kind === 'replicatedDb') {
-    return computeCostPerHour(kind, servers, serviceTimeMs, replicaCount, rates);
+    return computeCostPerHour(kind, servers, serviceTimeMs, rates);
   }
   if (USAGE_KINDS.includes(kind)) {
     return ((arrivalPerSec * 3600) / 1_000_000) * rates.perMillionRequests;

@@ -30,7 +30,16 @@ export const DEFAULT_SCORING: ScoringConfig = {
 };
 
 export function normalizeScoring(cfg?: Partial<ScoringConfig> | null): ScoringConfig {
-  return { ...DEFAULT_SCORING, ...(cfg ?? {}) };
+  const normalized = { ...DEFAULT_SCORING };
+  for (const key of Object.keys(DEFAULT_SCORING) as (keyof ScoringConfig)[]) {
+    const value = cfg?.[key];
+    // Host inputs and stored JSON can contain null/undefined or invalid values.
+    // Negative weights would turn an outage or an over-budget bill into a bonus.
+    if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) continue;
+    if (key === 'latencyTargetMs' && value === 0) continue;
+    normalized[key] = value;
+  }
+  return normalized;
 }
 
 export interface ScoreBreakdown {
@@ -58,7 +67,8 @@ export const STREAK_MAX_MULTIPLIER = 2;
 
 /** Bonus multiplier for a given streak length (1x → 2x over STREAK_RAMP_SEC). */
 export function streakMultiplier(streak: number): number {
-  return 1 + (STREAK_MAX_MULTIPLIER - 1) * Math.min(1, streak / STREAK_RAMP_SEC);
+  const seconds = Number.isFinite(streak) ? Math.max(0, streak) : 0;
+  return 1 + (STREAK_MAX_MULTIPLIER - 1) * Math.min(1, seconds / STREAK_RAMP_SEC);
 }
 
 /**
@@ -70,9 +80,17 @@ export function frameScore(
   system: SystemMetrics,
   cfg: ScoringConfig
 ): ScoreBreakdown {
-  const served = Math.max(0, system.totalThroughput);
+  const offered = Number.isFinite(system.offeredLoad) ? Math.max(0, system.offeredLoad) : 0;
+  const served = Number.isFinite(system.totalThroughput)
+    ? Math.min(offered, Math.max(0, system.totalThroughput))
+    : 0;
+  const successRate = Number.isFinite(system.successRate)
+    ? Math.min(1, Math.max(0, system.successRate))
+    : 0;
   const throughput = cfg.wThroughput * served;
-  const availability = cfg.wSuccess * system.successRate * 100;
+  // An idle system has no availability evidence. Otherwise a player could set
+  // the clients' offered rate to zero and earn perfect availability forever.
+  const availability = served > 0 ? cfg.wSuccess * successRate * 100 : 0;
 
   const latencyOver = Math.max(0, system.p95 - cfg.latencyTargetMs);
   // Scale the latency penalty by the target so it is unit-independent.
@@ -91,8 +109,9 @@ export function frameScore(
   // within target. Sustaining this builds the streak multiplier; one bad
   // second resets it, so resilience under chaos pays more than raw capacity.
   const sloMet =
-    system.offeredLoad > 0 &&
-    system.successRate >= 0.99 &&
+    offered > 0 &&
+    served / offered >= 0.99 &&
+    successRate >= 0.99 &&
     system.p95 <= cfg.latencyTargetMs;
 
   return { throughput, availability, latencyPenalty, costPenalty, net, sloMet };
