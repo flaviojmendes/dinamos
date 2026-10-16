@@ -492,7 +492,7 @@
     "hero_trust": "Free access · No credit card required",
     "signin_title": "Make room for practice.",
     "signin_subtitle": "Sign in to save your progress, use the simulators, and learn with the community.",
-    "stat_simulators_value": "15+",
+    "stat_simulators_value": "50+",
     "stat_simulators_label": "Interactive simulators",
     "stat_cases_value": "6",
     "stat_cases_label": "Real-world case studies",
@@ -502,8 +502,66 @@
     "stat_price_label": "Cost, forever",
     "features_title": "Complete and Practical Content",
     "features_subtitle": "Everything you need to become a distributed systems expert",
-    "simulators_title": "See how systems respond to your decisions.",
-    "simulators_subtitle": "Change a parameter, send a request, and watch your system respond. These are a few of the simulators waiting for you.",
+    "simulators_title": "From caching to AI, learn by experimenting.",
+    "simulators_subtitle": "Choose a simulator to explore its controls and discover what you can observe in each experiment.",
+    "showcase": {
+      "selector_label": "Choose a simulator to preview",
+      "preview_label": "Simulator preview",
+      "controls_label": "What you control",
+      "observe_label": "What you observe",
+      "signin_note": "Sign in for free to run the simulators.",
+      "items": {
+        "cache": {
+          "title": "Cache",
+          "category": "Performance",
+          "description": "Read the same key, adjust TTL, and see when the response comes from memory or the database.",
+          "controls": "TTL, capacity, and database latency",
+          "observe": "Hits, misses, and response time",
+          "alt": "Cache simulator preview showing the client, cache, and database flow, stored entries, and a read served from memory."
+        },
+        "load-balancer": {
+          "title": "Load Balancing",
+          "category": "Scalability",
+          "description": "Compare Round Robin, Least Connections, and random distribution while changing server count and traffic.",
+          "controls": "Strategy, server count, and incoming traffic",
+          "observe": "Load distribution across the servers",
+          "alt": "Load balancing simulator showing strategy selection, traffic settings, and the load on each server."
+        },
+        "circuit-breaker": {
+          "title": "Circuit Breaker",
+          "category": "Resilience",
+          "description": "Introduce errors and watch the circuit stop calls, test recovery, and start serving requests again.",
+          "controls": "Failures, error threshold, and recovery timeout",
+          "observe": "Closed, open, and half-open circuit states",
+          "alt": "Circuit Breaker simulator showing circuit state, failure controls, and request history."
+        },
+        "kafka": {
+          "title": "Kafka",
+          "category": "Messaging",
+          "description": "Produce messages, adjust consumers, and see how partitions distribute work and lag builds up.",
+          "controls": "Partitions, consumers, production and consumption rates",
+          "observe": "Pending messages and consumer lag",
+          "alt": "Kafka simulator showing a producer, partitions, a consumer group, and produced, consumed, and pending message metrics."
+        },
+        "consistent-hashing": {
+          "title": "Consistent Hashing",
+          "category": "Distributed data",
+          "description": "Add or remove nodes and watch which keys move around the distribution ring.",
+          "controls": "Number of nodes and virtual nodes",
+          "observe": "Key distribution and movement between nodes",
+          "alt": "Consistent hashing ring preview with virtual nodes and highlighted keys that moved to a new node."
+        },
+        "rag-pipeline": {
+          "title": "RAG Pipeline",
+          "category": "AI systems",
+          "description": "Adjust retrieval and context in a RAG pipeline to compare the effects on simulated quality, latency, and cost.",
+          "controls": "Chunk size, top-K, and reranking",
+          "observe": "Simulated quality, recall, latency, and cost",
+          "alt": "RAG pipeline simulator showing embedding, search, reranking, context assembly, and generation stages alongside controls and metrics."
+        }
+      },
+      "expand_preview": "Enlarge {{simulator}} preview"
+    },
     "teacher_title": "Who will teach you",
     "teacher_experience_title": "Experience",
     "teacher_experience_item1": "15+ years of software development experience",
@@ -556,7 +614,7 @@
     "journey_real_cases_item3": "Uber and Bit.ly",
     "journey_real_cases_description": "Apply your knowledge by analyzing real success cases",
     "what_you_receive_title": "What You Get",
-    "what_you_receive_item1": "Over 15 interactive simulators for hands-on practice",
+    "what_you_receive_item1": "Over 50 interactive simulators for hands-on practice",
     "what_you_receive_item2": "6 detailed case studies of tech companies",
     "what_you_receive_item3": "Complete theoretical content with practical examples",
     "what_you_receive_item4": "Updates and new content included",

@@ -8,7 +8,7 @@ import { LanguageSwitcher, Footer } from '../Common';
 import Brand from '../Common/Brand';
 import ThemeToggle from '../Common/ThemeToggle';
 import SystemTopology from './landing/SystemTopology';
-import SimulatorMedia from './SimulatorMedia';
+import SimulatorShowcase from './SimulatorShowcase';
 import './landing.css';
 
 const REPO_URL = 'https://github.com/flaviojmendes/dinamos';
@@ -124,22 +124,7 @@ export default function LandingPage() {
           <div><h2 id="simulators-title">{t('landing.simulators_title')}</h2><p>{t('landing.simulators_subtitle')}</p></div>
           <a href="#signin" className="dinamos-text-link">{t('landing.open_simulators')} <ArrowRight size={17} aria-hidden="true" /></a>
         </div>
-        <div className="dinamos-simulator-grid">
-          {[
-            { base: 'cache', index: 1 },
-            { base: 'circuit', index: 2 },
-            { base: 'loadbalancer', index: 3 },
-          ].map(({ base, index }) => (
-            <a key={base} href="#signin" className="dinamos-simulator-card group">
-              <div className="dinamos-preview"><SimulatorMedia base={base} alt={t(`landing.simulators_item${index}`)} /></div>
-              <div className="dinamos-simulator-copy">
-                <h3>{t(`landing.simulators_item${index}`)}<ArrowUpRight size={18} aria-hidden="true" /></h3>
-                <p>{t(`landing.simulators_item${index}_description`)}</p>
-                <span className="dinamos-card-link">{t('landing.try_simulator')} <ArrowRight size={15} aria-hidden="true" /></span>
-              </div>
-            </a>
-          ))}
-        </div>
+        <SimulatorShowcase />
       </section>
 
       <section className="dinamos-journey-section" id="journey" aria-labelledby="journey-title">

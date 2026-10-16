@@ -7,7 +7,7 @@
   "hero_trust": "Acesso gratuito · Sem cartão de crédito",
   "signin_title": "Abra espaço para a prática.",
   "signin_subtitle": "Entre para salvar seu progresso, usar os simuladores e aprender com a comunidade.",
-  "stat_simulators_value": "15+",
+  "stat_simulators_value": "50+",
   "stat_simulators_label": "Simuladores interativos",
   "stat_cases_value": "6",
   "stat_cases_label": "Estudos de caso reais",
@@ -17,8 +17,66 @@
   "stat_price_label": "Custo, para sempre",
   "features_title": "Conteúdo Completo e Prático",
   "features_subtitle": "Tudo que você precisa para se tornar um especialista em sistemas distribuídos",
-  "simulators_title": "Veja o sistema responder às suas decisões.",
-  "simulators_subtitle": "Mude um parâmetro, envie uma requisição e veja o sistema responder. Estes são alguns dos simuladores que esperam por você.",
+  "simulators_title": "Do cache à IA, aprenda experimentando.",
+  "simulators_subtitle": "Escolha um simulador para conhecer os controles e descobrir o que você pode observar em cada experimento.",
+  "showcase": {
+    "selector_label": "Escolha um simulador para visualizar",
+    "preview_label": "Prévia do simulador",
+    "controls_label": "O que você controla",
+    "observe_label": "O que você acompanha",
+    "signin_note": "Entre gratuitamente para executar os simuladores.",
+    "items": {
+      "cache": {
+        "title": "Cache",
+        "category": "Desempenho",
+        "description": "Leia a mesma chave, altere o TTL e veja quando a resposta vem da memória ou do banco de dados.",
+        "controls": "TTL, capacidade e latência do banco",
+        "observe": "Hits, misses e tempo de resposta",
+        "alt": "Prévia do simulador de cache com o fluxo cliente, cache e banco, entradas armazenadas e uma leitura atendida pela memória."
+      },
+      "load-balancer": {
+        "title": "Balanceamento de carga",
+        "category": "Escalabilidade",
+        "description": "Compare Round Robin, Least Connections e distribuição aleatória enquanto altera a quantidade de servidores e o tráfego.",
+        "controls": "Estratégia, número de servidores e tráfego",
+        "observe": "Distribuição de carga entre os servidores",
+        "alt": "Simulador de balanceamento de carga com seleção de estratégia, configuração de tráfego e carga de cada servidor."
+      },
+      "circuit-breaker": {
+        "title": "Circuit Breaker",
+        "category": "Resiliência",
+        "description": "Provoque erros e acompanhe o circuito interromper as chamadas, testar a recuperação e voltar a atender.",
+        "controls": "Falhas, limite de erros e recuperação",
+        "observe": "Estados fechado, aberto e semiaberto do circuito",
+        "alt": "Simulador de Circuit Breaker com estado do circuito, controles de falhas e histórico de requisições."
+      },
+      "kafka": {
+        "title": "Kafka",
+        "category": "Mensageria",
+        "description": "Produza mensagens, ajuste os consumidores e veja como as partições distribuem o trabalho e o atraso se acumula.",
+        "controls": "Partições, consumidores e taxas de produção e consumo",
+        "observe": "Mensagens pendentes e atraso dos consumidores",
+        "alt": "Simulador de Kafka com produtor, partições, grupo de consumidores e indicadores de mensagens produzidas, consumidas e pendentes."
+      },
+      "consistent-hashing": {
+        "title": "Hashing consistente",
+        "category": "Dados distribuídos",
+        "description": "Adicione ou remova nós e acompanhe quais chaves mudam de lugar no anel de distribuição.",
+        "controls": "Quantidade de nós e nós virtuais",
+        "observe": "Distribuição e movimentação das chaves entre nós",
+        "alt": "Prévia do anel de hashing consistente com nós virtuais e as chaves que mudaram de nó."
+      },
+      "rag-pipeline": {
+        "title": "Pipeline RAG",
+        "category": "Sistemas de IA",
+        "description": "Ajuste a busca e o contexto de um pipeline RAG para comparar os efeitos na qualidade, na latência e no custo simulados.",
+        "controls": "Tamanho dos chunks, top-K e reranking",
+        "observe": "Qualidade, recall, latência e custo simulados",
+        "alt": "Simulador de pipeline RAG com etapas de embedding, busca, reranking, montagem de contexto e geração, além de controles e métricas."
+      }
+    },
+    "expand_preview": "Ampliar prévia de {{simulator}}"
+  },
   "teacher_title": "Quem vai te ensinar",
   "teacher_experience_title": "Experiência",
   "teacher_experience_item1": "15+ anos de experiência em desenvolvimento de software",
@@ -71,7 +129,7 @@
   "journey_real_cases_item3": "Uber e Bit.ly",
   "journey_real_cases_description": "Aplique seu conhecimento analisando casos reais de sucesso",
   "what_you_receive_title": "O Que Você Recebe",
-  "what_you_receive_item1": "Mais de 15 simuladores interativos para prática hands-on",
+  "what_you_receive_item1": "Mais de 50 simuladores interativos para prática hands-on",
   "what_you_receive_item2": "6 estudos de caso detalhados de empresas de tecnologia",
   "what_you_receive_item3": "Conteúdo teórico completo com exemplos práticos",
   "what_you_receive_item4": "Atualizações e novos conteúdos incluídos",

@@ -45,8 +45,8 @@
 .dark .dinamos-button-primary:hover { background: #ffa5c6; }
 .dinamos-button:disabled { opacity: .55; cursor: wait; }
 .dinamos-text-link { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; color: var(--landing-accent); font-size: 15px; font-weight: 600; }
-.dinamos-text-link svg, .dinamos-card-link svg { transition: transform 180ms; }
-.dinamos-text-link:hover svg, .dinamos-simulator-card:hover .dinamos-card-link svg { transform: translateX(3px); }
+.dinamos-text-link svg { transition: transform 180ms; }
+.dinamos-text-link:hover svg { transform: translateX(3px); }
 .dinamos-hero { display: grid; grid-template-columns: 1.02fr 1fr; align-items: center; gap: 64px; padding-top: 156px; padding-bottom: 70px; }
 .dinamos-hero-copy { position: relative; }
 .dinamos-eyebrow { display: flex; align-items: center; gap: 9px; color: var(--landing-muted); font-size: 14px; font-weight: 500; }
@@ -77,15 +77,30 @@
 .dinamos-section-heading h2 { max-width: 20ch; }
 .dinamos-section-heading p { max-width: 55ch; margin-top: 14px; color: var(--landing-muted); font-size: 16px; line-height: 1.65; }
 .dinamos-section-heading > a { flex-shrink: 0; }
-.dinamos-simulator-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
-.dinamos-simulator-card { display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--landing-line); border-radius: 14px; background: var(--landing-surface); transition: border-color 200ms, transform 200ms; }
-.dinamos-simulator-card:hover { border-color: var(--landing-accent); transform: translateY(-3px); }
-.dinamos-preview { aspect-ratio: 16 / 10; overflow: hidden; background: #151821; border-bottom: 1px solid var(--landing-line); }
-.dinamos-simulator-copy { display: flex; flex-direction: column; flex: 1; padding: 22px; }
-.dinamos-simulator-copy h3 { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 23px; font-weight: 600; letter-spacing: -.02em; }
-.dinamos-simulator-copy h3 > svg { color: var(--landing-muted); }
-.dinamos-simulator-copy p { flex: 1; margin-top: 12px; color: var(--landing-muted); font-size: 15px; line-height: 1.65; }
-.dinamos-card-link { display: flex; align-items: center; gap: 8px; margin-top: 20px; color: var(--landing-accent); font-size: 13px; font-weight: 600; }
+.dinamos-simulator-tabs { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; margin-bottom: 20px; border-bottom: 1px solid var(--landing-line); }
+.dinamos-simulator-tabs button { min-width: 0; min-height: 86px; padding: 14px 12px; border-bottom: 2px solid transparent; border-radius: 8px 8px 0 0; text-align: left; color: var(--landing-muted); font-size: 14px; font-weight: 600; line-height: 1.45; transition: color 180ms, background-color 180ms, border-color 180ms; }
+.dinamos-simulator-tabs button:hover { background: var(--landing-raised); color: var(--landing-ink); }
+.dinamos-simulator-tabs button[aria-selected="true"] { background: rgb(242 61 127 / .07); color: var(--landing-accent); border-bottom-color: var(--landing-accent); }
+.dinamos-simulator-tab-category { display: block; margin-bottom: 5px; color: var(--landing-muted); font-size: 11px; font-weight: 400; }
+.dinamos-simulator-panel { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(0, .85fr); border: 1px solid var(--landing-line); border-radius: 14px; overflow: hidden; background: var(--landing-surface); }
+.dinamos-simulator-panel[hidden] { display: none; }
+.dinamos-simulator-snapshot { display: flex; flex-direction: column; min-width: 0; margin: 0; background: #101218; }
+.dinamos-simulator-image { position: relative; display: block; aspect-ratio: 4 / 3; padding: 12px; cursor: zoom-in; }
+.dinamos-simulator-image img { position: absolute; inset: 12px; width: calc(100% - 24px); height: calc(100% - 24px); object-fit: contain; }
+.dinamos-simulator-expand { position: absolute; top: 12px; right: 12px; box-sizing: content-box; padding: 8px; border-radius: 7px; background: #1b202c; color: #f2f4f8; }
+.dinamos-simulator-snapshot figcaption { display: flex; align-items: center; gap: 8px; margin-top: auto; padding: 12px 20px; border-top: 1px solid #323b4f; color: #a6b0c3; font-size: 12px; }
+.dinamos-simulator-snapshot figcaption > span { width: 6px; height: 6px; border-radius: 50%; background: #6ee7c8; }
+.dinamos-simulator-detail { padding: 32px; align-self: center; }
+.dinamos-simulator-detail h3 { font-size: clamp(25px, 2.3vw, 32px); font-weight: 600; line-height: 1.16; letter-spacing: -.025em; text-wrap: balance; }
+.dinamos-simulator-detail > p { margin-top: 16px; color: var(--landing-muted); font-size: 15px; line-height: 1.7; }
+.dinamos-simulator-detail dl { margin-block: 24px; }
+.dinamos-simulator-detail dl > div { padding-block: 15px; border-top: 1px solid var(--landing-line); }
+.dinamos-simulator-detail dt { color: var(--landing-muted); font-size: 12px; }
+.dinamos-simulator-detail dd { margin-top: 6px; font-size: 14px; line-height: 1.55; }
+.dinamos-simulator-detail > .dinamos-button { width: 100%; }
+.dinamos-simulator-detail > .dinamos-simulator-signin-note { display: flex; align-items: flex-start; gap: 6px; margin-top: 12px; font-size: 11px; line-height: 1.6; }
+.dinamos-simulator-signin-note svg { margin-top: 2px; color: var(--landing-accent); }
+.dinamos-simulator-tabs button:focus-visible, .dinamos-simulator-panel:focus-visible, .dinamos-simulator-image:focus-visible { outline: 2px solid var(--landing-accent); outline-offset: 3px; }
 .dinamos-journey-section { background: var(--landing-surface); border-block: 1px solid var(--landing-line); padding-block: 80px; }
 .dinamos-journey-layout { display: grid; grid-template-columns: .8fr 1.2fr; align-items: start; gap: 100px; }
 .dinamos-section-icon { display: inline-flex; margin-bottom: 22px; color: var(--landing-accent); }
@@ -135,8 +150,7 @@
   .dinamos-nav { gap: 18px; font-size: 14px; }
   .dinamos-hero { gap: 24px; padding-top: 140px; }
   .dinamos-journey-layout { gap: 56px; }
-  .dinamos-simulator-copy { padding: 18px; }
-  .dinamos-simulator-copy h3 { font-size: 20px; }
+  .dinamos-simulator-detail { padding: 24px; }
   .dinamos-about-grid { gap: 40px; }
   .dinamos-signin-section { gap: 40px; padding: 32px; }
 }
@@ -151,10 +165,14 @@
   .dinamos-proof > span { font-size: 13px; }
   .dinamos-section { padding-block: 64px; }
   .dinamos-section-heading { align-items: flex-start; flex-direction: column; gap: 12px; }
-  .dinamos-simulator-grid { grid-template-columns: 1fr; gap: 20px; }
-  .dinamos-simulator-card { flex-direction: row; }
-  .dinamos-preview { width: 42%; flex-shrink: 0; aspect-ratio: auto; border-bottom: 0; border-right: 1px solid var(--landing-line); }
-  .dinamos-simulator-copy { padding: 24px; }
+  .dinamos-simulator-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .dinamos-simulator-tabs button { min-height: 80px; }
+  .dinamos-simulator-panel { grid-template-columns: 1fr; }
+  .dinamos-simulator-image { aspect-ratio: 4 / 3; }
+  .dinamos-simulator-detail { padding: 28px; }
+  .dinamos-simulator-detail h3 { font-size: 30px; }
+  .dinamos-simulator-detail dl { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .dinamos-simulator-detail > .dinamos-button { width: auto; }
   .dinamos-journey-layout { grid-template-columns: 1fr; gap: 40px; }
   .dinamos-journey-intro h2 { max-width: 18ch; }
   .dinamos-journey-intro > p { max-width: 50ch; }
@@ -182,10 +200,11 @@
   .dinamos-system figcaption { font-size: 11px; }
   .dinamos-proof { gap: 17px; }
   .dinamos-proof > span { width: 100%; }
-  .dinamos-preview { width: 100%; aspect-ratio: 16 / 10; border-right: 0; border-bottom: 1px solid var(--landing-line); }
-  .dinamos-simulator-card { flex-direction: column; }
-  .dinamos-simulator-copy { padding: 22px; }
-  .dinamos-simulator-copy h3 { font-size: 24px; }
+  .dinamos-simulator-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
+  .dinamos-simulator-tabs button { padding: 12px; min-height: 76px; }
+  .dinamos-simulator-detail { padding: 22px; }
+  .dinamos-simulator-detail h3 { font-size: 28px; }
+  .dinamos-simulator-detail dl { grid-template-columns: 1fr; gap: 0; }
   .dinamos-journey-section { padding-block: 56px; }
   .dinamos-journey-list > li { gap: 16px; }
   .dinamos-journey-list h3 { font-size: 21px; }
