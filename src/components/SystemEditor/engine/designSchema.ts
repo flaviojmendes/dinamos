@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { defaultsForKind, type NodeKind } from './types';
+import { defaultsForKind, type NodeKind } from './types.js';
 import type { DesignV2, SerializedNode } from '../ui/persistence';
-import type { EdgeSpec } from './types';
+import type { EdgeSpec } from './types.js';
 import type { ChaosEvent, LoadProfileType } from './scenarios';
 
 export const MAX_DESIGN_NODES = 200;

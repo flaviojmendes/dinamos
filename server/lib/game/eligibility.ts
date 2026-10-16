@@ -1,4 +1,4 @@
-import { effectiveNowMs, type LifecycleClock } from './lifecycle/fsm';
+import { effectiveNowMs, type LifecycleClock } from './lifecycle/fsm.js';
 
 export interface EligibilityWindow {
   /** Simulated seconds elapsed since round start (excluding pause). */

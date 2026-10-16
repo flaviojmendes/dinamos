@@ -10,15 +10,15 @@ import {
   EdgeSpec,
   NodeConfig,
   serverServiceRate,
-} from './types';
+} from './types.js';
 import { Topology } from './topology';
-import { mmcMetrics, QueueMetrics } from './queueing';
+import { mmcMetrics, QueueMetrics } from './queueing.js';
 import {
   afterRetryFailProb,
   combineFailureProbs,
   expectedAttempts,
   timeoutFailureProb,
-} from './failureModel';
+} from './failureModel.js';
 
 /** Mutable cross-tick state owned by the simulator and threaded through solves. */
 export interface EngineState {

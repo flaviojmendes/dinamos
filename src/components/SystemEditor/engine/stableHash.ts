@@ -1,6 +1,6 @@
-import SHA256 from 'crypto-js/sha256';
-import Hex from 'crypto-js/enc-hex';
-import Utf8 from 'crypto-js/enc-utf8';
+import SHA256 from 'crypto-js/sha256.js';
+import Hex from 'crypto-js/enc-hex.js';
+import Utf8 from 'crypto-js/enc-utf8.js';
 
 /**
  * Collision-resistant stable digest for architecture snapshots.

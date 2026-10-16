@@ -2,9 +2,9 @@
 // performance benchmarks. Mirrors the client round loop in SystemEditorV2.
 
 import type { GameArchitecture, GameLoadProfile } from '../game/types';
-import { architectureComplianceGraph, architectureToSimConfig } from './architectureToSim';
-import { evaluateCompliance } from './compliance';
-import { makeLoadProfile, type ChaosEvent, type LoadProfileType } from './scenarios';
+import { architectureComplianceGraph, architectureToSimConfig } from './architectureToSim.js';
+import { evaluateCompliance } from './compliance.js';
+import { makeLoadProfile, type ChaosEvent, type LoadProfileType } from './scenarios.js';
 import {
   accumulate,
   applyCompliance,
@@ -13,8 +13,8 @@ import {
   normalizeScoring,
   type ScoreAccumulator,
   type ScoringConfig,
-} from './scoring';
-import { Simulator } from './simulator';
+} from './scoring.js';
+import { Simulator } from './simulator.js';
 import type { SimulationFrame } from './types';
 
 export interface RoundRunConfig {

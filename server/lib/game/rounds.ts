@@ -1,5 +1,5 @@
 import type { RoundConfig } from '../../../src/components/SystemEditor/game/types';
-import { DEFAULT_MAX_PLAYERS } from '../../../src/components/SystemEditor/engine/constants';
+import { DEFAULT_MAX_PLAYERS } from '../../../src/components/SystemEditor/engine/constants.js';
 
 export const DEFAULT_SCORING = {
   wThroughput: 1,

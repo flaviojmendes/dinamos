@@ -7,8 +7,8 @@ import {
   LifecycleError,
   type HostLifecycleAction,
   type LifecycleState,
-} from './fsm';
-import { activeRoundIndex, getRoundsFromSession, roundConfigAt } from '../rounds';
+} from './fsm.js';
+import { activeRoundIndex, getRoundsFromSession, roundConfigAt } from '../rounds.js';
 import {
   capturePlayerArchSnapshot,
   captureRoundSnapshot,
@@ -20,14 +20,14 @@ import {
   readPlayerArchSnapshots,
   readRoundSnapshots,
   readVerifiedRoundScores,
-} from '../snapshots';
-import { computeEligibilityWindow } from '../eligibility';
+} from '../snapshots.js';
+import { computeEligibilityWindow } from '../eligibility.js';
 import {
   computeVerifiedAggregate,
   recomputeVerifiedRoundScore,
   shouldFinalizeRound,
   shouldRunCheckpoint,
-} from '../scoring/recompute';
+} from '../scoring/recompute.js';
 import type { GameArchitecture } from '../../../../src/components/SystemEditor/game/types';
 
 type SessionRow = typeof gameSessions.$inferSelect;

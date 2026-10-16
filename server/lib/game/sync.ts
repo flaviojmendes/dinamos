@@ -8,10 +8,10 @@ import {
   recomputeLiveCheckpoints,
   snapshotPlayerArchitecturesForRound,
   snapshotRoundConfig,
-} from './lifecycle/service';
+} from './lifecycle/service.js';
 import { recordArenaProgression } from './progression.js';
 import { emitGameTelemetry } from './telemetry.js';
-import { activeRoundIndex } from './rounds';
+import { activeRoundIndex } from './rounds.js';
 
 type SessionRow = typeof gameSessions.$inferSelect;
 

@@ -1,6 +1,6 @@
 // Load profiles, chaos events and a library of preset topologies.
 
-import { EdgeSpec, NodeConfig, defaultsForKind } from './types';
+import { EdgeSpec, NodeConfig, defaultsForKind } from './types.js';
 
 export type LoadProfileType = 'constant' | 'ramp' | 'spike' | 'diurnal' | 'step';
 

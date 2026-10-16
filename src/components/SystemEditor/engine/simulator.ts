@@ -16,14 +16,14 @@ import {
   SimulationFrame,
   SystemMetrics,
   nodeCapacity,
-} from './types';
-import { buildTopology, validateTopology } from './topology';
-import { EngineState, solveFlow, NodeRuntime } from './fluidSolver';
-import { CircuitBreaker } from './failureModel';
-import { traceLatency } from './latencyTracer';
-import { Rng } from './rng';
-import { ChaosEvent, LoadProfile, isChaosActive, makeLoadProfile } from './scenarios';
-import { estimateNodeCostPerHour, CloudProvider } from './costModel';
+} from './types.js';
+import { buildTopology, validateTopology } from './topology.js';
+import { EngineState, solveFlow, NodeRuntime } from './fluidSolver.js';
+import { CircuitBreaker } from './failureModel.js';
+import { traceLatency } from './latencyTracer.js';
+import { Rng } from './rng.js';
+import { ChaosEvent, LoadProfile, isChaosActive, makeLoadProfile } from './scenarios.js';
+import { estimateNodeCostPerHour, CloudProvider } from './costModel.js';
 
 const HISTORY_LIMIT = 240;
 

@@ -1,7 +1,7 @@
 // Node-safe conversion from stored game architecture JSON to engine SimConfig.
 
 import type { GameArchitecture } from '../game/types';
-import { SIM_DT_SECONDS, SIM_TRACE_SAMPLES } from './constants';
+import { SIM_DT_SECONDS, SIM_TRACE_SAMPLES } from './constants.js';
 import type { EdgeSpec, SimConfig } from './types';
 
 /** Build a deterministic SimConfig from a player's architecture snapshot. */

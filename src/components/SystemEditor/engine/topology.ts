@@ -1,7 +1,7 @@
 // Graph topology analysis: strongly-connected components (for cycle support),
 // source/sink classification and structural validation.
 
-import { EdgeSpec, NodeConfig, nodeCapacity } from './types';
+import { EdgeSpec, NodeConfig, nodeCapacity } from './types.js';
 
 export interface Topology {
   /** node id -> outgoing edges */
