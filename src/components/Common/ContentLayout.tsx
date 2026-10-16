@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import CompletionButton from './CompletionButton';
 import ReadingTime from './ReadingTime';
 import { SimulatorConsole } from '../tactical';
-import { getItem } from '../../config/contentRegistry';
+import { getItem, getModule } from '../../config/contentRegistry';
 import { ContentBreadcrumb, ContentFooterNav } from './ContentNav';
 
 interface Props {
@@ -55,14 +55,27 @@ export default function ContentLayout({ children, hideCompletion = false, childP
   // Registry-driven breadcrumb + prev/next/related, shown on real content
   // pages (lessons, cases, simulators) but not on tool pages.
   const regItem = getItem(currentPath);
+  const isLesson = regItem?.type === 'lesson' || regItem?.type === 'case';
+  const lessonModule = isLesson ? getModule(regItem.moduleId) : undefined;
   const showNav = !!regItem && !isRoadmapPage && !isForumPage && !isEditor;
-  const navContainer = isSimulator ? 'px-4 md:px-6' : 'mx-auto max-w-4xl px-4 md:px-8';
+  const navContainer = isLesson ? 'lesson-chrome' : isSimulator ? 'px-4 md:px-6' : 'mx-auto max-w-4xl px-4 md:px-8';
 
   return (
     <div className="relative">
       {showNav && (
         <div className={`${navContainer} pt-6`}>
           <ContentBreadcrumb path={currentPath} />
+        </div>
+      )}
+
+      {isLesson && (
+        <div className="lesson-chrome">
+          <div className="lesson-meta">
+            {lessonModule && (
+              <span>{t(`command_center.modules.${lessonModule.id}`, { defaultValue: lessonModule.label })}</span>
+            )}
+            <ReadingTime contentRef={contentRef} />
+          </div>
         </div>
       )}
 
@@ -80,13 +93,21 @@ export default function ContentLayout({ children, hideCompletion = false, childP
         )}
       </div>
 
+      {isLesson && !hideCompletion && (
+        <div className="lesson-chrome">
+          <div className="lesson-completion">
+            <CompletionButton path={currentPath} childPaths={childPaths} />
+          </div>
+        </div>
+      )}
+
       {showNav && (
         <div className={`${navContainer} pb-12`}>
           <ContentFooterNav path={currentPath} />
         </div>
       )}
 
-      <div className="fixed bottom-8 right-8 flex flex-col items-end gap-3">
+      {!isLesson && <div className="fixed bottom-8 right-8 flex flex-col items-end gap-3">
         {!isRoadmapPage && !isSimulator && !isForumPage && (
           <ReadingTime contentRef={contentRef} />
         )}
@@ -94,7 +115,7 @@ export default function ContentLayout({ children, hideCompletion = false, childP
         {!hideCompletion && !isRoadmapPage && !isForumPage && (
           <CompletionButton path={currentPath} childPaths={childPaths} />
         )}
-      </div>
+      </div>}
     </div>
   );
 }

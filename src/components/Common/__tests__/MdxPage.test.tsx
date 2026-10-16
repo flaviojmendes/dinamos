@@ -16,7 +16,7 @@ vi.mock('../../../app/utils/api', () => ({ default: api }));
 
 const i18n = vi.hoisted(() => ({ language: 'en' }));
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ i18n }),
+  useTranslation: () => ({ i18n, t: (key: string) => key }),
 }));
 
 const pathname = vi.hoisted(() => ({ value: '/p1' }));

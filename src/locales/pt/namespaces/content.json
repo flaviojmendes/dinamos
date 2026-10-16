@@ -1,5 +1,24 @@
 {
   "mark_complete": "Marcar como concluído",
   "completed_label": "Concluído",
-  "reading_time": "{{minutes}} min de leitura"
+  "reading_time": "{{minutes}} min de leitura",
+  "on_this_page": "Nesta página",
+  "mark_incomplete": "Marcar como não concluído",
+  "table": "Tabela",
+  "callout": {
+    "info": "Nota",
+    "success": "Destaque",
+    "warning": "Atenção",
+    "danger": "Cuidado",
+    "neutral": "Observação"
+  },
+  "nav": {
+    "breadcrumb_label": "Navegação da aula",
+    "footer_label": "Continuar aprendendo",
+    "breadcrumb_home": "Início",
+    "prev": "Anterior",
+    "next": "Próxima",
+    "more_in_module": "Mais em {{module}}",
+    "explore": "Explorar"
+  }
 }

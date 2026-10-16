@@ -1,155 +1,73 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { createContext, useContext } from 'react';
+import { CircleCheck, Info, TriangleAlert, CircleAlert } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import './content.css';
 
-/**
- * MDX content component library — tactical command-console styling.
- *
- * All content-only pages are authored as MDX and rendered through MdxPage,
- * which provides this `mdxComponents` map via <MDXProvider>. Authors therefore
- * use these components as bare JSX tags (<Callout>, <Cards>, <Metric>, ...)
- * without importing anything.
- *
- * IMPORTANT: `@tailwindcss/typography` is NOT installed, so the `prose` classes
- * are inert. The HTML element map below carries ALL of the typographic styling.
- * Keep accent / variant class strings STATIC (never build class names
- * dynamically) so Tailwind's purge step keeps them.
- */
-
+/** Shared lesson components. Long chapters remain document sections; Cards
+ * provides the explicit grid context for compact overview/navigation tiles. */
 type AccentKey = 'brand' | 'green' | 'purple' | 'red' | 'yellow' | 'slate';
-
-// Left accent bar color per accent (the tactical section-marker treatment).
-const accentBar: Record<AccentKey, string> = {
-  brand: 'bg-signal-cyan',
-  green: 'bg-signal-green',
-  purple: 'bg-signal-cyan',
-  red: 'bg-signal-red',
-  yellow: 'bg-signal-amber',
-  slate: 'bg-slate-400 dark:bg-tactical-line',
-};
+const CardGridContext = createContext(false);
 
 const titleAccent: Record<AccentKey, string> = {
-  brand: 'text-brand-600 dark:text-signal-cyan',
-  green: 'text-green-600 dark:text-signal-green',
-  purple: 'text-purple-600 dark:text-signal-cyan',
-  red: 'text-red-600 dark:text-signal-red',
-  yellow: 'text-yellow-600 dark:text-signal-amber',
+  brand: 'text-brand-600 dark:text-brand-300',
+  green: 'text-green-700 dark:text-signal-green',
+  purple: 'text-purple-700 dark:text-purple-300',
+  red: 'text-red-700 dark:text-signal-red',
+  yellow: 'text-yellow-800 dark:text-signal-amber',
   slate: 'text-slate-900 dark:text-tactical-text',
 };
 
-// ---------------------------------------------------------------------------
-// Layout / rich components
-// ---------------------------------------------------------------------------
-
-/** Fade-in section wrapper (reproduces the framer-motion entrance on rich pages). */
 export function Section({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
+  return <div className={`lesson-group ${className}`}>{children}</div>;
 }
 
-/** Responsive grid for <Card> children. cols defaults to 3. */
 export function Cards({ children, cols = 3 }: { children: React.ReactNode; cols?: 2 | 3 | 4 }) {
-  const colClass =
-    cols === 2 ? 'md:grid-cols-2' : cols === 4 ? 'md:grid-cols-4' : 'md:grid-cols-3';
-  return <div className={`grid grid-cols-1 ${colClass} gap-4 my-8`}>{children}</div>;
+  return <CardGridContext.Provider value={true}>
+    <div className={`lesson-cards lesson-columns-${cols}`} data-lesson-grid>{children}</div>
+  </CardGridContext.Provider>;
 }
 
-/** A single bordered tactical panel with an optional accent header. */
-export function Card({
-  title,
-  emoji,
-  accent = 'slate',
-  children,
-}: {
-  title?: string;
-  emoji?: string;
-  accent?: AccentKey;
-  children: React.ReactNode;
+export function Card({ title, emoji, accent = 'slate', children }: {
+  title?: string; emoji?: string; accent?: AccentKey; children: React.ReactNode;
 }) {
+  const inGrid = useContext(CardGridContext);
+  const Heading = inGrid ? 'h3' : 'h2';
   return (
-    <div className="tactical-panel">
-      {title && (
-        <div className="flex items-center gap-2.5 border-b border-slate-200 dark:border-tactical-border px-4 py-3">
-          <span className={`h-3.5 w-1 shrink-0 ${accentBar[accent]}`} aria-hidden />
-          {emoji && <span className="text-base">{emoji}</span>}
-          <h3 className={`font-mono uppercase tracking-wider text-sm font-semibold ${titleAccent[accent]}`}>{title}</h3>
-        </div>
-      )}
-      <div className="p-4 space-y-3 text-slate-700 dark:text-tactical-dim text-sm leading-relaxed [&_ul]:list-disc [&_ul]:list-inside [&_ul]:space-y-1">
-        {children}
+    <section className={inGrid ? 'lesson-card' : 'lesson-section'} data-accent={accent}>
+      {title && <div className="lesson-section-heading">
+        {emoji && <span className="lesson-section-icon" aria-hidden="true">{emoji}</span>}
+        <Heading className={inGrid ? 'lesson-card-title' : 'lesson-heading'}>{title}</Heading>
+      </div>}
+      <div className="lesson-section-body">
+        <CardGridContext.Provider value={false}>{children}</CardGridContext.Provider>
       </div>
-    </div>
+    </section>
   );
 }
 
-/** Highlighted box for asides / theorem statements / notes. */
-export function Callout({
-  type = 'info',
-  title,
-  children,
-}: {
-  type?: 'info' | 'success' | 'warning' | 'danger' | 'neutral';
-  title?: string;
-  children: React.ReactNode;
+export function Callout({ type = 'info', title, children }: {
+  type?: 'info' | 'success' | 'warning' | 'danger' | 'neutral'; title?: string; children: React.ReactNode;
 }) {
-  const bar: Record<string, string> = {
-    info: 'bg-signal-cyan',
-    success: 'bg-signal-green',
-    warning: 'bg-signal-amber',
-    danger: 'bg-signal-red',
-    neutral: 'bg-slate-400 dark:bg-tactical-line',
-  };
-  const titleColor: Record<string, string> = {
-    info: 'text-brand-600 dark:text-signal-cyan',
-    success: 'text-green-600 dark:text-signal-green',
-    warning: 'text-yellow-600 dark:text-signal-amber',
-    danger: 'text-red-600 dark:text-signal-red',
-    neutral: 'text-slate-900 dark:text-tactical-text',
-  };
-  const label: Record<string, string> = {
-    info: 'NOTE',
-    success: 'CONFIRMED',
-    warning: 'CAUTION',
-    danger: 'ALERT',
-    neutral: 'MEMO',
-  };
-  return (
-    <div className="my-8 tactical-panel flex">
-      <div className={`w-1 shrink-0 ${bar[type]}`} aria-hidden />
-      <div className="flex-1 p-5">
-        <div className={`font-mono uppercase tracking-wider text-xs font-semibold mb-2 ${titleColor[type]}`}>
-          {title ?? label[type]}
-        </div>
-        <div className="space-y-3 text-slate-700 dark:text-tactical-dim [&_ul]:list-disc [&_ul]:list-inside [&_ul]:space-y-1">
-          {children}
-        </div>
-      </div>
+  const { t } = useTranslation();
+  if (type === 'neutral' && !title) return <div className="lesson-summary">{children}</div>;
+  const Icon = { info: Info, success: CircleCheck, warning: TriangleAlert, danger: CircleAlert, neutral: Info }[type];
+  return <aside className="lesson-callout" data-tone={type}>
+    <div className="lesson-callout-heading"><Icon size={18} aria-hidden="true" />
+      <span>{title ?? t(`content.callout.${type}`)}</span>
     </div>
-  );
+    <div className="lesson-callout-body">{children}</div>
+  </aside>;
 }
 
-/** Responsive grid of headline metrics. */
 export function Metrics({ children, cols = 3 }: { children: React.ReactNode; cols?: 2 | 3 | 4 }) {
-  const colClass =
-    cols === 2 ? 'md:grid-cols-2' : cols === 4 ? 'md:grid-cols-4' : 'md:grid-cols-3';
-  return <div className={`grid grid-cols-1 ${colClass} gap-3 my-8`}>{children}</div>;
+  return <div className={`lesson-metrics lesson-columns-${cols}`}>{children}</div>;
 }
 
-/** A single big-number metric tile. */
 export function Metric({ value, label, accent = 'brand' }: { value: string; label: string; accent?: AccentKey }) {
-  return (
-    <div className="tactical-panel px-4 py-4">
-      <div className={`font-mono text-3xl font-bold tabular-nums leading-none ${titleAccent[accent]}`}>{value}</div>
-      <div className="label-mono mt-2">{label}</div>
-    </div>
-  );
+  return <div className="lesson-metric">
+    <div className={`lesson-metric-value ${titleAccent[accent]}`}>{value}</div>
+    <div className="lesson-metric-label">{label}</div>
+  </div>;
 }
 
 // ---------------------------------------------------------------------------
@@ -182,7 +100,7 @@ type ArchLayer = { name?: string; nodes: (string | ArchNode)[]; accent?: AccentK
 /** Arrow that points right on wide screens and down when layers stack on mobile. */
 function LayerConnector() {
   return (
-    <div className="flex items-center justify-center font-mono text-signal-amber shrink-0 py-1 md:py-0 md:px-1">
+    <div className="flex items-center justify-center font-sans text-signal-amber shrink-0 py-1 md:py-0 md:px-1">
       <span className="md:hidden text-lg leading-none">↓</span>
       <span className="hidden md:inline text-lg leading-none">→</span>
     </div>
@@ -208,7 +126,7 @@ export function Architecture({ layers, caption }: { layers: ArchLayer[]; caption
                   return (
                     <div
                       key={j}
-                      className={`border px-3 py-2 text-center font-mono text-xs md:text-[0.8rem] leading-tight text-slate-800 dark:text-tactical-text ${nodeBox[acc]}`}
+                      className={`border px-3 py-2 text-center font-sans text-sm leading-tight text-slate-800 dark:text-tactical-text ${nodeBox[acc]}`}
                     >
                       {node.label}
                     </div>
@@ -221,7 +139,7 @@ export function Architecture({ layers, caption }: { layers: ArchLayer[]; caption
         ))}
       </div>
       {caption && (
-        <figcaption className="mt-4 text-xs font-mono text-slate-500 dark:text-tactical-dim text-center">
+        <figcaption className="mt-4 text-sm font-sans text-slate-500 dark:text-tactical-dim text-center">
           {caption}
         </figcaption>
       )}
@@ -236,15 +154,15 @@ export function Flow({ steps, caption, accent = 'brand' }: { steps: string[]; ca
       <div className="flex flex-wrap items-center gap-x-2 gap-y-3">
         {steps.map((s, i) => (
           <React.Fragment key={i}>
-            <div className={`border px-3 py-2 font-mono text-xs md:text-sm text-slate-800 dark:text-tactical-text ${nodeBox[accent]}`}>
+            <div className={`border px-3 py-2 font-sans text-xs md:text-sm text-slate-800 dark:text-tactical-text ${nodeBox[accent]}`}>
               {s}
             </div>
-            {i < steps.length - 1 && <span className="font-mono text-signal-amber text-lg leading-none">→</span>}
+            {i < steps.length - 1 && <span className="font-sans text-signal-amber text-lg leading-none">→</span>}
           </React.Fragment>
         ))}
       </div>
       {caption && (
-        <figcaption className="mt-4 text-xs font-mono text-slate-500 dark:text-tactical-dim">{caption}</figcaption>
+        <figcaption className="mt-4 text-sm font-sans text-slate-500 dark:text-tactical-dim">{caption}</figcaption>
       )}
     </figure>
   );
@@ -263,7 +181,7 @@ export function Timeline({ items }: { items: TimelineItem[] }) {
             aria-hidden
           />
           {it.year && <div className="label-mono">{it.year}</div>}
-          <div className="font-mono font-semibold text-slate-900 dark:text-tactical-text mt-0.5">{it.title}</div>
+          <div className="font-sans font-semibold text-slate-900 dark:text-tactical-text mt-0.5">{it.title}</div>
           {it.body && <div className="text-sm leading-relaxed text-slate-700 dark:text-tactical-dim mt-1">{it.body}</div>}
         </div>
       ))}
@@ -282,7 +200,7 @@ export function BarChart({ data, caption }: { data: BarDatum[]; caption?: string
         const pct = max > 0 ? Math.max(2, (d.value / max) * 100) : 0;
         return (
           <div key={i} className="space-y-1.5">
-            <div className="flex items-baseline justify-between gap-3 text-xs font-mono">
+            <div className="flex items-baseline justify-between gap-3 text-sm font-sans">
               <span className="text-slate-700 dark:text-tactical-dim truncate">{d.label}</span>
               <span className="tabular-nums font-semibold text-slate-900 dark:text-tactical-text shrink-0">
                 {d.display ?? d.value}
@@ -295,7 +213,7 @@ export function BarChart({ data, caption }: { data: BarDatum[]; caption?: string
         );
       })}
       {caption && (
-        <figcaption className="text-xs font-mono text-slate-500 dark:text-tactical-dim">{caption}</figcaption>
+        <figcaption className="text-sm font-sans text-slate-500 dark:text-tactical-dim">{caption}</figcaption>
       )}
     </figure>
   );
@@ -316,76 +234,39 @@ export function VideoEmbed({ src, title = 'video' }: { src: string; title?: stri
   );
 }
 
-// ---------------------------------------------------------------------------
-// HTML element map — carries the base typography (prose is inert).
-// ---------------------------------------------------------------------------
-
+// HTML styling is explicit; this project does not use a typography plugin.
 type EProps = React.HTMLAttributes<HTMLElement> & { href?: string };
 
+function LessonTable({ className = '', ...props }: EProps) {
+  const { t } = useTranslation();
+  return <div className="lesson-table" tabIndex={0} role="region" aria-label={t('content.table')}>
+    <table className={`lesson-table-content ${className}`} {...props} />
+  </div>;
+}
+
 const elements = {
-  h1: (p: EProps) => (
-    <h1 className="text-3xl md:text-4xl font-mono font-bold tracking-tight mb-8 text-slate-900 dark:text-tactical-text" {...p} />
-  ),
-  h2: (p: EProps) => (
-    <h2
-      className="flex items-center gap-3 text-2xl font-mono font-bold mt-16 mb-6 text-slate-900 dark:text-tactical-text before:content-[''] before:h-6 before:w-1 before:bg-signal-amber before:shrink-0"
-      {...p}
-    />
-  ),
-  h3: (p: EProps) => (
-    <h3 className="text-xl font-mono font-semibold mt-10 mb-4 text-brand-600 dark:text-signal-cyan" {...p} />
-  ),
-  h4: (p: EProps) => (
-    <h4 className="text-lg font-mono font-medium mt-6 mb-3 text-slate-900 dark:text-tactical-text" {...p} />
-  ),
-  p: (p: EProps) => (
-    <p className="my-5 leading-relaxed text-slate-700 dark:text-tactical-dim" {...p} />
-  ),
-  ul: (p: EProps) => <ul className="list-disc list-inside space-y-2 ml-4 my-5 text-slate-700 dark:text-tactical-dim marker:text-signal-amber" {...p} />,
-  ol: (p: EProps) => <ol className="list-decimal list-inside space-y-2 ml-4 my-5 text-slate-700 dark:text-tactical-dim marker:text-signal-amber" {...p} />,
-  li: (p: EProps) => <li className="leading-relaxed" {...p} />,
-  blockquote: (p: EProps) => (
-    <blockquote
-      className="border-l-2 border-signal-amber pl-4 my-8 text-lg font-mono text-slate-800 dark:text-tactical-text italic"
-      {...p}
-    />
-  ),
-  a: ({ href = '#', ...p }: EProps) => (
-    <a href={href} className="text-brand-600 dark:text-signal-cyan underline underline-offset-2 hover:no-underline" {...p} />
-  ),
-  code: (p: EProps) => (
-    <code className="px-1.5 py-0.5 bg-slate-200 dark:bg-tactical-raised text-sm font-mono text-brand-700 dark:text-signal-green" {...p} />
-  ),
-  pre: (p: EProps) => (
-    <pre className="my-6 p-4 bg-slate-950 dark:bg-black border border-slate-800 dark:border-tactical-border text-slate-100 overflow-x-auto text-sm [&_code]:bg-transparent [&_code]:p-0 [&_code]:text-slate-100" {...p} />
-  ),
-  hr: (p: EProps) => <hr className="my-10 border-slate-200 dark:border-tactical-border" {...p} />,
-  img: (p: React.ImgHTMLAttributes<HTMLImageElement>) => (
-    <img className="my-6 max-w-full border border-slate-200 dark:border-tactical-border" {...p} />
-  ),
-  table: (p: EProps) => (
-    <div className="my-6 overflow-x-auto tactical-panel">
-      <table className="w-full text-left border-collapse text-sm" {...p} />
-    </div>
-  ),
-  th: (p: EProps) => <th className="label-mono border-b border-slate-200 dark:border-tactical-border px-3 py-2.5 bg-slate-50 dark:bg-tactical-surface" {...p} />,
-  td: (p: EProps) => <td className="border-b border-slate-100 dark:border-tactical-border/60 px-3 py-2.5 font-mono text-slate-700 dark:text-tactical-dim" {...p} />,
+  h1: ({ className = '', ...p }: EProps) => <h1 className={`lesson-title ${className}`} {...p} />,
+  h2: ({ className = '', ...p }: EProps) => <h2 className={`lesson-heading ${className}`} {...p} />,
+  h3: ({ className = '', ...p }: EProps) => <h3 className={`lesson-subheading ${className}`} {...p} />,
+  h4: ({ className = '', ...p }: EProps) => <h4 className={`lesson-minor-heading ${className}`} {...p} />,
+  p: ({ className = '', ...p }: EProps) => <p className={`lesson-paragraph ${className}`} {...p} />,
+  ul: ({ className = '', ...p }: EProps) => <ul className={`lesson-list ${className}`} {...p} />,
+  ol: ({ className = '', ...p }: EProps) => <ol className={`lesson-list lesson-list-ordered ${className}`} {...p} />,
+  li: ({ className = '', ...p }: EProps) => <li className={`lesson-list-item ${className}`} {...p} />,
+  blockquote: ({ className = '', ...p }: EProps) => <blockquote className={`lesson-quote ${className}`} {...p} />,
+  a: ({ href = '#', className = '', ...p }: EProps) => <a href={href} className={`lesson-link ${className}`} {...p} />,
+  strong: ({ className = '', ...p }: EProps) => <strong className={`lesson-strong ${className}`} {...p} />,
+  code: ({ className = '', ...p }: EProps) => <code className={`lesson-inline-code ${className}`} {...p} />,
+  pre: ({ className = '', ...p }: EProps) => <pre className={`lesson-code ${className}`} tabIndex={0} {...p} />,
+  hr: ({ className = '', ...p }: EProps) => <hr className={`lesson-rule ${className}`} {...p} />,
+  img: ({ className = '', ...p }: React.ImgHTMLAttributes<HTMLImageElement>) => <img className={`lesson-image ${className}`} loading="lazy" decoding="async" {...p} />,
+  table: LessonTable,
+  th: ({ className = '', ...p }: EProps) => <th className={`lesson-th ${className}`} {...p} />,
+  td: ({ className = '', ...p }: EProps) => <td className={`lesson-td ${className}`} {...p} />,
 };
 
-/** The complete component set handed to <MDXProvider>. */
 export const mdxComponents = {
-  ...elements,
-  Section,
-  Cards,
-  Card,
-  Callout,
-  Metrics,
-  Metric,
-  Architecture,
-  Flow,
-  Timeline,
-  BarChart,
-  VideoEmbed,
+  ...elements, Section, Cards, Card, Callout, Metrics, Metric,
+  Architecture, Flow, Timeline, BarChart, VideoEmbed,
 };
-
 export default mdxComponents;

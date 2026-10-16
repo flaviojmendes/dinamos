@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import api from '../../app/utils/api';
 import { loadPageBody, shouldUseContentApi } from '../../contentDelivery';
+import LessonOutline from './LessonOutline';
 import MdxRenderer, { mdxCacheKey } from './MdxRenderer';
 import ContentAnnotations from './ContentAnnotations';
 import { getVisitorId } from '../../utils/visitorId';
@@ -40,6 +41,7 @@ export default function MdxPage({ slug }: Props) {
   const [body, setBody] = useState<string | null>(null);
   const [status, setStatus] = useState<'loading' | 'loaded' | 'notfound'>('loading');
   const articleRef = useRef<HTMLElement>(null);
+  const contentKey = useMemo(() => mdxCacheKey(slug, lang, body ?? ''), [slug, lang, body]);
 
   useEffect(() => {
     let cancelled = false;
@@ -80,21 +82,24 @@ export default function MdxPage({ slug }: Props) {
   }, [location.pathname]);
 
   return (
-    <article ref={articleRef} className="mx-auto max-w-4xl px-4 py-6 md:px-8 lg:py-10">
-      {status === 'loading' && <ContentSkeleton />}
-      {status === 'notfound' && (
-        <p className="text-slate-500 dark:text-tactical-dim">Content not found: {slug}</p>
-      )}
-      {status === 'loaded' && body !== null && (
-        <MdxRenderer
-          source={body}
-          cacheKey={mdxCacheKey(slug, lang, body)}
-          fallback={<ContentSkeleton />}
-        />
-      )}
-      {status === 'loaded' && (
-        <ContentAnnotations slug={slug} path={location.pathname} containerRef={articleRef} />
-      )}
-    </article>
+    <div className="lesson-layout">
+      <article ref={articleRef} className="lesson-article">
+        {status === 'loading' && <ContentSkeleton />}
+        {status === 'notfound' && (
+          <p className="text-slate-500 dark:text-tactical-dim">Content not found: {slug}</p>
+        )}
+        {status === 'loaded' && body !== null && (
+          <MdxRenderer
+            source={body}
+            cacheKey={contentKey}
+            fallback={<ContentSkeleton />}
+          />
+        )}
+        {status === 'loaded' && (
+          <ContentAnnotations slug={slug} path={location.pathname} containerRef={articleRef} />
+        )}
+      </article>
+      {status === 'loaded' && <LessonOutline containerRef={articleRef} contentKey={contentKey} />}
+    </div>
   );
 }

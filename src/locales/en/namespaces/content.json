@@ -1,5 +1,24 @@
 {
   "mark_complete": "Mark as completed",
   "completed_label": "Completed",
-  "reading_time": "{{minutes}} min read"
+  "reading_time": "{{minutes}} min read",
+  "on_this_page": "On this page",
+  "mark_incomplete": "Mark as incomplete",
+  "table": "Table",
+  "callout": {
+    "info": "Note",
+    "success": "Key point",
+    "warning": "Warning",
+    "danger": "Caution",
+    "neutral": "Note"
+  },
+  "nav": {
+    "breadcrumb_label": "Lesson navigation",
+    "footer_label": "Continue learning",
+    "breadcrumb_home": "Home",
+    "prev": "Previous",
+    "next": "Next",
+    "more_in_module": "More in {{module}}",
+    "explore": "Explore"
+  }
 }
