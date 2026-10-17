@@ -8,6 +8,9 @@ import { createRestaurantWorld, type RestaurantWorld } from './restaurantWorld';
 
 export interface RestaurantSceneProps {
   visual?: LessonVisual;
+  /** Lesson slug: selects the themed diorama. */
+  lesson?: string;
+  title?: string;
   locale?: 'pt' | 'en';
   mode: SceneMode;
   focus: Station;
@@ -55,7 +58,7 @@ export default function RestaurantScene(props: RestaurantSceneProps) {
     return () => { disposed = true; world.current?.dispose(); world.current = null; };
   }, []);
 
-  useEffect(() => { world.current?.update(props); }, [props.mode, props.focus, props.step, props.level, props.playing, props.reducedMotion, props.visual, props.locale]);
+  useEffect(() => { world.current?.update(props); }, [props.mode, props.focus, props.step, props.level, props.playing, props.reducedMotion, props.visual, props.locale, props.lesson, props.title]);
 
   return <div className="restaurant-world" data-renderer={unavailable ? 'unavailable' : backend}>
     <div ref={host} className="restaurant-world-canvas" role="img" aria-label={props.ariaLabel} />

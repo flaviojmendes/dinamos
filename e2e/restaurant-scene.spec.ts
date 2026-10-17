@@ -106,6 +106,7 @@ const bundle = buildSync({
         return {
           mode: concept.mode, focus: concept.steps[options.step].focus,
           visual: getLessonVisual(options.slug, options.step),
+          lesson: options.slug, title: concept.title[options.locale],
           step: options.step, level: options.level,
           locale: options.locale,
           playing: options.playing, reducedMotion: options.reducedMotion,

@@ -53,6 +53,11 @@ a lesson:
   animation mode must not invent a failure, successful write or transaction that
   contradicts the narration. Keep fault and blocking flags absent when no failure
   is being taught.
+- `src/components/restaurant/dioramas.ts` stages the lesson in one of the
+  burger-restaurant kits built by `dioramaKits.ts`. Write the chalkboard line in
+  both languages and the state of each step: units shown, opened, lit, closed or
+  marked approved, rejected or waiting, plus the kit's own props and dial. Use
+  only flags listed for that kit; `dioramas.test.ts` enforces this.
 
 Every component must belong to the restaurant: staff, orders, receipts, menus,
 recipe books, ingredient crates, employee badges, stockroom keys or delivery bags.

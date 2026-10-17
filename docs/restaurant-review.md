@@ -4,6 +4,10 @@ Foram revisadas as 121 aulas e suas 363 etapas, nos dois idiomas. A cena passa a
 
 ## Regras da cena
 
+- Cada aula tem um diorama próprio (`src/components/restaurant/dioramas.ts`), montado a partir de um dos 13 kits da hamburgueria em `dioramaKits.ts`: linha de atendimento, régua de comandas, cozinha em expansão, recepção, rede de filiais, arquivo e estoque, chaves e reservas, cardápio de consulta, porta do estoque, sala da gerência, expedição, mesa de receitas e cozinha reserva.
+- O quadro de giz escreve a ideia central da aula, e cada etapa altera o diorama: unidades abertas ou fechadas, selos de aprovado, recusado ou em espera, cones de fora de serviço e objetos específicos (catraca de senhas, diário de pedidos, disjuntor de entregas, gráfico da gerência).
+- Estações que não pertencem ao tema do kit aparecem como portas sinalizadas, e o funcionário entrega o objeto na porta, sem inventar um balcão.
+- O pedestal, com a placa de latão do título, ganha decorações conforme os seis níveis de progresso salvos.
 - Funcionários transportam comandas, livros, cardápios e sacolas; não há bolinhas de dados, linhas de rede, painéis flutuantes nem servidores no salão.
 - Filiais são balcões de hamburgueria com cozinheiro, chapa, cardápio e cobertura. A mesa da gerência tem receitas, registros, lista de conferência e telefone.
 - Cache e replicação copiam informações em documentos. Hambúrguer pronto, ingredientes e entregas físicas não são copiados, revertidos ou deduplicados como dados.

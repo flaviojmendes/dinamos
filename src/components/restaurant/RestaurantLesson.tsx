@@ -137,7 +137,7 @@ export default function RestaurantLesson({ slug, path, pages, progress, onComple
           <div className="restaurant-scene-label"><span className="restaurant-scene-dot" />{copy.preview}</div>
           <SceneBoundary onUnavailable={stopPlayback} fallback={<div className="restaurant-scene-loading" role="img" aria-label={copy.scene + concept.title[lang]}><Store size={54} aria-hidden="true" /><span>{copy.unavailable}</span></div>}>
             <Suspense fallback={<div className="restaurant-scene-loading" role="status"><Store size={30} aria-hidden="true" /><span>{copy.loading}</span></div>}>
-              <RestaurantScene mode={concept.mode} focus={active.focus} step={step} visual={visual} locale={lang} level={restaurant.level}
+              <RestaurantScene mode={concept.mode} focus={active.focus} step={step} visual={visual} lesson={slug} title={concept.title[lang]} locale={lang} level={restaurant.level}
                 playing={running && visible && documentVisible && !reducedMotion} reducedMotion={reducedMotion}
                 onStepComplete={finishStep} onUnavailable={stopPlayback} labels={copy.stations} ariaLabel={copy.scene + concept.title[lang]} />
             </Suspense>
