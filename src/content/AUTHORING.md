@@ -47,15 +47,22 @@ a lesson:
   steps. Each step identifies the station the learner should observe. Register a
   new published lesson here so it participates in the restaurant's progress.
 - `src/components/restaurant/visualModel.ts` defines each step's observable
-  behavior: source and destination stations, visual cue, queue depth, blocked
+  behavior: a required physical restaurant prop, source and destination stations,
+  document identifier where relevant, visual cue, queue depth, blocked
   flow, failing station or peers where relevant. Author these per lesson; a shared
   animation mode must not invent a failure, successful write or transaction that
   contradicts the narration. Keep fault and blocking flags absent when no failure
   is being taught.
 
-These scenes illustrate the restaurant's software and communication. Do not imply
-that physical food preparation has database atomicity, replication guarantees or
-reversible side effects. Explain such limits in the teaching text.
+Every component must belong to the restaurant: staff, orders, receipts, menus,
+recipe books, ingredient crates, employee badges, stockroom keys or delivery bags.
+Use staff carrying and checking these objects, never abstract traffic dots, network
+edges, floating computer panels or server racks. Branches must serve burgers.
+Cache and replication retain and copy information on documents; they never copy
+meals. A repeated ticket is visibly filed aside. Compensation issues a refund or
+releases a reservation, never reverses cooking. Keep the physical action, selected
+prop, identifier and narration consistent, and explain the limits of the analogy.
+The lesson-by-lesson audit is recorded in `docs/restaurant-review.md`.
 
 Review all three steps in both languages, with reduced motion, keyboard controls
 and a narrow viewport. The renderer prefers WebGL and uses the same Three.js

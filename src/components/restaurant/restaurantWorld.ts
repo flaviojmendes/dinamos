@@ -4,11 +4,15 @@ import { SVGRenderer } from 'three/addons/renderers/SVGRenderer.js';
 import type { LessonVisual } from './visualModel';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import type { SceneMode, Station } from './learningModel';
+import { makeRestaurantObject, restaurantPropNames } from './restaurantObjects';
+import type { RestaurantProp } from './visualModel';
+import { getRestaurantBeat, type RestaurantBeat } from './restaurantChoreography';
 
 type Position = [number, number, number];
 export interface WorldState {
   mode: SceneMode; focus: Station; step: 0 | 1 | 2; level: number;
   visual?: LessonVisual;
+  locale?: 'pt' | 'en';
   playing: boolean; reducedMotion: boolean; onStepComplete?: () => void;
 }
 export interface RestaurantWorld {
@@ -24,9 +28,9 @@ const P = {
   ink: '#202a38', white: '#fffcf4', gold: '#efb95e', red: '#e16c66', green: '#78bd96',
 };
 const positions: Record<Station, Position> = {
-  entrance: [-1.9, .3, 3.7], counter: [-.7, 1.25, 1], kitchen: [.2, 1.12, -2.15],
-  pickup: [2.5, 1.1, 1], stock: [-3.6, 1.1, -1.3], branch: [5.25, 1, -.5],
-  dispatch: [3.25, .7, 4], terminal: [3.45, 1.4, -2.55],
+  entrance: [-1.9, 1.1, 3.7], counter: [-.7, 1.25, 1], kitchen: [1.95, 1.12, -1.3],
+  pickup: [2.5, 1.1, 1], stock: [-3.6, 1.1, -1.3], branch: [5.25, 1, .45],
+  dispatch: [2.65, .85, 4.55], terminal: [3.45, 1.1, -2.55],
 };
 const levels: Record<Station, number> = { entrance: 1, counter: 1, kitchen: 2, stock: 3, pickup: 3, dispatch: 4, branch: 5, terminal: 6 };
 const specialStation: Partial<Record<SceneMode, Station>> = {
@@ -57,7 +61,7 @@ export function createRestaurantWorld(host: HTMLElement, initial: WorldState & {
     gpu.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.6));
     gpu.outputColorSpace = T.SRGBColorSpace;
     gpu.toneMapping = T.ACESFilmicToneMapping;
-    gpu.toneMappingExposure = 1.32;
+    gpu.toneMappingExposure = 1.12;
     gpu.shadowMap.enabled = true;
     gpu.shadowMap.type = T.PCFSoftShadowMap;
     gpu.shadowMap.autoUpdate = false;
@@ -74,6 +78,9 @@ export function createRestaurantWorld(host: HTMLElement, initial: WorldState & {
   canvas.setAttribute('aria-hidden', 'true');
   canvas.style.width = '100%'; canvas.style.height = '100%'; canvas.style.display = 'block';
   host.appendChild(canvas);
+  const previousHostPosition = host.style.position;
+  const positionHost = getComputedStyle(host).position === 'static';
+  if (positionHost) host.style.position = 'relative';
   let vectorFrame = 0;
   const setLoop = (callback: ((time: number) => void) | null) => {
     if (gpu) { gpu.setAnimationLoop(callback); return; }
@@ -127,6 +134,11 @@ export function createRestaurantWorld(host: HTMLElement, initial: WorldState & {
   function group(parent: T.Object3D = scene, at: Position = [0, 0, 0]) {
     const object = new T.Group(); object.position.set(...at); parent.add(object); return object;
   }
+  const craft = { group, box, sphere, cylinder };
+  const restaurantObject = (parent: T.Object3D, kind: RestaurantProp, at: Position, scale = 1) => {
+    const object = makeRestaurantObject(craft, parent, kind);
+    object.position.set(...at); object.scale.setScalar(scale); return object;
+  };
   const ambient = new T.HemisphereLight('#fff3de', '#a7bad5', 2.5); scene.add(ambient);
   const sunlight = new T.DirectionalLight('#fff5df', 4);
   sunlight.position.set(-6, 12, 9); sunlight.castShadow = true;
@@ -135,7 +147,7 @@ export function createRestaurantWorld(host: HTMLElement, initial: WorldState & {
   sunlight.shadow.normalBias = .04; sunlight.shadow.bias = -.0002;
   scene.add(sunlight);
   const fill = new T.DirectionalLight('#c9e4ff', 1.4); fill.position.set(7, 5, -5); scene.add(fill);
-  if (!gpu) { sunlight.intensity = .8; fill.intensity = .25; scene.add(new T.AmbientLight('#e8eef3', .35)); }
+  if (!gpu) { sunlight.intensity = .48; fill.intensity = .16; scene.add(new T.AmbientLight('#e8eef3', .3)); }
 
   const island = group();
   box(island, [13, .42, 11], [0, -.35, .5], P.edge, .18);
@@ -147,15 +159,6 @@ export function createRestaurantWorld(host: HTMLElement, initial: WorldState & {
   // Sidewalk, road and delivery parking outside the cutaway.
   box(island, [10.7, .025, 1.12], [.1, .03, 4.5], '#b9c3c4', .02);
   for (let x = -4; x < 5; x += 1.35) box(island, [.62, .015, .07], [x, .054, 4.5], P.white, .012).castShadow = false;
-  if (!gpu) {
-    const shadowMaterial = new T.MeshBasicMaterial({ color: '#30454b', transparent: true, opacity: .12, depthWrite: false });
-    materials.add(shadowMaterial);
-    for (const [x, z, width, depth] of [[-.7, 1.12, 2.5, .65], [-.65, -2.2, .9, .6], [3.1, 2.75, .8, .55], [-1.7, 2.6, .35, .22]]) {
-      const geometry = new T.CircleGeometry(1, 24); geometries.add(geometry);
-      const shadow = new T.Mesh(geometry, shadowMaterial); shadow.rotation.x = -Math.PI / 2;
-      shadow.position.set(x, .045, z); shadow.scale.set(width, depth, 1); island.add(shadow);
-    }
-  }
   const walls = group();
   box(walls, [9.3, 2.6, .17], [0, 1.3, -3.55], P.wall, .055);
   box(walls, [.17, 2.6, 7.2], [-4.55, 1.3, -.05], P.wall, .055);
@@ -176,6 +179,10 @@ export function createRestaurantWorld(host: HTMLElement, initial: WorldState & {
   box(sign, [.51, .065, .08], [0, -.03, .13], '#6c493a');
   box(sign, [.54, .05, .09], [0, -.08, .14], P.green);
   box(sign, [.5, .08, .08], [0, -.14, .13], P.gold);
+  // The vector renderer uses painter ordering, not a depth buffer. Large floor
+  // triangles must stay behind furniture and people instead of cutting across them.
+  island.traverse(object => { object.renderOrder = -20; });
+  walls.traverse(object => { object.renderOrder = -10; });
 
   const stationGroups = {} as Record<Station, T.Group>;
   for (const station of Object.keys(positions) as Station[]) stationGroups[station] = group();
@@ -198,6 +205,10 @@ export function createRestaurantWorld(host: HTMLElement, initial: WorldState & {
     cylinder(entrance, .035, .035, .74, [x, .48, 3.2], P.steel);
     sphere(entrance, .07, [x, .87, 3.2], P.gold);
   }
+  for (const x of [.45, 1.25]) {
+    cylinder(counter, .22, .22, .1, [x, .58, 2.1], P.pink);
+    for (const dx of [-.12, .12]) box(counter, [.045, .52, .045], [x + dx, .29, 2.1], P.navy, .01);
+  }
 
   const burners: T.Mesh[] = [];
   const grills: T.Group[] = [];
@@ -218,6 +229,8 @@ export function createRestaurantWorld(host: HTMLElement, initial: WorldState & {
   grill(stationGroups.kitchen, .92, -2.2);
   box(stationGroups.kitchen, [4.6, .38, 1.12], [-.65, 2.28, -2.3], P.steel, .1);
   box(stationGroups.kitchen, [3.9, .035, .6], [-.65, 2.06, -2.22], '#ffe5b1', .02);
+  box(stationGroups.kitchen, [1.3, .1, .7], [1.95, 1.04, -1.3], P.wood, .025);
+  for (const x of [1.4, 2.5]) box(stationGroups.kitchen, [.055, 1, .055], [x, .52, -1.3], P.steel, .01);
   for (const x of [-2.4, -.65, 1.1]) box(stationGroups.kitchen, [.055, .64, .055], [x, 1.7, -3.32], P.steel);
 
   function burger(parent: T.Group, at: Position, scale = 1) {
@@ -236,7 +249,8 @@ export function createRestaurantWorld(host: HTMLElement, initial: WorldState & {
   box(pickup, [1.8, .11, .94], [2.55, .96, 1.15], P.white);
   box(pickup, [1.65, .07, .72], [2.55, 1.61, 1.07], P.wood);
   for (const x of [1.84, 3.25]) box(pickup, [.055, .67, .055], [x, 1.3, 1.07], P.navy);
-  const cachedBurgers = [burger(pickup, [2.12, 1.03, 1.1], .75), burger(pickup, [2.7, 1.03, 1.1], .75)];
+  // Prepared food only belongs to preparation and pickup, never to a cache lesson.
+  const pickupBurgers = [burger(pickup, [2.12, 1.03, 1.1], .75), burger(pickup, [2.7, 1.03, 1.1], .75)];
   for (const x of [2.05, 2.65, 3.1]) {
     box(pickup, [.27, .45, .19], [x, 1.88, 1.12], x < 2.4 ? P.rose : '#c7af8e', .025);
     box(pickup, [.1, .07, .022], [x, 1.89, 1.23], P.white, .009);
@@ -248,12 +262,10 @@ export function createRestaurantWorld(host: HTMLElement, initial: WorldState & {
   for (const x of [-4.25, -3.25]) box(stock, [.055, 1.7, .055], [x, .88, -.54], P.navy);
   for (const y of [.15, .7, 1.25, 1.75]) box(stock, [1.1, .06, .7], [-3.75, y, -.54], P.wood);
   for (let i = 0; i < 6; i++) box(stock, [.27, .33, .35], [-4.02 + (i % 3) * .29, .88 + Math.floor(i / 3) * .53, -.5], i % 2 ? P.mint : '#d9bc90', .018);
+  box(stock, [1.15, .08, .75], [-3.6, 1.03, -1.3], P.wood, .025);
+  for (const x of [-4.04, -3.17]) box(stock, [.055, .98, .055], [x, .51, -1.3], P.navy, .01);
 
-  const cacheDisplay = group(pickup, [0, 0, 0]);
-  box(cacheDisplay, [.85, .46, .07], [2.6, 1.37, 1.57], P.navy, .025);
-  box(cacheDisplay, [.75, .36, .02], [2.6, 1.37, 1.615], '#466b65', .014);
-  const cacheRows: T.Mesh[] = [];
-  for (let i = 0; i < 3; i++) cacheRows.push(box(cacheDisplay, [.5 - i * .09, .035, .018], [2.55, 1.46 - i * .09, 1.64], P.mint, .005));
+  restaurantObject(pickup, 'menu', [2.95, 1.3, 1.15], .62);
 
   function plant(parent: T.Group, x: number, z: number) {
     const g = group(parent, [x, 0, z]);
@@ -292,35 +304,38 @@ export function createRestaurantWorld(host: HTMLElement, initial: WorldState & {
 
   const branch = stationGroups.branch;
   const replicas: T.Group[] = [];
-  const replicaLights: T.Mesh[] = [];
+  const branchDocuments: T.Group[] = [];
   for (let i = 0; i < 3; i++) {
     const g = group(branch, [5.25, 0, -2.65 + i * 2.05]); replicas.push(g);
-    box(g, [1.28, .11, 1.4], [0, .1, 0], '#cedbd6', .09);
-    box(g, [1.04, .89, .95], [0, .6, 0], i === 0 ? P.rose : '#d2d7d5');
-    box(g, [1.16, .16, 1.08], [0, 1.14, 0], P.navy, .04);
-    box(g, [.73, .41, .04], [0, .73, .5], P.ink);
-    box(g, [.7, .12, .09], [0, 1, .55], i === 0 ? P.pink : P.mint, .015);
-    for (const x of [-.23, .23]) box(g, [.035, .38, .025], [x, .72, .54], P.steel, .005);
-    replicaLights.push(sphere(g, .08, [.4, 1.3, 0], P.mint));
+    box(g, [1.35, .1, 1.5], [0, .1, 0], '#c6d4c8', .06);
+    box(g, [1.2, 1.75, .07], [0, .95, -.56], '#ddc9af', .025);
+    for (const x of [-.61, .61]) box(g, [.07, 1.8, .07], [x, 1, .57], P.wood, .02);
+    box(g, [1.45, .12, 1.4], [0, 1.95, .05], P.pink, .035);
+    for (let stripe = 0; stripe < 5; stripe++) box(g, [.13, .025, 1.41], [-.56 + stripe * .28, 2.025, .05], P.white, .007);
+    box(g, [1.28, .12, .7], [0, .9, .85], P.wood, .035);
+    box(g, [1.18, .65, .1], [0, .54, 1.1], P.rose, .025);
+    box(g, [.55, .11, .35], [0, .72, -.22], P.ink, .025);
+    burger(g, [.22, .79, -.2], .6);
+    burger(g, [-.22, .98, .95], .55);
+    restaurantObject(g, 'menu', [-.38, 1.16, .42], .45);
+    branchDocuments.push(restaurantObject(g, 'ledger', [.12, 1, .95], .5));
   }
   const terminal = stationGroups.terminal;
   box(terminal, [1.15, .1, .75], [3.25, .94, -2.5], P.wood);
   for (const x of [2.8, 3.7]) box(terminal, [.055, .9, .055], [x, .48, -2.5], P.navy);
-  box(terminal, [.1, .3, .1], [3.25, 1.14, -2.6], P.navy);
-  box(terminal, [.88, .58, .1], [3.25, 1.57, -2.6], P.navy, .045);
-  box(terminal, [.76, .46, .025], [3.25, 1.57, -2.535], '#42665f', .02);
-  for (let i = 0; i < 4; i++) box(terminal, [.1, .1 + i * .055, .03], [2.99 + i * .17, 1.46 + i * .025, -2.5], i % 2 ? P.mint : P.rose, .01);
-  box(terminal, [.5, .035, .18], [3.25, 1.02, -2.23], P.navy, .02);
+  restaurantObject(terminal, 'recipe', [3.03, 1.04, -2.4], .7);
+  restaurantObject(terminal, 'ledger', [3.56, 1.04, -2.4], .6);
+  restaurantObject(terminal, 'clock', [3.62, 1.25, -2.72], .55);
+  box(terminal, [1.1, .75, .07], [3.25, 1.95, -3.39], '#9d7750', .03);
+  restaurantObject(terminal, 'checklist', [3.25, 1.94, -3.33], .72);
+  // A chair and a supplier's telephone make this a restaurant manager's desk.
+  cylinder(terminal, .23, .27, .1, [3.25, .57, -1.77], P.pink);
+  box(terminal, [.45, .38, .06], [3.25, .85, -1.55], P.rose, .035);
+  for (const x of [3.1, 3.4]) box(terminal, [.045, .5, .045], [x, .3, -1.77], P.navy, .01);
+  box(terminal, [.28, .07, .22], [2.95, 1.05, -2.62], P.ink, .025);
+  box(terminal, [.33, .065, .09], [2.95, 1.12, -2.62], P.rose, .025);
 
-  const gpuWorkers = Array.from({ length: 3 }, (_, index) => {
-    const worker = group(terminal, [2.93 + index * .3, 0, -2.5]);
-    box(worker, [.23, .58, .46], [0, .38, 0], P.navy, .035);
-    sphere(worker, .027, [0, .57, .245], P.mint);
-    for (let row = 0; row < 3; row++) box(worker, [.14, .022, .018], [0, .4 - row * .07, .24], P.steel, .002);
-    return worker;
-  });
-
-  function person(parent: T.Group, at: Position, color: string, chef = false, skin = '#d6a184') {
+  function person(parent: T.Object3D, at: Position, color: string, chef = false, skin = '#d6a184') {
     const g = group(parent, at);
     const torso = cylinder(g, .19, .23, .52, [0, .79, 0], color);
     torso.castShadow = false;
@@ -360,164 +375,273 @@ export function createRestaurantWorld(host: HTMLElement, initial: WorldState & {
     box(g, [.12, .025, .01], [-.025, -.08, .02], P.steel, .002);
     return g;
   });
-  const effects = group();
-  const flowMaterial = new T.MeshBasicMaterial({ color: P.pink, transparent: true, opacity: .7 }); materials.add(flowMaterial);
-  const tokenMaterial = new T.MeshStandardMaterial({ color: P.pink, emissive: P.pink, emissiveIntensity: .15, roughness: .5 }); materials.add(tokenMaterial);
-  const tokens = Array.from({ length: 6 }, () => {
-    const geometry = new T.SphereGeometry(.09, 12, 8); geometries.add(geometry);
-    const token = new T.Mesh(geometry, tokenMaterial); effects.add(token); return token;
+  // Every unit has a food counter, a cook and a menu, rather than a server box.
+  replicas.forEach(replica => {
+    const chef = person(replica, [0, .16, -.12], P.white, true);
+    chef.group.scale.setScalar(.58);
   });
-  const lineMaterial = new T.LineDashedMaterial({ color: P.pink, dashSize: .13, gapSize: .1, transparent: true, opacity: .55 }); materials.add(lineMaterial);
-  let line: T.Line | null = null;
-  const focusRingGeometry = new T.RingGeometry(.73, .79, 48); geometries.add(focusRingGeometry);
-  const focusRing = new T.Mesh(focusRingGeometry, flowMaterial); focusRing.rotation.x = -Math.PI / 2; effects.add(focusRing);
-  const pin = sphere(effects, .1, [0, 0, 0], P.pink);
-  const connectionMaterial = new T.LineDashedMaterial({ color: P.mint, dashSize: .12, gapSize: .1, transparent: true, opacity: .55 }); materials.add(connectionMaterial);
-  const connections: T.Line[] = [];
-  for (const replica of replicas) {
-    const g = new T.BufferGeometry().setFromPoints([new T.Vector3(2.8, .12, -.55), new T.Vector3(replica.position.x, .12, replica.position.z)]);
-    geometries.add(g); const connection = new T.Line(g, connectionMaterial); connection.computeLineDistances(); effects.add(connection); connections.push(connection);
+  const manager = person(terminal, [3.75, .05, -2.1], '#6b927c');
+  manager.group.rotation.y = -.5;
+  const extraCook = person(stationGroups.kitchen, [-2.2, .05, -1.05], P.white, true, '#ad7557');
+  const extraAdvisor = person(terminal, [2.7, .05, -1.65], '#bd8559');
+  extraAdvisor.group.rotation.y = -.3;
+  const runner = person(scene, [0, .05, 0], P.pink);
+  const arrivingCustomer = person(scene, [0, .05, 0], '#6b8ca5');
+  arrivingCustomer.group.userData.restaurantProp = 'customer';
+  // The carried object remains in a worker's hands, at waist height throughout the walk.
+  const hand = group(runner.group, [0, .92, .36]);
+  const work = group();
+  const secondWork = group();
+  const peerWork = [group(), group(), group()];
+  const pools = new Map<T.Group, Map<RestaurantProp, T.Group>>();
+  function showObject(holder: T.Group, prop: RestaurantProp) {
+    if (!pools.has(holder)) pools.set(holder, new Map());
+    const pool = pools.get(holder)!;
+    if (!pool.has(prop)) pool.set(prop, restaurantObject(holder, prop, [0, 0, 0], .9));
+    for (const [kind, object] of pool) object.visible = kind === prop;
   }
-  const failed = new T.MeshBasicMaterial({ color: P.red, transparent: true, opacity: .8 }); materials.add(failed);
-  const fault = new T.Mesh(new T.TorusGeometry(.82, .045, 6, 24), failed); geometries.add(fault.geometry); effects.add(fault);
-  fault.rotation.x = -Math.PI / 2;
-  const faultBeacon = sphere(effects, .12, [0, 0, 0], P.red);
-  const steam = Array.from({ length: 5 }, (_, i) => {
-    const m = new T.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: .16, depthWrite: false }); materials.add(m);
+  const inkStamp = group(work, [.12, .24, .09]);
+  cylinder(inkStamp, .09, .09, .035, [0, 0, 0], '#568c65', 16).rotation.x = Math.PI / 2;
+  box(inkStamp, [.035, .11, .018], [-.015, -.005, .025], P.white, .004).rotation.z = .7;
+  box(inkStamp, [.035, .17, .018], [.045, .025, .025], P.white, .004).rotation.z = -.55;
+  const returnStamp = group(work, [.12, .23, .08]);
+  for (const angle of [-.7, .7]) box(returnStamp, [.035, .2, .02], [0, 0, 0], P.red, .005).rotation.z = angle;
+  const carriedApproval = inkStamp.clone(); hand.add(carriedApproval);
+  const carriedReturn = returnStamp.clone(); hand.add(carriedReturn);
+  const pen = group(work, [.28, .1, .07]);
+  cylinder(pen, .016, .016, .42, [0, 0, 0], P.navy, 6).rotation.z = -.4;
+  const filingTray = group();
+  box(filingTray, [.85, .08, .6], [0, 0, 0], '#9e7754', .025);
+  for (const x of [-.41, .41]) box(filingTray, [.04, .18, .58], [x, .08, 0], '#9e7754', .008);
+  const waitingNotice = group();
+  box(waitingNotice, [.77, .43, .035], [0, 0, 0], '#fff0d1', .015);
+  box(waitingNotice, [.04, .55, .04], [0, -.35, -.03], P.wood, .006);
+  box(waitingNotice, [.45, .04, .3], [0, -.62, 0], P.wood, .008);
+  const noticeClock = restaurantObject(waitingNotice, 'clock', [-.25, .04, .04], .27);
+  noticeClock.rotation.y = .1;
+  const stockKey = restaurantObject(stock, 'key', [-3.34, 1.13, -2.07], .55);
+  const reserveCrate = restaurantObject(stock, 'ingredient', [-3.6, .25, -.6], .8);
+  const steam = Array.from({ length: 4 }, (_, i) => {
+    const m = new T.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: .13, depthWrite: false }); materials.add(m);
     const g = new T.SphereGeometry(.09, 8, 6); geometries.add(g);
-    const puff = new T.Mesh(g, m); puff.position.set(-.5 + i * .1, 1.35, -2.15); effects.add(puff); return puff;
+    const puff = new T.Mesh(g, m); puff.position.set(-.5 + i * .1, 1.35, -2.15); scene.add(puff); return puff;
   });
 
-  const dataPanel = group(effects);
-  box(dataPanel, [1.5, .55, .07], [0, 0, 0], P.navy, .035);
-  const bitCells = Array.from({ length: 8 }, (_, i) => box(dataPanel, [.12, .18, .03], [-.59 + i * .17, .05, .06], P.mint, .012));
-  const statusLight = sphere(dataPanel, .055, [.61, -.16, .07], P.mint);
-
+  // These labels are anchored to furniture or the item being handled. No text textures
+  // or floating network UI are required, so WebGL and SVG remain equally readable.
+  const annotations = document.createElement('div');
+  annotations.setAttribute('aria-hidden', 'true');
+  Object.assign(annotations.style, { position: 'absolute', inset: '0', overflow: 'hidden', pointerEvents: 'none' });
+  host.appendChild(annotations);
+  const labels: { element: HTMLSpanElement; at: T.Vector3; visible: () => boolean }[] = [];
+  function label(at: Position, paper = false) {
+    const element = document.createElement('span');
+    Object.assign(element.style, {
+      position: 'absolute', display: 'block', whiteSpace: 'nowrap', transform: 'translate(-50%,-50%)',
+      fontFamily: 'system-ui,sans-serif', fontWeight: '700', fontSize: paper ? '10px' : '9px',
+      padding: paper ? '3px 6px' : '2px 5px', color: '#443d30', background: '#fff4db',
+      borderRadius: '2px', border: '1px solid #bfa981', lineHeight: '1.3',
+    });
+    annotations.appendChild(element);
+    const entry = { element, at: new T.Vector3(...at), visible: () => true }; labels.push(entry); return entry;
+  }
+  const itemLabel = label([0, 0, 0], true);
+  const extraLabel = label([0, 0, 0], true);
+  const noticeLabel = label([0, 0, 0]);
+  const mainSign = label([-2.55, 2.55, -3.3]); mainSign.element.textContent = 'DINAMOS';
+  replicas.forEach((replica, i) => {
+    const entry = label([replica.position.x, 1.67, replica.position.z + .76]);
+    entry.visible = () => branch.visible; entry.element.textContent = String.fromCharCode(65 + i);
+  });
   const allGroups: { object: T.Group; target: number; built: boolean }[] = [];
   for (const [station, object] of Object.entries(stationGroups) as [Station, T.Group][]) allGroups.push({ object, target: 1, built: initial.level >= levels[station] });
-  allGroups.push({ object: walls, target: 1, built: initial.level >= 2 }, { object: dining, target: 1, built: initial.level >= 3 });
-  let from = new T.Vector3(); let to = new T.Vector3();
-
+  allGroups.push({ object: dining, target: 1, built: initial.level >= 3 });
+  let beat: RestaurantBeat = { action: 'handover', copies: 1, carry: true };
+  let visual: LessonVisual = initial.visual ?? { from: 'entrance', to: 'counter', cue: 'flow', prop: 'order' };
+  let walk: T.Vector3[] = [];
+  let currentProp: RestaurantProp = 'order';
+  const anchor = (station: Station) => new T.Vector3(...positions[station]);
+  const floor = (station: Station) => {
+    const at = anchor(station); at.y = .05;
+    // Staff use the aisle behind the counter, customers the front of house.
+    if (station === 'counter') at.set(-1.25, .05, .15);
+    if (station === 'kitchen') at.set(1.95, .05, -.65);
+    if (station === 'stock') at.set(-3.15, .05, -.65);
+    if (station === 'pickup') at.set(2.65, .05, .25);
+    if (station === 'terminal') at.set(3.45, .05, -1.5);
+    if (station === 'branch') at.set(4.45, .05, -.7);
+    if (station === 'dispatch') at.set(3.3, .05, 3.75);
+    return at;
+  };
+  function makeWalk() {
+    const a = floor(visual.from), b = floor(visual.to);
+    walk = [a];
+    // Cross between dining room and kitchen around the open end of the counter.
+    if ((a.z > 1) !== (b.z > 1)) walk.push(new T.Vector3(3.7, .05, a.z), new T.Vector3(3.7, .05, b.z));
+    walk.push(b);
+  }
+  function placeOnWalk(object: T.Group, amount: number) {
+    const lengths = walk.slice(1).map((point, i) => point.distanceTo(walk[i]));
+    let remaining = amount * lengths.reduce((sum, length) => sum + length, 0);
+    for (let i = 0; i < lengths.length; i++) {
+      if (remaining <= lengths[i] || i === lengths.length - 1) {
+        const fraction = lengths[i] ? T.MathUtils.clamp(remaining / lengths[i], 0, 1) : 0;
+        object.position.copy(walk[i]).lerp(walk[i + 1], fraction);
+        const direction = walk[i + 1].clone().sub(walk[i]);
+        if (direction.lengthSq() > .001) object.rotation.y = Math.atan2(direction.x, direction.z);
+        return;
+      }
+      remaining -= lengths[i];
+    }
+  }
   function configure(next: WorldState, first = false) {
-    const changedStep = state.step !== next.step || state.mode !== next.mode;
+    const changedMode = state.mode !== next.mode;
+    const changedStep = state.step !== next.step || state.mode !== next.mode || JSON.stringify(state.visual) !== JSON.stringify(next.visual);
     state = next;
     if (changedStep || first) { stepTime = 0; reported = false; }
-    const visual = state.visual;
+    visual = state.visual ?? { from: 'entrance', to: state.focus, cue: 'flow', prop: 'order' };
+    currentProp = visual.prop; beat = getRestaurantBeat(visual);
     const required = specialStation[state.mode];
     for (const [station, object] of Object.entries(stationGroups) as [Station, T.Group][]) {
       const item = allGroups.find(item => item.object === object)!;
       const built = state.level >= levels[station];
-      item.target = built || station === state.focus || station === visual?.from || station === visual?.to || station === visual?.fault || station === required || (station === 'kitchen' && ['routing', 'scaling', 'recovery'].includes(state.mode)) ? 1 : 0;
+      item.target = built || station === state.focus || station === visual.from || station === visual.to || station === visual.fault || station === required ? 1 : 0;
       item.built = built;
     }
-    allGroups.find(item => item.object === walls)!.target = state.level >= 2 ? 1 : 0;
+    const expandedSite = allGroups.find(item => item.object === branch)!.target > 0;
+    island.scale.set(expandedSite ? 1 : .83, 1, 1);
+    island.position.x = expandedSite ? 0 : -.3;
     allGroups.find(item => item.object === dining)!.target = state.level >= 3 ? 1 : 0;
     for (const item of allGroups) {
       if (state.reducedMotion || first) { item.object.visible = item.target > 0; item.object.scale.set(1, item.target || .001, 1); }
       else if (item.target && !item.object.visible) { item.object.visible = true; item.object.scale.set(1, .02, 1); }
     }
-    const stepFocus = positions[state.focus];
-    focusRing.position.set(stepFocus[0], .09, stepFocus[2]); pin.position.set(stepFocus[0], stepFocus[1] + .75, stepFocus[2]);
-    fault.visible = !!visual?.fault;
-    const faultAt = visual?.fault ? positions[visual.fault] : positions.counter;
-    fault.position.set(faultAt[0], .13, faultAt[2]);
-    faultBeacon.visible = fault.visible; faultBeacon.position.set(faultAt[0], faultAt[1] + .85, faultAt[2]);
-    replicas.forEach((replica, i) => { replica.rotation.y = i === 0 && state.mode === 'consensus' ? .07 : 0; });
-    connections.forEach((connection, i) => { connection.visible = (state.level >= 5 || state.focus === 'branch' || required === 'branch' || visual?.from === 'branch' || visual?.to === 'branch' || visual?.fault === 'branch') && !(visual?.fault === 'branch' && i === 1); });
-    const ticketCount = visual?.queueDepth ?? (state.mode === 'routing' ? 3 : 1);
-    tickets.forEach((ticket, i) => { ticket.visible = i < ticketCount; });
-    cachedBurgers.forEach(burger => { burger.visible = true; });
-    const cue = visual?.cue;
-    if (state.step === 0 || state.mode !== 'scaling') { expandedWorkers = false; baseGrill.scale.setScalar(1); }
-    if (cue === 'scale' && visual?.peers) expandedWorkers = true;
-    if (cue === 'scale' && !visual?.peers && visual?.to === 'kitchen') baseGrill.scale.set(1.28, 1.12, 1.2);
-    gpuWorkers.forEach((worker, index) => { worker.visible = index === 0 || expandedWorkers; });
-
-    replicaLights.forEach((light, i) => { light.material = material(visual?.fault === 'branch' && i === 1 ? P.red : cue === 'vote' && i === 2 ? P.gold : P.mint); });
-    lineMaterial.color.set(visual?.blocked ? P.gold : P.pink);
-    dataPanel.visible = ['filter', 'write', 'inspect', 'retrieve', 'cache-fill', 'cache-hit', 'deduplicate', 'vote', 'commit', 'merge'].includes(cue ?? '');
-    dataPanel.position.set(stepFocus[0], stepFocus[1] + .45, stepFocus[2] + .15);
-    dataPanel.rotation.y = .45;
-    cacheRows.forEach((row, index) => { row.scale.x = cue === 'cache-fill' ? .55 + index * .13 : 1; });
-    statusLight.material = material(visual?.blocked ? P.gold : cue === 'reject' ? P.red : P.mint);
-    bitCells.forEach((cell, index) => { cell.material = material(cue === 'filter' && ![1, 3, 5].includes(index) ? '#566476' : cue === 'commit' ? P.mint : index % 2 ? P.rose : P.mint); });
-
-    tokenMaterial.color.set(cue === 'reject' ? P.red : visual?.blocked || cue === 'compensate' ? P.gold : ['cache-hit', 'commit', 'recover', 'answer', 'merge', 'deduplicate'].includes(cue ?? '') ? P.darkMint : P.pink);
-    tokenMaterial.emissive.copy(tokenMaterial.color);
-    const routes: Partial<Record<SceneMode, [Station, Station][]>> = {
-      counter: [['entrance', 'counter'], ['counter', 'kitchen'], ['kitchen', 'pickup']],
-      queue: [['entrance', 'counter'], ['counter', 'counter'], ['counter', 'kitchen']],
-      routing: [['entrance', 'counter'], ['counter', 'kitchen'], ['kitchen', 'pickup']],
-      cache: [['kitchen', 'pickup'], ['counter', 'pickup'], ['pickup', 'entrance']],
-      storage: [['counter', 'stock'], ['stock', 'stock'], ['stock', 'counter']],
-      replication: [['counter', 'stock'], ['stock', 'branch'], ['branch', 'counter']],
-      consensus: [['counter', 'branch'], ['branch', 'branch'], ['branch', 'counter']],
-      network: [['counter', 'branch'], ['branch', 'branch'], ['branch', 'counter']],
-      saga: [['counter', 'stock'], ['stock', 'kitchen'], ['kitchen', 'stock']],
-      security: [['entrance', 'counter'], ['entrance', 'entrance'], ['entrance', 'counter']],
-      observability: [['counter', 'kitchen'], ['kitchen', 'terminal'], ['terminal', 'counter']],
-      scaling: [['entrance', 'counter'], ['counter', 'kitchen'], ['kitchen', 'pickup']],
-      ai: [['counter', 'terminal'], ['stock', 'terminal'], ['terminal', 'counter']],
-      delivery: [['counter', 'kitchen'], ['kitchen', 'pickup'], ['pickup', 'dispatch']],
-      recovery: [['counter', 'kitchen'], ['kitchen', 'counter'], ['counter', 'kitchen']],
-      events: [['entrance', 'counter'], ['counter', 'stock'], ['stock', 'branch']],
-    };
-    const route = visual ? [visual.from, visual.to] as [Station, Station] : routes[state.mode]![state.step];
-    from = new T.Vector3(...positions[route[0]]); to = new T.Vector3(...positions[route[1]]);
-    if (from.distanceTo(to) < .1) { from.x -= 1.2; to.x += .6; }
-    if (line) { effects.remove(line); geometries.delete(line.geometry); line.geometry.dispose(); }
-    const points = Array.from({ length: 32 }, (_, i) => {
-      const t = i / 31 * (visual?.blocked ? .58 : 1); const v = from.clone().lerp(to, t); v.y += .5 * Math.sin(t * Math.PI); return v;
+    const target = anchor(visual.to);
+    const surfaces: Record<Station, number> = { entrance: 1.15, counter: 1.17, kitchen: 1.12, pickup: 1.03, stock: 1.08, branch: 1, dispatch: .95, terminal: 1.02 };
+    const flat = ['ledger', 'recipe', 'tray', 'ingredient'].includes(currentProp);
+    work.position.copy(target); work.position.y = surfaces[visual.to] + (flat ? .05 : .34); work.rotation.set(0, .35, 0);
+    secondWork.position.copy(work.position).add(new T.Vector3(.6, 0, .12)); secondWork.rotation.set(0, -.2, 0);
+    for (const holder of [hand, work, secondWork, ...peerWork]) showObject(holder, currentProp);
+    const localRead = !beat.carry;
+    runner.group.visible = currentProp !== 'customer' && beat.action !== 'queue';
+    arrivingCustomer.group.visible = currentProp === 'customer';
+    hand.visible = currentProp !== 'customer' && beat.carry; work.visible = localRead; secondWork.visible = beat.copies > 1 && localRead;
+    if (beat.action === 'copy') {
+      secondWork.visible = true;
+      secondWork.position.copy(anchor(visual.from));
+      secondWork.position.y = surfaces[visual.from] + (flat ? .05 : .34);
+    }
+    peerWork.forEach((holder, i) => {
+      const peerPosition = visual.to === 'branch' || visual.from === 'branch'
+        ? new T.Vector3(5.25, 1.07, -1.67 + i * 2.05)
+        : new T.Vector3(-2.2 + i * 1.55, 1.2, -2.05);
+      holder.position.copy(peerPosition); holder.rotation.set(0, .3, 0);
+      holder.visible = (beat.action === 'copy' || beat.action === 'approve') && !!visual.peers;
+      holder.scale.setScalar(.65);
     });
-    const geometry = new T.BufferGeometry().setFromPoints(points); geometries.add(geometry);
-    line = new T.Line(geometry, lineMaterial); line.computeLineDistances(); effects.add(line);
+    filingTray.position.copy(target).add(new T.Vector3(.5, -.05, .13));
+    filingTray.visible = ['file-duplicate', 'return', 'sort'].includes(beat.action);
+    const noticeAt = anchor(visual.fault ?? visual.to);
+    waitingNotice.position.copy(noticeAt); waitingNotice.position.y = .78; waitingNotice.rotation.y = .35;
+    waitingNotice.visible = !!visual.blocked || !!visual.fault;
+    stockKey.visible = currentProp === 'key' || (state.mode === 'security' && visual.to === 'stock');
+    reserveCrate.visible = currentProp === 'ingredient' || beat.action === 'refund';
+    tickets.forEach((ticket, i) => { ticket.visible = i < (visual.queueDepth ?? (beat.action === 'queue' ? 5 : 1)); });
+    pickupBurgers.forEach(item => { item.visible = currentProp === 'tray' || currentProp === 'delivery-bag'; });
+    if (state.step === 0 || changedMode) { expandedWorkers = false; baseGrill.scale.setScalar(1); }
+    if (visual.cue === 'scale' && visual.peers) expandedWorkers = true;
+    if (visual.cue === 'scale' && !visual.peers && visual.to === 'kitchen') baseGrill.scale.set(1.28, 1.12, 1.2);
+    extraCook.group.visible = state.mode === 'scaling' ? expandedWorkers : state.level >= 2 || expandedWorkers;
+    secondCook.group.visible = state.mode === 'scaling' ? expandedWorkers : state.level >= 2 || expandedWorkers;
+    extraAdvisor.group.visible = expandedWorkers && state.mode === 'ai';
+    branchDocuments.forEach(document => { document.visible = !peerWork.some(holder => holder.visible); });
+    const locale = state.locale ?? 'pt';
+    const name = restaurantPropNames[locale][currentProp];
+    itemLabel.element.textContent = `${name}${visual.detail ? ` ${visual.detail}` : ''}`;
+    extraLabel.element.textContent = beat.action === 'refund'
+      ? `${locale === 'pt' ? 'Estorno' : 'Refund'} ${visual.detail ?? ''}`
+      : beat.action === 'file-duplicate'
+        ? `${locale === 'pt' ? 'Via repetida' : 'Duplicate copy'} ${visual.detail ?? ''}`
+        : `${name}${visual.detail ? ` ${visual.detail}` : ''}`;
+    noticeLabel.element.textContent = locale === 'pt'
+      ? (visual.blocked ? 'Comanda em espera' : 'Sem novas notícias')
+      : (visual.blocked ? 'Order on hold' : 'No new messages');
+    noticeLabel.at.copy(waitingNotice.position).add(new T.Vector3(.1, .03, .06));
+    noticeLabel.visible = () => waitingNotice.visible;
+    itemLabel.visible = () => true;
+    extraLabel.visible = () => secondWork.visible;
+    host.dataset.restaurantProp = currentProp; host.dataset.restaurantAction = beat.action;
+    host.dataset.restaurantDetail = visual.detail ?? '';
+    makeWalk();
     if (gpu) gpu.shadowMap.needsUpdate = true;
     buildUntil = performance.now() + (first || state.reducedMotion ? 0 : 650);
-    updateFrame(0); render(); schedule();
+    updateFrame(0); if (!first) resize(); render(); schedule();
   }
   function updateFrame(delta: number) {
-    if (state.playing && !state.reducedMotion) { clock += delta; stepTime += delta; }
+    const teaching = state.playing && !state.reducedMotion;
+    if (teaching) { clock += delta; stepTime += delta; }
+    const phase = stepTime > 0 ? T.MathUtils.clamp(stepTime / 3.5, 0, 1) : teaching ? 0 : .88;
     for (const item of allGroups) {
       const scale = state.reducedMotion ? item.target : T.MathUtils.damp(item.object.scale.y, item.target, 8, Math.max(delta, .016));
       item.object.scale.set(1, Math.max(.001, scale), 1);
       if (item.target === 0 && scale < .008) item.object.visible = false;
     }
-    const teaching = state.playing && !state.reducedMotion;
-    tokens.forEach((token, i) => {
-      let progress = teaching ? (stepTime * (state.visual?.cue === 'cache-hit' ? .55 : .32) + i / tokens.length) % 1 : Math.min(.95, .16 + i * .13);
-      if (state.visual?.blocked) progress = Math.min(progress, .58);
-      if (state.visual?.cue === 'reject') progress = Math.min(progress, .4);
-      token.position.copy(from).lerp(to, progress);
-      token.position.y += .5 * Math.sin(progress * Math.PI);
-      if (state.visual?.peers) {
-        if (state.visual.to === 'branch') token.position.z += (i % 3 - 1) * 2.05 * progress;
-        else if (state.visual.from === 'branch') token.position.z += (i % 3 - 1) * 2.05 * (1 - progress);
-        else if (state.visual.to === 'kitchen') token.position.x += (i % 3 - 1) * 1.5 * progress;
-      }
-      token.visible = !(state.visual?.cue === 'deduplicate' && i % 2 === 1 && progress > .52);
-
-    });
-    focusRing.scale.setScalar(teaching ? 1 + Math.sin(clock * 2) * .035 : 1);
-    pin.position.y = positions[state.focus][1] + .75 + (teaching ? Math.sin(clock * 2) * .05 : 0);
-    cookingBurger.rotation.y = clock * .15;
-    cook.arms[0].rotation.x = teaching ? -.7 + Math.sin(clock * 4) * .2 : -.7;
-    secondCook.arms[1].rotation.x = teaching ? -.5 + Math.sin(clock * 3.5) * .2 : -.5;
-    cashier.arms[1].rotation.x = teaching ? -.5 + Math.sin(clock * 2.4) * .12 : -.5;
-    customers.forEach((customer, i) => {
-      const moving = teaching && state.step === 0;
-      customer.group.position.z = 2.6 + i * 1.15 - (moving ? Math.sin(clock * .8 + i) * .13 : 0);
-      customer.legs.forEach((leg, n) => { leg.rotation.x = moving ? Math.sin(clock * 5 + n * Math.PI) * .18 : 0; });
-    });
-    scooter.position.x = 3.1 + (teaching && state.mode === 'delivery' && state.step === 2 ? Math.sin(clock * .6) * 1.25 : 0);
+    let travel = T.MathUtils.smoothstep(phase, .06, .78);
+    if (beat.action === 'return') travel = phase < .5 ? phase * 1.5 : 1.5 * (1 - phase);
+    if (beat.action === 'retry') travel = phase < .5 ? phase * 1.5 : (phase - .5) * 2;
+    if (visual.blocked) travel = Math.min(travel, .55);
+    placeOnWalk(runner.group, travel); placeOnWalk(arrivingCustomer.group, travel);
+    if (!beat.carry && currentProp !== 'customer') {
+      runner.group.position.set(work.position.x - .45, .05, work.position.z + .48);
+      runner.group.rotation.y = Math.atan2(.45, -.48);
+    }
+    runner.arms.forEach(arm => { arm.rotation.x = -.85; });
+    arrivingCustomer.arms[1].rotation.x = -.3;
+    for (const person of [runner, arrivingCustomer]) person.legs.forEach((leg, i) => { leg.rotation.x = teaching && travel > 0 && travel < .98 ? Math.sin(clock * 7 + i * Math.PI) * .34 : 0; });
+    // A handover ends with the object resting on the destination's counter.
+    const delivered = beat.carry && travel > .96 && currentProp !== 'customer';
+    hand.visible = !delivered && beat.carry && currentProp !== 'customer';
+    work.visible = !beat.carry || delivered;
+    if (beat.action === 'file-duplicate') {
+      secondWork.visible = true;
+      secondWork.position.copy(filingTray.position).add(new T.Vector3(0, .09, 0));
+      secondWork.rotation.x = -Math.PI / 2;
+    } else if (beat.action === 'refund') secondWork.visible = true;
+    const stamping = beat.stamp && phase > .45;
+    inkStamp.visible = !!stamping && beat.stamp !== 'rejected'; returnStamp.visible = !!stamping && beat.stamp === 'rejected';
+    carriedApproval.visible = !!stamping && beat.stamp !== 'rejected'; carriedReturn.visible = !!stamping && beat.stamp === 'rejected';
+    pen.visible = beat.action === 'write';
+    pen.position.x = .12 + (teaching ? Math.sin(clock * 6) * .14 : 0);
+    work.rotation.x = currentProp === 'ledger' || currentProp === 'recipe' || currentProp === 'tray' || currentProp === 'ingredient' ? 0 : -.12;
+    if (beat.action === 'read') work.rotation.z = teaching ? Math.sin(clock * 2) * .035 : 0;
+    // Copies are papers/books handled at serving stations. Prepared food never fans out.
+    peerWork.forEach((holder, i) => { if (holder.visible) holder.rotation.y = .3 + (teaching && beat.action === 'approve' ? Math.sin(clock * 2 + i) * .08 : 0); });
+    cook.arms[0].rotation.x = currentProp === 'tray' || currentProp === 'ingredient' ? -.8 + (teaching ? Math.sin(clock * 5) * .22 : 0) : -.5;
+    secondCook.arms[1].rotation.x = teaching && expandedWorkers ? -.7 + Math.sin(clock * 4) * .2 : -.5;
+    cashier.arms[1].rotation.x = beat.action === 'write' || beat.action === 'approve' ? -.8 + (teaching ? Math.sin(clock * 5) * .12 : 0) : -.5;
+    manager.arms[1].rotation.x = -.7 + (teaching && visual.to === 'terminal' ? Math.sin(clock * 3) * .1 : 0);
+    customers.forEach((customer, i) => { customer.group.position.z = 2.6 + i * 1.15; });
+    scooter.position.x = 3.1 + (teaching && currentProp === 'delivery-bag' && visual.to === 'dispatch' ? Math.max(0, phase - .65) * 3 : 0);
     steam.forEach((puff, i) => {
       const cycle = (clock * .4 + i / steam.length) % 1;
-      puff.position.y = 1.27 + cycle * .9;
-      puff.scale.setScalar(.4 + cycle);
-      (puff.material as T.MeshBasicMaterial).opacity = teaching ? (1 - cycle) * .18 : .08;
+      puff.visible = currentProp === 'tray' || currentProp === 'ingredient'; puff.position.y = 1.27 + cycle * .9;
+      puff.scale.setScalar(.4 + cycle); (puff.material as T.MeshBasicMaterial).opacity = teaching ? (1 - cycle) * .13 : .06;
     });
+    itemLabel.at.copy(work.visible ? work.position : currentProp === 'customer' ? arrivingCustomer.group.position : runner.group.position);
+    itemLabel.at.y += work.visible ? .45 : 1.8;
+    extraLabel.at.copy(secondWork.position).add(new T.Vector3(0, .45, 0));
     if (teaching && stepTime >= 4 && !reported) { reported = true; initial.onStepComplete?.(); }
   }
-  function render() { if (!disposed) { renderer.render(scene, camera); if (!gpu) canvas.style.backgroundColor = 'transparent'; } }
+  function render() {
+    if (disposed) return;
+    renderer.render(scene, camera); if (!gpu) canvas.style.backgroundColor = 'transparent';
+    for (const entry of labels) {
+      const projected = entry.at.clone().project(camera);
+      entry.element.style.display = entry.visible() && projected.z >= -1 && projected.z <= 1 ? 'block' : 'none';
+      entry.element.style.left = `${(projected.x + 1) * .5 * host.clientWidth}px`;
+      entry.element.style.top = `${(1 - projected.y) * .5 * host.clientHeight}px`;
+    }
+  }
   function schedule() {
     previousTime = 0;
     const animate = state.playing && !state.reducedMotion;
@@ -534,7 +658,8 @@ export function createRestaurantWorld(host: HTMLElement, initial: WorldState & {
   const resize = () => {
     const width = Math.max(host.clientWidth, 1); const height = Math.max(host.clientHeight, 1);
     const aspect = width / height;
-    const view = Math.max(6.35, 8.9 / aspect);
+    const expandedSite = allGroups.find(item => item.object === branch)!.target > 0;
+    const view = Math.max(expandedSite ? 6.35 : 5.6, (expandedSite ? 8.9 : 7.5) / aspect);
     camera.left = -view * aspect; camera.right = view * aspect; camera.top = view; camera.bottom = -view;
     camera.updateProjectionMatrix(); if (gpu) gpu.setSize(width, height, false); else renderer.setSize(width, height); render();
   };
@@ -557,7 +682,10 @@ export function createRestaurantWorld(host: HTMLElement, initial: WorldState & {
       disposed = true; setLoop(null); observer.disconnect();
       canvas.removeEventListener('webglcontextlost', lost); controls.removeEventListener('change', renderOnChange); controls.dispose();
       geometries.forEach(geometry => geometry.dispose()); materials.forEach(m => m.dispose());
-      gpu?.dispose(); gpu?.forceContextLoss(); if (canvas.parentNode === host) host.removeChild(canvas);
+      gpu?.dispose(); gpu?.forceContextLoss(); annotations.remove();
+      if (positionHost) host.style.position = previousHostPosition;
+      delete host.dataset.restaurantProp; delete host.dataset.restaurantAction; delete host.dataset.restaurantDetail;
+      if (canvas.parentNode === host) host.removeChild(canvas);
     },
   };
 }

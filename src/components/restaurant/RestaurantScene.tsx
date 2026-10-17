@@ -8,6 +8,7 @@ import { createRestaurantWorld, type RestaurantWorld } from './restaurantWorld';
 
 export interface RestaurantSceneProps {
   visual?: LessonVisual;
+  locale?: 'pt' | 'en';
   mode: SceneMode;
   focus: Station;
   step: 0 | 1 | 2;
@@ -54,7 +55,7 @@ export default function RestaurantScene(props: RestaurantSceneProps) {
     return () => { disposed = true; world.current?.dispose(); world.current = null; };
   }, []);
 
-  useEffect(() => { world.current?.update(props); }, [props.mode, props.focus, props.step, props.level, props.playing, props.reducedMotion, props.visual]);
+  useEffect(() => { world.current?.update(props); }, [props.mode, props.focus, props.step, props.level, props.playing, props.reducedMotion, props.visual, props.locale]);
 
   return <div className="restaurant-world" data-renderer={unavailable ? 'unavailable' : backend}>
     <div ref={host} className="restaurant-world-canvas" role="img" aria-label={props.ariaLabel} />

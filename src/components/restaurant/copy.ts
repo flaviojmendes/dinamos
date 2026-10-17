@@ -8,6 +8,7 @@ export const restaurantCopy = {
     expand: 'Abrir restaurante',
     level: 'Nível',
     preview: 'Conceito em ação',
+    inScene: 'Acompanhe na hamburgueria',
     scene: 'Diorama da hamburgueria: ',
     loading: 'Preparando a hamburgueria…',
     unavailable: 'Explore a hamburgueria pelas etapas abaixo.',
@@ -36,7 +37,7 @@ export const restaurantCopy = {
     locked: 'Ainda em construção',
     stations: {
       entrance: 'Entrada', counter: 'Balcão', kitchen: 'Cozinha', pickup: 'Retirada',
-      stock: 'Estoque', branch: 'Filial', dispatch: 'Entregas', terminal: 'Central de operações',
+      stock: 'Estoque', branch: 'Filial', dispatch: 'Entregas', terminal: 'Mesa da gerência',
     } satisfies Record<Station, string>,
   },
   en: {
@@ -46,6 +47,7 @@ export const restaurantCopy = {
     expand: 'Open restaurant',
     level: 'Level',
     preview: 'Concept in action',
+    inScene: 'Follow in the burger restaurant',
     scene: 'Burger restaurant diorama: ',
     loading: 'Preparing the restaurant…',
     unavailable: 'Explore the restaurant using the steps below.',
@@ -74,7 +76,7 @@ export const restaurantCopy = {
     locked: 'Still under construction',
     stations: {
       entrance: 'Entrance', counter: 'Counter', kitchen: 'Kitchen', pickup: 'Pickup',
-      stock: 'Stockroom', branch: 'Branch', dispatch: 'Delivery', terminal: 'Operations center',
+      stock: 'Stockroom', branch: 'Branch', dispatch: 'Delivery', terminal: 'Manager’s desk',
     } satisfies Record<Station, string>,
   },
 };

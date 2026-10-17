@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { getConcept, getRestaurantProgress, restaurantStages } from './learningModel';
 import { getLessonVisual } from './visualModel';
 import { restaurantCopy } from './copy';
+import { restaurantPropNames } from './restaurantObjects';
 import './restaurant.css';
 
 const RestaurantScene = lazy(() => import('./RestaurantScene'));
@@ -136,13 +137,18 @@ export default function RestaurantLesson({ slug, path, pages, progress, onComple
           <div className="restaurant-scene-label"><span className="restaurant-scene-dot" />{copy.preview}</div>
           <SceneBoundary onUnavailable={stopPlayback} fallback={<div className="restaurant-scene-loading" role="img" aria-label={copy.scene + concept.title[lang]}><Store size={54} aria-hidden="true" /><span>{copy.unavailable}</span></div>}>
             <Suspense fallback={<div className="restaurant-scene-loading" role="status"><Store size={30} aria-hidden="true" /><span>{copy.loading}</span></div>}>
-              <RestaurantScene mode={concept.mode} focus={active.focus} step={step} visual={visual} level={restaurant.level}
+              <RestaurantScene mode={concept.mode} focus={active.focus} step={step} visual={visual} locale={lang} level={restaurant.level}
                 playing={running && visible && documentVisible && !reducedMotion} reducedMotion={reducedMotion}
                 onStepComplete={finishStep} onUnavailable={stopPlayback} labels={copy.stations} ariaLabel={copy.scene + concept.title[lang]} />
             </Suspense>
           </SceneBoundary>
           <span className="restaurant-station-label">{copy.stations[active.focus]}</span>
         </div>
+
+        {visual && <div className="restaurant-object-note">
+          <span>{copy.inScene}</span><strong>{restaurantPropNames[lang][visual.prop]}{visual.detail ? ` ${visual.detail}` : ''}</strong>
+          <span>{visual.from === visual.to ? copy.stations[visual.to] : `${copy.stations[visual.from]} → ${copy.stations[visual.to]}`}</span>
+        </div>}
 
         <div className="restaurant-demonstration">
           <div className="restaurant-playback">
