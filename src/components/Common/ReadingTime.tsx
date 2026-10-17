@@ -19,7 +19,7 @@ export default function ReadingTime({ contentRef }: ReadingTimeProps) {
       // Observe the async wrapper, but count only the article once it arrives.
       const article = contentRef.current.querySelector('article') || contentRef.current;
       const walker = document.createTreeWalker(article, NodeFilter.SHOW_TEXT, {
-        acceptNode: (node) => node.parentElement?.closest('pre, script, style, button, nav, [aria-hidden="true"]')
+        acceptNode: (node) => node.parentElement?.closest('pre, script, style, button, nav, [aria-hidden="true"], [data-reading-time-ignore]')
           ? NodeFilter.FILTER_REJECT
           : NodeFilter.FILTER_ACCEPT,
       });

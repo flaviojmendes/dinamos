@@ -29,6 +29,42 @@ code identifiers, URLs, protocol names or product names. Translate the teaching
 prose, diagram labels, code comments and example output where they are visible to
 the learner. Preserve blank lines around JSX components and their Markdown.
 
+## The animated restaurant
+
+On a published lesson route, `BurgerAnalogy` also opens the restaurant diorama.
+The same saved lesson progress used by the course builds its six permanent
+stages. Watching, replaying or changing a demonstration step does not complete a
+lesson. A concept can preview a station before the learner has unlocked its
+permanent expansion; the interface distinguishes the demonstration from saved
+construction progress. The CMS preview keeps the written example available
+without requiring a course progress provider.
+
+Keep the MDX example and both animation scripts aligned when adding or revising
+a lesson:
+
+- `src/components/restaurant/learningModel.ts` defines the canonical slug and
+  route, bilingual concept title and improvement, and three bilingual teaching
+  steps. Each step identifies the station the learner should observe. Register a
+  new published lesson here so it participates in the restaurant's progress.
+- `src/components/restaurant/visualModel.ts` defines each step's observable
+  behavior: source and destination stations, visual cue, queue depth, blocked
+  flow, failing station or peers where relevant. Author these per lesson; a shared
+  animation mode must not invent a failure, successful write or transaction that
+  contradicts the narration. Keep fault and blocking flags absent when no failure
+  is being taught.
+
+These scenes illustrate the restaurant's software and communication. Do not imply
+that physical food preparation has database atomicity, replication guarantees or
+reversible side effects. Explain such limits in the teaching text.
+
+Review all three steps in both languages, with reduced motion, keyboard controls
+and a narrow viewport. The renderer prefers WebGL and uses the same Three.js
+scene through SVG when a GPU context is unavailable. Scene-load failures must
+leave the written lesson and manual teaching steps usable. Run the restaurant
+unit tests and `npm run test:e2e -- e2e/restaurant-scene.spec.ts` after changing the
+scripts or renderer. The browser tests exercise the real engine in an isolated
+mount; they do not bypass authentication or add a production testing route.
+
 ## Publishing and verification
 
 - `npm run content:export-static` exports published CMS records (requires the

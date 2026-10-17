@@ -14,6 +14,7 @@ vi.mock('../../contexts/AuthContext', () => ({
 import {
   ContentProgressProvider,
   useContentProgress,
+  useOptionalContentProgress,
   emitProgressUpdate,
   PROGRESS_UPDATED_EVENT,
 } from '../useContentProgress';
@@ -31,6 +32,14 @@ beforeEach(() => {
 });
 
 describe('useContentProgress', () => {
+  it('allows optional lesson embeds to detect a missing progress provider', () => {
+    const outside = renderHook(() => useOptionalContentProgress());
+    expect(outside.result.current).toBeNull();
+    const inside = renderHook(() => useOptionalContentProgress(), { wrapper });
+    act(() => inside.result.current!.markAsCompleted('/intro'));
+    expect(inside.result.current!.isCompleted('/intro')).toBe(true);
+  });
+
   it('throws when used outside the provider', () => {
     expect(() => renderHook(() => useContentProgress())).toThrow(/within a ContentProgressProvider/);
   });

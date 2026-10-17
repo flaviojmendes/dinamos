@@ -185,8 +185,13 @@ export function ContentProgressProvider({ children }: { children: ReactNode }) {
   return createElement(ContentProgressContext.Provider, { value }, children);
 }
 
+/** Optional consumer for lesson embeds that can also appear in the CMS preview. */
+export function useOptionalContentProgress(): ContentProgressContextValue | null {
+  return useContext(ContentProgressContext);
+}
+
 export function useContentProgress(): ContentProgressContextValue {
-  const ctx = useContext(ContentProgressContext);
+  const ctx = useOptionalContentProgress();
   if (!ctx) {
     throw new Error('useContentProgress must be used within a ContentProgressProvider');
   }

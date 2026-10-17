@@ -1,0 +1,16 @@
+.restaurant-world, .restaurant-world-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.restaurant-world { cursor: grab; }
+.restaurant-world:active { cursor: grabbing; }
+.restaurant-camera-controls { position: absolute; bottom: 10px; left: 12px; display: flex; gap: 3px; padding: 2px; border: 1px solid #c4d0cc; background: #ffffffed; border-radius: 9px; }
+.restaurant-camera-controls button { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 6px; background: transparent; color: #344b4b; cursor: pointer; }
+.restaurant-camera-controls button:hover { background: #e3ece9; }
+.restaurant-camera-controls button:focus-visible { outline: 2px solid #bf1759; outline-offset: -2px; }
+.dark .restaurant-camera-controls { border-color: #344a50; background: #151e26ed; }
+.dark .restaurant-camera-controls button { color: #cfdfdc; }
+.dark .restaurant-camera-controls button:hover { background: #2b3c42; }
+.restaurant-world-unavailable { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; gap: 18px; padding: 38px 24px; text-align: center; color: #324c49; font-size: 13px; }
+.dark .restaurant-world-unavailable { color: #c5d9d2; }
+.restaurant-world-fallback-route { display: flex; align-items: center; justify-content: center; gap: 6px; }
+.restaurant-world-fallback-route span { padding: 9px; border: 1px solid currentColor; border-radius: 6px; }
+.restaurant-world-fallback-route span + span::before { content: '→'; display: inline-block; margin-right: 7px; }
+@media (max-width: 440px) { .restaurant-camera-controls { bottom: 8px; left: 8px; } .restaurant-camera-controls button { width: 44px; height: 44px; } }

@@ -1,0 +1,128 @@
+.restaurant-lesson {
+  --restaurant-mint: #0d7156;
+  --restaurant-mint-surface: #e4f4ed;
+  margin: 24px -24px -22px;
+  border-top: 1px solid var(--lesson-line);
+  font-family: 'Hanken Grotesk', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: left;
+}
+.dark .restaurant-lesson { --restaurant-mint: #6ee7c8; --restaurant-mint-surface: #1c352f; }
+.restaurant-heading, .restaurant-heading-main, .restaurant-playback, .restaurant-playback-actions,
+.restaurant-growth-heading, .restaurant-growth-footer, .restaurant-completed, .restaurant-complete-button { display: flex; align-items: center; }
+.restaurant-heading { min-height: 64px; justify-content: space-between; gap: 12px; padding: 10px 16px 10px 24px; }
+.restaurant-heading-main { min-width: 0; gap: 9px; flex-wrap: wrap; color: var(--lesson-ink); }
+.restaurant-heading-main > svg { color: var(--lesson-muted); flex-shrink: 0; }
+.restaurant-heading-main > strong { font-size: 15px; font-weight: 650; }
+.restaurant-level { padding: 3px 8px; border: 1px solid var(--lesson-line); border-radius: 6px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.restaurant-icon-button, .restaurant-step-button, .restaurant-complete-button {
+  appearance: none;
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font: inherit;
+  cursor: pointer;
+  transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease;
+}
+.restaurant-icon-button { display: inline-flex; justify-content: center; align-items: center; padding: 10px; color: var(--lesson-body); background: transparent; flex-shrink: 0; }
+.restaurant-icon-button:hover:not(:disabled), .restaurant-step-button:hover { background: var(--lesson-soft); color: var(--lesson-ink); }
+.restaurant-icon-button:disabled { opacity: .32; cursor: default; }
+.restaurant-lesson button:focus-visible { outline: 2px solid var(--lesson-link); outline-offset: 3px; }
+.restaurant-collapse svg { transition: transform 180ms ease; }
+.restaurant-collapse[aria-expanded='false'] svg { transform: rotate(-90deg); }
+.restaurant-scene-frame { position: relative; isolation: isolate; height: 390px; overflow: hidden; background: #e3e9e7; }
+.dark .restaurant-scene-frame { background: #17232b; }
+.restaurant-scene-frame canvas { display: block; width: 100%; height: 100%; }
+.restaurant-scene-label, .restaurant-station-label {
+  position: absolute;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #ffffffed;
+  color: #323b4f;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.5;
+  pointer-events: none;
+}
+.restaurant-scene-label { top: 14px; left: 16px; }
+.restaurant-scene-dot { width: 6px; height: 6px; border-radius: 50%; background: #b71b59; }
+.restaurant-station-label { right: 16px; bottom: 14px; }
+.dark .restaurant-scene-label, .dark .restaurant-station-label { color: #f2f4f8; background: #151821eb; }
+.dark .restaurant-scene-dot { background: #ff8ab5; }
+.restaurant-scene-loading { display: flex; position: absolute; inset: 0; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--lesson-muted); font-size: 13px; }
+.restaurant-demonstration { padding: 12px 24px 20px; border-bottom: 1px solid var(--lesson-line); }
+.restaurant-playback { gap: 12px; justify-content: space-between; }
+.restaurant-step-list { display: flex; align-items: center; gap: 3px; min-width: 0; }
+.restaurant-step-button { display: flex; align-items: center; gap: 7px; padding: 5px 9px; color: var(--lesson-muted); background: transparent; text-align: left; }
+.restaurant-step-button > span:first-child { display: inline-flex; justify-content: center; align-items: center; flex-shrink: 0; width: 24px; height: 24px; border: 1px solid var(--lesson-line); border-radius: 50%; font-size: 11px; font-weight: 600; }
+.restaurant-step-button[aria-current='step'] { color: var(--lesson-link); background: var(--lesson-soft); }
+.restaurant-step-button[aria-current='step'] > span:first-child { color: var(--lesson-surface); border-color: var(--lesson-link); background: var(--lesson-link); }
+.restaurant-step-button-text { display: none; max-width: 25ch; font-size: 12px; line-height: 1.35; font-weight: 600; }
+.restaurant-playback-actions { gap: 2px; flex-shrink: 0; }
+.restaurant-play-button { color: var(--lesson-link); }
+.restaurant-narration { min-height: 116px; padding-top: 16px; }
+.restaurant-step-count { display: block; margin-bottom: 5px; color: var(--lesson-muted); font-size: 11px; font-weight: 600; }
+.restaurant-narration > strong { display: block; color: var(--lesson-ink); font-size: 17px; font-weight: 650; line-height: 1.4; }
+.restaurant-narration > p { max-width: 70ch; margin-top: 7px; color: var(--lesson-body); font-size: 14px; line-height: 1.65; }
+.restaurant-reduced-note { padding-top: 10px; color: var(--lesson-muted); font-size: 12px; }
+.restaurant-growth { padding: 20px 24px 22px; }
+.restaurant-growth-heading { justify-content: space-between; gap: 12px; }
+.restaurant-eyebrow { display: block; color: var(--lesson-muted); font-size: 11px; font-weight: 500; line-height: 1.5; }
+.restaurant-growth-heading strong { display: block; margin-top: 2px; color: var(--lesson-ink); font-size: 15px; font-weight: 650; }
+.restaurant-growth-count { color: var(--lesson-muted); font-size: 13px; text-align: right; white-space: nowrap; }
+.restaurant-growth-count b { color: var(--restaurant-mint); font-size: 22px; font-weight: 650; line-height: 1.2; }
+.restaurant-growth-count-label { display: block; font-size: 10px; }
+.restaurant-progress { height: 4px; margin-top: 17px; border-radius: 4px; background: var(--lesson-line); overflow: hidden; }
+.restaurant-progress > span { display: block; width: 100%; height: 100%; border-radius: inherit; background: var(--restaurant-mint); transform-origin: left; transition: transform 300ms cubic-bezier(.25,1,.5,1); }
+.restaurant-stage-rail { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); list-style: none; gap: 8px; margin: 12px 0 18px; padding: 0; }
+.restaurant-stage-rail li { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; min-width: 0; color: var(--lesson-muted); font-size: 11px; line-height: 1.4; }
+.restaurant-stage-dot { display: inline-flex; justify-content: center; align-items: center; width: 21px; height: 21px; border: 1px solid var(--lesson-line); border-radius: 50%; font-weight: 600; }
+.restaurant-stage-rail li[data-unlocked='true'] .restaurant-stage-dot { color: var(--restaurant-mint); background: var(--restaurant-mint-surface); border-color: transparent; }
+.restaurant-stage-rail li[aria-current='step'] { color: var(--lesson-ink); font-weight: 600; }
+.restaurant-stage-rail li[aria-current='step'] .restaurant-stage-dot { border: 1px solid var(--restaurant-mint); }
+.restaurant-growth-footer { justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.restaurant-growth-footer > p { max-width: 40ch; color: var(--lesson-muted); font-size: 12px; line-height: 1.6; }
+.restaurant-growth-footer > p > strong { color: var(--lesson-ink); font-weight: 600; }
+.restaurant-complete-button { gap: 7px; justify-content: center; padding: 10px 13px; color: #fff; background: #b91c58; font-size: 12px; font-weight: 600; }
+.restaurant-complete-button:hover { background: #9d1349; }
+.dark .restaurant-complete-button { color: #151821; background: #ff8ab5; }
+.dark .restaurant-complete-button:hover { background: #ffadcb; }
+.restaurant-completed { gap: 6px; min-height: 44px; color: var(--restaurant-mint); font-size: 12px; font-weight: 600; }
+.restaurant-celebration { display: flex; align-items: center; gap: 7px; color: var(--restaurant-mint); font-size: 12px; line-height: 1.6; }
+.restaurant-celebration:not(:empty) { padding-top: 12px; animation: restaurant-growth-feedback 240ms ease-out; }
+.restaurant-celebration svg { flex-shrink: 0; }
+.restaurant-preview-note { padding-top: 14px; color: var(--lesson-muted); font-size: 11px; line-height: 1.6; }
+@keyframes restaurant-growth-feedback { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+@media (min-width: 740px) {
+  .restaurant-step-button[aria-current='step'] .restaurant-step-button-text { display: block; }
+}
+@media (max-width: 560px) {
+  .restaurant-heading { padding-inline: 18px 10px; }
+  .restaurant-heading-main { column-gap: 7px; }
+  .restaurant-heading-main > strong { font-size: 13px; }
+  .restaurant-level { font-size: 10px; }
+  .restaurant-heading-main > svg { width: 16px; }
+  .restaurant-scene-frame { height: 320px; }
+  .restaurant-demonstration, .restaurant-growth { padding-inline: 18px; }
+  .restaurant-playback { gap: 5px; }
+  .restaurant-step-list { gap: 0; }
+  .restaurant-step-button { padding-inline: 6px; }
+  .restaurant-playback-actions { gap: 0; }
+  .restaurant-narration { min-height: 130px; }
+  .restaurant-stage-rail { gap: 4px; }
+  .restaurant-stage-rail li > span:last-child { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+  .restaurant-growth-footer { align-items: flex-start; flex-direction: column; gap: 7px; }
+  .restaurant-complete-button { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .restaurant-lesson *, .restaurant-lesson *::before, .restaurant-lesson *::after { animation: none !important; transition: none !important; }
+}
+@media (max-width: 380px) {
+  .restaurant-playback-actions > .restaurant-icon-button:first-child { display: none; }
+}

@@ -4,6 +4,8 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  resolve: { dedupe: ['three'] },
+  optimizeDeps: { include: ['three', 'three/addons/controls/OrbitControls.js', 'three/addons/geometries/RoundedBoxGeometry.js', 'three/addons/renderers/SVGRenderer.js'] },
   build: {
     manifest: true,
     rollupOptions: {

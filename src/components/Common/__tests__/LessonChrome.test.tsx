@@ -60,7 +60,7 @@ beforeEach(() => {
 });
 
 describe('lesson reading controls', () => {
-  it('updates reading time when lesson prose arrives and excludes code samples and outline links', async () => {
+  it('updates reading time when lesson prose arrives and excludes code, navigation, and game controls', async () => {
     function Lesson({ loaded }: { loaded: boolean }) {
       const ref = useRef<HTMLDivElement>(null);
       return <>
@@ -70,6 +70,7 @@ describe('lesson reading controls', () => {
             {loaded && <p>{'prose '.repeat(230)}</p>}
             <pre>{'code '.repeat(1000)}</pre>
             <nav>{'outline '.repeat(1000)}</nav>
+            <section data-reading-time-ignore>{'restaurant controls '.repeat(1000)}</section>
           </article>
           <aside>{'sidebar '.repeat(1000)}</aside>
         </div>
