@@ -577,9 +577,9 @@ export function createRestaurantWorld(host: HTMLElement, initial: WorldState & {
     buildUntil = performance.now() + (first || state.reducedMotion ? 0 : 650);
     updateFrame(0); if (!first) resize(); render(); schedule();
   }
-  function updateFrame(delta: number) {
+  function updateFrame(delta: number, activeElapsed = delta) {
     const teaching = state.playing && !state.reducedMotion;
-    if (teaching) { clock += delta; stepTime += delta; }
+    if (teaching) { clock += delta; stepTime += activeElapsed; }
     const phase = stepTime > 0 ? T.MathUtils.clamp(stepTime / 3.5, 0, 1) : teaching ? 0 : .88;
     for (const item of allGroups) {
       const scale = state.reducedMotion ? item.target : T.MathUtils.damp(item.object.scale.y, item.target, 8, Math.max(delta, .016));
@@ -647,9 +647,11 @@ export function createRestaurantWorld(host: HTMLElement, initial: WorldState & {
     const animate = state.playing && !state.reducedMotion;
     if (animate || performance.now() < buildUntil) setLoop(time => {
       if (disposed) return;
-      const delta = previousTime ? Math.min((time - previousTime) / 1000, gpu ? .05 : .15) : 0;
+      const elapsed = previousTime ? Math.max(0, (time - previousTime) / 1000) : 0;
       previousTime = time;
-      updateFrame(delta); render();
+      // Bound pose interpolation, not the lesson clock. A slow GPU must not
+      // stretch four seconds of active teaching into dozens of seconds.
+      updateFrame(Math.min(elapsed, gpu ? .05 : .15), elapsed); render();
       if ((!state.playing || state.reducedMotion) && performance.now() >= buildUntil) setLoop(null);
     });
     else setLoop(null);

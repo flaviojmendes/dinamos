@@ -49,6 +49,7 @@ interface SceneHarness {
   zoom: () => void;
   dispose: () => void;
   catalog: () => SceneCase[];
+  slowFrames: () => void;
 }
 declare global { interface Window { RestaurantTest: SceneHarness } }
 
@@ -88,6 +89,17 @@ const bundle = buildSync({
       const webglAvailable = !!gl;
       gl?.getExtension('WEBGL_lose_context')?.loseContext();
       const host = () => document.getElementById('restaurant');
+      export function slowFrames() {
+        // Software WebGL is already slow on CI. Apply explicit low-frame-rate
+        // coverage to the vector fallback without doubling the GPU runner's cost.
+        if (webglAvailable) return;
+        const nativeFrame = window.requestAnimationFrame.bind(window);
+        // Exercise a low frame rate on both GPU and vector renderers. The lesson
+        // clock must follow active elapsed time rather than clamped pose deltas.
+        window.requestAnimationFrame = callback => nativeFrame(() => {
+          window.setTimeout(() => callback(performance.now()), 400);
+        });
+      }
       function state() {
         const concept = getConcept(options.slug);
         if (!concept) throw new Error('Unknown renderer test lesson');
@@ -215,8 +227,9 @@ test('saved-progress levels visibly build six distinct restaurant stages, prefer
 });
 
 test('each teaching step finishes once after four active seconds, excluding pause and reduced motion', async ({ page }) => {
+  await page.evaluate(() => window.RestaurantTest.slowFrames());
   const start = await page.evaluate(() => window.RestaurantTest.mount({ slug: 'components/cache', playing: true, reducedMotion: false }));
-  await page.waitForTimeout(800);
+  await page.waitForTimeout(1_100);
   const moving = await page.evaluate(() => window.RestaurantTest.snapshot());
   expect(moving.propCenters, 'A worker must actually carry the restaurant object through the scene').not.toEqual(start.propCenters);
   const paused = await page.evaluate(() => window.RestaurantTest.update({ playing: false }));
