@@ -18,8 +18,13 @@ import { progressRouter } from './routes/progress.js';
 import { viewsRouter } from './routes/views.js';
 import { contentAnalyticsRouter } from './routes/contentAnalytics.js';
 import { announcementsRouter } from './routes/announcements.js';
+import { settingsRouter, settingsNoStore } from './routes/settings.js';
 
 const app = new Hono<{ Variables: AppVariables }>();
+
+// Apply before CORS so even settings preflight responses are never cached.
+app.use('/api/settings/public', settingsNoStore);
+app.use('/api/admin/settings', settingsNoStore);
 
 // Same-origin in production; allow the configured frontend origin otherwise.
 const allowedOrigin = process.env.FRONTEND_URL ?? '*';
@@ -44,6 +49,8 @@ app.route('/', pollsRouter);
 app.route('/', notificationsRouter);
 app.route('/', quizzesRouter);
 app.route('/', leaderboardRouter);
+// Settings declares its own no-store headers before authentication can fail.
+app.route('/', settingsRouter);
 app.route('/', adminRouter);
 app.route('/', gameRouter);
 app.route('/', architecturesRouter);

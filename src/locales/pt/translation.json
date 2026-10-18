@@ -70,6 +70,33 @@
         "title": "Configurações",
         "description": "Configuração global da plataforma."
       }
+    },
+    "settings": {
+      "title": "Configurações do sistema",
+      "lesson_experience": "Experiência das aulas",
+      "dioramas_label": "Dioramas das aulas",
+      "dioramas_description": "Exibir a hamburgueria animada em todas as aulas para todos os usuários.",
+      "dioramas_help": "As aulas escritas e o progresso salvo continuam disponíveis com os dioramas desligados. A mudança chega às aulas abertas em até 30 segundos.",
+      "loading": "Carregando configurações…",
+      "saving": "Salvando…",
+      "unknown": "Configuração atual indisponível.",
+      "enabled": "Os dioramas estão ativados.",
+      "disabled": "Os dioramas estão desativados.",
+      "saved_enabled": "Dioramas ativados para todos.",
+      "saved_disabled": "Dioramas desativados para todos.",
+      "load_error": "Não foi possível carregar a configuração atual. Tente novamente antes de fazer alterações.",
+      "save_error": "Não foi possível salvar a alteração. A configuração anterior foi mantida. Tente novamente.",
+      "retry": "Tentar novamente",
+      "free_title": "Plataforma gratuita",
+      "free_description": "Toda a plataforma é gratuita e está disponível para todos os usuários autenticados. Todos os recursos abaixo estão disponíveis sem restrições.",
+      "free_features": {
+        "challenges": "Acesso ilimitado a todos os desafios de System Design",
+        "quizzes": "Todos os quizzes disponíveis",
+        "ai_feedback": "Feedback com IA personalizado",
+        "progress": "Salvamento automático do progresso",
+        "history": "Histórico de soluções e pontuações",
+        "community": "Acesso ao fórum da comunidade"
+      }
     }
   },
   "command_center": {

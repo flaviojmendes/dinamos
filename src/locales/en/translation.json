@@ -70,6 +70,33 @@
         "title": "Settings",
         "description": "Global platform configuration."
       }
+    },
+    "settings": {
+      "title": "System settings",
+      "lesson_experience": "Lesson experience",
+      "dioramas_label": "Lesson dioramas",
+      "dioramas_description": "Show the animated burger restaurant in every lesson for all users.",
+      "dioramas_help": "Written lessons and saved progress remain available when dioramas are off. Changes reach open lesson pages within 30 seconds.",
+      "loading": "Loading settings…",
+      "saving": "Saving…",
+      "unknown": "Current setting unavailable.",
+      "enabled": "Dioramas are enabled.",
+      "disabled": "Dioramas are disabled.",
+      "saved_enabled": "Dioramas enabled for everyone.",
+      "saved_disabled": "Dioramas disabled for everyone.",
+      "load_error": "Could not load the current setting. Try again before making changes.",
+      "save_error": "Could not save the change. The previous setting has been kept. Try again.",
+      "retry": "Try again",
+      "free_title": "Free platform",
+      "free_description": "The entire platform is free and available to all signed-in users. All the features below are available without restrictions.",
+      "free_features": {
+        "challenges": "Unlimited access to all System Design challenges",
+        "quizzes": "All quizzes available",
+        "ai_feedback": "Personalized AI feedback",
+        "progress": "Automatic progress saving",
+        "history": "Solution and score history",
+        "community": "Access to the community forum"
+      }
     }
   },
   "command_center": {

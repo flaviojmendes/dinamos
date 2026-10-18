@@ -32,6 +32,10 @@ the learner. Preserve blank lines around JSX components and their Markdown.
 ## The animated restaurant
 
 On a published lesson route, `BurgerAnalogy` also opens the restaurant diorama.
+Administrators can disable or re-enable all dioramas under **Admin → Settings**.
+The global value is persisted in `app_settings`. Lesson pages check the public
+setting before mounting a diorama and refresh it every 30 seconds while visible;
+written examples and saved lesson progress remain available when it is disabled.
 The same saved lesson progress used by the course builds its six permanent
 stages. Watching, replaying or changing a demonstration step does not complete a
 lesson. A concept can preview a station before the learner has unlocked its
